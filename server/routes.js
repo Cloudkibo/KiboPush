@@ -18,8 +18,11 @@ module.exports = function(app) {
 
   app.use('/auth', require('./auth'));
 
-  app.get('/', function(req, res){
+  app.get('/dashboard', function(req, res){
     res.sendFile(path.join(config.root, 'client/index.html'));
   });
 
+  app.get('/', function(req, res){
+    res.sendFile(path.join(config.root, 'client/landing.html'));
+  });
 };
