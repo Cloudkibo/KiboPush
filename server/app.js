@@ -7,11 +7,15 @@ var express = require('express'),
   port = process.env.PORT || 3000,
   bodyParser = require('body-parser');
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'; // production
+
+console.log(app.get('env'));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// middleware to see if the request sender is authorised server or not
-app.use('/sendVoipNotification', function(req, res, next){
+// TODO for authentication middleware to see if the request sender is authorised server or not
+app.use('/', function(req, res, next){
   console.log('this middleware will authenticate the token. For now, all is authorized.');
 });
 
