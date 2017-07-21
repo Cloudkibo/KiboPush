@@ -27,7 +27,9 @@ return fetch(BASE_URL + endpoint, config)
 }
 
 return text
-}).catch(err => console.log(err))
+  }).catch(err => {
+    //console.log(err)
+  })
 }
 
 export const CALL_API = Symbol('Call API')
