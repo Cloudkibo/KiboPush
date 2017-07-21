@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('kibopush', 'root', '', {
+const sequelize = new Sequelize('kibopush', 'root', 'kibo4321', {
   host: 'localhost',
   port: 3306,
   dialect: 'mysql',

@@ -10,12 +10,10 @@ var express = require('express'),
   path = require('path'),
   config = require('./config');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(config.root, 'client/public')));
-
+require('./config/express')(app);
 require('./routes')(app);
 
+// TODO move this to routes module
 app.use(function(req, res) {
   res.status(404).send({url: req.originalUrl + ' not found'})
 });
