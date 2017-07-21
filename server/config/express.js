@@ -14,28 +14,38 @@ var morgan = require('morgan');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-//var cookieParser = require('cookie-parser');
-//var errorHandler = require('errorhandler');
+var cookieParser = require('cookie-parser');
+var errorHandler = require('errorhandler');
 var path = require('path');
-//var passport = require('passport');
 var helmet = require('helmet');
+//var passport = require('passport');
 
 var config = require('./index');
 
 module.exports = function(app) {
   var env = app.get('env');
 
+  /**
+   * middleware to compress response body to optimize app
+   * (it is better done on nginx proxy level)
+   */
 
-  app.use(compression()); // middleware to compress response body to optimize app
+  app.use(compression());
+
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(express.static(path.join(config.root, 'client/public')));
   app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
+
+  // Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.
   app.use(methodOverride());
-  // app.use(cookieParser());
+
+  // Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
+  app.use(cookieParser());
+
   // app.use(passport.initialize());
 
-  if ('production' === env) {
+  if (env === 'production') {
 
     /**
      * Helmet can help protect your app from some
@@ -47,7 +57,7 @@ module.exports = function(app) {
 
   }
 
-  if ('development' === env || 'test' === env) {
+  if (env === 'development' || env === 'test') {
 
     /**
      * HTTP request logger
@@ -55,7 +65,10 @@ module.exports = function(app) {
 
     app.use(morgan('dev'));
 
-    // app.use(require('connect-livereload')());
-    //app.use(errorHandler()); // Error handler - has to be last
+    /**
+     * Development-only error handler middleware.
+     */
+
+    app.use(errorHandler()); // Error handler - has to be last
   }
 };

@@ -4,10 +4,11 @@
   "description": "kibopush official repository",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --trace-sync-io server/app.js",
-    "start_prod": "NODE_ENV=production nodemon server/app.js",
+    "start": "cross-env DEBUG=kibopush:* NODE_ENV=development nodemon server/app.js",
+    "start:prod": "cross-env NODE_ENV=production node server/app.js",
+    "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
-    "test": "test"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,8 @@
     "babelify": "^7.2.0",
     "composable-middleware": "^0.3.0",
     "compression": "^1.7.0",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.8",
     "errorhandler": "^1.5.0",
     "express": "^4.15.3",
     "helmet": "^3.6.1",
@@ -51,11 +54,14 @@
     "sequelize": "^4.4.0",
     "serve-favicon": "^2.4.3",
     "watch": "^1.0.2",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "winston": "^2.3.1",
+    "winston-papertrail": "^1.0.5"
   },
   "devDependencies": {
-    "eslint-config-rallycoding": "^3.2.0",
     "body-parser": "^1.17.2",
+    "cross-env": "^5.0.1",
+    "eslint-config-rallycoding": "^3.2.0",
     "nodemon": "^1.11.0"
   }
 }

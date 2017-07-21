@@ -10,6 +10,7 @@
 
 var path = require('path');
 var config = require('./config');
+var logger = require('./components/logger');
 
 module.exports = function(app) {
 
@@ -19,10 +20,12 @@ module.exports = function(app) {
   app.use('/auth', require('./auth'));
 
   app.get('/dashboard', function(req, res){
+    logger.serverLog('routes.js', 'going to serve main react app');
     res.sendFile(path.join(config.root, 'client/index.html'));
   });
 
   app.get('/', function(req, res){
+    logger.serverLog('routes.js', 'going to serve landing page');
     res.sendFile(path.join(config.root, 'client/landing.html'));
   });
 };

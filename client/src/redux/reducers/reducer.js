@@ -1,21 +1,11 @@
 import { combineReducers } from 'redux';
 
-import { connectInfo } from './connectinfo.reducer';
-import { chatListInfo } from './chatlist.reducer';
-import { contactListInfo } from './contactlist.reducer';
-import { conversationListInfo } from './conversation.reducer';
-import { archiveListInfo } from './archivelist.reducer';
-import { groupListInfo } from './grouplist.reducer';
-import { groupMemberListInfo } from './groupmemberlist.reducer';
+import {basicInfo} from './basicinfo.reducer';
+import {pagesInfo} from './pages.reducer';
 
 const appReducer = combineReducers({
-  connectInfo,
-  chatListInfo,
-  archiveListInfo,
-  contactListInfo,
-  conversationListInfo,
-  groupListInfo,
-  groupMemberListInfo
+  basicInfo,
+  pagesInfo
 });
 
 export default appReducer;
