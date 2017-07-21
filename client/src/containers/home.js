@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Login from './login/login';
+import Sidebar from './sidebar/sidebar';
+import Responsive from './sidebar/responsive';
+import Dashboard from './dashboard/dashboard';
+import Header from './header/header';
+import HeaderResponsive from './header/headerResponsive';
 
 class Home extends Component {
 
@@ -14,8 +18,16 @@ class Home extends Component {
   }
 
   render() {
+    console.log("Hello");
     return (
-      <Login />
+      <div>
+      <Header/>
+      <HeaderResponsive />
+      
+      <Sidebar/>
+      <Responsive/>
+      <Dashboard/>
+      </div>
     );
   }
 
