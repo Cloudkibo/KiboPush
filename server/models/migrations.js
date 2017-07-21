@@ -25,11 +25,11 @@ Broadcasts.belongsTo(Users);
 // force: true will drop the table if it already exists
 Users.sync({force: true}).then(() => {
   // Table created
-  // return Users.create({
-  //   firstName: 'John',
-  //   lastName: 'Hancock',
-  //   email: 'what@email.com'
-  // });
+  return Users.create({
+    firstName: 'John',
+    lastName: 'Hancock',
+    email: 'what@email.com'
+  });
 });
 
 Pages.sync({force: true}).then(() => {
