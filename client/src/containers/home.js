@@ -23,7 +23,6 @@ class Home extends Component {
       <div>
       <Header/>
       <HeaderResponsive />
-      
       <Sidebar/>
       <Responsive/>
       <Dashboard/>

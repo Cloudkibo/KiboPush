@@ -6,6 +6,7 @@ import React from 'react';
 
 class Login extends React.Component {
   render() {
+    console.log("Sojahro wada here");
     return (
       <div className="container-background">
         <div className="container-background-up">

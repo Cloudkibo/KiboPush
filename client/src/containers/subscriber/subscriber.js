@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-class Dashboard extends React.Component {
+class Subscriber extends React.Component {
   render() {
     return (
      <div className="container">
@@ -278,4 +278,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default Subscriber;
