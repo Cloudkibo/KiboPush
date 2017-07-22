@@ -11,6 +11,12 @@ const Users = db.define('user', {
   email: {
       type: Sequelize.STRING
   },
+  locale: {
+      type: Sequelize.STRING
+  },
+  gender: {
+      type: Sequelize.STRING
+  },
   authType: {
       type: Sequelize.STRING
   },

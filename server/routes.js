@@ -21,7 +21,7 @@ module.exports = function(app) {
 
   app.use('/auth', require('./auth'));
 
-  app.get('/login', function(req, res){
+  app.get('/dashboard', function(req, res){
     logger.serverLog(TAG, 'going to serve main react app');
     res.sendFile(path.join(config.root, 'client/index.html'));
   });

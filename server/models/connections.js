@@ -2,7 +2,7 @@ var Sequelize = require('sequelize');
 
 var logger = require('../components/logger');
 
-const sequelize = new Sequelize('kibopush', 'root', 'kibo4321', {
+const sequelize = new Sequelize('kibopush', 'root', '', {
   host: 'localhost',
   port: 3306,
   dialect: 'mysql',

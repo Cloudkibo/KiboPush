@@ -11,39 +11,7 @@ class HeaderResponsive extends React.Component {
 
 	<div className="header-content-wrapper">
 		<ul className="nav nav-tabs mobile-app-tabs" role="tablist">
-			<li className="nav-item">
-				<a className="nav-link" data-toggle="tab" href="#request" role="tab">
-					<div className="control-icon has-items">
-						<svg className="olymp-happy-face-icon"><use xlinkHref="icons/icons.svg#olymp-happy-face-icon"></use></svg>
-						<div className="label-avatar bg-blue">6</div>
-					</div>
-				</a>
-			</li>
 
-			<li className="nav-item">
-				<a className="nav-link" data-toggle="tab" href="#chat" role="tab">
-					<div className="control-icon has-items">
-						<svg className="olymp-chat---messages-icon"><use xlinkHref="icons/icons.svg#olymp-chat---messages-icon"></use></svg>
-						<div className="label-avatar bg-purple">2</div>
-					</div>
-				</a>
-			</li>
-
-			<li className="nav-item">
-				<a className="nav-link" data-toggle="tab" href="#notification" role="tab">
-					<div className="control-icon has-items">
-						<svg className="olymp-thunder-icon"><use xlinkHref="icons/icons.svg#olymp-thunder-icon"></use></svg>
-						<div className="label-avatar bg-primary">8</div>
-					</div>
-				</a>
-			</li>
-
-			<li className="nav-item">
-				<a className="nav-link" data-toggle="tab" href="#search" role="tab">
-					<svg className="olymp-magnifying-glass-icon"><use xlinkHref="icons/icons.svg#olymp-magnifying-glass-icon"></use></svg>
-					<svg className="olymp-close-icon"><use xlinkHref="icons/icons.svg#olymp-close-icon"></use></svg>
-				</a>
-			</li>
 		</ul>
 	</div>
 

@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router';
 
 class Dashboard extends React.Component {
   render() {
@@ -17,7 +18,7 @@ class Dashboard extends React.Component {
                     <div className="friend-avatar">
                         <h1>24</h1>
                       <div className="author-content">
-                        <a href="#" className="h5 author-name">Subscribers</a>
+                        <Link to="subscribers" className="h5 author-name">Subscribers</Link>
                       </div>
                     </div>
                   </div>
