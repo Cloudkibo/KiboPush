@@ -10,8 +10,10 @@ var router = express.Router();
 
 var logger = require('../../components/logger');
 
+const TAG = 'api/user/index.js';
+
 router.get('/', function (req, res) {
-  logger.serverLog('api/thing/index.js', 'going to serve landing page');
+  logger.serverLog(TAG, 'going to serve landing page');
   res.json(200, { status: 'success' });
 });
 

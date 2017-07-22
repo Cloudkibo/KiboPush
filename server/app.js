@@ -13,11 +13,6 @@ var express = require('express'),
 require('./config/express')(app);
 require('./routes')(app);
 
-// TODO move this to routes module
-app.use(function(req, res) {
-  res.status(404).send({url: req.originalUrl + ' not found'})
-});
-
 app.listen(config.port);
 
 logger.serverLog('app.js', 'KiboPush server STARTED on ' + config.port + ' in ' + config.env + ' mode');

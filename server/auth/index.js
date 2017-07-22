@@ -9,8 +9,10 @@ var router = express.Router();
 
 var logger = require('../components/logger');
 
+const TAG = 'auth/index.js';
+
 router.get('/', function (req, res) {
-  logger.serverLog('auth/index.js', 'going to serve landing page');
+  logger.serverLog(TAG, 'going to serve landing page');
   res.json(200, { status: 'success' });
 });
 
