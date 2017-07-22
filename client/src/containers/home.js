@@ -40,7 +40,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  // todo do this later
   return bindActionCreators({ }, dispatch);
 }
 

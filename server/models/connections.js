@@ -1,5 +1,7 @@
 var Sequelize = require('sequelize');
 
+var logger = require('../components/logger');
+
 const sequelize = new Sequelize('kibopush', 'root', 'kibo4321', {
   host: 'localhost',
   port: 3306,
@@ -18,10 +20,10 @@ const sequelize = new Sequelize('kibopush', 'root', 'kibo4321', {
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    logger.serverLog('/models/connections.js', 'Connection has been established successfully.');
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    logger.serverLog('/models/connections.js', 'Unable to connect to the database:' + err);
   });
 
 

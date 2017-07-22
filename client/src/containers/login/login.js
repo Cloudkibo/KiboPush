@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router';
 
 class Login extends React.Component {
   render() {
@@ -10,7 +11,7 @@ class Login extends React.Component {
     return (
       <div className="container-background">
         <div className="container-background-up">
-          Sojharo is here!
+          <Link to="/dashboard">Sojharo is here!</Link>
         </div>
       </div>
     );

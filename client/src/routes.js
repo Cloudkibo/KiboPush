@@ -5,8 +5,9 @@ import Home from './containers/home';
 import Login from './containers/login/login';
 
 const routes = (
-   <Route path="/dashboard" component={App}>
-    <IndexRoute component={Home} />
+   <Route path="/login" component={App}>
+     <IndexRoute component={Login} />
+     <Route path="/dashboard" component={Home} />
   </Route>
 );
 
