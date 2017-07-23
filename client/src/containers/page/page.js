@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 
-class Broadcast extends React.Component {
+class Page extends React.Component {
   render() {
     return (
 			<div>
@@ -23,39 +23,39 @@ class Broadcast extends React.Component {
           <main className="col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12">
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
-				<h3>Broadcasts</h3>
+				<h3>Pages</h3>
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
 								<tr>
-									<th>Platform</th>
-									<th>Type</th>
-									<th>Created At</th>
-									<th>Sent</th>
+									<th>Page Pic</th>
+									<th>Page Name</th>
+									<th>Likes</th>
+									<th>Followers</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>Facebook</td>
-									<td>Survey</td>
-									<td>24th Aug 2017</td>
+									<td>Image</td>
+									<td>Test Page</td>
+									<td>157</td>
 									<td>17</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
 								</tr>
 								<tr>
-									<td>Facebook</td>
-									<td>Poll</td>
-									<td>24th Aug 2017</td>
-									<td>174</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td>Image</td>
+									<td>Test Page</td>
+									<td>157</td>
+									<td>17</td>
+									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
 								</tr>
 								<tr>
-									<td>Facebook</td>
-									<td>Message</td>
-									<td>24th Aug 2017</td>
-									<td>26</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td>Image</td>
+									<td>Test Page</td>
+									<td>157</td>
+									<td>17</td>
+									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -76,4 +76,4 @@ class Broadcast extends React.Component {
   }
 }
 
-export default Broadcast;
+export default Page;

@@ -37,6 +37,11 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
+					<Link to="pages">
+						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="PAGES"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
+					</Link>
+				</li>
+				<li>
 					<Link to="login">
 						<svg className="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Login"><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
 					</Link>
@@ -51,11 +56,7 @@ class Sidebar extends Component {
 						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="WEATHER APP"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
 					</Link>
 				</li>
-				<li>
-					<Link to="20-CalendarAndEvents-MonthlyCalendar.html">
-						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
-					</Link>
-				</li>
+			
 
 				<li>
 					<Link to="25-FriendsBirthday.html">
@@ -109,6 +110,12 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
+					<Link to="pages">
+						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
+						<span className="left-menu-title">PAGES</span>
+					</Link>
+				</li>
+				<li>
 					<Link to="login">
 						<svg className="olymp-star-icon left-menu-icon"   data-toggle="tooltip" data-placement="right" title="" data-original-title="LOGIN"><use xlinkHref="icons/icons.svg#olymp-star-icon"></use></svg>
 						<span className="left-menu-title">Login</span>
@@ -127,12 +134,7 @@ class Sidebar extends Component {
 						<span className="left-menu-title">Weather App</span>
 					</Link>
 				</li>
-				<li>
-					<Link to="20-CalendarAndEvents-MonthlyCalendar.html">
-						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
-						<span className="left-menu-title">Calendar and Events</span>
-					</Link>
-				</li>
+			
 				<li>
 					<Link to="25-FriendsBirthday.html">
 						<svg className="olymp-cupcake-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Friends Birthdays"><use xlinkHref="icons/icons.svg#olymp-cupcake-icon"></use></svg>
