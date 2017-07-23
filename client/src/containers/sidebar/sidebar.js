@@ -32,8 +32,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="17-FriendGroups.html">
-						<svg className="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="FRIEND GROUPS"><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
+					<Link to="login">
+						<svg className="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Login"><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
 					</Link>
 				</li>
 				<li>
@@ -102,9 +102,9 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="17-FriendGroups.html">
-						<svg className="olymp-star-icon left-menu-icon"   data-toggle="tooltip" data-placement="right" title="" data-original-title="FRIEND GROUPS"><use xlinkHref="icons/icons.svg#olymp-star-icon"></use></svg>
-						<span className="left-menu-title">Friend Groups</span>
+					<Link to="login">
+						<svg className="olymp-star-icon left-menu-icon"   data-toggle="tooltip" data-placement="right" title="" data-original-title="LOGIN"><use xlinkHref="icons/icons.svg#olymp-star-icon"></use></svg>
+						<span className="left-menu-title">Login</span>
 					</Link>
 				</li>
 				<li>

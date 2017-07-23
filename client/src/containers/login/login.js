@@ -4,15 +4,25 @@
 
 import React from 'react';
 import { Link } from 'react-router';
+import FacebookLogin from 'react-facebook-login';
+const responseFacebook = (response) => {
+  console.log(response);
+};
 
 class Login extends React.Component {
+
   render() {
-    console.log("Sojahro wada here");
     return (
       <div className="container-background">
         <div className="container-background-up">
-          <Link to="/dashboard">Sojharo is here!</Link>
+          <Link to="/dashboard">Back to dashboard</Link>
         </div>
+        <FacebookLogin
+          appId="1088597931155576"
+          autoLoad
+          callback={responseFacebook}
+          icon="fa-facebook"
+        />
       </div>
     );
   }
