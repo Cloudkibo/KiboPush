@@ -32,6 +32,11 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
+					<Link to="broadcasts">
+						<svg className="olymp-badge-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="BROADCASTS"><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
+					</Link>
+				</li>
+				<li>
 					<Link to="login">
 						<svg className="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Login"><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
 					</Link>
@@ -51,11 +56,7 @@ class Sidebar extends Component {
 						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
 					</Link>
 				</li>
-				<li>
-					<Link to="24-CommunityBadges.html">
-						<svg className="olymp-badge-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Community Badges"><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
-					</Link>
-				</li>
+
 				<li>
 					<Link to="25-FriendsBirthday.html">
 						<svg className="olymp-cupcake-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Friends Birthdays"><use xlinkHref="icons/icons.svg#olymp-cupcake-icon"></use></svg>
@@ -102,11 +103,18 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
+					<Link to="broadcasts">
+						<svg className="olymp-badge-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Community Badges"><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
+						<span className="left-menu-title">BROADCASTS</span>
+					</Link>
+				</li>
+				<li>
 					<Link to="login">
 						<svg className="olymp-star-icon left-menu-icon"   data-toggle="tooltip" data-placement="right" title="" data-original-title="LOGIN"><use xlinkHref="icons/icons.svg#olymp-star-icon"></use></svg>
 						<span className="left-menu-title">Login</span>
 					</Link>
 				</li>
+				
 				<li>
 					<Link to="18-MusicAndPlaylists.html">
 						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="MUSIC&PLAYLISTS"><use xlinkHref="icons/icons.svg#olymp-headphones-icon"></use></svg>
@@ -123,12 +131,6 @@ class Sidebar extends Component {
 					<Link to="20-CalendarAndEvents-MonthlyCalendar.html">
 						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
 						<span className="left-menu-title">Calendar and Events</span>
-					</Link>
-				</li>
-				<li>
-					<Link to="24-CommunityBadges.html">
-						<svg className="olymp-badge-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Community Badges"><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
-						<span className="left-menu-title">Community Badges</span>
 					</Link>
 				</li>
 				<li>
