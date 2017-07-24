@@ -8,11 +8,12 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { Link } from 'react-router';
 
 class Broadcast extends React.Component {
   render() {
     return (
-			<div>
+	   <div>
       <Header/>
       <HeaderResponsive />
       <Sidebar/>
@@ -24,6 +25,9 @@ class Broadcast extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Broadcasts</h3>
+				<Link to='createbroadcast' className="pull-right">
+						<button className="btn btn-primary btn-md-2"> Create Broadcast</button>
+				</Link>
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
