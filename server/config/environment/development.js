@@ -6,17 +6,16 @@
 // Development specific configuration
 // ==================================
 module.exports = {
-  // MongoDB connection options
+  // MySQL connection options
   db: {
     mysql: {
       credentials: {
-        schema: process.env.DB_SCHEMA || 'kibopush',
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || 'kibo4321'
+        schema: 'kibopush',
+        user: 'root',
+        password: 'kibo4321'
       },
-      host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 3306,
-      dialect: 'mysql',
+      host: 'localhost',
+      port: 3306
     }
   },
   seedDB: false

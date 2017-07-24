@@ -8,12 +8,14 @@ var express = require('express');
 var router = express.Router();
 
 var logger = require('../components/logger');
+var config = require('../config/environment');
+var Users = require('../models/Users').Users;
 
 const TAG = 'auth/index.js';
 
-router.get('/', function (req, res) {
-  logger.serverLog(TAG, 'going to serve landing page');
-  res.json(200, { status: 'success' });
-});
+require('./facebook/passport').setup(Users, config);
+
+router.use('/facebook', require('./facebook'));
+
 
 module.exports = router;

@@ -1,17 +1,15 @@
 var Sequelize = require('sequelize');
 
 var logger = require('../components/logger');
+var config = require('../config/environment');
 
-const sequelize = new Sequelize('kibopush', 'root', 'kibo4321', {
-  host: 'localhost',
-  port: 3306,
-  dialect: 'mysql',
+const sequelize = new Sequelize(config.db.mysql.credentials.schema,
+  config.db.mysql.credentials.user, config.db.mysql.credentials.password, {
+  host: config.db.mysql.host,
+  port: config.db.mysql.port,
+  dialect: config.db.mysql.dialect,
 
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-  },
+  pool: config.db.mysql.pool,
 
   // SQLite only
   storage: 'path/to/database.sqlite'
