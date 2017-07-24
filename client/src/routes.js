@@ -6,6 +6,7 @@ import Login from './containers/login/login';
 import Subscriber from './containers/subscriber/subscriber';
 import Broadcast from './containers/broadcast/broadcast';
 import Page from './containers/page/page';
+import AddPage from './containers/page/addPage';
 
 const routes = (
    <Route path="/dashboard" component={App}>
@@ -14,6 +15,7 @@ const routes = (
      <Route path="/subscribers" component={Subscriber}  />
      <Route path="/broadcasts" component={Broadcast}  />
      <Route path="/pages" component={Page}  />
+     <Route path="/addPages" component={AddPage}  />
   </Route>
 );
 

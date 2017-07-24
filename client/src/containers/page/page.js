@@ -8,6 +8,7 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { Link } from 'react-router';
 
 class Page extends React.Component {
   render() {
@@ -24,6 +25,7 @@ class Page extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Pages</h3>
+				<Link to="addPages" className="btn btn-primary btn-sm" style={{float: 'right'}}>Add Pages</Link>
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>

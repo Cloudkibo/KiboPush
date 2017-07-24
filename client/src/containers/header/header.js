@@ -14,14 +14,7 @@ class Header extends React.Component {
 	</div>
 
 	<div className="header-content-wrapper">
-	
-
-
 		<div className="control-block">
-
-		
-		
-		
 			<div className="author-page author vcard inline-items more">
 				<div className="author-thumb">
 					<img alt="author" src="img/author-page.jpg" className="avatar" />
@@ -31,7 +24,6 @@ class Header extends React.Component {
 							<div className="ui-block-title ui-block-title-small">
 								<h6 className="title">Your Account</h6>
 							</div>
-
 							<ul className="account-settings">
 								<li>
 									<a href="29-YourAccount-AccountSettings.html">
@@ -49,10 +41,6 @@ class Header extends React.Component {
 									</a>
 								</li>
 							</ul>
-
-					
-					
-				
 						</div>
 
 					</div>
