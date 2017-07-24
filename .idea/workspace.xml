@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d52f0d1-a023-4abd-8866-f9b31b31e58f" name="Default" comment="security and optimizations with redux #1">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/config/environment/development.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/server/config/index.js" afterPath="$PROJECT_DIR$/server/config/environment/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/public/css/theme-styles-olympus.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/landing.html" afterPath="$PROJECT_DIR$/client/landing.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/public/js/bundle.js" afterPath="$PROJECT_DIR$/client/public/js/bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/app.js" afterPath="$PROJECT_DIR$/server/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/components/logger.js" afterPath="$PROJECT_DIR$/server/components/logger.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/config/express.js" afterPath="$PROJECT_DIR$/server/config/express.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/connections.js" afterPath="$PROJECT_DIR$/server/models/connections.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/containers/login/login.js" afterPath="$PROJECT_DIR$/client/src/containers/login/login.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes.js" afterPath="$PROJECT_DIR$/server/routes.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -29,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="routes.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="routes.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/routes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="25" column="53" lean-forward="false" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="53" />
+            <state relative-caret-position="384">
+              <caret line="26" column="5" lean-forward="true" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -49,7 +45,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/config/environment/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="432">
@@ -423,7 +419,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36376000" />
+    <option name="totallyTimeSpent" value="36442000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -830,14 +826,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="25" column="53" lean-forward="false" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/config/express.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
@@ -851,16 +839,6 @@
         <state relative-caret-position="720">
           <caret line="48" column="9" lean-forward="true" selection-start-line="44" selection-start-column="28" selection-end-line="48" selection-end-column="9" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/environment/development.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#44#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -879,6 +857,24 @@
           <folding>
             <element signature="e#0#44#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/config/environment/development.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#44#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="26" column="5" lean-forward="true" selection-start-line="26" selection-start-column="5" selection-end-line="26" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
