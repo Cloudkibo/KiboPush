@@ -2,7 +2,7 @@
  * Created by sojharo on 20/07/2017.
  */
 
-var config = require('../config/index');
+var config = require('../config/environment/index');
 
 var winston = require('winston');
 require('winston-papertrail').Papertrail;

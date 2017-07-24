@@ -12,6 +12,9 @@ var surveyQuestions = require('./surveyQuestions').surveyQuestions;
 var surveyOptions = require('./surveyOptions').surveyOptions;
 var db = require('./connections').sequelize;
 
+var logger = require('../components/logger');
+const TAG = 'models/migrations';
+
 Users.hasMany(Pages);
 Users.hasMany(Subscribers);
 Pages.belongsTo(Users);
@@ -35,6 +38,7 @@ pollOptions.belongsTo(Polls);
 db
   .sync({force: true}) // create the database table for our model(s)
   .then(function(){
+    logger.serverLog(TAG, 'Done with migrations. Database is setup. You can now exit the script');
     // do some work
   });
 

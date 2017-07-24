@@ -26,11 +26,10 @@ router.get('/fetch', function (req, res) {
   logger.serverLog(TAG, 'going to serve landing page');
   Users.findOne({
     where: {
-      firstName: 'John'
+      firstName: 'Johns'
     },
     attributes: ['email']
   }).then(function(data){
-
     res.json(200, { status: 'success', data: data });
   });
 });

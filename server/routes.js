@@ -9,7 +9,7 @@
 'use strict';
 
 var path = require('path');
-var config = require('./config');
+var config = require('./config/environment/index');
 var logger = require('./components/logger');
 
 const TAG = 'routes.js';

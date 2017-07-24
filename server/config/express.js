@@ -18,9 +18,9 @@ var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
 var helmet = require('helmet');
-//var passport = require('passport');
+var passport = require('passport');
 
-var config = require('./index');
+var config = require('./environment/index');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -43,22 +43,18 @@ module.exports = function(app) {
   // Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
   app.use(cookieParser());
 
-  // app.use(passport.initialize());
+  app.use(passport.initialize());
 
   if (env === 'production') {
-
     /**
      * Helmet can help protect your app from some
      * well-known web vulnerabilities by setting
      * HTTP headers appropriately.
      */
-
     app.use(helmet());
-
   }
 
   if (env === 'development' || env === 'test') {
-
     /**
      * HTTP request logger
      */
