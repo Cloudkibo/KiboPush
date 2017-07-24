@@ -5,7 +5,7 @@
 var path = require('path');
 var _ = require('lodash');
 
-module.exports = {
+var all = {
 
   env: process.env.NODE_ENV,
 
@@ -24,3 +24,7 @@ module.exports = {
     callbackURL:  (process.env.DOMAIN || 'https://api.cloudkibo.com') + '/auth/facebook/callback'
   }
 };
+
+module.exports = _.merge(
+  all,
+  require('./' + process.env.NODE_ENV + '.js') || {});

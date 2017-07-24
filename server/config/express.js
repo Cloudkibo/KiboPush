@@ -20,7 +20,7 @@ var path = require('path');
 var helmet = require('helmet');
 //var passport = require('passport');
 
-var config = require('./index');
+var config = require('./environment/index');
 
 module.exports = function(app) {
   var env = app.get('env');

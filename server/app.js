@@ -7,7 +7,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'; // production
 var express = require('express'),
   app = express(),
   path = require('path'),
-  config = require('./config'),
+  config = require('./config/environment/index'),
   logger = require('./components/logger');
 
 require('./config/express')(app);
