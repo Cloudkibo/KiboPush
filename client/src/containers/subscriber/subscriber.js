@@ -8,8 +8,14 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
-
+import { connect } from 'react-redux';
+import {loadSubscribersList} from '../../redux/actions/subscribers.actions';
+import { bindActionCreators } from 'redux';
 class Subscriber extends React.Component {
+	constructor(props, context) {
+		super(props, context);
+   		props.loadSubscribersList();
+  }
   render() {
     return (
 			<div>
@@ -21,10 +27,10 @@ class Subscriber extends React.Component {
 	 <br/><br/><br/><br/><br/><br/>
         <div className="row">
           <main className="col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12">
-						<div className="ui-block">
-        <div className="birthday-item inline-items badges">
-				<h3>Subscribers</h3>
-        <div className="table-responsive">
+			<div className="ui-block">
+	        <div className="birthday-item inline-items badges">
+					<h3>Subscribers</h3>
+        			<div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
 								<tr>
@@ -36,33 +42,24 @@ class Subscriber extends React.Component {
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>John</td>
-									<td>Doe</td>
-									<td>john@example.com</td>
-									<td>en/US</td>
-									<td>Male</td>
-								</tr>
-								<tr>
-									<td>Mary</td>
-									<td>Moe</td>
-									<td>mary@example.com</td>
-									<td>en/US</td>
-									<td>Male</td>
-								</tr>
-								<tr>
-									<td>July</td>
-									<td>Dooley</td>
-									<td>july@example.com</td>
-									<td>en/US</td>
-									<td>Male</td>
-								</tr>
+							 {
+                      				  this.props.subscribers.map((subscriber, i) => (
+                      				  	<tr>
+											<td>{subscriber.firstname}</td>
+											<td>{subscriber.lastname}</td>
+											<td>{subscriber.email}</td>
+											<td>{subscriber.locale}</td>
+											<td>{subscriber.gender}</td>
+										</tr>
+                        		))
+                      		 }
+								
 							</tbody>
 						</table>
 					</div>
      
-        </div>
-      </div>
+	        </div>
+	      </div>
 
         
           </main>
@@ -76,4 +73,16 @@ class Subscriber extends React.Component {
   }
 }
 
-export default Subscriber;
+
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          subscribers:(state.subscribersInfo.subscribers),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadSubscribersList:loadSubscribersList}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Subscriber);
+
