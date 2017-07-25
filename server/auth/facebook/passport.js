@@ -33,8 +33,10 @@ exports.setup = function (User, config) {
       }
 
       needle.get('https://graph.facebook.com/me?fields=id,name,locale,email,timezone,gender,picture&access_token='+accessToken, options, function(err, resp) {
-        console.log(err);
-        console.log(resp);
+        logger.serverLog(TAG, 'error from graph api needle: ');
+        logger.serverLog(TAG, JSON.stringify(err));
+        logger.serverLog(TAG, 'resp from graph api needle: ');
+        logger.serverLog(TAG, JSON.stringify(resp));
       });
 
       /*User.findOne({
