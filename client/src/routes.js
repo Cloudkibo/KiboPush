@@ -11,6 +11,7 @@ import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
+import EditBroadcast from './containers/broadcast/EditBroadcast';
 
 const routes = (
    <Route path="/" component={App}>
@@ -24,7 +25,9 @@ const routes = (
      <Route path="/createbroadcast" component={CreateBroadcast}  />
      <Route path="/createworkflow" component={CreateWorkflow}  />
      <Route path="/workflows" component={Workflows}  />
+     <Route path="/editbroadcast" component={EditBroadcast}  />
      </Route>
+
 );
 
 // const routes = (

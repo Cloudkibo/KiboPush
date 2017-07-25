@@ -6,6 +6,8 @@ import React, {Component} from 'react';
 import { Link } from 'react-router';
 
 class Sidebar extends Component {
+
+
   render() {
     return (
       <div className="fixed-sidebar">
@@ -17,9 +19,9 @@ class Sidebar extends Component {
 		<div className="mCustomScrollbar" data-mcs-theme="dark">
 			<ul className="left-menu">
 				<li>
-					<Link to="#" className="js-sidebar-open">
+					<a className="js-sidebar-open">
 						<svg className="olymp-menu-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="OPEN MENU"><use xlinkHref="icons/icons.svg#olymp-menu-icon"></use></svg>
-					</Link>
+					</a>
 				</li>
 				<li>
 					<Link to="dashboard">

@@ -12,19 +12,6 @@ const responseFacebook = (response) => {
 class Login extends React.Component {
 
   render() {
-   /* return (
-      <div className="container-background">
-        <div className="container-background-up">
-          <Link to="/dashboard">Back to dashboard</Link>
-        </div>
-        <FacebookLogin
-          appId="1088597931155576"
-          autoLoad
-          callback={responseFacebook}
-          icon="fa-facebook"
-        />
-      </div>
-    );*/
    return (
       <div className="landing-page">
         <title>Landing Page</title>
