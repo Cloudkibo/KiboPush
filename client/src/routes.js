@@ -8,6 +8,7 @@ import Broadcast from './containers/broadcast/broadcast';
 import Page from './containers/page/page';
 import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
+import EditBroadcast from './containers/broadcast/EditBroadcast';
 
 const routes = (
    <Route path="/dashboard" component={App}>
@@ -18,6 +19,7 @@ const routes = (
      <Route path="/pages" component={Page}  />
      <Route path="/addPages" component={AddPage}  />
      <Route path="/createbroadcast" component={CreateBroadcast}  />
+     <Route path="/editbroadcast" component={EditBroadcast}  />
      
   </Route>
 );

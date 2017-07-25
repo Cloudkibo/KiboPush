@@ -8,8 +8,10 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { Link } from 'react-router';
 
-class CreateBroadcast extends React.Component {
+
+class EditBroadcast extends React.Component {
 
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -35,11 +37,11 @@ class CreateBroadcast extends React.Component {
      
 
       <div className="container">
-      						   	 <br/>
+      						 <br/>
 							     <br/>
 							     <br/>
 						      <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						        <h2 className="presentation-margin">Send a Message to Facebook Subscribers</h2>
+						        <h2 className="presentation-margin">Edit Broadcast</h2>
 						        <div className="ui-block">
 						          <div className="news-feed-form">
 						            
@@ -68,8 +70,8 @@ class CreateBroadcast extends React.Component {
 						                    <i className="fa fa-volume-up"></i>
 						                   		<span>Add Audio</span>
 						                    </a>
-						                    <button className="btn btn-primary btn-md-2"> Send Broadcast</button>
-						                    <button className="btn btn-md-2 btn-border-think btn-transparent c-grey">Cancel</button>
+						                    <button className="btn btn-primary btn-md-2"> Save Broadcast</button>
+																<Link to="broadcasts" className="btn btn-md-2 btn-border-think btn-transparent c-grey" style={{float: 'right', margin: 2}}>Back</Link>
 						                  </div>
 						                </form>
 						              </div>
@@ -87,4 +89,4 @@ class CreateBroadcast extends React.Component {
   }
 }
 
-export default CreateBroadcast;
+export default EditBroadcast;
