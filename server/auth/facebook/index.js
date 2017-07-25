@@ -13,7 +13,7 @@ var router = express.Router();
 // TODO add more scopes here specially for pages
 router
   .get('/', passport.authenticate('facebook', {
-    scope: ['email', 'user_about_me'],
+    scope: ['email', 'user_about_me', 'pages_show_list'],
     failureRedirect: '/register',
     session: false
   }))

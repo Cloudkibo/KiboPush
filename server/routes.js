@@ -21,12 +21,12 @@ module.exports = function(app) {
 
   app.use('/auth', require('./auth'));
 
-  app.get('/login', function(req, res){
+  app.get('/', function(req, res){
     logger.serverLog(TAG, 'going to serve main react app');
     res.sendFile(path.join(config.root, 'client/index.html'));
   });
 
-  app.get('/', function(req, res){
+  app.get('/dashboard2', function(req, res){
     logger.serverLog(TAG, 'going to serve landing page');
     res.sendFile(path.join(config.root, 'client/landing.html'));
   });
