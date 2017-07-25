@@ -36,8 +36,8 @@ exports.setup = function (User, config) {
         logger.serverLog(TAG, 'error from graph api needle: ');
         logger.serverLog(TAG, JSON.stringify(err));
         logger.serverLog(TAG, 'resp from graph api needle: ');
-        logger.serverLog(TAG, resp);
-        console.log(resp);
+        logger.serverLog(TAG, resp.body);
+        console.log(resp.body);
       });
 
       /*User.findOne({
