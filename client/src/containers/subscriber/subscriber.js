@@ -11,6 +11,7 @@ import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
 import {loadSubscribersList} from '../../redux/actions/subscribers.actions';
 import { bindActionCreators } from 'redux';
+
 class Subscriber extends React.Component {
 	constructor(props, context) {
 		super(props, context);

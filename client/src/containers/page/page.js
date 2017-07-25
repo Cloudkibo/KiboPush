@@ -9,6 +9,9 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { loadMyPagesList } from '../../redux/actions/pages.actions';
+import { bindActionCreators } from 'redux';
 
 class Page extends React.Component {
 
@@ -24,6 +27,8 @@ class Page extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
+
+		this.props.loadMyPagesList("", {});
 	}
 	
   render() {
@@ -53,27 +58,21 @@ class Page extends React.Component {
 								</tr>
 							</thead>
 							<tbody>
+
+							{ (this.props.pages) ?
+								this.props.pages.map((page, i) => (
 								<tr>
-									<td>Image</td>
-									<td>Test Page</td>
-									<td>157</td>
-									<td>17</td>
+									<td>{page.pic}</td>
+									<td>{page.pageName}</td>
+									<td>{page.likes}</td>
+									<td>{page.followers}</td>
 									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
-								</tr>
-								<tr>
-									<td>Image</td>
-									<td>Test Page</td>
-									<td>157</td>
-									<td>17</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
-								</tr>
-								<tr>
-									<td>Image</td>
-									<td>Test Page</td>
-									<td>157</td>
-									<td>17</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
-								</tr>
+								</tr> 
+
+								)) : <br/>
+								
+							}
+					
 							</tbody>
 						</table>
 					</div>
@@ -93,4 +92,14 @@ class Page extends React.Component {
   }
 }
 
-export default Page;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          pages:(state.pagesInfo.pages),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadMyPagesList:loadMyPagesList}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Page);
