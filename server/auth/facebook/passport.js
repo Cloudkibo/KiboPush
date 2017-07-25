@@ -5,6 +5,9 @@
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
+var logger = require('../../components/logger');
+const TAG = 'api/auth/facebook/passport';
+
 exports.setup = function (User, config) {
   passport.use(new FacebookStrategy({
       clientID: config.facebook.clientID,
@@ -12,7 +15,14 @@ exports.setup = function (User, config) {
       callbackURL: config.facebook.callbackURL
     },
     function(accessToken, refreshToken, profile, done) {
-      User.findOne({
+      logger.serverLog(TAG, 'facebook access token: ');
+      logger.serverLog(TAG, accessToken);
+      logger.serverLog(TAG, 'facebook refresh token: ');
+      logger.serverLog(TAG, refreshToken);
+      logger.serverLog(TAG, 'facebook done: ');
+      logger.serverLog(TAG, JSON.stringify(profile));
+
+      /*User.findOne({
           'facebook.id': profile.id
         },
         function(err, user) {
@@ -54,7 +64,8 @@ exports.setup = function (User, config) {
           } else {
             return done(err, user);
           }
-        })
+        })*/
+
     }
   ));
 };

@@ -13,9 +13,9 @@ import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
 
 const routes = (
-   <Route path="/dashboard" component={App}>
-     <IndexRoute  component={Home} />
-     <Route path="/login" component={Login}  />
+   <Route path="/" component={App}>
+     <IndexRoute  component={Login} />
+     <Route path="/dashboard" component={Home}  />
      <Route path="/subscribers" component={Subscriber}  />
      <Route path="/broadcasts" component={Broadcast}  />
      <Route path="/pages" component={Page}  />
@@ -24,8 +24,20 @@ const routes = (
      <Route path="/createbroadcast" component={CreateBroadcast}  />
      <Route path="/createworkflow" component={CreateWorkflow}  />
      <Route path="/workflows" component={Workflows}  />
-     
-  </Route>
+     </Route>
 );
+
+// const routes = (
+//    <Route path="/dashboard" component={App}>
+//      <IndexRoute  component={Home} />
+//      <Route path="/login" component={Login}  />
+//      <Route path="/subscribers" component={Subscriber}  />
+//      <Route path="/broadcasts" component={Broadcast}  />
+//      <Route path="/pages" component={Page}  />
+//      <Route path="/addPages" component={AddPage}  />
+//      <Route path="/createbroadcast" component={CreateBroadcast}  />
+//
+//   </Route>
+// );
 
 export default routes;

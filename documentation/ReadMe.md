@@ -1,8 +1,6 @@
-Installation pointers.
+## Operations Guide
 
-For database setup, we should always run script `npm run start:migration`.
-
-## Setup Database
+#### Setup Database
 
     sudo apt-get update
     sudo apt-get install mysql-server
@@ -59,6 +57,9 @@ We need to set the following variables: (Just copy paste and then change the val
 
 Now, run the migrations to setup the database schemas:
 
-   npm run start:migration:prod
+    npm run start:migration:prod
    
-   
+After this, we can run the server by running the script kibo_script.
+
+    ./kibo_script
+    

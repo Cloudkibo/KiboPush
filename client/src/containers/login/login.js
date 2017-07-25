@@ -49,7 +49,7 @@ class Login extends React.Component {
           <div className="content-bg"></div>
         </div>
 
-        
+
         {/* Landing Header */}
         <div className="container">
           <div className="row">
@@ -59,12 +59,12 @@ class Login extends React.Component {
                   <img src="img/logo.png" alt="KiboPush" />
                   <h5 className="logo-title">KiboPush</h5>
                 </a>
-                
+
               </div>
             </div>
           </div>
         </div>
-       
+
         <div className="container">
           <div className="row display-flex">
             <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
@@ -73,23 +73,27 @@ class Login extends React.Component {
                 <p style={{fontSize:'2em'}}>Get connected with your facebook audience through push messages. Push surveys, polls, instant broadcasts to your Facebook subscribers.
                 </p>
                 <FacebookLogin
-                  appId="1088597931155576"
+                  appId="1429073230510150"
                   autoLoad
                   callback={responseFacebook}
                   icon="fa-facebook"
                 />
-
+                <br/>
+                <br/>
+                <a href="/auth/facebook">Login with facebook server side</a>
+                <br/>
+                <br/>
                 <Link to="/dashboard">Dashboard</Link>
               </div>
             </div>
-          
+
         </div>
-       
+
       </div>
       </div>
-     
+
     );
-  
+
   }
 }
 
