@@ -11,6 +11,20 @@ import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 
 class Broadcast extends React.Component {
+
+	 componentDidMount() {
+		require('../../../public/js/jquery-3.2.0.min.js');
+		require('../../../public/js/jquery.min.js');
+		var addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/theme-plugins.js');
+		document.body.appendChild(addScript);
+		addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/material.min.js');
+		document.body.appendChild(addScript);
+		addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/main.js');
+		document.body.appendChild(addScript);
+	}
   render() {
     return (
 	   <div>
@@ -26,7 +40,7 @@ class Broadcast extends React.Component {
         <div className="birthday-item inline-items badges">
 				<h3>Broadcasts</h3>
 				<Link to='createbroadcast' className="pull-right">
-						<button className="btn btn-primary btn-md-2"> Create Broadcast</button>
+						<button className="btn btn-primary btn-sm"> Create Broadcast</button>
 				</Link>
         <div className="table-responsive">
 						<table className="table table-striped">
@@ -45,21 +59,30 @@ class Broadcast extends React.Component {
 									<td>Survey</td>
 									<td>24th Aug 2017</td>
 									<td>17</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
+									</td>
 								</tr>
 								<tr>
 									<td>Facebook</td>
 									<td>Poll</td>
 									<td>24th Aug 2017</td>
 									<td>174</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
+									</td>
 								</tr>
 								<tr>
 									<td>Facebook</td>
 									<td>Message</td>
 									<td>24th Aug 2017</td>
 									<td>26</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+									<td>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
+									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
+									</td>
 								</tr>
 							</tbody>
 						</table>
