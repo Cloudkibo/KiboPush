@@ -9,8 +9,22 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import { bindActionCreators } from 'redux';
 
 class Broadcast extends React.Component {
+
+		constructor(props, context) {
+		super(props, context);
+  }
+
+	componentWillReceiveProps(nextProps){
+		if(nextProps.broadcasts){
+			console.log("Broadcasts Updated", nextProps.broadcasts);
+			// this.setState({broadcasts: nextProps.broadcasts});
+		}
+	}
 
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -25,6 +39,9 @@ class Broadcast extends React.Component {
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
 	}
+
+	comp
+
   render() {
     return (
 	   <div>
@@ -54,36 +71,21 @@ class Broadcast extends React.Component {
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Facebook</td>
-									<td>Survey</td>
-									<td>24th Aug 2017</td>
-									<td>17</td>
+							{
+								this.props.broadcasts.map((broadcast, i) => (
+									<tr>
+									<td>{broadcast.platform}</td>
+									<td>{broadcast.type}</td>
+									<td>{broadcast.created_at}</td>
+									<td>{broadcast.sent}</td>
 									<td>
 									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
 									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
 									</td>
 								</tr>
-								<tr>
-									<td>Facebook</td>
-									<td>Poll</td>
-									<td>24th Aug 2017</td>
-									<td>174</td>
-									<td>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
-									</td>
-								</tr>
-								<tr>
-									<td>Facebook</td>
-									<td>Message</td>
-									<td>24th Aug 2017</td>
-									<td>26</td>
-									<td>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</Link>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
-									</td>
-								</tr>
+								))
+							}
+							
 							</tbody>
 						</table>
 					</div>
@@ -103,4 +105,14 @@ class Broadcast extends React.Component {
   }
 }
 
-export default Broadcast;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          broadcasts:(state.broadcastsInfo.broadcasts),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Broadcast);
