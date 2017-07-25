@@ -15,6 +15,10 @@ export function broadcastsInfo(state = initialState, action) {
       return Object.assign({}, state, {
         broadcasts: [...state.broadcasts, action.data]
       });
+    case ActionTypes.EDIT_BROADCAST:
+      return Object.assign({}, state, {
+        broadcasts: action.data
+      });
 
    
     default:

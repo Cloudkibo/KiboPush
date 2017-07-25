@@ -64,7 +64,7 @@ class CreateBroadcast extends React.Component {
 						            
 						            <div className="tab-content">
 						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
-						                <form>
+						              
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
 						                    <label className="control-label">Say something...</label>
@@ -87,10 +87,10 @@ class CreateBroadcast extends React.Component {
 						                    <i className="fa fa-volume-up"></i>
 						                   		<span>Add Audio</span>
 						                    </a>
+																<button className="btn btn-primary btn-sm" onClick={this.createBroadcast}> Create Broadcast</button>
+						                    <button className="btn btn-sm btn-border-think btn-transparent c-grey">Cancel</button>
 						                  </div>
-						                </form>
-																<button className="btn btn-primary btn-md-2" onClick={this.createBroadcast}> Create Broadcast</button>
-						                    <button className="btn btn-md-2 btn-border-think btn-transparent c-grey">Cancel</button>
+						                
 						              </div>
 						             
 						             
