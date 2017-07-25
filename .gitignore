@@ -61,4 +61,6 @@ typings/
 
 # ides
 .idea/
+
+
 /client/public/js/bundle.js
