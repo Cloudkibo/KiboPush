@@ -9,6 +9,9 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import {addBroadcast, loadBroadcastsList, editBroadcast} from '../../redux/actions/broadcast.actions';
+import { bindActionCreators } from 'redux';
 
 
 class EditBroadcast extends React.Component {
@@ -28,6 +31,7 @@ class EditBroadcast extends React.Component {
 	}
 
   render() {
+		console.log(this.props.location);
     return (
 	<div>
       <Header/>
@@ -50,8 +54,7 @@ class EditBroadcast extends React.Component {
 						                <form>
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
-						                    <label className="control-label">Say something...</label>
-						                    <textarea className="form-control"/>
+																<textarea className="form-control" value={1}/>
 						                  </div>
 						                  <div className="add-options-message">
 						                    <a href="#" className="options-message" data-toggle="modal" data-target="#update-header-photo" data-placement="top" title data-original-title="ADD PHOTOS">
@@ -89,4 +92,14 @@ class EditBroadcast extends React.Component {
   }
 }
 
-export default EditBroadcast;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          broadcasts:(state.broadcastsInfo.broadcasts),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast, editBroadcast:editBroadcast}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(EditBroadcast);

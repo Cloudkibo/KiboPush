@@ -17,3 +17,11 @@ export function addBroadcast(token, data) {
     data
   };
 }
+
+export function editBroadcast(token, data) {
+	//here we will edit the broadcast
+  return {
+    type: ActionTypes.EDIT_BROADCAST,
+    data
+  };
+}
