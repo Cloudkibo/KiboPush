@@ -9,18 +9,22 @@ import Page from './containers/page/page';
 import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
-const routes = (
-  <Route path="/" component={App}>
-    <IndexRoute  component={Login} />
-    <Route path="/dashboard" component={Home}  />
-    <Route path="/subscribers" component={Subscriber}  />
-    <Route path="/broadcasts" component={Broadcast}  />
-    <Route path="/pages" component={Page}  />
-    <Route path="/addPages" component={AddPage}  />
-    <Route path="/surveys" component={Surveys}  />
-    <Route path="/createbroadcast" component={CreateBroadcast}  />
+import CreateWorkflow from './containers/workflows/CreateWorkflow';
+import Workflows from './containers/workflows/Workflows';
 
-  </Route>
+const routes = (
+   <Route path="/" component={App}>
+     <IndexRoute  component={Login} />
+     <Route path="/dashboard" component={Home}  />
+     <Route path="/subscribers" component={Subscriber}  />
+     <Route path="/broadcasts" component={Broadcast}  />
+     <Route path="/pages" component={Page}  />
+     <Route path="/addPages" component={AddPage}  />
+     <Route path="/surveys" component={Surveys}  />
+     <Route path="/createbroadcast" component={CreateBroadcast}  />
+     <Route path="/createworkflow" component={CreateWorkflow}  />
+     <Route path="/workflows" component={Workflows}  />
+     </Route>
 );
 
 // const routes = (
