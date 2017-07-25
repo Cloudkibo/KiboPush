@@ -3,4 +3,5 @@
 git pull origin master
 forever stop server/app.js
 npm install
+npm run build:react
 forever start server/app.js

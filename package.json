@@ -10,6 +10,7 @@
     "start:migration:prod": "cross-env DEBUG=kibopush:* NODE_ENV=production MIGRATION=true node server/app.js",
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
+    "build:react": "browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
     "test": ""
   },
   "repository": {
