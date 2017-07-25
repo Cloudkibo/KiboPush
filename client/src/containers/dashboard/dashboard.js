@@ -53,10 +53,13 @@ class Dashboard extends React.Component {
                       </li>
                       <li>
                         <div className="points">
-                          <span>
-                            <span className="statistics-point bg-primary" />
-                            Surveys
-                          </span>
+                          <Link to="/surveys">
+		                          <span>
+		                            <span className="statistics-point bg-primary" />
+		                            Surveys
+		                          </span>
+                          </Link>
+
                         </div>
                         <div className="count-stat">49</div>
                       </li>

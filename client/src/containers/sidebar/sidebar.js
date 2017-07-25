@@ -37,8 +37,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="pages">
-						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="PAGES"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
+					<Link to="surveys">
+						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="SURVEYS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
@@ -110,9 +110,9 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="pages">
+					<Link to="surveys">
 						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CALENDAR AND EVENTS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
-						<span className="left-menu-title">PAGES</span>
+						<span className="left-menu-title">SURVEYS</span>
 					</Link>
 				</li>
 				<li>
