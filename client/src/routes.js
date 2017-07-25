@@ -9,6 +9,9 @@ import Page from './containers/page/page';
 import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
+import CreateWorkflow from './containers/workflows/CreateWorkflow';
+import Workflows from './containers/workflows/Workflows';
+
 const routes = (
    <Route path="/dashboard" component={App}>
      <IndexRoute  component={Home} />
@@ -19,6 +22,8 @@ const routes = (
      <Route path="/addPages" component={AddPage}  />
      <Route path="/surveys" component={Surveys}  />
      <Route path="/createbroadcast" component={CreateBroadcast}  />
+     <Route path="/createworkflow" component={CreateWorkflow}  />
+     <Route path="/workflows" component={Workflows}  />
      
   </Route>
 );
