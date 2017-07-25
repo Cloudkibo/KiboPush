@@ -78,7 +78,11 @@ class Login extends React.Component {
                   callback={responseFacebook}
                   icon="fa-facebook"
                 />
-
+                <br/>
+                <br/>
+                <a href="/auth/facebook">Login with facebook server side</a>
+                <br/>
+                <br/>
                 <Link to="/dashboard">Dashboard</Link>
               </div>
             </div>
