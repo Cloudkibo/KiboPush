@@ -49,8 +49,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="18-MusicAndPlaylists.html">
-						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="MUSIC&PLAYLISTS"><use xlinkHref="icons/icons.svg#olymp-headphones-icon"></use></svg>
+					<Link to="pages">
+						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="MANAGE PAGES"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
@@ -125,9 +125,9 @@ class Sidebar extends Component {
 				</li>
 				
 				<li>
-					<Link to="18-MusicAndPlaylists.html">
+					<Link to="pages">
 						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="MUSIC&PLAYLISTS"><use xlinkHref="icons/icons.svg#olymp-headphones-icon"></use></svg>
-						<span className="left-menu-title">Music & Playlists</span>
+						<span className="left-menu-title">MANAGE PAGES</span>
 					</Link>
 				</li>
 				<li>

@@ -22,6 +22,21 @@ class Survey extends React.Component {
 		super(props, context);
    		props.loadSurveysList();
   }
+
+	componentDidMount() {
+		require('../../../public/js/jquery-3.2.0.min.js');
+		require('../../../public/js/jquery.min.js');
+		var addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/theme-plugins.js');
+		document.body.appendChild(addScript);
+		addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/material.min.js');
+		document.body.appendChild(addScript);
+		addScript = document.createElement('script');
+		addScript.setAttribute('src', '../../../js/main.js');
+		document.body.appendChild(addScript);
+	}
+
   render() {
     return (
 	 <div>
@@ -37,7 +52,7 @@ class Survey extends React.Component {
         <div className="birthday-item inline-items badges">
 				<h3>Surveys</h3>
 				<Link to='createbroadcast' className="pull-right">
-						<button className="btn btn-primary btn-md-2"> Create Survey</button>
+						<button className="btn btn-primary btn-sm"> Create Survey</button>
 				</Link>
         <div className="table-responsive">
 						<table className="table table-striped">

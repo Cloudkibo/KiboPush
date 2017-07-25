@@ -12,7 +12,7 @@ module.exports = {
       credentials: {
         schema: 'kibopush',
         user: 'root',
-        password: 'kibo4321'
+        password: ''
       },
       host: 'localhost',
       port: 3306
