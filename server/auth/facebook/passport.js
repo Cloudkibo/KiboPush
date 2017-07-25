@@ -20,7 +20,7 @@ exports.setup = function (User, config) {
       logger.serverLog(TAG, 'facebook refresh token: ');
       logger.serverLog(TAG, refreshToken);
       logger.serverLog(TAG, 'facebook done: ');
-      logger.serverLog(TAG, profile);
+      logger.serverLog(TAG, JSON.stringify(profile));
 
       /*User.findOne({
           'facebook.id': profile.id
