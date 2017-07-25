@@ -22,6 +22,21 @@ exports.setup = function (User, config) {
       logger.serverLog(TAG, 'facebook done: ');
       logger.serverLog(TAG, JSON.stringify(profile));
 
+      var needle = require('needle');
+
+      var options = {
+        headers: {
+          'X-Custom-Header': 'CloudKibo Web Application'
+        },
+        json:true
+
+      }
+
+      needle.get('https://graph.facebook.com/me?fields=id,name,locale,email,timezone,gender,picture&access_token='+accessToken, options, function(err, resp) {
+        console.log(err);
+        console.log(resp);
+      });
+
       /*User.findOne({
           'facebook.id': profile.id
         },
