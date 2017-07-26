@@ -20,7 +20,7 @@ router.get('/', auth.isAuthenticated(), function (req, res) {
 router.get('/fetch', function (req, res) {
   logger.serverLog(TAG, 'things api is working');
   Users.findAll({
-    attributes: ['email']
+    attributes: ['id', 'name', 'email']
   }).then(function(data){
     res.json(200, { status: 'success', data: data });
   });

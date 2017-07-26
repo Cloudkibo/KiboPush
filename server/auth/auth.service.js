@@ -42,10 +42,10 @@ function isAuthenticated() {
       // });
       Users.findOne({
         where: {
-          firstName: 'John'
+          name: 'John'
         }
       }).then(function(user){
-        if (!user) return res.send(401);
+        if (!user) return res.json(401, {status: 'failed', description: 'Unauthorized'});
 
         req.user = user;
         next();
