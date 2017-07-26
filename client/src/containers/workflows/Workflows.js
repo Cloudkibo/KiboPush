@@ -9,6 +9,9 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import {addWorkFlow, loadWorkFlowList} from '../../redux/actions/workflows.actions';
+import { bindActionCreators } from 'redux';
 
 class Workflows extends React.Component {
 
@@ -27,6 +30,7 @@ class Workflows extends React.Component {
 	}
 
   render() {
+		console.log("Workflows", this.props.workflows)
     return (
 	   <div>
       <Header/>
@@ -41,41 +45,41 @@ class Workflows extends React.Component {
         <div className="birthday-item inline-items badges">
 				<h3>Workflows</h3>
 				<Link to='createworkflow' className="pull-right">
-						<button className="btn btn-primary btn-md-2"> Create Workflow</button>
+						<button className="btn btn-primary btn-sm"> Create Workflow</button>
 				</Link>
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
 								<tr>
-									<th>Platform</th>
-									<th>Type</th>
-									<th>Created At</th>
-									<th>Sent</th>
+									<th>Name</th>
+									<th>Condition</th>
+									<th>Key Words</th>
+									<th>Message</th>
+									<th>Active</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
+							{
+
+								(this.props.workflows) ?
+								this.props.workflows.map((workflow,i)=>(
 								<tr>
-									<td>Facebook</td>
-									<td>Survey</td>
-									<td>24th Aug 2017</td>
-									<td>17</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
+								
+									<td>{workflow.name}</td>
+									<td>{workflow.condition}</td>
+									<td>{workflow.keyWords}</td>
+									<td>{workflow.message}</td>
+									<td>{workflow.isActive}</td>
+									<td>
+										<button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button>
+										<button className="btn btn-primary btn-sm" style={{float: 'left'}}>Disable</button>
+									</td>
 								</tr>
-								<tr>
-									<td>Facebook</td>
-									<td>Poll</td>
-									<td>24th Aug 2017</td>
-									<td>174</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
-								</tr>
-								<tr>
-									<td>Facebook</td>
-									<td>Message</td>
-									<td>24th Aug 2017</td>
-									<td>26</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button></td>
-								</tr>
+
+								)):<br/>
+							}
+								
 							</tbody>
 						</table>
 					</div>
@@ -95,4 +99,14 @@ class Workflows extends React.Component {
   }
 }
 
-export default Workflows;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          workflows:(state.workflowsInfo.workflows),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadWorkFlowList:loadWorkFlowList, addWorkFlow:addWorkFlow}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Workflows);

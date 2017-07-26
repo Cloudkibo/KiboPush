@@ -8,8 +8,16 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { connect } from 'react-redux';
+import {addWorkFlow, loadWorkFlowList} from '../../redux/actions/workflows.actions';
+import { bindActionCreators } from 'redux';
 
 class CreateWorkflow extends React.Component {
+
+	constructor(props){
+		super(props);
+		this.gotoWorkflow = this.gotoWorkflow.bind(this);
+	}
 
 	componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -23,6 +31,13 @@ class CreateWorkflow extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
+	}
+
+	gotoWorkflow(){
+		this.props.addWorkFlow("", {});
+		this.props.history.push({
+			pathname: '/workflows',
+		});
 	}
 
   render() {
@@ -42,7 +57,6 @@ class CreateWorkflow extends React.Component {
         <h2 className="presentation-margin">Create a CreateWorkflow</h2>
         <div className="ui-block">
           <div className="ui-block-content">
-              <form>
               			 <label>Rule</label>
 
 				       	<div className="form-group form-inline">
@@ -51,9 +65,9 @@ class CreateWorkflow extends React.Component {
 						        <option value="message_is">Message is</option>
 						        <option value="message_contains">Message Contains</option>
 						        <option value="message_begins">Message Begins with</option>
-						       
 						      </select>
-						      <input type="text" className="form-control input-lg" id="keywords" placeholder="Enter keywords separated by comma" />
+									<br/>
+						      <input type="text" className="form-control input-lg" style={{width: 100 + '%'}} id="keywords" placeholder="Enter keywords separated by comma" />
 						   
 						 </div>
 						   	      
@@ -70,8 +84,8 @@ class CreateWorkflow extends React.Component {
 				          </select>
 				        </div>
 				       
-				        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+				        <button onClick={this.gotoWorkflow} className="btn btn-primary">Submit</button>
+    
           </div>
         </div>
       </div>
@@ -84,4 +98,14 @@ class CreateWorkflow extends React.Component {
   }
 }
 
-export default CreateWorkflow;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          workflows:(state.workflowsInfo.workflows),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadWorkFlowList:loadWorkFlowList, addWorkFlow:addWorkFlow}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(CreateWorkflow);
