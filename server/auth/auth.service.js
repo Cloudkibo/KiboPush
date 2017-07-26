@@ -23,6 +23,7 @@ function isAuthenticated() {
   return compose()
   // Validate jwt
     .use(function(req, res, next) {
+      logger.serverLog(TAG, 'Headers are: '+ JSON.stringify(req.headers));
       // allow access_token to be passed through query parameter as well
       if(req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
