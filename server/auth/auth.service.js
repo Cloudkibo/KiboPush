@@ -23,7 +23,6 @@ function isAuthenticated() {
   return compose()
   // Validate jwt
     .use(function(req, res, next) {
-      logger.serverLog(TAG, 'Headers are: '+ JSON.stringify(req.headers));
       // allow access_token to be passed through query parameter as well
       if(req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
@@ -33,17 +32,10 @@ function isAuthenticated() {
     // Attach user to request
     .use(function(req, res, next) {
       logger.serverLog(TAG, 'Here is user object ' + JSON.stringify(req.user));
-      // TODO correct this
-      // Users.findById(req.user._id, function (err, user) {
-      //   if (err) return next(err);
-      //   if (!user) return res.send(401);
-      //
-      //   req.user = user;
-      //   next();
-      // });
+
       Users.findOne({
         where: {
-          name: 'John'
+          fbId: req.user._id
         }
       }).then(function(user){
         if (!user) return res.json(401, {status: 'failed', description: 'Unauthorized'});
