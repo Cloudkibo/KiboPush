@@ -68,7 +68,7 @@ function setTokenCookie(req, res) {
   if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
   var token = signToken(req.user.fbId);
   logger.serverLog(TAG, 'Here is the signed token: ' + token);
-  res.cookie('token', JSON.stringify(token));
+  res.cookie('token', token);
   res.redirect('/');
 }
 
