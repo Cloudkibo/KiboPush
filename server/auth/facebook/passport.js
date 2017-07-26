@@ -59,10 +59,10 @@ exports.setup = function (User, config) {
         User
           .findOrCreate({ where: { fbId: resp.body.id }, defaults: payload })
           .spread((user, created) => {
-            logger.serverLog(TAG, JSON.stringify(user.get({
-              plain: true
-            })));
-            logger.serverLog(TAG, 'User created:'+ created);
+            // logger.serverLog(TAG, JSON.stringify(user.get({
+            //   plain: true
+            // })));
+            logger.serverLog(TAG, 'User created: ' + created);
 
             return done(err, user);
 

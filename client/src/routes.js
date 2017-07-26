@@ -30,17 +30,4 @@ const routes = (
 
 );
 
-// const routes = (
-//    <Route path="/dashboard" component={App}>
-//      <IndexRoute  component={Home} />
-//      <Route path="/login" component={Login}  />
-//      <Route path="/subscribers" component={Subscriber}  />
-//      <Route path="/broadcasts" component={Broadcast}  />
-//      <Route path="/pages" component={Page}  />
-//      <Route path="/addPages" component={AddPage}  />
-//      <Route path="/createbroadcast" component={CreateBroadcast}  />
-//
-//   </Route>
-// );
-
 export default routes;

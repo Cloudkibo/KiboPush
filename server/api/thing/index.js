@@ -8,10 +8,13 @@ var logger = require('../../components/logger');
 
 var Users = require('../../models/Users').Users;
 
+var auth = require('../../auth/auth.service');
+
 const TAG = 'api/thing/index.js';
 
-router.get('/', function (req, res) {
+router.get('/', auth.isAuthenticated(), function (req, res) {
   logger.serverLog(TAG, 'going to serve landing page');
+  req.user.fbToken
   Users.create({
     firstName: 'John',
     lastName: 'Hancock',
