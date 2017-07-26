@@ -23,8 +23,9 @@ store.dispatch(setBrowserVersion(BROWSER_VERSION));
 console.log(store.getState());
 
 // TODO note this is for testing the middleware to call the REST API - Following is sample action for REST
+
 import callApi from './utility/api.caller.service';
-callApi('things/fetch').then(res => {
+callApi('things').then(res => {
   console.log(res);
 });
 
