@@ -8,8 +8,16 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { connect } from 'react-redux';
+import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import { bindActionCreators } from 'redux';
 
 class CreateBroadcast extends React.Component {
+
+		constructor(props, context) {
+		super(props, context);
+		this.createBroadcast = this.createBroadcast.bind(this);
+  }
 
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -23,6 +31,17 @@ class CreateBroadcast extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
+	}
+
+	componentWillReceiveProps(nextProps){
+		if(nextProps.broadcasts){
+			console.log("Broadcasts Updated", nextProps.broadcasts);
+		}
+	}
+
+	createBroadcast(){
+		this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
+		console.log("Broadcast added");
 	}
 
   render() {
@@ -45,7 +64,7 @@ class CreateBroadcast extends React.Component {
 						            
 						            <div className="tab-content">
 						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
-						                <form>
+						              
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
 						                    <label className="control-label">Say something...</label>
@@ -68,10 +87,10 @@ class CreateBroadcast extends React.Component {
 						                    <i className="fa fa-volume-up"></i>
 						                   		<span>Add Audio</span>
 						                    </a>
-						                    <button className="btn btn-primary btn-md-2"> Send Broadcast</button>
-						                    <button className="btn btn-md-2 btn-border-think btn-transparent c-grey">Cancel</button>
+																<button className="btn btn-primary btn-sm" onClick={this.createBroadcast}> Create Broadcast</button>
+						                    <button className="btn btn-sm btn-border-think btn-transparent c-grey">Cancel</button>
 						                  </div>
-						                </form>
+						                
 						              </div>
 						             
 						             
@@ -87,4 +106,17 @@ class CreateBroadcast extends React.Component {
   }
 }
 
-export default CreateBroadcast;
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          broadcasts:(state.broadcastsInfo.broadcasts),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(CreateBroadcast);
+
+
+
