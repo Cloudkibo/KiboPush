@@ -49,7 +49,7 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="createpoll">
+					<Link to="poll">
 						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Polls"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
@@ -125,7 +125,7 @@ class Sidebar extends Component {
 				</li>
 				
 				<li>
-					<Link to="createpoll">
+					<Link to="poll">
 						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="CREATE POLL"><use xlinkHref="icons/icons.svg#olymp-headphones-icon"></use></svg>
 						<span className="left-menu-title">Create Poll</span>
 					</Link>

@@ -13,6 +13,7 @@ import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
 import EditBroadcast from './containers/broadcast/EditBroadcast';
 import CreatePoll from './containers/polls/CreatePoll';
+import Poll from './containers/polls/poll';
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger';
 import auth from './utility/auth.service';
 
@@ -50,6 +51,7 @@ const routes = (
   //    <Route path="/workflows" component={Workflows} onEnter={ requireAuth } />
   //    <Route path="/editbroadcast" component={EditBroadcast} onEnter={ requireAuth } />
   //    <Route path="/createpoll" component={CreatePoll} onEnter={ requireAuth } />
+  //    <Route path="/poll" component={Poll} onEnter={ requireAuth }/>
   //    <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth}/>
   //    </Route>
 
@@ -66,6 +68,7 @@ const routes = (
         <Route path="/workflows" component={Workflows}/>
         <Route path="/editbroadcast" component={EditBroadcast}/>
         <Route path="/createpoll" component={CreatePoll}/>
+        <Route path="/poll" component={Poll}/>
         <Route path="/subscribeToMessenger" component={SubscribeToMessenger}/>
      </Route>
 
