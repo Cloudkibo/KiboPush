@@ -5,7 +5,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
+import { Router, browserHistory, hashHistory } from 'react-router';
 
 import { configureStore } from './redux/store/store';
 const history = browserHistory;
@@ -31,6 +31,6 @@ callApi('things').then(res => {
 
 ReactDOM.render((
   <Provider store={store}>
-    <Router history={history} routes={routes} />
+    <Router history={hashHistory} routes={routes} />
   </Provider>
 ), rootElement);
