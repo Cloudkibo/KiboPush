@@ -51,6 +51,7 @@
     "react": "^15.6.1",
     "react-autocomplete": "^1.0.0-rc2",
     "react-bootstrap": "^0.30.8",
+    "react-cookie": "^2.0.8",
     "react-dom": "^15.6.1",
     "react-dropdown": "^1.2.1",
     "react-facebook-login": "^3.6.2",

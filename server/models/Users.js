@@ -2,13 +2,7 @@ var db = require('./connections').sequelize;
 var Sequelize = require('sequelize');
 
 const Users = db.define('user', {
-  firstName: {
-    type: Sequelize.STRING
-  },
-  lastName: {
-    type: Sequelize.STRING
-  },
-  userName: {
+  name: {
     type: Sequelize.STRING
   },
   email: {
@@ -20,8 +14,11 @@ const Users = db.define('user', {
   gender: {
       type: Sequelize.STRING
   },
-  authType: {
+  provider: {
       type: Sequelize.STRING
+  },
+  timezone: {
+    type: Sequelize.INTEGER
   },
   fbId:{
       type: Sequelize.STRING
