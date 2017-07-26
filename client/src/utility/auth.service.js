@@ -10,14 +10,14 @@ import cookie from 'react-cookie';
 
 const auth = {
   getToken() {
-    var token = cookie.load('token')
+    var token = cookie.load('token');
     return token
   },
 
   logout(cb) {
     cookie.remove('token', { path: '/' });
-    if (cb) cb()
-    this.onChange(false)
+    if (cb) cb();
+    this.onChange(false);
   },
 
   loggedIn() {
