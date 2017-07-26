@@ -19,7 +19,7 @@ export default function callApi(endpoint, method = 'get', body) {
       'Authorization': `Bearer ${auth.getToken()}`,
     });
   }
-
+  console.log(headers);
   return fetch(`${API_URL}/${endpoint}`, {
     headers,
     method,
