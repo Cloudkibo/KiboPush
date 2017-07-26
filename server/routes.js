@@ -18,6 +18,8 @@ module.exports = function(app) {
 
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
+  app.use('/api/broadcasts', require('./api/broadcasts'));
+  app.use('/api/workflows', require('./api/workflows'));
 
   app.use('/auth', require('./auth'));
 
