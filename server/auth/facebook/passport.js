@@ -18,12 +18,9 @@ exports.setup = function (User, config) {
       profileFields: ['id', 'displayName', 'photos', 'email'] // TODO Test this
     },
     function(accessToken, refreshToken, profile, done) {
-      logger.serverLog(TAG, 'facebook access token: ');
-      logger.serverLog(TAG, accessToken);
-      logger.serverLog(TAG, 'facebook refresh token: ');
-      logger.serverLog(TAG, refreshToken);
-      logger.serverLog(TAG, 'facebook done: ');
-      logger.serverLog(TAG, JSON.stringify(profile._json));
+      if (profile._json) {
+        logger.serverLog(TAG, 'facebook auth done for: ' + profile._json.name +' with fb id: '+ profile._json.id);
+      }
 
       var needle = require('needle');
 
