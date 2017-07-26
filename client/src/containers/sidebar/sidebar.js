@@ -54,8 +54,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="19-WeatherWidget.html">
-						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="WEATHER APP"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
+					<Link to="subscribeToMessenger">
+						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe To Messenger"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
 					</Link>
 				</li>
 			
@@ -131,9 +131,9 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="19-WeatherWidget.html">
-						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="WEATHER APP"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
-						<span className="left-menu-title">Weather App</span>
+					<Link to="subscribeToMessenger">
+						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe To Messenger"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
+						<span className="left-menu-title">Subscribe To Messenger</span>
 					</Link>
 				</li>
 			
