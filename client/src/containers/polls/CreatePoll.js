@@ -12,11 +12,11 @@ import { connect } from 'react-redux';
 import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
 import { bindActionCreators } from 'redux';
 
-class CreateBroadcast extends React.Component {
+class CreatePoll extends React.Component {
 
 		constructor(props, context) {
 		super(props, context);
-		this.createBroadcast = this.createBroadcast.bind(this);
+		this.createPoll = this.createPoll.bind(this);
   }
 
 	 componentDidMount() {
@@ -33,15 +33,11 @@ class CreateBroadcast extends React.Component {
 		document.body.appendChild(addScript);
 	}
 
-	componentWillReceiveProps(nextProps){
-		if(nextProps.broadcasts){
-			console.log("Broadcasts Updated", nextProps.broadcasts);
-		}
-	}
-
-	createBroadcast(){
-		this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
-		console.log("Broadcast added");
+	
+	createPoll(){
+		//this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
+		//console.log("Broadcast added");
+		alert('poll created');
 	}
 
   render() {
@@ -53,12 +49,12 @@ class CreateBroadcast extends React.Component {
       <Responsive/>
      
 
-      <div className="container">
+       <div className="container">
       						   	 <br/>
 							     <br/>
 							     <br/>
 						      <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						        <h2 className="presentation-margin">Send a Message to Facebook Subscribers</h2>
+						        <h2 className="presentation-margin">Ask Facebook Subscribers a Question</h2>
 						        <div className="ui-block">
 						          <div className="news-feed-form">
 						            
@@ -66,28 +62,33 @@ class CreateBroadcast extends React.Component {
 						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
 						              
 						                  
-						                  <div className="form-group with-icon label-floating is-empty">
-						                    <label className="control-label">Say something...</label>
+						                  <div className="form-group label-floating is-empty">
+						                    <label className="control-label">Ask something...</label>
 						                    <textarea className="form-control"/>
 						                  </div>
+						                  <br/>
+						                  <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						                  <label className="control-label"> Add 3 responses</label> 
+						                  <fieldset className="input-group-vertical">
+											      <div className="form-group">
+											        <label className="sr-only">Response1</label>
+											        <input type="text" className="form-control" placeholder="Response 1"/>
+											      </div>
+											      <div className="form-group">
+											        <label className="sr-only">Response2</label>
+											        <input type="text" className="form-control" placeholder="Response 2"/>
+											      </div>
+											      <div className="form-group">
+											        <label className="sr-only">Response3</label>
+											        <input type="text" className="form-control" placeholder="Response 3"/>
+											      </div>
+											      
+											</fieldset>
+											</div>
 						                  <div className="add-options-message">
-						                    <a href="#" className="options-message" data-toggle="modal" data-target="#update-header-photo" data-placement="top" title data-original-title="ADD PHOTOS">
-						                   		<i className="fa fa-image"></i>
-						                   		<span>Add Image</span>
-						                    </a>
-						                    <a href="#" className="options-message" data-toggle="tooltip" data-placement="top" title data-original-title="TAG YOUR FRIENDS">
-						                    <i className="fa fa-video-camera"></i>
-						                   		<span>Add Video</span>
-						                    </a>
-						                    <a href="#" className="options-message" data-toggle="tooltip" data-placement="top" title data-original-title="ADD LOCATION">
-						                    <i className="fa fa-link"></i>
-						                   		<span>Add Link</span>
-						                    </a>
-						                    <a href="#" className="options-message" data-toggle="tooltip" data-placement="top" title data-original-title="ADD LOCATION">
-						                    <i className="fa fa-volume-up"></i>
-						                   		<span>Add Audio</span>
-						                    </a>
-											<button className="btn btn-primary btn-sm" onClick={this.createBroadcast}> Create Broadcast</button>
+						                    
+						                   
+											<button className="btn btn-primary btn-sm" onClick={this.createPoll}> Create Poll</button>
 						                    <button className="btn btn-sm btn-border-think btn-transparent c-grey">Cancel</button>
 						                  </div>
 						                
@@ -109,14 +110,14 @@ class CreateBroadcast extends React.Component {
 function mapStateToProps(state) {
   console.log(state);
   return {
-          broadcasts:(state.broadcastsInfo.broadcasts),
+         // broadcasts:(state.broadcastsInfo.broadcasts),
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+ // return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
 }
-export default connect(mapStateToProps,mapDispatchToProps)(CreateBroadcast);
+export default connect(mapStateToProps,mapDispatchToProps)(CreatePoll);
 
 
 

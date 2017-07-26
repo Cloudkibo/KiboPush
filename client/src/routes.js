@@ -12,6 +12,7 @@ import Surveys from './containers/survey/surveys';
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
 import EditBroadcast from './containers/broadcast/EditBroadcast';
+import CreatePoll from './containers/polls/CreatePoll';
 
 import auth from './utility/auth.service';
 
@@ -48,6 +49,7 @@ const routes = (
      <Route path="/createworkflow" component={CreateWorkflow} onEnter={ requireAuth } />
      <Route path="/workflows" component={Workflows} onEnter={ requireAuth } />
      <Route path="/editbroadcast" component={EditBroadcast} onEnter={ requireAuth } />
+     <Route path="/createpoll" component={CreatePoll} onEnter={ requireAuth } />
      </Route>
 
 );
