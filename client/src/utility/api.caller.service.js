@@ -16,7 +16,7 @@ export default function callApi(endpoint, method = 'get', body) {
 
   if (auth.loggedIn()) {
     headers = _.merge(headers, {
-      'Authorization': `Bearer ${auth.getToken()}`,
+      'Authorization': `${auth.getToken()}`,
     });
   }
 
