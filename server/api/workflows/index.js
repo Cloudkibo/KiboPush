@@ -22,7 +22,16 @@ router.get('/fetch', function (req, res) {
   // Users.findAll().then(function(data){
   //   res.json(200, { status: 'success', data: data });
   // });
-  res.json(200, {hello: 'Hi There'})
+  res.json(200, {name: 'Workflow 1',keyWords:'Hello',condition:'when message contains',message:'Hi there!', isActive: 'Yes'});
+});
+
+router.post('/create', function (req, res) {
+  logger.serverLog(TAG, req.body);
+  // Users.findAll().then(function(data){
+  //   res.json(200, { status: 'success', data: data });
+  // });
+
+  res.json(200, req.body)
 });
 
 module.exports = router;
