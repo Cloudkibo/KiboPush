@@ -59,12 +59,12 @@ class Login extends React.Component {
                 <h1>Welcome to KiboPush</h1>
                 <p style={{fontSize:'2em'}}>Get connected with your facebook audience through push messages. Push surveys, polls, instant broadcasts to your Facebook subscribers.
                 </p>
-                <FacebookLogin
+                {/*<FacebookLogin
                   appId="1429073230510150"
                   autoLoad
                   callback={responseFacebook}
                   icon="fa-facebook"
-                />
+                />*/}
                 <br/>
                 <br/>
                 <a href="/auth/facebook">Login with facebook server side</a>

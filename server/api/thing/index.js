@@ -13,24 +13,13 @@ var auth = require('../../auth/auth.service');
 const TAG = 'api/thing/index.js';
 
 router.get('/', auth.isAuthenticated(), function (req, res) {
-  logger.serverLog(TAG, 'going to serve landing page');
-  req.user.fbToken
-  Users.create({
-    firstName: 'John',
-    lastName: 'Hancock',
-    email: 'what@email.com'
-  }).then(function(task) {
-    logger.serverLog(TAG, 'created a sample user');
-  });
+  logger.serverLog(TAG, 'things api is working');
   res.json(200, { status: 'success' });
 });
 
 router.get('/fetch', function (req, res) {
-  logger.serverLog(TAG, 'going to serve landing page');
-  Users.findOne({
-    where: {
-      firstName: 'Johns'
-    },
+  logger.serverLog(TAG, 'things api is working');
+  Users.findAll({
     attributes: ['email']
   }).then(function(data){
     res.json(200, { status: 'success', data: data });
