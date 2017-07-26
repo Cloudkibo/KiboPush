@@ -57,7 +57,7 @@ function isAuthenticated() {
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*24*3 });
+  return jwt.sign({ _id: id }, config.secrets.session);
 }
 
 /**
@@ -66,7 +66,7 @@ function signToken(id) {
 function setTokenCookie(req, res) {
   if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
   logger.serverLog(TAG, '(setTokenCookie) Here is user object ' + JSON.stringify(req.user));
-  var token = signToken(req.user.email);
+  var token = signToken(req.user.fbId);
   res.cookie('token', JSON.stringify(token));
   res.redirect('/');
 }

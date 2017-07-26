@@ -23,7 +23,7 @@ exports.setup = function (User, config) {
       logger.serverLog(TAG, 'facebook refresh token: ');
       logger.serverLog(TAG, refreshToken);
       logger.serverLog(TAG, 'facebook done: ');
-      logger.serverLog(TAG, JSON.stringify(profile));
+      logger.serverLog(TAG, JSON.stringify(profile._json));
 
       var needle = require('needle');
 
@@ -62,9 +62,9 @@ exports.setup = function (User, config) {
         User
           .findOrCreate({ where: { fbId: resp.body.id }, defaults: payload })
           .spread((user, created) => {
-            logger.serverLog(TAG, user.get({
+            logger.serverLog(TAG, JSON.stringify(user.get({
               plain: true
-            }));
+            })));
             logger.serverLog(TAG, 'User created:'+ created);
 
             return done(err, user);
