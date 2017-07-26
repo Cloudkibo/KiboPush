@@ -5,7 +5,6 @@
   "main": "app.js",
   "scripts": {
     "start": "cross-env DEBUG=kibopush:* NODE_ENV=development nodemon server/app.js",
-    "start:zarmeen": "cross-env DOMAIN=https://2efa449f.ngrok.io DEBUG=kibopush:* NODE_ENV=development nodemon server/app.js",
     "start:prod": "cross-env NODE_ENV=production node server/app.js",
     "start:migration": "cross-env DEBUG=kibopush:* NODE_ENV=development MIGRATION=true nodemon server/app.js",
     "start:migration:prod": "cross-env DEBUG=kibopush:* NODE_ENV=production MIGRATION=true node server/app.js",

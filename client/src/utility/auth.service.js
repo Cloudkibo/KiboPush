@@ -8,7 +8,7 @@ import cookie from 'react-cookie';
 // printlogs('log', cookie.load('token'));
 // browserHistory.push('/dashboard')
 
-module.exports = {
+const auth = {
   getToken() {
     var token = cookie.load('token')
     return token
@@ -38,5 +38,6 @@ module.exports = {
   },
 
   onChange() {}
-}
+};
 
+export default auth;
