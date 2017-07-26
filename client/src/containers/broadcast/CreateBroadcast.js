@@ -41,7 +41,9 @@ class CreateBroadcast extends React.Component {
 
 	createBroadcast(){
 		this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
-		console.log("Broadcast added");
+		this.props.history.push({
+			pathname: '/broadcasts',
+		});
 	}
 
   render() {

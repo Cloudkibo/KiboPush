@@ -54,7 +54,7 @@ class EditBroadcast extends React.Component {
 						                <form>
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
-																<textarea className="form-control" value={1}/>
+																<textarea className="form-control" value={this.props.location.state.platform}/>
 						                  </div>
 						                  <div className="add-options-message">
 						                    <a href="#" className="options-message" data-toggle="modal" data-target="#update-header-photo" data-placement="top" title data-original-title="ADD PHOTOS">

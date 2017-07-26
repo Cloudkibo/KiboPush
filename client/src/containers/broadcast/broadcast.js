@@ -40,11 +40,10 @@ class Broadcast extends React.Component {
 		document.body.appendChild(addScript);
 	}
 
-	gotoEdit(i){
+	gotoEdit(broadcast){
 		 this.props.history.push({
 			pathname: '/editbroadcast',
-			query: {id: 6},
-			state: {id: 5}
+			state: broadcast
 		});
 	}
 
@@ -85,8 +84,8 @@ class Broadcast extends React.Component {
 									<td>{broadcast.created_at}</td>
 									<td>{broadcast.sent}</td>
 									<td>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(i)} style={{float: 'left', margin: 2}}>Edit</Link>
-									<Link to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</Link>
+									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
+									<button to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
 									</td>
 								</tr>
 								))
