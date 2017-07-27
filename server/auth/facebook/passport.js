@@ -15,7 +15,7 @@ exports.setup = function (User, config) {
       clientID: config.facebook.clientID,
       clientSecret: config.facebook.clientSecret,
       callbackURL: config.facebook.callbackURL,
-      profileFields: ['id', 'displayName', 'photos', 'email'] // TODO Test this
+      profileFields: ['id', 'displayName', 'photos', 'email']
     },
     function(accessToken, refreshToken, profile, done) {
       if (profile._json) {
@@ -38,9 +38,7 @@ exports.setup = function (User, config) {
         logger.serverLog(TAG, 'resp from graph api needle: ');
         logger.serverLog(TAG, JSON.stringify(resp.body));
 
-        if (err) {
-          return done(err);
-        }
+        if (err) return done(err);
 
         var payload = {
           name: resp.body.name,

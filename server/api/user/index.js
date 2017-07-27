@@ -8,13 +8,13 @@ var express = require('express');
 
 var router = express.Router();
 
+var auth = require('../../auth/auth.service');
+var controller = require('./user.controller');
+
 var logger = require('../../components/logger');
 
 const TAG = 'api/user/index.js';
 
-router.get('/', function (req, res) {
-  logger.serverLog(TAG, 'going to serve landing page');
-  res.json(200, { status: 'success' });
-});
+router.get('/', auth.isAuthenticated(), controller.index);
 
 module.exports = router;

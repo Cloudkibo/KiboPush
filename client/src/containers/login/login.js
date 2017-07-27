@@ -3,11 +3,6 @@
  */
 
 import React from 'react';
-import { Link } from 'react-router';
-import FacebookLogin from 'react-facebook-login';
-const responseFacebook = (response) => {
-  console.log(response);
-};
 
 class Login extends React.Component {
 
@@ -57,20 +52,11 @@ class Login extends React.Component {
             <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
               <div className="landing-content">
                 <h1>Welcome to KiboPush</h1>
-                <p style={{fontSize:'2em'}}>Get connected with your facebook audience through push messages. Push surveys, polls, instant broadcasts to your Facebook subscribers.
+                <p style={{fontSize: '2em'}}>
+                  Get connected with your facebook audience through push messages.
+                  Push surveys, polls, instant broadcasts to your Facebook subscribers.
                 </p>
-                {/*<FacebookLogin
-                  appId="1429073230510150"
-                  autoLoad
-                  callback={responseFacebook}
-                  icon="fa-facebook"
-                />*/}
-                <br/>
-                <br/>
-                <a href="/auth/facebook">Login with facebook server side</a>
-                <br/>
-                <br/>
-                <Link to="/dashboard">Dashboard</Link>
+                <a href="/auth/facebook">Login with Facebook</a>
               </div>
             </div>
 

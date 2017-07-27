@@ -6,16 +6,19 @@ const Pages = db.define('page', {
     type: Sequelize.STRING
   },
   pageName: {
-      type: Sequelize.STRING
+    type: Sequelize.STRING
   },
   pagePic: {
-      type: Sequelize.STRING
+    type: Sequelize.STRING
+  },
+  category: {
+    type: Sequelize.STRING
   },
   numberOfFollowers: {
-      type: Sequelize.INTEGER
+    type: Sequelize.INTEGER
   },
   likes: {
-      type: Sequelize.INTEGER
+    type: Sequelize.INTEGER
   },
   access_given: {
     type: Sequelize.BOOLEAN

@@ -38,7 +38,7 @@ function isAuthenticated() {
           fbId: req.user._id
         }
       }).then(function(user){
-        if (!user) return res.json(401, {status: 'failed', description: 'Unauthorized'});
+        if (!user) return res.status(401).json({status: 'failed', description: 'Unauthorized'});
 
         req.user = user;
         next();
@@ -57,7 +57,7 @@ function signToken(id) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
+  if (!req.user) return res.status(404).json({message: 'Something went wrong, please try again.'});
   var token = signToken(req.user.fbId);
   logger.serverLog(TAG, 'Here is the signed token: ' + token);
   res.cookie('token', token);
