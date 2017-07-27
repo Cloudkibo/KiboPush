@@ -14,7 +14,7 @@ exports.index = function (req, res) {
       id: req.user.id
     }
   }).then(function (user) {
-    if (!user) return res.status(404).json({status: 'failed', payload: 'User not found'});
+    if (!user) return res.status(404).json({status: 'failed', description: 'User not found'});
     logger.serverLog(TAG, 'user object sent to client');
     res.status(200).json({status: 'success', payload: user});
   });

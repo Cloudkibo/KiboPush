@@ -57,7 +57,7 @@ function signToken(id) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.user) return res.status(404).json({message: 'Something went wrong, please try again.'});
+  if (!req.user) return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'});
   var token = signToken(req.user.fbId);
   logger.serverLog(TAG, 'Here is the signed token: ' + token);
   res.cookie('token', token);

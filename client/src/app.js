@@ -25,7 +25,7 @@ console.log(store.getState());
 // TODO note this is for testing the middleware to call the REST API
 
 import callApi from './utility/api.caller.service';
-callApi('things').then(res => {
+callApi('users').then(res => {
   console.log(res);
 });
 
