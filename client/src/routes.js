@@ -4,6 +4,7 @@ import App from './sub.app.js';
 import Home from './containers/home';
 import Login from './containers/login/login';
 import Subscriber from './containers/subscriber/subscriber';
+import Stats from './containers/stats/stats';
 import Broadcast from './containers/broadcast/broadcast';
 import Page from './containers/page/page';
 import AddPage from './containers/page/addPage';
@@ -69,6 +70,7 @@ const routes = (
         <Route path="/editbroadcast" component={EditBroadcast}/>
         <Route path="/createpoll" component={CreatePoll}/>
         <Route path="/poll" component={Poll}/>
+        <Route path="/stats" component={Stats}/>
         <Route path="/subscribeToMessenger" component={SubscribeToMessenger}/>
      </Route>
 

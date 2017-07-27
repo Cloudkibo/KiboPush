@@ -66,8 +66,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="26-Statistics.html">
-						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Account Stats"><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
+					<Link to="stats">
+						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Analytics"><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
@@ -144,9 +144,9 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="26-Statistics.html">
+					<Link to="stats">
 						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Account Stats"><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
-						<span className="left-menu-title">Account Stats</span>
+						<span className="left-menu-title">Analytics</span>
 					</Link>
 				</li>
 				<li>
