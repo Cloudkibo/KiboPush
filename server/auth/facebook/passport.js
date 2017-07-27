@@ -27,14 +27,15 @@ exports.setup = function (User, config) {
         headers: {
           'X-Custom-Header': 'CloudKibo Web Application'
         },
-        json:true
+        json: true
+      };
 
-      }
-
-      needle.get('https://graph.facebook.com/me?fields=id,name,locale,email,timezone,gender,picture&access_token='+accessToken, options, function(err, resp) {
-        logger.serverLog(TAG, 'error from graph api needle: ');
+      needle.get('https://graph.facebook.com/me?fields=' +
+        'id,name,locale,email,timezone,gender,picture' +
+        '&access_token=' + accessToken, options, function (err, resp) {
+        logger.serverLog(TAG, 'error from graph api to get user data: ');
         logger.serverLog(TAG, JSON.stringify(err));
-        logger.serverLog(TAG, 'resp from graph api needle: ');
+        logger.serverLog(TAG, 'resp from graph api to get user data: ');
         logger.serverLog(TAG, JSON.stringify(resp.body));
 
         if (err) return done(err);
@@ -61,31 +62,19 @@ exports.setup = function (User, config) {
             // })));
             logger.serverLog(TAG, 'User created: ' + created);
 
+            needle.get('https://graph.facebook.com/v2.10/' +
+              resp.body.id + '/accounts?' + 'access_token=' +
+              accessToken, options, function (err2, respPages) {
+
+              logger.serverLog(TAG, 'error from graph api to get pages list data: ');
+              logger.serverLog(TAG, JSON.stringify(err2));
+              logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
+              logger.serverLog(TAG, JSON.stringify(respPages.body));
+
+            });
+
             return done(err, user);
-
-            /*
-             findOrCreate returns an array containing the object that was found
-             or created and a boolean that will be true if a new object was
-             created and false if not, like so:
-
-             [ {
-             username: 'sdepold',
-             job: 'Technical Lead JavaScript',
-             id: 1,
-             createdAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET),
-             updatedAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET)
-             },
-             true ]
-
-             In the example above, the "spread" on line 39 divides
-             the array into its 2 parts and passes them as arguments
-             to the callback function defined beginning at line 39,
-             which treats them as "user" and "created" in this case.
-             (So "user" will be the object from index 0 of
-             the returned array and "created" will equal "true".)
-             */
-
-          })
+          });
       });
     }
   ));

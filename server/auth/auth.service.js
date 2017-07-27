@@ -22,7 +22,7 @@ const TAG = 'auth/auth.service.js';
 function isAuthenticated() {
   return compose()
   // Validate jwt
-    .use(function(req, res, next) {
+    .use(function (req, res, next) {
       // allow access_token to be passed through query parameter as well
       if(req.query && req.query.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.query.access_token;
@@ -37,7 +37,7 @@ function isAuthenticated() {
         where: {
           fbId: req.user._id
         }
-      }).then(function(user){
+      }).then(function (user) {
         if (!user) return res.status(401).json({status: 'failed', description: 'Unauthorized'});
 
         req.user = user;
