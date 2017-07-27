@@ -4,11 +4,14 @@ import App from './sub.app.js';
 import Home from './containers/home';
 import Login from './containers/login/login';
 import Subscriber from './containers/subscriber/subscriber';
+import Stats from './containers/stats/stats';
 import Broadcast from './containers/broadcast/broadcast';
 import Page from './containers/page/page';
 import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
+import AddSurvey from './containers/survey/add_survey';
+
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
 import EditBroadcast from './containers/broadcast/EditBroadcast';
@@ -69,7 +72,9 @@ const routes = (
         <Route path="/editbroadcast" component={EditBroadcast}/>
         <Route path="/createpoll" component={CreatePoll}/>
         <Route path="/poll" component={Poll}/>
+        <Route path="/stats" component={Stats}/>
         <Route path="/subscribeToMessenger" component={SubscribeToMessenger}/>
+        <Route path="/addsurvey" component={AddSurvey}/>
      </Route>
 
 );
