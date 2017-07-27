@@ -8,8 +8,9 @@ import Responsive from '../sidebar/responsive';
 import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import {addPoll, loadPollsList} from '../../redux/actions/poll.actions';
 import { bindActionCreators } from 'redux';
 
 class CreatePoll extends React.Component {
@@ -35,9 +36,12 @@ class CreatePoll extends React.Component {
 
 	
 	createPoll(){
-		//this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
-		//console.log("Broadcast added");
-		alert('poll created');
+		this.props.addPoll('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
+		console.log("Poll added");
+		this.props.history.push({
+			pathname: '/poll',
+		});
+	
 	}
 
   render() {
@@ -110,14 +114,11 @@ class CreatePoll extends React.Component {
 function mapStateToProps(state) {
   console.log(state);
   return {
-         // broadcasts:(state.broadcastsInfo.broadcasts),
+          polls:(state.pollsInfo.polls),
          };
 }
 
 function mapDispatchToProps(dispatch) {
- // return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(CreatePoll);
-
-
-
