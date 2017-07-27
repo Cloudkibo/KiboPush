@@ -6,7 +6,7 @@ var router = express.Router();
 
 var logger = require('../../components/logger');
 
-var Users = require('../../models/Users').Users;
+var Users = require('../user/user.model').Users;
 
 var auth = require('../../auth/auth.service');
 

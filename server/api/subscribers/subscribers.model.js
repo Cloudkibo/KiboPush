@@ -1,4 +1,4 @@
-var db = require('./connections').sequelize;
+var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
 
 const Subscribers = db.define('subscriber', {
@@ -29,7 +29,7 @@ const Subscribers = db.define('subscriber', {
   profilePic:{
       type: Sequelize.STRING
   },
-  
+
 
 });
 

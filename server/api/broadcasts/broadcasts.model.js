@@ -1,4 +1,4 @@
-var db = require('./connections').sequelize;
+var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
 
 const Broadcasts = db.define('broadcast', {

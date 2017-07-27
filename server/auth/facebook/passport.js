@@ -4,8 +4,8 @@
 
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var needle = require('needle');
 var _ = require('lodash');
-var Users = require('../../models/Users').Users;
 
 var logger = require('../../components/logger');
 const TAG = 'api/auth/facebook/passport';
@@ -17,12 +17,11 @@ exports.setup = function (User, config) {
       callbackURL: config.facebook.callbackURL,
       profileFields: ['id', 'displayName', 'photos', 'email']
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
       if (profile._json) {
-        logger.serverLog(TAG, 'facebook auth done for: ' + profile._json.name +' with fb id: '+ profile._json.id);
+        logger.serverLog(TAG, 'facebook auth done for: ' +
+          profile._json.name + ' with fb id: ' + profile._json.id);
       }
-
-      var needle = require('needle');
 
       var options = {
         headers: {

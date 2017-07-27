@@ -2,7 +2,7 @@
  * Created by sojharo on 27/07/2017.
  */
 
-var Users = require('../../models/Users').Users;
+var Users = require('./user.model').Users;
 
 var logger = require('../../components/logger');
 
