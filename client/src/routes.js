@@ -55,7 +55,9 @@ const routes = (
   //    <Route path="/editbroadcast" component={EditBroadcast} onEnter={ requireAuth } />
   //    <Route path="/createpoll" component={CreatePoll} onEnter={ requireAuth } />
   //    <Route path="/poll" component={Poll} onEnter={ requireAuth }/>
+      // <Route path="/stats" component={Stats}/>
   //    <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth}/>
+    // <Route path="/addsurvey" component={AddSurvey}/>
   //    </Route>
 
      <Route path="/" component={App}>
