@@ -13,16 +13,16 @@ const Pages = db.define('page', {
   pagePic: {
     type: Sequelize.STRING
   },
-  category: {
-    type: Sequelize.STRING
-  },
   numberOfFollowers: {
     type: Sequelize.INTEGER
   },
   likes: {
     type: Sequelize.INTEGER
   },
-  access_given: {
+  accessToken: {
+    type: Sequelize.STRING
+  },
+  enabled: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false

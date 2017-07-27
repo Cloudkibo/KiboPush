@@ -17,11 +17,14 @@ const TAG = 'models/migrations';
 
 Users.hasMany(Pages);
 Users.hasMany(Subscribers);
-Pages.belongsTo(Users);
-Subscribers.belongsTo(Users);
-Pages.hasMany(Subscribers);
-Subscribers.belongsTo(Pages);
 Users.hasMany(Broadcasts);
+
+Pages.belongsTo(Users);
+Pages.hasMany(Subscribers);
+
+Subscribers.belongsTo(Users);
+Subscribers.belongsTo(Pages);
+
 Broadcasts.belongsTo(Users);
 Broadcasts.hasOne(Messages);
 Messages.belongsTo(Broadcasts);

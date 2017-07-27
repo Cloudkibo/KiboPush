@@ -6,6 +6,7 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var needle = require('needle');
 var _ = require('lodash');
+var Pages = require('../../api/pages/pages.model').Pages;
 
 var logger = require('../../components/logger');
 const TAG = 'api/auth/facebook/passport';
@@ -60,7 +61,7 @@ exports.setup = function (User, config) {
             logger.serverLog(TAG, 'User created: ' + created);
 
             fetchPages('https://graph.facebook.com/v2.10/' +
-              resp.body.id + '/accounts?limit=2&' + 'access_token=' +
+              resp.body.id + '/accounts?access_token=' +
               accessToken);
 
             return done(err, user);
@@ -71,18 +72,30 @@ exports.setup = function (User, config) {
 };
 
 function fetchPages(url) {
-  needle.get(url, options, function (err2, resp) {
+  needle.get(url, options, function (err, resp) {
     logger.serverLog(TAG, 'error from graph api to get pages list data: ');
-    logger.serverLog(TAG, JSON.stringify(err2));
+    logger.serverLog(TAG, JSON.stringify(err));
     logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
     logger.serverLog(TAG, JSON.stringify(resp.body));
 
     const data = resp.body.data;
     const cursor = resp.body.paging;
 
-    logger.serverLog(TAG, JSON.stringify(cursor));
+    data.forEach(function (item) {
+      Pages
+        .findOrCreate({
+          where: {pageId: item.id},
+          defaults: {
+            pageName: item.name,
+            accessToken: item.access_token
+          }
+        })
+        .spread((page, created) => {
+          logger.serverLog(TAG, 'Page ' + data.name + ' created: ' + created);
+        });
+    });
 
-    if (cursor.previous) {
+    if (cursor.next) {
       fetchPages(cursor.next);
     }
 
