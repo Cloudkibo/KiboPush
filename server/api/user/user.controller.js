@@ -12,7 +12,9 @@ exports.index = function (req, res) {
   Users.findOne({
     where: {
       id: req.user.id
-    }
+    },
+    attributes: [ 'id', 'name', 'email', 'gender', 'timezone',
+      'profilePic', 'fbId' ]
   }).then(function (user) {
     if (!user) return res.status(404).json({status: 'failed', description: 'User not found'});
     logger.serverLog(TAG, 'user object sent to client');
