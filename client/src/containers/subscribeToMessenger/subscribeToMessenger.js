@@ -17,8 +17,24 @@ class SubscribeToMessenger extends React.Component {
 		constructor(props, context) {
 		super(props, context);
 		this.subscribeToMessenger = this.subscribeToMessenger.bind(this);
+		this.onChange = this.onChange.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.state = {'buttonText':'Send to Messenger','buttonColor':'blue','fontColor':'white'};
   }
 
+
+  	onChange(event) {
+	    this.setState({
+	    	'buttonText':event.target.value
+	    });
+	  }
+	 handleChange(e){
+	      this.setState({
+	    	'buttonColor':e.target.value,
+	    	'fontColor': e.target.value == 'blue'?'white':'black'
+	    });
+
+	    }
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
 		require('../../../public/js/jquery.min.js');
@@ -65,23 +81,24 @@ class SubscribeToMessenger extends React.Component {
 						                  <div className="col-xl-12">
 					                          <div className="form-group">
 										      	<label for="colorbtn"> Choose Color</label>
-										       <select className="form-control" id="colorbtn" ref="colorbtn">
-										        <option value="white">White</option>
+										       <select className="form-control" id="colorbtn" ref="colorbtn" onChange={this.handleChange.bind(this)}>
 										        <option value="blue">Blue</option>
+										        <option value="white">White</option>
+										        
 										       
 										      </select> 
 										      </div>
 										      <div className="form-group">
 										        <label for="textbtn"> Button Text</label>
-										        <input type="text" className="form-control" ref="textbtn" placeholder="Send on Messenger" id="textbtn"/>
+										        <input type="text" className="form-control" ref="textbtn" placeholder="Send on Messenger" id="textbtn" onChange={this.onChange}/>
 										      </div>
 										      <br/>
 										      <br/>
 										      <div className="form-group">
 										        <label for="textbtn"> Button Preview</label>
 										        <br/>
-										        <a className="btn" href="#" style={{'backgroundColor':'blue'}}>
-  														<i className="fa fa-facebook fa-lg"></i> Send to Messenger</a>
+										        <a className="btn" href="#" style={{'backgroundColor': this.state.buttonColor,'color':this.state.fontColor,'borderColor':this.state.fontColor}}>
+  														<i className="fa fa-facebook fa-lg"></i> {this.state.buttonText}</a>
 										      </div>
 											</div>
 						                  <div className="add-options-message">
