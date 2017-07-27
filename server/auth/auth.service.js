@@ -64,7 +64,7 @@ function setTokenCookie(req, res) {
   res.redirect('/');
 }
 
-function isAuthorizedWebHookTrigger(){
+function isAuthorizedWebHookTrigger() {
   return compose()
     .use(function(req, res, next){
       const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
@@ -72,11 +72,9 @@ function isAuthorizedWebHookTrigger(){
       logger.serverLog(TAG, req.ip);
       logger.serverLog(TAG, ip);
       logger.serverLog(TAG, 'This is middleware');
-      logger.serverLog(TAG, req.body)
-      if(ip === '162.243.215.177')
-        next();
-      else
-        res.send(403);
+      logger.serverLog(TAG, req.body);
+      if (ip === '162.243.215.177') next();
+      else res.send(403);
     });
 }
 

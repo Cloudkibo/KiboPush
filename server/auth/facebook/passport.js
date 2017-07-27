@@ -77,6 +77,8 @@ function fetchPages(url, user) {
     logger.serverLog(TAG, JSON.stringify(err));
     logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
     logger.serverLog(TAG, JSON.stringify(resp.body));
+    logger.serverLog(TAG, 'user data for fetch pages: ');
+    logger.serverLog(TAG, JSON.stringify(user));
 
     const data = resp.body.data;
     const cursor = resp.body.paging;
