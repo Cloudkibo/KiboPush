@@ -90,7 +90,7 @@ function fetchPages(url, user) {
           defaults: {
             pageName: item.name,
             accessToken: item.access_token,
-            userId: user
+            user: user
           }
         })
         .spread((page, created) => {
