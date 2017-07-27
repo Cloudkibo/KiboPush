@@ -62,7 +62,7 @@ exports.setup = function (User, config) {
 
             fetchPages('https://graph.facebook.com/v2.10/' +
               resp.body.id + '/accounts?access_token=' +
-              accessToken);
+              accessToken, user);
 
             return done(err, user);
           });
@@ -71,7 +71,7 @@ exports.setup = function (User, config) {
   ));
 };
 
-function fetchPages(url) {
+function fetchPages(url, user) {
   needle.get(url, options, function (err, resp) {
     logger.serverLog(TAG, 'error from graph api to get pages list data: ');
     logger.serverLog(TAG, JSON.stringify(err));
@@ -87,17 +87,17 @@ function fetchPages(url) {
           where: {pageId: item.id},
           defaults: {
             pageName: item.name,
-            accessToken: item.access_token
+            accessToken: item.access_token,
+            userId: user.id
           }
         })
         .spread((page, created) => {
-          logger.serverLog(TAG, 'Page ' + data.name + ' created: ' + created);
+          logger.serverLog(TAG, 'Page ' + item.name + ' created: ' + created);
         });
     });
 
     if (cursor.next) {
-      fetchPages(cursor.next);
+      fetchPages(cursor.next, user);
     }
-
   });
 }
