@@ -1,12 +1,14 @@
-var db = require('./connections').sequelize;
+var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
 
 const Pages = db.define('page', {
   pageId: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false
   },
   pageName: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false
   },
   pagePic: {
     type: Sequelize.STRING
@@ -21,7 +23,9 @@ const Pages = db.define('page', {
     type: Sequelize.INTEGER
   },
   access_given: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 
 });

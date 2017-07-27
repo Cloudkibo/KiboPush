@@ -9,7 +9,7 @@ var router = express.Router();
 
 var logger = require('../components/logger');
 var config = require('../config/environment');
-var Users = require('../models/Users').Users;
+var Users = require('../api/user/user.model').Users;
 
 const TAG = 'auth/index.js';
 

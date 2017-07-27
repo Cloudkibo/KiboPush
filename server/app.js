@@ -14,7 +14,7 @@ var express = require('express'),
 const TAG = 'app.js';
 
 if(process.env.MIGRATION === 'true') {
-  require('./models/migrations');
+  require('./config/migrations');
   return ;
 }
 

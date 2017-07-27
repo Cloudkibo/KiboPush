@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 
-var logger = require('../components/logger');
-var config = require('../config/environment');
+var logger = require('./logger');
+var config = require('../config/environment/index');
 
 const sequelize = new Sequelize(config.db.mysql.credentials.schema,
   config.db.mysql.credentials.user, config.db.mysql.credentials.password, {
@@ -18,10 +18,10 @@ const sequelize = new Sequelize(config.db.mysql.credentials.schema,
 sequelize
   .authenticate()
   .then(() => {
-    logger.serverLog('/models/connections.js', 'Connection has been established successfully.');
+    logger.serverLog('/models/db.js', 'Connection has been established successfully.');
   })
   .catch(err => {
-    logger.serverLog('/models/connections.js', 'Unable to connect to the database:' + err);
+    logger.serverLog('/models/db.js', 'Unable to connect to the database:' + err);
   });
 
 

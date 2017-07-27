@@ -1,4 +1,4 @@
-var db = require('./connections').sequelize;
+var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
 
 const Messages = db.define('message', {
@@ -8,7 +8,7 @@ const Messages = db.define('message', {
   text: {
     type: Sequelize.STRING
   },
-  
+
 
 });
 
