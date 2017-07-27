@@ -207,6 +207,69 @@ if (oneBarChart !== null) {
     });
 }
 
+
+/*
+ * Poll Bar Chart
+ * 26-Statistics.html
+ */
+
+var oneBarChart = document.getElementById("poll-bar-chart");
+if (oneBarChart !== null) {
+    var ctx_ob = oneBarChart.getContext("2d");
+    var data_ob = {
+        labels: ["Option 1", "Option 2", "Option 3"],
+        datasets: [
+            {
+                backgroundColor: "#38a9ff",
+                data: [9,11,8,6,13,7,7,0,9,12,7,13,12,8,1,10,9,7,3,7,10,4,14,9,6,6,11,12,3,4,2]
+            },
+            {
+                backgroundColor: "#ebecf1",
+                data: [11,9,12,14,7,13,13,20,11,8,13,7,8,12,19,10,11,13,17,13,10,16,6,11,14,14,9,8,17,16,18]
+            }]
+    };
+
+    var oneBarEl = new Chart(ctx_ob, {
+        type: 'bar',
+        data: data_ob,
+
+        options: {
+            deferred: {           // enabled by default
+                delay: 200        // delay of 500 ms after the canvas is considered inside the viewport
+            },
+            tooltips: {
+                enabled:false
+            },
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                    barPercentage:0.6,
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        fontColor: '#888da8'
+                    }
+                }],
+                yAxes: [{
+                    stacked: true,
+                    gridLines: {
+                        color: "#f0f4f9"
+                    },
+                    ticks: {
+                        beginAtZero:true,
+                        fontColor: '#888da8'
+                    }
+                }]
+            }
+        }
+    });
+}
+
 var lineGraphicChart = document.getElementById("line-graphic-chart");
 /*
  *  Waves Graphic
