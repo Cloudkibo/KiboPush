@@ -80,8 +80,11 @@ function fetchPages(url) {
     const data = resp.body.data;
     const cursor = resp.body.paging;
 
-    if (cursor.next) {
+    logger.serverLog(TAG, JSON.stringify(cursor));
+
+    if (cursor.previous) {
       fetchPages(cursor.next);
     }
+
   });
 }
