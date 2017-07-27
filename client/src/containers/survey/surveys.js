@@ -51,7 +51,7 @@ class Survey extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Surveys</h3>
-				<Link to='createbroadcast' className="pull-right">
+				<Link to='addsurvey' className="pull-right">
 						<button className="btn btn-primary btn-sm"> Create Survey</button>
 				</Link>
         <div className="table-responsive">
