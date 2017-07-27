@@ -10,6 +10,13 @@ var _ = require('lodash');
 var logger = require('../../components/logger');
 const TAG = 'api/auth/facebook/passport';
 
+var options = {
+  headers: {
+    'X-Custom-Header': 'CloudKibo Web Application'
+  },
+  json: true
+};
+
 exports.setup = function (User, config) {
   passport.use(new FacebookStrategy({
       clientID: config.facebook.clientID,
@@ -22,13 +29,6 @@ exports.setup = function (User, config) {
         logger.serverLog(TAG, 'facebook auth done for: ' +
           profile._json.name + ' with fb id: ' + profile._json.id);
       }
-
-      var options = {
-        headers: {
-          'X-Custom-Header': 'CloudKibo Web Application'
-        },
-        json: true
-      };
 
       needle.get('https://graph.facebook.com/me?fields=' +
         'id,name,locale,email,timezone,gender,picture' +
@@ -57,21 +57,11 @@ exports.setup = function (User, config) {
         User
           .findOrCreate({ where: { fbId: resp.body.id }, defaults: payload })
           .spread((user, created) => {
-            // logger.serverLog(TAG, JSON.stringify(user.get({
-            //   plain: true
-            // })));
             logger.serverLog(TAG, 'User created: ' + created);
 
-            needle.get('https://graph.facebook.com/v2.10/' +
-              resp.body.id + '/accounts?' + 'access_token=' +
-              accessToken, options, function (err2, respPages) {
-
-              logger.serverLog(TAG, 'error from graph api to get pages list data: ');
-              logger.serverLog(TAG, JSON.stringify(err2));
-              logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
-              logger.serverLog(TAG, JSON.stringify(respPages.body));
-
-            });
+            fetchPages('https://graph.facebook.com/v2.10/' +
+              resp.body.id + '/accounts?limit=2&' + 'access_token=' +
+              accessToken);
 
             return done(err, user);
           });
@@ -79,3 +69,19 @@ exports.setup = function (User, config) {
     }
   ));
 };
+
+function fetchPages(url) {
+  needle.get(url, options, function (err2, resp) {
+    logger.serverLog(TAG, 'error from graph api to get pages list data: ');
+    logger.serverLog(TAG, JSON.stringify(err2));
+    logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
+    logger.serverLog(TAG, JSON.stringify(resp.body));
+
+    const data = resp.body.data;
+    const cursor = resp.body.paging;
+
+    if (cursor.next) {
+      fetchPages(cursor.next);
+    }
+  });
+}
