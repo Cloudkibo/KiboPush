@@ -32,7 +32,6 @@ exports.enable = function (req, res) {
       id: req.body.id
     }
   }).then(function (pages) {
-    logger.serverLog(pages);
     if (!pages) {
       return res.status(404).json({status: 'failed', description: 'Some error occurred'});
     }
@@ -49,7 +48,6 @@ exports.disable = function (req, res) {
       id: req.body.id
     }
   }).then(function (pages) {
-    logger.serverLog(pages);
     if (!pages) {
       return res.status(404).json({status: 'failed', description: 'Some error occurred'});
     }

@@ -18,3 +18,19 @@ exports.index = function (req, res) {
       res.status(201).json({ status: 'success', payload: poll});
     });
 };
+
+exports.update = function (req, res) {
+  Polls.update({
+    statement: req.body.statement
+  }, {
+    where: {
+      id: req.params.id
+    }
+  }).then(function (poll) {
+    if (!poll) {
+      return res.status(404).json({status: 'failed', description: 'Some error occurred'});
+    }
+    logger.serverLog(TAG, 'updated the polls with statement: '+ req.body.statement);
+    res.status(200).json({status: 'success', payload: poll});
+  });
+};

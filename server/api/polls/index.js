@@ -12,6 +12,6 @@ var logger = require('../../components/logger');
 const TAG = 'api/polls/index.js';
 
 router.post('/', auth.isAuthenticated(), controller.index);
-
+router.put('/:id', auth.isAuthenticated(), controller.update);
 
 module.exports = router;
