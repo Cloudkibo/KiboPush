@@ -88,6 +88,7 @@ class Poll extends React.Component {
 									<td>
 									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(poll)} style={{float: 'left', margin: 2}}>Edit</button>
 									<button to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
+									<Link to="pollResult" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Report</Link>
 									</td>
 								</tr>
 								)) : <br/>
