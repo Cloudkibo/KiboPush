@@ -4,6 +4,7 @@
 
 var Messages = require('./messages.model').Messages;
 var Pages = require('../pages/pages.model').Pages;
+var Subscribers = require('../subscribers/subscribers.model').Subscribers;
 
 var logger = require('../../components/logger');
 
@@ -13,7 +14,7 @@ exports.index = function (req, res) {
   logger.serverLog(TAG, 'messages API is working');
 
   Messages.findAll().then(function (messages) {
-    if (!messages) return res.status(404).json({status: 'failed', payload: []});
+    if (!messages) return res.status(404).json({status: 'failed', description: 'Messages not found'});
     logger.serverLog(TAG, 'messages object sent to client');
     res.status(200).json({status: 'success', payload: messages});
   });
@@ -36,49 +37,49 @@ exports.getfbMessage = function (req, res) {
           pageId: page,
         }
       }).then(function (page) {
-        if (!page) return res.status(404).json({status: 'failed', payload: 'Page not found'});
+        if (!page) return res.status(404).json({status: 'failed', description: 'Page not found'});
         //fetch subsriber info from Graph API
         // fetch customer details
-        var optionsChat = {
+        var options = {
           url: 'https://graph.facebook.com/v2.6/' + sender + '?access_token=' + page.accessToken,
           qs: {access_token: page.accessToken},
           method: 'GET'
 
         };
 
-        function callbackChat(error, response, body) {
-          let subsriber = JSON.parse(body);
-          logger.serverLog('info', 'This is subsriber ' + JSON.stringify(subsriber));
+        needle.get(options.url, options, function (error, response) {
+          let subsriber = JSON.parse(response.body);
+          logger.serverLog(TAG, 'This is subsriber ' + JSON.stringify(subsriber));
 
           if (!error) {
 
             var payload = {
-              name: customer.first_name + ' ' + customer.last_name,
+              firstName: customer.first_name,
+              lastName: customer.last_name,
               locale: customer.locale,
               gender: customer.gender,
               provider: 'facebook',
               timezone: customer.timezone,
               profilePic: rcustomer.profile_pic,
-              fbToken: '',
+              pageScopedId: '',
             };
 
             if (customer.email) {
               payload = _.merge(payload, {email: customer.email});
             }
 
-            User
-              .findOrCreate({where: {fbId: sender}, defaults: payload})
-              .spread((user, created) => {
-                logger.serverLog(TAG, 'User created: ' + created);
+            Subscribers
+              .findOrCreate({where: {senderId: sender}, defaults: payload})
+              .spread((subsriber, created) => {
+                logger.serverLog(TAG, 'Subscriber created: ' + created);
                 // return done(err, user);
-                res.status(200).json({status: 'success', payload: user});
+                res.status(200).json({status: 'success', payload: subsriber});
               });
 
           }
-        }
+        });
 
-        request.post(optionsChat, callbackChat);
-
+      
 
       });
     }
