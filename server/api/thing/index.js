@@ -12,15 +12,37 @@ var auth = require('../../auth/auth.service');
 
 const TAG = 'api/thing/index.js';
 
-router.get('/', auth.isAuthenticated(), function (req, res) {
+router.get('/', function (req, res) {
   logger.serverLog(TAG, 'things api is working');
-  res.status(200).json({status: 'success'});
+  var payload = {
+    name: 'sojharo',
+    locale: 'en',
+    gender: 'male',
+    provider: 'facebook',
+    timezone: '5',
+    profilePic: 'url',
+    email: 'sojharo@live.com'
+  };
+
+  User
+    .findOrCreate({ where: { fbId: resp.body.id }, defaults: payload })
+    .spread((user, created) => {
+      logger.serverLog(TAG, 'User created: ' + created);
+      res.status(200).json({ status: 'success', payload: user });
+    });
 });
 
 router.get('/fetch', function (req, res) {
   logger.serverLog(TAG, 'things api is working');
   Users.findAll().then(function(data){
-    res.status(200).json({status: 'success', data: data});
+    res.status(200).json({ status: 'success', data: data });
+  });
+});
+
+router.get('/update', function (req, res) {
+  logger.serverLog(TAG, 'things api is working');
+  Users.findAll().then(function(data){
+    res.status(200).json({ status: 'success', data: data });
   });
 });
 
