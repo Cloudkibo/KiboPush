@@ -10,7 +10,7 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import {addPoll, loadPollsList} from '../../redux/actions/poll.actions';
 import { bindActionCreators } from 'redux';
 
 class Poll extends React.Component {
@@ -38,6 +38,7 @@ class Poll extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
+		// this.props.loadPollsList();
 	}
 
 	gotoEdit(broadcast){
@@ -48,6 +49,7 @@ class Poll extends React.Component {
 	}
 
   render() {
+		console.log("POlls", this.props.polls);
     return (
 	   <div>
       <Header/>
@@ -76,19 +78,20 @@ class Poll extends React.Component {
 								</tr>
 							</thead>
 							<tbody>
-							{
-								this.props.broadcasts.map((broadcast, i) => (
+							{ (this.props.polls) ?
+								this.props.polls.map((poll, i) => (
 									<tr>
-									<td>{broadcast.platform}</td>
+									<td>{poll.platform}</td>
 									<td>poll</td>
-									<td>{broadcast.created_at}</td>
-									<td>{broadcast.sent}</td>
+									<td>{poll.created_at}</td>
+									<td>{poll.sent}</td>
 									<td>
-									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
+									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(poll)} style={{float: 'left', margin: 2}}>Edit</button>
 									<button to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
+									<Link to="pollResult" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Report</Link>
 									</td>
 								</tr>
-								))
+								)) : <br/>
 							}
 							
 							</tbody>
@@ -113,11 +116,11 @@ class Poll extends React.Component {
 function mapStateToProps(state) {
   console.log(state);
   return {
-          broadcasts:(state.broadcastsInfo.broadcasts),
+          polls:(state.pollsInfo.polls),
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Poll);

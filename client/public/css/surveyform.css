@@ -358,7 +358,35 @@ a {
   border-bottom: 5px solid #4ABFE2;
 }
 
-fieldset 
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width:auto;
+        padding:0 10px;
+        border-bottom:none;
+    }
+.panel-default > .panel-heading {
+    color: #212121;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+.panel {
+    border: none;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/*fieldset 
   {
     border: 1px solid #ddd !important;
     margin: 0;
@@ -380,4 +408,4 @@ fieldset
       border-radius: 4px; 
       padding: 5px 5px 5px 10px; 
       background-color: #ffffff;
-    }
+    }*/
