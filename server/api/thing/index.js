@@ -7,6 +7,7 @@ var router = express.Router();
 var logger = require('../../components/logger');
 
 var Users = require('../user/user.model').Users;
+var Pages = require('../pages/pages.model').Pages;
 
 var auth = require('../../auth/auth.service');
 
@@ -24,8 +25,8 @@ router.get('/', function (req, res) {
     email: 'sojharo@live.com'
   };
 
-  User
-    .findOrCreate({ where: { fbId: resp.body.id }, defaults: payload })
+  Users
+    .findOrCreate({ where: { id: 1 }, defaults: payload })
     .spread((user, created) => {
       logger.serverLog(TAG, 'User created: ' + created);
       res.status(200).json({ status: 'success', payload: user });
@@ -41,9 +42,40 @@ router.get('/fetch', function (req, res) {
 
 router.get('/update', function (req, res) {
   logger.serverLog(TAG, 'things api is working');
-  Users.findAll().then(function(data){
-    res.status(200).json({ status: 'success', data: data });
+  Users.update({
+    name: 'mangi'
+  }, {
+    where: {
+      id: 1
+    }
+  }).then(function (pages) {
+    logger.serverLog(TAG, pages);
+    if (!pages) {
+      return res.status(404).json({ status: 'failed', description: 'Some error occurred' });
+    }
+    logger.serverLog(TAG, 'user object sent to client');
+    res.status(200).json({ status: 'success', payload: pages });
   });
+});
+
+router.get('/associate', function (req, res) {
+  // NOTE: this is for local side testing of creating associations
+  // run the first route for creating user
+  Pages
+    .findOrCreate({
+      where: {id: 1},
+      defaults: {
+        pageId: 1,
+        pageName: 'page sojharo',
+        accessToken: 'access token',
+        user: 1
+      }
+    })
+    .spread((page, created) => {
+      logger.serverLog(TAG, page);
+      logger.serverLog(TAG, 'Page created: ' + created);
+      res.status(200).json({ status: 'success', payload: page });
+    });
 });
 
 module.exports = router;

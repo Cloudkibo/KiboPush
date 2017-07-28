@@ -2,10 +2,10 @@ var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
 
 const Broadcasts = db.define('broadcast', {
-  platform: {
+  platform: { // TODO define this as enum with values, for now value is facebook
     type: Sequelize.STRING
   },
-  type: {
+  type: { // TODO define this as enum with values
     type: Sequelize.STRING
   },
 

@@ -17,16 +17,16 @@ exports.index = function (req, res) {
       'enabled']
   }).then(function (pages) {
     if (!pages) {
-      return res.status(404).json({ status: 'failed', description: 'Some error occurred' });
+      return res.status(404).json({status: 'failed', description: 'Some error occurred'});
     }
     logger.serverLog(TAG, 'fb pages list sent to client');
-    res.status(200).json({ status: 'success', payload: pages });
+    res.status(200).json({status: 'success', payload: pages});
   });
 };
 
 exports.enable = function (req, res) {
   Pages.update({
-    enabled: true,
+    enabled: true
   }, {
     where: {
       id: req.body.id
@@ -34,25 +34,26 @@ exports.enable = function (req, res) {
   }).then(function (pages) {
     logger.serverLog(pages);
     if (!pages) {
-      return res.status(404).json({ status: 'failed', description: 'Some error occurred' });
+      return res.status(404).json({status: 'failed', description: 'Some error occurred'});
     }
-    logger.serverLog(TAG, 'user object sent to client');
-    res.status(200).json({ status: 'success', payload: pages });
+    logger.serverLog(TAG, 'updated the pages for enabling');
+    res.status(200).json({status: 'success', payload: pages});
   });
 };
 
 exports.disable = function (req, res) {
-  Pages.findAll({
+  Pages.update({
+    enabled: false
+  }, {
     where: {
-      userId: req.user.id
-    },
-    attributes: ['pageId', 'pageName', 'pagePic', 'numberOfFollowers', 'likes',
-      'enabled']
-  }).then(function (user) {
-    if (!user) {
-      return res.status(404).json({ status: 'failed', description: 'Some error occurred' });
+      id: req.body.id
     }
-    logger.serverLog(TAG, 'user object sent to client');
-    res.status(200).json({status: 'success', payload: user});
+  }).then(function (pages) {
+    logger.serverLog(pages);
+    if (!pages) {
+      return res.status(404).json({status: 'failed', description: 'Some error occurred'});
+    }
+    logger.serverLog(TAG, 'updated the pages for disabling');
+    res.status(200).json({status: 'success', payload: pages});
   });
 };
