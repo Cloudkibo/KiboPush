@@ -3,13 +3,13 @@
  */
 
 var logger = require('../../components/logger');
-var Broadcasts = require('../broadcasts/Broadcasts.model');
-const TAG = 'api/pages/pages.controller.js';
+var Polls = require('./Polls.model');
+const TAG = 'api/polls/polls.controller.js';
 
 
 
 exports.index = function (req, res) {
-  Broadcasts.find({type:'poll'},function(err, polls){
+  Polls.find(function(err, polls){
     logger.serverLog(TAG,  polls);
     logger.serverLog(TAG, "Error: " +  err);
     res.status(200).json(polls)  
@@ -17,7 +17,18 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
+    var poll = new Polls({platform: 'facebook', statement: 'Can smoking cause cancer',
+          options: ['Yes', 'No', 'Dont Care'] });
 
+    //save model to MongoDB
+    poll.save(function (err) {
+      if (err) {
+        res.status(500).json({status: 'Failed', error: err, description: 'Failed to insert record'});
+      }
+      else {
+        res.status(200).json({status: 'Success'});
+      }
+    });
 };
 
 exports.report = function (req, res) {
@@ -31,21 +42,14 @@ exports.send = function (req, res) {
 
 exports.seed = function (req, res) {
  var rawDocuments = [
-   {platform: 'facebook', type: 'poll', 
-   poll: {statement: 'Do you think social media destroys productivity',
-   options:[{optionStatment: 'Yes'}, {optionStatment: 'No'}, {optionStatment: 'Maybe'}]},
-   survey: [], message: null, userId: '1', pageId: '1', media: null, link: null},
-   {platform: 'facebook', type: 'poll', 
-   poll: {statement: 'Do you see global warming as a real threat',
-   options:[{optionStatment: 'Yes'}, {optionStatment: 'No'}, {optionStatment: 'Maybe'}]},
-   survey: [], message: null, userId: '1', pageId: '1', media: null, link: null},
-   {platform: 'facebook', type: 'poll', 
-   poll: {statement: 'Do you think college education is worth it',
-   options:[{optionStatment: 'Yes'}, {optionStatment: 'No'}, {optionStatment: 'Maybe'}]},
-   survey: [], message: null, userId: '1', pageId: '1', media: null, link: null},
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'],  },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'],  },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
    ];
 
- Broadcasts.insertMany(rawDocuments)
+ Polls.insertMany(rawDocuments)
       .then(function(mongooseDocuments) {
           logger.serverLog(TAG, "Polls Table Seeded");
           res.status(200).json({status: 'Success'});
@@ -53,6 +57,6 @@ exports.seed = function (req, res) {
       .catch(function(err) {
           /* Error handling */
           logger.serverLog(TAG, "Unable to seed the database");
-          res.status(500).json({status: 'Failed'});
+          res.status(500).json({status: 'Failed', err: err});
       });
 };
