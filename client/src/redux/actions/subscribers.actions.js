@@ -1,7 +1,8 @@
 import * as ActionTypes from '../constants/constants';
-var axios = require('axios');
+import callApi from '../../utility/api.caller.service';
 
 export function updateSubscribersList(data){
+  console.log("Data Fetched From Subscribers", data);
   return {
     type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
     data
@@ -10,15 +11,10 @@ export function updateSubscribersList(data){
 
 export function loadSubscribersList() {
 	//here we will fetch list of subscribers from endpoint
-  console.log('loadSubscribersList called');		
+  console.log('loadSubscribersList called');		    
   return (dispatch) => {
-    axios.get('/api/subscribers/fetch')
-    .then(function (response) {
-      console.log(response.data);
-      return dispatch(updateSubscribersList(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+    callApi('subscribers').then(res => dispatch(updateSubscribersList(res)));
+  };
+  
+ 
 }
