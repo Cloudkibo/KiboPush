@@ -19,7 +19,7 @@ var errorHandler = require('errorhandler');
 var path = require('path');
 var helmet = require('helmet');
 var passport = require('passport');
-
+var mongoose = require('mongoose');
 var config = require('./environment/index');
 
 module.exports = function(app) {
@@ -66,5 +66,7 @@ module.exports = function(app) {
      */
 
     app.use(errorHandler()); // Error handler - has to be last
+
+    mongoose.connect('mongodb://localhost/kibopush');
   }
 };

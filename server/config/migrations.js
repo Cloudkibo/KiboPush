@@ -15,25 +15,26 @@ var db = require('../components/db').sequelize;
 var logger = require('../components/logger');
 const TAG = 'models/migrations';
 
-Users.hasMany(Pages);
-Users.hasMany(Subscribers);
-Users.hasMany(Broadcasts);
+// Pages.belongsTo(Users);
+// Users.hasMany(Pages);
 
-Pages.belongsTo(Users);
-Pages.hasMany(Subscribers);
 
-Subscribers.belongsTo(Users);
-Subscribers.belongsTo(Pages);
+// Pages.hasMany(Subscribers);
+// Subscribers.belongsTo(Pages);
 
-Broadcasts.belongsTo(Users);
-Broadcasts.hasOne(Messages);
-Messages.belongsTo(Broadcasts);
+
+// Users.hasMany(Broadcasts);
+// Broadcasts.belongsTo(Users);
+
+// Broadcasts.hasOne(Messages);
+// Messages.belongsTo(Broadcasts);
 // TODO do here for userid in messages table
 
-Broadcasts.hasOne(Polls);
-Polls.belongsTo(Broadcasts);
-Polls.hasMany(pollOptions);
-pollOptions.belongsTo(Polls);
+// Broadcasts.hasOne(Polls);
+// Polls.belongsTo(Broadcasts);
+
+// Polls.hasMany(pollOptions);
+// pollOptions.belongsTo(Polls);
 
 // TODO part of survey
 // Broadcasts.hasOne(Surveys);

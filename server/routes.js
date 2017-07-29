@@ -22,6 +22,7 @@ module.exports = function(app) {
   app.use('/api/workflows', require('./api/workflows'));
   app.use('/api/subscribers', require('./api/subscribers'));
   app.use('/api/messages', require('./api/messages'));
+  app.use('/api/pages', require('./api/pages'));
 
   app.use('/auth', require('./auth'));
 

@@ -1,14 +1,13 @@
 var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
+var Users = require('../user/user.model').Users;
 
 const Pages = db.define('page', {
-  pageId: {
+  pageCode: {
     type: Sequelize.STRING,
-    allowNull: false
   },
   pageName: {
     type: Sequelize.STRING,
-    allowNull: false
   },
   pagePic: {
     type: Sequelize.STRING
@@ -24,10 +23,15 @@ const Pages = db.define('page', {
   },
   enabled: {
     type: Sequelize.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  }
+  },
+   
 
+},{
+  classMethods: {
+        associate: function(Users) {
+          Pages.belongsTo(Users);
+        }
+    }
 });
 
 exports.Pages = Pages;

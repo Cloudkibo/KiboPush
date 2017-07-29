@@ -1,5 +1,7 @@
 var db = require('../../components/db').sequelize;
 var Sequelize = require('sequelize');
+var Pages = require('../pages/pages.model').Pages;
+
 
 const Users = db.define('user', {
   name: {
@@ -30,6 +32,14 @@ const Users = db.define('user', {
       type: Sequelize.STRING,
   },
 
+  
+
+},{
+     classMethods: {
+        associate: function(Pages) {
+          Users.hasMany(Pages);
+        }
+    },
 });
 
 exports.Users = Users;
