@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
 
 var subscriberSchema = new Schema({
-    pageScopedId: {
+  pageScopedId: {
     type: String
   },
   firstName: {

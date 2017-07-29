@@ -5,13 +5,16 @@ var express = require('express');
 var router = express.Router();
 
 var logger = require('../../components/logger');
-var controller = require('./subscribers.controller');
+var controller = require('./polls.controller');
 var auth = require('../../auth/auth.service');
-const TAG = 'api/subscribers/index.js';
+const TAG = 'api/polls/index.js';
 
 
 
 router.get('/', controller.index);
+router.get('/create', controller.create);
+router.post('/report', controller.report);
+router.post('/send', controller.send);
 
 /* Seed Pages */
 router.get('/seed', controller.seed);

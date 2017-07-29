@@ -10,7 +10,7 @@ var logger = require('../../components/logger');
 var auth = require('../../auth/auth.service');
 
 
-var User = require('../user/Users.model');
+// var User = require('../user/Users.model');
 
 const TAG = 'api/thing/index.js';
 /*
@@ -68,24 +68,24 @@ router.get('/update', function (req, res) {
 });
 
 */
-router.get('/save', function (req, res) {
-var silence = new User({ name: 'Silence' });
-  console.log(silence); // 'Silence'
-   silence.save(function(err) {
-        if (err)
-           throw err;
-        else 
-            res.status(200).json({status: 'Success'});
-    });
-});
-router.get('/mongo', function (req, res) {
+// router.get('/save', function (req, res) {
+// var silence = new User({ name: 'Silence' });
+//   console.log(silence); // 'Silence'
+//    silence.save(function(err) {
+//         if (err)
+//            throw err;
+//         else 
+//             res.status(200).json({status: 'Success'});
+//     });
+// });
+// router.get('/mongo', function (req, res) {
   
-  User.find(function(err, users){
-    console.log("User", users);
-    console.log("Error", err);
-    res.status(200).json(users);  
-  })
-});
+//   // User.find(function(err, users){
+//   //   console.log("User", users);
+//   //   console.log("Error", err);
+//   //   res.status(200).json(users);  
+//   // })
+// });
 
 
 

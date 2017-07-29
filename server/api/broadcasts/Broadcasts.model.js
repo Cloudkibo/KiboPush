@@ -5,12 +5,12 @@ var mongoose = require('mongoose')
 var broadcastSchema = new Schema({
     platform: String,
     type: String,
-    poll: [{
+    poll: {
         statement: String,
         options: [{
             optionStatment: String,
         }]
-    }],
+    },
     survey:[{
         statement: String,
         isMultiple: String,

@@ -31,10 +31,10 @@ exports.send = function (req, res) {
 
 exports.seed = function (req, res) {
  var rawDocuments = [
-   {platform: 'facebook', type: 'message', poll: [], survey: [], message: 'Seed Message 1', userId: '1', pageId: '1', media: null, link: null},
-   {platform: 'facebook', type: 'message', poll: [], survey: [], message: 'Seed Message 2', userId: '1', pageId: '1', media: null, link: null},
-   {platform: 'facebook', type: 'message', poll: [], survey: [], message: 'Seed Message 3', userId: '1', pageId: '1', media: null, link: null},
-   {platform: 'facebook', type: 'message', poll: [], survey: [], message: 'Seed Message 4', userId: '1', pageId: '1', media: null, link: null},
+   {platform: 'facebook', type: 'message', poll: {}, survey: [], message: 'Seed Message 1', userId: '1', pageId: '1', media: null, link: null},
+   {platform: 'facebook', type: 'message', poll: {}, survey: [], message: 'Seed Message 2', userId: '1', pageId: '1', media: null, link: null},
+   {platform: 'facebook', type: 'message', poll: {}, survey: [], message: 'Seed Message 3', userId: '1', pageId: '1', media: null, link: null},
+   {platform: 'facebook', type: 'message', poll: {}, survey: [], message: 'Seed Message 4', userId: '1', pageId: '1', media: null, link: null},
    ];
 
  Broadcasts.insertMany(rawDocuments)
