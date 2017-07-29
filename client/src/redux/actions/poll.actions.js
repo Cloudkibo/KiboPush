@@ -1,20 +1,34 @@
 import * as ActionTypes from '../constants/constants';
+import callApi from '../../utility/api.caller.service';
 
-export function loadPollsList() {
-	//here we will fetch list of subscribers from endpoint
-  console.log('Loading broadcast list');		
-  var data = [];	
+export function updatePollsList(data){
   return {
     type: ActionTypes.FETCH_POLLS_LIST,
     data
   };
 }
 
-export function addPoll(token, data) {
-	//here we will add the broadcast
-  return {
+export function createPoll(data){
+   return {
     type: ActionTypes.ADD_POLL,
     data
+  };
+}
+
+export function loadPollsList() {
+	//here we will fetch list of subscribers from endpoint
+  console.log('Loading broadcast list');
+  return (dispatch) => {
+    callApi('polls').then(res => dispatch(updatePollsList(res)));
+  };			
+  
+}
+
+export function addPoll(token, data) {
+	//here we will add the broadcast
+  console.log('Loading broadcast list');
+  return (dispatch) => {
+    callApi('polls/create','post',data).then(res => dispatch(createPoll(data)));
   };
 }
 

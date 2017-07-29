@@ -17,8 +17,8 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-    var poll = new Polls({platform: 'facebook', statement: 'Can smoking cause cancer',
-          options: ['Yes', 'No', 'Dont Care'] });
+    var poll = new Polls({platform: 'facebook', statement: req.body.statement,
+          options: req.body.options, sent: 0 });
 
     //save model to MongoDB
     poll.save(function (err) {
@@ -42,11 +42,11 @@ exports.send = function (req, res) {
 
 exports.seed = function (req, res) {
  var rawDocuments = [
-   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'],  },
-   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
-   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
-   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'],  },
-   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], sent: 0 },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], sent: 0 },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], sent: 0},
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], sent: 0 },
+   {platform: 'facebook', statement: 'Can smoking cause cancer', options: ['Yes', 'No', 'Dont Care'], sent: 0},
    ];
 
  Polls.insertMany(rawDocuments)
