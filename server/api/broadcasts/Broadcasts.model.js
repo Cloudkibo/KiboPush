@@ -1,36 +1,17 @@
+// WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
+//Zarmeen
+
 var mongoose = require('mongoose')
    ,Schema = mongoose.Schema
    ,ObjectId = Schema.ObjectId;
 
 var broadcastSchema = new Schema({
-    platform: String,
-    type: String,
-    poll: {
-        statement: String,
-        options: [{
-            optionStatment: String,
-        }]
-    },
-    survey:[{
-        statement: String,
-        isMultiple: String,
-        options:[{
-            optionStatment: String,
-        }],
-    }],
-    link: {
-        linkTitle: String,
-        linkDescription: String,
-        linkUrl: String,
-    },
-    media: {
-        url: String,
-        type: String,
-        name: String,
-    },
-    message: String,
-    userId: String,
-    pageId: String,
+    platform: String, // TODO define this as enum with values, for now value is facebook
+    type: String, // TODO define this as enum with values ['text','attachment']
+    text: String, //message body
+    userId: {type: Schema.ObjectId, ref: 'users'},
+    datetime : {type: Date, default: Date.now },
+  //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
 
 module.exports = mongoose.model('broadcasts', broadcastSchema);

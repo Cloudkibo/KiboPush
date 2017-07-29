@@ -12,9 +12,10 @@ const TAG = 'api/thing/index.js';
 
 
 router.get('/', controller.index);
-router.get('/create', controller.create);
+router.post('/create', controller.create);
 router.post('/edit', controller.edit);
 router.post('/send', controller.send);
+router.get('/:id', controller.show);
 
 /* Seed Pages */
 router.get('/seed', controller.seed);

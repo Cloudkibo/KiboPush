@@ -10,11 +10,18 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {addBroadcast, loadBroadcastsList, editBroadcast} from '../../redux/actions/broadcast.actions';
+import {getbroadcast, loadBroadcastsList, editbroadcast} from '../../redux/actions/broadcast.actions';
 import { bindActionCreators } from 'redux';
 
 
 class EditBroadcast extends React.Component {
+	constructor(props, context) {
+    super(props, context);
+    console.log('props.params.id' + props.params.id);
+    props.getbroadcast(props.params.id);
+   // this.editPage = this.editPage.bind(this);
+
+  }
 
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -30,9 +37,15 @@ class EditBroadcast extends React.Component {
 		document.body.appendChild(addScript);
 	}
 
+	editbroadcast(event){
+		event.preventDefault();
+		this.props.editbroadcast({_id:this.props.broadcast._id,platform: this.props.broadcast.platform, type: 'message', text: this.refs.message.value});
+		this.props.history.push({
+			pathname: '/broadcasts',
+		});
+	}
   render() {
-		console.log(this.props.location);
-    return (
+	return (
 	<div>
       <Header/>
       <HeaderResponsive />
@@ -51,10 +64,11 @@ class EditBroadcast extends React.Component {
 						            
 						            <div className="tab-content">
 						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
+						               {this.props.broadcast &&
 						                <form>
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
-																<textarea className="form-control" value={this.props.location.state.platform}/>
+																<textarea className="form-control" defaultValue={this.props.broadcast?this.props.broadcast.text:''} ref="message"/>
 						                  </div>
 						                  <div className="add-options-message">
 						                    <a href="#" className="options-message" data-toggle="modal" data-target="#update-header-photo" data-placement="top" title data-original-title="ADD PHOTOS">
@@ -73,10 +87,11 @@ class EditBroadcast extends React.Component {
 						                    <i className="fa fa-volume-up"></i>
 						                   		<span>Add Audio</span>
 						                    </a>
-						                    <button className="btn btn-primary btn-md-2"> Save Broadcast</button>
-																<Link to="broadcasts" className="btn btn-md-2 btn-border-think btn-transparent c-grey" style={{float: 'right', margin: 2}}>Back</Link>
+						                    <button className="btn btn-primary btn-md-2" onClick={this.editbroadcast.bind(this)}> Save Broadcast</button>
+											<Link to="broadcasts" className="btn btn-md-2 btn-border-think btn-transparent c-grey" style={{float: 'right', margin: 2}}>Back</Link>
 						                  </div>
 						                </form>
+						            }
 						              </div>
 						             
 						             
@@ -96,10 +111,11 @@ function mapStateToProps(state) {
   console.log(state);
   return {
           broadcasts:(state.broadcastsInfo.broadcasts),
+          broadcast:(state.broadcastsInfo.broadcast),
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast, editBroadcast:editBroadcast}, dispatch);
+  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, getbroadcast:getbroadcast, editbroadcast:editbroadcast}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(EditBroadcast);

@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import {createbroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
 import { bindActionCreators } from 'redux';
 
 class CreateBroadcast extends React.Component {
@@ -40,7 +40,7 @@ class CreateBroadcast extends React.Component {
 	}
 
 	createBroadcast(){
-		this.props.addBroadcast('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
+		this.props.createbroadcast({platform: 'Facebook', type: 'message', text: this.refs.message.value});
 		this.props.history.push({
 			pathname: '/broadcasts',
 		});
@@ -70,7 +70,7 @@ class CreateBroadcast extends React.Component {
 						                  
 						                  <div className="form-group with-icon label-floating is-empty">
 						                    <label className="control-label">Say something...</label>
-						                    <textarea className="form-control"/>
+						                    <textarea className="form-control" ref="message"/>
 						                  </div>
 						                  <div className="add-options-message">
 						                    <a href="#" className="options-message" data-toggle="modal" data-target="#update-header-photo" data-placement="top" title data-original-title="ADD PHOTOS">
@@ -116,7 +116,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
+  return bindActionCreators({loadBroadcastsList:loadBroadcastsList, createbroadcast:createbroadcast}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(CreateBroadcast);
 
