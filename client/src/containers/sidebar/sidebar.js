@@ -53,16 +53,9 @@ class Sidebar extends Component {
 						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Polls"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
-				<li>
+					<li>
 					<Link to="subscribeToMessenger">
-						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe To Messenger"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
-					</Link>
-				</li>
-			
-
-				<li>
-					<Link to="25-FriendsBirthday.html">
-						<svg className="olymp-cupcake-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Friends Birthdays"><use xlinkHref="icons/icons.svg#olymp-cupcake-icon"></use></svg>
+						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe Widget"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
@@ -71,8 +64,8 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="27-ManageWidgets.html">
-						<svg className="olymp-manage-widgets-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Manage Widgets"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
+					<Link to="pages">
+						<svg className="olymp-manage-widgets-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Pages"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
 			</ul>
@@ -132,17 +125,12 @@ class Sidebar extends Component {
 				</li>
 				<li>
 					<Link to="subscribeToMessenger">
-						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe To Messenger"><use xlinkHref="icons/icons.svg#olymp-weather-icon"></use></svg>
+						<svg className="olymp-weather-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe To Messenger"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 						<span className="left-menu-title">Subscribe To Messenger</span>
 					</Link>
 				</li>
 			
-				<li>
-					<Link to="25-FriendsBirthday.html">
-						<svg className="olymp-cupcake-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Friends Birthdays"><use xlinkHref="icons/icons.svg#olymp-cupcake-icon"></use></svg>
-						<span className="left-menu-title">Friends Birthdays</span>
-					</Link>
-				</li>
+				
 				<li>
 					<Link to="stats">
 						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Account Stats"><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
@@ -150,9 +138,9 @@ class Sidebar extends Component {
 					</Link>
 				</li>
 				<li>
-					<Link to="27-ManageWidgets.html">
+					<Link to="pages">
 						<svg className="olymp-manage-widgets-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Manage Widgets"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
-						<span className="left-menu-title">Manage Widgets</span>
+						<span className="left-menu-title">Pages</span>
 					</Link>
 				</li>
 			</ul>

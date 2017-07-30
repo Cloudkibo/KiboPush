@@ -9,7 +9,11 @@ const TAG = 'api/pages/pages.controller.js';
 
 
 exports.index = function (req, res) {
-  
+   Pages.find({connected: true}, function(err, pages){
+    logger.serverLog(TAG,  pages);
+    logger.serverLog(TAG, "Error: " +  err);
+    res.status(200).json(pages);  
+  })
 };
 
 exports.enable = function (req, res) {
@@ -19,8 +23,13 @@ exports.enable = function (req, res) {
 exports.disable = function (req, res) {
  
 };
-exports.allPages = function (req, res) {
-   Pages.find(function(err, pages){
+
+exports.connect = function (req, res) {
+ 
+};
+
+exports.otherPages = function (req, res) {
+   Pages.find({connected: false}, function(err, pages){
     logger.serverLog(TAG,  pages);
     logger.serverLog(TAG, "Error: " +  err);
     res.status(200).json(pages);  
@@ -31,10 +40,10 @@ exports.allPages = function (req, res) {
 
 exports.seed = function (req, res) {
  var rawDocuments = [
-   {pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: true, userId: 5},
-   {pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: false, userId: 5},
-   {pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: false, userId: 5},
-   {pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: true, userId: 5},
+   {pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: true, userId: 5, likes: 0, numberOfFollowers: 0},
+   {pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: false, userId: 5, likes: 50, numberOfFollowers: 25},
+   {pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: false, userId: 5, likes: 37, numberOfFollowers: 89},
+   {pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: true, userId: 5, likes: 53, numberOfFollowers: 74},
    ];
 
  Pages.insertMany(rawDocuments)

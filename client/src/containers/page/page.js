@@ -15,6 +15,10 @@ import { bindActionCreators } from 'redux';
 
 class Page extends React.Component {
 
+	 componentWillMount(){
+		 this.props.loadMyPagesList("", {});
+	 }
+
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
 		require('../../../public/js/jquery.min.js');
@@ -28,7 +32,7 @@ class Page extends React.Component {
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
 
-		this.props.loadMyPagesList("", {});
+		
 	}
 	
   render() {
@@ -62,14 +66,14 @@ class Page extends React.Component {
 							{ (this.props.pages) ?
 								this.props.pages.map((page, i) => (
 								<tr>
-									<td>{page.pic}</td>
+									<td>{page.pagePic}</td>
 									<td>{page.pageName}</td>
 									<td>{page.likes}</td>
-									<td>{page.followers}</td>
+									<td>{page.numberOfFollowers}</td>
 									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
 								</tr> 
 
-								)) : <br/>
+								)) : <tr/>
 								
 							}
 					
