@@ -1,16 +1,17 @@
-var db = require('../../components/db').sequelize;
-var Sequelize = require('sequelize');
+// WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
+//Zarmeen
 
-const Surveys = db.define('survey', {
-  title: {
-    type: Sequelize.STRING
-  },
-  subtitle: {
-    type: Sequelize.STRING
-  },
-  image: {
-    type: Sequelize.STRING
-  },
+var mongoose = require('mongoose')
+   ,Schema = mongoose.Schema
+   ,ObjectId = Schema.ObjectId;
+
+var surveySchema = new Schema({
+    title: String, // title of survey
+    description: String, // description of survey
+    image: String, //image url
+    userId: {type: Schema.ObjectId, ref: 'users'},
+    datetime : {type: Date, default: Date.now },
+  //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
 
-exports.Surveys = Surveys;
+module.exports = mongoose.model('surveys', surveySchema);

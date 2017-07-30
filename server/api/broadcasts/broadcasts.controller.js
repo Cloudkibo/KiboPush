@@ -4,7 +4,7 @@
 
 var logger = require('../../components/logger');
 var Broadcasts = require('./Broadcasts.model');
-const TAG = 'api/pages/pages.controller.js';
+const TAG = 'api/broadcast/broadcast.controller.js';
 
 
 
@@ -13,7 +13,6 @@ exports.index = function (req, res) {
   Broadcasts.find(function(err, broadcasts){
     if(err) return res.status(404).json({status: 'failed', description: 'Broadcasts not found'});
     logger.serverLog(TAG,  broadcasts);
-    logger.serverLog(TAG, "Error: " +  err);
     res.status(200).json({status: 'success', payload: broadcasts});
   });
 };

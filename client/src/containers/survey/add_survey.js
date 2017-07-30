@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions';
+import {createsurvey} from '../../redux/actions/surveys.actions';
 import { bindActionCreators } from 'redux';
 
 class AddSurvey extends React.Component {
@@ -19,10 +19,11 @@ class AddSurvey extends React.Component {
 		this.state = {questionType:'text',surveyQuestions:[]};
 		//surveyQuestions will be an array of json object
 		//each json object will have following keys:
-		// question : //value of question
+		// statement : //value of question
 		// type: //text or multichoice
 		// choiceCount: //no of options
-		//choices: [] array of choice values
+		//options: [] array of choice values
+		this.createSurvey = this.createSurvey.bind(this);
   }
 
 	 componentDidMount() {
@@ -39,6 +40,18 @@ class AddSurvey extends React.Component {
 		document.body.appendChild(addScript);
 	}
 
+	 createSurvey(e){
+	 	e.preventDefault();
+	 	var surveybody = {
+	 		survey:{
+		 			 title: this.refs.title.value, // title of survey
+				   	 description: this.refs.description.value, // description of survey
+				     image: '', //image url
+				 	},
+			questions:this.state.surveyQuestions,
+	 	};
+	 	this.props.createsurvey(surveybody);
+	 }
 	 addClick(){
 	  
 	   let surveyQuestions = this.state.surveyQuestions;
@@ -49,7 +62,7 @@ class AddSurvey extends React.Component {
 	   	choiceValues = ['','',''];
 	   }
 
-	   surveyQuestions.push({'question':'','type':this.state.questionType,'choiceCount':choiceCount,'choiceValues':choiceValues});
+	   surveyQuestions.push({'statement':'','type':this.state.questionType,'choiceCount':choiceCount,'options':choiceValues});
 	   this.setState({surveyQuestions:surveyQuestions});
 	   console.log('surveyQuestions');
 	   console.log(this.state.surveyQuestions);
@@ -58,10 +71,10 @@ class AddSurvey extends React.Component {
   
   	addChoices(qindex){
   	   let surveyQuestions = this.state.surveyQuestions.slice();
-  	   let choices =  surveyQuestions[qindex].choiceValues.slice();
+  	   let choices =  surveyQuestions[qindex].options.slice();
 	   surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount + 1;
 	   choices.push('');
-	   surveyQuestions[qindex].choiceValues = choices;
+	   surveyQuestions[qindex].options = choices;
 	   this.setState({surveyQuestions});
 	     
   	}
@@ -69,14 +82,14 @@ class AddSurvey extends React.Component {
   	removeChoices(choiceIndex,qindex){
   	   console.log('removeChoices called qindex '+qindex +' choiceIndex '+choiceIndex);	
   	   let surveyQuestions = this.state.surveyQuestions.slice();
-  	   let choices =  surveyQuestions[qindex].choiceValues.slice();
+  	   let choices =  surveyQuestions[qindex].options.slice();
   	   console.log('choices before');
   	   console.log(choices);
   	   choices.splice(choiceIndex,1);
   	   console.log('choices after');
   	   console.log(choices);
 	   surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount - 1;
-	   surveyQuestions[qindex].choiceValues = choices;
+	   surveyQuestions[qindex].options = choices;
 	   this.setState({surveyQuestions:surveyQuestions});
 	     
   	}
@@ -91,7 +104,7 @@ class AddSurvey extends React.Component {
   }
     handleChange(i, event) {
      let surveyQuestions = this.state.surveyQuestions.slice();
-     surveyQuestions[i].question = event.target.value;
+     surveyQuestions[i].statement = event.target.value;
      this.setState({surveyQuestions});
      console.log('surveyQuestions');
 	 console.log(this.state.surveyQuestions);
@@ -103,7 +116,7 @@ class AddSurvey extends React.Component {
      let surveyQuestions = this.state.surveyQuestions.slice();
      console.log('qindex is ' + qindex);
      console.log('choiceIndex is ' + choiceIndex);
-     surveyQuestions[qindex].choiceValues[choiceIndex] = event.target.value;
+     surveyQuestions[qindex].options[choiceIndex] = event.target.value;
      this.setState({surveyQuestions});
      console.log('surveyQuestions');
 	 console.log(this.state.surveyQuestions);
@@ -236,14 +249,14 @@ class AddSurvey extends React.Component {
 						                  <div className="col-xl-12">
 					                      <div className="form-group">
 						                    <label className="control-label">Title</label>
-						                    <input className="form-control" placeholder="Enter form title here"/>
+						                    <input className="form-control" placeholder="Enter form title here" ref="title"/>
 						                  </div>
 						                  </div>
 						                  <br/>
 						                  <div className="col-xl-12">
 							                  <div className="form-group">
 							                    <label className="control-label">Description</label>
-							                    <textarea className="form-control" placeholder="Enter form description here" rows="3"/>
+							                    <textarea className="form-control" placeholder="Enter form description here" rows="3" ref="description"/>
 							                  </div>
 							              </div>
 							              <br/>
@@ -271,7 +284,7 @@ class AddSurvey extends React.Component {
 						                  <div className="add-options-message">
 						                    
 						                   
-											<button className="btn btn-secondary" onClick={this.createPoll}> Create Survey</button>
+											<button className="btn btn-secondary" onClick={this.createSurvey}> Create Survey</button>
 						                    <button className="btn btn-border-think btn-transparent c-grey">Cancel</button>
 						                  </div>
 						                
@@ -293,15 +306,15 @@ class AddSurvey extends React.Component {
 function mapStateToProps(state) {
   console.log(state);
   return {
-         // broadcasts:(state.broadcastsInfo.broadcasts),
+          surveys:(state.surveysInfo.surveys),
          };
 }
 
-function mapDispatchToProps(dispatch) {
- // return bindActionCreators({loadBroadcastsList:loadBroadcastsList, addBroadcast:addBroadcast}, dispatch);
-}
-//export default connect(mapStateToProps,mapDispatchToProps)(AddSurvey);
 
-export default (AddSurvey);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({createsurvey:createsurvey}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(AddSurvey);
+
 
 
