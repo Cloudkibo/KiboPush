@@ -9,10 +9,10 @@ const TAG = 'api/workflows/workflows.controller.js';
 
 
 exports.index = function (req, res) {
-  Workflows.find(function(err, polls){
-    logger.serverLog(TAG,  polls);
+  Workflows.find(function(err, workflows){
+    logger.serverLog(TAG,  workflows);
     logger.serverLog(TAG, "Error: " +  err);
-    res.status(200).json(polls)  
+    res.status(200).json(workflows);  
   })
 };
 
@@ -51,7 +51,7 @@ exports.seed = function (req, res) {
 
  Workflows.insertMany(rawDocuments)
       .then(function(mongooseDocuments) {
-          logger.serverLog(TAG, "Polls Table Seeded");
+          logger.serverLog(TAG, "Workflows Table Seeded");
           res.status(200).json({status: 'Success'});
       })
       .catch(function(err) {

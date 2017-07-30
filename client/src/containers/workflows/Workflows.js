@@ -15,6 +15,11 @@ import { bindActionCreators } from 'redux';
 
 class Workflows extends React.Component {
 
+
+	componentWillMount(){
+		this.props.loadWorkFlowList();
+	}
+
 	componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
 		require('../../../public/js/jquery.min.js');
@@ -51,11 +56,11 @@ class Workflows extends React.Component {
 						<table className="table table-striped">
 							<thead>
 								<tr>
-									<th>Name</th>
 									<th>Condition</th>
 									<th>Key Words</th>
 									<th>Message</th>
 									<th>Active</th>
+									<th>Sent</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -66,14 +71,14 @@ class Workflows extends React.Component {
 								this.props.workflows.map((workflow,i)=>(
 								<tr>
 								
-									<td>{workflow.name}</td>
 									<td>{workflow.condition}</td>
-									<td>{workflow.keyWords}</td>
-									<td>{workflow.message}</td>
-									<td>{workflow.isActive}</td>
+									<td>{workflow.keywords}</td>
+									<td>{workflow.reply}</td>
+									<td>{workflow.isActive ? 'Yes' : 'No'}</td>
+									<td>{workflow.sent}</td>
 									<td>
-										<button className="btn btn-primary btn-sm" style={{float: 'left'}}>Edit</button>
-										<button className="btn btn-primary btn-sm" style={{float: 'left'}}>Disable</button>
+										<button className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Edit</button>
+										<button className="btn btn-primary btn-sm" style={{float: 'left', margin: 2}}>Disable</button>
 									</td>
 								</tr>
 
