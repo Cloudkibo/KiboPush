@@ -20,10 +20,21 @@ export function updateOtherPages(data){
   };
 }
 
-export function loadMyPagesList(token, data) {
+export function loadMyPagesList() {
     console.log('loadPagesList called');	
     return (dispatch) => {
     callApi('pages').then(res => dispatch(updatePagesList(res)));
+  };
+}
+
+export function removePage(page) {
+    console.log('loadPagesList called');	
+    return (dispatch) => {
+    callApi('pages/disable','post',page).then(res => {
+      if(res.status == 200){
+        loadMyPagesList();
+      }
+    });
   };
 }
 

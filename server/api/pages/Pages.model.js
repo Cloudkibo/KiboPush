@@ -21,9 +21,6 @@ var pageSchema = new Schema({
   accessToken: {
     type: String
   },
-  enabled: {
-    type: Boolean,
-  },
   connected: {
     type: Boolean,
   },

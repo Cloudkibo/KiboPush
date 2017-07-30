@@ -19,7 +19,7 @@ router.get('/', controller.index);
 router.get('/otherPages',  controller.otherPages);
 router.post('/enable', controller.enable);
 router.post('/disable', controller.disable);
-router.post('/connect', controller.connect);
+
 
 
 /* Seed Pages */

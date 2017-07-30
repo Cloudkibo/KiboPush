@@ -21,12 +21,15 @@ exports.enable = function (req, res) {
 };
 
 exports.disable = function (req, res) {
- 
+      var updateData = {
+        connected: false,
+      };
+      Pages.update({_id: req.body._id},updateData, function(err,affected) {
+        logger.serverLog(TAG, 'affected rows ' + affected);
+      });
 };
 
-exports.connect = function (req, res) {
- 
-};
+
 
 exports.otherPages = function (req, res) {
    Pages.find({connected: false}, function(err, pages){
@@ -40,10 +43,10 @@ exports.otherPages = function (req, res) {
 
 exports.seed = function (req, res) {
  var rawDocuments = [
-   {pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: true, userId: 5, likes: 0, numberOfFollowers: 0},
-   {pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: false, userId: 5, likes: 50, numberOfFollowers: 25},
-   {pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: true, connected: false, userId: 5, likes: 37, numberOfFollowers: 89},
-   {pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', enabled: false, connected: true, userId: 5, likes: 53, numberOfFollowers: 74},
+   {pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, userId: 5, likes: 0, numberOfFollowers: 0},
+   {pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken',  connected: false, userId: 5, likes: 50, numberOfFollowers: 25},
+   {pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken',  connected: false, userId: 5, likes: 37, numberOfFollowers: 89},
+   {pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken',  connected: true, userId: 5, likes: 53, numberOfFollowers: 74},
    ];
 
  Pages.insertMany(rawDocuments)
