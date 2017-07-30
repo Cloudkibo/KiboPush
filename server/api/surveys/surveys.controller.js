@@ -179,6 +179,41 @@ exports.showQuestions = function(req, res) {
 };
 
 
+// Submit response of survey
+exports.submitresponse = function(req, res) {
+  logger.serverLog(TAG, 'This is body in submit survey response '+ JSON.stringify(req.body) );
+  //expected body will be
+
+  /*
+    body:{
+    responses:[{qid:_id of question,response:''}],//array of json responses
+    surveyId: _id of survey,
+    subscriberId: _id of subscriber,
+    }
+  */
+  for(var resp in req.body.responses){
+                       
+              var surveyResponse = new SurveyResponses({
+                      response:req.body.responses[resp].response,//response submitted by subscriber
+                      surveyId: req.body.surveyId,
+                      questionId: req.body.responses[resp].qid,
+                      subscriberId: req.body.subscriberId,
+                                        
+                    });
+
+              surveyResponse.save(function(err){
+                 if(err) { 
+                           return res.status(404).json({status: 'failed', description: 'Survey Response not created'});
+                         }
+                });
+
+              }
+  return res.status(200).json({status: 'success', payload: 'Response submitted successfully'});  
+
+
+
+};
+
 exports.send = function (req, res) {
    //we will write here the logic to send survey
 };
