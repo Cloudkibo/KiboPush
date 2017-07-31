@@ -4,6 +4,8 @@
 
 var logger = require('../../components/logger');
 var Broadcasts = require('./Broadcasts.model');
+var Pages = require('../pages/Pages.model');
+var Subscribers = require('../subscribers/Subscribers.model');
 const TAG = 'api/broadcast/broadcast.controller.js';
 
 
@@ -82,4 +84,74 @@ exports.seed = function (req, res) {
           logger.serverLog(TAG, "Unable to seed the database");
           res.status(500).json({status: 'Failed'});
       });
+};
+
+//webhook for facebook
+exports.getfbMessage = function (req, res) {
+  logger.serverLog(TAG, 'message received from FB Subscriber');
+  let messaging_events = req.body.entry[0].messaging
+
+  for (let i = 0; i < messaging_events.length; i++) {
+    let event = req.body.entry[0].messaging[i];
+    logger.serverLog(TAG, JSON.stringify(event));
+    if (event.message) {
+
+      let sender = event.sender.id;
+      let page = event.recipient.id;
+      //get accesstoken of page
+      Pages.findOne({pageId: page}).then(function (page) {
+        if (!page) return res.status(404).json({status: 'failed', description: 'Page not found'});
+        //fetch subsriber info from Graph API
+        // fetch customer details
+        var options = {
+          url: 'https://graph.facebook.com/v2.6/' + sender + '?access_token=' + page.accessToken,
+          qs: {access_token: page.accessToken},
+          method: 'GET'
+
+        };
+
+        needle.get(options.url, options, function (error, response) {
+          let subsriber = JSON.parse(response.body);
+          logger.serverLog(TAG, 'This is subsriber ' + JSON.stringify(subsriber));
+
+          if (!error) {
+
+            var payload = {
+              firstName: customer.first_name,
+              lastName: customer.last_name,
+              locale: customer.locale,
+              gender: customer.gender,
+              provider: 'facebook',
+              timezone: customer.timezone,
+              profilePic: rcustomer.profile_pic,
+              pageScopedId: '',
+            };
+
+            if (customer.email) {
+              payload = _.merge(payload, {email: customer.email});
+            }
+
+            Subscribers.findOne({senderId : sender}, function(err, subsriber){
+              if(err){
+                //subsriber not found, create subscriber
+                Subscribers.create(payload, function(err2, subsriber) {
+                   if(err) { 
+                    return res.status(404).json({status: 'failed', description: 'Subscriber not created'});
+                    }
+                   return res.status(200).json({status: 'success', payload: subsriber}); 
+                    });
+                   }
+            });
+           
+
+          
+        };
+
+      
+
+      });
+    });
+  }
+}
+
 };
