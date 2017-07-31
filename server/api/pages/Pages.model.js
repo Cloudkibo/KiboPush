@@ -21,7 +21,7 @@ var pageSchema = new Schema({
   accessToken: {
     type: String
   },
-  connected: {
+  connected: { // TODO add default value
     type: Boolean,
   },
   userId: {

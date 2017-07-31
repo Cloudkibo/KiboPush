@@ -8,22 +8,22 @@
 
 'use strict';
 
-var express = require('express');
-var favicon = require('serve-favicon');
-var morgan = require('morgan');
-var compression = require('compression');
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
-var cookieParser = require('cookie-parser');
-var errorHandler = require('errorhandler');
-var path = require('path');
-var helmet = require('helmet');
-var passport = require('passport');
-var mongoose = require('mongoose');
-var config = require('./environment/index');
+const express = require('express');
+const favicon = require('serve-favicon');
+const morgan = require('morgan');
+const compression = require('compression');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const errorHandler = require('errorhandler');
+const path = require('path');
+const helmet = require('helmet');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const config = require('./environment/index');
 
-module.exports = function(app) {
-  var env = app.get('env');
+module.exports = function (app) {
+  const env = app.get('env');
 
   /**
    * middleware to compress response body to optimize app
@@ -66,7 +66,5 @@ module.exports = function(app) {
      */
 
     app.use(errorHandler()); // Error handler - has to be last
-
-    mongoose.connect('mongodb://localhost/kibopush');
   }
 };

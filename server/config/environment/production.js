@@ -7,16 +7,9 @@
 // ==================================
 module.exports = {
   // MySQL connection options
-  db: {
-    mysql: {
-      credentials: {
-        schema: process.env.DB_SCHEMA,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD
-      },
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT
-    }
+  mongo: {
+    uri:    process.env.MONGO_URI ||
+    'mongodb://root:a345rq98efw@localhost/kibopush'
   },
   seedDB: false
 };

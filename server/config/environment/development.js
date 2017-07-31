@@ -6,18 +6,9 @@
 // Development specific configuration
 // ==================================
 module.exports = {
-  // MySQL connection options
-  db: {
-    mysql: {
-      credentials: {
-        schema: 'kibopush',
-        user: 'root',
-        password: 'kibo4321',
-        
-      },
-      host: 'localhost',
-      port: 3306
-    }
+  // MongoDB connection options
+  mongo: {
+    uri: 'mongodb://localhost/kibopush-dev'
   },
   seedDB: false
 };

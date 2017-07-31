@@ -3,19 +3,18 @@
  */
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'; // production
-process.env.MIGRATION = process.env.MIGRATION || 'false';
 
 var express = require('express'),
   app = express(),
   path = require('path'),
   config = require('./config/environment/index'),
-  logger = require('./components/logger');
+  logger = require('./components/logger'),
+  mongoose = require('mongoose');
 
 const TAG = 'app.js';
 
-if(process.env.MIGRATION === 'true') {
-  return ;
-}
+// Connect to database
+mongoose.connect(config.mongo.uri, config.mongo.options);
 
 require('./config/express')(app);
 require('./routes')(app);

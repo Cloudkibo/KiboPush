@@ -3,19 +3,19 @@
  */
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
+const router = express.Router();
 
-var logger = require('../components/logger');
-var config = require('../config/environment');
-// var Users = require('../api/user/user.model').Users;
+const logger = require('../components/logger');
+const config = require('../config/environment');
+const Users = require('../api/user/Users.model');
 
 const TAG = 'auth/index.js';
 
-// require('./facebook/passport').setup(Users, config);
+require('./facebook/passport').setup(Users, config);
 
-// router.use('/facebook', require('./facebook'));
+router.use('/facebook', require('./facebook'));
 
 
 module.exports = router;
