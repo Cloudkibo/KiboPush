@@ -62,7 +62,7 @@ class Survey extends React.Component {
 									<th>Description</th>
 									<th>Created At</th>
 									<th>Actions</th>
-								
+
 								</tr>
 							</thead>
 							<tbody>
@@ -72,25 +72,29 @@ class Survey extends React.Component {
 											<td>{survey.title}</td>
 											<td>{survey.description}</td>
 											<td>{handleDate(survey.datetime)}</td>
-											<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>View</button></td>
-											
+											<td>
+												<button className="btn btn-primary btn-sm" style={{float: 'left'}}>View</button>
+												<Link to='/surveyResult'>
+														<button className="btn btn-primary btn-sm"> Report </button>
+												</Link>
+											</td>
 										</tr>
-                        		
-								
-							
+
+
+
 							))
                       		 }
 							</tbody>
 						</table>
 					</div>
-     
+
         </div>
       </div>
 
-        
+
           </main>
-      
-   
+
+
         </div>
       </div>
 			</div>
@@ -110,4 +114,3 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({loadSurveysList:loadSurveysList}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Survey);
-
