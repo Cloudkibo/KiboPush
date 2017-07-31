@@ -11,7 +11,7 @@ import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
 import AddSurvey from './containers/survey/add_survey';
-
+import SurveyResult from './containers/survey/SurveyResult';
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
 import Workflows from './containers/workflows/Workflows';
 import EditBroadcast from './containers/broadcast/EditBroadcast';
@@ -63,23 +63,24 @@ const routes = (
   //    </Route>
 
      <Route path="/" component={App}>
-        <IndexRoute component={Login}  />
+        <IndexRoute component={Login} />
         <Route path="/dashboard" component={Home} />
         <Route path="/subscribers" component={Subscriber} />
-        <Route path="/broadcasts" component={Broadcast}/>
-        <Route path="/pages" component={Page}/>
-        <Route path="/addPages" component={AddPage}/>
-        <Route path="/surveys" component={Surveys}/>
-        <Route path="/createbroadcast" component={CreateBroadcast}/>
+        <Route path="/broadcasts" component={Broadcast} />
+        <Route path="/pages" component={Page} />
+        <Route path="/addPages" component={AddPage} />
+        <Route path="/surveys" component={Surveys} />
+        <Route path="/createbroadcast" component={CreateBroadcast} />
         <Route path="/createworkflow" component={CreateWorkflow} />
-        <Route path="/workflows" component={Workflows}/>
-        <Route path="/editbroadcast/:id" component={EditBroadcast}/>
-        <Route path="/createpoll" component={CreatePoll}/>
-        <Route path="/poll" component={Poll}/>
-        <Route path="/stats" component={Stats}/>
-        <Route path="/subscribeToMessenger" component={SubscribeToMessenger}/>
-        <Route path="/addsurvey" component={AddSurvey}/>
-        <Route path="/pollResult" component={PollResult}/>
+        <Route path="/workflows" component={Workflows} />
+        <Route path="/editbroadcast/:id" component={EditBroadcast} />
+        <Route path="/createpoll" component={CreatePoll} />
+        <Route path="/poll" component={Poll} />
+        <Route path="/stats" component={Stats} />
+        <Route path="/subscribeToMessenger" component={SubscribeToMessenger} />
+        <Route path="/addsurvey" component={AddSurvey} />
+        <Route path="/pollResult" component={PollResult} />
+        <Route path="/surveyResult" component={SurveyResult} />
      </Route>
 
 );
