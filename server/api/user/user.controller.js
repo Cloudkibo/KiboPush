@@ -4,7 +4,7 @@
 
 // var Users = require('./user.model').Users;
 
-var logger = require('../../components/logger');
+const logger = require('../../components/logger');
 
 const TAG = 'api/user/user.controller.js';
 

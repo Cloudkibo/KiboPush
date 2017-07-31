@@ -77,7 +77,7 @@ exports.setup = function (User, config) {
   ));
 };
 
-// TODO use this after testing 
+// TODO use this after testing
 function fetchPages(url, user) {
   needle.get(url, options, (err, resp) => {
     logger.serverLog(TAG, 'error from graph api to get pages list data: ');

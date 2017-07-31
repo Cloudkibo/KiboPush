@@ -1,14 +1,13 @@
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
+const router = express.Router();
 
-var logger = require('../../components/logger');
-var controller = require('./workflows.controller');
-var auth = require('../../auth/auth.service');
+const logger = require('../../components/logger');
+const controller = require('./workflows.controller');
+const auth = require('../../auth/auth.service');
 const TAG = 'api/polls/index.js';
-
 
 
 router.get('/', controller.index);

@@ -1,15 +1,15 @@
 // WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
 //Zarmeen
 
-var mongoose = require('mongoose')
-   ,Schema = mongoose.Schema
-   ,ObjectId = Schema.ObjectId;
+let mongoose = require('mongoose'),
+   Schema = mongoose.Schema,
+   ObjectId = Schema.ObjectId;
 
-var pollResponseSchema = new Schema({
-    response:String,//response submitted by subscriber
-    pollId: {type: Schema.ObjectId, ref: 'polls'},
-    subscriberId: {type: Schema.ObjectId, ref: 'subscribers'},
-    datetime : {type: Date, default: Date.now },
+const pollResponseSchema = new Schema({
+    response: String, //response submitted by subscriber
+    pollId: { type: Schema.ObjectId, ref: 'polls' },
+    subscriberId: { type: Schema.ObjectId, ref: 'subscribers' },
+    datetime: { type: Date, default: Date.now },
   //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
 

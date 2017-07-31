@@ -4,22 +4,21 @@
 
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
+const router = express.Router();
 
-var auth = require('../../auth/auth.service');
-var controller = require('./pages.controller');
+const auth = require('../../auth/auth.service');
+const controller = require('./pages.controller');
 
-var logger = require('../../components/logger');
+const logger = require('../../components/logger');
 
 const TAG = 'api/pages/index.js';
 
 router.get('/', controller.index);
-router.get('/otherPages',  controller.otherPages);
+router.get('/otherPages', controller.otherPages);
 router.post('/enable', controller.enable);
 router.post('/disable', controller.disable);
-
 
 
 /* Seed Pages */

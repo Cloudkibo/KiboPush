@@ -1,17 +1,17 @@
 // WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
 //Zarmeen
 
-var mongoose = require('mongoose')
-   ,Schema = mongoose.Schema
-   ,ObjectId = Schema.ObjectId;
+const mongoose = require('mongoose');
 
-var pollSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const pollSchema = new Schema({
     platform: String, // TODO define this as enum with values, for now value is facebook
-    statement: String, 
+    statement: String,
     options: [String],
-    userId: {type: Schema.ObjectId, ref: 'users'},
+    userId: { type: Schema.ObjectId, ref: 'users' },
     sent: Number,
-    datetime : {type: Date, default: Date.now },
+    datetime: { type: Date, default: Date.now },
 
   //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
