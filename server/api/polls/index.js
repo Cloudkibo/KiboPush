@@ -15,7 +15,8 @@ router.get('/', controller.index);
 router.post('/create', controller.create);
 router.post('/report', controller.report);
 router.post('/send', controller.send);
-
+router.get('/responses/:id', controller.getresponses);
+router.get('/submitresponse/', controller.submitresponses);
 /* Seed Pages */
 router.get('/seed', controller.seed);
 

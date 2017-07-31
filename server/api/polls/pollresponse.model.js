@@ -5,30 +5,12 @@ var mongoose = require('mongoose')
    ,Schema = mongoose.Schema
    ,ObjectId = Schema.ObjectId;
 
-var surveyResponseSchema = new Schema({
+var pollResponseSchema = new Schema({
     response:String,//response submitted by subscriber
-    surveyId: {type: Schema.ObjectId, ref: 'surveys'},
-    questionId: {type: Schema.ObjectId, ref: 'surveyquestions'},
+    pollId: {type: Schema.ObjectId, ref: 'polls'},
     subscriberId: {type: Schema.ObjectId, ref: 'subscribers'},
     datetime : {type: Date, default: Date.now },
   //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
 
-/*
-[{
-response:'ans1',
-surveyId:{
-	title:
-	'description':
-
-},
-question:{
-	statement:
-	type:
-},
-subscriberID:{
-	
-}
-}]
-*/
-module.exports = mongoose.model('surveyresponse', surveyResponseSchema);
+module.exports = mongoose.model('pollresponse', pollResponseSchema);

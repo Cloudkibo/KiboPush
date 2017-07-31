@@ -31,7 +31,17 @@ export function addPoll(token, data) {
     callApi('polls/create','post',data).then(res => dispatch(createPoll(data)));
   };
 }
-
+export function showresponses(data){
+  return {
+    type: ActionTypes.ADD_POLL_RESPONSES,
+    data
+  }; 
+}
+export function getpollresults(token, pollid) {
+  return (dispatch) => {
+    callApi(`polls/responses/${pollid}`).then(res => dispatch(showresponses(res.payload)));
+  };
+}
 /* A poll should NOT be allowed to edit */
 
 // export function editPoll(token, data) {

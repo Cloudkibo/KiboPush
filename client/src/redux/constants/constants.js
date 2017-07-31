@@ -17,3 +17,4 @@ export const ADD_POLL = 'ADD_POLL';
 export const GET_BROADCAST='GET_BROADCAST';
 export const ADD_SURVEY='ADD_SURVEY';
 export const ADD_RESPONSES='ADD_RESPONSES';
+export const ADD_POLL_RESPONSES='ADD_POLL_RESPONSES';
