@@ -1,8 +1,8 @@
-var mongoose = require('mongoose')
-   ,Schema = mongoose.Schema
-   ,ObjectId = Schema.ObjectId;
+let mongoose = require('mongoose'),
+   Schema = mongoose.Schema,
+   ObjectId = Schema.ObjectId;
 
-var subscriberSchema = new Schema({
+const subscriberSchema = new Schema({
   pageScopedId: {
     type: String
   },
@@ -15,7 +15,7 @@ var subscriberSchema = new Schema({
   locale: {
       type: String
   },
-  timezone:{
+  timezone: {
       type: String,
   },
   email: {
@@ -24,16 +24,16 @@ var subscriberSchema = new Schema({
   gender: {
       type: String
   },
-  senderId:{
+  senderId: {
       type: String
   },
-  profilePic:{
+  profilePic: {
       type: String
   },
-  pageId:{
+  pageId: {
       type: String
   },
-  userId:{
+  userId: {
       type: String
   },
 });

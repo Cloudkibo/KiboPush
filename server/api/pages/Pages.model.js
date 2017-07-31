@@ -1,8 +1,8 @@
-var mongoose = require('mongoose')
-   ,Schema = mongoose.Schema
-   ,ObjectId = Schema.ObjectId;
+let mongoose = require('mongoose'),
+   Schema = mongoose.Schema,
+   ObjectId = Schema.ObjectId;
 
-var pageSchema = new Schema({
+const pageSchema = new Schema({
   pageCode: {
     type: String,
   },
@@ -21,7 +21,7 @@ var pageSchema = new Schema({
   accessToken: {
     type: String
   },
-  connected: {
+  connected: { // TODO add default value
     type: Boolean,
   },
   userId: {

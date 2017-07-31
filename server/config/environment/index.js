@@ -23,14 +23,10 @@ var all = {
     session: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4'
   },
 
-  // MySQL Connection Options
-  db: {
-    mysql: {
-      dialect: 'mysql',
-      pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
+  mongo: {
+    options: {
+      db: {
+        safe: true
       }
     }
   },

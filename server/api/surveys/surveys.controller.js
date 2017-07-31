@@ -2,25 +2,24 @@
  * Created by sojharo on 27/07/2017.
  */
 
-var logger = require('../../components/logger');
-var Surveys = require('./surveys.model');
-var SurveyQuestions = require('./surveyquestions.model');
-var SurveyResponses = require('./surveyresponse.model');
+const logger = require('../../components/logger');
+const Surveys = require('./surveys.model');
+const SurveyQuestions = require('./surveyquestions.model');
+const SurveyResponses = require('./surveyresponse.model');
 const TAG = 'api/surveys/surveys.controller.js';
 
 
-
 exports.index = function (req, res) {
-  logger.serverLog(TAG,'Surveys get api is working');
-  Surveys.find(function(err, surveys){
-    if(err) return res.status(404).json({status: 'failed', description: 'Surveys not found'});
-    logger.serverLog(TAG,  surveys);
-    res.status(200).json({status: 'success', payload: surveys});
+  logger.serverLog(TAG, 'Surveys get api is working');
+  Surveys.find((err, surveys) => {
+    if (err) return res.status(404).json({ status: 'failed', description: 'Surveys not found' });
+    logger.serverLog(TAG, surveys);
+    res.status(200).json({ status: 'success', payload: surveys });
   });
 };
 
 exports.create = function (req, res) {
-  logger.serverLog(TAG, 'Inside Create Survey, req body = '+ JSON.stringify(req.body));
+  logger.serverLog(TAG, `Inside Create Survey, req body = ${JSON.stringify(req.body)}`);
   /*expected request body{
     survey:{
     title: String, // title of survey
@@ -35,34 +34,32 @@ exports.create = function (req, res) {
     },...]
   }*/
 
-  Surveys.create(req.body.survey, function(err, survey) {
-    if(err) { 
-       return res.status(404).json({status: 'failed', description: 'Survey not created'});
+  Surveys.create(req.body.survey, (err, survey) => {
+    if (err) { 
+       return res.status(404).json({ status: 'failed', description: 'Survey not created' });
      }
      //after survey is created, create survey questions
-    for(var question in req.body.questions){
-            var options = [];
-            if(req.body.questions[question].type == 'multichoice'){
+    for (const question in req.body.questions) {
+            let options = [];
+            if (req.body.questions[question].type == 'multichoice') {
               options = req.body.questions[question].options;
             }
-            var surveyQuestion = new SurveyQuestions({
+            const surveyQuestion = new SurveyQuestions({
                     statement: req.body.questions[question].statement, // question statement
-                    options: options,// array of question options
-                    type:req.body.questions[question].type,//type can be text/multichoice
+                    options, // array of question options
+                    type: req.body.questions[question].type, //type can be text/multichoice
                     surveyId: survey._id,
                     
                   });
 
-            surveyQuestion.save(function(err2,question){
-               if(err2) { 
-                         return res.status(404).json({status: 'failed', description: 'Survey Question not created'});
+            surveyQuestion.save((err2, question) => {
+               if (err2) { 
+                         return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
                        }
-               logger.serverLog(TAG, 'This is the question created '+ JSON.stringify(question) );
+               logger.serverLog(TAG, `This is the question created ${JSON.stringify(question)}`);
             });
-
           }
-    return res.status(200).json({status: 'success', payload: survey});
-   
+    return res.status(200).json({ status: 'success', payload: survey });
   });
 };
 
@@ -79,109 +76,95 @@ exports.edit = function (req, res) {
         options: Array of String
     },...]
   }*/
- logger.serverLog(TAG, 'This is body in edit survey '+ JSON.stringify(req.body) );
- Surveys.findById(req.body.survey._id, function (err, survey) {
-    if(err) { 
-       return res.status(404).json({status: 'failed', description: 'Survey not found'});
+ logger.serverLog(TAG, `This is body in edit survey ${JSON.stringify(req.body)}`);
+ Surveys.findById(req.body.survey._id, (err, survey) => {
+    if (err) { 
+       return res.status(404).json({ status: 'failed', description: 'Survey not found' });
      }
      
      survey.title = req.body.survey.title;
      survey.description = req.body.survey.description;
      survey.image = req.body.survey.image;
      
-     survey.save(function(err2){
-               if(err) { 
-                       return res.status(404).json({status: 'failed', description: 'Survey update failed.'});
+     survey.save((err2) => {
+               if (err) { 
+                       return res.status(404).json({ status: 'failed', description: 'Survey update failed.' });
                      }
 
-                SurveyQuestions.remove({surveyId : survey._id}, function(err3){
-                  if(err3) { 
-                       return res.status(404).json({status: 'failed', description: 'Error in removing survey questions.'});
+                SurveyQuestions.remove({ surveyId: survey._id }, (err3) => {
+                  if (err3) { 
+                       return res.status(404).json({ status: 'failed', description: 'Error in removing survey questions.' });
                      }
-                  for(var question in req.body.questions){
-                        var options = [];
-                        if(req.body.questions[question].type == 'multichoice'){
+                  for (const question in req.body.questions) {
+                        let options = [];
+                        if (req.body.questions[question].type == 'multichoice') {
                           options = req.body.questions[question].options;
                         }
-                        var surveyQuestion = new SurveyQuestions({
+                        const surveyQuestion = new SurveyQuestions({
                                 statement: req.body.questions[question].statement, // question statement
-                                options: options,// array of question options
-                                type:req.body.questions[question].type,//type can be text/multichoice
+                                options, // array of question options
+                                type: req.body.questions[question].type, //type can be text/multichoice
                                 surveyId: survey._id,
                                 
                               });
 
-                        surveyQuestion.save(function(err2){
-                           if(err2) { 
-                                     return res.status(404).json({status: 'failed', description: 'Survey Question not created'});
+                        surveyQuestion.save((err2) => {
+                           if (err2) { 
+                                     return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
                                    }
                         });
-
                     }
 
-                  return res.status(200).json({status: 'success', payload: req.body.survey});  
-
+                  return res.status(200).json({ status: 'success', payload: req.body.survey });
                 });
-             
               });
   });
-}
-
-
-// Get a single survey
-exports.show = function(req, res) {
-  Surveys.findById(req.params.id).populate('userId').exec(function (err, survey){
-      if(err) { 
-              return res.status(404).json({status: 'failed', description: 'Survey not found'});
-              }
-      //find questions
-      SurveyQuestions.find({surveyId:survey._id}).populate('surveyId').exec(function (err2, questions){
-              if(err2) { 
-                return res.status(404).json({status: 'failed', description: 'Survey Questions not found'});
-              }
-             SurveyResponses.find({surveyId:survey._id}).populate('surveyId subscriberId questionId').exec(function (err3, responses){
-              if(err3) { 
-                return res.status(404).json({status: 'failed', description: 'Survey responses not found'});
-              }
-                return res.status(200).json({status: 'success', payload: {survey:survey,questions:questions,responses:responses}});  
-
-             });
-     
-             });
-
-    });
-  
-
 };
 
 
 // Get a single survey
-exports.showQuestions = function(req, res) {
-  Surveys.findById(req.params.id).populate('userId').exec(function (err, survey){
-      if(err) { 
-              return res.status(404).json({status: 'failed', description: 'Survey not found'});
+exports.show = function (req, res) {
+  Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
+      if (err) { 
+              return res.status(404).json({ status: 'failed', description: 'Survey not found' });
               }
       //find questions
-      SurveyQuestions.find({surveyId:survey._id}).populate('surveyId').exec(function (err2, questions){
-              if(err2) { 
-                return res.status(404).json({status: 'failed', description: 'Survey Questions not found'});
+      SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
+              if (err2) { 
+                return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
+              }
+             SurveyResponses.find({ surveyId: survey._id }).populate('surveyId subscriberId questionId').exec((err3, responses) => {
+              if (err3) { 
+                return res.status(404).json({ status: 'failed', description: 'Survey responses not found' });
+              }
+                return res.status(200).json({ status: 'success', payload: { survey, questions, responses } });
+             });
+             });
+    });
+};
+
+
+// Get a single survey
+exports.showQuestions = function (req, res) {
+  Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
+      if (err) { 
+              return res.status(404).json({ status: 'failed', description: 'Survey not found' });
+              }
+      //find questions
+      SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
+              if (err2) { 
+                return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
             
-                return res.status(200).json({status: 'success', payload: {survey:survey,questions:questions}});  
-
-            
-     
+                return res.status(200).json({ status: 'success', payload: { survey, questions } });
              });
-
     });
-  
-
 };
 
 
 // Submit response of survey
-exports.submitresponse = function(req, res) {
-  logger.serverLog(TAG, 'This is body in submit survey response '+ JSON.stringify(req.body) );
+exports.submitresponse = function (req, res) {
+  logger.serverLog(TAG, `This is body in submit survey response ${JSON.stringify(req.body)}`);
   //expected body will be
 
   /*
@@ -191,32 +174,25 @@ exports.submitresponse = function(req, res) {
     subscriberId: _id of subscriber,
     }
   */
-  for(var resp in req.body.responses){
-                       
-              var surveyResponse = new SurveyResponses({
-                      response:req.body.responses[resp].response,//response submitted by subscriber
+  for (const resp in req.body.responses) {
+              const surveyResponse = new SurveyResponses({
+                      response: req.body.responses[resp].response, //response submitted by subscriber
                       surveyId: req.body.surveyId,
                       questionId: req.body.responses[resp].qid,
                       subscriberId: req.body.subscriberId,
                                         
                     });
 
-              surveyResponse.save(function(err){
-                 if(err) { 
-                           return res.status(404).json({status: 'failed', description: 'Survey Response not created'});
+              surveyResponse.save((err) => {
+                 if (err) { 
+                           return res.status(404).json({ status: 'failed', description: 'Survey Response not created' });
                          }
                 });
-
               }
-  return res.status(200).json({status: 'success', payload: 'Response submitted successfully'});  
-
-
-
+  return res.status(200).json({ status: 'success', payload: 'Response submitted successfully' });
 };
 
 exports.send = function (req, res) {
    //we will write here the logic to send survey
 };
-
-
 
