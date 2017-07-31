@@ -35,3 +35,17 @@ export function addSurvey(data) {
     data
   };
 }
+
+export function showSurveyResponse(data){
+  return {
+    type: ActionTypes.ADD_RESPONSES,
+    data
+  }; 
+}
+export function loadsurveyresponses(surveyid) {
+  //surveyid is the _id of survey
+  console.log('loadsurveyresponses called');    
+  return (dispatch) => {
+    callApi(`surveys/${surveyid}`).then(res => dispatch(showSurveyResponse(res.payload.responses)));
+  };
+}
