@@ -25,5 +25,7 @@ export function updateWorkFlow(data){
 }
 
 export function addWorkFlow(data) {
- 
+  return (dispatch) => {
+    callApi('workflows/create', 'post', data).then(res => dispatch(updateWorkFlow(data)));
+  };
 }
