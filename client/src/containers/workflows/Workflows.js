@@ -72,7 +72,7 @@ class Workflows extends React.Component {
 								<tr>
 								
 									<td>{workflow.condition}</td>
-									<td>{workflow.keywords}</td>
+									<td>{workflow.keywords.join(",")}</td>
 									<td>{workflow.reply}</td>
 									<td>{workflow.isActive ? 'Yes' : 'No'}</td>
 									<td>{workflow.sent}</td>

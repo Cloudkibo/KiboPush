@@ -16,13 +16,14 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-    const poll = new Polls({ platform: 'facebook',
-statement: req.body.statement,
-          options: req.body.options,
-sent: 0 });
+
+    var workflow = new Workflows({condition: req.body.condition, keywords: req.body.keywords , reply: req.body.reply,
+       isActive: (req.body.isActive == 'Yes') ? true:false, sent: 0 });
+
+       console.log("Workflow received", workflow);
 
     //save model to MongoDB
-    poll.save((err) => {
+    workflow.save(function (err) {
       if (err) {
         res.status(500).json({ status: 'Failed', error: err, description: 'Failed to insert record' });
       } else {
@@ -40,12 +41,12 @@ exports.send = function (req, res) {
 
 
 exports.seed = function (req, res) {
- const rawDocuments = [
-   { condition: 'message contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+ var rawDocuments = [
+   {condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+   {condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+   {condition: 'message_begins', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+   {condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+   {condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
    ];
 
  Workflows.insertMany(rawDocuments)
