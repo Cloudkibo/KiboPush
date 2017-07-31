@@ -14,6 +14,10 @@ import { bindActionCreators } from 'redux';
 
 class AddPage extends React.Component {
 
+	componentWillMount(){
+		
+	}
+
 	componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
 		require('../../../public/js/jquery.min.js');
@@ -52,7 +56,7 @@ class AddPage extends React.Component {
 						<a href="#" className="h6 author-name">{page.pageName} </a>
 						<div className="birthday-date">January 16th, 1989</div>
 					</div>
-					<a href="20-CalendarAndEvents-MonthlyCalendar.html" className="btn btn-sm bg-blue">Add</a>
+					<a href="20-CalendarAndEvents-MonthlyCalendar.html" className="btn btn-sm bg-blue">Connect</a>
 				</div>
 			</div>       
 			  )):<br/>

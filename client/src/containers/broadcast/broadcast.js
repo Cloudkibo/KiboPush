@@ -17,6 +17,7 @@ class Broadcast extends React.Component {
 
 		constructor(props, context) {
 		super(props, context);
+		props.loadBroadcastsList();
   }
 
 	componentWillReceiveProps(nextProps){
@@ -42,7 +43,7 @@ class Broadcast extends React.Component {
 
 	gotoEdit(broadcast){
 		 this.props.history.push({
-			pathname: '/editbroadcast',
+			pathname: `/editbroadcast/${broadcast._id}`,
 			state: broadcast
 		});
 	}
@@ -71,7 +72,7 @@ class Broadcast extends React.Component {
 									<th>Platform</th>
 									<th>Type</th>
 									<th>Created At</th>
-									<th>Sent</th>
+									<th>Message</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -81,8 +82,8 @@ class Broadcast extends React.Component {
 									<tr>
 									<td>{broadcast.platform}</td>
 									<td>{broadcast.type}</td>
-									<td>{broadcast.created_at}</td>
-									<td>{broadcast.sent}</td>
+									<td>{broadcast.datetime}</td>
+									<td>{broadcast.text}</td>
 									<td>
 									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
 									<button to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>

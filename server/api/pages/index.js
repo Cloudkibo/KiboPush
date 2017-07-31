@@ -15,8 +15,14 @@ var logger = require('../../components/logger');
 
 const TAG = 'api/pages/index.js';
 
-router.get('/', auth.isAuthenticated(), controller.index);
-router.post('/enable', auth.isAuthenticated(), controller.enable);
-router.post('/disable', auth.isAuthenticated(), controller.disable);
+router.get('/', controller.index);
+router.get('/otherPages',  controller.otherPages);
+router.post('/enable', controller.enable);
+router.post('/disable', controller.disable);
+
+
+
+/* Seed Pages */
+router.get('/seed', controller.seed);
 
 module.exports = router;

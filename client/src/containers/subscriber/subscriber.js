@@ -63,8 +63,8 @@ class Subscriber extends React.Component {
 							 {
                       				  this.props.subscribers.map((subscriber, i) => (
                       				  	<tr>
-											<td>{subscriber.firstname}</td>
-											<td>{subscriber.lastname}</td>
+											<td>{subscriber.firstName}</td>
+											<td>{subscriber.lastName}</td>
 											<td>{subscriber.email}</td>
 											<td>{subscriber.locale}</td>
 											<td>{subscriber.gender}</td>

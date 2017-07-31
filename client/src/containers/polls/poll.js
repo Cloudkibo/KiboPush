@@ -20,8 +20,8 @@ class Poll extends React.Component {
   }
 
 	componentWillReceiveProps(nextProps){
-		if(nextProps.broadcasts){
-			console.log("Broadcasts Updated", nextProps.broadcasts);
+		if(nextProps.polls){
+			console.log("Polls Updated", nextProps.polls);
 			// this.setState({broadcasts: nextProps.broadcasts});
 		}
 	}
@@ -38,7 +38,7 @@ class Poll extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
-		// this.props.loadPollsList();
+		this.props.loadPollsList();
 	}
 
 	gotoEdit(broadcast){
@@ -71,7 +71,7 @@ class Poll extends React.Component {
 							<thead>
 								<tr>
 									<th>Platform</th>
-									<th>Type</th>
+									<th>Statment</th>
 									<th>Created At</th>
 									<th>Sent</th>
 									<th>Actions</th>
@@ -82,12 +82,11 @@ class Poll extends React.Component {
 								this.props.polls.map((poll, i) => (
 									<tr>
 									<td>{poll.platform}</td>
-									<td>poll</td>
-									<td>{poll.created_at}</td>
+									<td>{poll.statement}</td>
+									<td>{poll.datetime}</td>
 									<td>{poll.sent}</td>
 									<td>
-									<button className="btn btn-primary btn-sm" onClick={() => this.gotoEdit(poll)} style={{float: 'left', margin: 2}}>Edit</button>
-									<button to="editbroadcast" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
+									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
 									<Link to="pollResult" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Report</Link>
 									</td>
 								</tr>

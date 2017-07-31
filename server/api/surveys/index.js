@@ -5,20 +5,20 @@ var express = require('express');
 var router = express.Router();
 
 var logger = require('../../components/logger');
-var controller = require('./broadcasts.controller');
+var controller = require('./surveys.controller');
 var auth = require('../../auth/auth.service');
-const TAG = 'api/broadcasts/index.js';
+const TAG = 'api/surveys/index.js';
+
 
 
 router.get('/', controller.index);
 router.post('/create', controller.create);
 router.post('/edit', controller.edit);
 router.post('/send', controller.send);
-router.get('/:id', controller.show);
+router.post('/submitresponse', controller.submitresponse);
 
-/* Seed Pages */
-router.get('/seed', controller.seed);
-
+router.get('/:id', controller.show); //show survey and responses of the survey
+router.get('/showquestions/:id',controller.showQuestions);
 
 
 module.exports = router;

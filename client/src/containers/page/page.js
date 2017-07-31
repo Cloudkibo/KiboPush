@@ -10,10 +10,19 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { loadMyPagesList } from '../../redux/actions/pages.actions';
+import { loadMyPagesList, removePage } from '../../redux/actions/pages.actions';
 import { bindActionCreators } from 'redux';
 
 class Page extends React.Component {
+
+	constructor(props){
+		super(props);
+		this.removePage = this.removePage.bind(this);
+	}
+
+	 componentWillMount(){
+		 this.props.loadMyPagesList();
+	 }
 
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -28,7 +37,13 @@ class Page extends React.Component {
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
 
-		this.props.loadMyPagesList("", {});
+		
+	}
+
+
+	removePage(page){
+		console.log("This is the page", page);
+		this.props.removePage(page);
 	}
 	
   render() {
@@ -62,14 +77,14 @@ class Page extends React.Component {
 							{ (this.props.pages) ?
 								this.props.pages.map((page, i) => (
 								<tr>
-									<td>{page.pic}</td>
+									<td>{page.pagePic}</td>
 									<td>{page.pageName}</td>
 									<td>{page.likes}</td>
-									<td>{page.followers}</td>
-									<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
+									<td>{page.numberOfFollowers}</td>
+									<td><button onClick={() => this.removePage(page)} className="btn btn-primary btn-sm" style={{float: 'left'}}>Remove</button></td>
 								</tr> 
 
-								)) : <br/>
+								)) : <tr/>
 								
 							}
 					
@@ -100,6 +115,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadMyPagesList:loadMyPagesList}, dispatch);
+  return bindActionCreators({loadMyPagesList:loadMyPagesList, removePage:removePage}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Page);

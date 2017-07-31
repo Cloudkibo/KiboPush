@@ -18,6 +18,14 @@ class CreatePoll extends React.Component {
 		constructor(props, context) {
 		super(props, context);
 		this.createPoll = this.createPoll.bind(this);
+		this.state = {
+			statement: '',
+			option1: '',
+			option2: '',
+			option3: '',
+		}
+		this.updateStatment = this.updateStatment.bind(this);
+		this.updateOptions = this.updateOptions.bind(this);
   }
 
 	 componentDidMount() {
@@ -36,12 +44,44 @@ class CreatePoll extends React.Component {
 
 	
 	createPoll(){
-		this.props.addPoll('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
+		var options= [];
+		if(this.state.option1 != ''){
+			options.push(this.state.option1);
+		}
+		if(this.state.option2 != ''){
+			options.push(this.state.option2);
+		}
+		if(this.state.option3 != ''){
+			options.push(this.state.option3);
+		}
+		this.props.addPoll('', {platform: 'Facebook', datetime: Date.now(), statement: this.state.statement, sent: 0, options: options});
 		console.log("Poll added");
 		this.props.history.push({
 			pathname: '/poll',
 		});
 	
+	}
+
+	updateStatment(e){
+		this.setState({statement: e.target.value});
+	}
+
+	updateOptions(e, opt){
+		switch (opt) {
+			case 1:
+				this.setState({option1: e.target.value});		
+				break;
+			case 2:
+				this.setState({option2: e.target.value});		
+				break;
+			case 3:
+				this.setState({option3: e.target.value});		
+				break;
+		
+			default:
+				break;
+		}
+		
 	}
 
   render() {
@@ -68,7 +108,7 @@ class CreatePoll extends React.Component {
 						                  
 						                  <div className="form-group label-floating is-empty">
 						                    <label className="control-label">Ask something...</label>
-						                    <textarea className="form-control"/>
+																<textarea className="form-control" value={this.state.statement} onChange={(e) => this.updateStatment(e)}/>
 						                  </div>
 						                  <br/>
 						                  <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -76,15 +116,15 @@ class CreatePoll extends React.Component {
 						                  <fieldset className="input-group-vertical">
 											      <div className="form-group">
 											        <label className="sr-only">Response1</label>
-											        <input type="text" className="form-control" placeholder="Response 1"/>
+											        <input type="text" className="form-control" value={this.state.option1} onChange={(e) => this.updateOptions(e, 1)}  placeholder="Response 1"/>
 											      </div>
 											      <div className="form-group">
 											        <label className="sr-only">Response2</label>
-											        <input type="text" className="form-control" placeholder="Response 2"/>
+											        <input type="text" className="form-control" value={this.state.option2} onChange={(e) => this.updateOptions(e, 2)} placeholder="Response 2"/>
 											      </div>
 											      <div className="form-group">
 											        <label className="sr-only">Response3</label>
-											        <input type="text" className="form-control" placeholder="Response 3"/>
+											        <input type="text" className="form-control" value={this.state.option3} onChange={(e) => this.updateOptions(e, 3)} placeholder="Response 3"/>
 											      </div>
 											      
 											</fieldset>

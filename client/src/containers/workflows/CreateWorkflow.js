@@ -61,23 +61,23 @@ class CreateWorkflow extends React.Component {
 
 				       	<div className="form-group form-inline">
 						     
-						      <select className="form-control input-lg">
+						      <select className="input-lg">
 						        <option value="message_is">Message is</option>
 						        <option value="message_contains">Message Contains</option>
 						        <option value="message_begins">Message Begins with</option>
 						      </select>
-									<br/>
-						      <input type="text" className="form-control input-lg" style={{width: 100 + '%'}} id="keywords" placeholder="Enter keywords separated by comma" />
-						   
 						 </div>
-						   	      
-				        <div className="form-group">
+						 <div>
+									<label>Keywords (Separated by comma)</label>
+						      <input type="text" className="form-control input-lg" style={{width: 100 + '%'}} id="keywords" placeholder="Enter keywords separated by comma" />
+				        </div>
+								<div className="form-group">
 				          <label htmlFor="exampleInputReply">Reply</label>
 				          <textarea className="form-control" rows="5" id="exampleInputReply"/>
 				        </div>
 				        <div className="form-group">
 				          <label htmlFor="isActive">Is Active</label>
-				          <select className="form-control" id="isActive">
+				          <select  id="isActive">
 				            <option>Yes</option>
 				            <option>No</option>
 				          

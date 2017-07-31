@@ -19,7 +19,10 @@ export function broadcastsInfo(state = initialState, action) {
       return Object.assign({}, state, {
         broadcasts: action.data
       });
-
+     case ActionTypes.GET_BROADCAST:
+      return Object.assign({}, state, {
+        broadcast: state.broadcasts.filter((c) => c._id == action.data)[0],
+      });
    
     default:
       return state;

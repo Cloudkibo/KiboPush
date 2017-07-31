@@ -2,31 +2,45 @@
  * Created by sojharo on 21/07/2017.
  */
 import * as ActionTypes from '../constants/constants';
+import callApi from '../../utility/api.caller.service';
 
-export function loadMyPagesList(token, data) {
-  data = [
-    {pageName: 'Test', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Pied Piper', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Hooli', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Raviga', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Aviato', likes: 15, followers: 45, pic: 'Image'},
-  ];
+export function updatePagesList(data){
+  console.log("My Pages", data);
   return {
     type: ActionTypes.LOAD_PAGES_LIST,
     data
   };
 }
 
-export function loadOtherPagesList(token, data) {
-  data = [
-    {pageName: 'WoxCut', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'NYSE', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Stupid Cat Memes', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Serious Business Talks', likes: 15, followers: 45, pic: 'Image'},
-    {pageName: 'Tech News', likes: 15, followers: 45, pic: 'Image'},
-  ];
+export function updateOtherPages(data){
+  console.log("Other Pages", data);
   return {
     type: ActionTypes.FETCH_PAGES_LIST,
     data
+  };
+}
+
+export function loadMyPagesList() {
+    console.log('loadPagesList called');	
+    return (dispatch) => {
+    callApi('pages').then(res => dispatch(updatePagesList(res)));
+  };
+}
+
+export function removePage(page) {
+    console.log('loadPagesList called');	
+    return (dispatch) => {
+    callApi('pages/disable','post',page).then(res => {
+      if(res.status == 200){
+        loadMyPagesList();
+      }
+    });
+  };
+}
+
+export function loadOtherPagesList(token, data) {
+  console.log('loadOtherPagesList called');	
+    return (dispatch) => {
+    callApi('pages/otherPages').then(res => dispatch(updateOtherPages(res)));
   };
 }

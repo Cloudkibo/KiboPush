@@ -73,7 +73,7 @@ const routes = (
         <Route path="/createbroadcast" component={CreateBroadcast}/>
         <Route path="/createworkflow" component={CreateWorkflow} />
         <Route path="/workflows" component={Workflows}/>
-        <Route path="/editbroadcast" component={EditBroadcast}/>
+        <Route path="/editbroadcast/:id" component={EditBroadcast}/>
         <Route path="/createpoll" component={CreatePoll}/>
         <Route path="/poll" component={Poll}/>
         <Route path="/stats" component={Stats}/>

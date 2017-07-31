@@ -59,7 +59,7 @@ class Survey extends React.Component {
 							<thead>
 								<tr>
 									<th>Title</th>
-									<th>Subtitle</th>
+									<th>Description</th>
 									<th>Created At</th>
 									<th>Actions</th>
 								
@@ -70,8 +70,8 @@ class Survey extends React.Component {
                       				  this.props.surveys.map((survey, i) => (
                       				  	<tr>
 											<td>{survey.title}</td>
-											<td>{survey.subtitle}</td>
-											<td>{handleDate(survey.createdAt)}</td>
+											<td>{survey.description}</td>
+											<td>{handleDate(survey.datetime)}</td>
 											<td><button className="btn btn-primary btn-sm" style={{float: 'left'}}>View</button></td>
 											
 										</tr>
