@@ -7,8 +7,7 @@ var router = express.Router();
 var logger = require('../../components/logger');
 var controller = require('./broadcasts.controller');
 var auth = require('../../auth/auth.service');
-const TAG = 'api/thing/index.js';
-
+const TAG = 'api/broadcasts/index.js';
 
 
 router.get('/', controller.index);
@@ -19,6 +18,7 @@ router.get('/:id', controller.show);
 
 /* Seed Pages */
 router.get('/seed', controller.seed);
+
 
 
 module.exports = router;

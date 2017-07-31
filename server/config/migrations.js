@@ -8,8 +8,8 @@ var Medias = require('../api/media/media.model').Medias;
 var Polls = require('../api/polls/polls.model').Polls;
 var pollOptions = require('../api/polloptions/polloptions.model').pollOptions;
 var Surveys = require('../api/surveys/surveys.model').Surveys;
-var surveyQuestions = require('../api/surveryquestions/surveryquestions.model').surveyQuestions;
-var surveyOptions = require('../api/surveryoptions/surveryoptions.model').surveyOptions;
+var surveyQuestions = require('../api/surveyquestions/surveyquestions.model').surveyQuestions;
+var surveyOptions = require('../api/surveyoptions/surveyoptions.model').surveyOptions;
 var db = require('../components/db').sequelize;
 
 var logger = require('../components/logger');
@@ -37,7 +37,7 @@ const TAG = 'models/migrations';
 // pollOptions.belongsTo(Polls);
 
 // TODO part of survey
-// Broadcasts.hasOne(Surveys);
+Broadcasts.hasOne(Surveys);
 
 db
   .sync({force: true}) // create the database table for our model(s)

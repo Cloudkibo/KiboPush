@@ -5,6 +5,7 @@
 var logger = require('../../components/logger');
 var Polls = require('./Polls.model');
 var PollResponse = require('./pollresponse.model');
+
 const TAG = 'api/polls/polls.controller.js';
 
 
@@ -14,7 +15,7 @@ exports.index = function (req, res) {
   Polls.find(function(err, polls){
     logger.serverLog(TAG,  polls);
     logger.serverLog(TAG, "Error: " +  err);
-    res.status(200).json({status:'success',payload: polls}); 
+    res.status(200).json({status:'success',payload: polls});
   })
 };
 
@@ -45,36 +46,36 @@ exports.submitresponses = function (req, res) {
     */
 
     PollResponse.create(req.body, function(err, pollresponse) {
-    if(err) { 
+    if(err) {
        return res.status(404).json({status: 'failed', description: 'Poll response not created'});
      }
-      return res.status(200).json({status: 'success', payload: pollresponse});  
+      return res.status(200).json({status: 'success', payload: pollresponse});
 
    });
-   
+
 };
 
 
 exports.getresponses = function (req, res) {
     logger.serverLog(TAG,'Inside getresponses of Poll');
-   
+
     PollResponse.find({pollId:req.params.id}).populate('pollId subscriberId').exec(function (err, pollresponses){
-              if(err) { 
+              if(err) {
                 return res.status(404).json({status: 'failed', description: 'Poll responses not found'});
               }
-            
-                return res.status(200).json({status: 'success', payload: pollresponses});  
 
-            
-     
+                return res.status(200).json({status: 'success', payload: pollresponses});
+
+
+
              });
-   
+
 };
 exports.report = function (req, res) {
- 
+
 };
 exports.send = function (req, res) {
-   
+
 };
 
 

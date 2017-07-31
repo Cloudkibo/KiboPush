@@ -9,8 +9,6 @@ var controller = require('./polls.controller');
 var auth = require('../../auth/auth.service');
 const TAG = 'api/polls/index.js';
 
-
-
 router.get('/', controller.index);
 router.post('/create', controller.create);
 router.post('/report', controller.report);
@@ -19,6 +17,5 @@ router.get('/responses/:id', controller.getresponses);
 router.get('/submitresponse/', controller.submitresponses);
 /* Seed Pages */
 router.get('/seed', controller.seed);
-
 
 module.exports = router;
