@@ -21,9 +21,10 @@ export function updateOtherPages(data){
 }
 
 export function loadMyPagesList() {
-    console.log('loadPagesList called');	
+    console.log('loadPagesList called');
+    var userid = ''//this will be the _id of user object	
     return (dispatch) => {
-    callApi('pages').then(res => dispatch(updatePagesList(res)));
+    callApi(`pages/${userid}`).then(res => dispatch(updatePagesList(res.payload)));
   };
 }
 

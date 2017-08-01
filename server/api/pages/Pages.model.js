@@ -24,9 +24,8 @@ const pageSchema = new Schema({
   connected: { // TODO add default value
     type: Boolean,
   },
-  userId: {
-    type: String,
-  }
+  userId: { type: Schema.ObjectId, ref: 'users' },
+    
 });
 
 module.exports = mongoose.model('pages', pageSchema);

@@ -15,7 +15,7 @@ const logger = require('../../components/logger');
 
 const TAG = 'api/pages/index.js';
 
-router.get('/', controller.index);
+router.get('/:id', controller.index); //this id will be userid
 router.get('/otherPages', controller.otherPages);
 router.post('/enable', controller.enable);
 router.post('/disable', controller.disable);

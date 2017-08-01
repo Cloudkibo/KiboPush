@@ -8,10 +8,11 @@ const Pages = require('./Pages.model');
 const TAG = 'api/pages/pages.controller.js';
 
 exports.index = function (req, res) {
-  Pages.find({ connected: true }, (err, pages) => {
+  logger.serverLog(TAG, 'Get pages API called');
+  Pages.find({ connected: true,userId:req.params.id }, (err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
-    res.status(200).json(pages);
+    res.status(200).json({ status: 'success', payload: pages });
   });
 };
 
