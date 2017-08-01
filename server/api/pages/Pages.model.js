@@ -3,7 +3,7 @@ let mongoose = require('mongoose'),
    ObjectId = Schema.ObjectId;
 
 const pageSchema = new Schema({
-  pageCode: {
+  pageId: {
     type: String,
   },
   pageName: {
