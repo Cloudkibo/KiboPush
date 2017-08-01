@@ -92,19 +92,25 @@ function fetchPages(url, user) {
 
     data.forEach((item) => {
       Pages
-        .findOrCreate({
-          where: { pageId: item.id },
-          defaults: {
-            pageName: item.name,
-            accessToken: item.access_token,
-            user
+        .findOne({ pageId: item.id },function(err, page) {
+          if(!page){
+            logger.serverLog(TAG, 'Page not found. Creating a page ');
+            var page = new Pages({ pageId: item.id,
+                                  pageName: item.name,
+                                  accessToken: item.access_token,
+                                  user});
+            //save model to MongoDB
+            page.save((err,page) => {
+              if (err) {
+                res.status(500).json({ status: 'Failed', error: err, description: 'Failed to insert page' });
+              }
+              logger.serverLog(TAG, `Page ${item.name} created: ${page}`); 
+            });
           }
-        })
-        .spread((page, created) => {
-          logger.serverLog(TAG, `Page ${item.name} created: ${created}`);
-        });
-    });
+         
+          });
 
+     }); 
     if (cursor.next) {
       fetchPages(cursor.next, user);
     }
