@@ -4,15 +4,15 @@
  */
 
 const logger = require('../../components/logger');
-const Pages = require('./Pages.model');
+const Pages = require('../pages/Pages.model');
 const TAG = 'api/pages/pages.controller.js';
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
-  Pages.find({ connected: true,userId:req.params.id }, (err, pages) => {
-    logger.serverLog(TAG, pages);
-    logger.serverLog(TAG, `Error: ${err}`);
-    res.status(200).json({ status: 'success', payload: pages });
+  var data = {};
+  Pages.count(function(err, c) {
+    data.pagesCount = c;
+    res.status(200).json(data);
   });
 };
 
@@ -40,10 +40,10 @@ exports.otherPages = function (req, res) {
 
 exports.seed = function (req, res) {
   const rawDocuments = [
-    { pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 0, numberOfFollowers: 0 },
-    { pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false,  likes: 50, numberOfFollowers: 25 },
-    { pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, likes: 37, numberOfFollowers: 89 },
-    { pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 53, numberOfFollowers: 74 },
+    { pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, userId: 5, likes: 0, numberOfFollowers: 0 },
+    { pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, userId: 5, likes: 50, numberOfFollowers: 25 },
+    { pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, userId: 5, likes: 37, numberOfFollowers: 89 },
+    { pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, userId: 5, likes: 53, numberOfFollowers: 74 },
   ];
 
   Pages.insertMany(rawDocuments)

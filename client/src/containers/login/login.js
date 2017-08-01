@@ -51,7 +51,7 @@ class Login extends React.Component {
           <div className="row display-flex">
             <div className="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
               <div className="landing-content">
-                <h1>Welcome to KiboPush</h1>
+                <h1>Welcome to KiboPush (Server)</h1>
                 <p style={{fontSize: '2em'}}>
                   Get connected with your facebook audience through push messages.
                   Push surveys, polls, instant broadcasts to your Facebook subscribers.

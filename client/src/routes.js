@@ -42,46 +42,47 @@ function redirectAuthUsers(nextState, replace) {
 }
 
 const routes = (
-  //  <Route path="/" component={App}>
-  //    <IndexRoute component={Login} onEnter={ redirectAuthUsers } />
-  //    <Route path="/dashboard" component={Home} onEnter={ requireAuth } />
-  //    <Route path="/subscribers" component={Subscriber} onEnter={ requireAuth } />
-  //    <Route path="/broadcasts" component={Broadcast} onEnter={ requireAuth } />
-  //    <Route path="/pages" component={Page} onEnter={ requireAuth } />
-  //    <Route path="/addPages" component={AddPage} onEnter={ requireAuth } />
-  //    <Route path="/surveys" component={Surveys} onEnter={ requireAuth } />
-  //    <Route path="/createbroadcast" component={CreateBroadcast} onEnter={ requireAuth } />
-  //    <Route path="/createworkflow" component={CreateWorkflow} onEnter={ requireAuth } />
-  //    <Route path="/workflows" component={Workflows} onEnter={ requireAuth } />
-  //    <Route path="/editbroadcast" component={EditBroadcast} onEnter={ requireAuth } />
-  //    <Route path="/createpoll" component={CreatePoll} onEnter={ requireAuth } />
-  //    <Route path="/poll" component={Poll} onEnter={ requireAuth }/>
-      // <Route path="/stats" component={Stats}/>
-  //    <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth}/>
-    // <Route path="/addsurvey" component={AddSurvey}/>
-    // <Route path="/pollResult" component={PollResult}/>
-  //    </Route>
-
-     <Route path="/" component={App}>
-        <IndexRoute component={Login} />
-        <Route path="/dashboard" component={Home} />
-        <Route path="/subscribers" component={Subscriber} />
-        <Route path="/broadcasts" component={Broadcast} />
-        <Route path="/pages" component={Page} />
-        <Route path="/addPages" component={AddPage} />
-        <Route path="/surveys" component={Surveys} />
-        <Route path="/createbroadcast" component={CreateBroadcast} />
-        <Route path="/createworkflow" component={CreateWorkflow} />
-        <Route path="/workflows" component={Workflows} />
-        <Route path="/editbroadcast/:id" component={EditBroadcast} />
-        <Route path="/createpoll" component={CreatePoll} />
-        <Route path="/poll" component={Poll} />
-        <Route path="/stats" component={Stats} />
-        <Route path="/subscribeToMessenger" component={SubscribeToMessenger} />
-        <Route path="/addsurvey" component={AddSurvey} />
-        <Route path="/pollResult" component={PollResult} />
-        <Route path="/surveyResult" component={SurveyResult} />
+   <Route path="/" component={App}>
+     <IndexRoute component={Login} onEnter={ redirectAuthUsers } />
+     <Route path="/dashboard" component={Home} onEnter={ requireAuth } />
+     <Route path="/subscribers" component={Subscriber} onEnter={ requireAuth } />
+     <Route path="/broadcasts" component={Broadcast} onEnter={ requireAuth } />
+     <Route path="/pages" component={Page} onEnter={ requireAuth } />
+     <Route path="/addPages" component={AddPage} onEnter={ requireAuth } />
+     <Route path="/surveys" component={Surveys} onEnter={ requireAuth } />
+     <Route path="/createbroadcast" component={CreateBroadcast} onEnter={ requireAuth } />
+     <Route path="/createworkflow" component={CreateWorkflow} onEnter={ requireAuth } />
+     <Route path="/workflows" component={Workflows} onEnter={ requireAuth } />
+     <Route path="/editbroadcast" component={EditBroadcast} onEnter={ requireAuth } />
+     <Route path="/createpoll" component={CreatePoll} onEnter={ requireAuth } />
+     <Route path="/poll" component={Poll} onEnter={ requireAuth }/>
+      <Route path="/stats" component={Stats}/>
+     <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth}/>
+    <Route path="/addsurvey" component={AddSurvey} onEnter={requireAuth}/>
+    <Route path="/pollResult" component={PollResult} onEnter={requireAuth}/>
+    <Route path="/surveyResult" component={SurveyResult} onEnter={requireAuth} />
      </Route>
+
+    //  <Route path="/" component={App}>
+    //     <IndexRoute component={Login} />
+    //     <Route path="/dashboard" component={Home} />
+    //     <Route path="/subscribers" component={Subscriber} />
+    //     <Route path="/broadcasts" component={Broadcast} />
+    //     <Route path="/pages" component={Page} />
+    //     <Route path="/addPages" component={AddPage} />
+    //     <Route path="/surveys" component={Surveys} />
+    //     <Route path="/createbroadcast" component={CreateBroadcast} />
+    //     <Route path="/createworkflow" component={CreateWorkflow} />
+    //     <Route path="/workflows" component={Workflows} />
+    //     <Route path="/editbroadcast/:id" component={EditBroadcast} />
+    //     <Route path="/createpoll" component={CreatePoll} />
+    //     <Route path="/poll" component={Poll} />
+    //     <Route path="/stats" component={Stats} />
+    //     <Route path="/subscribeToMessenger" component={SubscribeToMessenger} />
+    //     <Route path="/addsurvey" component={AddSurvey} />
+    //     <Route path="/pollResult" component={PollResult} />
+    //     <Route path="/surveyResult" component={SurveyResult} />
+    //  </Route>
 
 );
 

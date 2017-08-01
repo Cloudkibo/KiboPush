@@ -16,6 +16,7 @@ const TAG = 'routes.js';
 
 module.exports = function(app) {
 
+  app.use('/api/dashboard', require('./api/dashboard'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
   app.use('/api/broadcasts', require('./api/broadcasts'));
