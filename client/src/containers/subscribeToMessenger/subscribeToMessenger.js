@@ -74,6 +74,19 @@ class SubscribeToMessenger extends React.Component {
 						        <div className="ui-block">
 						          <div className="news-feed-form">
 						            
+						             <div className="alert alert-success">
+						                        <h4 className="block">Code for Send To Messenger Button</h4>
+						                        To embed the facebook messenger button on your website, you need to put this line inside &lt;body&gt; tag of HTML of your website's each page.
+						                        <br/><br/>
+						                        <center>
+						                          <code className="codeBox">
+						                         
+						                          &lt;a class='btn' href='https://m.me/fbPageID' style='{'background:'+this.state.buttonColor+';color: '+this.state.fontColor+'; border-color: white;'}' &gt;&lt;i class="fa fa-facebook fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;/a&gt;
+						                          </code>
+						                        </center><br/>
+						                        Note: For css, we are using Bootstrap library. The class btn is defined in Bootrap css file.<br/>
+						            </div>
+
 						            <div className="tab-content">
 						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
 						              
@@ -101,12 +114,7 @@ class SubscribeToMessenger extends React.Component {
   														<i className="fa fa-facebook fa-lg"></i> {this.state.buttonText}</a>
 										      </div>
 											</div>
-						                  <div className="add-options-message">
-						                    
-						                   
-											<button className="btn btn-primary btn-sm" onClick={this.subscribeToMessenger}> Generate Script</button>
-						                    <button className="btn btn-sm btn-border-think btn-transparent c-grey">Cancel</button>
-						                  </div>
+						                 
 						                
 						              </div>
 						             
