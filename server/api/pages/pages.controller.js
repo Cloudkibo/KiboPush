@@ -38,7 +38,7 @@ exports.otherPages = function (req, res) {
 };
 
 exports.addPages = function (req, res) {
-  logger.serverLog(TAG, 'Add Pages called');
+  logger.serverLog(TAG, 'Add Pages called '+ JSON.stringify(req.body));
   Users.findOne({ fbId: req.body.fbid},(err, user) => {
     if(err){
        return res.status(404).json({ status: 'failed', description: err});

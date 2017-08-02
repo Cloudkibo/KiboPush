@@ -21,7 +21,7 @@ export function updateOtherPages(data){
   };
 }
 export function addPages(fbid) {
-    console.log('addPages called');
+    console.log('addPages called with fbid ' + fbid);
     return (dispatch) => {
     callApi(`pages/addpages/`,'post',{fbid:fbid}).then(res => dispatch(updateOtherPages(res.payload)));
   };
