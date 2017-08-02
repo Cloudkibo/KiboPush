@@ -11,7 +11,6 @@ const needle = require('needle');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
-  logger.serverLog(TAG, pages);
   logger.serverLog(TAG, req.user);
   Pages.find((err, pages) => {
     logger.serverLog(TAG, pages);
