@@ -12,13 +12,12 @@ const needle = require('needle');
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
   logger.serverLog(TAG, req.user);
-  Pages.remove( { } );
-  /*Pages.find((err, pages) => {
+  Pages.find((err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: pages });
-  });*/
-  res.status(200).json({ status: 'success', payload: [] });
+  });
+  
 };
 
 exports.enable = function (req, res) {
