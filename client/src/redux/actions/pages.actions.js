@@ -20,11 +20,8 @@ export function updateOtherPages(data){
     data
   };
 }
-export function addPages() {
+export function addPages(token) {
     console.log('addPages called');
-    var token = auth.getToken();
-    console.log('token is');
-    console.log(token);
     return (dispatch) => {
     callApi(`pages/addpages/`,'post',{accessToken:token}).then(res => dispatch(updateOtherPages(res.payload)));
   };

@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 
 class Dashboard extends React.Component {
 
+	
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
 		require('../../../public/js/jquery.min.js');

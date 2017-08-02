@@ -11,6 +11,7 @@ import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { loadMyPagesList, removePage,addPages } from '../../redux/actions/pages.actions';
+import {getuserdetails} from  '../../redux/actions/basicinfo.actions';
 import { bindActionCreators } from 'redux';
 
 class Page extends React.Component {
@@ -21,6 +22,7 @@ class Page extends React.Component {
 	}
 
 	 componentWillMount(){
+	 	 this.props.getuserdetails();
 		 this.props.loadMyPagesList();
 	 }
 
@@ -60,7 +62,9 @@ class Page extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Pages</h3>
-				<button onClick={() => this.props.addPages()} className="btn btn-primary btn-sm" style={{float: 'left'}}>Add Pages</button>
+				{this.props.user &&
+				<button onClick={() => this.props.addPages(this.props.user.fbToken)} className="btn btn-primary btn-sm" style={{float: 'left'}}>Add Pages</button>
+        		}
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
@@ -111,10 +115,11 @@ function mapStateToProps(state) {
   console.log(state);
   return {
           pages:(state.pagesInfo.pages),
+          user:(state.basicInfo.user),
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadMyPagesList:loadMyPagesList, removePage:removePage,addPages:addPages}, dispatch);
+  return bindActionCreators({loadMyPagesList:loadMyPagesList, getuserdetails:getuserdetails,removePage:removePage,addPages:addPages}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Page);
