@@ -19,6 +19,7 @@ router.get('/:id', controller.index); //this id will be userid
 router.get('/otherPages', controller.otherPages);
 router.post('/enable', controller.enable);
 router.post('/disable', controller.disable);
+router.post('/addpages', controller.addPages);
 
 
 /* Seed Pages */

@@ -3,6 +3,7 @@
  */
 import * as ActionTypes from '../constants/constants';
 import callApi from '../../utility/api.caller.service';
+import auth from '../../utility/auth.service';
 
 export function updatePagesList(data){
   console.log("My Pages", data);
@@ -17,6 +18,15 @@ export function updateOtherPages(data){
   return {
     type: ActionTypes.FETCH_PAGES_LIST,
     data
+  };
+}
+export function addPages() {
+    console.log('addPages called');
+    var token = auth.getToken();
+    console.log('token is');
+    console.log(token);
+    return (dispatch) => {
+    callApi(`pages/addpages/`,'post',{accessToken:token}).then(res => dispatch(updateOtherPages(res.payload)));
   };
 }
 

@@ -10,7 +10,7 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { loadMyPagesList, removePage } from '../../redux/actions/pages.actions';
+import { loadMyPagesList, removePage,addPages } from '../../redux/actions/pages.actions';
 import { bindActionCreators } from 'redux';
 
 class Page extends React.Component {
@@ -60,7 +60,7 @@ class Page extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Pages</h3>
-				<Link to="addPages" className="btn btn-primary btn-sm" style={{float: 'right'}}>Add Pages</Link>
+				<button onClick={() => this.props.addPages()} className="btn btn-primary btn-sm" style={{float: 'left'}}>Add Pages</button>
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>
@@ -115,6 +115,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadMyPagesList:loadMyPagesList, removePage:removePage}, dispatch);
+  return bindActionCreators({loadMyPagesList:loadMyPagesList, removePage:removePage,addPages:addPages}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Page);

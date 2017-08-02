@@ -6,7 +6,7 @@
 const logger = require('../../components/logger');
 const Pages = require('./Pages.model');
 const TAG = 'api/pages/pages.controller.js';
-
+const Users = require('../user/Users.model');
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
   Pages.find({ connected: true,userId:req.params.id }, (err, pages) => {
@@ -37,6 +37,65 @@ exports.otherPages = function (req, res) {
   });
 };
 
+exports.addPages = function (req, res) {
+  logger.serverLog(TAG, 'Add Pages called');
+  Users.findOne({ fbToken: req.body.accessToken},(err, user) => {
+    if(err){
+       return res.status(404).json({ status: 'failed', description: err});
+    }
+    else{
+     logger.serverLog(TAG, user); 
+     fetchPages('https://graph.facebook.com/v2.10/' +
+              user.fbId + '/accounts?access_token=' +
+              req.body.accessToken, user); 
+     return res.status(200).json({ status: 'success', payload: user});
+    }
+   
+   
+  });
+};
+
+
+
+// TODO use this after testing
+function fetchPages(url, user) {
+  needle.get(url, options, (err, resp) => {
+    logger.serverLog(TAG, 'error from graph api to get pages list data: ');
+    logger.serverLog(TAG, JSON.stringify(err));
+    logger.serverLog(TAG, 'resp from graph api to get pages list data: ');
+    logger.serverLog(TAG, JSON.stringify(resp.body));
+    logger.serverLog(TAG, 'user data for fetch pages: ');
+    logger.serverLog(TAG, JSON.stringify(user));
+
+    const data = resp.body.data;
+    const cursor = resp.body.paging;
+
+    data.forEach((item) => {
+      Pages
+        .findOne({ pageId: item.id },function(err, page) {
+          if(!page){
+            logger.serverLog(TAG, 'Page not found. Creating a page ');
+            var page = new Pages({ pageId: item.id,
+                                  pageName: item.name,
+                                  accessToken: item.access_token,
+                                  user});
+            //save model to MongoDB
+            page.save((err,page) => {
+              if (err) {
+                 logger.serverLog(TAG, `Error occured ${err}`); 
+              }
+              logger.serverLog(TAG, `Page ${item.name} created: ${page}`); 
+            });
+          }
+         
+          });
+
+     }); 
+    if (cursor.next) {
+      fetchPages(cursor.next, user);
+    }
+  });
+}
 
 exports.seed = function (req, res) {
   const rawDocuments = [
