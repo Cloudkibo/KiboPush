@@ -10,6 +10,8 @@ var express = require('express'),
   config = require('./config/environment/index'),
   logger = require('./components/logger'),
   mongoose = require('mongoose');
+  const router = express.Router();
+var subdomain = require('express-subdomain');
 
 const TAG = 'app.js';
 
@@ -19,6 +21,7 @@ mongoose.connect(config.mongo.uri, config.mongo.options);
 require('./config/express')(app);
 require('./routes')(app);
 
+app.use(subdomain('app', router));
 app.listen(config.port);
 
 logger.serverLog(TAG, 'KiboPush server STARTED on ' + config.port + ' in ' + config.env + ' mode');
