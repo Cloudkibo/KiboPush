@@ -7,6 +7,8 @@ const logger = require('../../components/logger');
 const Pages = require('./Pages.model');
 const TAG = 'api/pages/pages.controller.js';
 const Users = require('../user/Users.model');
+const needle = require('needle');
+
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
   Pages.find({ connected: true,userId:req.params.id }, (err, pages) => {

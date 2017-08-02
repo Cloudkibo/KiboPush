@@ -6,6 +6,7 @@ const logger = require('../../components/logger');
 const Polls = require('./Polls.model');
 const PollResponse = require('./pollresponse.model');
 const Subscribers = require('../subscribers/Subscribers.model');
+const needle = require('needle');
 
 const TAG = 'api/polls/polls.controller.js';
 
