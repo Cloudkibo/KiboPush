@@ -62,6 +62,7 @@ exports.setup = function (User, config) {
               return done(err);
             }
             if (!err && user !== null) {
+                console.log("User", user);
                 done(null, user);
             }
             else {
