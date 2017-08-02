@@ -69,6 +69,7 @@ exports.setup = function (User, config) {
             if (error) {
                 return done(error);
             } else {
+                console.log("Payload", payload);
                 return done(null, payload);
             }
             });
