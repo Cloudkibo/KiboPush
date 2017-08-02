@@ -5,6 +5,7 @@
 const logger = require('../../components/logger');
 const Broadcasts = require('./Broadcasts.model');
 const Pages = require('../pages/Pages.model');
+const PollResponse = require('../polls/pollresponse.model');
 const Subscribers = require('../subscribers/Subscribers.model');
 const TAG = 'api/broadcast/broadcast.controller.js';
 
@@ -82,6 +83,7 @@ exports.seed = function (req, res) {
 
 //webhook for facebook
 exports.getfbMessage = function (req, res) {
+  This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]} 
   logger.serverLog(TAG, 'message received from FB Subscriber');
   const messaging_events = req.body.entry[0].messaging;
 
@@ -139,5 +141,34 @@ exports.getfbMessage = function (req, res) {
       });
     });
   }
+
+
+  //if event.post, writing a logic to save response of poll
+  if(event.postback){
+          var resp = JSON.parse(event.postback.payload);
+           logger.serverLog(TAG, resp);
+           if(resp.poll_id){
+            //find subscriber from sender id
+            Subscribers.findOne({ senderId: event.sender.id }, (err, subsriber) => {
+              if (err) {
+                logger.serverLog(TAG, 'Error occured in finding subscriber');
+              }
+
+              var pollbody = {
+              response: resp.option, //response submitted by subscriber
+              pollId: resp.poll_id,
+              subscriberId: subscriber._id,
+
+                       }
+             PollResponse.create(pollbody, (err, pollresponse) => {
+                if (err) {
+                   return res.status(404).json({ status: 'failed', description: 'Poll response not created' });
+                 }
+                  return res.status(200).json({ status: 'success', payload: pollresponse });
+               });
+            });
+           
+           }
+      }
 }
 };
