@@ -11,7 +11,7 @@ const needle = require('needle');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
-  Pages.find({ connected: true,fbId:req.user.fbId }, (err, pages) => {
+  Pages.find({userId:req.user._id }, (err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: pages });
@@ -87,7 +87,7 @@ function fetchPages(url, user) {
             var page = new Pages({ pageId: item.id,
                                   pageName: item.name,
                                   accessToken: item.access_token,
-                                  user});
+                                  userId:user._id});
             //save model to MongoDB
             page.save((err,page) => {
               if (err) {
