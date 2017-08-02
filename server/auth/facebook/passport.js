@@ -57,25 +57,22 @@ exports.setup = function (User, config) {
           payload = _.merge(payload, { email: resp.body.email });
         }
 
-        Users.find({
-            fbId: resp.body.id
-          },
-          (err, user) => {
+        Users.findOne({ fbId: resp.body.id}, function (err, user) {
             if (err) {
               return done(err);
             }
-            if (!user) {
-               payload.save(function(error) {
-            if (!error) {
-                // Do something with the document
-                return done(error, payload);
-            } else {
-                return done(error);
-                }
-            });
-            } else {
-              return done(err, user);
+            if (!err && user !== null) {
+                done(null, user);
             }
+            else {
+               payload.save(function(error) {
+            if (error) {
+                return done(error);
+            } else {
+                return done(null, payload);
+            }
+            });
+            } 
           }
         );
       });
