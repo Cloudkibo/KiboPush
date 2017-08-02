@@ -63,7 +63,7 @@ class Page extends React.Component {
         <div className="birthday-item inline-items badges">
 				<h3>Pages</h3>
 				{this.props.user &&
-				<button onClick={() => this.props.addPages(this.props.user._id)} className="btn btn-primary btn-sm" style={{float: 'left'}}>Add Pages</button>
+				<button onClick={() => this.props.addPages(this.props.user.fbId)} className="btn btn-primary btn-sm" style={{float: 'left'}}>Add Pages</button>
         		}
         <div className="table-responsive">
 						<table className="table table-striped">
