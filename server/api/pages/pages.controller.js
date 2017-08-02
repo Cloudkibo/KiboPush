@@ -39,7 +39,7 @@ exports.otherPages = function (req, res) {
 
 exports.addPages = function (req, res) {
   logger.serverLog(TAG, 'Add Pages called');
-  Users.findOne({ fbToken: req.body.accessToken},(err, user) => {
+  Users.findOne({ fbId: req.body.fbid},(err, user) => {
     if(err){
        return res.status(404).json({ status: 'failed', description: err});
     }
@@ -47,7 +47,7 @@ exports.addPages = function (req, res) {
      logger.serverLog(TAG, user); 
      fetchPages('https://graph.facebook.com/v2.10/' +
               user.fbId + '/accounts?access_token=' +
-              req.body.accessToken, user); 
+              user.fbToken, user); 
      return res.status(200).json({ status: 'success', payload: user});
     }
    

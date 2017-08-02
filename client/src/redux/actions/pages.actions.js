@@ -20,10 +20,10 @@ export function updateOtherPages(data){
     data
   };
 }
-export function addPages(token) {
+export function addPages(fbid) {
     console.log('addPages called');
     return (dispatch) => {
-    callApi(`pages/addpages/`,'post',{accessToken:token}).then(res => dispatch(updateOtherPages(res.payload)));
+    callApi(`pages/addpages/`,'post',{fbid:fbid}).then(res => dispatch(updateOtherPages(res.payload)));
   };
 }
 
