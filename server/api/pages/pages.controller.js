@@ -61,6 +61,13 @@ exports.addPages = function (req, res) {
 
 // TODO use this after testing
 function fetchPages(url, user) {
+  var options = {
+        headers: {
+          'X-Custom-Header': 'CloudKibo Web Application'
+        },
+        json:true
+
+      }
   needle.get(url, options, (err, resp) => {
     logger.serverLog(TAG, 'error from graph api to get pages list data: ');
     logger.serverLog(TAG, JSON.stringify(err));
