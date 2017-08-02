@@ -7,6 +7,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const needle = require('needle');
 const _ = require('lodash');
 const Pages = require('../../api/pages/Pages.model');
+const Users = require('../../api/user/Users.model');
 
 const logger = require('../../components/logger');
 const TAG = 'api/auth/facebook/passport';
@@ -41,21 +42,22 @@ exports.setup = function (User, config) {
 
         if (err) return done(err);
 
-        let payload = new User({
+        let payload = new Users({
           name: resp.body.name,
           locale: resp.body.locale,
           gender: resp.body.gender,
           provider: 'facebook',
           timezone: resp.body.timezone,
           profilePic: resp.body.picture.data.url,
-          fbToken: accessToken
+          fbToken: accessToken,
+          fbId: resp.body.id
         });
 
         if (resp.body.email) {
           payload = _.merge(payload, { email: resp.body.email });
         }
 
-        User.findOne({
+        Users.find({
             fbId: resp.body.id
           },
           (err, user) => {
@@ -63,10 +65,14 @@ exports.setup = function (User, config) {
               return done(err);
             }
             if (!user) {
-              user.save((err) => {
-                if (err) done(err);
-                return done(err, user);
-              });
+               payload.save(function(error) {
+            if (!error) {
+                // Do something with the document
+                return done(error, payload);
+            } else {
+                return done(error);
+                }
+            });
             } else {
               return done(err, user);
             }
