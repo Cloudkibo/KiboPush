@@ -11,7 +11,7 @@ const needle = require('needle');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
-  Pages.find({ connected: true,userId:req.params.id }, (err, pages) => {
+  Pages.find({ connected: true,fbId:req.user.fbId }, (err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: pages });
