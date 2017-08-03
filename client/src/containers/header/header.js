@@ -4,6 +4,7 @@
 
 import React from 'react';
 import auth from '../../utility/auth.service';
+import cookie from 'react-cookie';
 
 class Header extends React.Component {
   render() {
@@ -35,7 +36,7 @@ class Header extends React.Component {
 									</a>
 								</li>
 								<li>
-									<a onClick={ () => { auth.logout(); } }>
+									<a onClick={ () => { cookie.remove('token', { path: '/' }); } }>
 										<svg className="olymp-logout-icon"><use xlinkHref="icons/icons.svg#olymp-logout-icon"></use></svg>
 
 										<span>Log Out</span>
