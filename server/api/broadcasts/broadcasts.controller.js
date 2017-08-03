@@ -105,6 +105,7 @@ exports.getfbMessage = function (req, res) {
         if (!page) return res.status(404).json({ status: 'failed', description: 'Page not found' });
         //fetch subsriber info from Graph API
         // fetch customer details
+        logger.serverLog(TAG, 'This is a page' + JSON.stringify(page));
         const options = {
           url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
           qs: { access_token: page.accessToken },
