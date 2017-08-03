@@ -61,7 +61,17 @@ exports.disable = function (req, res) {
          Pages.find({connected:true,userId:req.user._id},(err, pages) => {
             logger.serverLog(TAG, pages);
             logger.serverLog(TAG, `Error: ${err}`);
+             const options = {
+                url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                qs: { access_token: req.body.accessToken },
+                method: 'POST'
+
+              };
+
+          needle.delete(options.url, options, (error, response) => {
+            logger.serverLog(TAG, `This is response ${JSON.stringify(response.body)}`);
             res.status(200).json({ status: 'success', payload: pages });
+          });
           });
        
       }
