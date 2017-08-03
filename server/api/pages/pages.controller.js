@@ -12,7 +12,7 @@ const needle = require('needle');
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
   logger.serverLog(TAG, req.user);
-  Pages.find((err, pages) => {
+  Pages.find({connected:true,userId:req.user._id},(err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: pages });
@@ -30,7 +30,7 @@ exports.enable = function (req, res) {
         res.status(500).json({ status: 'Failed', error: err,
           description: 'Failed to update record' });
       } else {
-         Pages.find((err, pages) => {
+           Pages.find({connected:false,userId:req.user._id},(err, pages) => {
             logger.serverLog(TAG, pages);
             logger.serverLog(TAG, `Error: ${err}`);
             res.status(200).json({ status: 'success', payload: pages });
@@ -48,11 +48,11 @@ exports.disable = function (req, res) {
         res.status(500).json({ status: 'Failed', error: err,
           description: 'Failed to update record' });
       } else {
-         Pages.find((err, pages) => {
-              logger.serverLog(TAG, pages);
-              logger.serverLog(TAG, `Error: ${err}`);
-              res.status(200).json({ status: 'success', payload: pages });
-            });
+         Pages.find({connected:true,userId:req.user._id},(err, pages) => {
+            logger.serverLog(TAG, pages);
+            logger.serverLog(TAG, `Error: ${err}`);
+            res.status(200).json({ status: 'success', payload: pages });
+          });
        
       }
     });

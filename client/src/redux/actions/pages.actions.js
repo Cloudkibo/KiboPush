@@ -25,7 +25,7 @@ export function enablePage(page) {
    console.log('enablePage called');
    console.log(page);
     return (dispatch) => {
-    callApi(`pages/enable/`,'post',page).then(res => dispatch(updateOtherPages(res)));
+    callApi(`pages/enable/`,'post',page).then(res => dispatch(updateOtherPages(res.payload)));
   };
 }
 export function addPages() {
@@ -45,14 +45,9 @@ export function loadMyPagesList() {
 export function removePage(page) {
     console.log('loadPagesList called');	
     return (dispatch) => {
-    callApi('pages/disable','post',page).then(res => {
-      if(res.status == 200){
-        loadMyPagesList();
-      }
-    });
+    callApi('pages/disable','post',page).then(res => dispatch(updatePagesList(res.payload)));
   };
 }
-
 export function loadOtherPagesList(token, data) {
   console.log('loadOtherPagesList called');	
     return (dispatch) => {
