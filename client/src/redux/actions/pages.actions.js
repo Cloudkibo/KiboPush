@@ -30,7 +30,7 @@ export function enablePage(page) {
 }
 export function addPages() {
     return (dispatch) => {
-    callApi(`pages/addpages/`).then(res => dispatch(updateOtherPages(res.payload)));
+    callApi(`pages/addpages/`).then(res => dispatch(loadOtherPagesList()));
   };
 }
 
@@ -48,7 +48,7 @@ export function removePage(page) {
     callApi('pages/disable','post',page).then(res => dispatch(updatePagesList(res.payload)));
   };
 }
-export function loadOtherPagesList(token, data) {
+export function loadOtherPagesList() {
   console.log('loadOtherPagesList called');	
     return (dispatch) => {
     callApi('pages/otherPages').then(res => dispatch(updateOtherPages(res.payload)));
