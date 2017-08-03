@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import auth from '../../utility/auth.service';
 
 class Header extends React.Component {
   render() {
@@ -34,7 +35,7 @@ class Header extends React.Component {
 									</a>
 								</li>
 								<li>
-									<a href="/api/users/logout">
+									<a onClick={ () => { auth.logout(); } }>
 										<svg className="olymp-logout-icon"><use xlinkHref="icons/icons.svg#olymp-logout-icon"></use></svg>
 
 										<span>Log Out</span>
@@ -45,7 +46,7 @@ class Header extends React.Component {
 
 					</div>
 				</div>
-				<a href="02-ProfilePage.html" className="author-name fn">
+				<a href="#" className="author-name fn">
 					<div className="author-title">
 						Richard Henricks <svg className="olymp-dropdown-arrow-icon"><use xlinkHref="icons/icons.svg#olymp-dropdown-arrow-icon"></use></svg>
 					</div>
