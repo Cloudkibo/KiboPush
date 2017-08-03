@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 class AddPage extends React.Component {
 
 	componentWillMount(){
-		
+		this.props.addPages();
 	}
 
 	componentDidMount() {
@@ -30,7 +30,7 @@ class AddPage extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
-		this.props.addPages();
+		
 	}
 	
   render() {

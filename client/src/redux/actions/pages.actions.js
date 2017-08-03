@@ -30,7 +30,10 @@ export function enablePage(page) {
 }
 export function addPages() {
     return (dispatch) => {
-    callApi(`pages/addpages/`).then(res => dispatch(loadOtherPagesList()));
+    callApi(`pages/addpages/`).then(res => {
+      dispatch(loadOtherPagesList());
+      console.log("Response From Add Pages", res);
+  });
   };
 }
 
