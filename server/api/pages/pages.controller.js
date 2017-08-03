@@ -59,22 +59,18 @@ exports.disable = function (req, res) {
 };
 
 exports.otherPages = function (req, res) {
- /* Pages.find({ connected: false }, (err, pages) => {
+  Pages.find({ connected: false ,userId:req.user._id}, (err, pages) => {
+    if(err){
+         return res.status(500).json({ status: 'failed', description: 'pages not found' });
+
+    }
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
-    res.status(200).json(pages);
-  });*/
+     return res.status(200).json({ status: 'success', payload: pages });
 
-  logger.serverLog(TAG, 'otherPages called');
- 
-  const rawDocuments = [
-    { pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 0, numberOfFollowers: 0 },
-    { pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false,  likes: 50, numberOfFollowers: 25 },
-    { pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, likes: 37, numberOfFollowers: 89 },
-    { pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 53, numberOfFollowers: 74 },
-  ];
-  res.status(200).json({ status: 'success', payload: rawDocuments });
+  });
 
+  
 };
 
 exports.addPages = function (req, res) {
