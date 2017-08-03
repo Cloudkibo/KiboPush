@@ -60,7 +60,14 @@ exports.send = function (req, res) {
    //we will write here the logic to send broadcast
 };
 
-
+exports.verifyhook = function(req, res) {
+  if (req.query['hub.verify_token'] === 'VERIFY_ME') {
+    res.send(req.query['hub.challenge'])
+  }
+  else {
+    res.send('Error, wrong token')
+  }
+}
 exports.seed = function (req, res) {
  const rawDocuments = [
    { platform: 'facebook', type: 'message', poll: {}, survey: [], message: 'Seed Message 1', userId: '1', pageId: '1', media: null, link: null },
