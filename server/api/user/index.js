@@ -17,6 +17,6 @@ const TAG = 'api/user/index.js';
 
 router.get('/', auth.isAuthenticated(), controller.index);
 
-router.get('/logout', auth.isAuthenticated(), controller.logout);
+router.get('/logout', controller.logout);
 
 module.exports = router;
