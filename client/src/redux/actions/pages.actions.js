@@ -29,7 +29,6 @@ export function enablePage(page) {
   };
 }
 export function addPages() {
-    console.log('addPages called with fbid ' + fbid);
     return (dispatch) => {
     callApi(`pages/addpages/`).then(res => dispatch(updateOtherPages(res.payload)));
   };
