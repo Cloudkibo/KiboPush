@@ -36,11 +36,11 @@ class Header extends React.Component {
 									</a>
 								</li>
 								<li>
-									<a onClick={ () => {cookie.remove('token', { path: '/' });} }>
+									<button onClick={ () => {cookie.remove('token', { path: '/' });} }>
 										<svg className="olymp-logout-icon"><use xlinkHref="icons/icons.svg#olymp-logout-icon"></use></svg>
 
 										<span>Log Out</span>
-									</a>
+									</button>
 								</li>
 							</ul>
 						</div>
