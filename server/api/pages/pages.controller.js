@@ -64,7 +64,7 @@ exports.disable = function (req, res) {
              const options = {
                 url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
                 qs: { access_token: req.body.accessToken },
-                method: 'POST'
+                method: 'DELETE'
 
               };
 
