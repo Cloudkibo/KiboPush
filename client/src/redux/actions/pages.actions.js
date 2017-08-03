@@ -20,10 +20,18 @@ export function updateOtherPages(data){
     data
   };
 }
-export function addPages(fbid) {
+
+export function enablePage(page) {
+   console.log('enablePage called');
+   console.log(page);
+    return (dispatch) => {
+    callApi(`pages/enable/`,'post',page).then(res => dispatch(updateOtherPages(res)));
+  };
+}
+export function addPages() {
     console.log('addPages called with fbid ' + fbid);
     return (dispatch) => {
-    callApi(`pages/addpages/`,'post',{fbid:fbid}).then(res => dispatch(updateOtherPages(res.payload)));
+    callApi(`pages/addpages/`).then(res => dispatch(updateOtherPages(res.payload)));
   };
 }
 
@@ -49,6 +57,6 @@ export function removePage(page) {
 export function loadOtherPagesList(token, data) {
   console.log('loadOtherPagesList called');	
     return (dispatch) => {
-    callApi('pages/otherPages').then(res => dispatch(updateOtherPages(res)));
+    callApi('pages/otherPages').then(res => dispatch(updateOtherPages(res.payload)));
   };
 }
