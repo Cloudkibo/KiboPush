@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import { loadOtherPagesList,enablePage } from '../../redux/actions/pages.actions';
+import { loadOtherPagesList,enablePage,addPages } from '../../redux/actions/pages.actions';
 import { bindActionCreators } from 'redux';
 
 class AddPage extends React.Component {
@@ -30,7 +30,7 @@ class AddPage extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
-		this.props.loadOtherPagesList("", {});
+		this.props.addPages();
 	}
 	
   render() {
@@ -82,6 +82,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadOtherPagesList:loadOtherPagesList,enablePage:enablePage}, dispatch);
+  return bindActionCreators({loadOtherPagesList:loadOtherPagesList,enablePage:enablePage,addPages:addPages}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(AddPage);
