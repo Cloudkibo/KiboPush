@@ -34,8 +34,8 @@ exports.enable = function (req, res) {
             logger.serverLog(TAG, pages);
             logger.serverLog(TAG, `Error: ${err}`);
             const options = {
-                url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=1429073230510150|Cxrq7w_L44_9WoAUigH_Himml4g`,
-                qs: { access_token: '1429073230510150|Cxrq7w_L44_9WoAUigH_Himml4g' },
+                url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                qs: { access_token: req.body.accessToken },
                 method: 'POST'
 
               };
