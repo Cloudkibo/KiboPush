@@ -33,8 +33,18 @@ exports.enable = function (req, res) {
            Pages.find({connected:false,userId:req.user._id},(err, pages) => {
             logger.serverLog(TAG, pages);
             logger.serverLog(TAG, `Error: ${err}`);
+            const options = {
+                url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=1429073230510150|Cxrq7w_L44_9WoAUigH_Himml4g`,
+                qs: { access_token: '1429073230510150|Cxrq7w_L44_9WoAUigH_Himml4g' },
+                method: 'POST'
+
+              };
+
+          needle.post(options.url, options, (error, response) => {
+            logger.serverLog(TAG, `This is response ${JSON.stringify(response.body)}`);
             res.status(200).json({ status: 'success', payload: pages });
           });
+      });
       }
     });
 };
