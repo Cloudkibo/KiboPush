@@ -49,12 +49,14 @@ class AddPage extends React.Component {
 			  (this.props.otherPages)?this.props.otherPages.map((page, i) => (
 				<div className="ui-block">
 				<div className="birthday-item inline-items">
-					<div className="author-thumb">
+					{/*
+						<div className="author-thumb">
 						<img src="img/avatar7-sm.jpg" alt="author" />
 					</div>
+				*/}
 					<div className="birthday-author-name">
 						<a href="#" className="h6 author-name">{page.pageName} </a>
-						<div className="birthday-date">January 16th, 1989</div>
+						
 					</div>
 					<button onClick={() => this.props.enablePage(page)} className="btn btn-sm bg-blue">Connect</button>
 					
