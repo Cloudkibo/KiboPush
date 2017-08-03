@@ -8,14 +8,13 @@
 
 'use strict';
 
-var path = require('path');
-var config = require('./config/environment/index');
-var logger = require('./components/logger');
+const path = require('path');
+const config = require('./config/environment/index');
+const logger = require('./components/logger');
 
 const TAG = 'routes.js';
 
-module.exports = function(app) {
-
+module.exports = function (app) {
   app.use('/api/dashboard', require('./api/dashboard'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
@@ -28,17 +27,17 @@ module.exports = function(app) {
 
   app.use('/auth', require('./auth'));
 
-  app.get('/', function(req, res){
+  app.get('/', (req, res) => {
     logger.serverLog(TAG, 'going to serve main react app');
     res.sendFile(path.join(config.root, 'client/index.html'));
   });
 
-  app.get('/dashboard2', function(req, res){
+  app.get('/dashboard2', (req, res) => {
     logger.serverLog(TAG, 'going to serve landing page');
     res.sendFile(path.join(config.root, 'client/landing.html'));
   });
 
-  app.use(function(req, res) {
-    res.status(404).send({url: req.originalUrl + ' not found'})
+  app.use((req, res) => {
+    res.status(404).send({ url: `${req.originalUrl} not found` });
   });
 };
