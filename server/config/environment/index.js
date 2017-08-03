@@ -23,6 +23,10 @@ var all = {
     session: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4'
   },
 
+  ip: process.env.OPENSHIFT_NODEJS_IP ||
+  process.env.IP ||
+  undefined,
+
   mongo: {
     options: {
       db: {
