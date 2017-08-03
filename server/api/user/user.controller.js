@@ -15,3 +15,10 @@ exports.index = function (req, res) {
      res.status(200).json({status: 'success', payload: user});
    });
 };
+
+
+exports.logout = function (req, res) {
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+};

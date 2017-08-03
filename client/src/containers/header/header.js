@@ -34,7 +34,7 @@ class Header extends React.Component {
 									</a>
 								</li>
 								<li>
-									<a href="#">
+									<a href="/api/users/logout">
 										<svg className="olymp-logout-icon"><use xlinkHref="icons/icons.svg#olymp-logout-icon"></use></svg>
 
 										<span>Log Out</span>
