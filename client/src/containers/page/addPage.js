@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import { loadOtherPagesList } from '../../redux/actions/pages.actions';
+import { loadOtherPagesList,enablePage } from '../../redux/actions/pages.actions';
 import { bindActionCreators } from 'redux';
 
 class AddPage extends React.Component {
@@ -56,7 +56,8 @@ class AddPage extends React.Component {
 						<a href="#" className="h6 author-name">{page.pageName} </a>
 						<div className="birthday-date">January 16th, 1989</div>
 					</div>
-					<a href="20-CalendarAndEvents-MonthlyCalendar.html" className="btn btn-sm bg-blue">Connect</a>
+					<button onClick={() => this.props.enablePage(page)} className="btn btn-sm bg-blue">Connect</button>
+					
 				</div>
 			</div>       
 			  )):<br/>
@@ -81,6 +82,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadOtherPagesList:loadOtherPagesList}, dispatch);
+  return bindActionCreators({loadOtherPagesList:loadOtherPagesList,enablePage:enablePage}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(AddPage);

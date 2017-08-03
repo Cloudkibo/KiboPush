@@ -66,9 +66,8 @@ class Page extends React.Component {
 						<div className="ui-block">
         <div className="birthday-item inline-items badges">
 				<h3>Pages</h3>
-				{this.props.user &&
 				<Link to="addPages" className="btn btn-primary btn-sm" style={{float: 'right'}}>Add Pages</Link>
-        		}
+        		
         <div className="table-responsive">
 						<table className="table table-striped">
 							<thead>

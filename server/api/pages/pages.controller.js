@@ -22,29 +22,64 @@ exports.index = function (req, res) {
 };
 
 exports.enable = function (req, res) {
-
+  logger.serverLog(TAG, 'Enable page API called '+JSON.stringify(req.body));
+  
+  Pages.update({ _id: req.body._id },
+    { connected: true }, (err) => {
+      if (err) {
+        res.status(500).json({ status: 'Failed', error: err,
+          description: 'Failed to update record' });
+      } else {
+         Pages.find((err, pages) => {
+            logger.serverLog(TAG, pages);
+            logger.serverLog(TAG, `Error: ${err}`);
+            res.status(200).json({ status: 'success', payload: pages });
+          });
+      }
+    });
 };
 
 exports.disable = function (req, res) {
-  const updateData = {
-    connected: false,
-  };
-  Pages.update({ _id: req.body._id }, updateData, (err, affected) => {
-    logger.serverLog(TAG, `affected rows ${affected}`);
-  });
+  logger.serverLog(TAG, 'disable page API called '+JSON.stringify(req.body));
+  
+  Pages.update({ _id: req.body._id },
+    { connected: false }, (err) => {
+      if (err) {
+        res.status(500).json({ status: 'Failed', error: err,
+          description: 'Failed to update record' });
+      } else {
+         Pages.find((err, pages) => {
+              logger.serverLog(TAG, pages);
+              logger.serverLog(TAG, `Error: ${err}`);
+              res.status(200).json({ status: 'success', payload: pages });
+            });
+       
+      }
+    });
 };
 
 exports.otherPages = function (req, res) {
-  Pages.find({ connected: false }, (err, pages) => {
+ /* Pages.find({ connected: false }, (err, pages) => {
     logger.serverLog(TAG, pages);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json(pages);
-  });
+  });*/
+
+  logger.serverLog(TAG, 'otherPages called');
+ 
+  const rawDocuments = [
+    { pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 0, numberOfFollowers: 0 },
+    { pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false,  likes: 50, numberOfFollowers: 25 },
+    { pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, likes: 37, numberOfFollowers: 89 },
+    { pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, likes: 53, numberOfFollowers: 74 },
+  ];
+  res.status(200).json({ status: 'success', payload: rawDocuments });
+
 };
 
 exports.addPages = function (req, res) {
-  logger.serverLog(TAG, 'Add Pages called '+ JSON.stringify(req.body));
-  Users.findOne({ fbId: req.body.fbid},(err, user) => {
+  logger.serverLog(TAG, 'Add Pages called ');
+  Users.findOne({ fbId: req.user.fbId},(err, user) => {
     if(err){
        return res.status(404).json({ status: 'failed', description: err});
     }
@@ -53,7 +88,12 @@ exports.addPages = function (req, res) {
      fetchPages('https://graph.facebook.com/v2.10/' +
               user.fbId + '/accounts?access_token=' +
               user.fbToken, user); 
-     return res.status(200).json({ status: 'success', payload: user});
+     Pages.find({userId:req.user._id,connected:false},(err, pages) => {
+              logger.serverLog(TAG, pages);
+              logger.serverLog(TAG, `Error: ${err}`);
+              res.status(200).json({ status: 'success', payload: pages });
+            });
+   //  return res.status(200).json({ status: 'success', payload: user});
     }
    
    
@@ -90,7 +130,8 @@ function fetchPages(url, user) {
             var page = new Pages({ pageId: item.id,
                                   pageName: item.name,
                                   accessToken: item.access_token,
-                                  userId:user._id});
+                                  userId:user._id,
+                                  connected:false,});
             //save model to MongoDB
             page.save((err,page) => {
               if (err) {
