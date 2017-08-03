@@ -11,21 +11,35 @@ exports.index = function (req, res) {
   Workflows.find((err, workflows) => {
     logger.serverLog(TAG, workflows);
     logger.serverLog(TAG, `Error: ${err}`);
-    res.status(200).json(workflows);  
+    res.status(200).json(workflows);
   });
 };
 
 exports.create = function (req, res) {
-
-    var workflow = new Workflows({condition: req.body.condition, keywords: req.body.keywords , reply: req.body.reply,
-       isActive: (req.body.isActive == 'Yes') ? true:false, sent: 0 });
-
-       console.log("Workflow received", workflow);
+    const workflow = new Workflows({
+      condition: req.body.condition,
+      keywords: req.body.keywords,
+      reply: req.body.reply,
+      isActive: (req.body.isActive === 'Yes'),
+      sent: 0 });
 
     //save model to MongoDB
-    workflow.save(function (err) {
+    workflow.save((err) => {
       if (err) {
-        res.status(500).json({ status: 'Failed', error: err, description: 'Failed to insert record' });
+        res.status(500).json({ status: 'Failed', error: err,
+          description: 'Failed to insert record' });
+      } else {
+        res.status(200).json({ status: 'Success' });
+      }
+    });
+};
+
+exports.edit = function (req, res) {
+  Workflows.update({ _id: req.body._id },
+    { isActive: (req.body.isActive === 'Yes') }, { multi: true }, (err) => {
+      if (err) {
+        res.status(500).json({ status: 'Failed', error: err,
+          description: 'Failed to update record' });
       } else {
         res.status(200).json({ status: 'Success' });
       }
@@ -33,20 +47,25 @@ exports.create = function (req, res) {
 };
 
 exports.report = function (req, res) {
- 
+
 };
 exports.send = function (req, res) {
-   
+
 };
 
 
 exports.seed = function (req, res) {
- var rawDocuments = [
-   {condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   {condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   {condition: 'message_begins', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   {condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
-   {condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'], reply: 'How are you?', isActive: true, sent: 0 },
+ const rawDocuments = [
+   { condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?', isActive: true, sent: 0 },
+   { condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?', isActive: true, sent: 0 },
+   { condition: 'message_begins', keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?', isActive: true, sent: 0 },
+   { condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?', isActive: true, sent: 0 },
+   { condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?', isActive: true, sent: 0 },
    ];
 
  Workflows.insertMany(rawDocuments)

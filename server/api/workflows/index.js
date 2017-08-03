@@ -12,7 +12,7 @@ const TAG = 'api/polls/index.js';
 
 router.get('/', controller.index);
 router.post('/create', controller.create);
-// router.post('/edit', controller.create);
+router.post('/edit', controller.edit);
 router.post('/active', controller.create);
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
