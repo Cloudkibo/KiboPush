@@ -171,6 +171,7 @@ exports.getfbMessage = function (req, res) {
   if(event.postback){
           var resp = JSON.parse(event.postback.payload);
            logger.serverLog(TAG, resp);
+           logger.serverLog(TAG,' payload '+resp.poll_id);
            if(resp.poll_id){
             //find subscriber from sender id
             Subscribers.findOne({ senderId: event.sender.id }, (err, subsriber) => {
@@ -186,12 +187,17 @@ exports.getfbMessage = function (req, res) {
                        }
              PollResponse.create(pollbody, (err, pollresponse) => {
                 if (err) {
+                  logger.serverLog(TAG, err);
                    return res.status(404).json({ status: 'failed', description: 'Poll response not created' });
                  }
                   return res.status(200).json({ status: 'success', payload: pollresponse });
                });
             });
            
+           }
+           else{
+                  return res.status(200).json({ status: 'success', payload: 'success' });
+            
            }
       }
 }
