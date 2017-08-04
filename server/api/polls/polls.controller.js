@@ -121,7 +121,7 @@ exports.send = function (req, res) {
                     return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
                   }
                   //get accesstoken of page
-                  needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token`,(err,resp) =>{
+                  needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`,(err,resp) =>{
                    if(err){
                     logger.serverLog(TAG, 'Page accesstoken from graph api Error' + JSON.stringify(err));
                     return res.status(404).json({ status: 'failed', description: err});
