@@ -131,6 +131,7 @@ exports.getfbMessage = function (req, res) {
               pageScopedId: '',
               email:'',
               senderId:sender,
+              pageId:page._id,
             };
 
             
@@ -151,7 +152,15 @@ exports.getfbMessage = function (req, res) {
                    return res.status(200).json({ status: 'success', payload: subscriber });
                     });
                    }
+            else{
+             return res.status(200).json({ status: 'success', payload: subscriber }); 
+            }
             });
+        }
+        else{
+         return res.status(404).json({ status: 'failed',
+                      description: 'Graph api call failed' });
+                    }
         }
       });
     });

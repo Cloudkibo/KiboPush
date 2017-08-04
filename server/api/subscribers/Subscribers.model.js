@@ -30,9 +30,7 @@ const subscriberSchema = new Schema({
   profilePic: {
       type: String
   },
-  pageId: {
-      type: String
-  },
+  pageId: { type: Schema.ObjectId, ref: 'pages' },
   userId: {
       type: String
   },
