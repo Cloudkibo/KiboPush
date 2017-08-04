@@ -31,6 +31,6 @@ import callApi from './utility/api.caller.service';
 
 ReactDOM.render((
   <Provider store={store}>
-    <Router history={history} routes={routes} />
+    <Router history={hashHistory} routes={routes} />
   </Provider>
 ), rootElement);
