@@ -38,7 +38,7 @@ var all = {
   facebook: {
     clientID:     process.env.FACEBOOK_ID || '456637644436523',
     clientSecret: process.env.FACEBOOK_SECRET || 'f46495b908b408bc8e4f5b259b18e952',
-    callbackURL:  (process.env.DOMAIN || 'http://app.kibopush.com') + '/auth/facebook/callback'
+    callbackURL:  (process.env.DOMAIN || 'https://app.kibopush.com') + '/auth/facebook/callback'
   }
 };
 

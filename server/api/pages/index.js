@@ -15,11 +15,11 @@ const logger = require('../../components/logger');
 
 const TAG = 'api/pages/index.js';
 
-router.get('/',auth.isAuthenticated(), controller.index); //this id will be userid
-router.get('/otherPages', auth.isAuthenticated(),controller.otherPages);
-router.post('/enable',auth.isAuthenticated(),controller.enable);
-router.post('/disable',auth.isAuthenticated(),controller.disable);
-router.get('/addpages',auth.isAuthenticated(),controller.addPages);
+router.get('/', auth.isAuthenticated(), controller.index); //this id will be userid
+router.get('/otherPages', auth.isAuthenticated(), controller.otherPages);
+router.post('/enable', auth.isAuthenticated(), controller.enable);
+router.post('/disable', auth.isAuthenticated(), controller.disable);
+router.get('/addpages', auth.isAuthenticated(), controller.addPages);
 
 
 /* Seed Pages */
