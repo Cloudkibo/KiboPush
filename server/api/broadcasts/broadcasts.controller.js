@@ -125,7 +125,7 @@ exports.getfbMessage = function (req, res) {
               gender: customer.gender,
               provider: 'facebook',
               timezone: customer.timezone,
-              profilePic: rcustomer.profile_pic,
+              profilePic: customer.profile_pic,
               pageScopedId: '',
             };
 
