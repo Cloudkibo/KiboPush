@@ -10,7 +10,7 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {addPoll, loadPollsList} from '../../redux/actions/poll.actions';
+import {addPoll, loadPollsList,sendpoll} from '../../redux/actions/poll.actions';
 import { bindActionCreators } from 'redux';
 
 class Poll extends React.Component {
@@ -49,8 +49,7 @@ class Poll extends React.Component {
 	}
 
   render() {
-		console.log("POlls", this.props.polls);
-    return (
+	return (
 	   <div>
       <Header/>
       <HeaderResponsive />
@@ -86,7 +85,7 @@ class Poll extends React.Component {
 									<td>{poll.datetime}</td>
 									<td>{poll.sent}</td>
 									<td>
-									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Send</button>
+									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={this.props.sendpoll(poll)}>Send</button>
 									<Link to="pollResult" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Report</Link>
 									</td>
 								</tr>
@@ -120,6 +119,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll}, dispatch);
+  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll,sendpoll:sendpoll}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Poll);

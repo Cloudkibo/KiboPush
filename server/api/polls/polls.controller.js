@@ -7,6 +7,7 @@ const Polls = require('./Polls.model');
 const PollResponse = require('./pollresponse.model');
 const Subscribers = require('../subscribers/Subscribers.model');
 const needle = require('needle');
+const Pages = require('../pages/Pages.model');
 
 const TAG = 'api/polls/polls.controller.js';
 
@@ -102,32 +103,45 @@ exports.send = function (req, res) {
                             }
                           }
         logger.serverLog(TAG, 'Poll to be sent ' + JSON.stringify(messageData));
-        
-        Subscribers.find({pageId:req.body.pageId}, function (err, subscribers) {
-          if(err) { 
-            return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
+        Pages.find({userId:req.user._id},function(err,pages){
+          if(err){
+                logger.serverLog(TAG, 'Error ' + JSON.stringify(err));
+                return res.status(404).json({ status: 'failed', description: 'Pages not found'});
+          
           }
-          for(var j=0;j< subscribers.length;j++){
+          else{
+            logger.serverLog(TAG, 'Pages fetched ' + JSON.stringify(pages));
+            for(var z=0;z<pages.length;z++)
+            {
+                Subscribers.find({pageId:pages[z]._id}, function (err, subscribers) {
+                  if(err) { 
+                    return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
+                  }
+                  for(var j=0;j< subscribers.length;j++){
 
-                  var data = {
-                              recipient: {id: subscribers[j].userId}, //this is the subscriber id
-                              message: messageData,
-                            }
-                  var options= {
-                      qs: {access_token: req.body.pageToken},
-                     }
-                  needle.post('https://graph.facebook.com/v2.6/me/messages', data,options, (err, resp) => {
-                    
-                       if (err) {
-                          return res.status(404).json({ status: 'failed', description: err});
-                        }
+                          var data = {
+                                      recipient: {id: subscribers[j].senderId}, //this is the subscriber id
+                                      message: messageData,
+                                    }
+                          var options= {
+                              qs: {access_token: pages[z].accessToken},
+                             }
+                          needle.post('https://graph.facebook.com/v2.6/me/messages', data,options, (err, resp) => {
+                              logger.serverLog(TAG, 'Sending poll to subscriber response ' + JSON.stringify(resp.body));
+                               if (err) {
+                                  return res.status(404).json({ status: 'failed', description: err});
+                                }
 
-                         // return res.status(200).json({ status: 'success', payload: resp.body });
-                    
-                  });
+                                 // return res.status(200).json({ status: 'success', payload: resp.body });
+                            
+                          });
+                  }
+                });
+            }
+                return res.status(200).json({ status: 'success', payload: 'Poll sent successfully.' });
+              
           }
-          return res.status(200).json({ status: 'success', payload: 'Poll sent successfully.' });
-        });
+      });
     
 
 };
