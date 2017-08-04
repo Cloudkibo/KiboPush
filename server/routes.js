@@ -38,10 +38,10 @@ module.exports = function (app) {
   });
 
   app.use((req, res) => {
-    res.status(404).send({ url: `${req.originalUrl} not found` });
+    // res.status(404).send({ url: `${req.originalUrl} not found` });
     // if (req.originalUrl) {
     //   res.cookie('next', req.originalUrl);
     // }
-    // res.redirect('/');
+    res.redirect('/');
   });
 };

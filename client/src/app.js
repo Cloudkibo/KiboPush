@@ -24,6 +24,6 @@ console.log(store.getState());
 
 ReactDOM.render((
   <Provider store={store}>
-    <Router history={hashHistory} routes={routes} />
+    <Router history={history} routes={routes} />
   </Provider>
 ), rootElement);

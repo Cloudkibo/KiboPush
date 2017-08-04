@@ -1,4 +1,4 @@
-import { Route, IndexRoute, browserHistory } from 'react-router';
+import { Route, IndexRoute } from 'react-router';
 import React from 'react';
 import App from './sub.app.js';
 import Home from './containers/home';
@@ -23,24 +23,33 @@ import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToM
 import auth from './utility/auth.service';
 
 function requireAuth(nextState, replace) {
+  console.log(nextState);
+  auth.putNext(nextState.location.pathname);
   if (!auth.loggedIn()) {
     console.log('you are not logged in.');
-    // replace({
-    //   pathname: '/',
-    //   state: { nextPathname: nextState.location.pathname }
-    // });
-    browserHistory.push('/');
+    replace({
+      pathname: '/',
+      state: { nextPathname: nextState.location.pathname }
+    });
   }
 }
 
 function redirectAuthUsers(nextState, replace) {
   if (auth.loggedIn()) {
     console.log('you are logged in. You cant go here.');
-    // replace({
-    //   pathname: '/dashboard',
-    //   state: { nextPathname: nextState.location.pathname }
-    // });
-    browserHistory.push('/dashboard');
+    if (auth.getNext() && auth.getNext() !== '') {
+      const next = auth.getNext();
+      auth.removeNext();
+      replace({
+        pathname: next,
+        state: { nextPathname: nextState.location.pathname }
+      });
+    } else {
+      replace({
+        pathname: '/dashboard',
+        state: { nextPathname: nextState.location.pathname }
+      });
+    }
   }
 }
 

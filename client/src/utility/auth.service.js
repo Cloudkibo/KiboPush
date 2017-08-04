@@ -10,12 +10,16 @@ import cookie from 'react-cookie';
 
 const auth = {
   getToken() {
-    var token = cookie.load('token');
+    const token = cookie.load('token');
     return token;
   },
 
+  putNext(val) {
+    cookie.save('next', val);
+  },
+
   getNext() {
-    var token = cookie.load('next');
+    const token = cookie.load('next');
     return token;
   },
 
@@ -30,20 +34,12 @@ const auth = {
   },
 
   loggedIn() {
-    var token = cookie.load('token')
+    const token = cookie.load('token');
     //first check from server if this token is expired or is still valid
-    if(typeof token === 'undefined' || token === '') {
-      //  console.log('token' + token);
-      return false
-
+    if (typeof token === 'undefined' || token === '') {
+      return false;
     }
-    else{
-      // console.log('calling in loggedIn() service')
-      //  console.log(token);
-      return true
-
-    }
-
+      return true;
   },
 
   onChange() {}
