@@ -11,7 +11,16 @@ import cookie from 'react-cookie';
 const auth = {
   getToken() {
     var token = cookie.load('token');
-    return token
+    return token;
+  },
+
+  getNext() {
+    var token = cookie.load('next');
+    return token;
+  },
+
+  removeNext() {
+    cookie.remove('next');
   },
 
   logout(cb) {

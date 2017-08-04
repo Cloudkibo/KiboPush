@@ -34,6 +34,14 @@ function requireAuth(nextState, replace) {
 function redirectAuthUsers(nextState, replace) {
   if (auth.loggedIn()) {
     console.log('you are logged in. You cant go here.');
+    if (auth.getNext() && auth.getNext() !== '') {
+      const next = auth.getNext();
+      auth.removeNext();
+      replace({
+        pathname: next,
+        state: { nextPathname: nextState.location.pathname }
+      });
+    }
     replace({
       pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
