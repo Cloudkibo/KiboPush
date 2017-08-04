@@ -115,11 +115,9 @@ exports.getfbMessage = function (req, res) {
         };
 
         needle.get(options.url, options, (error, response) => {
-          logger.serverLog(TAG, `This is response ${JSON.stringify(response)}`);
-          logger.serverLog(TAG, `This is error  ${JSON.stringify(error)}`);
           
           const subsriber = JSON.parse(response.body);
-          logger.serverLog(TAG, `This is subsriber ${JSON.stringify(subsriber)}`);
+          logger.serverLog(TAG, 'This is subsriber ' + JSON.stringify(subsriber));
 
           if (!error) {
             let payload = {
