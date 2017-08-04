@@ -110,9 +110,10 @@ exports.send = function (req, res) {
           
           }
           else{
-            for(var z=0;z<pages.length;z++)
+            logger.serverLog(TAG, 'Page at Z ' + JSON.stringify(pages));
+            for(var z in pages)
             {
-                
+                logger.serverLog(TAG, 'Page at Z ' + JSON.stringify(pages[z]));
                 Subscribers.find({pageId:pages[z]._id}, function (err, subscribers) {
                   logger.serverLog(TAG, 'Subscribers of page ' + JSON.stringify(subscribers));
                   logger.serverLog(TAG, 'Page at Z ' + JSON.stringify(pages[z]));
