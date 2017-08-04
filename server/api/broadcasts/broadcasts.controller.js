@@ -179,4 +179,5 @@ exports.getfbMessage = function (req, res) {
            }
       }
 }
+ return res.status(200);
 };
