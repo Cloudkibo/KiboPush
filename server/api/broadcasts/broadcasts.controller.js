@@ -138,7 +138,7 @@ exports.getfbMessage = function (req, res) {
             Subscribers.findOne({ senderId: sender }, (err, subscriber) => {
               logger.serverLog(TAG, err);
               logger.serverLog(TAG, subscriber);
-              if (err) {
+              if (subscriber == null) {
 
                 //subsriber not found, create subscriber
                 Subscribers.create(payload, (err2, subsriber) => {
