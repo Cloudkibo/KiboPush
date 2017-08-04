@@ -35,7 +35,7 @@ function redirectAuthUsers(nextState, replace) {
   if (auth.loggedIn()) {
     console.log('you are logged in. You cant go here.');
     replace({
-      pathname: '#dashboard',
+      pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
     });
   }
