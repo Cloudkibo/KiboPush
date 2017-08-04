@@ -19,6 +19,11 @@ export function surveysInfo(state = initialState, action) {
      return Object.assign({}, state, {
         responses: action.data
       });
+     case ActionTypes.LOAD_SURVEYS_QUESTIONS:
+     return Object.assign({}, state, {
+        questions: action.questions,
+        survey:action.survey,
+      });
     default:
       return state;
   }
