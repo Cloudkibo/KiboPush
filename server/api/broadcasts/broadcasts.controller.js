@@ -174,7 +174,7 @@ exports.getfbMessage = function (req, res) {
            logger.serverLog(TAG,' payload '+resp.poll_id);
            if(resp.poll_id){
             //find subscriber from sender id
-            Subscribers.findOne({ senderId: event.sender.id }, (err, subsriber) => {
+            Subscribers.findOne({ senderId: event.sender.id }, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG, 'Error occured in finding subscriber');
               }
