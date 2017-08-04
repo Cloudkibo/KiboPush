@@ -115,27 +115,27 @@ exports.getfbMessage = function (req, res) {
         };
 
         needle.get(options.url, options, (error, response) => {
-          
-          const subsriber = JSON.parse(response.body);
+          logger.serverLog(TAG, 'This is a response from graph api' + JSON.stringify(response.body));
+          const subsriber = response.body;
           logger.serverLog(TAG, 'This is subsriber ' + JSON.stringify(subsriber));
 
           if (!error) {
             let payload = {
-              firstName: customer.first_name,
-              lastName: customer.last_name,
-              locale: customer.locale,
-              gender: customer.gender,
+              firstName: subsriber.first_name,
+              lastName: subsriber.last_name,
+              locale: subsriber.locale,
+              gender: subsriber.gender,
               provider: 'facebook',
-              timezone: customer.timezone,
-              profilePic: customer.profile_pic,
+              timezone: subsriber.timezone,
+              profilePic: subsriber.profile_pic,
               pageScopedId: '',
             };
 
-            if (customer.email) {
-              payload = _.merge(payload, { email: customer.email });
+            if (subsriber.email) {
+              payload = _.merge(payload, { email: subsriber.email });
             }
 
-            Subscribers.findOne({ senderId: sender }, (err, subsriber) => {
+            Subscribers.findOne({ senderId: sender }, (err, subscriber) => {
               if (err) {
                 //subsriber not found, create subscriber
                 Subscribers.create(payload, (err2, subsriber) => {
@@ -144,7 +144,7 @@ exports.getfbMessage = function (req, res) {
                       description: 'Subscriber not created' });
                     }
                     logger.serverLog(TAG, 'new Subscriber added');
-                   return res.status(200).json({ status: 'success', payload: subsriber });
+                   return res.status(200).json({ status: 'success', payload: subscriber });
                     });
                    }
             });
