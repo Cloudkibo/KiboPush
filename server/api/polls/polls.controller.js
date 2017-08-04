@@ -119,7 +119,7 @@ exports.send = function (req, res) {
                   }
                   for(var j=0;j< subscribers.length;j++){
                           logger.serverLog(TAG, 'At Subscriber fetched ' + JSON.stringify(subscribers[j]));
-                          logger.serverLog(TAG, 'At Pages fetched ' + JSON.stringify(pages[z].accessToken));
+                          logger.serverLog(TAG, 'At Pages fetched ' + JSON.stringify(pages[z]));
             
                           var data = {
                                       recipient: {id: subscribers[j].senderId}, //this is the subscriber id
