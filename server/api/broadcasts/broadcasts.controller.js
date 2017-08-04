@@ -200,6 +200,10 @@ exports.getfbMessage = function (req, res) {
             
            }
       }
+      else{
+                return res.status(200).json({ status: 'success', payload: 'message received' });
+          
+      }
 }
  //return res.status(200);
 };
