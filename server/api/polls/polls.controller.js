@@ -112,14 +112,15 @@ exports.send = function (req, res) {
           else{
             for(var z=0;z<pages.length;z++)
             {
-                logger.serverLog(TAG, 'At Page fetched ' + JSON.stringify(pages[z]));
-            
+             
                 Subscribers.find({pageId:pages[z]._id}, function (err, subscribers) {
                   if(err) { 
                     return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
                   }
                   for(var j=0;j< subscribers.length;j++){
-
+                          logger.serverLog(TAG, 'At Subscriber fetched ' + JSON.stringify(subscribers[j]));
+                          logger.serverLog(TAG, 'At Pages fetched ' + JSON.stringify(pages[z].accessToken));
+            
                           var data = {
                                       recipient: {id: subscribers[j].senderId}, //this is the subscriber id
                                       message: messageData,
