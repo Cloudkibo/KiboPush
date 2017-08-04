@@ -131,6 +131,7 @@ exports.getfbMessage = function (req, res) {
               pageScopedId: '',
               email:'',
               senderId:sender,
+              pageId:page._id,
             };
 
             
@@ -138,7 +139,7 @@ exports.getfbMessage = function (req, res) {
             Subscribers.findOne({ senderId: sender }, (err, subscriber) => {
               logger.serverLog(TAG, err);
               logger.serverLog(TAG, subscriber);
-              if (err) {
+              if (subscriber == null) {
 
                 //subsriber not found, create subscriber
                 Subscribers.create(payload, (err2, subsriber) => {
@@ -151,8 +152,16 @@ exports.getfbMessage = function (req, res) {
                    return res.status(200).json({ status: 'success', payload: subscriber });
                     });
                    }
+                else{
+                 return res.status(200).json({ status: 'success', payload: subscriber }); 
+                }
             });
         }
+        else{
+         return res.status(404).json({ status: 'failed',
+                      description: 'Graph api call failed' });
+                    }
+        
       });
     });
   }
@@ -162,9 +171,10 @@ exports.getfbMessage = function (req, res) {
   if(event.postback){
           var resp = JSON.parse(event.postback.payload);
            logger.serverLog(TAG, resp);
+           logger.serverLog(TAG,' payload '+resp.poll_id);
            if(resp.poll_id){
             //find subscriber from sender id
-            Subscribers.findOne({ senderId: event.sender.id }, (err, subsriber) => {
+            Subscribers.findOne({ senderId: event.sender.id }, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG, 'Error occured in finding subscriber');
               }
@@ -177,12 +187,17 @@ exports.getfbMessage = function (req, res) {
                        }
              PollResponse.create(pollbody, (err, pollresponse) => {
                 if (err) {
+                  logger.serverLog(TAG, err);
                    return res.status(404).json({ status: 'failed', description: 'Poll response not created' });
                  }
                   return res.status(200).json({ status: 'success', payload: pollresponse });
                });
             });
            
+           }
+           else{
+                  return res.status(200).json({ status: 'success', payload: 'success' });
+            
            }
       }
 }

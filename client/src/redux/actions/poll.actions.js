@@ -15,15 +15,26 @@ export function createPoll(data){
   };
 }
 
+export function sendpollresp(data){
+   return {
+    type: ActionTypes.SEND_POLL,
+    data
+  };
+}
+
 export function loadPollsList() {
 	//here we will fetch list of subscribers from endpoint
   console.log('Loading broadcast list');
   return (dispatch) => {
-    callApi('polls').then(res => dispatch(updatePollsList(res)));
+    callApi('polls').then(res => dispatch(updatePollsList(res.payload)));
   };			
   
 }
-
+export function sendpoll(poll){
+   return (dispatch) => {
+    callApi('polls/send','post',poll).then(res => dispatch(sendpollresp(res.payload)));
+  };
+}
 export function addPoll(token, data) {
 	//here we will add the broadcast
   console.log('Loading broadcast list');
