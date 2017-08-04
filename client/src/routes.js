@@ -41,11 +41,12 @@ function redirectAuthUsers(nextState, replace) {
         pathname: next,
         state: { nextPathname: nextState.location.pathname }
       });
+    } else {
+      replace({
+        pathname: '/dashboard',
+        state: { nextPathname: nextState.location.pathname }
+      });
     }
-    replace({
-      pathname: '/dashboard',
-      state: { nextPathname: nextState.location.pathname }
-    });
   }
 }
 
