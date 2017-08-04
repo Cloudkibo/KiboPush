@@ -141,6 +141,7 @@ exports.getfbMessage = function (req, res) {
                     return res.status(404).json({ status: 'failed',
                       description: 'Subscriber not created' });
                     }
+                    logger.serverLog(TAG, 'new Subscriber added');
                    return res.status(200).json({ status: 'success', payload: subsriber });
                     });
                    }
