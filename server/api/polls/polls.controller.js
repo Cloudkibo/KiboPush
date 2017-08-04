@@ -143,7 +143,7 @@ exports.send = function (req, res) {
                           var options= {
                               qs: {access_token: resp.body.access_token},
                              }
-                          needle.post('https://graph.facebook.com/v2.6/me/messages', data,options, (err, resp) => {
+                          needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
                               logger.serverLog(TAG, 'Sending poll to subscriber response ' + JSON.stringify(resp.body));
                                if (err) {
                                   return res.status(404).json({ status: 'failed', description: err});
