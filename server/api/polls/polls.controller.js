@@ -120,16 +120,27 @@ exports.send = function (req, res) {
                   if(err) { 
                     return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
                   }
+                  //get accesstoken of page
+                  needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token`,(err,resp) =>{
+                   if(err){
+                    logger.serverLog(TAG, 'Page accesstoken from graph api Error' + JSON.stringify(err));
+                    return res.status(404).json({ status: 'failed', description: err});
+                              
+                   }
+                   else{
+                   logger.serverLog(TAG, 'Page accesstoken from graph api ' + JSON.stringify(resp.body));
+
+                         
                   for(var j=0;j< subscribers.length;j++){
                           logger.serverLog(TAG, 'At Subscriber fetched ' + JSON.stringify(subscribers[j]));
                           //logger.serverLog(TAG, 'At Pages fetched ' + JSON.stringify(pages[z]));
-            
+                          
                           var data = {
                                       recipient: {id: subscribers[j].senderId}, //this is the subscriber id
                                       message: messageData,
                                     }
                           var options= {
-                              qs: {access_token: pages[z].accessToken},
+                              qs: {access_token: resp.body.access_token},
                              }
                           needle.post('https://graph.facebook.com/v2.6/me/messages', data,options, (err, resp) => {
                               logger.serverLog(TAG, 'Sending poll to subscriber response ' + JSON.stringify(resp.body));
@@ -141,6 +152,8 @@ exports.send = function (req, res) {
                             
                           });
                   }
+                }
+                });
                 });
             }
                 return res.status(200).json({ status: 'success', payload: 'Poll sent successfully.' });
