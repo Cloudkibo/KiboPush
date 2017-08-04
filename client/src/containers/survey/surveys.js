@@ -37,6 +37,12 @@ class Survey extends React.Component {
 		document.body.appendChild(addScript);
 	}
 
+	gotoView(survey){
+		 this.props.history.push({
+			pathname: `/viewsurvey/${survey._id}`,
+			state: survey
+		});
+		}
   render() {
     return (
 	 <div>
@@ -73,7 +79,8 @@ class Survey extends React.Component {
 											<td>{survey.description}</td>
 											<td>{handleDate(survey.datetime)}</td>
 											<td>
-												<button className="btn btn-primary btn-sm" style={{float: 'left'}}>View</button>
+
+												<button className="btn btn-primary btn-sm" style={{float: 'left'}} onClick={() => this.gotoView(survey)}>View</button>
 												<Link to='/surveyResult'>
 														<button className="btn btn-primary btn-sm"> Report </button>
 												</Link>

@@ -10,6 +10,14 @@ export function showSurveys(data) {
 
 }
 
+export function showSurveyQuestions(data) {
+  return {
+    type: ActionTypes.LOAD_SURVEYS_QUESTIONS,
+    survey:data.survey,
+    questions:data.questions,
+  };
+
+}
 
 export function loadSurveysList() {
 	//here we will fetch list of subscribers from endpoint
@@ -18,7 +26,11 @@ export function loadSurveysList() {
     callApi('surveys').then(res => dispatch(showSurveys(res.payload)));
   };
 }
-
+export function getsurveyform(id){
+ return (dispatch) => {
+    callApi(`surveys/showquestions/${id}`).then(res => dispatch(showSurveyQuestions(res.payload)));
+  }; 
+}
 export function createsurvey(survey) {
   console.log('Creating survey');
   console.log(survey)
