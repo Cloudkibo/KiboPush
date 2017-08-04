@@ -8,6 +8,7 @@ const Pages = require('../pages/Pages.model');
 const PollResponse = require('../polls/pollresponse.model');
 const Subscribers = require('../subscribers/Subscribers.model');
 const TAG = 'api/broadcast/broadcast.controller.js';
+const needle = require('needle');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working');
@@ -183,5 +184,5 @@ exports.getfbMessage = function (req, res) {
            }
       }
 }
- return res.status(200);
+ //return res.status(200);
 };
