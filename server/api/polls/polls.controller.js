@@ -110,9 +110,10 @@ exports.send = function (req, res) {
           
           }
           else{
-            logger.serverLog(TAG, 'Pages fetched ' + JSON.stringify(pages));
             for(var z=0;z<pages.length;z++)
             {
+                logger.serverLog(TAG, 'At Page fetched ' + JSON.stringify(pages[z]));
+            
                 Subscribers.find({pageId:pages[z]._id}, function (err, subscribers) {
                   if(err) { 
                     return res.status(404).json({ status: 'failed', description: 'Subscribers not found'});
