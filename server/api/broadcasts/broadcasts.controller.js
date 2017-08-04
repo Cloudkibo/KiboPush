@@ -129,17 +129,18 @@ exports.getfbMessage = function (req, res) {
               timezone: subsriber.timezone,
               profilePic: subsriber.profile_pic,
               pageScopedId: '',
+              email:'',
+              senderId:sender,
             };
 
-            if (subsriber.email) {
-              payload = _.merge(payload, { email: subsriber.email });
-            }
+            
 
             Subscribers.findOne({ senderId: sender }, (err, subscriber) => {
               if (err) {
                 //subsriber not found, create subscriber
                 Subscribers.create(payload, (err2, subsriber) => {
-                   if (err) {
+                   if (err2) {
+                    logger.serverLog(TAG, err2);
                     return res.status(404).json({ status: 'failed',
                       description: 'Subscriber not created' });
                     }
