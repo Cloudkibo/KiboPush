@@ -133,12 +133,13 @@ exports.send = function (req, res) {
                          
                   for(var j=0;j< subscribers.length;j++){
                           logger.serverLog(TAG, 'At Subscriber fetched ' + JSON.stringify(subscribers[j]));
-                          //logger.serverLog(TAG, 'At Pages fetched ' + JSON.stringify(pages[z]));
+                          logger.serverLog(TAG, 'At Pages Token ' + resp.body.access_token);
                           
                           var data = {
                                       recipient: {id: subscribers[j].senderId}, //this is the subscriber id
                                       message: messageData,
                                     }
+
                           var options= {
                               qs: {access_token: resp.body.access_token},
                              }
