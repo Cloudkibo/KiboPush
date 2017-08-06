@@ -9,20 +9,25 @@ import auth from './auth.service';
 export const API_URL = '/api';
 
 export default function callApi(endpoint, method = 'get', body) {
-
-  var headers = {
+  let headers = {
     'content-type': 'application/json'
   };
 
   if (auth.loggedIn()) {
     headers = _.merge(headers, {
-      'Authorization': `Bearer ${auth.getToken()}`,
+      Authorization: `Bearer ${auth.getToken()}`,
     });
   }
   return fetch(`${API_URL}/${endpoint}`, {
     headers,
     method,
     body: JSON.stringify(body),
+  }).then(response => {
+    if (response.statusText === 'Unauthorized') {
+      auth.logout();
+      return Promise.reject(response.statusText);
+    }
+    return response;
   }).then(response => response.json().then(json => ({ json, response })))
     .then(({ json, response }) => {
       if (!response.ok) {

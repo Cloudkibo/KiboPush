@@ -22,11 +22,6 @@ store.dispatch(setBrowserVersion(BROWSER_VERSION));
 
 console.log(store.getState());
 
-import callApi from './utility/api.caller.service';
-callApi('users').then(res => {
- console.log(res);
-});
-
 ReactDOM.render((
   <Provider store={store}>
     <Router history={history} routes={routes} />
