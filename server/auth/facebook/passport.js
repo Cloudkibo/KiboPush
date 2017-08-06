@@ -62,16 +62,20 @@ exports.setup = function (User, config) {
               return done(err);
             }
             if (!err && user !== null) {
-                console.log('User', user);
+              user.fbToken = accessToken;
+              user.save((err, userpaylaod) => {
+                if (err) {
+                  return done(err);
+                }
                 done(null, user);
+              });
             } else {
-               payload.save((error) => {
-            if (error) {
-                return done(error);
-            }
-                console.log('Payload', payload);
+              payload.save((error) => {
+                if (error) {
+                  return done(error);
+                }
                 return done(null, payload);
-            });
+              });
             }
           }
         );
@@ -98,21 +102,26 @@ function fetchPages(url, user) {
         .findOne({ pageId: item.id }, (err, page) => {
           if (!page) {
             logger.serverLog(TAG, 'Page not found. Creating a page ');
-            var page = new Pages({ pageId: item.id,
-                                  pageName: item.name,
-                                  accessToken: item.access_token,
-                                  user });
+            var page = new Pages({
+              pageId: item.id,
+              pageName: item.name,
+              accessToken: item.access_token,
+              user
+            });
             //save model to MongoDB
             page.save((err2, page) => {
               if (err2) {
-                res.status(500).json({ status: 'Failed', error: err2,
-                  description: 'Failed to insert page' });
+                res.status(500).json({
+                  status: 'Failed',
+                  error: err2,
+                  description: 'Failed to insert page'
+                });
               }
               logger.serverLog(TAG, `Page ${item.name} created: ${page}`);
             });
           }
-          });
-     });
+        });
+    });
     if (cursor.next) {
       fetchPages(cursor.next, user);
     }
