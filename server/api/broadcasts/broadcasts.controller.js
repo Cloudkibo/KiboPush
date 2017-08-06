@@ -104,6 +104,7 @@ exports.send = function (req, res) {
         });
       });
     });
+    return res.status(200).json({ status: 'success', payload: 'Broadcast sent successfully.' });
   });
 };
 
