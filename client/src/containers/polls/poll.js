@@ -47,7 +47,14 @@ class Poll extends React.Component {
 			state: broadcast
 		});
 	}
+gotoView(poll){
+		 this.props.history.push({
+			pathname: `/pollResult/${poll._id}`,
+			state: poll
+		});
 
+		 
+		}
   render() {
 	return (
 	   <div>
@@ -86,7 +93,7 @@ class Poll extends React.Component {
 									<td>{poll.sent}</td>
 									<td>
 									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={this.props.sendpoll(poll)}>Send</button>
-									<Link to="pollResult" className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}}>Report</Link>
+									<button  className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={() => this.gotoView(poll)}>Report</button>
 									</td>
 								</tr>
 								)) : <br/>

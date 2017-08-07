@@ -12,6 +12,7 @@ import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
 import ViewSurvey from './containers/survey/ViewSurvey';
 import SubmitSurvey from './containers/survey/SubmitSurvey';
+import ViewSurveyDetail from './containers/survey/ViewSurveyDetail';
 import AddSurvey from './containers/survey/add_survey';
 import SurveyResult from './containers/survey/SurveyResult';
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
@@ -80,19 +81,20 @@ const routes = (
     <Route path="/broadcasts" component={Broadcast} onEnter={requireAuth} />
     <Route path="/pages" component={Page} onEnter={requireAuth} />
     <Route path="/addPages" component={AddPage} onEnter={requireAuth} />
-    <Route path="/surveys" component={Surveys} onEnter={requireAuth} />
+    <Route path="/surveys" component={Surveys} />
     <Route path="/createbroadcast" component={CreateBroadcast} onEnter={requireAuth} />
     <Route path="/createworkflow" component={CreateWorkflow} onEnter={requireAuth} />
     <Route path="/workflows" component={Workflows} onEnter={requireAuth} />
     <Route path="/editbroadcast" component={EditBroadcast} onEnter={requireAuth} />
     <Route path="/createpoll" component={CreatePoll} onEnter={requireAuth} />
-    <Route path="/poll" component={Poll} onEnter={requireAuth} />
+    <Route path="/poll" component={Poll} />
     <Route path="/stats" component={Stats} />
     <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path="/addsurvey" component={AddSurvey} onEnter={requireAuth} />
-    <Route path="/pollResult" component={PollResult} onEnter={requireAuth} />
+    <Route path="/pollResult/:id" component={PollResult} />
     <Route path="/surveyResult" component={SurveyResult} onEnter={requireAuth} />
     <Route path="/viewsurvey/:id/:subscriberid" component={ViewSurvey} />
+    <Route path="/viewsurveydetail/:id" component={ViewSurveyDetail} />
     <Route path="/submitsurveyresponse" component={SubmitSurvey} />
   </Route>
 
