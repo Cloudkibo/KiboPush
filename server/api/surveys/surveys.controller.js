@@ -10,6 +10,7 @@ const TAG = 'api/surveys/surveys.controller.js';
 
 const needle = require('needle');
 const Pages = require('../pages/Pages.model');
+const Subscribers = require('../subscribers/Subscribers.model');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Surveys get api is working');
