@@ -60,6 +60,15 @@ function redirectAuthUsers(nextState, replace) {
         state: { nextPathname: nextState.location.pathname }
       });
     }
+  } else {
+    if (auth.getNext() && auth.getNext() !== '') {
+      const next = auth.getNext();
+      auth.removeNext();
+      replace({
+        pathname: next,
+        state: { nextPathname: nextState.location.pathname }
+      });
+    }
   }
 }
 
