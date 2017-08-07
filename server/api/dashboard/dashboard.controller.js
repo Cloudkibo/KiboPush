@@ -9,8 +9,8 @@ const TAG = 'api/pages/pages.controller.js';
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called');
-  var data = {};
-  Pages.count(function(err, c) {
+  const data = {};
+  Pages.count((err, c) => {
     data.pagesCount = c;
     res.status(200).json(data);
   });

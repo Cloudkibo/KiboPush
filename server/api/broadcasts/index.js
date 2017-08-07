@@ -14,8 +14,8 @@ router.get('/', controller.index);
 router.post('/create', controller.create);
 router.post('/edit', controller.edit);
 router.post('/send', controller.send);
-router.post('/webhook',controller.getfbMessage);
-router.get('/webhook',controller.verifyhook);
+router.post('/webhook', controller.getfbMessage);
+router.get('/webhook', controller.verifyhook);
 
 router.get('/:id', controller.show);
 

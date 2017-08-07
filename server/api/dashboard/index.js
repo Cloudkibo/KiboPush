@@ -21,7 +21,6 @@ router.post('/enable', controller.enable);
 router.post('/disable', controller.disable);
 
 
-
 /* Seed Pages */
 router.get('/seed', controller.seed);
 

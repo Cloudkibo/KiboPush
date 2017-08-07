@@ -26,7 +26,8 @@ exports.create = function (req, res) {
     //save model to MongoDB
     workflow.save((err) => {
       if (err) {
-        res.status(500).json({ status: 'Failed', error: err,
+        res.status(500).json({ status: 'Failed',
+error: err,
           description: 'Failed to insert record' });
       } else {
         res.status(200).json({ status: 'Success' });
@@ -38,7 +39,8 @@ exports.edit = function (req, res) {
   Workflows.update({ _id: req.body._id },
     { isActive: (req.body.isActive === 'Yes') }, { multi: true }, (err) => {
       if (err) {
-        res.status(500).json({ status: 'Failed', error: err,
+        res.status(500).json({ status: 'Failed',
+error: err,
           description: 'Failed to update record' });
       } else {
         res.status(200).json({ status: 'Success' });
@@ -56,16 +58,31 @@ exports.send = function (req, res) {
 
 exports.seed = function (req, res) {
  const rawDocuments = [
-   { condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'],
-     reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message_contains', keywords: ['Hi', 'Hello', 'Howdy'],
-     reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message_begins', keywords: ['Hi', 'Hello', 'Howdy'],
-     reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'],
-     reply: 'How are you?', isActive: true, sent: 0 },
-   { condition: 'message_is', keywords: ['Hi', 'Hello', 'Howdy'],
-     reply: 'How are you?', isActive: true, sent: 0 },
+   { condition: 'message_contains',
+keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?',
+isActive: true,
+sent: 0 },
+   { condition: 'message_contains',
+keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?',
+isActive: true,
+sent: 0 },
+   { condition: 'message_begins',
+keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?',
+isActive: true,
+sent: 0 },
+   { condition: 'message_is',
+keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?',
+isActive: true,
+sent: 0 },
+   { condition: 'message_is',
+keywords: ['Hi', 'Hello', 'Howdy'],
+     reply: 'How are you?',
+isActive: true,
+sent: 0 },
    ];
 
  Workflows.insertMany(rawDocuments)
