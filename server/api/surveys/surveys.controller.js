@@ -8,6 +8,8 @@ const SurveyQuestions = require('./surveyquestions.model');
 const SurveyResponses = require('./surveyresponse.model');
 const TAG = 'api/surveys/surveys.controller.js';
 
+const needle = require('needle');
+const Pages = require('../pages/Pages.model');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Surveys get api is working');
@@ -174,7 +176,7 @@ exports.submitresponse = function (req, res) {
     subscriberId: _id of subscriber,
     }
   */
-  for (const resp in req.body.responses) {
+  for (var resp in req.body.responses) {
               const surveyResponse = new SurveyResponses({
                       response: req.body.responses[resp].response, //response submitted by subscriber
                       surveyId: req.body.surveyId,
@@ -185,6 +187,7 @@ exports.submitresponse = function (req, res) {
 
               surveyResponse.save((err) => {
                  if (err) { 
+                          logger.serverLog(TAG, err);
                            return res.status(404).json({ status: 'failed', description: 'Survey Response not created' });
                          }
                 });
@@ -193,6 +196,79 @@ exports.submitresponse = function (req, res) {
 };
 
 exports.send = function (req, res) {
-   //we will write here the logic to send survey
+  logger.serverLog(TAG, `Inside sendsurvey ${JSON.stringify(req.body)}`);
+  /*
+   Expected request body
+   { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
+   */
+  Pages.find({ userId: req.user._id }, (err, pages) => {
+    if (err) {
+      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`);
+      return res.status(404).json({ status: 'failed', description: 'Pages not found' });
+    }
+      logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`);
+      for (var z in pages) // todo this for loop doesn't work with async code
+      {
+        logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
+        Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
+          logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`);
+          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
+          if (err) {
+            return res.status(404).json({ status: 'failed', description: 'Subscribers not found' });
+          }
+          //get accesstoken of page
+          // TODO can't we get access token from the page table???
+          needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`, (err, resp) => {
+            if (err) {
+              logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`);
+              // TODO this will do problem, res should not be in loop
+              return res.status(404).json({ status: 'failed', description: err });
+            }
+
+              logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`);
+
+
+              for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
+                logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`);
+                logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
+
+                 var messageData = {
+                                        attachment: {
+                                          type: 'template',
+                                          payload: {
+                                            template_type: 'button',
+                                            text: req.body.statement,
+                                            "buttons":[
+                                              {
+                                                "type":"web_url",
+                                                "url":"https://app.kibopush.com/surveys/viewsurvey/"+req.body._id+"/"+subscribers[j].senderId ,
+                                                "title":req.body.title,
+                                              },
+                                             
+                                            ]
+                                          }
+                                        }
+                                      };
+                const data = {
+                  recipient: { id: subscribers[j].senderId }, //this is the subscriber id
+                  message: messageData,
+                };
+
+                needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
+                  logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(resp.body)}`);
+                  if (err) {
+                    // TODO this will do problem, res should not be in loop
+                    return res.status(404).json({ status: 'failed', description: err });
+                  }
+
+                  // return res.status(200).json({ status: 'success', payload: resp.body });
+                });
+              }
+          });
+        });
+      }
+      return res.status(200).json({ status: 'success', payload: 'Survey sent successfully.' });
+  });
 };
+
 

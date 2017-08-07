@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import {loadSurveysList} from '../../redux/actions/surveys.actions';
+import {loadSurveysList,sendsurvey} from '../../redux/actions/surveys.actions';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 var handleDate = function(d){
@@ -39,9 +39,11 @@ class Survey extends React.Component {
 
 	gotoView(survey){
 		 this.props.history.push({
-			pathname: `/viewsurvey/${survey._id}`,
+			pathname: `/viewsurvey/${survey._id}/121212`,
 			state: survey
 		});
+
+		 
 		}
   render() {
     return (
@@ -79,11 +81,12 @@ class Survey extends React.Component {
 											<td>{survey.description}</td>
 											<td>{handleDate(survey.datetime)}</td>
 											<td>
-
-												<button className="btn btn-primary btn-sm" style={{float: 'left'}} onClick={() => this.gotoView(survey)}>View</button>
-												<Link to='/surveyResult'>
-														<button className="btn btn-primary btn-sm"> Report </button>
+												<button className="btn btn-primary btn-sm"  onClick={() => this.gotoView(survey)}>View</button>
+												<Link to='/surveyResult' className="btn btn-primary btn-sm">
+													Report 
 												</Link>
+												<button className="btn btn-primary btn-sm" onClick={() => this.props.sendsurvey(survey)}> Send </button>
+												
 											</td>
 										</tr>
 
@@ -118,6 +121,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadSurveysList:loadSurveysList}, dispatch);
+  return bindActionCreators({loadSurveysList:loadSurveysList,sendsurvey:sendsurvey}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Survey);

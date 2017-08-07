@@ -10,6 +10,12 @@ export function showSurveys(data) {
 
 }
 
+export function submitresponse(data){
+   return {
+    type: ActionTypes.SUBMIT_SURVEY,
+    response:data
+  };
+}
 export function showSurveyQuestions(data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_QUESTIONS,
@@ -26,9 +32,20 @@ export function loadSurveysList() {
     callApi('surveys').then(res => dispatch(showSurveys(res.payload)));
   };
 }
+export function sendsurvey(survey){
+return (dispatch) => {
+    callApi(`surveys/send`,'post',survey).then(res => {alert('Survey sent successfully')});
+  }; 
+}
 export function getsurveyform(id){
  return (dispatch) => {
     callApi(`surveys/showquestions/${id}`).then(res => dispatch(showSurveyQuestions(res.payload)));
+  }; 
+}
+
+export function submitsurvey(survey){
+   return (dispatch) => {
+    callApi(`surveys/submitresponse`,'post',survey).then(res => dispatch(submitresponse(res.payload)));
   }; 
 }
 export function createsurvey(survey) {

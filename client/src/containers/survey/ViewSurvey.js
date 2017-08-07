@@ -9,7 +9,7 @@ import Dashboard from '../dashboard/dashboard';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { connect } from 'react-redux';
-import {getsurveyform} from '../../redux/actions/surveys.actions';
+import {getsurveyform,submitsurvey} from '../../redux/actions/surveys.actions';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 var handleDate = function(d){
@@ -24,6 +24,8 @@ class ViewSurvey extends React.Component {
    		this.submitSurvey=this.submitSurvey.bind(this);
   }
   submitSurvey(e){
+  
+
   	e.preventDefault();
   	var responses=[];
   	for(var j = 0;j<this.props.questions.length;j++){
@@ -31,6 +33,7 @@ class ViewSurvey extends React.Component {
   	}
   	console.log('submited responses');
   	console.log(responses);
+    this.props.submitsurvey({'responses':responses,surveyId:this.props.params.id,subscriberId:this.props.params.subscriberid});
   }
 
 	componentDidMount() {
@@ -46,8 +49,19 @@ class ViewSurvey extends React.Component {
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
 	}
+  gotoresp(){
+     this.props.history.push({
+      pathname: `/submitsurveyresponse`,
+      state: this.props.response,
+    });
+
+     
+    }
 
   render() {
+    {this.props.response &&
+      this.gotoresp();
+    }
     return (
       <div className="container">
         <div className="row">
@@ -109,10 +123,11 @@ function mapStateToProps(state) {
   return {
           survey:(state.surveysInfo.survey),
           questions:(state.surveysInfo.questions),
+          response:(state.surveysInfo.response)
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({getsurveyform:getsurveyform}, dispatch);
+  return bindActionCreators({getsurveyform:getsurveyform,submitsurvey:submitsurvey}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(ViewSurvey);

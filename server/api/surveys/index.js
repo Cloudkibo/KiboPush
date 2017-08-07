@@ -13,7 +13,7 @@ const TAG = 'api/surveys/index.js';
 router.get('/', controller.index);
 router.post('/create', controller.create);
 router.post('/edit', controller.edit);
-router.post('/send', controller.send);
+router.post('/send', auth.isAuthenticated(),controller.send);
 router.post('/submitresponse', controller.submitresponse);
 
 router.get('/:id', controller.show); //show survey and responses of the survey
