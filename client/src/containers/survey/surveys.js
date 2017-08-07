@@ -39,7 +39,7 @@ class Survey extends React.Component {
 
 	gotoView(survey){
 		 this.props.history.push({
-			pathname: `/viewsurvey/${survey._id}/121212`,
+			pathname: `/viewsurveydetail/${survey._id}`,
 			state: survey
 		});
 

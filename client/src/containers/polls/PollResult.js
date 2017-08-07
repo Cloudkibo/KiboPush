@@ -10,14 +10,16 @@ import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {addPoll, loadPollsList} from '../../redux/actions/poll.actions';
+import {addPoll, loadPollsList,getpollresults} from '../../redux/actions/poll.actions';
 import { bindActionCreators } from 'redux';
 
 class PollResult extends React.Component {
 
 		constructor(props, context) {
 		super(props, context);
-		this.createPoll = this.createPoll.bind(this);
+    console.log(props.params.id);
+    props.getpollresults(props.params.id);
+	
   }
 
 	 componentDidMount() {
@@ -35,15 +37,7 @@ class PollResult extends React.Component {
 	}
 
 	
-	createPoll(){
-		this.props.addPoll('', {platform: 'Facebook', type: 'message', created_at: '15th Aug 2017', sent: 41});
-		console.log("Poll added");
-		this.props.history.push({
-			pathname: '/poll',
-		});
 	
-	}
-
   render() {
     return (
 	<div>
@@ -129,10 +123,11 @@ function mapStateToProps(state) {
   console.log(state);
   return {
           polls:(state.pollsInfo.polls),
+          responses:(state.pollsInfo.responses)
          };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll}, dispatch);
+  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll,getpollresults:getpollresults}, dispatch);
 }
 export default connect(mapStateToProps,mapDispatchToProps)(PollResult);

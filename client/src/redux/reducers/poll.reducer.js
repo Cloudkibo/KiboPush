@@ -15,7 +15,10 @@ export function pollsInfo(state = initialState, action) {
       return Object.assign({}, state, {
         polls: [...state.polls, action.data]
       });
-
+    case ActionTypes.ADD_POLL_RESPONSES:
+      return Object.assign({}, state, {
+        responses: action.sorted,
+      });
    
     default:
       return state;
