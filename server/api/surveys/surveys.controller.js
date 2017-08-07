@@ -242,7 +242,7 @@ exports.send = function (req, res) {
                                             "buttons":[
                                               {
                                                 "type":"web_url",
-                                                "url":"https://app.kibopush.com/surveys/viewsurvey/"+req.body._id+"/"+subscribers[j].senderId ,
+                                                "url":`https://app.kibopush.com/viewsurvey/${req.body._id}/${subscribers[j].senderId}`,
                                                 "title":req.body.title,
                                               },
                                              
@@ -254,7 +254,7 @@ exports.send = function (req, res) {
                   recipient: { id: subscribers[j].senderId }, //this is the subscriber id
                   message: messageData,
                 };
-
+                logger.serverLog(TAG,messageData);
                 needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
                   logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(resp.body)}`);
                   if (err) {
