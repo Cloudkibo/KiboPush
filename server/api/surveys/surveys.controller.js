@@ -238,7 +238,7 @@ exports.send = function (req, res) {
                                           type: 'template',
                                           payload: {
                                             template_type: 'button',
-                                            text: req.body.statement,
+                                            text: req.body.description,
                                             "buttons":[
                                               {
                                                 "type":"web_url",
