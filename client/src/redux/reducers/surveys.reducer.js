@@ -24,6 +24,10 @@ export function surveysInfo(state = initialState, action) {
         questions: action.questions,
         survey:action.survey,
       });
+     case ActionTypes.SUBMIT_SURVEY:
+      return Object.assign({}, state, {
+        response:action.response,
+      });
     default:
       return state;
   }

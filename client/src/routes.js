@@ -11,6 +11,7 @@ import AddPage from './containers/page/addPage';
 import CreateBroadcast from './containers/broadcast/CreateBroadcast';
 import Surveys from './containers/survey/surveys';
 import ViewSurvey from './containers/survey/ViewSurvey';
+import SubmitSurvey from './containers/survey/SubmitSurvey';
 import AddSurvey from './containers/survey/add_survey';
 import SurveyResult from './containers/survey/SurveyResult';
 import CreateWorkflow from './containers/workflows/CreateWorkflow';
@@ -82,7 +83,8 @@ const routes = (
     <Route path="/addsurvey" component={AddSurvey} onEnter={requireAuth} />
     <Route path="/pollResult" component={PollResult} onEnter={requireAuth} />
     <Route path="/surveyResult" component={SurveyResult} onEnter={requireAuth} />
-    <Route path="/viewsurvey/:id" component={ViewSurvey} />
+    <Route path="/viewsurvey/:id/:subscriberid" component={ViewSurvey} />
+    <Route path="/submitsurveyresponse" component={SubmitSurvey} />
   </Route>
 
 );
