@@ -304,11 +304,11 @@ exports.getfbMessage = function (req, res) {
             }
 
             //send the next question
-            SurveyQuestions.find({ surveyId: req.body._id,_id:{$gt: resp.question_id } }).populate('surveyId').exec((err2, questions) => {
+            SurveyQuestions.find({ surveyId: resp.survey_id,_id:{$gt: resp.question_id } }).populate('surveyId').exec((err2, questions) => {
               if (err2) { 
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
-               logger.serverLog(TAG, questions);
+               logger.serverLog(TAG, 'Questions are ' + JSON.stringify(questions));
              if(questions.length > 0){
                first_question = questions[0];
                //create buttons
