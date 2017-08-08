@@ -92,7 +92,7 @@ gotoView(poll){
 									<td>{poll.datetime}</td>
 									<td>{poll.sent}</td>
 									<td>
-									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={this.props.sendpoll(poll)}>Send</button>
+									<button className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={() => this.props.sendpoll(poll)}>Send</button>
 									<button  className="btn btn-primary btn-sm" style={{float: 'left' , margin: 2}} onClick={() => this.gotoView(poll)}>Report</button>
 									</td>
 								</tr>
