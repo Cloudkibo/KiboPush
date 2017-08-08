@@ -3,7 +3,7 @@
  */
 
 const logger = require('../../components/logger');
-const Broadcasts = require('./Broadcasts.model');
+const Broadcasts = require('./broadcasts.model');
 const Pages = require('../pages/Pages.model');
 const PollResponse = require('../polls/pollresponse.model');
 const SurveyResponse = require('../surveys/surveyresponse.model');
@@ -305,7 +305,7 @@ exports.getfbMessage = function (req, res) {
 
             //send the next question
             SurveyQuestions.find({ surveyId: resp.survey_id,_id:{$gt: resp.question_id } }).populate('surveyId').exec((err2, questions) => {
-              if (err2) { 
+              if (err2) {
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
                logger.serverLog(TAG, 'Questions are ' + JSON.stringify(questions));
@@ -342,7 +342,7 @@ exports.getfbMessage = function (req, res) {
                                                         template_type: 'button',
                                                         text: first_question.statement,
                                                         "buttons":buttons,
-      
+
                                                         }
                                                       }
                                             };
