@@ -8,7 +8,7 @@ const TAG = 'api/subscribers/subscribers.controller.js';
 
 
 exports.index = function (req, res) {
-  Subscribers.find((err, subscriber) => {
+  Subscribers.find({userId:req.user._id},(err, subscriber) => {
     logger.serverLog(TAG, subscriber);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json(subscriber);  
