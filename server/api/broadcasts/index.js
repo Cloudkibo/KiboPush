@@ -10,12 +10,12 @@ const auth = require('../../auth/auth.service');
 const TAG = 'api/broadcasts/index.js';
 
 
-router.get('/', controller.index);
-router.post('/create', controller.create);
-router.post('/edit', controller.edit);
-router.post('/send', controller.send);
-router.post('/webhook', controller.getfbMessage);
-router.get('/webhook', controller.verifyhook);
+router.get('/', auth.isAuthenticated(), controller.index);
+router.post('/create', auth.isAuthenticated(), controller.create);
+router.post('/edit', auth.isAuthenticated(), controller.edit);
+router.post('/send', auth.isAuthenticated(), controller.send);
+router.post('/webhook', auth.isAuthenticated(), controller.getfbMessage);
+router.get('/webhook', auth.isAuthenticated(), controller.verifyhook);
 
 router.get('/:id', controller.show);
 
