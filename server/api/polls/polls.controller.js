@@ -98,7 +98,7 @@ exports.send = function (req, res) {
     }
   };
   logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`);
-  Pages.find({ userId: req.user._id }, (err, pages) => {
+  Pages.find({ userId: req.user._id,connected:true }, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`);
       return res.status(404).json({ status: 'failed', description: 'Pages not found' });
