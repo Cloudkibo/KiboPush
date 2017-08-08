@@ -4,10 +4,18 @@
 
 import React from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import {loadDashboardData} from '../../redux/actions/dashboard.actions';
+import { bindActionCreators } from 'redux';
 
 
 class Dashboard extends React.Component {
 
+	constructor(props, context) {
+	super(props, context);
+		props.loadDashboardData();
+		
+	}	
 	
 	 componentDidMount() {
 		require('../../../public/js/jquery-3.2.0.min.js');
@@ -26,6 +34,7 @@ class Dashboard extends React.Component {
 
 	
   render() {
+
     return (
      <div className="container">
 	 <br/><br/><br/><br/><br/><br/>
@@ -35,7 +44,7 @@ class Dashboard extends React.Component {
                 <div className="friend-item friend-groups">
                   <div className="friend-item-content">              
                     <div className="friend-avatar">
-                        <h1>24</h1>
+                        <h1>{this.props.dashboard.subscribers}</h1>
                       <div className="author-content">
                         <Link to="subscribers" className="h5 author-name">Subscribers</Link>
                       </div>
@@ -100,7 +109,7 @@ class Dashboard extends React.Component {
                 <div className="friend-item friend-groups">
                   <div className="friend-item-content">              
                     <div className="friend-avatar">
-                        <h1>24</h1>
+												<h1>{this.props.dashboard.pages}</h1>
                       <div className="author-content">
                         <a href="#" className="h5 author-name">Pages</a>
                       </div>
@@ -268,7 +277,7 @@ class Dashboard extends React.Component {
                 <div className="friend-item friend-groups">
                   <div className="friend-item-content">              
                     <div className="friend-avatar">
-                        <h1>24</h1>
+                        <h1>{this.props.dashboard.scheduledBroadcast}</h1>
                       <div className="author-content">
                         <a href="#" className="h5 author-name">Scheduled Broadcasts</a>
                       </div>
@@ -284,7 +293,7 @@ class Dashboard extends React.Component {
                   <div className="author-thumb">
                     <img src="/img/author-page.jpg" alt="author" />
                   </div>
-                  <a href="#" className="h4 title">Welcome Richard!</a>
+                  <a href="#" className="h4 title">Welcome {this.props.dashboard.name} ! </a>
                   <p>Hope you are having a good day at Pied Piper! ;). Click the button below to start sending broadcasts.
                   </p>
                   <a href="#" className="btn btn-blue btn-sm">See Broadcasts<div className="ripple-container" /></a>
@@ -301,4 +310,15 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+
+function mapStateToProps(state) {
+  console.log(state);
+  return {
+          dashboard:(state.dashboardInfo.dashboard),
+         };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({loadDashboardData:loadDashboardData}, dispatch);
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Dashboard);

@@ -42,13 +42,62 @@ export function addPoll(token, data) {
     callApi('polls/create','post',data).then(res => dispatch(createPoll(data)));
   };
 }
+function rank(items, prop) {
+
+  //declare a key->count table
+  var results = {}
+
+  //loop through all the items we were given to rank
+  var len=items.length;
+  for(var i=0;i<len;i++) {
+
+    //get the requested property value (example: License)
+    var value = items[i][prop];
+
+    //increment counter for this value (starting at 1)
+    var count = (results[value] || 0) + 1;
+    results[value] = count;
+  }
+
+  var ranked = []
+
+  //loop through all the keys in the results object
+  for(var key in results) {
+
+    //here we check that the results object *actually* has
+    //the key. because of prototypal inheritance in javascript there's
+    //a chance that someone has modified the Object class prototype
+    //with some extra properties. We don't want to include them in the
+    //ranking, so we check the object has it's *own* property.
+    if(results.hasOwnProperty(key)) {
+
+      //add an object that looks like {value:"License ABC", count: 2} 
+      //to the output array
+      ranked.push({value:key, count:results[key]}); 
+    }
+  }
+
+  //sort by count descending
+  return ranked.sort(function(a, b) { return b.count - a.count; });
+}
 export function showresponses(data){
+  var d = [{'response': 'abc', //response submitted by subscriber
+    'pollId': '110',
+    'subscriberid':'1212'},{'response': 'abc', //response submitted by subscriber
+    'pollId': '1100',
+    'subscriberid':'12112'},{'response': 'xyz', //response submitted by subscriber
+    'pollId': '1010',
+    'subscriberid':'10212'}];
+  var sorted = rank(d, "response");
+  console.log(sorted);
   return {
     type: ActionTypes.ADD_POLL_RESPONSES,
-    data
+    sorted
   }; 
 }
-export function getpollresults(token, pollid) {
+
+
+export function getpollresults(pollid) {
   return (dispatch) => {
     callApi(`polls/responses/${pollid}`).then(res => dispatch(showresponses(res.payload)));
   };
