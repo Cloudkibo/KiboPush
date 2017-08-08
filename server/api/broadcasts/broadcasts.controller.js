@@ -308,6 +308,7 @@ exports.getfbMessage = function (req, res) {
               if (err2) { 
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
+               logger.serverLog(TAG, questions);
              if(questions.length > 0){
                first_question = questions[0];
                //create buttons
