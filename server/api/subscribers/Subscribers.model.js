@@ -30,10 +30,14 @@ const subscriberSchema = new Schema({
   profilePic: {
       type: String
   },
-  pageId: { type: Schema.ObjectId, ref: 'pages' },
-  userId: {
-      type: String
+  pageId: {
+    type: Schema.ObjectId,
+    ref: 'pages'
   },
+  userId: {
+    type: Schema.ObjectId,
+    ref: 'users'
+  }
 });
 
 module.exports = mongoose.model('subscribers', subscriberSchema);
