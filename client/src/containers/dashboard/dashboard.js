@@ -5,7 +5,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import {loadDashboardData} from '../../redux/actions/broadcast.actions';
+import {loadDashboardData} from '../../redux/actions/dashboard.actions';
 import { bindActionCreators } from 'redux';
 
 
