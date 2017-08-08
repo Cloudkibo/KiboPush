@@ -66,7 +66,7 @@ function redirectAuthUsers(nextState, replace) {
       const next = auth.getNext();
       auth.removeNext();
       replace({
-        pathname: next,
+        pathname: '/',
         state: { nextPathname: nextState.location.pathname }
       });
     }
