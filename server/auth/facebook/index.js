@@ -12,7 +12,7 @@ const router = express.Router();
 
 router
   .get('/', passport.authenticate('facebook', {
-    scope: ['email', 'public_profile', 'pages_show_list', 'pages_messaging_subscriptions', 'manage_pages'],
+    scope: ['email', 'public_profile', 'pages_show_list', 'pages_messaging_subscriptions', 'manage_pages', 'pages_messaging'],
     failureRedirect: '/',
     session: false
   }))
