@@ -16,6 +16,7 @@ const appReducer = combineReducers({
   broadcastsInfo,
   workflowsInfo,
   pollsInfo,
+  dashboardInfo,
 });
 
 export default appReducer;

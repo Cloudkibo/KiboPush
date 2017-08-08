@@ -11,7 +11,8 @@ const initialState = {
         polls: 0,
         messages: 0,
         surveys: 0,
-  }},
+  }
+},
 
 };
 
