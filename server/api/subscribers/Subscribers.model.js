@@ -31,9 +31,7 @@ const subscriberSchema = new Schema({
       type: String
   },
   pageId: { type: Schema.ObjectId, ref: 'pages' },
-  userId: {
-      type: String
-  },
+  userId: { type: Schema.ObjectId, ref: 'users' },
 });
 
 module.exports = mongoose.model('subscribers', subscriberSchema);
