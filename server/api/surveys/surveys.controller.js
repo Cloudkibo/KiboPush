@@ -222,7 +222,7 @@ exports.send = function (req, res) {
                 buttons.push({
                                 type: 'postback',
                                 title: first_question.options[x],
-                                payload: JSON.stringify({ survey_id: req.body._id, option: first_question.options[x],question_id:first_question._id,next_question_id:next_question_id })
+                                payload: JSON.stringify({ survey_id: req.body._id, option: first_question.options[x],question_id:first_question._id,next_question_id:next_question_id,userToken:req.user.fbToken })
                               })
                }
                 logger.serverLog(TAG, 'buttons created'+ JSON.stringify(buttons));
@@ -263,7 +263,7 @@ exports.send = function (req, res) {
                                                       type: 'template',
                                                       payload: {
                                                         template_type: 'button',
-                                                        text: first_question.statement,
+                                                        text: 'Please respond to these questions. \n' + first_question.statement,
                                                         "buttons":buttons,
       
                                                         }

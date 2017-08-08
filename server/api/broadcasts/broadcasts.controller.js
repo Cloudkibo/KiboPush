@@ -6,6 +6,8 @@ const logger = require('../../components/logger');
 const Broadcasts = require('./Broadcasts.model');
 const Pages = require('../pages/Pages.model');
 const PollResponse = require('../polls/pollresponse.model');
+const SurveyResponse = require('../surveys/surveyresponse.model');
+const SurveyQuestions = require('../surveys/surveyquestions.model');
 const Subscribers = require('../subscribers/Subscribers.model');
 const TAG = 'api/broadcast/broadcast.controller.js';
 const needle = require('needle');
@@ -252,7 +254,7 @@ exports.getfbMessage = function (req, res) {
     }
 
 
-    //if event.post, writing a logic to save response of poll
+    //if event.post, the response will be of survey or poll. writing a logic to save response of poll
     if (event.postback) {
       var resp = JSON.parse(event.postback.payload);
       logger.serverLog(TAG, resp);
@@ -278,7 +280,122 @@ exports.getfbMessage = function (req, res) {
             return res.status(200).json({ status: 'success', payload: pollresponse });
           });
         });
-      } else {
+      }
+      else if(resp.survey_id){
+        //this is the response of survey question
+        //first save the response of survey
+                //find subscriber from sender id
+        Subscribers.findOne({ senderId: event.sender.id }, (err, subscriber) => {
+          if (err) {
+            logger.serverLog(TAG, 'Error occured in finding subscriber');
+          }
+
+          const surveybody = {
+            response: resp.option, //response submitted by subscriber
+            surveyId: resp.survey_id,
+            questionId: resp.question_id,
+            subscriberId: subscriber._id,
+
+          };
+          SurveyResponse.create(surveybody, (err1, surveyresponse) => {
+            if (err1) {
+              logger.serverLog(TAG, err1);
+              return res.status(404).json({ status: 'failed', description: 'SurveyResponse  not created' });
+            }
+
+            //send the next question
+            SurveyQuestions.find({ surveyId: req.body._id,_id:{$gt: resp.question_id } }).populate('surveyId').exec((err2, questions) => {
+              if (err2) { 
+                return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
+              }
+             if(questions.length > 0){
+               first_question = questions[0];
+               //create buttons
+               var buttons = [];
+               var next_question_id='nil';
+               if(questions.length > 1){
+                next_question_id = questions[1]._id;
+               }
+
+               for(var x=0;x<first_question.options.length;x++){
+
+                buttons.push({
+                                type: 'postback',
+                                title: first_question.options[x],
+                                payload: JSON.stringify({ survey_id: resp.survey_id, option: first_question.options[x],question_id:first_question._id,next_question_id:next_question_id,userToken:resp.userToken})
+                              })
+                  }
+                logger.serverLog(TAG, 'buttons created'+ JSON.stringify(buttons));
+                needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
+                        if (err3) {
+                          logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
+                          // TODO this will do problem, res should not be in loop
+                          return res.status(404).json({ status: 'failed', description: err });
+                        }
+
+                          logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
+                          var messageData = {
+                                                    attachment: {
+                                                      type: 'template',
+                                                      payload: {
+                                                        template_type: 'button',
+                                                        text: first_question.statement,
+                                                        "buttons":buttons,
+      
+                                                        }
+                                                      }
+                                            };
+                            const data = {
+                              recipient: { id: event.sender.id }, //this is the subscriber id
+                              message: messageData,
+                            };
+                            logger.serverLog(TAG,messageData);
+                            needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
+                              logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
+                              if (err4) {
+                                // TODO this will do problem, res should not be in loop
+                                return res.status(404).json({ status: 'failed', description: err4 });
+                              }
+
+                               return res.status(200).json({ status: 'success', payload: respp.body });
+                            });
+                          });
+              }
+
+              //else send thank you message
+              else{
+                needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
+                        if (err3) {
+                          logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
+                          // TODO this will do problem, res should not be in loop
+                          return res.status(404).json({ status: 'failed', description: err });
+                        }
+
+                          logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
+                          var messageData = {
+                                                text: 'Thank you. Response submitted successfully.'
+                                            };
+                            const data = {
+                              recipient: { id: event.sender.id }, //this is the subscriber id
+                              message: messageData,
+                            };
+                            logger.serverLog(TAG,messageData);
+                            needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
+                              logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
+                              if (err4) {
+                                // TODO this will do problem, res should not be in loop
+                                return res.status(404).json({ status: 'failed', description: err4 });
+                              }
+
+                               return res.status(200).json({ status: 'success', payload: respp.body });
+                            });
+                          });
+              }
+            });
+          });
+        });
+      }
+       else {
         return res.status(200).json({ status: 'success', payload: 'success' });
       }
     } else {
