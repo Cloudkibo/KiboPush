@@ -219,7 +219,7 @@ exports.send = function (req, res) {
 
                for(var x=0;x<first_question.options.length;x++){
 
-                buttons.append({
+                buttons.push({
                                 type: 'postback',
                                 title: first_question.options[x],
                                 payload: JSON.stringify({ survey_id: req.body._id, option: first_question.options[x],question_id:first_question._id,next_question_id:next_question_id })
