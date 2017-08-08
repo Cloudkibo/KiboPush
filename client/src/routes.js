@@ -25,8 +25,8 @@ import auth from './utility/auth.service';
 
 function requireAuth(nextState, replace) {
   console.log(nextState);
-  auth.putNext(nextState.location.pathname);
   if (!auth.loggedIn()) {
+    auth.putNext(nextState.location.pathname);
     console.log('you are not logged in.');
     replace({
       pathname: '/',
