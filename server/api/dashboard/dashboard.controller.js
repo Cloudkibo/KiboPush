@@ -12,7 +12,7 @@ const Surveys = require('../surveys/surveys.model');
 const TAG = 'api/pages/pages.controller.js';
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Get pages API called');
+  logger.serverLog(TAG, 'Get Dashboard API called');
   const data = {};
   Pages.count((err, c) => {
     data.pagesCount = c;
@@ -79,6 +79,7 @@ exports.stats = function (req, res) {
                   polls: pollsCount,
                   surveys: surveysCount
                 };
+
                 res.status(200).json({ status: 'success',
                   payload });
               });
