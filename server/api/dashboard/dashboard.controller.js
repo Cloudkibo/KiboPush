@@ -54,7 +54,7 @@ exports.stats = function (req, res) {
         return res.status(500).json({status: 'failed', description: JSON.stringify(err2)});
       }
       payload.subscribers = subscribersCount;
-      Broadcasts.find({ userId: req.user._id }).sort('datetime', -1).limit(10).exec(
+      Broadcasts.find({ userId: req.user._id }).sort('datetime').limit(10).exec(
         (err3, recentBroadcasts) => {
           if (err3) {
             return res.status(500).json({ status: 'failed', description: JSON.stringify(err3) });
