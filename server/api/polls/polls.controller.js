@@ -10,7 +10,7 @@ const TAG = 'api/polls/polls.controller.js';
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Poll get api is working');
-  Polls.find((err, polls) => {
+  Polls.find({userId: req.user._id},(err, polls) => {
     logger.serverLog(TAG, polls);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: polls });
@@ -18,7 +18,7 @@ exports.index = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  const poll = new Polls({ platform: 'facebook', statement: req.body.statement, options: req.body.options, sent: 0 });
+  const poll = new Polls({ platform: 'facebook', statement: req.body.statement, options: req.body.options, sent: 0 ,userId: req.user._id});
 
   //save model to MongoDB
   poll.save((err) => {
@@ -98,7 +98,7 @@ exports.send = function (req, res) {
     }
   };
   logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`);
-  Pages.find({ userId: req.user._id }, (err, pages) => {
+  Pages.find({ userId: req.user._id,connected:true }, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`);
       return res.status(404).json({ status: 'failed', description: 'Pages not found' });

@@ -214,6 +214,7 @@ exports.getfbMessage = function (req, res) {
               lastName: subsriber.last_name,
               locale: subsriber.locale,
               gender: subsriber.gender,
+              userId: page.userId,
               provider: 'facebook',
               timezone: subsriber.timezone,
               profilePic: subsriber.profile_pic,
