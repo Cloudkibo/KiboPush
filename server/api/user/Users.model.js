@@ -12,6 +12,8 @@ const userSchema = new Schema({
   fbId: String,
   profilePic: String,
   fbToken: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('users', userSchema);
