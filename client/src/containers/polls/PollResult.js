@@ -33,12 +33,12 @@ class PollResult extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js');
     document.body.appendChild(addScript);
     console.log(this.props.params.id);
-    props.getpollresults(this.props.params.id);
+    this.props.getpollresults(this.props.params.id);
   
     
   }
   componentWillReceiveProps(nextprops){
-       /* if(nextprops.responses){
+        if(nextprops.responses){
           var radarChart = document.getElementById("radar-chart");
           if (radarChart !== null) {
               var ctx_rc = radarChart.getContext("2d");
@@ -88,7 +88,7 @@ class PollResult extends React.Component {
                   }
               });
           }
-        }*/
+        }
 	}
 
 	

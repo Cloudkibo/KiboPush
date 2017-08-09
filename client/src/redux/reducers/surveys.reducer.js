@@ -17,7 +17,9 @@ export function surveysInfo(state = initialState, action) {
       });
     case ActionTypes.ADD_RESPONSES:
      return Object.assign({}, state, {
-        responses: action.data
+        survey:survey,
+        questions:questions,
+        responses:responses,
       });
      case ActionTypes.LOAD_SURVEYS_QUESTIONS:
      return Object.assign({}, state, {

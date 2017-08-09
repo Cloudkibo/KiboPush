@@ -144,15 +144,13 @@ export function showSurveyResponse(){
       },
     },
   ];
-  const dummyData = {
-    survey,
-    questions,
-    responses,
-  };
+ 
 
   return {
     type: ActionTypes.ADD_RESPONSES,
-    data: dummyData,
+    survey:survey,
+    questions:questions,
+    responses:responses,
   };
 }
 export function loadsurveyresponses(surveyid) {
