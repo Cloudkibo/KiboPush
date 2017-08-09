@@ -81,7 +81,7 @@ function rank(items, prop) {
   return ranked.sort(function(a, b) { return b.count - a.count; });
 }
 export function showresponses(data){
-  var d = [{'response': 'abc', //response submitted by subscriber
+  /*var d = [{'response': 'abc', //response submitted by subscriber
     'pollId': '110',
     'subscriberid':'1212'},{'response': 'abc', //response submitted by subscriber
     'pollId': '1100',
@@ -96,8 +96,8 @@ export function showresponses(data){
     'subscriberid':'1212'}
     ,{'response': 'lmn', //response submitted by subscriber
     'pollId': '10010',
-    'subscriberid':'102012'}];
-  var sorted = rank(d, "response");
+    'subscriberid':'102012'}];*/
+  var sorted = rank(data, "response");
   console.log(sorted);
   return {
     type: ActionTypes.ADD_POLL_RESPONSES,

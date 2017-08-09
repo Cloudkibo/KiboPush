@@ -89,7 +89,7 @@ class SurveyResult extends React.Component {
                       <div className="ui-block-content">
                         <ul className='list-group'>
                           {
-                            this.props.responses && this.props.responses.questions.map((c) => (
+                            this.props.questions && this.props.questions.map((c) => (
                               <div className='card'>
                               <li
                                 className='list-group-item'
@@ -98,7 +98,7 @@ class SurveyResult extends React.Component {
                               >
                                 <strong>{c.statement}</strong>
                               </li>
-                              <Response responses={this.props.responses} question={c} />
+                              <Response responses={this.props.responses.filter((d)=>d.questionId._id == c._id)} question={c} />
                               </div>
                             ))
                           }
@@ -117,9 +117,9 @@ class SurveyResult extends React.Component {
 
 function mapStateToProps(state) {
   console.log(state);
-  const { responses } = state.surveysInfo;
+  const { responses,survey,questions } = state.surveysInfo;
   return {
-    responses,
+    responses,survey,questions,
   };
 }
 
