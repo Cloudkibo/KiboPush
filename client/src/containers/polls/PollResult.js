@@ -34,68 +34,59 @@ class PollResult extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
+  }
+  componentWillReceiveProps(nextprops){
+        if(nextprops.responses){
+          var radarChart = document.getElementById("radar-chart");
+          if (radarChart !== null) {
+              var ctx_rc = radarChart.getContext("2d");
+              var data_rc = {
+                  datasets: [{
+                      data: [
+                          nextprops.responses[0].count,
+                          nextprops.responses[1].count,
+                          nextprops.responses[2].count
+                      ],
+                      backgroundColor: [
+                          "#38a9ff",
+                          "#ff5e3a",
+                          "#ffdc1b"
+                      ]
+                  }],
+                  labels: [
+                          nextprops.responses[0].value,
+                          nextprops.responses[1].value,
+                          nextprops.responses[2].value
 
-    var twoBarChart = document.getElementById("two-bars-chart");
-/*
- * Single Two Bar Graphic
- * 14-FavouritePage-Statistics.html
-*/
-if (twoBarChart !== null) {
-    var ctx_tb = twoBarChart.getContext("2d");
-    var data_tb = {
-        labels: range(2011, 2016, 1),
-        datasets: [
-            {
-            label: "Statistic 02",
-            backgroundColor: "#ffdc1b",
-            borderSkipped: "bottom",
-            data: [43,47,38,30,47,39]
-        }, {
-            label: "Statistic 01",
-            backgroundColor: "#ff5e3a",
-            borderSkipped: 'bottom',
-            borderWidth: 0,
-            data: [36,30,45,50,39,41]
-        }]
-    };
+                  ]
+              };
 
-    var twoBarChartEl = new Chart(ctx_tb, {
-        type: 'bar',
-        data: data_tb,
-        options: {
-            legend: {
-                display: false
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false
-            },
-            responsive: true,
-            scales: {
-                xAxes: [{
-                    barPercentage:0.7,
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: {
-                        fontColor: '#888da8'
-                    }
-                }],
-                yAxes: [{
-                    stacked: true,
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: {
-                        beginAtZero:true,
-                        fontColor: '#888da8'
-                    }
-                }]
-            }
+              var radarChartEl = new Chart(ctx_rc, {
+                  type: 'pie',
+                  data: data_rc,
+                  options: {
+                      deferred: {           // enabled by default
+                          delay: 300        // delay of 500 ms after the canvas is considered inside the viewport
+                      },
+                      legend: {
+                          display: false
+                      },
+                      scale: {
+                          gridLines: {
+                              display: false
+                          },
+                          ticks: {
+                              beginAtZero: true
+                          },
+                          reverse: false
+                      },
+                      animation: {
+                          animateScale: true
+                      }
+                  }
+              });
+          }
         }
-    });
-}
-
 	}
 
 	
@@ -165,7 +156,7 @@ if (twoBarChart !== null) {
                 </div>
                 <div className="ui-block-content">
                   <div className="chart-js chart-js-one-bar">
-                    <canvas id="two-bars-chart" width={1400} height={380} />
+                    <canvas id="radar-chart" width={250} height={170} />
                   </div>
                 </div>
               </div>
