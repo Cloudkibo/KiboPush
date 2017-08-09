@@ -26,8 +26,8 @@ import auth from './utility/auth.service';
 
 function requireAuth(nextState, replace) {
   console.log(nextState);
+  auth.putNext(nextState.location.pathname);
   if (!auth.loggedIn()) {
-    auth.putNext(nextState.location.pathname);
     console.log('you are not logged in.');
     replace({
       pathname: '/',
@@ -66,7 +66,7 @@ function redirectAuthUsers(nextState, replace) {
       const next = auth.getNext();
       auth.removeNext();
       replace({
-        pathname: '/',
+        pathname: next,
         state: { nextPathname: nextState.location.pathname }
       });
     }
