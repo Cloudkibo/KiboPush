@@ -11,7 +11,7 @@ const router = express.Router();
 const controller = require('./page_poll.controller');
 const auth = require('../../auth/auth.service');
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
+router.get('/',auth.isAuthenticated(), controller.index);
+router.get('/:id',auth.isAuthenticated(), controller.show);
 
 module.exports = router;
