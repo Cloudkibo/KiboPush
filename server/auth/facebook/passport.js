@@ -62,11 +62,16 @@ exports.setup = function (User, config) {
               return done(err);
             }
             if (!err && user !== null) {
+              logger.serverLog(TAG, `previous fb token before login: ${user.fbToken}`);
+              user.updatedAt = Date.now();
               user.fbToken = accessToken;
+              logger.serverLog(TAG, `new fb token after login: ${accessToken}`);
               user.save((err, userpaylaod) => {
                 if (err) {
+                  logger.serverLog(TAG, JSON.stringify(err));
                   return done(err);
                 }
+                logger.serverLog(TAG, `user is updated : ${JSON.stringify(userpaylaod)}`);
                 done(null, user);
               });
             } else {
