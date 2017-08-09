@@ -87,7 +87,16 @@ export function showresponses(data){
     'pollId': '1100',
     'subscriberid':'12112'},{'response': 'xyz', //response submitted by subscriber
     'pollId': '1010',
-    'subscriberid':'10212'}];
+    'subscriberid':'10212'},
+    {'response': 'lmn', //response submitted by subscriber
+    'pollId': '10190',
+    'subscriberid':'109212'},
+    {'response': 'lmn', //response submitted by subscriber
+    'pollId': '10810',
+    'subscriberid':'1212'}
+    ,{'response': 'lmn', //response submitted by subscriber
+    'pollId': '10010',
+    'subscriberid':'102012'}];
   var sorted = rank(d, "response");
   console.log(sorted);
   return {
