@@ -153,7 +153,7 @@ class PollResult extends React.Component {
                   <div className="h6 title">Poll Response Chart</div>
                 </div>
                 <div className="ui-block-content">
-                  <div className="chart-js chart-js-one-bar" style={{'width':'400px','height':'350px'}}>
+                  <div className="chart-js chart-js-one-bar" style={{'width':'400px','height':'350px','margin':'0 auto'}}>
                     <canvas id="radar-chart" width={250} height={170} />
                   </div>
                 </div>
