@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import { Link } from 'react-router';
-
+import ReactTooltip from 'react-tooltip'
 class Sidebar extends Component {
 
 
@@ -20,53 +20,54 @@ class Sidebar extends Component {
 			<ul className="left-menu">
 				<li>
 					<a className="js-sidebar-open">
-						<svg className="olymp-menu-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="OPEN MENU"><use xlinkHref="icons/icons.svg#olymp-menu-icon"></use></svg>
+						<svg className="olymp-menu-icon left-menu-icon" ><use xlinkHref="icons/icons.svg#olymp-menu-icon"></use></svg>
 					</a>
 				</li>
 				<li>
-					<Link to="dashboard">
-						<svg className="olymp-newsfeed-icon left-menu-icon" data-toggle="tooltip" data-placement="right" title="" data-original-title="DASHBOARD"><use xlinkHref="icons/icons.svg#olymp-newsfeed-icon"></use></svg>
+					<Link to="dashboard" data-toggle="tooltip">
+						<svg className="olymp-newsfeed-icon left-menu-icon" ><use xlinkHref="icons/icons.svg#olymp-newsfeed-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="subscribers">
-						<svg className="olymp-star-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="SUBSCRIBERS"><use xlinkHref="icons/icons.svg#olymp-happy-faces-icon"></use></svg>
+					<Link to="subscribers" >
+						<svg className="olymp-star-icon left-menu-icon"  ><use xlinkHref="icons/icons.svg#olymp-happy-faces-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
 					<Link to="broadcasts">
-						<svg className="olymp-badge-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="BROADCASTS"><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
+						<svg className="olymp-badge-icon left-menu-icon"  ><use xlinkHref="icons/icons.svg#olymp-badge-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="surveys">
-						<svg className="olymp-calendar-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="SURVEYS"><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
+					<Link to="surveys" >
+						<svg className="olymp-calendar-icon left-menu-icon" ><use xlinkHref="icons/icons.svg#olymp-calendar-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="workflows">
-						<svg className="olymp-happy-faces-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Workflows"><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
+					<Link to="workflows" >
+						<svg className="olymp-happy-faces-icon left-menu-icon"  ><use xlinkHref="icons/icons.svg#olymp-star-icon" ></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="poll">
-						<svg className="olymp-headphones-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Polls"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
+					<Link to="poll" >
+						<svg className="olymp-headphones-icon left-menu-icon" ><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
 					<li>
-					<Link to="subscribeToMessenger">
-						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Subscribe Widget"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
+					<Link to="subscribeToMessenger" >
+						<svg className="olymp-stats-icon left-menu-icon"  ><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="stats">
-						<svg className="olymp-stats-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Analytics"><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
+					<Link to="stats" >
+						<svg className="olymp-stats-icon left-menu-icon"  ><use xlinkHref="icons/icons.svg#olymp-stats-icon"></use></svg>
 					</Link>
 				</li>
 				<li>
-					<Link to="pages">
-						<svg className="olymp-manage-widgets-icon left-menu-icon"  data-toggle="tooltip" data-placement="right" title="" data-original-title="Pages"><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
+					<Link to="pages" data-for='pages'>
+						<svg className="olymp-manage-widgets-icon left-menu-icon" ><use xlinkHref="icons/icons.svg#olymp-manage-widgets-icon"></use></svg>
 					</Link>
+					<ReactTooltip id='pages' place="right">Pages</ReactTooltip>
 				</li>
 			</ul>
 		</div>
