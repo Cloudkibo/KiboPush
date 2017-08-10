@@ -14,7 +14,7 @@ const Subscribers = require('../subscribers/Subscribers.model');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Surveys get api is working');
-  Surveys.find((err, surveys) => {
+  Surveys.find({userId: req.user._id},(err, surveys) => {
     if (err) return res.status(404).json({ status: 'failed', description: 'Surveys not found' });
     logger.serverLog(TAG, surveys);
     res.status(200).json({ status: 'success', payload: surveys });
@@ -36,8 +36,9 @@ exports.create = function (req, res) {
         type: String,
     },...]
   }*/
+  const survey = new Surveys({ title: req.body.survey.title, description: req.body.survey.description,userId: req.user._id});
 
-  Surveys.create(req.body.survey, (err, survey) => {
+  survey.save((err, survey) => {
     if (err) { 
        return res.status(404).json({ status: 'failed', description: 'Survey not created' });
      }
