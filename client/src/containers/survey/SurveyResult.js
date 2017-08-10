@@ -9,7 +9,7 @@ import Sidebar from '../sidebar/sidebar';
 import Responsive from '../sidebar/responsive';
 import Header from '../header/header';
 import HeaderResponsive from '../header/headerResponsive';
-import { showSurveyResponse } from '../../redux/actions/surveys.actions';
+import { loadsurveyresponses } from '../../redux/actions/surveys.actions';
 import Response from './Response';
 
 class SurveyResult extends React.Component {
@@ -26,7 +26,7 @@ class SurveyResult extends React.Component {
 		addScript = document.createElement('script');
 		addScript.setAttribute('src', '../../../js/main.js');
 		document.body.appendChild(addScript);
-    this.props.showSurveyResponse();
+    this.props.loadsurveyresponses(this.props.params.id);
 	}
 
   render() {
@@ -135,6 +135,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ showSurveyResponse }, dispatch);
+  return bindActionCreators({ loadsurveyresponses }, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SurveyResult);

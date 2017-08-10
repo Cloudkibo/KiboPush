@@ -82,7 +82,7 @@ class Survey extends React.Component {
 											<td>{handleDate(survey.datetime)}</td>
 											<td>
 												<button className="btn btn-primary btn-sm"  onClick={() => this.gotoView(survey)}>View</button>
-												<Link to='/surveyResult' className="btn btn-primary btn-sm">
+												<Link to='/surveyResult/{survey._id}' className="btn btn-primary btn-sm">
 													Report 
 												</Link>
 												<button className="btn btn-primary btn-sm" onClick={() => this.props.sendsurvey(survey)}> Send </button>
