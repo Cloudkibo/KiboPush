@@ -43,8 +43,15 @@ class Survey extends React.Component {
 			state: survey
 		});
 
-		 
+
 		}
+
+  gotoResults(survey) {
+    this.props.history.push({
+      pathname: `/surveyResult/${survey._id}`,
+      state: survey
+    });
+  }
   render() {
     return (
 	 <div>
@@ -82,11 +89,12 @@ class Survey extends React.Component {
 											<td>{handleDate(survey.datetime)}</td>
 											<td>
 												<button className="btn btn-primary btn-sm"  onClick={() => this.gotoView(survey)}>View</button>
-												<Link to='/surveyResult' className="btn btn-primary btn-sm">
-													Report 
-												</Link>
+                        <button className="btn btn-primary btn-sm" onClick={() => this.gotoResults(survey)}>Report
+                        </button>
+
+
 												<button className="btn btn-primary btn-sm" onClick={() => this.props.sendsurvey(survey)}> Send </button>
-												
+
 											</td>
 										</tr>
 

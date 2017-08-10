@@ -10,7 +10,7 @@ const auth = require('../../auth/auth.service');
 const TAG = 'api/subscribers/index.js';
 
 
-router.get('/',auth.isAuthenticated(), controller.index);
+router.get('/', auth.isAuthenticated(), controller.index);
 
 /* Seed Pages */
 router.get('/seed', controller.seed);

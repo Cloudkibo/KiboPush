@@ -17,7 +17,7 @@ class PollResult extends React.Component {
 
 		constructor(props, context) {
 		super(props, context);
-    
+
   }
 
 	 componentDidMount() {
@@ -34,33 +34,31 @@ class PollResult extends React.Component {
     document.body.appendChild(addScript);
     console.log(this.props.params.id);
     this.props.getpollresults(this.props.params.id);
-  
-    
+
+
   }
   componentWillReceiveProps(nextprops){
         if(nextprops.responses){
           var radarChart = document.getElementById("radar-chart");
+          var counts = []
+          var vals = []
+          var colors = ["#38a9ff", "#ff5e3a", "#ffdc1b"]
+          var backcolors = []
+          for (var j = 0; j < nextprops.responses.length; j++) {
+            counts.push(nextprops.responses[j].count)
+            backcolors.push(colors[j]);
+            vals.push(nextprops.responses[j].value);
+
+          }
           if (radarChart !== null) {
               var ctx_rc = radarChart.getContext("2d");
+
               var data_rc = {
                   datasets: [{
-                      data: [
-                          nextprops.responses[0].count,
-                          nextprops.responses[1].count,
-                          nextprops.responses[2].count
-                      ],
-                      backgroundColor: [
-                          "#38a9ff",
-                          "#ff5e3a",
-                          "#ffdc1b"
-                      ]
+                    data: counts,
+                    backgroundColor: backcolors
                   }],
-                  labels: [
-                          nextprops.responses[0].value,
-                          nextprops.responses[1].value,
-                          nextprops.responses[2].value
-
-                  ]
+                labels: vals
               };
 
               var radarChartEl = new Chart(ctx_rc, {
@@ -91,8 +89,8 @@ class PollResult extends React.Component {
         }
 	}
 
-	
-	
+
+
   render() {
     return (
 	<div>
@@ -145,7 +143,7 @@ class PollResult extends React.Component {
                 </div>
               </div>
             </div>
-      
+
           </div>
 
 					<div className="row">
@@ -164,7 +162,7 @@ class PollResult extends React.Component {
           </div>
         </div>
 						      </div>
-					
+
 					</div>
 					</div>
 

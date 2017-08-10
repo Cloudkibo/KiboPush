@@ -14,7 +14,7 @@ const Subscribers = require('../subscribers/Subscribers.model');
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Surveys get api is working');
-  Surveys.find((err, surveys) => {
+  Surveys.find({userId: req.user._id}, (err, surveys) => {
     if (err) return res.status(404).json({ status: 'failed', description: 'Surveys not found' });
     logger.serverLog(TAG, surveys);
     res.status(200).json({ status: 'success', payload: surveys });
@@ -36,6 +36,12 @@ exports.create = function (req, res) {
         type: String,
     },...]
   }*/
+  const survey = new Surveys({
+    title: req.body.survey.title,
+    description: req.body.survey.description,
+    userId: req.user._id
+  });
+
 
   Surveys.create(req.body.survey, (err, survey) => {
     if (err) {
@@ -177,7 +183,7 @@ exports.submitresponse = function (req, res) {
     subscriberId: _id of subscriber,
     }
   */
-  for (var resp in req.body.responses) {
+  for (const resp in req.body.responses) {
               const surveyResponse = new SurveyResponses({
                       response: req.body.responses[resp].response, //response submitted by subscriber
                       surveyId: req.body.surveyId,
@@ -208,24 +214,29 @@ exports.send = function (req, res) {
               if (err2) {
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
-            if(questions.length > 0){
+    if (questions.length > 0) {
                first_question = questions[0];
                //create buttons
-               var buttons = [];
-               var next_question_id='nil';
-               if(questions.length > 1){
+      const buttons = [];
+      let next_question_id = 'nil';
+      if (questions.length > 1) {
                 next_question_id = questions[1]._id;
                }
 
-               for(var x=0;x<first_question.options.length;x++){
-
+      for (let x = 0; x < first_question.options.length; x++) {
                 buttons.push({
                                 type: 'postback',
                                 title: first_question.options[x],
-                                payload: JSON.stringify({ survey_id: req.body._id, option: first_question.options[x],question_id:first_question._id,next_question_id:next_question_id,userToken:req.user.fbToken })
-                              })
+                  payload: JSON.stringify({
+                    survey_id: req.body._id,
+                    option: first_question.options[x],
+                    question_id: first_question._id,
+                    next_question_id,
+                    userToken: req.user.fbToken
+                  })
+                });
                }
-                logger.serverLog(TAG, 'buttons created'+ JSON.stringify(buttons));
+      logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`);
 
                Pages.find({ userId: req.user._id }, (err, pages) => {
                   if (err) {
@@ -233,7 +244,7 @@ exports.send = function (req, res) {
                     return res.status(404).json({ status: 'failed', description: 'Pages not found' });
                   }
                   logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`);
-                  for (var z in pages) // todo this for loop doesn't work with async code
+                 for (let z = 0; z < pages.length; z++) // todo this for loop doesn't work with async code
                   {
                     logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
                     Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
@@ -248,7 +259,7 @@ exports.send = function (req, res) {
                         if (err) {
                           logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`);
                           // TODO this will do problem, res should not be in loop
-                          return res.status(404).json({ status: 'failed', description: err });
+                          //return res.status(404).json({ status: 'failed', description: err });
                         }
 
                           logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`);
@@ -258,13 +269,13 @@ exports.send = function (req, res) {
                             logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`);
                             logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
 
-                             var messageData = {
+                            const messageData = {
                                                     attachment: {
                                                       type: 'template',
                                                       payload: {
                                                         template_type: 'button',
-                                                        text: 'Please respond to these questions. \n' + first_question.statement,
-                                                        "buttons":buttons,
+                                                        text: `Please respond to these questions. \n${first_question.statement}`,
+                                                        buttons,
 
                                                         }
                                                       }
@@ -273,12 +284,12 @@ exports.send = function (req, res) {
                               recipient: { id: subscribers[j].senderId }, //this is the subscriber id
                               message: messageData,
                             };
-                            logger.serverLog(TAG,messageData);
+                            logger.serverLog(TAG, messageData);
                             needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
                               logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(resp.body)}`);
                               if (err) {
                                 // TODO this will do problem, res should not be in loop
-                                return res.status(404).json({ status: 'failed', description: err });
+                                //  return res.status(404).json({ status: 'failed', description: err });
                               }
 
                               // return res.status(200).json({ status: 'success', payload: resp.body });
@@ -289,12 +300,9 @@ exports.send = function (req, res) {
                   }
                   return res.status(200).json({ status: 'success', payload: 'Survey sent successfully.' });
               });
-      }
-      else{
+    } else {
            return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
-
       }
 });
 };
-
 

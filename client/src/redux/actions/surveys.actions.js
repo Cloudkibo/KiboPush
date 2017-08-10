@@ -35,18 +35,18 @@ export function loadSurveysList() {
 export function sendsurvey(survey){
 return (dispatch) => {
     callApi(`surveys/send`,'post',survey).then(res => {alert('Survey sent successfully')});
-  }; 
+  };
 }
 export function getsurveyform(id){
  return (dispatch) => {
     callApi(`surveys/showquestions/${id}`).then(res => dispatch(showSurveyQuestions(res.payload)));
-  }; 
+  };
 }
 
 export function submitsurvey(survey){
    return (dispatch) => {
     callApi(`surveys/submitresponse`,'post',survey).then(res => dispatch(submitresponse(res.payload)));
-  }; 
+  };
 }
 export function createsurvey(survey) {
   console.log('Creating survey');
@@ -65,14 +65,14 @@ export function addSurvey(data) {
   };
 }
 
-export function showSurveyResponse(){
-  const survey = [
+export function showSurveyResponse(data) {
+  /* const survey =
     {
       _id: '1',
       title: 'Product Satisfaction',
       description: 'The survey to check our new product satisfaction from customers',
-    },
-  ];
+   }
+   ;
   const questions = [
     {
       _id: '10',
@@ -96,6 +96,17 @@ export function showSurveyResponse(){
         description: 'The survey to check our new product satisfaction from customers',
       },
     },
+   {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers',
+   },
+   }
   ];
   const responses = [
     {
@@ -111,6 +122,12 @@ export function showSurveyResponse(){
         statement: 'How would you rate our new product?',
         options: ['Excellent', 'Good', 'Bad'],
         type: 'multichoice',
+   },
+   subscriberId:{
+   _id:'a',
+   firstName:'Zarmeen',
+   lastName:'Nasim',
+   gender:'Female'
       }
     },
     {
@@ -127,6 +144,34 @@ export function showSurveyResponse(){
         options: [],
         type: 'text',
       },
+
+   subscriberId:{
+   _id:'b',
+   firstName:'Sojharo',
+   lastName:'Mangi',
+   gender:'Male'
+   }
+   },
+   {
+   _id: '23',
+   response: 'Good',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers',
+   },
+   questionId: {
+   _id: '10',
+   statement: 'How would you rate our new product?',
+   options: ['Excellent', 'Good', 'Bad'],
+   type: 'multichoice',
+   },
+   subscriberId:{
+   _id:'b',
+   firstName:'Sojharo',
+   lastName:'Mangi',
+   gender:'Male'
+   }
     },
     {
       _id: '22',
@@ -142,15 +187,88 @@ export function showSurveyResponse(){
         options: [],
         type: 'text',
       },
+
+   subscriberId:{
+   _id:'c',
+   firstName:'Sumaira',
+   lastName:'Saeed',
+   gender:'Female'
+   }
     },
-  ];
- 
+   {
+   _id: '24',
+   response: 'Red',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers',
+   },
+   questionId:  {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice',
+
+   },
+   subscriberId:{
+   _id:'b',
+   firstName:'Sojharo',
+   lastName:'Mangi',
+   gender:'Male'
+   }
+   },
+   {
+   _id: '25',
+   response: 'Red',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers',
+   },
+   questionId:  {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice',
+
+   },
+   subscriberId:{
+   _id:'c',
+   firstName:'Sumaira',
+   lastName:'Saeed',
+   gender:'Female'
+   }
+   },
+   {
+   _id: '26',
+   response: 'Orange',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers',
+   },
+   questionId:  {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice',
+
+   },
+   subscriberId:{
+   _id:'a',
+   firstName:'Zarmeen',
+   lastName:'Nasim',
+   gender:'Female'
+   }
+   },
+   ];*/
+
 
   return {
     type: ActionTypes.ADD_RESPONSES,
-    survey:survey,
-    questions:questions,
-    responses:responses,
+    survey: data.survey,
+    questions: data.questions,
+    responses: data.responses,
   };
 }
 export function loadsurveyresponses(surveyid) {

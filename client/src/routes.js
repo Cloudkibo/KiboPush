@@ -85,14 +85,14 @@ const routes = (
     <Route path="/createbroadcast" component={CreateBroadcast} onEnter={requireAuth} />
     <Route path="/createworkflow" component={CreateWorkflow} onEnter={requireAuth} />
     <Route path="/workflows" component={Workflows} onEnter={requireAuth} />
-    <Route path="/editbroadcast" component={EditBroadcast} onEnter={requireAuth} />
+    <Route path="/editbroadcast/:id" component={EditBroadcast} onEnter={requireAuth}/>
     <Route path="/createpoll" component={CreatePoll} onEnter={requireAuth} />
     <Route path="/poll" component={Poll} />
     <Route path="/stats" component={Stats} />
     <Route path="/subscribeToMessenger" component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path="/addsurvey" component={AddSurvey} onEnter={requireAuth} />
     <Route path="/pollResult/:id" component={PollResult} />
-    <Route path="/surveyResult" component={SurveyResult} onEnter={requireAuth} />
+    <Route path="/surveyResult/:id" component={SurveyResult} onEnter={requireAuth}/>
     <Route path="/viewsurvey/:id/:subscriberid" component={ViewSurvey} />
     <Route path="/viewsurveydetail/:id" component={ViewSurveyDetail} />
     <Route path="/submitsurveyresponse" component={SubmitSurvey} />

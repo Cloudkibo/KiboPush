@@ -42,7 +42,7 @@ exports.otherPages = function (req, res) {
 };
 
 exports.stats = function (req, res) {
-  let payload = {
+  const payload = {
     scheduledBroadcast: 0,
     username: req.user.name
   };
