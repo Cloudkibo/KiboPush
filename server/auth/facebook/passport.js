@@ -90,6 +90,7 @@ exports.setup = function (User, config) {
 }
 
 // TODO use this after testing
+// eslint-disable-next-line no-unused-vars
 function fetchPages (url, user) {
   needle.get(url, options, (err, resp) => {
     logger.serverLog(TAG, 'error from graph api to get pages list data: ')

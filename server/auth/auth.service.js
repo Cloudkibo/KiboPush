@@ -3,7 +3,6 @@
  */
 'use strict'
 
-const passport = require('passport')
 const config = require('../config/environment')
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
@@ -34,6 +33,7 @@ function isAuthenticated () {
       logger.serverLog(TAG, `Here is user object ${JSON.stringify(req.user)}`)
 
       Users.findOne({ fbId: req.user._id }, (err, user) => {
+        if (err) return res.status(500).json({ status: 'failed', description: 'Internal Server Error' })
         if (!user) return res.status(401).json({ status: 'failed', description: 'Unauthorized' })
 
         req.user = user
@@ -65,6 +65,7 @@ function setTokenCookie (req, res) {
   res.redirect('/')
 }
 
+// eslint-disable-next-line no-unused-vars
 function isAuthorizedWebHookTrigger () {
   return compose()
     .use((req, res, next) => {

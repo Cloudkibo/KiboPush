@@ -23,7 +23,10 @@ if (config.env === 'development') {
     logger.serverLog(TAG, 'localhost authentication with params: ' + JSON.stringify(req.params))
     Users.findOne({ name: req.params.name }, (err, user) => {
       if (err) {
-        return done(err)
+        return res.status(500).json({
+          status: 'failed',
+          description: 'Internal Server Error'
+        })
       }
       if (!err && user !== null) {
         req.user = user
@@ -39,7 +42,10 @@ if (config.env === 'development') {
         })
         payload.save((error, userPayload) => {
           if (error) {
-            return done(error)
+            return res.status(500).json({
+              status: 'failed',
+              description: 'Internal Server Error'
+            })
           }
           req.user = userPayload
           auth.setTokenCookie(req, res)
