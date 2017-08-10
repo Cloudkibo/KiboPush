@@ -108,45 +108,48 @@ exports.send = function (req, res) {
       {
         logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
         Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
-          logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`);
-          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
-          if (err) {
-            return res.status(404).json({ status: 'failed', description: 'Subscribers not found' });
-          }
-          //get accesstoken of page
-          // TODO can't we get access token from the page table???
-          needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`, (err, resp) => {
-            if (err) {
-              logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`);
-              // TODO this will do problem, res should not be in loop
-              return res.status(404).json({ status: 'failed', description: err });
-            }
-
-              logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`);
-
-
-              for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
-                logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`);
-                logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
-
-                const data = {
-                  recipient: { id: subscribers[j].senderId }, //this is the subscriber id
-                  message: messageData,
-                };
-
-                needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
-                  logger.serverLog(TAG, `Sending poll to subscriber response ${JSON.stringify(resp.body)}`);
+          if(subscribers.length > 0)
+         {   
+                  logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`);
+                  logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
                   if (err) {
-                    // TODO this will do problem, res should not be in loop
-                   // return res.status(404).json({ status: 'failed', description: err });
-                   logger.serverLog(TAG, err);
-                   logger.serverLog(TAG,'ERror occured at subscriber :'+JSON.stringify(subscribers[j]));
+                    return res.status(404).json({ status: 'failed', description: 'Subscribers not found' });
                   }
+                  //get accesstoken of page
+                  // TODO can't we get access token from the page table???
+                  needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`);
+                      // TODO this will do problem, res should not be in loop
+                      //return res.status(404).json({ status: 'failed', description: err });
+                    }
 
-                  // return res.status(200).json({ status: 'success', payload: resp.body });
-                });
-              }
-          });
+                      logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`);
+
+
+                      for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
+                        logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`);
+                        logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
+
+                        const data = {
+                          recipient: { id: subscribers[j].senderId }, //this is the subscriber id
+                          message: messageData,
+                        };
+
+                        needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
+                          logger.serverLog(TAG, `Sending poll to subscriber response ${JSON.stringify(resp.body)}`);
+                          if (err) {
+                            // TODO this will do problem, res should not be in loop
+                           // return res.status(404).json({ status: 'failed', description: err });
+                           logger.serverLog(TAG, err);
+                           logger.serverLog(TAG,'ERror occured at subscriber :'+JSON.stringify(subscribers[j]));
+                          }
+
+                          // return res.status(200).json({ status: 'success', payload: resp.body });
+                        });
+                      }
+                  });
+          }
         });
       }
       return res.status(200).json({ status: 'success', payload: 'Poll sent successfully.' });
