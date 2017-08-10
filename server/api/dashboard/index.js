@@ -17,7 +17,8 @@ const TAG = 'api/pages/index.js';
 
 router.get('/otherPages', auth.isAuthenticated(), controller.otherPages);
 router.post('/enable', auth.isAuthenticated(), controller.enable);
-router.post('/disable', auth.isAuthenticated(), controller.disable);
+// todo remove this /disable, this is coded badly
+// router.post('/disable', auth.isAuthenticated(), controller.disable);
 router.get('/stats', auth.isAuthenticated(), controller.stats);
 router.get('/:id', auth.isAuthenticated(), controller.index); // todo remove this, after discuss - this id will be userid
 

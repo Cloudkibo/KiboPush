@@ -38,7 +38,7 @@ exports.create = function (req, res) {
   }*/
 
   Surveys.create(req.body.survey, (err, survey) => {
-    if (err) { 
+    if (err) {
        return res.status(404).json({ status: 'failed', description: 'Survey not created' });
      }
      //after survey is created, create survey questions
@@ -52,12 +52,12 @@ exports.create = function (req, res) {
                     options, // array of question options
                     type: req.body.questions[question].type, //type can be text/multichoice
                     surveyId: survey._id,
-                    
+
                   });
 
             surveyQuestion.save((err2, question) => {
-               if (err2) { 
-                         return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
+               if (err2) {
+                         //return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
                        }
                logger.serverLog(TAG, `This is the question created ${JSON.stringify(question)}`);
             });
@@ -81,21 +81,21 @@ exports.edit = function (req, res) {
   }*/
  logger.serverLog(TAG, `This is body in edit survey ${JSON.stringify(req.body)}`);
  Surveys.findById(req.body.survey._id, (err, survey) => {
-    if (err) { 
+    if (err) {
        return res.status(404).json({ status: 'failed', description: 'Survey not found' });
      }
-     
+
      survey.title = req.body.survey.title;
      survey.description = req.body.survey.description;
      survey.image = req.body.survey.image;
-     
+
      survey.save((err2) => {
-               if (err) { 
+               if (err) {
                        return res.status(404).json({ status: 'failed', description: 'Survey update failed.' });
                      }
 
                 SurveyQuestions.remove({ surveyId: survey._id }, (err3) => {
-                  if (err3) { 
+                  if (err3) {
                        return res.status(404).json({ status: 'failed', description: 'Error in removing survey questions.' });
                      }
                   for (const question in req.body.questions) {
@@ -108,12 +108,12 @@ exports.edit = function (req, res) {
                                 options, // array of question options
                                 type: req.body.questions[question].type, //type can be text/multichoice
                                 surveyId: survey._id,
-                                
+
                               });
 
                         surveyQuestion.save((err2) => {
-                           if (err2) { 
-                                     return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
+                           if (err2) {
+                                     //return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
                                    }
                         });
                     }
@@ -128,16 +128,16 @@ exports.edit = function (req, res) {
 // Get a single survey
 exports.show = function (req, res) {
   Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
-      if (err) { 
+      if (err) {
               return res.status(404).json({ status: 'failed', description: 'Survey not found' });
               }
       //find questions
       SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
-              if (err2) { 
+              if (err2) {
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
              SurveyResponses.find({ surveyId: survey._id }).populate('surveyId subscriberId questionId').exec((err3, responses) => {
-              if (err3) { 
+              if (err3) {
                 return res.status(404).json({ status: 'failed', description: 'Survey responses not found' });
               }
                 return res.status(200).json({ status: 'success', payload: { survey, questions, responses } });
@@ -150,15 +150,15 @@ exports.show = function (req, res) {
 // Get a single survey
 exports.showQuestions = function (req, res) {
   Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
-      if (err) { 
+      if (err) {
               return res.status(404).json({ status: 'failed', description: 'Survey not found' });
               }
       //find questions
       SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
-              if (err2) { 
+              if (err2) {
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
-            
+
                 return res.status(200).json({ status: 'success', payload: { survey, questions } });
              });
     });
@@ -183,11 +183,11 @@ exports.submitresponse = function (req, res) {
                       surveyId: req.body.surveyId,
                       questionId: req.body.responses[resp].qid,
                       subscriberId: req.body.subscriberId,
-                                        
+
                     });
 
               surveyResponse.save((err) => {
-                 if (err) { 
+                 if (err) {
                           logger.serverLog(TAG, err);
                            return res.status(404).json({ status: 'failed', description: 'Survey Response not created' });
                          }
@@ -205,7 +205,7 @@ exports.send = function (req, res) {
   // we will send only first question to fb subsribers
         //find questions
   SurveyQuestions.find({ surveyId: req.body._id }).populate('surveyId').exec((err2, questions) => {
-              if (err2) { 
+              if (err2) {
                 return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
               }
             if(questions.length > 0){
@@ -257,7 +257,7 @@ exports.send = function (req, res) {
                           for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
                             logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`);
                             logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
-    
+
                              var messageData = {
                                                     attachment: {
                                                       type: 'template',
@@ -265,7 +265,7 @@ exports.send = function (req, res) {
                                                         template_type: 'button',
                                                         text: 'Please respond to these questions. \n' + first_question.statement,
                                                         "buttons":buttons,
-      
+
                                                         }
                                                       }
                                                   };
@@ -292,7 +292,7 @@ exports.send = function (req, res) {
       }
       else{
            return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
-             
+
       }
 });
 };

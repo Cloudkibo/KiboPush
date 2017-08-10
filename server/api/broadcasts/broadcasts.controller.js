@@ -192,7 +192,6 @@ exports.getfbMessage = function (req, res) {
       const page = event.recipient.id;
       //get accesstoken of page
       Pages.findOne({ pageId: page }).then((page) => {
-        if (!page) return res.status(404).json({ status: 'failed', description: 'Page not found' });
         //fetch subsriber info from Graph API
         // fetch customer details
         logger.serverLog(TAG, `This is a page${JSON.stringify(page)}`);
@@ -232,23 +231,15 @@ exports.getfbMessage = function (req, res) {
                 Subscribers.create(payload, (err2, subsriber) => {
                   if (err2) {
                     logger.serverLog(TAG, err2);
-                    return res.status(404).json({
-                      status: 'failed',
-                      description: 'Subscriber not created'
-                    });
                   }
                   logger.serverLog(TAG, 'new Subscriber added');
-                  return res.status(200).json({ status: 'success', payload: subscriber });
                 });
               } else {
-                return res.status(200).json({ status: 'success', payload: subscriber });
+                // return res.status(200).json({ status: 'success', payload: subscriber });
               }
             });
           } else {
-            return res.status(404).json({
-              status: 'failed',
-              description: 'Graph api call failed'
-            });
+
           }
         });
       });
@@ -276,9 +267,7 @@ exports.getfbMessage = function (req, res) {
           PollResponse.create(pollbody, (err, pollresponse) => {
             if (err) {
               logger.serverLog(TAG, err);
-              return res.status(404).json({ status: 'failed', description: 'Poll response not created' });
             }
-            return res.status(200).json({ status: 'success', payload: pollresponse });
           });
         });
       }
@@ -301,13 +290,12 @@ exports.getfbMessage = function (req, res) {
           SurveyResponse.create(surveybody, (err1, surveyresponse) => {
             if (err1) {
               logger.serverLog(TAG, err1);
-              return res.status(404).json({ status: 'failed', description: 'SurveyResponse  not created' });
             }
 
             //send the next question
             SurveyQuestions.find({ surveyId: resp.survey_id,_id:{$gt: resp.question_id } }).populate('surveyId').exec((err2, questions) => {
               if (err2) {
-                return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' });
+                logger.serverLog(TAG, 'Survey questions not found');
               }
                logger.serverLog(TAG, 'Questions are ' + JSON.stringify(questions));
              if(questions.length > 0){
@@ -331,8 +319,7 @@ exports.getfbMessage = function (req, res) {
                 needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
                         if (err3) {
                           logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
-                          // TODO this will do problem, res should not be in loop
-                          return res.status(404).json({ status: 'failed', description: err });
+
                         }
 
                           logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
@@ -355,11 +342,8 @@ exports.getfbMessage = function (req, res) {
                             needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
                               logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
                               if (err4) {
-                                // TODO this will do problem, res should not be in loop
-                                return res.status(404).json({ status: 'failed', description: err4 });
-                              }
 
-                               return res.status(200).json({ status: 'success', payload: respp.body });
+                              }
                             });
                           });
               }
@@ -369,8 +353,6 @@ exports.getfbMessage = function (req, res) {
                 needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
                         if (err3) {
                           logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
-                          // TODO this will do problem, res should not be in loop
-                          return res.status(404).json({ status: 'failed', description: err });
                         }
 
                           logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
@@ -385,11 +367,8 @@ exports.getfbMessage = function (req, res) {
                             needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
                               logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
                               if (err4) {
-                                // TODO this will do problem, res should not be in loop
-                                return res.status(404).json({ status: 'failed', description: err4 });
                               }
 
-                               return res.status(200).json({ status: 'success', payload: respp.body });
                             });
                           });
               }
@@ -398,11 +377,10 @@ exports.getfbMessage = function (req, res) {
         });
       }
        else {
-        return res.status(200).json({ status: 'success', payload: 'success' });
       }
     } else {
-      return res.status(200).json({ status: 'success', payload: 'message received' });
     }
   }
-  //return res.status(200);
+
+  return res.status(200).json({status: 'success', description: 'got the data.'});
 };
