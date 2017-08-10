@@ -2,16 +2,16 @@
  * Created by sojharo on 01/08/2017.
  */
 
-'use strict';
+'use strict'
 
-const express = require('express');
+const express = require('express')
 
-const router = express.Router();
+const router = express.Router()
 
-const controller = require('./page_broadcast.controller');
-const auth = require('../../auth/auth.service');
+const controller = require('./page_broadcast.controller')
+const auth = require('../../auth/auth.service')
 
-router.get('/', auth.isAuthenticated(), controller.index);
-router.get('/:id', auth.isAuthenticated(), controller.show);
+router.get('/', auth.isAuthenticated(), controller.index)
+router.get('/:id', auth.isAuthenticated(), controller.show)
 
-module.exports = router;
+module.exports = router

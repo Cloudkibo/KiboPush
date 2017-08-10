@@ -1,6 +1,5 @@
-let mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  ObjectId = Schema.ObjectId;
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 const userSchema = new Schema({
   name: String,
@@ -14,6 +13,6 @@ const userSchema = new Schema({
   fbToken: String,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
-});
+})
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('users', userSchema)

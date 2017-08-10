@@ -1,17 +1,17 @@
-import * as ActionTypes from '../constants/constants';
-import callApi from '../../utility/api.caller.service';
+import * as ActionTypes from '../constants/constants'
+import callApi from '../../utility/api.caller.service'
 
-export function updateDashboard(data){
-  console.log("Data Fetched From Server", data);
+export function updateDashboard (data) {
+  console.log('Data Fetched From Server', data)
   return {
     type: ActionTypes.UPDATE_DASHBOARD,
     data
-  };
+  }
 }
 
-export function loadDashboardData() {
-	//here we will fetch list of subscribers from endpoint
-  console.log('loading dashboard data');		    
+export function loadDashboardData () {
+	// here we will fetch list of subscribers from endpoint
+  console.log('loading dashboard data')
   return (dispatch) => {
     // callApi('subscribers').then(res => dispatch(updateSubscribersList(res)));
     var res = {
@@ -23,11 +23,9 @@ export function loadDashboardData() {
       activityChart: {
         polls: 24,
         messages: 13,
-        surveys: 45,
-        },
-    };
-    dispatch(updateDashboard(res));
-  };
-  
- 
+        surveys: 45
+      }
+    }
+    dispatch(updateDashboard(res))
+  }
 }

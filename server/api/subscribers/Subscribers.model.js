@@ -1,6 +1,6 @@
 let mongoose = require('mongoose'),
-   Schema = mongoose.Schema,
-   ObjectId = Schema.ObjectId;
+  Schema = mongoose.Schema,
+  ObjectId = Schema.ObjectId
 
 const subscriberSchema = new Schema({
   pageScopedId: {
@@ -13,22 +13,22 @@ const subscriberSchema = new Schema({
     type: String
   },
   locale: {
-      type: String
+    type: String
   },
   timezone: {
-      type: String,
+    type: String
   },
   email: {
-      type: String
+    type: String
   },
   gender: {
-      type: String
+    type: String
   },
   senderId: {
-      type: String
+    type: String
   },
   profilePic: {
-      type: String
+    type: String
   },
   pageId: {
     type: Schema.ObjectId,
@@ -38,6 +38,6 @@ const subscriberSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'users'
   }
-});
+})
 
-module.exports = mongoose.model('subscribers', subscriberSchema);
+module.exports = mongoose.model('subscribers', subscriberSchema)

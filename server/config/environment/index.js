@@ -2,8 +2,8 @@
  * Created by sojharo on 20/07/2017.
  */
 
-const path = require('path');
-const _ = require('lodash');
+const path = require('path')
+const _ = require('lodash')
 
 const all = {
 
@@ -40,8 +40,8 @@ const all = {
     clientSecret: process.env.FACEBOOK_SECRET || 'f46495b908b408bc8e4f5b259b18e952',
     callbackURL: `${process.env.DOMAIN || 'https://app.kibopush.com'}/auth/facebook/callback`
   }
-};
+}
 
 module.exports = _.merge(
   all,
-  require(`./${process.env.NODE_ENV}.js`) || {});
+  require(`./${process.env.NODE_ENV}.js`) || {})

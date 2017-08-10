@@ -9,8 +9,11 @@
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
     "build:react": "browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
-    "test": "echo Testing is not yet implemented - By: Sojharo"
+    "test": "standard"
   },
+  "pre-commit": [
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Cloudkibo/KiboPush.git"
@@ -77,7 +80,13 @@
   "devDependencies": {
     "body-parser": "^1.17.2",
     "cross-env": "^5.0.1",
-    "eslint-config-rallycoding": "^3.2.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "standard": "^10.0.3"
+  },
+  "standard": {
+    "ignore": [
+      "client/public"
+    ]
   }
+
 }

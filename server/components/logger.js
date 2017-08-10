@@ -2,10 +2,10 @@
  * Created by sojharo on 20/07/2017.
  */
 
-const config = require('../config/environment/index');
+const config = require('../config/environment/index')
 
-const winston = require('winston');
-require('winston-papertrail').Papertrail;
+const winston = require('winston')
+require('winston-papertrail').Papertrail
 
 const logger = new winston.Logger({
   transports: [
@@ -16,18 +16,17 @@ const logger = new winston.Logger({
       colorize: true
     })
   ]
-});
-
+})
 
 exports.serverLog = function (label, data) {
-  const namespace = `kibopush:${label}`;
-  const debug = require('debug')(namespace);
+  const namespace = `kibopush:${label}`
+  const debug = require('debug')(namespace)
 
   if (config.env === 'development' || config.env === 'test') {
-    debug(data);
+    debug(data)
     // todo use log levels like info, warn, error and debug
-    logger.info(`${namespace} - ${data}`);
+    logger.info(`${namespace} - ${data}`)
   } else {
-    logger.info(`${namespace} - ${data}`);
+    logger.info(`${namespace} - ${data}`)
   }
-};
+}

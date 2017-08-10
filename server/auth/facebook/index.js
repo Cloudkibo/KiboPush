@@ -2,13 +2,13 @@
  * Created by sojharo on 24/07/2017.
  */
 
-'use strict';
+'use strict'
 
-const express = require('express');
-const passport = require('passport');
-const auth = require('../auth.service');
+const express = require('express')
+const passport = require('passport')
+const auth = require('../auth.service')
 
-const router = express.Router();
+const router = express.Router()
 
 router
   .get('/', passport.authenticate('facebook', {
@@ -20,6 +20,6 @@ router
   .get('/callback', passport.authenticate('facebook', {
     failureRedirect: '/',
     session: false
-  }), auth.setTokenCookie);
+  }), auth.setTokenCookie)
 
-module.exports = router;
+module.exports = router

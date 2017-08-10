@@ -1,86 +1,79 @@
-import React from 'react';
-import Popover from 'react-simple-popover';
+import React from 'react'
+import Popover from 'react-simple-popover'
 
-function rank(items, prop) {
-
-  //declare a key->count table
+function rank (items, prop) {
+  // declare a key->count table
   var results = {}
 
-  //loop through all the items we were given to rank
-  var len = items.length;
+  // loop through all the items we were given to rank
+  var len = items.length
   for (var i = 0; i < len; i++) {
+    // get the requested property value (example: License)
+    var value = items[i][prop]
 
-    //get the requested property value (example: License)
-    var value = items[i][prop];
-
-    //increment counter for this value (starting at 1)
-    var count = (results[value] || 0) + 1;
-    results[value] = count;
+    // increment counter for this value (starting at 1)
+    var count = (results[value] || 0) + 1
+    results[value] = count
   }
 
   var ranked = []
 
-  //loop through all the keys in the results object
+  // loop through all the keys in the results object
   for (var key in results) {
-
-    //here we check that the results object *actually* has
-    //the key. because of prototypal inheritance in javascript there's
-    //a chance that someone has modified the Object class prototype
-    //with some extra properties. We don't want to include them in the
-    //ranking, so we check the object has it's *own* property.
+    // here we check that the results object *actually* has
+    // the key. because of prototypal inheritance in javascript there's
+    // a chance that someone has modified the Object class prototype
+    // with some extra properties. We don't want to include them in the
+    // ranking, so we check the object has it's *own* property.
     if (results.hasOwnProperty(key)) {
-
-      //add an object that looks like {value:"License ABC", count: 2}
-      //to the output array
-      ranked.push({value: key, count: results[key]});
+      // add an object that looks like {value:"License ABC", count: 2}
+      // to the output array
+      ranked.push({value: key, count: results[key]})
     }
   }
 
-  //sort by count descending
+  // sort by count descending
   return ranked.sort(function (a, b) {
-    return b.count - a.count;
-  });
+    return b.count - a.count
+  })
 }
 class Response extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.openPopover = this.openPopover.bind(this);
-    this.closePopover = this.closePopover.bind(this);
-    this.state = {'responseVal': []};
+    this.openPopover = this.openPopover.bind(this)
+    this.closePopover = this.closePopover.bind(this)
+    this.state = {'responseVal': []}
   }
 
-
-  openPopover() {
-    this.setState({ showPopover: true });
+  openPopover () {
+    this.setState({ showPopover: true })
   }
 
-  closePopover() {
-    this.setState({ showPopover: false });
+  closePopover () {
+    this.setState({ showPopover: false })
   }
 
-  componentWillReceiveProps(nextprops) {
-    console.log('i am called in Response.js');
-    if (nextprops.responses && nextprops.question.type == "multichoice") {
-      var sorted = rank(nextprops.responses, "response");
-      console.log('sorted data is ');
-      console.log(sorted);
+  componentWillReceiveProps (nextprops) {
+    console.log('i am called in Response.js')
+    if (nextprops.responses && nextprops.question.type == 'multichoice') {
+      var sorted = rank(nextprops.responses, 'response')
+      console.log('sorted data is ')
+      console.log(sorted)
       // this.setState({responseVal:sorted});
 
-
-      var radarChart = document.getElementById(nextprops.question._id);
+      var radarChart = document.getElementById(nextprops.question._id)
       var counts = []
       var vals = []
-      var colors = ["#38a9ff", "#ff5e3a", "#ffdc1b"]
+      var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']
       var backcolors = []
       for (var j = 0; j < sorted.length; j++) {
         counts.push(sorted[j].count)
-        backcolors.push(colors[j]);
-        vals.push(sorted[j].value);
-
+        backcolors.push(colors[j])
+        vals.push(sorted[j].value)
       }
       if (radarChart !== null) {
-        var ctx_rc = radarChart.getContext("2d");
+        var ctx_rc = radarChart.getContext('2d')
 
         var data_rc = {
           datasets: [{
@@ -88,7 +81,7 @@ class Response extends React.Component {
             backgroundColor: backcolors
           }],
           labels: vals
-        };
+        }
 
         var radarChartEl = new Chart(ctx_rc, {
           type: 'pie',
@@ -113,44 +106,42 @@ class Response extends React.Component {
               animateScale: true
             }
           }
-        });
+        })
       }
-
     }
   }
-  render() {
-    const response = this.props.responses;
+  render () {
+    const response = this.props.responses
     return (
       (
-        this.props.question.type === 'text' ?
-          <ul className='list-group'>
+        this.props.question.type === 'text'
+          ? <ul className='list-group'>
             {
               response.map((c) => (
                 <div>
-                <li
-                  className='list-group-item'
-                  style={{ cursor: 'pointer' }}
-                  key={c._id}
-                  ref='target'
-                  onMouseOver={this.openPopover}
-                  onMouseOut={this.closePopover}
-                  data-toggle="tooltip" data-placement="right" title=""
-                  data-original-title={c.subscriberId.firstName + ' ' + c.subscriberId.lastName}
+                  <li
+                    className='list-group-item'
+                    style={{ cursor: 'pointer' }}
+                    key={c._id}
+                    ref='target'
+                    onMouseOver={this.openPopover}
+                    onMouseOut={this.closePopover}
+                    data-toggle='tooltip' data-placement='right' title=''
+                    data-original-title={c.subscriberId.firstName + ' ' + c.subscriberId.lastName}
                 >
-                  {c.response}
+                    {c.response}
 
-                </li>
+                  </li>
                 </div>
               ))
             }
           </ul>
-        :
-          <div className="chart-js chart-js-one-bar" style={{'width': '400px', 'height': '350px', 'margin': '0 auto'}}>
-            <canvas id={this.props.question._id} width={250} height={170}/>
-          </div>
+        : <div className='chart-js chart-js-one-bar' style={{'width': '400px', 'height': '350px', 'margin': '0 auto'}}>
+          <canvas id={this.props.question._id} width={250} height={170} />
+        </div>
       )
-    );
+    )
   }
 }
 
-export default Response;
+export default Response

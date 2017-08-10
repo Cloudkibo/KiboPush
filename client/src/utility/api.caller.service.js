@@ -2,41 +2,41 @@
  * Created by sojharo on 26/07/2017.
  */
 
-import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
-import auth from './auth.service';
+import fetch from 'isomorphic-fetch'
+import _ from 'lodash'
+import auth from './auth.service'
 
-export const API_URL = '/api';
+export const API_URL = '/api'
 
-export default function callApi(endpoint, method = 'get', body) {
+export default function callApi (endpoint, method = 'get', body) {
   let headers = {
     'content-type': 'application/json'
-  };
+  }
 
   if (auth.loggedIn()) {
     headers = _.merge(headers, {
-      Authorization: `Bearer ${auth.getToken()}`,
-    });
+      Authorization: `Bearer ${auth.getToken()}`
+    })
   }
   return fetch(`${API_URL}/${endpoint}`, {
     headers,
     method,
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   }).then(response => {
     if (response.statusText === 'Unauthorized') {
-      auth.logout();
-      return Promise.reject(response.statusText);
+      auth.logout()
+      return Promise.reject(response.statusText)
     }
-    return response;
+    return response
   }).then(response => response.json().then(json => ({ json, response })))
     .then(({ json, response }) => {
       if (!response.ok) {
-        return Promise.reject(json);
+        return Promise.reject(json)
       }
-      return json;
+      return json
     })
     .then(
       response => response,
       error => error
-    );
+    )
 }

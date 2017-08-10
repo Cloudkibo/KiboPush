@@ -2,28 +2,27 @@
  * Created by sojharo on 27/07/2017.
  */
 
-'use strict';
+'use strict'
 
-const express = require('express');
+const express = require('express')
 
-const router = express.Router();
+const router = express.Router()
 
-const auth = require('../../auth/auth.service');
-const controller = require('./dashboard.controller');
+const auth = require('../../auth/auth.service')
+const controller = require('./dashboard.controller')
 
-const logger = require('../../components/logger');
+const logger = require('../../components/logger')
 
-const TAG = 'api/pages/index.js';
+const TAG = 'api/pages/index.js'
 
-router.get('/otherPages', auth.isAuthenticated(), controller.otherPages);
-router.post('/enable', auth.isAuthenticated(), controller.enable);
+router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
+router.post('/enable', auth.isAuthenticated(), controller.enable)
 // todo remove this /disable, this is coded badly
 // router.post('/disable', auth.isAuthenticated(), controller.disable);
-router.get('/stats', auth.isAuthenticated(), controller.stats);
-router.get('/:id', auth.isAuthenticated(), controller.index); // todo remove this, after discuss - this id will be userid
-
+router.get('/stats', auth.isAuthenticated(), controller.stats)
+router.get('/:id', auth.isAuthenticated(), controller.index) // todo remove this, after discuss - this id will be userid
 
 /* Seed Pages */
-router.get('/seed', controller.seed);
+router.get('/seed', controller.seed)
 
-module.exports = router;
+module.exports = router

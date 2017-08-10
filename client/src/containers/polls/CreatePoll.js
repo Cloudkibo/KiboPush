@@ -2,163 +2,155 @@
  * Created by sojharo on 20/07/2017.
  */
 
-import React from 'react';
-import Sidebar from '../sidebar/sidebar';
-import Responsive from '../sidebar/responsive';
-import Dashboard from '../dashboard/dashboard';
-import Header from '../header/header';
-import HeaderResponsive from '../header/headerResponsive';
-import { Link } from 'react-router';
-import { connect } from 'react-redux';
-import {addPoll, loadPollsList} from '../../redux/actions/poll.actions';
-import { bindActionCreators } from 'redux';
+import React from 'react'
+import Sidebar from '../sidebar/sidebar'
+import Responsive from '../sidebar/responsive'
+import Dashboard from '../dashboard/dashboard'
+import Header from '../header/header'
+import HeaderResponsive from '../header/headerResponsive'
+import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import {addPoll, loadPollsList} from '../../redux/actions/poll.actions'
+import { bindActionCreators } from 'redux'
 
 class CreatePoll extends React.Component {
-
-		constructor(props, context) {
-		super(props, context);
-		this.createPoll = this.createPoll.bind(this);
-		this.state = {
-			statement: '',
-			option1: '',
-			option2: '',
-			option3: '',
-		}
-		this.updateStatment = this.updateStatment.bind(this);
-		this.updateOptions = this.updateOptions.bind(this);
+  constructor (props, context) {
+    super(props, context)
+    this.createPoll = this.createPoll.bind(this)
+    this.state = {
+      statement: '',
+      option1: '',
+      option2: '',
+      option3: ''
+    }
+    this.updateStatment = this.updateStatment.bind(this)
+    this.updateOptions = this.updateOptions.bind(this)
   }
 
-	 componentDidMount() {
-		require('../../../public/js/jquery-3.2.0.min.js');
-		require('../../../public/js/jquery.min.js');
-		var addScript = document.createElement('script');
-		addScript.setAttribute('src', '../../../js/theme-plugins.js');
-		document.body.appendChild(addScript);
-		addScript = document.createElement('script');
-		addScript.setAttribute('src', '../../../js/material.min.js');
-		document.body.appendChild(addScript);
-		addScript = document.createElement('script');
-		addScript.setAttribute('src', '../../../js/main.js');
-		document.body.appendChild(addScript);
-	}
+	 componentDidMount () {
+   require('../../../public/js/jquery-3.2.0.min.js')
+   require('../../../public/js/jquery.min.js')
+   var addScript = document.createElement('script')
+   addScript.setAttribute('src', '../../../js/theme-plugins.js')
+   document.body.appendChild(addScript)
+   addScript = document.createElement('script')
+   addScript.setAttribute('src', '../../../js/material.min.js')
+   document.body.appendChild(addScript)
+   addScript = document.createElement('script')
+   addScript.setAttribute('src', '../../../js/main.js')
+   document.body.appendChild(addScript)
+ }
 
-	
-	createPoll(){
-		var options= [];
-		if(this.state.option1 != ''){
-			options.push(this.state.option1);
-		}
-		if(this.state.option2 != ''){
-			options.push(this.state.option2);
-		}
-		if(this.state.option3 != ''){
-			options.push(this.state.option3);
-		}
-		this.props.addPoll('', {platform: 'Facebook', datetime: Date.now(), statement: this.state.statement, sent: 0, options: options});
-		console.log("Poll added");
-		this.props.history.push({
-			pathname: '/poll',
-		});
-	
-	}
+  createPoll () {
+    var options = []
+    if (this.state.option1 != '') {
+      options.push(this.state.option1)
+    }
+    if (this.state.option2 != '') {
+      options.push(this.state.option2)
+    }
+    if (this.state.option3 != '') {
+      options.push(this.state.option3)
+    }
+    this.props.addPoll('', {platform: 'Facebook', datetime: Date.now(), statement: this.state.statement, sent: 0, options: options})
+    console.log('Poll added')
+    this.props.history.push({
+      pathname: '/poll'
+    })
+  }
 
-	updateStatment(e){
-		this.setState({statement: e.target.value});
-	}
+  updateStatment (e) {
+    this.setState({statement: e.target.value})
+  }
 
-	updateOptions(e, opt){
-		switch (opt) {
-			case 1:
-				this.setState({option1: e.target.value});		
-				break;
-			case 2:
-				this.setState({option2: e.target.value});		
-				break;
-			case 3:
-				this.setState({option3: e.target.value});		
-				break;
-		
-			default:
-				break;
-		}
-		
-	}
+  updateOptions (e, opt) {
+    switch (opt) {
+      case 1:
+        this.setState({option1: e.target.value})
+        break
+      case 2:
+        this.setState({option2: e.target.value})
+        break
+      case 3:
+        this.setState({option3: e.target.value})
+        break
 
-  render() {
+      default:
+        break
+    }
+  }
+
+  render () {
     return (
-	<div>
-      <Header/>
-      <HeaderResponsive />
-      <Sidebar/>
-      <Responsive/>
-     
+      <div>
+        <Header />
+        <HeaderResponsive />
+        <Sidebar />
+        <Responsive />
 
-       <div className="container">
-      						   	 <br/>
-							     <br/>
-							     <br/>
-						      <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						        <h2 className="presentation-margin">Ask Facebook Subscribers a Question</h2>
-						        <div className="ui-block">
-						          <div className="news-feed-form">
-						            
-						            <div className="tab-content">
-						              <div className="tab-pane active" id="home-1" role="tabpanel" aria-expanded="true">
-						              
-						                  
-						                  <div className="form-group label-floating is-empty">
-						                    <label className="control-label">Ask something...</label>
-																<textarea className="form-control" value={this.state.statement} onChange={(e) => this.updateStatment(e)}/>
-						                  </div>
-						                  <br/>
-						                  <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-						                  <label className="control-label"> Add 3 responses</label> 
-						                  <fieldset className="input-group-vertical">
-											      <div className="form-group">
-											        <label className="sr-only">Response1</label>
-											        <input type="text" className="form-control" value={this.state.option1} onChange={(e) => this.updateOptions(e, 1)}  placeholder="Response 1"/>
-											      </div>
-											      <div className="form-group">
-											        <label className="sr-only">Response2</label>
-											        <input type="text" className="form-control" value={this.state.option2} onChange={(e) => this.updateOptions(e, 2)} placeholder="Response 2"/>
-											      </div>
-											      <div className="form-group">
-											        <label className="sr-only">Response3</label>
-											        <input type="text" className="form-control" value={this.state.option3} onChange={(e) => this.updateOptions(e, 3)} placeholder="Response 3"/>
-											      </div>
-											      
-											</fieldset>
-											</div>
-						                  <div className="add-options-message">
-						                    
-						                   
-											<button className="btn btn-primary btn-sm" onClick={this.createPoll}> Create Poll</button>
-						                    <button className="btn btn-sm btn-border-think btn-transparent c-grey">Cancel</button>
-						                  </div>
-						                
-						              </div>
-						             
-						             
-						            </div>
-						          </div>
-						        </div>
-						      </div>
-					
-					</div>
-					</div>
+        <div className='container'>
+          <br />
+          <br />
+          <br />
+          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+            <h2 className='presentation-margin'>Ask Facebook Subscribers a Question</h2>
+            <div className='ui-block'>
+              <div className='news-feed-form'>
 
-    );
+                <div className='tab-content'>
+                  <div className='tab-pane active' id='home-1' role='tabpanel' aria-expanded='true'>
+
+                    <div className='form-group label-floating is-empty'>
+                      <label className='control-label'>Ask something...</label>
+                      <textarea className='form-control' value={this.state.statement} onChange={(e) => this.updateStatment(e)} />
+                    </div>
+                    <br />
+                    <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                      <label className='control-label'> Add 3 responses</label>
+                      <fieldset className='input-group-vertical'>
+                        <div className='form-group'>
+                          <label className='sr-only'>Response1</label>
+                          <input type='text' className='form-control' value={this.state.option1} onChange={(e) => this.updateOptions(e, 1)} placeholder='Response 1' />
+                        </div>
+                        <div className='form-group'>
+                          <label className='sr-only'>Response2</label>
+                          <input type='text' className='form-control' value={this.state.option2} onChange={(e) => this.updateOptions(e, 2)} placeholder='Response 2' />
+                        </div>
+                        <div className='form-group'>
+                          <label className='sr-only'>Response3</label>
+                          <input type='text' className='form-control' value={this.state.option3} onChange={(e) => this.updateOptions(e, 3)} placeholder='Response 3' />
+                        </div>
+
+                      </fieldset>
+                    </div>
+                    <div className='add-options-message'>
+
+                      <button className='btn btn-primary btn-sm' onClick={this.createPoll}> Create Poll</button>
+                      <button className='btn btn-sm btn-border-think btn-transparent c-grey'>Cancel</button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    )
   }
 }
 
-function mapStateToProps(state) {
-  console.log(state);
+function mapStateToProps (state) {
+  console.log(state)
   return {
-          polls:(state.pollsInfo.polls),
-         };
+    polls: (state.pollsInfo.polls)
+  }
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadPollsList:loadPollsList, addPoll:addPoll}, dispatch);
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll}, dispatch)
 }
-export default connect(mapStateToProps,mapDispatchToProps)(CreatePoll);
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePoll)

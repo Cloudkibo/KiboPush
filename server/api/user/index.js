@@ -2,21 +2,21 @@
  * Created by sojharo on 20/07/2017.
  */
 
-'use strict';
+'use strict'
 
-const express = require('express');
+const express = require('express')
 
-const router = express.Router();
+const router = express.Router()
 
-const auth = require('../../auth/auth.service');
-const controller = require('./user.controller');
+const auth = require('../../auth/auth.service')
+const controller = require('./user.controller')
 
-const logger = require('../../components/logger');
+const logger = require('../../components/logger')
 
-const TAG = 'api/user/index.js';
+const TAG = 'api/user/index.js'
 
-router.get('/', auth.isAuthenticated(), controller.index);
+router.get('/', auth.isAuthenticated(), controller.index)
 
-router.get('/logout', controller.logout);
+router.get('/logout', controller.logout)
 
-module.exports = router;
+module.exports = router

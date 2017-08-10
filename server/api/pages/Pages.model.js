@@ -1,13 +1,13 @@
 let mongoose = require('mongoose'),
   Schema = mongoose.Schema,
-  ObjectId = Schema.ObjectId;
+  ObjectId = Schema.ObjectId
 
 const pageSchema = new Schema({
   pageId: {
-    type: String,
+    type: String
   },
   pageName: {
-    type: String,
+    type: String
   },
   pagePic: {
     type: String
@@ -22,10 +22,10 @@ const pageSchema = new Schema({
     type: String
   },
   connected: { // TODO add default value
-    type: Boolean,
+    type: Boolean
   },
-  userId: { type: Schema.ObjectId, ref: 'users' },
+  userId: { type: Schema.ObjectId, ref: 'users' }
 
-});
+})
 
-module.exports = mongoose.model('pages', pageSchema);
+module.exports = mongoose.model('pages', pageSchema)
