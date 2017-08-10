@@ -104,7 +104,7 @@ exports.send = function (req, res) {
       return res.status(404).json({ status: 'failed', description: 'Pages not found' });
     }
       logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`);
-      for (var z in pages) // todo this for loop doesn't work with async code
+      for (let z in pages) // todo this for loop doesn't work with async code
       {
         logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
         Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
