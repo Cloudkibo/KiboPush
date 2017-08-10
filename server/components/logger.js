@@ -5,6 +5,8 @@
 const config = require('../config/environment/index')
 
 const winston = require('winston')
+
+// eslint-disable-next-line no-unused-expressions
 require('winston-papertrail').Papertrail
 
 const logger = new winston.Logger({

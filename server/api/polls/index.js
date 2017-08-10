@@ -15,7 +15,5 @@ router.post('/report', auth.isAuthenticated(), controller.report)
 router.post('/send', auth.isAuthenticated(), controller.send)
 router.get('/responses/:id', controller.getresponses)
 router.get('/submitresponse/', controller.submitresponses)
-/* Seed Pages */
-router.get('/seed', controller.seed)
 
 module.exports = router

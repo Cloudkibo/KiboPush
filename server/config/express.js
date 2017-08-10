@@ -19,7 +19,6 @@ const errorHandler = require('errorhandler')
 const path = require('path')
 const helmet = require('helmet')
 const passport = require('passport')
-const mongoose = require('mongoose')
 const config = require('./environment/index')
 
 module.exports = function (app) {

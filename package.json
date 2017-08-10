@@ -75,6 +75,7 @@
     "winston-papertrail": "^1.0.5"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "body-parser": "^1.17.2",
     "cross-env": "^5.0.1",
     "nodemon": "^1.11.0",
@@ -83,7 +84,7 @@
   "standard": {
     "ignore": [
       "client/public"
-    ]
+    ],
+    "parser": "babel-eslint"
   }
-
 }
