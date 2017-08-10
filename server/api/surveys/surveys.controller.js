@@ -218,7 +218,7 @@ exports.send = function (req, res) {
                 next_question_id = questions[1]._id;
                }
 
-               for(var x=0;x<first_question.options.length;x++){
+               for(let x=0;x<first_question.options.length;x++){
 
                 buttons.push({
                                 type: 'postback',
@@ -234,10 +234,10 @@ exports.send = function (req, res) {
                     return res.status(404).json({ status: 'failed', description: 'Pages not found' });
                   }
                   logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`);
-                  for (var z in pages) // todo this for loop doesn't work with async code
+                  for (let z=0;z<pages.length;z++) // todo this for loop doesn't work with async code
                   {
                     logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
-                    Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
+                    Subscribers.find({pageId: pages[z]._id }, (err, subscribers) => {
                       logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`);
                       logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
                       if (err) {
@@ -249,7 +249,7 @@ exports.send = function (req, res) {
                         if (err) {
                           logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`);
                           // TODO this will do problem, res should not be in loop
-                          return res.status(404).json({ status: 'failed', description: err });
+                          //return res.status(404).json({ status: 'failed', description: err });
                         }
 
                           logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`);
@@ -279,7 +279,7 @@ exports.send = function (req, res) {
                               logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(resp.body)}`);
                               if (err) {
                                 // TODO this will do problem, res should not be in loop
-                                return res.status(404).json({ status: 'failed', description: err });
+                              //  return res.status(404).json({ status: 'failed', description: err });
                               }
 
                               // return res.status(200).json({ status: 'success', payload: resp.body });
