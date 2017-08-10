@@ -1,6 +1,6 @@
 let mongoose = require('mongoose'),
-   Schema = mongoose.Schema,
-   ObjectId = Schema.ObjectId;
+  Schema = mongoose.Schema,
+  ObjectId = Schema.ObjectId;
 
 const pageSchema = new Schema({
   pageId: {
@@ -25,7 +25,7 @@ const pageSchema = new Schema({
     type: Boolean,
   },
   userId: { type: Schema.ObjectId, ref: 'users' },
-    
+
 });
 
 module.exports = mongoose.model('pages', pageSchema);

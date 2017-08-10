@@ -6,11 +6,11 @@ let mongoose = require('mongoose'),
   ObjectId = Schema.ObjectId;
 
 const broadcastSchema = new Schema({
-    platform: String, // TODO define this as enum with values, for now value is facebook
-    type: String, // TODO define this as enum with values ['text','attachment']
-    text: String, //message body
-  userId: {type: Schema.ObjectId, ref: 'users'},
-  datetime: {type: Date, default: Date.now},
+  platform: String, // TODO define this as enum with values, for now value is facebook
+  type: String, // TODO define this as enum with values ['text','attachment']
+  text: String, //message body
+  userId: { type: Schema.ObjectId, ref: 'users' },
+  datetime: { type: Date, default: Date.now },
   //  pageId: String, [discuss with sojharo, will we keep it or not]
 });
 

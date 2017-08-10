@@ -273,7 +273,7 @@ exports.getfbMessage = function (req, res) {
       } else if (resp.survey_id) {
         //this is the response of survey question
         //first save the response of survey
-                //find subscriber from sender id
+        //find subscriber from sender id
         Subscribers.findOne({ senderId: event.sender.id }, (err, subscriber) => {
           if (err) {
             logger.serverLog(TAG, 'Error occured in finding subscriber');
@@ -294,88 +294,88 @@ exports.getfbMessage = function (req, res) {
             //send the next question
             SurveyQuestions.find({
               surveyId: resp.survey_id,
-              _id: {$gt: resp.question_id}
+              _id: { $gt: resp.question_id }
             }).populate('surveyId').exec((err2, questions) => {
               if (err2) {
                 logger.serverLog(TAG, 'Survey questions not found');
               }
               logger.serverLog(TAG, `Questions are ${JSON.stringify(questions)}`);
               if (questions.length > 0) {
-               first_question = questions[0];
-               //create buttons
+                first_question = questions[0];
+                //create buttons
                 const buttons = [];
                 let next_question_id = 'nil';
                 if (questions.length > 1) {
-                next_question_id = questions[1]._id;
-               }
+                  next_question_id = questions[1]._id;
+                }
 
                 for (let x = 0; x < first_question.options.length; x++) {
-                buttons.push({
-                                type: 'postback',
-                                title: first_question.options[x],
-                  payload: JSON.stringify({
-                    survey_id: resp.survey_id,
-                    option: first_question.options[x],
-                    question_id: first_question._id,
-                    next_question_id,
-                    userToken: resp.userToken
-                  })
-                });
-                  }
+                  buttons.push({
+                    type: 'postback',
+                    title: first_question.options[x],
+                    payload: JSON.stringify({
+                      survey_id: resp.survey_id,
+                      option: first_question.options[x],
+                      question_id: first_question._id,
+                      next_question_id,
+                      userToken: resp.userToken
+                    })
+                  });
+                }
                 logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`);
                 needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
-                        if (err3) {
-                          logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
-                        }
+                  if (err3) {
+                    logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
+                  }
 
-                          logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
+                  logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
                   const messageData = {
-                                                    attachment: {
-                                                      type: 'template',
-                                                      payload: {
-                                                        template_type: 'button',
-                                                        text: first_question.statement,
-                                                        buttons,
+                    attachment: {
+                      type: 'template',
+                      payload: {
+                        template_type: 'button',
+                        text: first_question.statement,
+                        buttons,
 
-                                                        }
-                                                      }
-                                            };
-                            const data = {
-                              recipient: { id: event.sender.id }, //this is the subscriber id
-                              message: messageData,
-                            };
+                      }
+                    }
+                  };
+                  const data = {
+                    recipient: { id: event.sender.id }, //this is the subscriber id
+                    message: messageData,
+                  };
                   logger.serverLog(TAG, messageData);
-                            needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
-                              logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
-                              if (err4) {
+                  needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
+                    logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
+                    if (err4) {
 
-                              }
-                            });
-                          });
+                    }
+                  });
+                });
               }
 
               //else send thank you message
               else {
                 needle.get(`https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`, (err3, response) => {
-                        if (err3) {
-                          logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
-                        }
+                  if (err3) {
+                    logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err3)}`);
+                  }
 
-                          logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
+                  logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(response.body)}`);
                   const messageData = {
-                                                text: 'Thank you. Response submitted successfully.'
-                                            };
-                            const data = {
-                              recipient: { id: event.sender.id }, //this is the subscriber id
-                              message: messageData,
-                            };
+                    text: 'Thank you. Response submitted successfully.'
+                  };
+                  const data = {
+                    recipient: { id: event.sender.id }, //this is the subscriber id
+                    message: messageData,
+                  };
                   logger.serverLog(TAG, messageData);
-                            needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
-                              logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
-                              if (err4) {
-                              }
-                            });
-                          });
+                  needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`, data, (err4, respp) => {
+                    logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(respp.body)}`);
+                    if (err4) {
+                    }
+                  });
+                });
               }
             });
           });
@@ -386,5 +386,5 @@ exports.getfbMessage = function (req, res) {
     }
   }
 
-  return res.status(200).json({status: 'success', description: 'got the data.'});
+  return res.status(200).json({ status: 'success', description: 'got the data.' });
 };

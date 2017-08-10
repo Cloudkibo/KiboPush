@@ -1,4 +1,3 @@
-
 /**
  * Created by sojharo on 27/07/2017.
  */
@@ -51,7 +50,7 @@ exports.stats = function (req, res) {
     payload.pages = pagesCount;
     Subscribers.count({ userId: req.user._id }, (err2, subscribersCount) => {
       if (err2) {
-        return res.status(500).json({status: 'failed', description: JSON.stringify(err2)});
+        return res.status(500).json({ status: 'failed', description: JSON.stringify(err2) });
       }
       payload.subscribers = subscribersCount;
       Broadcasts.find({ userId: req.user._id }).sort('datetime').limit(10).exec(
@@ -66,13 +65,17 @@ exports.stats = function (req, res) {
             }
             Polls.count({ userId: req.user._id }, (err5, pollsCount) => {
               if (err5) {
-                return res.status(500).json({ status: 'failed',
-                  description: JSON.stringify(err5) });
+                return res.status(500).json({
+                  status: 'failed',
+                  description: JSON.stringify(err5)
+                });
               }
               Surveys.count({ userId: req.user._id }, (err6, surveysCount) => {
                 if (err6) {
-                  return res.status(500).json({ status: 'failed',
-                    description: JSON.stringify(err6) });
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: JSON.stringify(err6)
+                  });
                 }
                 payload.activityChart = {
                   messages: broadcastsCount,
@@ -80,8 +83,10 @@ exports.stats = function (req, res) {
                   surveys: surveysCount
                 };
 
-                res.status(200).json({ status: 'success',
-                  payload });
+                res.status(200).json({
+                  status: 'success',
+                  payload
+                });
               });
             });
           });
@@ -94,10 +99,50 @@ exports.stats = function (req, res) {
 
 exports.seed = function (req, res) {
   const rawDocuments = [
-    { pageCode: '1', pageName: 'Cat Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, userId: 5, likes: 0, numberOfFollowers: 0 },
-    { pageCode: '2', pageName: 'Dank Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, userId: 5, likes: 50, numberOfFollowers: 25 },
-    { pageCode: '3', pageName: 'Dog Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: false, userId: 5, likes: 37, numberOfFollowers: 89 },
-    { pageCode: '4', pageName: 'Elephant Memes', pagePic: 'url', numberOfFollowers: 23, accessToken: 'getToken', connected: true, userId: 5, likes: 53, numberOfFollowers: 74 },
+    {
+      pageCode: '1',
+      pageName: 'Cat Memes',
+      pagePic: 'url',
+      numberOfFollowers: 23,
+      accessToken: 'getToken',
+      connected: true,
+      userId: 5,
+      likes: 0,
+      numberOfFollowers: 0
+    },
+    {
+      pageCode: '2',
+      pageName: 'Dank Memes',
+      pagePic: 'url',
+      numberOfFollowers: 23,
+      accessToken: 'getToken',
+      connected: false,
+      userId: 5,
+      likes: 50,
+      numberOfFollowers: 25
+    },
+    {
+      pageCode: '3',
+      pageName: 'Dog Memes',
+      pagePic: 'url',
+      numberOfFollowers: 23,
+      accessToken: 'getToken',
+      connected: false,
+      userId: 5,
+      likes: 37,
+      numberOfFollowers: 89
+    },
+    {
+      pageCode: '4',
+      pageName: 'Elephant Memes',
+      pagePic: 'url',
+      numberOfFollowers: 23,
+      accessToken: 'getToken',
+      connected: true,
+      userId: 5,
+      likes: 53,
+      numberOfFollowers: 74
+    },
   ];
 
   Pages.insertMany(rawDocuments)

@@ -10,7 +10,7 @@ const TAG = 'api/polls/polls.controller.js';
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Poll get api is working');
-  Polls.find({userId: req.user._id}, (err, polls) => {
+  Polls.find({ userId: req.user._id }, (err, polls) => {
     logger.serverLog(TAG, polls);
     logger.serverLog(TAG, `Error: ${err}`);
     res.status(200).json({ status: 'success', payload: polls });
@@ -105,7 +105,7 @@ exports.send = function (req, res) {
     }
   };
   logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`);
-  Pages.find({userId: req.user._id, connected: true}, (err, pages) => {
+  Pages.find({ userId: req.user._id, connected: true }, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`);
       return res.status(404).json({ status: 'failed', description: 'Pages not found' });
@@ -114,7 +114,7 @@ exports.send = function (req, res) {
     for (let z = 0; z < pages.length; z++) // todo this for loop doesn't work with async code
     {
       logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
-      Subscribers.find({pageId: pages[z]._id}, (err, subscribers) => {
+      Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
         if (subscribers.length > 0) {
           logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`);
           logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`);
@@ -137,7 +137,7 @@ exports.send = function (req, res) {
               logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`);
 
               const data = {
-                recipient: {id: subscribers[j].senderId}, //this is the subscriber id
+                recipient: { id: subscribers[j].senderId }, //this is the subscriber id
                 message: messageData,
               };
 
@@ -157,6 +157,6 @@ exports.send = function (req, res) {
         }
       });
     }
-    return res.status(200).json({status: 'success', payload: 'Poll sent successfully.'});
+    return res.status(200).json({ status: 'success', payload: 'Poll sent successfully.' });
   });
 };
