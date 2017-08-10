@@ -138,7 +138,9 @@ exports.send = function (req, res) {
                   logger.serverLog(TAG, `Sending poll to subscriber response ${JSON.stringify(resp.body)}`);
                   if (err) {
                     // TODO this will do problem, res should not be in loop
-                    return res.status(404).json({ status: 'failed', description: err });
+                   // return res.status(404).json({ status: 'failed', description: err });
+                   logger.serverLog(TAG, err);
+                   logger.serverLog(TAG,'ERror occured at subscriber :'+JSON.stringify(subscribers[j]));
                   }
 
                   // return res.status(200).json({ status: 'success', payload: resp.body });
