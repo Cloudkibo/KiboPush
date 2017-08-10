@@ -41,11 +41,22 @@ class SurveyResult extends React.Component {
 					<div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <h3 className="presentation-margin">Survey Report</h3>
               <div className="container">
-                <br />
+               {this.props.survey &&
+                <div className="row">
+                 <div className="col-lg-12 col-sm-12 col-xs-12">
+                    <div className="ui-block responsive-flex">
+                      <h5 className="presentation-margin">Title : {this.props.survey.title}</h5>
+                      <p>{this.props.survey.description}</p>
+                    </div>
+                  </div>
+                </div>
+              }
                 <div className="row">
                   <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div className="ui-block">
+
                       <div className="ui-block-content">
+                     
                         <ul className="statistics-list-count">
                           <li>
                             <div className="points">
@@ -96,7 +107,7 @@ class SurveyResult extends React.Component {
                                 style={{ cursor: 'pointer' }}
                                 key={c._id}
                               >
-                                <strong>{c.statement}</strong>
+                                <strong>Q. {c.statement}</strong>
                               </li>
                               <Response responses={this.props.responses.filter((d)=>d.questionId._id == c._id)} question={c} />
                               </div>
