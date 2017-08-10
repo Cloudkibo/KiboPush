@@ -20,12 +20,13 @@ const options = {
 }
 
 exports.setup = function (User, config) {
-  passport.use(new FacebookStrategy({
-    clientID: config.facebook.clientID,
-    clientSecret: config.facebook.clientSecret,
-    callbackURL: config.facebook.callbackURL,
-    profileFields: ['id', 'displayName', 'photos', 'email']
-  },
+  passport.use(new FacebookStrategy(
+    {
+      clientID: config.facebook.clientID,
+      clientSecret: config.facebook.clientSecret,
+      callbackURL: config.facebook.callbackURL,
+      profileFields: ['id', 'displayName', 'photos', 'email']
+    },
     (accessToken, refreshToken, profile, done) => {
       if (profile._json) {
         logger.serverLog(TAG, `facebook auth done for: ${
@@ -54,15 +55,16 @@ exports.setup = function (User, config) {
         })
 
         if (resp.body.email) {
-          payload = _.merge(payload, { email: resp.body.email })
+          payload = _.merge(payload, {email: resp.body.email})
         }
 
-        Users.findOne({ fbId: resp.body.id }, (err, user) => {
+        Users.findOne({fbId: resp.body.id}, (err, user) => {
           if (err) {
             return done(err)
           }
           if (!err && user !== null) {
-            logger.serverLog(TAG, `previous fb token before login: ${user.fbToken}`)
+            logger.serverLog(TAG,
+              `previous fb token before login: ${user.fbToken}`)
             user.updatedAt = Date.now()
             user.fbToken = accessToken
             logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
@@ -71,7 +73,8 @@ exports.setup = function (User, config) {
                 logger.serverLog(TAG, JSON.stringify(err))
                 return done(err)
               }
-              logger.serverLog(TAG, `user is updated : ${JSON.stringify(userpaylaod)}`)
+              logger.serverLog(TAG,
+                `user is updated : ${JSON.stringify(userpaylaod)}`)
               done(null, user)
             })
           } else {
@@ -82,8 +85,7 @@ exports.setup = function (User, config) {
               return done(null, payload)
             })
           }
-        }
-        )
+        })
       })
     }
   ))
@@ -104,29 +106,23 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      Pages
-        .findOne({ pageId: item.id }, (err, page) => {
-          if (!page) {
-            logger.serverLog(TAG, 'Page not found. Creating a page ')
-            var page = new Pages({
-              pageId: item.id,
-              pageName: item.name,
-              accessToken: item.access_token,
-              user
-            })
-            // save model to MongoDB
-            page.save((err2, page) => {
-              if (err2) {
-                res.status(500).json({
-                  status: 'Failed',
-                  error: err2,
-                  description: 'Failed to insert page'
-                })
-              }
-              logger.serverLog(TAG, `Page ${item.name} created: ${page}`)
-            })
-          }
-        })
+      Pages.findOne({pageId: item.id}, (err, page) => {
+        if (err) return logger.serverLog(TAG, 'Error ' + JSON.stringify(err))
+        if (!page) {
+          logger.serverLog(TAG, 'Page not found. Creating a page ')
+          var newPage = new Pages({
+            pageId: item.id,
+            pageName: item.name,
+            accessToken: item.access_token,
+            user
+          })
+          // save model to MongoDB
+          newPage.save((err2, page) => {
+            if (err2) return logger.serverLog(TAG, 'Error ' + JSON.stringify(err2))
+            logger.serverLog(TAG, `Page ${item.name} created: ${page}`)
+          })
+        }
+      })
     })
     if (cursor.next) {
       fetchPages(cursor.next, user)
