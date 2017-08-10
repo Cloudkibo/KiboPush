@@ -24,6 +24,9 @@ module.exports = function (app) {
   app.use('/api/subscribers', require('./api/subscribers'));
   app.use('/api/pages', require('./api/pages'));
   app.use('/api/surveys', require('./api/surveys'));
+  app.use('/api/page_poll', require('./api/page_poll'));
+  app.use('/api/page_survey', require('./api/page_survey'));
+  app.use('/api/page_broadcast', require('./api/page_broadcast'));
 
   app.use('/auth', require('./auth'));
 
