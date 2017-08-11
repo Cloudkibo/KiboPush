@@ -1,6 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import {browserHistory} from 'react-router';
+import {browserHistory} from 'react-router'
 
 export function showSurveys (data) {
   return {
@@ -66,9 +66,8 @@ else{
   return {
     type: ActionTypes.ADD_SURVEY,
     data,
-  }*/
-    browserHistory.push('/surveys');
-
+  } */
+  browserHistory.push('/surveys')
 }
 
 export function showSurveyResponse (data) {

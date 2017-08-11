@@ -38,16 +38,15 @@ class AddSurvey extends React.Component {
    addScript.setAttribute('src', '../../../js/main.js')
    document.body.appendChild(addScript)
  }
-componentWillReceiveProps(nextprops){
-  if(nextprops.createwarning){
-    console.log('i am called');
-     this.props.history.push({
-      pathname: '/surveys',
-     
-  });
-   }
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.createwarning) {
+      console.log('i am called')
+      this.props.history.push({
+        pathname: '/surveys'
 
-}
+      })
+    }
+  }
 	 createSurvey (e) {
 	 	e.preventDefault()
 	 	var surveybody = {
@@ -123,12 +122,12 @@ componentWillReceiveProps(nextprops){
     console.log('surveyQuestions')
 	 console.log(this.state.surveyQuestions)
   }
-  /*handleQuestionType (e) {
+  /* handleQuestionType (e) {
 	      this.setState({
 	    	'questionType': e.target.value
 
 	    })
-	  }*/
+	  } */
 
   createOptionsList (qindex) {
   		console.log('qindex' + qindex)
@@ -260,9 +259,9 @@ componentWillReceiveProps(nextprops){
                       <h5> Add Questions </h5>
                       {this.createUI()}
                     </div>
-                      {/*
+                    {/*
                         <div className='col-xl-12'>
-                    
+
                       <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
                       <div className='col-sm-6 col-md-4'>
                         <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
@@ -272,13 +271,12 @@ componentWillReceiveProps(nextprops){
                         </select>
                         <br />
                         </div>
-                      
+
                     </div>
                     */}
-                        
-                     
+
                     <div className='col-sm-6 col-md-4'>
-                          <button className='btn btn-secondary btn-sm' onClick={this.addClick.bind(this)}> Add Questions</button>
+                      <button className='btn btn-secondary btn-sm' onClick={this.addClick.bind(this)}> Add Questions</button>
                     </div>
                     <div className='add-options-message'>
 

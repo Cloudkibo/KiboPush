@@ -12,7 +12,8 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addPoll, loadPollsList, sendpoll} from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
-import {formatAMPM,handleDate} from '../../utility/utils'
+import {formatAMPM, handleDate} from '../../utility/utils'
+import {browserHistory} from 'react-router'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -48,10 +49,11 @@ class Poll extends React.Component {
  })
   }
   gotoView (poll) {
-		 this.props.history.push({
+	/*	 this.props.history.push({
    pathname: `/pollResult/${poll._id}`,
    state: poll
- })
+ }) */
+    browserHistory.push(`/pollResult/${poll._id}`)
   }
   render () {
     return (

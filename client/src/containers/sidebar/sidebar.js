@@ -29,8 +29,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='dashboard'>
-                <span>Dashboard</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='dashboard'>
+                  <span>Dashboard</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -39,8 +39,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='subscribers'>
-                <span>Subscribers</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='subscribers'>
+                  <span>Subscribers</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -49,8 +49,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-badge-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='broadcasts'>
-                <span>Broadcasts</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='broadcasts'>
+                  <span>Broadcasts</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -59,8 +59,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-calendar-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='surveys'>
-                <span>Surveys</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='surveys'>
+                  <span>Surveys</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -69,8 +69,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-star-icon' />
                   </svg>
                 </Link>
-                 <ReactTooltip place="right" type="dark" effect="float" id='workflows'>
-                <span>Workflows</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='workflows'>
+                  <span>Workflows</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -79,8 +79,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='poll'>
-                <span>Polls</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='poll'>
+                  <span>Polls</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -89,8 +89,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='subscribe'>
-                <span>Subscribe to Messenger</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='subscribe'>
+                  <span>Subscribe to Messenger</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -99,8 +99,8 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-stats-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='stats'>
-                <span>Analytics</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='stats'>
+                  <span>Analytics</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -109,10 +109,10 @@ class Sidebar extends Component {
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip place="right" type="dark" effect="float" id='pages'>
-                <span>Pages</span>
+                <ReactTooltip place='right' type='dark' effect='float' id='pages'>
+                  <span>Pages</span>
                 </ReactTooltip>
-               
+
               </li>
             </ul>
           </div>

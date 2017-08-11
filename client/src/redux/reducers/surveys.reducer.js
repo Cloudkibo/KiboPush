@@ -14,7 +14,7 @@ export function surveysInfo (state = initialState, action) {
     case ActionTypes.ADD_SURVEY:
    	   return Object.assign({}, state, {
         surveys: [...state.surveys, action.data.payload],
-        createwarning:action.data.status,
+        createwarning: action.data.status
 
       })
     case ActionTypes.ADD_RESPONSES:

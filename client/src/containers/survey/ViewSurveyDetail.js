@@ -12,6 +12,8 @@ import { connect } from 'react-redux'
 import {getsurveyform, submitsurvey} from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import {browserHistory} from 'react-router'
+
 var handleDate = function (d) {
   var c = new Date(d)
   return c.toDateString()
@@ -22,6 +24,17 @@ class ViewSurveyDetail extends React.Component {
     super(props, context)
    		props.getsurveyform(props.params.id)
    		this.submitSurvey = this.submitSurvey.bind(this)
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
   }
   submitSurvey (e) {
   	e.preventDefault()
@@ -35,17 +48,7 @@ class ViewSurveyDetail extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    browserHistory.push(`/viewsurveydetail/${this.props.params.id}`)
   }
   gotoView () {
     this.props.history.push({

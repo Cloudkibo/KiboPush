@@ -35,6 +35,7 @@ class ViewSurvey extends React.Component {
   }
 
   componentDidMount () {
+    alert('componentDidMount called in ViewSurvey')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')

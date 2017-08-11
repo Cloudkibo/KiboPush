@@ -12,12 +12,12 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addBroadcast, loadBroadcastsList, sendbroadcast} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import {formatAMPM,handleDate} from '../../utility/utils'
+import {formatAMPM, handleDate} from '../../utility/utils'
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsList();
-    this.sendBroadcast = this.sendBroadcast.bind(this);
+    props.loadBroadcastsList()
+    this.sendBroadcast = this.sendBroadcast.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -48,8 +48,8 @@ class Broadcast extends React.Component {
  })
   }
 
-  sendBroadcast(broadcast){
-    this.props.sendbroadcast(broadcast);
+  sendBroadcast (broadcast) {
+    this.props.sendbroadcast(broadcast)
   }
 
   render () {

@@ -12,8 +12,8 @@ import { connect } from 'react-redux'
 import {loadSurveysList, sendsurvey} from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import {formatAMPM,handleDate} from '../../utility/utils'
-
+import {formatAMPM, handleDate} from '../../utility/utils'
+import {browserHistory} from 'react-router'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -36,10 +36,12 @@ class Survey extends React.Component {
   }
 
   gotoView (survey) {
-		 this.props.history.push({
+		/* this.props.history.push({
    pathname: `/viewsurveydetail/${survey._id}`,
    state: survey
- })
+ }) */
+
+    browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
 
   gotoResults (survey) {
