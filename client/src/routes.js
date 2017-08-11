@@ -81,20 +81,20 @@ const routes = (
     <Route path='/broadcasts' component={Broadcast} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
-    <Route path='/surveys' component={Surveys} />
+    <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
     <Route path='/createbroadcast' component={CreateBroadcast} onEnter={requireAuth} />
     <Route path='/createworkflow' component={CreateWorkflow} onEnter={requireAuth} />
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/editbroadcast/:id' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
-    <Route path='/poll' component={Poll} />
+    <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path='/addsurvey' component={AddSurvey} onEnter={requireAuth} />
-    <Route path='/pollResult/:id' component={PollResult} />
+    <Route path='/pollResult/:id' component={PollResult} onEnter={requireAuth} />
     <Route path='/surveyResult/:id' component={SurveyResult} onEnter={requireAuth} />
-    <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} />
-    <Route path='/viewsurveydetail/:id' component={ViewSurveyDetail} />
+    <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
+    <Route path='/viewsurveydetail/:id' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
   </Route>
 
