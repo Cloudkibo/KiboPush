@@ -24,7 +24,7 @@ export function showSurveyQuestions (data) {
 }
 
 export function loadSurveysList () {
-	// here we will fetch list of subscribers from endpoint
+  // here we will fetch list of subscribers from endpoint
   console.log('loadSurveysList called')
   return (dispatch) => {
     callApi('surveys').then(res => dispatch(showSurveys(res.payload)))
@@ -55,7 +55,7 @@ export function createsurvey (survey) {
 };
 
 export function addSurvey (data) {
-	// here we will add the broadcast
+  // here we will add the broadcast
 /*  if(data.status =='success'){
   alert('Survey created successfully.');
 }
@@ -75,9 +75,9 @@ export function showSurveyResponse (data) {
     {
       _id: '1',
       title: 'Product Satisfaction',
-      description: 'The survey to check our new product satisfaction from customers',
-   }
-   ;
+      description: 'The survey to check our new product satisfaction from customers'
+    }
+
   const questions = [
     {
       _id: '10',
@@ -87,8 +87,8 @@ export function showSurveyResponse (data) {
       surveyId: {
         _id: '1',
         title: 'Product Satisfaction',
-        description: 'The survey to check our new product satisfaction from customers',
-      },
+        description: 'The survey to check our new product satisfaction from customers'
+      }
     },
     {
       _id: '11',
@@ -98,21 +98,21 @@ export function showSurveyResponse (data) {
       surveyId: {
         _id: '1',
         title: 'Product Satisfaction',
-        description: 'The survey to check our new product satisfaction from customers',
-      },
+        description: 'The survey to check our new product satisfaction from customers'
+      }
     },
-   {
-   _id: '12',
-   statement: 'Which color do you like?',
-   options: ['Peach', 'Orange', 'Red'],
-   type: 'multichoice',
-   surveyId: {
-   _id: '1',
-   title: 'Product Satisfaction',
-   description: 'The survey to check our new product satisfaction from customers',
-   },
-   }
-  ];
+    {
+      _id: '12',
+      statement: 'Which color do you like?',
+      options: ['Peach', 'Orange', 'Red'],
+      type: 'multichoice',
+      surveyId: {
+        _id: '1',
+        title: 'Product Satisfaction',
+        description: 'The survey to check our new product satisfaction from customers'
+      }
+    }
+  ]
   const responses = [
     {
       _id: '20',
@@ -120,19 +120,19 @@ export function showSurveyResponse (data) {
       surveyId: {
         _id: '1',
         title: 'Product Satisfaction',
-        description: 'The survey to check our new product satisfaction from customers',
+        description: 'The survey to check our new product satisfaction from customers'
       },
       questionId: {
         _id: '10',
         statement: 'How would you rate our new product?',
         options: ['Excellent', 'Good', 'Bad'],
-        type: 'multichoice',
-   },
-   subscriberId:{
-   _id:'a',
-   firstName:'Zarmeen',
-   lastName:'Nasim',
-   gender:'Female'
+        type: 'multichoice'
+      },
+      subscriberId: {
+        _id: 'a',
+        firstName: 'Zarmeen',
+        lastName: 'Nasim',
+        gender: 'Female'
       }
     },
     {
@@ -141,42 +141,42 @@ export function showSurveyResponse (data) {
       surveyId: {
         _id: '1',
         title: 'Product Satisfaction',
-        description: 'The survey to check our new product satisfaction from customers',
+        description: 'The survey to check our new product satisfaction from customers'
       },
       questionId: {
         _id: '11',
         statement: 'Any feedback you want to give?',
         options: [],
-        type: 'text',
+        type: 'text'
       },
 
-   subscriberId:{
-   _id:'b',
-   firstName:'Sojharo',
-   lastName:'Mangi',
-   gender:'Male'
-   }
-   },
-   {
-   _id: '23',
-   response: 'Good',
-   surveyId: {
-   _id: '1',
-   title: 'Product Satisfaction',
-   description: 'The survey to check our new product satisfaction from customers',
-   },
-   questionId: {
-   _id: '10',
-   statement: 'How would you rate our new product?',
-   options: ['Excellent', 'Good', 'Bad'],
-   type: 'multichoice',
-   },
-   subscriberId:{
-   _id:'b',
-   firstName:'Sojharo',
-   lastName:'Mangi',
-   gender:'Male'
-   }
+      subscriberId: {
+        _id: 'b',
+        firstName: 'Sojharo',
+        lastName: 'Mangi',
+        gender: 'Male'
+      }
+    },
+    {
+      _id: '23',
+      response: 'Good',
+      surveyId: {
+        _id: '1',
+        title: 'Product Satisfaction',
+        description: 'The survey to check our new product satisfaction from customers'
+      },
+      questionId: {
+        _id: '10',
+        statement: 'How would you rate our new product?',
+        options: ['Excellent', 'Good', 'Bad'],
+        type: 'multichoice'
+      },
+      subscriberId: {
+        _id: 'b',
+        firstName: 'Sojharo',
+        lastName: 'Mangi',
+        gender: 'Male'
+      }
     },
     {
       _id: '22',
@@ -184,89 +184,89 @@ export function showSurveyResponse (data) {
       surveyId: {
         _id: '1',
         title: 'Product Satisfaction',
-        description: 'The survey to check our new product satisfaction from customers',
+        description: 'The survey to check our new product satisfaction from customers'
       },
       questionId: {
         _id: '11',
         statement: 'Any feedback you want to give?',
         options: [],
-        type: 'text',
+        type: 'text'
       },
 
-   subscriberId:{
-   _id:'c',
-   firstName:'Sumaira',
-   lastName:'Saeed',
-   gender:'Female'
-   }
+      subscriberId: {
+        _id: 'c',
+        firstName: 'Sumaira',
+        lastName: 'Saeed',
+        gender: 'Female'
+      }
     },
-   {
-   _id: '24',
-   response: 'Red',
-   surveyId: {
-   _id: '1',
-   title: 'Product Satisfaction',
-   description: 'The survey to check our new product satisfaction from customers',
-   },
-   questionId:  {
-   _id: '12',
-   statement: 'Which color do you like?',
-   options: ['Peach', 'Orange', 'Red'],
-   type: 'multichoice',
+    {
+      _id: '24',
+      response: 'Red',
+      surveyId: {
+        _id: '1',
+        title: 'Product Satisfaction',
+        description: 'The survey to check our new product satisfaction from customers'
+      },
+      questionId: {
+        _id: '12',
+        statement: 'Which color do you like?',
+        options: ['Peach', 'Orange', 'Red'],
+        type: 'multichoice'
 
-   },
-   subscriberId:{
-   _id:'b',
-   firstName:'Sojharo',
-   lastName:'Mangi',
-   gender:'Male'
-   }
-   },
-   {
-   _id: '25',
-   response: 'Red',
-   surveyId: {
-   _id: '1',
-   title: 'Product Satisfaction',
-   description: 'The survey to check our new product satisfaction from customers',
-   },
-   questionId:  {
-   _id: '12',
-   statement: 'Which color do you like?',
-   options: ['Peach', 'Orange', 'Red'],
-   type: 'multichoice',
+      },
+      subscriberId: {
+        _id: 'b',
+        firstName: 'Sojharo',
+        lastName: 'Mangi',
+        gender: 'Male'
+      }
+    },
+    {
+      _id: '25',
+      response: 'Red',
+      surveyId: {
+        _id: '1',
+        title: 'Product Satisfaction',
+        description: 'The survey to check our new product satisfaction from customers'
+      },
+      questionId: {
+        _id: '12',
+        statement: 'Which color do you like?',
+        options: ['Peach', 'Orange', 'Red'],
+        type: 'multichoice'
 
-   },
-   subscriberId:{
-   _id:'c',
-   firstName:'Sumaira',
-   lastName:'Saeed',
-   gender:'Female'
-   }
-   },
-   {
-   _id: '26',
-   response: 'Orange',
-   surveyId: {
-   _id: '1',
-   title: 'Product Satisfaction',
-   description: 'The survey to check our new product satisfaction from customers',
-   },
-   questionId:  {
-   _id: '12',
-   statement: 'Which color do you like?',
-   options: ['Peach', 'Orange', 'Red'],
-   type: 'multichoice',
+      },
+      subscriberId: {
+        _id: 'c',
+        firstName: 'Sumaira',
+        lastName: 'Saeed',
+        gender: 'Female'
+      }
+    },
+    {
+      _id: '26',
+      response: 'Orange',
+      surveyId: {
+        _id: '1',
+        title: 'Product Satisfaction',
+        description: 'The survey to check our new product satisfaction from customers'
+      },
+      questionId: {
+        _id: '12',
+        statement: 'Which color do you like?',
+        options: ['Peach', 'Orange', 'Red'],
+        type: 'multichoice'
 
-   },
-   subscriberId:{
-   _id:'a',
-   firstName:'Zarmeen',
-   lastName:'Nasim',
-   gender:'Female'
-   }
-   },
-   ]; */
+      },
+      subscriberId: {
+        _id: 'a',
+        firstName: 'Zarmeen',
+        lastName: 'Nasim',
+        gender: 'Female'
+      }
+    }
+  ] */
 
   return {
     type: ActionTypes.ADD_RESPONSES,

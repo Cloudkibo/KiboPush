@@ -13,7 +13,8 @@ import {loadsurveyresponses} from '../../redux/actions/surveys.actions'
 import Response from './Response'
 
 class SurveyResult extends React.Component {
-  componentDidMount () {
+  constructor (props, context) {
+    super(props, context)
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     let addScript = document.createElement('script')
@@ -25,6 +26,8 @@ class SurveyResult extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+  componentDidMount () {
     this.props.loadsurveyresponses(this.props.params.id)
   }
 
