@@ -74,25 +74,7 @@ class SurveyResult extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='ui-block'>
-                    <div className='ui-block-content'>
-                      <ul className='statistics-list-count'>
-                        <li>
-                          <div className='points'>
-                            <span>
-                                Survey Response
-                              </span>
-                          </div>
-                          <div className='count-stat'>333
-                              <span className='indicator negative'> - 10</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                
               <div className='row'>
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>
