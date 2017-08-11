@@ -5,15 +5,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Sidebar from '../sidebar/sidebar'
-import Responsive from '../sidebar/responsive'
-import Header from '../header/header'
-import HeaderResponsive from '../header/headerResponsive'
+import Sidebar from '../../components/sidebar/sidebar'
+import Responsive from '../../components/sidebar/responsive'
+import Header from '../../components/header/header'
+import HeaderResponsive from '../../components/header/headerResponsive'
 import {loadsurveyresponses} from '../../redux/actions/surveys.actions'
 import Response from './Response'
 
 class SurveyResult extends React.Component {
-  componentDidMount () {
+  constructor (props, context) {
+    super(props, context)
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     let addScript = document.createElement('script')
@@ -25,6 +26,8 @@ class SurveyResult extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+  componentDidMount () {
     this.props.loadsurveyresponses(this.props.params.id)
   }
 
@@ -50,46 +53,7 @@ class SurveyResult extends React.Component {
                 </div>
               </div>
                 }
-              <div className='row'>
-                <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='ui-block'>
 
-                    <div className='ui-block-content'>
-
-                      <ul className='statistics-list-count'>
-                        <li>
-                          <div className='points'>
-                            <span>
-                                Survey Sent
-                              </span>
-                          </div>
-                          <div className='count-stat'>36
-                              <span className='indicator positive'> + 5</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='ui-block'>
-                    <div className='ui-block-content'>
-                      <ul className='statistics-list-count'>
-                        <li>
-                          <div className='points'>
-                            <span>
-                                Survey Response
-                              </span>
-                          </div>
-                          <div className='count-stat'>333
-                              <span className='indicator negative'> - 10</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div className='row'>
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>

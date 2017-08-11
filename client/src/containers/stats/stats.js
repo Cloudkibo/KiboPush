@@ -3,37 +3,37 @@
  */
 
 import React from 'react'
-import Sidebar from '../sidebar/sidebar'
-import Responsive from '../sidebar/responsive'
+import Sidebar from '../../components/sidebar/sidebar'
+import Responsive from '../../components/sidebar/responsive'
 import Dashboard from '../dashboard/dashboard'
-import Header from '../header/header'
-import HeaderResponsive from '../header/headerResponsive'
+import Header from '../../components/header/header'
+import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {loadSubscribersList} from '../../redux/actions/subscribers.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 
 class Stats extends React.Component {
   constructor (props, context) {
     super(props, context)
-   		props.loadSubscribersList()
+    props.loadSubscribersList()
   }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/selectize.min.js')
-   document.body.appendChild(addScript)
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/selectize.min.js')
+    document.body.appendChild(addScript)
+  }
 
   render () {
     return (
@@ -59,7 +59,7 @@ class Stats extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>28
-                        <span className='indicator positive'> + 4</span>
+                            <span className='indicator positive'> + 4</span>
                           </div>
                         </li>
                       </ul>
@@ -77,7 +77,7 @@ class Stats extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>450
-                        <span className='indicator negative'> - 12</span>
+                            <span className='indicator negative'> - 12</span>
                           </div>
                         </li>
                       </ul>
@@ -95,7 +95,7 @@ class Stats extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>16
-                        <span className='indicator positive'> + 1</span>
+                            <span className='indicator positive'> + 1</span>
                           </div>
                         </li>
                       </ul>
@@ -113,7 +113,7 @@ class Stats extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>390
-                        <span className='indicator positive'> + 2</span>
+                            <span className='indicator positive'> + 2</span>
                           </div>
                         </li>
                       </ul>
@@ -127,12 +127,18 @@ class Stats extends React.Component {
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>
                     <div className='ui-block-title'>
-                      <div className='h6 title'>Monthly Chart of Subscriberss</div>
+                      <div className='h6 title'>Monthly Chart of Subscriberss
+                      </div>
                       <select className='without-border'>
                         <option value='LY'>LAST YEAR (2016)</option>
                         <option value='CUR'>CURRENT YEAR (2017)</option>
                       </select>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='chart-js chart-js-one-bar'>
@@ -146,7 +152,9 @@ class Stats extends React.Component {
                 <div className='col-xl-8 col-lg-8 col-md-7 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex' data-mh='pie-chart'>
                     <div className='ui-block-title'>
-                      <div className='h6 title'>Monthly Broadcasts and Subscribers</div>
+                      <div className='h6 title'>Monthly Broadcasts and
+                        Subscribers
+                      </div>
                       <select className='without-border'>
                         <option value='CUR'>LAST 3 MONTH</option>
                         <option value='LY'>LAST YEAR (2016)</option>
@@ -161,11 +169,17 @@ class Stats extends React.Component {
                       Subscribers
                     </span>
                       </div>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='chart-js chart-js-line-graphic'>
-                        <canvas id='line-graphic-chart' width={730} height={300} />
+                        <canvas id='line-graphic-chart' width={730}
+                          height={300} />
                       </div>
                     </div>
                   </div>
@@ -174,7 +188,12 @@ class Stats extends React.Component {
                   <div className='ui-block' data-mh='pie-chart'>
                     <div className='ui-block-title'>
                       <div className='h6 title'>Activity Chart</div>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='chart-with-statistic'>
@@ -217,9 +236,10 @@ class Stats extends React.Component {
                           </li>
                         </ul>
                         <div className='chart-js chart-js-pie-color'>
-                          <canvas id='pie-color-chart' width={180} height={180} />
+                          <canvas id='pie-color-chart' width={180}
+                            height={180} />
                           <div className='general-statistics'>17
-                        <span>Last Month Posts</span>
+                            <span>Last Month Posts</span>
                           </div>
                         </div>
                       </div>
@@ -230,15 +250,22 @@ class Stats extends React.Component {
             </div>
             <div className='container'>
               <div className='row'>
-                <div className='col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12'>
+                <div
+                  className='col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12'>
                   <div className='ui-block'>
                     <div className='ui-block-title'>
                       <div className='h6 title'>Push to Click Ratio</div>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='circle-progress circle-pie-chart'>
-                        <div className='pie-chart' data-value='0.68' data-startcolor='#38a9ff' data-endcolor='#317cb6'>
+                        <div className='pie-chart' data-value='0.68'
+                          data-startcolor='#38a9ff' data-endcolor='#317cb6'>
                           <div className='content'><span>%</span></div>
                         </div>
                       </div>
@@ -249,11 +276,19 @@ class Stats extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12'>
+                <div
+                  className='col-xl-8 col-lg-8 col-md-12 col-sm-12 col-xs-12'>
                   <div className='ui-block'>
                     <div className='ui-block-title'>
-                      <div className='h6 title'>Geolocation data Of subscribers</div>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <div className='h6 title'>Geolocation data Of
+                        subscribers
+                      </div>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='world-statistics'>
@@ -307,12 +342,19 @@ class Stats extends React.Component {
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>
                     <div className='ui-block-title'>
-                      <div className='h6 title'>Trend Analysis Subscribers:Clicks Ratio</div>
+                      <div className='h6 title'>Trend Analysis
+                        Subscribers:Clicks Ratio
+                      </div>
                       <select className='without-border'>
                         <option value='LY'>LAST YEAR (2016)</option>
                         <option value={2}>CURRENT YEAR (2017)</option>
                       </select>
-                      <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg></a>
+                      <a href='#' className='more'>
+                        <svg className='olymp-three-dots-icon'>
+                          <use
+                            xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                        </svg>
+                      </a>
                     </div>
                     <div className='ui-block-content'>
                       <div className='chart-js chart-js-line-chart'>
@@ -320,7 +362,8 @@ class Stats extends React.Component {
                       </div>
                     </div>
                     <hr />
-                    <div className='ui-block-content display-flex content-around'>
+                    <div
+                      className='ui-block-content display-flex content-around'>
                       <div className='chart-js chart-js-small-pie'>
                         <canvas id='pie-small-chart' width={90} height={90} />
                       </div>
@@ -376,6 +419,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadSubscribersList: loadSubscribersList}, dispatch)
+  return bindActionCreators({loadSubscribersList: loadSubscribersList},
+    dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Stats)

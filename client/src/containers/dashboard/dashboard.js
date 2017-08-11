@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux'
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+    alert('dashboard call');
     props.loadDashboardData()
   }
 

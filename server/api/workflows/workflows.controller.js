@@ -38,8 +38,8 @@ exports.create = function (req, res) {
 }
 
 exports.edit = function (req, res) {
-  Workflows.update({ _id: req.body._id },
-    { isActive: (req.body.isActive === 'Yes') }, { multi: true }, (err) => {
+  Workflows.update({ _id: req.body._id }, { isActive: (req.body.isActive === 'Yes') },
+    { multi: true }, (err) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
@@ -49,7 +49,24 @@ exports.edit = function (req, res) {
       } else {
         res.status(200).json({ status: 'Success' })
       }
-    })
+    }
+  )
+}
+
+exports.sent = function (req, res) {
+  Workflows.update({ _id: req.body._id }, { sent: req.body.sent },
+    { multi: true }, (err) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          error: err,
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({ status: 'Success' })
+      }
+    }
+  )
 }
 
 exports.report = function (req, res) {

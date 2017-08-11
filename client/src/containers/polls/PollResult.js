@@ -3,11 +3,11 @@
  */
 
 import React from 'react'
-import Sidebar from '../sidebar/sidebar'
-import Responsive from '../sidebar/responsive'
+import Sidebar from '../../components/sidebar/sidebar'
+import Responsive from '../../components/sidebar/responsive'
 import Dashboard from '../dashboard/dashboard'
-import Header from '../header/header'
-import HeaderResponsive from '../header/headerResponsive'
+import Header from '../../components/header/header'
+import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addPoll, loadPollsList, getpollresults} from '../../redux/actions/poll.actions'
@@ -18,21 +18,25 @@ class PollResult extends React.Component {
     super(props, context)
   }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
-   console.log(this.props.params.id)
-   this.props.getpollresults(this.props.params.id)
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/Chart.min.js')
+    document.body.appendChild(addScript)
+
+    console.log(this.props.params.id)
+    this.props.getpollresults(this.props.params.id)
+  }
   componentWillReceiveProps (nextprops) {
     if (nextprops.responses) {
       var radarChart = document.getElementById('radar-chart')
