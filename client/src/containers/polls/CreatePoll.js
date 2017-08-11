@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import { Alert } from 'react-bs-notifier'
 import Sidebar from '../sidebar/sidebar'
 import Responsive from '../sidebar/responsive'
 import Dashboard from '../dashboard/dashboard'
@@ -18,6 +19,7 @@ class CreatePoll extends React.Component {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
     this.state = {
+      alert: false,
       statement: '',
       option1: '',
       option2: '',
@@ -43,20 +45,24 @@ class CreatePoll extends React.Component {
 
   createPoll () {
     var options = []
-    if (this.state.option1 != '') {
-      options.push(this.state.option1)
+    if (this.state.option1 === '' || this.state.option2 === '' || this.state.option3 === '' || this.state.statement === '') {
+      this.setState({ alert: true })
+    } else {
+      if (this.state.option1 !== '') {
+        options.push(this.state.option1)
+      }
+      if (this.state.option2 !== '') {
+        options.push(this.state.option2)
+      }
+      if (this.state.option3 !== '') {
+        options.push(this.state.option3)
+      }
+      this.props.addPoll('', {platform: 'Facebook', datetime: Date.now(), statement: this.state.statement, sent: 0, options: options})
+      console.log('Poll added')
+      this.props.history.push({
+        pathname: '/poll'
+      })
     }
-    if (this.state.option2 != '') {
-      options.push(this.state.option2)
-    }
-    if (this.state.option3 != '') {
-      options.push(this.state.option3)
-    }
-    this.props.addPoll('', {platform: 'Facebook', datetime: Date.now(), statement: this.state.statement, sent: 0, options: options})
-    console.log('Poll added')
-    this.props.history.push({
-      pathname: '/poll'
-    })
   }
 
   updateStatment (e) {
@@ -99,7 +105,6 @@ class CreatePoll extends React.Component {
 
                 <div className='tab-content'>
                   <div className='tab-pane active' id='home-1' role='tabpanel' aria-expanded='true'>
-
                     <div className='form-group label-floating is-empty'>
                       <label className='control-label'>Ask something...</label>
                       <textarea className='form-control' value={this.state.statement} onChange={(e) => this.updateStatment(e)} />
@@ -123,6 +128,12 @@ class CreatePoll extends React.Component {
 
                       </fieldset>
                     </div>
+                    <br />
+                    { this.state.alert &&
+                    <center><Alert type='danger'>
+                      You have either left one or more responses empty or you have not asked anything. Please ask something and fill all three responses in order to create this poll.
+                    </Alert></center>
+                    }
                     <div className='add-options-message'>
 
                       <button className='btn btn-primary btn-sm' onClick={this.createPoll}> Create Poll</button>
