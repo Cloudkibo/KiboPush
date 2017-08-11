@@ -77,6 +77,8 @@ class Response extends React.Component {
       // this.setState({responseVal:sorted});
 
       var radarChart = document.getElementById(nextprops.question._id)
+      console.log('radarChart')
+      console.log(radarChart)
       var counts = []
       var vals = []
       var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']
