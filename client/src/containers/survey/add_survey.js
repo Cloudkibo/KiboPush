@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {questionType: 'text', surveyQuestions: []}
+    this.state = {questionType: 'multichoice', surveyQuestions: []}
 		// surveyQuestions will be an array of json object
 		// each json object will have following keys:
 		// statement : //value of question
@@ -38,7 +38,16 @@ class AddSurvey extends React.Component {
    addScript.setAttribute('src', '../../../js/main.js')
    document.body.appendChild(addScript)
  }
+componentWillReceiveProps(nextprops){
+  if(nextprops.createwarning){
+    console.log('i am called');
+     this.props.history.push({
+      pathname: '/surveys',
+     
+  });
+   }
 
+}
 	 createSurvey (e) {
 	 	e.preventDefault()
 	 	var surveybody = {
@@ -114,12 +123,12 @@ class AddSurvey extends React.Component {
     console.log('surveyQuestions')
 	 console.log(this.state.surveyQuestions)
   }
-  handleQuestionType (e) {
+  /*handleQuestionType (e) {
 	      this.setState({
 	    	'questionType': e.target.value
 
 	    })
-	  }
+	  }*/
 
   createOptionsList (qindex) {
   		console.log('qindex' + qindex)
@@ -251,7 +260,9 @@ class AddSurvey extends React.Component {
                       <h5> Add Questions </h5>
                       {this.createUI()}
                     </div>
-                    <div className='col-xl-12'>
+                      {/*
+                        <div className='col-xl-12'>
+                    
                       <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
                       <div className='col-sm-6 col-md-4'>
                         <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
@@ -260,13 +271,15 @@ class AddSurvey extends React.Component {
 
                         </select>
                         <br />
-                        <div className='col-sm-6 col-md-4'>
-                          <button className='btn btn-secondary btn-sm' onClick={this.addClick.bind(this)}> Add Questions</button>
                         </div>
-                      </div>
-
+                      
                     </div>
-
+                    */}
+                        
+                     
+                    <div className='col-sm-6 col-md-4'>
+                          <button className='btn btn-secondary btn-sm' onClick={this.addClick.bind(this)}> Add Questions</button>
+                    </div>
                     <div className='add-options-message'>
 
                       <button className='btn btn-secondary' onClick={this.createSurvey}> Create Survey</button>

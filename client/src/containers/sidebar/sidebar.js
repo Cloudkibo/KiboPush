@@ -24,68 +24,95 @@ class Sidebar extends Component {
                 </a>
               </li>
               <li>
-                <Link to='dashboard' data-toggle='tooltip'>
+                <Link to='dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <svg className='olymp-newsfeed-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='dashboard'>
+                <span>Dashboard</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='subscribers'>
+                <Link to='subscribers' data-for='subscribers' data-tip>
                   <svg className='olymp-star-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='subscribers'>
+                <span>Subscribers</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='broadcasts'>
+                <Link to='broadcasts' data-for='broadcasts' data-tip>
                   <svg className='olymp-badge-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-badge-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='broadcasts'>
+                <span>Broadcasts</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='surveys'>
+                <Link to='surveys' data-for='surveys' data-tip>
                   <svg className='olymp-calendar-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-calendar-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='surveys'>
+                <span>Surveys</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='workflows'>
-                  <svg className='olymp-happy-faces-icon left-menu-icon'>
+                <Link to='workflows' data-for='workflows' data-tip>
+                  <svg className='olymp-happy-faces-icon left-menu-icon' >
                     <use xlinkHref='icons/icons.svg#olymp-star-icon' />
                   </svg>
                 </Link>
+                 <ReactTooltip place="right" type="dark" effect="float" id='workflows'>
+                <span>Workflows</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='poll'>
-                  <svg className='olymp-headphones-icon left-menu-icon'>
+                <Link to='poll' data-for='poll' data-tip>
+                  <svg className='olymp-headphones-icon left-menu-icon' >
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='poll'>
+                <span>Polls</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='subscribeToMessenger'>
+                <Link to='subscribeToMessenger' data-for='subscribe' data-tip>
                   <svg className='olymp-stats-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='subscribe'>
+                <span>Subscribe to Messenger</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='stats'>
+                <Link to='stats' data-for='stats' data-tip>
                   <svg className='olymp-stats-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-stats-icon' />
                   </svg>
                 </Link>
+                <ReactTooltip place="right" type="dark" effect="float" id='stats'>
+                <span>Analytics</span>
+                </ReactTooltip>
               </li>
               <li>
-                <Link to='pages' data-for='pages'>
+                <Link to='pages' data-for='pages' data-tip>
                   <svg className='olymp-manage-widgets-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
                 </Link>
-                <ReactTooltip id='pages' place='right'>Pages</ReactTooltip>
+                <ReactTooltip place="right" type="dark" effect="float" id='pages'>
+                <span>Pages</span>
+                </ReactTooltip>
+               
               </li>
             </ul>
           </div>

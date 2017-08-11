@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import {browserHistory} from 'react-router';
 
 export function showSurveys (data) {
   return {
@@ -49,17 +50,25 @@ export function createsurvey (survey) {
   console.log('Creating survey')
   console.log(survey)
   return (dispatch) => {
-    callApi('surveys/create', 'post', survey).then(res => dispatch(addSurvey(res.payload)))
+    callApi('surveys/create', 'post', survey).then(res => dispatch(addSurvey(res)))
   }
 };
 
 export function addSurvey (data) {
 	// here we will add the broadcast
+/*  if(data.status =='success'){
+  alert('Survey created successfully.');
+}
+else{
+   alert('Error occurred in creating surveys');
+}
   console.log(data)
   return {
     type: ActionTypes.ADD_SURVEY,
-    data
-  }
+    data,
+  }*/
+    browserHistory.push('/surveys');
+
 }
 
 export function showSurveyResponse (data) {

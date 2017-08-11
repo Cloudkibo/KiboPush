@@ -12,7 +12,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addBroadcast, loadBroadcastsList, sendbroadcast} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-
+import {formatAMPM,handleDate} from '../../utility/utils'
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -86,7 +86,7 @@ class Broadcast extends React.Component {
   <tr>
     <td>{broadcast.platform}</td>
     <td>{broadcast.type}</td>
-    <td>{broadcast.datetime}</td>
+    <td>{handleDate(broadcast.datetime)}</td>
     <td>{broadcast.text}</td>
     <td>
       <button className='btn btn-primary btn-sm' onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>

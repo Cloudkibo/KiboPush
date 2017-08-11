@@ -12,10 +12,8 @@ import { connect } from 'react-redux'
 import {loadSurveysList, sendsurvey} from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-var handleDate = function (d) {
-  var c = new Date(d)
-  return c.toDateString()
-}
+import {formatAMPM,handleDate} from '../../utility/utils'
+
 
 class Survey extends React.Component {
   constructor (props, context) {

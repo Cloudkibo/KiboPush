@@ -12,6 +12,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addPoll, loadPollsList, sendpoll} from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
+import {formatAMPM,handleDate} from '../../utility/utils'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -86,7 +87,7 @@ class Poll extends React.Component {
   <tr>
     <td>{poll.platform}</td>
     <td>{poll.statement}</td>
-    <td>{poll.datetime}</td>
+    <td>{handleDate(poll.datetime)}</td>
     <td>{poll.sent}</td>
     <td>
       <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.props.sendpoll(poll)}>Send</button>
