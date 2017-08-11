@@ -42,7 +42,7 @@ exports.create = function (req, res) {
     userId: req.user._id
   })
 
-  Surveys.create(req.body.survey, (err, survey) => {
+  Surveys.create(survey, (err, survey) => {
     if (err) {
       return res.status(404).json({ status: 'failed', description: 'Survey not created' })
     }
