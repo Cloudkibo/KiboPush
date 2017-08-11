@@ -52,3 +52,14 @@ export function editBroadcast (data) {
     data
   }
 }
+
+
+export function sendbroadcast (broadcast) {
+  console.log('Sending broadcast message', broadcast);
+  return (dispatch) => {
+    callApi('broadcasts/send', 'post', broadcast).then(res => {
+      // dispatch(editBroadcast(res.payload));
+      console.log("Send Broadcast Response", res);
+    })
+  }
+};

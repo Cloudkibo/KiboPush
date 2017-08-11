@@ -10,13 +10,14 @@ import Header from '../header/header'
 import HeaderResponsive from '../header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addBroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions'
+import {addBroadcast, loadBroadcastsList, sendbroadcast} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsList()
+    props.loadBroadcastsList();
+    this.sendBroadcast = this.sendBroadcast.bind(this);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -45,6 +46,10 @@ class Broadcast extends React.Component {
    pathname: `/editbroadcast/${broadcast._id}`,
    state: broadcast
  })
+  }
+
+  sendBroadcast(broadcast){
+    this.props.sendbroadcast(broadcast);
   }
 
   render () {
@@ -85,7 +90,7 @@ class Broadcast extends React.Component {
     <td>{broadcast.text}</td>
     <td>
       <button className='btn btn-primary btn-sm' onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
-      <button to='editbroadcast' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Send</button>
+      <button onClick={() => this.sendBroadcast(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Send</button>
     </td>
   </tr>
 								))
@@ -116,6 +121,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadBroadcastsList: loadBroadcastsList, addBroadcast: addBroadcast}, dispatch)
+  return bindActionCreators({loadBroadcastsList: loadBroadcastsList, addBroadcast: addBroadcast, sendbroadcast: sendbroadcast}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Broadcast)
