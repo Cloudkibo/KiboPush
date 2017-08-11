@@ -10,8 +10,7 @@ import cookie from 'react-cookie'
 
 const auth = {
   getToken () {
-    const token = cookie.load('token')
-    return token
+    return cookie.load('token')
   },
 
   putNext (val) {
@@ -19,8 +18,7 @@ const auth = {
   },
 
   getNext () {
-    const token = cookie.load('next')
-    return token
+    return cookie.load('next')
   },
 
   removeNext () {
@@ -36,10 +34,7 @@ const auth = {
   loggedIn () {
     const token = cookie.load('token')
     // first check from server if this token is expired or is still valid
-    if (typeof token === 'undefined' || token === '') {
-      return false
-    }
-    return true
+    return !(typeof token === 'undefined' || token === '')
   },
 
   onChange () {}

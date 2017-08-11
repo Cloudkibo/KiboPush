@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Sidebar from './sidebar/sidebar'
-import Responsive from './sidebar/responsive'
+import Sidebar from '../components/sidebar/sidebar'
+import Responsive from '../components/sidebar/responsive'
 import Dashboard from './dashboard/dashboard'
-import Header from './header/header'
-import HeaderResponsive from './header/headerResponsive'
+import Header from '../components/header/header'
+import HeaderResponsive from '../components/header/headerResponsive'
 
 class Home extends Component {
   constructor (props, context) {

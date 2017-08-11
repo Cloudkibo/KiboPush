@@ -3,11 +3,11 @@
  */
 
 import React from 'react'
-import Sidebar from '../sidebar/sidebar'
-import Responsive from '../sidebar/responsive'
+import Sidebar from '../../components/sidebar/sidebar'
+import Responsive from '../../components/sidebar/responsive'
 import Dashboard from '../dashboard/dashboard'
-import Header from '../header/header'
-import HeaderResponsive from '../header/headerResponsive'
+import Header from '../../components/header/header'
+import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {addWorkFlow, loadWorkFlowList} from '../../redux/actions/workflows.actions'
