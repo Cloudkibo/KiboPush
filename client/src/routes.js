@@ -92,7 +92,7 @@ const routes = (
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path='/addsurvey' component={AddSurvey} onEnter={requireAuth} />
     <Route path='/pollResult/:id' component={PollResult} onEnter={requireAuth} />
-    <Route path='/surveyResult/:id' component={SurveyResult} onEnter={requireAuth} />
+    <Route path='/surveyResult' component={SurveyResult} onEnter={requireAuth} />
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />

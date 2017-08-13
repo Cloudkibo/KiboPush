@@ -28,7 +28,7 @@ class SurveyResult extends React.Component {
     document.body.appendChild(addScript)
   }
   componentDidMount () {
-    this.props.loadsurveyresponses(this.props.params.id)
+    this.props.loadsurveyresponses(this.props.location.state);
   }
 
   render () {

@@ -51,8 +51,8 @@ class Survey extends React.Component {
 
   gotoResults (survey) {
     this.props.history.push({
-      pathname: `/surveyResult/${survey._id}`,
-      state: survey
+      pathname: `/surveyResult`,
+      state: survey._id
     })
   }
   render () {
