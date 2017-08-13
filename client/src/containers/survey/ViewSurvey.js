@@ -20,7 +20,6 @@ var handleDate = function (d) {
 class ViewSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
-   		props.getsurveyform(props.params.id)
    		this.submitSurvey = this.submitSurvey.bind(this)
   }
   submitSurvey (e) {
@@ -32,6 +31,10 @@ class ViewSurvey extends React.Component {
   	console.log('submited responses')
   	console.log(responses)
     this.props.submitsurvey({'responses': responses, surveyId: this.props.params.id, subscriberId: this.props.params.subscriberid})
+  }
+
+  componentWillMount(){
+    props.getsurveyform(props.params.id);
   }
 
   componentDidMount () {
