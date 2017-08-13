@@ -38,16 +38,16 @@ class ViewSurvey extends React.Component {
 
   componentDidMount () {
     alert('componentDidMount called in ViewSurvey')
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
+    require('../../../../public/js/jquery-3.2.0.min.js')
+    require('../../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    addScript.setAttribute('src', '../../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../../js/material.min.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../../js/main.js')
     document.body.appendChild(addScript)
   }
   gotoresp () {
