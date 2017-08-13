@@ -23,7 +23,11 @@ class ViewSurveyDetail extends React.Component {
   constructor (props, context) {
     super(props, context)
    		props.getsurveyform(props.params.id)
-   		this.submitSurvey = this.submitSurvey.bind(this)
+   		this.submitSurvey = this.submitSurvey.bind(this);
+  }
+
+   componentDidMount () {
+    alert('componentDidMount called in ViewSurvey')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -36,6 +40,7 @@ class ViewSurveyDetail extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
+  
   submitSurvey (e) {
   	e.preventDefault()
   	var responses = []
