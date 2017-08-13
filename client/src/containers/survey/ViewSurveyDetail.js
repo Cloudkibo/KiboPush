@@ -20,11 +20,12 @@ var handleDate = function (d) {
 }
 
 class ViewSurveyDetail extends React.Component {
-  // constructor (props, context) {
-    // super(props, context)
-   		// props.getsurveyform(props.params.id)
+  constructor (props, context) {
+    super(props, context);
+    console.log(props.location.state);
+   		props.getsurveyform(props.location.state)
    		// this.submitSurvey = this.submitSurvey.bind(this);
-  // }
+  }
 
    componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail');
