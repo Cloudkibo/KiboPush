@@ -36,9 +36,14 @@ class Survey extends React.Component {
   }
 
   gotoView (survey) {
-		 this.props.history.push({
-   pathname: `/viewsurveydetail/${survey._id}`,
-   state: survey
+// 		 this.props.history.push({
+//    pathname: `/viewsurveydetail/${survey._id}`,
+//    state: survey
+//  }) 
+
+	 this.props.history.push({
+   pathname: `/viewsurveydetail`,
+   state: survey._id,
  }) 
 
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
