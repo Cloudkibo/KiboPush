@@ -27,7 +27,7 @@ class ViewSurveyDetail extends React.Component {
   }
 
    componentDidMount () {
-    alert('componentDidMount called in ViewSurvey')
+    console.log('componentDidMount called in ViewSurveyDetail');
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -38,7 +38,8 @@ class ViewSurveyDetail extends React.Component {
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    document.body.appendChild(addScript);
+    console.log('componentDidMount called in ViewSurveyDetail Finished');
   }
   
   // submitSurvey (e) {
