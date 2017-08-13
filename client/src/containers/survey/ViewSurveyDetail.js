@@ -22,35 +22,35 @@ var handleDate = function (d) {
 class ViewSurveyDetail extends React.Component {
   constructor (props, context) {
     super(props, context)
-   		props.getsurveyform(props.params.id)
-   		this.submitSurvey = this.submitSurvey.bind(this);
+   		// props.getsurveyform(props.params.id)
+   		// this.submitSurvey = this.submitSurvey.bind(this);
   }
 
    componentDidMount () {
     alert('componentDidMount called in ViewSurvey')
-    require('../../../../public/js/jquery-3.2.0.min.js')
-    require('../../../../public/js/jquery.min.js')
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../../js/theme-plugins.js')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../js/material.min.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../../js/main.js')
+    addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-
-  submitSurvey (e) {
-  	e.preventDefault()
-  	var responses = []
-  	for (var j = 0; j < this.props.questions.length; j++) {
-  		responses.push({qid: this.props.questions[j]._id, response: this.refs[this.props.questions[j]._id].value})
-  	}
-  	console.log('submited responses')
-  	console.log(responses)
-    this.props.submitsurvey({'responses': responses, surveyId: this.props.params.id, subscriberId: this.props.params.subscriberid})
-  }
+  
+  // submitSurvey (e) {
+  // 	e.preventDefault()
+  // 	var responses = []
+  // 	for (var j = 0; j < this.props.questions.length; j++) {
+  // 		responses.push({qid: this.props.questions[j]._id, response: this.refs[this.props.questions[j]._id].value})
+  // 	}
+  // 	console.log('submited responses')
+  // 	console.log(responses)
+  //   this.props.submitsurvey({'responses': responses, surveyId: this.props.params.id, subscriberId: this.props.params.subscriberid})
+  // }
 
   componentDidMount () {
     browserHistory.push(`/viewsurveydetail/${this.props.params.id}`)
