@@ -85,7 +85,7 @@ const routes = (
     <Route path='/createbroadcast' component={CreateBroadcast} onEnter={requireAuth} />
     <Route path='/createworkflow' component={CreateWorkflow} onEnter={requireAuth} />
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
-    <Route path='/editbroadcast/:id' component={EditBroadcast} onEnter={requireAuth} />
+    <Route path='/editbroadcast' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
