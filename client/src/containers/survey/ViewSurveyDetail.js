@@ -52,9 +52,9 @@ class ViewSurveyDetail extends React.Component {
   //   this.props.submitsurvey({'responses': responses, surveyId: this.props.params.id, subscriberId: this.props.params.subscriberid})
   // }
 
-  componentDidMount () {
-    browserHistory.push(`/viewsurveydetail/${this.props.params.id}`)
-  }
+  // componentDidMount () {
+  //   browserHistory.push(`/viewsurveydetail/${this.props.params.id}`)
+  // }
   gotoView () {
     this.props.history.push({
       pathname: `/surveys`
