@@ -11,7 +11,6 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addPoll, loadPollsList} from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 class InviteSubscribers extends React.Component {
@@ -88,14 +87,4 @@ class InviteSubscribers extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  console.log(state)
-  return {
-    polls: (state.pollsInfo.polls)
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll}, dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(InviteSubscribers)
+export default (InviteSubscribers)

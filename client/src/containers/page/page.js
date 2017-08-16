@@ -51,8 +51,8 @@ class Page extends React.Component {
   inviteSubscribers (page) {
     console.log('invite Subscribers')
     this.props.history.push({
-      pathname: '/invitesubscribers/',
-      state: {pageName: page.pageName, pageId: page.pageId}
+      pathname: `/invitesubscribers`,
+      state: page
 
     })
   }
