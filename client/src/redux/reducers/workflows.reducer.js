@@ -5,7 +5,7 @@ const initialState = {
 
 }
 
-export function workflowsInfo (state = initialState, action) {
+export function workflowsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.LOAD_WORKFLOW_LIST:
       return Object.assign({}, state, {

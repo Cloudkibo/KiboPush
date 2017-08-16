@@ -5,7 +5,7 @@ const initialState = {
 
 }
 
-export function broadcastsInfo (state = initialState, action) {
+export function broadcastsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FETCH_BROADCASTS_LIST:
       return Object.assign({}, state, {
