@@ -15,7 +15,7 @@ import { AlertList, Alert, AlertContainer } from 'react-bs-notifier'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {questionType: 'multichoice', surveyQuestions: [], showAlert: false, alertmsg: ''}
+    this.state = {questionType: 'multichoice', surveyQuestions: [], showAlert: false, alertmsg: '', timeout: 2000}
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
     // statement : //value of question
@@ -50,33 +50,37 @@ class AddSurvey extends React.Component {
   createSurvey (e) {
     e.preventDefault()
     let flag = 0
-    for (let j = 0; j < this.state.surveyQuestions.length; j++) {
-      if (this.state.surveyQuestions[j].options.length > 0) {
-        for (let k = 0; k < this.state.surveyQuestions[j].options.length; k++) {
-          if (this.state.surveyQuestions[j].options[k] == '') {
-            flag = 1
-            console.log('empty')
-            break
+    if (this.state.surveyQuestions.length == 0) {
+      this.setState({showAlert: true, alertmsg: 'A survey form requires atleast one question'})
+    } else {
+      for (let j = 0; j < this.state.surveyQuestions.length; j++) {
+        if (this.state.surveyQuestions[j].options.length > 0) {
+          for (let k = 0; k < this.state.surveyQuestions[j].options.length; k++) {
+            if (this.state.surveyQuestions[j].options[k] == '') {
+              flag = 1
+              console.log('empty')
+              break
+            }
           }
         }
+        if (flag == 1) {
+          break
+        }
       }
-      if (flag == 1) {
-        break
-      }
-    }
-    if (flag == 0 && this.refs.title.value != '' && this.refs.description.value != '') {
-      var surveybody = {
-        survey: {
-          title: this.refs.title.value, // title of survey
-          description: this.refs.description.value, // description of survey
-          image: '' // image url
-        },
-        questions: this.state.surveyQuestions
-      }
-      this.props.createsurvey(surveybody)
-    } else {
+      if (flag == 0 && this.refs.title.value != '' && this.refs.description.value != '') {
+        var surveybody = {
+          survey: {
+            title: this.refs.title.value, // title of survey
+            description: this.refs.description.value, // description of survey
+            image: '' // image url
+          },
+          questions: this.state.surveyQuestions
+        }
+        this.props.createsurvey(surveybody)
+      } else {
      // alert('Please fill all the fields.')
-      this.setState({showAlert: true, alertmsg: 'Please fill all the fields.'})
+        this.setState({showAlert: true, alertmsg: 'Please fill all the fields.'})
+      }
     }
   }
   addClick () {
@@ -91,6 +95,9 @@ class AddSurvey extends React.Component {
     surveyQuestions.push({'statement': '', 'type': this.state.questionType, 'choiceCount': choiceCount, 'options': choiceValues})
     this.setState({surveyQuestions: surveyQuestions})
     console.log('surveyQuestions')
+    if (this.state.surveyQuestions.length > 0) {
+      this.setState({showAlert: false, alertmsg: ''})
+    }
     console.log(this.state.surveyQuestions)
   }
 
@@ -100,29 +107,43 @@ class AddSurvey extends React.Component {
     surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount + 1
     choices.push('')
     surveyQuestions[qindex].options = choices
+    if (surveyQuestions[qindex].choiceCount >= 2) {
+      this.setState({showAlert: false, alertmsg: ''})
+    }
     this.setState({surveyQuestions})
+  }
+  onDismissAlert () {
+    this.setState({showAlert: false, alertmsg: ''})
   }
 
   removeChoices (choiceIndex, qindex) {
     console.log('removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
-    let choices = surveyQuestions[qindex].options.slice()
-    console.log('choices before')
-    console.log(choices)
-    choices.splice(choiceIndex, 1)
-    console.log('choices after')
-    console.log(choices)
-    surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount - 1
-    surveyQuestions[qindex].options = choices
-    this.setState({surveyQuestions: surveyQuestions})
+    if (surveyQuestions[qindex].choiceCount == 2) {
+      this.setState({showAlert: true, alertmsg: 'Atleast 2 options are required for each question'})
+    } else {
+      let choices = surveyQuestions[qindex].options.slice()
+      console.log('choices before')
+      console.log(choices)
+      choices.splice(choiceIndex, 1)
+      console.log('choices after')
+      console.log(choices)
+      surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount - 1
+      surveyQuestions[qindex].options = choices
+      this.setState({surveyQuestions: surveyQuestions})
+    }
   }
   removeClick (i) {
-    let surveyQuestions = this.state.surveyQuestions.slice()
-    surveyQuestions.splice(i, 1)
-    console.log(surveyQuestions)
-    this.setState({
-      surveyQuestions: surveyQuestions
-    })
+    if (this.state.surveyQuestions.length >= 1) {
+      this.setState({showAlert: true, alertmsg: 'A survey form requires atleast one question'})
+    } else {
+      let surveyQuestions = this.state.surveyQuestions.slice()
+      surveyQuestions.splice(i, 1)
+      console.log(surveyQuestions)
+      this.setState({
+        surveyQuestions: surveyQuestions
+      })
+    }
   }
   handleChange (i, event) {
     let surveyQuestions = this.state.surveyQuestions.slice()
@@ -142,6 +163,7 @@ class AddSurvey extends React.Component {
     console.log('surveyQuestions')
     console.log(this.state.surveyQuestions)
   }
+
   /* handleQuestionType (e) {
         this.setState({
         'questionType': e.target.value
@@ -306,7 +328,7 @@ class AddSurvey extends React.Component {
                     </div>
                     {this.state.showAlert == true &&
                     <center>
-                      <Alert type='danger' >
+                      <Alert type='danger' timeout={this.state.timeout} onDismiss={this.onDismissAlert.bind(this)}>
                         {this.state.alertmsg}
                       </Alert>
                     </center>

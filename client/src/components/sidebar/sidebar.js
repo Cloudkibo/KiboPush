@@ -24,7 +24,7 @@ class Sidebar extends Component {
                 </a>
               </li>
               <li>
-                <Link to='dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
+                <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <svg className='olymp-newsfeed-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' />
                   </svg>
@@ -34,7 +34,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='subscribers' data-for='subscribers' data-tip>
+                <Link to='/subscribers' data-for='subscribers' data-tip>
                   <svg className='olymp-star-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' />
                   </svg>
@@ -44,7 +44,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='broadcasts' data-for='broadcasts' data-tip>
+                <Link to='/broadcasts' data-for='broadcasts' data-tip>
                   <svg className='olymp-badge-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-badge-icon' />
                   </svg>
@@ -54,7 +54,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='surveys' data-for='surveys' data-tip>
+                <Link to='/surveys' data-for='surveys' data-tip>
                   <svg className='olymp-calendar-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-calendar-icon' />
                   </svg>
@@ -64,7 +64,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='workflows' data-for='workflows' data-tip>
+                <Link to='/workflows' data-for='workflows' data-tip>
                   <svg className='olymp-happy-faces-icon left-menu-icon' >
                     <use xlinkHref='icons/icons.svg#olymp-star-icon' />
                   </svg>
@@ -74,7 +74,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='poll' data-for='poll' data-tip>
+                <Link to='/poll' data-for='poll' data-tip>
                   <svg className='olymp-headphones-icon left-menu-icon' >
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
@@ -84,7 +84,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='subscribeToMessenger' data-for='subscribe' data-tip>
+                <Link to='/subscribeToMessenger' data-for='subscribe' data-tip>
                   <svg className='olymp-stats-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
@@ -94,7 +94,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='stats' data-for='stats' data-tip>
+                <Link to='/stats' data-for='stats' data-tip>
                   <svg className='olymp-stats-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-stats-icon' />
                   </svg>
@@ -104,7 +104,7 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='pages' data-for='pages' data-tip>
+                <Link to='/pages' data-for='pages' data-tip>
                   <svg className='olymp-manage-widgets-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
                   </svg>
@@ -133,44 +133,44 @@ class Sidebar extends Component {
                 </Link>
               </li>
               <li>
-                <Link to='dashboard'>
+                <Link to='/dashboard'>
                   <svg className='olymp-newsfeed-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='DASHBOARD'><use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' /></svg>
                   <span className='left-menu-title'>DASHBOARD</span>
                 </Link>
               </li>
               <li>
-                <Link to='subscribers'>
+                <Link to='/subscribers'>
                   <svg className='olymp-happy-faces-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='SUBSCRIBERS'><use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' /></svg>
                   <span className='left-menu-title'>SUBSCRIBERS</span>
                 </Link>
               </li>
               <li>
-                <Link to='broadcasts'>
+                <Link to='/broadcasts'>
                   <svg className='olymp-badge-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Community Badges'><use xlinkHref='icons/icons.svg#olymp-badge-icon' /></svg>
                   <span className='left-menu-title'>BROADCASTS</span>
                 </Link>
               </li>
               <li>
-                <Link to='surveys'>
+                <Link to='/surveys'>
                   <svg className='olymp-calendar-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='CALENDAR AND EVENTS'><use xlinkHref='icons/icons.svg#olymp-calendar-icon' /></svg>
                   <span className='left-menu-title'>SURVEYS</span>
                 </Link>
               </li>
               <li>
-                <Link to='workflows'>
+                <Link to='/workflows'>
                   <svg className='olymp-star-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='WORKFLOWS'><use xlinkHref='icons/icons.svg#olymp-star-icon' /></svg>
                   <span className='left-menu-title'>Workflows</span>
                 </Link>
               </li>
 
               <li>
-                <Link to='poll'>
+                <Link to='/poll'>
                   <svg className='olymp-headphones-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='CREATE POLL'><use xlinkHref='icons/icons.svg#olymp-headphones-icon' /></svg>
                   <span className='left-menu-title'>Create Poll</span>
                 </Link>
               </li>
               <li>
-                <Link to='subscribeToMessenger'>
+                <Link to='/subscribeToMessenger'>
                   <svg className='olymp-weather-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribe To Messenger'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
                   <span className='left-menu-title'>Subscribe To Messenger</span>
                 </Link>
@@ -183,7 +183,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               <li>
-                <Link to='pages'>
+                <Link to='/pages'>
                   <svg className='olymp-manage-widgets-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Manage Widgets'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
                   <span className='left-menu-title'>Pages</span>
                 </Link>

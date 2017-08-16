@@ -8,6 +8,7 @@ import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
 import Page from './containers/page/page'
 import AddPage from './containers/page/addPage'
+import InviteSubscribers from './containers/page/InviteSubscribers'
 import CreateBroadcast from './containers/broadcast/CreateBroadcast'
 import Surveys from './containers/survey/surveys'
 import ViewSurvey from './containers/survey/ViewSurvey'
@@ -85,17 +86,18 @@ const routes = (
     <Route path='/createbroadcast' component={CreateBroadcast} onEnter={requireAuth} />
     <Route path='/createworkflow' component={CreateWorkflow} onEnter={requireAuth} />
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
-    <Route path='/editbroadcast/:id' component={EditBroadcast} onEnter={requireAuth} />
+    <Route path='/editbroadcast' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path='/addsurvey' component={AddSurvey} onEnter={requireAuth} />
-    <Route path='/pollResult/:id' component={PollResult} onEnter={requireAuth} />
-    <Route path='/surveyResult/:id' component={SurveyResult} onEnter={requireAuth} />
+    <Route path='/pollResult' component={PollResult} onEnter={requireAuth} />
+    <Route path='/surveyResult' component={SurveyResult} onEnter={requireAuth} />
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
-    <Route path='/viewsurveydetail/:id' component={ViewSurveyDetail} onEnter={requireAuth} />
+    <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
+    <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
   </Route>
 
 )

@@ -14,7 +14,7 @@ const needle = require('needle')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
-  Broadcasts.find((err, broadcasts) => {
+  Broadcasts.find({ userId: req.user._id }, (err, broadcasts) => {
     if (err) {
       return res.status(404)
       .json({status: 'failed', description: 'Broadcasts not found'})
@@ -27,7 +27,13 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   logger.serverLog(TAG,
     `Inside Create Broadcast, req body = ${JSON.stringify(req.body)}`)
-  Broadcasts.create(req.body, (err, broadcast) => {
+  const broadcast = new Broadcasts({
+    platform: req.body.platform, // TODO define this as enum with values, for now value is facebook
+    type: req.body.type, // TODO define this as enum with values ['text','attachment']
+    text: req.body.text, // message body
+    userId: req.user._id
+  })
+  broadcast.save((err, broadcast) => {
     if (err) {
       return res.status(404)
         .json({status: 'failed', description: 'Broadcasts not created'})

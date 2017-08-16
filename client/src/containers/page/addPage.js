@@ -13,6 +13,10 @@ import { loadOtherPagesList, enablePage, addPages } from '../../redux/actions/pa
 import { bindActionCreators } from 'redux'
 
 class AddPage extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {counter: 0}
+  }
   componentWillMount () {
     this.props.addPages()
   }
@@ -31,6 +35,13 @@ class AddPage extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.otherPages && nextprops.otherPages.length <= 0 && this.state.counter < 2) {
+      console.log('calling addPages')
+      this.props.addPages()
+      this.setState({counter: this.state.counter + 1 })
+    }
+  }
   render () {
     return (
       <div>
@@ -44,24 +55,21 @@ class AddPage extends React.Component {
             <main className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
               <h3>Add Pages</h3>
               {
-			  (this.props.otherPages) ? this.props.otherPages.map((page, i) => (
-  <div className='ui-block'>
-    <div className='birthday-item inline-items'>
-      {/*
-						<div className="author-thumb">
-						<img src="img/avatar7-sm.jpg" alt="author" />
-					</div>
-				*/}
-      <div className='birthday-author-name'>
-        <a href='#' className='h6 author-name'>{page.pageName} </a>
+        (this.props.otherPages) &&
+         this.props.otherPages.map((page, i) => (
+           <div className='ui-block'>
+             <div className='birthday-item inline-items'>
 
-      </div>
-      <button onClick={() => this.props.enablePage(page)} className='btn btn-sm bg-blue'>Connect</button>
+               <div className='birthday-author-name'>
+                 <a href='#' className='h6 author-name'>{page.pageName} </a>
 
-    </div>
-  </div>
-			  )) : <br />
-		  }
+               </div>
+               <button onClick={() => this.props.enablePage(page)} className='btn btn-sm bg-blue'>Connect</button>
+
+             </div>
+           </div>
+        ))
+      }
 
             </main>
 

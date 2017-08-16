@@ -43,8 +43,8 @@ class Broadcast extends React.Component {
 
   gotoEdit (broadcast) {
 		 this.props.history.push({
-   pathname: `/editbroadcast/${broadcast._id}`,
-   state: broadcast
+   pathname: `/editbroadcast`,
+   state: broadcast._id,
  })
   }
 
