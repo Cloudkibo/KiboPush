@@ -13,6 +13,10 @@ import { loadOtherPagesList, enablePage, addPages } from '../../redux/actions/pa
 import { bindActionCreators } from 'redux'
 
 class AddPage extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {counter: 0}
+  }
   componentWillMount () {
     this.props.addPages()
   }
@@ -32,9 +36,10 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.otherPages && nextprops.otherPages.length <= 0) {
+    if (nextprops.otherPages && nextprops.otherPages.length <= 0 && this.state.counter < 2) {
       console.log('calling addPages')
       this.props.addPages()
+      this.setState({counter: this.state.counter + 1 })
     }
   }
   render () {
