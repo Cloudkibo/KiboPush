@@ -5,43 +5,52 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {getbroadcast, loadBroadcastsList, editbroadcast} from '../../redux/actions/broadcast.actions'
+import {
+  getbroadcast,
+  loadBroadcastsList,
+  editbroadcast
+} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 
 class EditBroadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
     console.log('props.params.id' + props.location.state)
-    props.getbroadcast(props.location.state);
-   // this.editPage = this.editPage.bind(this);
+    props.getbroadcast(props.location.state)
+    // this.editPage = this.editPage.bind(this);
   }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+  }
 
   editbroadcast (event) {
     event.preventDefault()
-    this.props.editbroadcast({_id: this.props.broadcast._id, platform: this.props.broadcast.platform, type: 'message', text: this.refs.message.value})
+    this.props.editbroadcast({
+      _id: this.props.broadcast._id,
+      platform: this.props.broadcast.platform,
+      type: 'message',
+      text: this.refs.message.value
+    })
     this.props.history.push({
       pathname: '/broadcasts'
     })
   }
+
   render () {
     return (
       <div>
@@ -60,35 +69,55 @@ class EditBroadcast extends React.Component {
               <div className='news-feed-form'>
 
                 <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel' aria-expanded='true'>
+                  <div className='tab-pane active' id='home-1' role='tabpanel'
+                    aria-expanded='true'>
                     {this.props.broadcast &&
                     <form>
 
-                      <div className='form-group with-icon label-floating is-empty'>
-                        <textarea className='form-control' defaultValue={this.props.broadcast ? this.props.broadcast.text : ''} ref='message' />
+                      <div
+                        className='form-group with-icon label-floating is-empty'>
+                        <textarea className='form-control'
+                          defaultValue={this.props.broadcast
+                                    ? this.props.broadcast.text
+                                    : ''} ref='message' />
                       </div>
                       <div className='add-options-message'>
-                        <a href='#' className='options-message' data-toggle='modal' data-target='#update-header-photo' data-placement='top' title data-original-title='ADD PHOTOS'>
+                        <a href='#' className='options-message'
+                          data-toggle='modal'
+                          data-target='#update-header-photo'
+                          data-placement='top' title
+                          data-original-title='ADD PHOTOS'>
                           <i className='fa fa-image' />
                           <span>Add Image</span>
                         </a>
-                        <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='TAG YOUR FRIENDS'>
+                        <a href='#' className='options-message'
+                          data-toggle='tooltip' data-placement='top' title
+                          data-original-title='TAG YOUR FRIENDS'>
                           <i className='fa fa-video-camera' />
                           <span>Add Video</span>
                         </a>
-                        <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='ADD LOCATION'>
+                        <a href='#' className='options-message'
+                          data-toggle='tooltip' data-placement='top' title
+                          data-original-title='ADD LOCATION'>
                           <i className='fa fa-link' />
                           <span>Add Link</span>
                         </a>
-                        <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='ADD LOCATION'>
+                        <a href='#' className='options-message'
+                          data-toggle='tooltip' data-placement='top' title
+                          data-original-title='ADD LOCATION'>
                           <i className='fa fa-volume-up' />
                           <span>Add Audio</span>
                         </a>
-                        <button className='btn btn-primary btn-md-2' onClick={this.editbroadcast.bind(this)}> Save Broadcast</button>
-                        <Link to='broadcasts' className='btn btn-md-2 btn-border-think btn-transparent c-grey' style={{float: 'right', margin: 2}}>Back</Link>
+                        <button className='btn btn-primary btn-md-2'
+                          onClick={this.editbroadcast.bind(this)}> Save
+                          Broadcast
+                        </button>
+                        <Link to='broadcasts'
+                          className='btn btn-md-2 btn-border-think btn-transparent c-grey'
+                          style={{float: 'right', margin: 2}}>Back</Link>
                       </div>
                     </form>
-						            }
+                    }
                   </div>
 
                 </div>
@@ -112,6 +141,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadBroadcastsList: loadBroadcastsList, getbroadcast: getbroadcast, editbroadcast: editbroadcast}, dispatch)
+  return bindActionCreators({
+    loadBroadcastsList: loadBroadcastsList,
+    getbroadcast: getbroadcast,
+    editbroadcast: editbroadcast
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditBroadcast)

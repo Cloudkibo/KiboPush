@@ -1,6 +1,5 @@
-let mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  ObjectId = Schema.ObjectId
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 const subscriberSchema = new Schema({
   pageScopedId: {

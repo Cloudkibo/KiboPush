@@ -1,6 +1,5 @@
-let mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  ObjectId = Schema.ObjectId
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 const pageSchema = new Schema({
   pageId: {
@@ -24,7 +23,7 @@ const pageSchema = new Schema({
   connected: { // TODO add default value
     type: Boolean
   },
-  userId: { type: Schema.ObjectId, ref: 'users' }
+  userId: {type: Schema.ObjectId, ref: 'users'}
 
 })
 

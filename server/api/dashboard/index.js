@@ -11,10 +11,6 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./dashboard.controller')
 
-const logger = require('../../components/logger')
-
-const TAG = 'api/pages/index.js'
-
 router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 router.post('/enable', auth.isAuthenticated(), controller.enable)
 // todo remove this /disable, this is coded badly

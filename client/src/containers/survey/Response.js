@@ -1,5 +1,4 @@
 import React from 'react'
-import Popover from 'react-simple-popover'
 
 function rank (items, prop) {
   // declare a key->count table
@@ -61,11 +60,11 @@ class Response extends React.Component {
   }
 
   openPopover () {
-    this.setState({ showPopover: true })
+    this.setState({showPopover: true})
   }
 
   closePopover () {
-    this.setState({ showPopover: false })
+    this.setState({showPopover: false})
   }
 
   componentDidMount () {
@@ -92,10 +91,11 @@ class Response extends React.Component {
         var ctx_rc = radarChart.getContext('2d')
 
         var data_rc = {
-          datasets: [{
-            data: counts,
-            backgroundColor: backcolors
-          }],
+          datasets: [
+            {
+              data: counts,
+              backgroundColor: backcolors
+            }],
           labels: vals
         }
 
@@ -126,6 +126,7 @@ class Response extends React.Component {
       }
     }
   }
+
   render () {
     const response = this.props.responses
     return (
@@ -133,28 +134,33 @@ class Response extends React.Component {
         this.props.question.type === 'text'
           ? <ul className='list-group'>
             {
-              response.map((c) => (
-                <div>
-                  <li
-                    className='list-group-item'
-                    style={{ cursor: 'pointer' }}
-                    key={c._id}
-                    ref='target'
-                    onMouseOver={this.openPopover}
-                    onMouseOut={this.closePopover}
-                    data-toggle='tooltip' data-placement='right' title=''
-                    data-original-title={c.subscriberId.firstName + ' ' + c.subscriberId.lastName}
+            response.map((c) => (
+              <div>
+                <li
+                  className='list-group-item'
+                  style={{cursor: 'pointer'}}
+                  key={c._id}
+                  ref='target'
+                  onMouseOver={this.openPopover}
+                  onMouseOut={this.closePopover}
+                  data-toggle='tooltip' data-placement='right' title=''
+                  data-original-title={c.subscriberId.firstName + ' ' +
+                  c.subscriberId.lastName}
                 >
-                    {c.response}
+                  {c.response}
 
-                  </li>
-                </div>
-              ))
-            }
+                </li>
+              </div>
+            ))
+          }
           </ul>
-        : <div className='chart-js chart-js-one-bar' style={{'width': '400px', 'height': '350px', 'margin': '0 auto'}}>
-          <canvas id={this.props.question._id} width={250} height={170} />
-        </div>
+          : <div className='chart-js chart-js-one-bar' style={{
+            'width': '400px',
+            'height': '350px',
+            'margin': '0 auto'
+          }}>
+            <canvas id={this.props.question._id} width={250} height={170} />
+          </div>
       )
     )
   }

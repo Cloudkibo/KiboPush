@@ -4,10 +4,8 @@ const express = require('express')
 
 const router = express.Router()
 
-const logger = require('../../components/logger')
 const controller = require('./workflows.controller')
-const auth = require('../../auth/auth.service')
-const TAG = 'api/polls/index.js'
+// const auth = require('../../auth/auth.service')
 
 router.get('/', controller.index)
 router.post('/create', controller.create)

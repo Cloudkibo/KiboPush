@@ -14,10 +14,10 @@ const needle = require('needle')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
-  Broadcasts.find({ userId: req.user._id }, (err, broadcasts) => {
+  Broadcasts.find({userId: req.user._id}, (err, broadcasts) => {
     if (err) {
       return res.status(404)
-      .json({status: 'failed', description: 'Broadcasts not found'})
+        .json({status: 'failed', description: 'Broadcasts not found'})
     }
     logger.serverLog(TAG, broadcasts)
     res.status(200).json({status: 'success', payload: broadcasts})
@@ -387,9 +387,7 @@ exports.getfbMessage = function (req, res) {
                         }
                       })
                   })
-              }
-              // else send thank you message
-              else {
+              } else { // else send thank you message
                 needle.get(
                   `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
                   (err3, response) => {

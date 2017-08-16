@@ -1,9 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  broadcasts: []
-
-}
+// const initialState = {
+//   broadcasts: []
+// }
 
 export function broadcastsInfo (state = {}, action) {
   switch (action.type) {
@@ -21,7 +20,7 @@ export function broadcastsInfo (state = {}, action) {
       })
     case ActionTypes.GET_BROADCAST:
       return Object.assign({}, state, {
-        broadcast: state.broadcasts.filter((c) => c._id == action.data)[0]
+        broadcast: state.broadcasts.filter((c) => c._id === action.data)[0]
       })
 
     default:

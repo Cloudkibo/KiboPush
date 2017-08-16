@@ -10,10 +10,11 @@ export function updateDashboard (data) {
 }
 
 export function loadDashboardData () {
-	// here we will fetch list of subscribers from endpoint
+  // here we will fetch list of subscribers from endpoint
   console.log('loading dashboard data')
   return (dispatch) => {
-    callApi('dashboard/stats').then(res => dispatch(updateDashboard(res.payload)));
+    callApi('dashboard/stats')
+      .then(res => dispatch(updateDashboard(res.payload)))
     // var res = {
     //   pages: 13,
     //   subscribers: 26,

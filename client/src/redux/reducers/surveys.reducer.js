@@ -2,7 +2,6 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   surveys: []
-
 }
 
 export function surveysInfo (state = initialState, action) {
@@ -12,7 +11,7 @@ export function surveysInfo (state = initialState, action) {
         surveys: action.data
       })
     case ActionTypes.ADD_SURVEY:
-   	   return Object.assign({}, state, {
+      return Object.assign({}, state, {
         surveys: [...state.surveys, action.data.payload],
         createwarning: action.data.status
 

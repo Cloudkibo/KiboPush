@@ -12,18 +12,19 @@ export function loadBroadcastsList () {
   return (dispatch) => {
     callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
   }
-};
+}
 
 export function createbroadcast (broadcast) {
   console.log('Creating broadcast message')
   console.log(broadcast)
   return (dispatch) => {
-    callApi('broadcasts/create', 'post', broadcast).then(res => dispatch(addBroadcast(res.payload)))
+    callApi('broadcasts/create', 'post', broadcast)
+      .then(res => dispatch(addBroadcast(res.payload)))
   }
-};
+}
 
 export function addBroadcast (data) {
-	// here we will add the broadcast
+  // here we will add the broadcast
   console.log(data)
   return {
     type: ActionTypes.ADD_BROADCAST,
@@ -41,12 +42,13 @@ export function editbroadcast (broadcast) {
   console.log('Editing broadcast message')
   console.log(broadcast)
   return (dispatch) => {
-    callApi('broadcasts/edit', 'post', {broadcast: broadcast}).then(res => dispatch(editBroadcast(res.payload)))
+    callApi('broadcasts/edit', 'post', {broadcast: broadcast})
+      .then(res => dispatch(editBroadcast(res.payload)))
   }
-};
+}
 
 export function editBroadcast (data) {
-	// here we will edit the broadcast
+  // here we will edit the broadcast
   return {
     type: ActionTypes.EDIT_BROADCAST,
     data
@@ -61,4 +63,4 @@ export function sendbroadcast (broadcast) {
       console.log('Send Broadcast Response', res)
     })
   }
-};
+}

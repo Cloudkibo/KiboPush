@@ -14,15 +14,19 @@ const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Surveys get api is working')
-  Surveys.find({ userId: req.user._id }, (err, surveys) => {
-    if (err) return res.status(404).json({ status: 'failed', description: 'Surveys not found' })
+  Surveys.find({userId: req.user._id}, (err, surveys) => {
+    if (err) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Surveys not found'})
+    }
     logger.serverLog(TAG, surveys)
-    res.status(200).json({ status: 'success', payload: surveys })
+    res.status(200).json({status: 'success', payload: surveys})
   })
 }
 
 exports.create = function (req, res) {
-  logger.serverLog(TAG, `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG,
+    `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
   /* expected request body{
    survey:{
    title: String, // title of survey
@@ -44,7 +48,8 @@ exports.create = function (req, res) {
 
   Surveys.create(survey, (err, survey) => {
     if (err) {
-      return res.status(404).json({ status: 'failed', description: 'Survey not created' })
+      return res.status(404)
+        .json({status: 'failed', description: 'Survey not created'})
     }
     // after survey is created, create survey questions
     for (const question in req.body.questions) {
@@ -64,10 +69,11 @@ exports.create = function (req, res) {
         if (err2) {
           // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
         }
-        logger.serverLog(TAG, `This is the question created ${JSON.stringify(question)}`)
+        logger.serverLog(TAG,
+          `This is the question created ${JSON.stringify(question)}`)
       })
     }
-    return res.status(200).json({ status: 'success', payload: survey })
+    return res.status(200).json({status: 'success', payload: survey})
   })
 }
 
@@ -84,10 +90,12 @@ exports.edit = function (req, res) {
    options: Array of String
    },...]
    } */
-  logger.serverLog(TAG, `This is body in edit survey ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG,
+    `This is body in edit survey ${JSON.stringify(req.body)}`)
   Surveys.findById(req.body.survey._id, (err, survey) => {
     if (err) {
-      return res.status(404).json({ status: 'failed', description: 'Survey not found' })
+      return res.status(404)
+        .json({status: 'failed', description: 'Survey not found'})
     }
 
     survey.title = req.body.survey.title
@@ -96,12 +104,16 @@ exports.edit = function (req, res) {
 
     survey.save((err2) => {
       if (err) {
-        return res.status(404).json({ status: 'failed', description: 'Survey update failed.' })
+        return res.status(404)
+          .json({status: 'failed', description: 'Survey update failed.'})
       }
 
-      SurveyQuestions.remove({ surveyId: survey._id }, (err3) => {
+      SurveyQuestions.remove({surveyId: survey._id}, (err3) => {
         if (err3) {
-          return res.status(404).json({ status: 'failed', description: 'Error in removing survey questions.' })
+          return res.status(404).json({
+            status: 'failed',
+            description: 'Error in removing survey questions.'
+          })
         }
         for (const question in req.body.questions) {
           let options = []
@@ -123,7 +135,8 @@ exports.edit = function (req, res) {
           })
         }
 
-        return res.status(200).json({ status: 'success', payload: req.body.survey })
+        return res.status(200)
+          .json({status: 'success', payload: req.body.survey})
       })
     })
   })
@@ -133,20 +146,28 @@ exports.edit = function (req, res) {
 exports.show = function (req, res) {
   Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
     if (err) {
-      return res.status(404).json({ status: 'failed', description: 'Survey not found' })
+      return res.status(404)
+        .json({status: 'failed', description: 'Survey not found'})
     }
     // find questions
-    SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
-      if (err2) {
-        return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' })
-      }
-      SurveyResponses.find({ surveyId: survey._id }).populate('surveyId subscriberId questionId').exec((err3, responses) => {
-        if (err3) {
-          return res.status(404).json({ status: 'failed', description: 'Survey responses not found' })
+    SurveyQuestions.find({surveyId: survey._id})
+      .populate('surveyId')
+      .exec((err2, questions) => {
+        if (err2) {
+          return res.status(404)
+            .json({status: 'failed', description: 'Survey Questions not found'})
         }
-        return res.status(200).json({ status: 'success', payload: { survey, questions, responses } })
+        SurveyResponses.find({surveyId: survey._id})
+          .populate('surveyId subscriberId questionId')
+          .exec((err3, responses) => {
+            if (err3) {
+              return res.status(404).json(
+                {status: 'failed', description: 'Survey responses not found'})
+            }
+            return res.status(200)
+              .json({status: 'success', payload: {survey, questions, responses}})
+          })
       })
-    })
   })
 }
 
@@ -154,22 +175,28 @@ exports.show = function (req, res) {
 exports.showQuestions = function (req, res) {
   Surveys.findById(req.params.id).populate('userId').exec((err, survey) => {
     if (err) {
-      return res.status(404).json({ status: 'failed', description: 'Survey not found' })
+      return res.status(404)
+        .json({status: 'failed', description: 'Survey not found'})
     }
     // find questions
-    SurveyQuestions.find({ surveyId: survey._id }).populate('surveyId').exec((err2, questions) => {
-      if (err2) {
-        return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' })
-      }
+    SurveyQuestions.find({surveyId: survey._id})
+      .populate('surveyId')
+      .exec((err2, questions) => {
+        if (err2) {
+          return res.status(404)
+            .json({status: 'failed', description: 'Survey Questions not found'})
+        }
 
-      return res.status(200).json({ status: 'success', payload: { survey, questions } })
-    })
+        return res.status(200)
+          .json({status: 'success', payload: {survey, questions}})
+      })
   })
 }
 
 // Submit response of survey
 exports.submitresponse = function (req, res) {
-  logger.serverLog(TAG, `This is body in submit survey response ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG,
+    `This is body in submit survey response ${JSON.stringify(req.body)}`)
   // expected body will be
 
   /*
@@ -191,11 +218,13 @@ exports.submitresponse = function (req, res) {
     surveyResponse.save((err) => {
       if (err) {
         logger.serverLog(TAG, err)
-        return res.status(404).json({ status: 'failed', description: 'Survey Response not created' })
+        return res.status(404)
+          .json({status: 'failed', description: 'Survey Response not created'})
       }
     })
   }
-  return res.status(200).json({ status: 'success', payload: 'Response submitted successfully' })
+  return res.status(200)
+    .json({status: 'success', payload: 'Response submitted successfully'})
 }
 
 exports.send = function (req, res) {
@@ -206,97 +235,117 @@ exports.send = function (req, res) {
    */
   // we will send only first question to fb subsribers
   // find questions
-  SurveyQuestions.find({ surveyId: req.body._id }).populate('surveyId').exec((err2, questions) => {
-    if (err2) {
-      return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' })
-    }
-    if (questions.length > 0) {
-      first_question = questions[0]
-      // create buttons
-      const buttons = []
-      let next_question_id = 'nil'
-      if (questions.length > 1) {
-        next_question_id = questions[1]._id
+  SurveyQuestions.find({surveyId: req.body._id})
+    .populate('surveyId')
+    .exec((err2, questions) => {
+      if (err2) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Survey Questions not found'})
       }
-
-      for (let x = 0; x < first_question.options.length; x++) {
-        buttons.push({
-          type: 'postback',
-          title: first_question.options[x],
-          payload: JSON.stringify({
-            survey_id: req.body._id,
-            option: first_question.options[x],
-            question_id: first_question._id,
-            next_question_id,
-            userToken: req.user.fbToken
-          })
-        })
-      }
-      logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`)
-
-      Pages.find({ userId: req.user._id }, (err, pages) => {
-        if (err) {
-          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-          return res.status(404).json({ status: 'failed', description: 'Pages not found' })
+      if (questions.length > 0) {
+        first_question = questions[0]
+        // create buttons
+        const buttons = []
+        let next_question_id = 'nil'
+        if (questions.length > 1) {
+          next_question_id = questions[1]._id
         }
-        logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
-        for (let z = 0; z < pages.length; z++) // todo this for loop doesn't work with async code
-        {
-          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-          Subscribers.find({ pageId: pages[z]._id }, (err, subscribers) => {
-            logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`)
-            logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-            if (err) {
-              return res.status(404).json({ status: 'failed', description: 'Subscribers not found' })
-            }
-            // get accesstoken of page
-            // TODO can't we get access token from the page table???
-            needle.get(`https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                // TODO this will do problem, res should not be in loop
-                // return res.status(404).json({ status: 'failed', description: err });
-              }
 
-              logger.serverLog(TAG, `Page accesstoken from graph api ${JSON.stringify(resp.body)}`)
-
-              for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
-                logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscribers[j])}`)
-                logger.serverLog(TAG, `At Pages Token ${resp.body.access_token}`)
-
-                const messageData = {
-                  attachment: {
-                    type: 'template',
-                    payload: {
-                      template_type: 'button',
-                      text: `Please respond to these questions. \n${first_question.statement}`,
-                      buttons
-
-                    }
-                  }
-                }
-                const data = {
-                  recipient: { id: subscribers[j].senderId }, // this is the subscriber id
-                  message: messageData
-                }
-                logger.serverLog(TAG, messageData)
-                needle.post(`https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`, data, (err, resp) => {
-                  logger.serverLog(TAG, `Sending survey to subscriber response ${JSON.stringify(resp.body)}`)
-                  if (err) {
-                    // TODO this will do problem, res should not be in loop
-                    //  return res.status(404).json({ status: 'failed', description: err });
-                  }
-
-                  // return res.status(200).json({ status: 'success', payload: resp.body });
-                })
-              }
+        for (let x = 0; x < first_question.options.length; x++) {
+          buttons.push({
+            type: 'postback',
+            title: first_question.options[x],
+            payload: JSON.stringify({
+              survey_id: req.body._id,
+              option: first_question.options[x],
+              question_id: first_question._id,
+              next_question_id,
+              userToken: req.user.fbToken
             })
           })
         }
-        return res.status(200).json({ status: 'success', payload: 'Survey sent successfully.' })
-      })
-    } else {
-      return res.status(404).json({ status: 'failed', description: 'Survey Questions not found' })
-    }
-  })
+        logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`)
+
+        Pages.find({userId: req.user._id}, (err, pages) => {
+          if (err) {
+            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            return res.status(404)
+              .json({status: 'failed', description: 'Pages not found'})
+          }
+          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
+          for (let z = 0; z < pages.length; z++) // todo this for loop doesn't work with async code
+          {
+            logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
+            Subscribers.find({pageId: pages[z]._id}, (err, subscribers) => {
+              logger.serverLog(TAG,
+                `Subscribers of page ${JSON.stringify(subscribers)}`)
+              logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Subscribers not found'})
+              }
+              // get accesstoken of page
+              // TODO can't we get access token from the page table???
+              needle.get(
+                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`,
+                (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Page accesstoken from graph api Error${JSON.stringify(
+                        err)}`)
+                    // TODO this will do problem, res should not be in loop
+                    // return res.status(404).json({ status: 'failed', description: err });
+                  }
+
+                  logger.serverLog(TAG,
+                    `Page accesstoken from graph api ${JSON.stringify(
+                      resp.body)}`)
+
+                  for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
+                    logger.serverLog(TAG,
+                      `At Subscriber fetched ${JSON.stringify(subscribers[j])}`)
+                    logger.serverLog(TAG,
+                      `At Pages Token ${resp.body.access_token}`)
+
+                    const messageData = {
+                      attachment: {
+                        type: 'template',
+                        payload: {
+                          template_type: 'button',
+                          text: `Please respond to these questions. \n${first_question.statement}`,
+                          buttons
+
+                        }
+                      }
+                    }
+                    const data = {
+                      recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                      message: messageData
+                    }
+                    logger.serverLog(TAG, messageData)
+                    needle.post(
+                      `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                      data, (err, resp) => {
+                        logger.serverLog(TAG,
+                          `Sending survey to subscriber response ${JSON.stringify(
+                            resp.body)}`)
+                        if (err) {
+                          // TODO this will do problem, res should not be in loop
+                          //  return res.status(404).json({ status: 'failed', description: err });
+                        }
+
+                        // return res.status(200).json({ status: 'success', payload: resp.body });
+                      })
+                  }
+                })
+            })
+          }
+          return res.status(200)
+            .json({status: 'success', payload: 'Survey sent successfully.'})
+        })
+      } else {
+        return res.status(404)
+          .json({status: 'failed', description: 'Survey Questions not found'})
+      }
+    })
 }

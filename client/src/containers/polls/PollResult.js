@@ -5,12 +5,14 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addPoll, loadPollsList, getpollresults} from '../../redux/actions/poll.actions'
+import {
+  addPoll,
+  getpollresults,
+  loadPollsList
+} from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 
 class PollResult extends React.Component {
@@ -37,6 +39,7 @@ class PollResult extends React.Component {
     console.log(this.props.location.state)
     this.props.getpollresults(this.props.location.state)
   }
+
   componentWillReceiveProps (nextprops) {
     if (nextprops.responses) {
       var radarChart = document.getElementById('radar-chart')
@@ -53,10 +56,11 @@ class PollResult extends React.Component {
         var ctx_rc = radarChart.getContext('2d')
 
         var data_rc = {
-          datasets: [{
-            data: counts,
-            backgroundColor: backcolors
-          }],
+          datasets: [
+            {
+              data: counts,
+              backgroundColor: backcolors
+            }],
           labels: vals
         }
 
@@ -115,7 +119,7 @@ class PollResult extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>28
-                        <span className='indicator positive'> + 4</span>
+                            <span className='indicator positive'> + 4</span>
                           </div>
                         </li>
                       </ul>
@@ -133,7 +137,7 @@ class PollResult extends React.Component {
                         </span>
                           </div>
                           <div className='count-stat'>450
-                        <span className='indicator negative'> - 12</span>
+                            <span className='indicator negative'> - 12</span>
                           </div>
                         </li>
                       </ul>
@@ -150,7 +154,11 @@ class PollResult extends React.Component {
                       <div className='h6 title'>Poll Response Chart</div>
                     </div>
                     <div className='ui-block-content'>
-                      <div className='chart-js chart-js-one-bar' style={{'width': '400px', 'height': '350px', 'margin': '0 auto'}}>
+                      <div className='chart-js chart-js-one-bar' style={{
+                        'width': '400px',
+                        'height': '350px',
+                        'margin': '0 auto'
+                      }}>
                         <canvas id='radar-chart' width={250} height={170} />
                       </div>
                     </div>
@@ -176,6 +184,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll, getpollresults: getpollresults}, dispatch)
+  return bindActionCreators({
+    loadPollsList: loadPollsList,
+    addPoll: addPoll,
+    getpollresults: getpollresults
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PollResult)

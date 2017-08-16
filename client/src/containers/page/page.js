@@ -5,13 +5,16 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadMyPagesList, removePage, addPages } from '../../redux/actions/pages.actions'
-import {getuserdetails} from '../../redux/actions/basicinfo.actions'
+import {
+  addPages,
+  loadMyPagesList,
+  removePage
+} from '../../redux/actions/pages.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 
 class Page extends React.Component {
@@ -48,6 +51,7 @@ class Page extends React.Component {
     console.log('This is the page', page)
     this.props.removePage(page)
   }
+
   inviteSubscribers (page) {
     console.log('invite Subscribers')
     this.props.history.push({
@@ -67,11 +71,13 @@ class Page extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Pages</h3>
-                  <Link to='addPages' className='btn btn-primary btn-sm' style={{float: 'right'}}>Add Pages</Link>
+                  <Link to='addPages' className='btn btn-primary btn-sm'
+                    style={{float: 'right'}}>Add Pages</Link>
 
                   <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -87,22 +93,29 @@ class Page extends React.Component {
                       <tbody>
 
                         { (this.props.pages)
-                ? this.props.pages.map((page, i) => (
-                  <tr>
-                    <td>{page.pagePic}</td>
-                    <td>{page.pageName}</td>
-                    <td>{page.likes}</td>
-                    <td>{page.numberOfFollowers}</td>
-                    <td>
-                      <button onClick={() => this.removePage(page)} className='btn btn-primary btn-sm' style={{float: 'left'}}>Remove</button>
-                      <button onClick={() => this.inviteSubscribers(page)} className='btn btn-primary btn-sm' style={{float: 'left'}}>Invite Subscribers</button>
-                    </td>
+                        ? this.props.pages.map((page, i) => (
+                          <tr>
+                            <td>{page.pagePic}</td>
+                            <td>{page.pageName}</td>
+                            <td>{page.likes}</td>
+                            <td>{page.numberOfFollowers}</td>
+                            <td>
+                              <button onClick={() => this.removePage(page)}
+                                className='btn btn-primary btn-sm'
+                                style={{float: 'left'}}>Remove
+                              </button>
+                              <button
+                                onClick={() => this.inviteSubscribers(page)}
+                                className='btn btn-primary btn-sm'
+                                style={{float: 'left'}}>Invite Subscribers
+                              </button>
+                            </td>
 
-                  </tr>
+                          </tr>
 
-                )) : <tr />
+                        )) : <tr />
 
-              }
+                      }
 
                       </tbody>
                     </table>
@@ -130,6 +143,11 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList, getuserdetails: getuserdetails, removePage: removePage, addPages: addPages}, dispatch)
+  return bindActionCreators({
+    loadMyPagesList: loadMyPagesList,
+    getuserdetails: getuserdetails,
+    removePage: removePage,
+    addPages: addPages
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page)

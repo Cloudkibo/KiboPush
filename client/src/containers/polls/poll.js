@@ -5,21 +5,19 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addPoll, loadPollsList, sendpoll} from '../../redux/actions/poll.actions'
+import {
+  addPoll,
+  loadPollsList,
+  sendpoll
+} from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
-import {formatAMPM, handleDate} from '../../utility/utils'
-import {browserHistory} from 'react-router'
+import { handleDate } from '../../utility/utils'
 
 class Poll extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-  }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls) {
       console.log('Polls Updated', nextProps.polls)
@@ -40,7 +38,7 @@ class Poll extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     if (!this.props.polls) {
-    //  alert('calling')
+      //  alert('calling')
       this.props.loadPollsList()
     }
   }
@@ -51,6 +49,7 @@ class Poll extends React.Component {
       state: broadcast
     })
   }
+
   gotoView (poll) {
     this.props.history.push({
       pathname: `/pollResult`,
@@ -58,6 +57,7 @@ class Poll extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
+
   render () {
     return (
       <div>
@@ -68,12 +68,14 @@ class Poll extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Polls</h3>
                   <Link to='createpoll' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Poll</button>
+                    <button className='btn btn-primary btn-sm'> Create Poll
+                    </button>
                   </Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -88,19 +90,26 @@ class Poll extends React.Component {
                       </thead>
                       <tbody>
                         { (this.props.polls)
-                ? this.props.polls.map((poll, i) => (
-                  <tr>
-                    <td>{poll.platform}</td>
-                    <td>{poll.statement}</td>
-                    <td>{handleDate(poll.datetime)}</td>
-                    <td>{poll.sent}</td>
-                    <td>
-                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.props.sendpoll(poll)}>Send</button>
-                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.gotoView(poll)}>Report</button>
-                    </td>
-                  </tr>
-                )) : <br />
-              }
+                        ? this.props.polls.map((poll, i) => (
+                          <tr>
+                            <td>{poll.platform}</td>
+                            <td>{poll.statement}</td>
+                            <td>{handleDate(poll.datetime)}</td>
+                            <td>{poll.sent}</td>
+                            <td>
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.props.sendpoll(poll)}>
+                                Send
+                              </button>
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.gotoView(poll)}>Report
+                              </button>
+                            </td>
+                          </tr>
+                        )) : <br />
+                      }
 
                       </tbody>
                     </table>
@@ -127,6 +136,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll, sendpoll: sendpoll}, dispatch)
+  return bindActionCreators(
+    {loadPollsList: loadPollsList, addPoll: addPoll, sendpoll: sendpoll},
+    dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Poll)

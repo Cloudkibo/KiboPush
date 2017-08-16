@@ -3,19 +3,10 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
-import { connect } from 'react-redux'
-import {getsurveyform, submitsurvey} from '../../redux/actions/surveys.actions'
-import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
-var handleDate = function (d) {
-  var c = new Date(d)
-  return c.toDateString()
-}
+// var handleDate = function (d) {
+//   var c = new Date(d)
+//   return c.toDateString()
+// }
 
 class SubmitSurvey extends React.Component {
   componentDidMount () {

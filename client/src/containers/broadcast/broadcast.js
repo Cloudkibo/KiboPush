@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * Created by sojharo on 20/07/2017.
  */
@@ -5,14 +6,18 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addBroadcast, loadBroadcastsList, sendbroadcast} from '../../redux/actions/broadcast.actions'
+import {
+  addBroadcast,
+  loadBroadcastsList,
+  sendbroadcast
+} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import {formatAMPM, handleDate} from '../../utility/utils'
+import { handleDate } from '../../utility/utils'
+
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -65,12 +70,15 @@ class Broadcast extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
                   <Link to='createbroadcast' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Broadcast</button>
+                    <button className='btn btn-primary btn-sm'> Create
+                      Broadcast
+                    </button>
                   </Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -85,19 +93,27 @@ class Broadcast extends React.Component {
                       </thead>
                       <tbody>
                         {
-                this.props.broadcasts && this.props.broadcasts.map((broadcast, i) => (
-                  <tr>
-                    <td>{broadcast.platform}</td>
-                    <td>{broadcast.type}</td>
-                    <td>{handleDate(broadcast.datetime)}</td>
-                    <td>{broadcast.text}</td>
-                    <td>
-                      <button className='btn btn-primary btn-sm' onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
-                      <button onClick={() => this.sendBroadcast(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Send</button>
-                    </td>
-                  </tr>
-                ))
-              }
+                        this.props.broadcasts &&
+                        this.props.broadcasts.map((broadcast, i) => (
+                          <tr>
+                            <td>{broadcast.platform}</td>
+                            <td>{broadcast.type}</td>
+                            <td>{handleDate(broadcast.datetime)}</td>
+                            <td>{broadcast.text}</td>
+                            <td>
+                              <button className='btn btn-primary btn-sm'
+                                onClick={() => this.gotoEdit(broadcast)}
+                                style={{float: 'left', margin: 2}}>Edit
+                              </button>
+                              <button
+                                onClick={() => this.sendBroadcast(broadcast)}
+                                className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}>Send
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      }
 
                       </tbody>
                     </table>
@@ -124,6 +140,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadBroadcastsList: loadBroadcastsList, addBroadcast: addBroadcast, sendbroadcast: sendbroadcast}, dispatch)
+  return bindActionCreators({
+    loadBroadcastsList: loadBroadcastsList,
+    addBroadcast: addBroadcast,
+    sendbroadcast: sendbroadcast
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Broadcast)

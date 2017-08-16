@@ -11,10 +11,6 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./pages.controller')
 
-const logger = require('../../components/logger')
-
-const TAG = 'api/pages/index.js'
-
 router.get('/', auth.isAuthenticated(), controller.index) // this id will be userid
 router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 router.post('/enable', auth.isAuthenticated(), controller.enable)

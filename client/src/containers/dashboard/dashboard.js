@@ -3,12 +3,11 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import {loadDashboardData} from '../../redux/actions/dashboard.actions'
+import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList} from '../../redux/actions/pages.actions'
-import { browserHistory } from 'react-router'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -18,11 +17,12 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.pages && nextprops.pages.length == 0) {
+    if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
     }
   }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -42,7 +42,8 @@ class Dashboard extends React.Component {
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
         <div className='row'>
-          <main className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
+          <main
+            className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
@@ -58,7 +59,11 @@ class Dashboard extends React.Component {
             <div className='ui-block' data-mh='pie-chart' style={{height: 381}}>
               <div className='ui-block-title'>
                 <div className='h6 title'>Activity Chart</div>
-                <a href='#' className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='#olymp-three-dots-icon' /></svg></a>
+                <a href='#' className='more'>
+                  <svg className='olymp-three-dots-icon'>
+                    <use xlinkHref='#olymp-three-dots-icon' />
+                  </svg>
+                </a>
               </div>
               <div>
                 <div className='ui-block-content'>
@@ -95,8 +100,29 @@ class Dashboard extends React.Component {
                         <div className='count-stat'>49</div>
                       </li>
                     </ul>
-                    <div className='chart-js chart-js-pie-color'><iframe className='chartjs-hidden-iframe' tabIndex={-1} style={{display: 'block', overflow: 'hidden', border: 0, margin: 0, top: 0, left: 0, bottom: 0, right: 0, height: '100%', width: '100%', position: 'absolute', pointerEvents: 'none', zIndex: -1}} />
-                      <canvas id='pie-color-chart' width={175} height={175} style={{display: 'block', width: 175, height: 175}} />
+                    <div className='chart-js chart-js-pie-color'>
+                      <iframe className='chartjs-hidden-iframe' tabIndex={-1}
+                        style={{
+                          display: 'block',
+                          overflow: 'hidden',
+                          border: 0,
+                          margin: 0,
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          height: '100%',
+                          width: '100%',
+                          position: 'absolute',
+                          pointerEvents: 'none',
+                          zIndex: -1
+                        }} />
+                      <canvas id='pie-color-chart' width={175} height={175}
+                        style={{
+                          display: 'block',
+                          width: 175,
+                          height: 175
+                        }} />
                       <div className='general-statistics'>17
                         <span>Total Broadcasts</span>
                       </div>
@@ -107,7 +133,8 @@ class Dashboard extends React.Component {
             </div>
 
           </main>
-          <aside className='col-xl-3 pull-xl-6 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
+          <aside
+            className='col-xl-3 pull-xl-6 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
@@ -131,18 +158,28 @@ class Dashboard extends React.Component {
                     <img src='img/playlist6.jpg' alt='thumb-composition' />
                     <div className='overlay' />
                     <a href='#' className='play-icon'>
-                      <svg className='olymp-music-play-icon-big'><use xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' /></svg>
+                      <svg className='olymp-music-play-icon-big'>
+                        <use
+                          xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' />
+                      </svg>
                     </a>
                   </div>
 
                   <div className='composition'>
-                    <a href='#' className='composition-name'>The Past Starts Slow...</a>
-                    <a href='#' className='composition-author'>System of a Revenge</a>
+                    <a href='#' className='composition-name'>The Past Starts
+                      Slow...</a>
+                    <a href='#' className='composition-author'>System of a
+                      Revenge</a>
                   </div>
 
                   <div className='composition-time'>
-                    <time className='published' dateTime='2017-03-24T18:18'>3:22</time>
-                    <div className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg>
+                    <time className='published' dateTime='2017-03-24T18:18'>
+                      3:22
+                    </time>
+                    <div className='more'>
+                      <svg className='olymp-three-dots-icon'>
+                        <use xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                      </svg>
                       <ul className='more-dropdown'>
                         <li>
                           <a href='#'>Add Song to Player</a>
@@ -161,7 +198,10 @@ class Dashboard extends React.Component {
                     <img src='img/playlist7.jpg' alt='thumb-composition' />
                     <div className='overlay' />
                     <a href='#' className='play-icon'>
-                      <svg className='olymp-music-play-icon-big'><use xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' /></svg>
+                      <svg className='olymp-music-play-icon-big'>
+                        <use
+                          xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' />
+                      </svg>
                     </a>
                   </div>
 
@@ -171,8 +211,13 @@ class Dashboard extends React.Component {
                   </div>
 
                   <div className='composition-time'>
-                    <time className='published' dateTime='2017-03-24T18:18'>5:48</time>
-                    <div className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg>
+                    <time className='published' dateTime='2017-03-24T18:18'>
+                      5:48
+                    </time>
+                    <div className='more'>
+                      <svg className='olymp-three-dots-icon'>
+                        <use xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                      </svg>
                       <ul className='more-dropdown'>
                         <li>
                           <a href='#'>Add Song to Player</a>
@@ -190,7 +235,10 @@ class Dashboard extends React.Component {
                     <img src='img/playlist8.jpg' alt='thumb-composition' />
                     <div className='overlay' />
                     <a href='#' className='play-icon'>
-                      <svg className='olymp-music-play-icon-big'><use xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' /></svg>
+                      <svg className='olymp-music-play-icon-big'>
+                        <use
+                          xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' />
+                      </svg>
                     </a>
                   </div>
 
@@ -200,8 +248,13 @@ class Dashboard extends React.Component {
                   </div>
 
                   <div className='composition-time'>
-                    <time className='published' dateTime='2017-03-24T18:18'>3:06</time>
-                    <div className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg>
+                    <time className='published' dateTime='2017-03-24T18:18'>
+                      3:06
+                    </time>
+                    <div className='more'>
+                      <svg className='olymp-three-dots-icon'>
+                        <use xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                      </svg>
                       <ul className='more-dropdown'>
                         <li>
                           <a href='#'>Add Song to Player</a>
@@ -219,18 +272,28 @@ class Dashboard extends React.Component {
                     <img src='img/playlist9.jpg' alt='thumb-composition' />
                     <div className='overlay' />
                     <a href='#' className='play-icon'>
-                      <svg className='olymp-music-play-icon-big'><use xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' /></svg>
+                      <svg className='olymp-music-play-icon-big'>
+                        <use
+                          xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' />
+                      </svg>
                     </a>
                   </div>
 
                   <div className='composition'>
-                    <a href='#' className='composition-name'>Seven Nation Army</a>
-                    <a href='#' className='composition-author'>The Black Stripes</a>
+                    <a href='#' className='composition-name'>Seven Nation
+                      Army</a>
+                    <a href='#' className='composition-author'>The Black
+                      Stripes</a>
                   </div>
 
                   <div className='composition-time'>
-                    <time className='published' dateTime='2017-03-24T18:18'>6:17</time>
-                    <div className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg>
+                    <time className='published' dateTime='2017-03-24T18:18'>
+                      6:17
+                    </time>
+                    <div className='more'>
+                      <svg className='olymp-three-dots-icon'>
+                        <use xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                      </svg>
                       <ul className='more-dropdown'>
                         <li>
                           <a href='#'>Add Song to Player</a>
@@ -248,7 +311,10 @@ class Dashboard extends React.Component {
                     <img src='img/playlist10.jpg' alt='thumb-composition' />
                     <div className='overlay' />
                     <a href='#' className='play-icon'>
-                      <svg className='olymp-music-play-icon-big'><use xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' /></svg>
+                      <svg className='olymp-music-play-icon-big'>
+                        <use
+                          xlinkHref='icons/icons-music.svg#olymp-music-play-icon-big' />
+                      </svg>
                     </a>
                   </div>
 
@@ -258,8 +324,13 @@ class Dashboard extends React.Component {
                   </div>
 
                   <div className='composition-time'>
-                    <time className='published' dateTime='2017-03-24T18:18'>5:40</time>
-                    <div className='more'><svg className='olymp-three-dots-icon'><use xlinkHref='icons/icons.svg#olymp-three-dots-icon' /></svg>
+                    <time className='published' dateTime='2017-03-24T18:18'>
+                      5:40
+                    </time>
+                    <div className='more'>
+                      <svg className='olymp-three-dots-icon'>
+                        <use xlinkHref='icons/icons.svg#olymp-three-dots-icon' />
+                      </svg>
                       <ul className='more-dropdown'>
                         <li>
                           <a href='#'>Add Song to Player</a>
@@ -282,7 +353,8 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.scheduledBroadcast}</h1>
                     <div className='author-content'>
-                      <a href='#' className='h5 author-name'>Scheduled Broadcasts</a>
+                      <a href='#' className='h5 author-name'>Scheduled
+                        Broadcasts</a>
                     </div>
                   </div>
                 </div>
@@ -295,10 +367,15 @@ class Dashboard extends React.Component {
                   <div className='author-thumb'>
                     <img src='/img/author-page.jpg' alt='author' />
                   </div>
-                  <a href='#' className='h4 title'>Welcome {this.props.dashboard.name} ! </a>
-                  <p>Hope you are having a good day at Pied Piper! ;). Click the button below to start sending broadcasts.
+                  <a href='#'
+                    className='h4 title'>Welcome {this.props.dashboard.name}
+                    ! </a>
+                  <p>Hope you are having a good day at Pied Piper! ;). Click the
+                    button below to start sending broadcasts.
                   </p>
-                  <a href='#' className='btn btn-blue btn-sm'>See Broadcasts<div className='ripple-container' /></a>
+                  <a href='#' className='btn btn-blue btn-sm'>See Broadcasts
+                    <div className='ripple-container' />
+                  </a>
                 </div>
               </div>
             </div>
@@ -320,6 +397,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList}, dispatch)
+  return bindActionCreators(
+    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList},
+    dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

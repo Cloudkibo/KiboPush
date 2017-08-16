@@ -1,10 +1,9 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  pages: [],
-  otherPages: []
-
-}
+// const initialState = {
+//   pages: [],
+//   otherPages: []
+// }
 
 export function pagesInfo (state = [], action) {
   switch (action.type) {
