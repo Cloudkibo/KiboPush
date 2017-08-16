@@ -23,17 +23,17 @@ exports.enable = function (req, res) {
 
 }
 
-exports.disable = function (req, res) {
-  const updateData = {
-    connected: false
-  }
-  Pages.update({ _id: req.body._id }, updateData, (err, affected) => {
-    logger.serverLog(TAG, `affected rows ${affected}`)
-  })
-}
+// exports.disable = function (req, res) {
+//   const updateData = {
+//     connected: false
+//   }
+//   Pages.update({_id: req.body._id}, updateData, (err, affected) => {
+//     logger.serverLog(TAG, `affected rows ${affected}`)
+//   })
+// }
 
 exports.otherPages = function (req, res) {
-  Pages.find({ connected: false }, (err, pages) => {
+  Pages.find({connected: false}, (err, pages) => {
     logger.serverLog(TAG, pages)
     logger.serverLog(TAG, `Error: ${err}`)
     res.status(200).json(pages)
@@ -45,32 +45,38 @@ exports.stats = function (req, res) {
     scheduledBroadcast: 0,
     username: req.user.name
   }
-  Pages.count({ connected: true, userId: req.user._id }, (err, pagesCount) => {
-    if (err) return res.status(500).json({ status: 'failed', description: JSON.stringify(err) })
+  Pages.count({connected: true, userId: req.user._id}, (err, pagesCount) => {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: JSON.stringify(err)})
+    }
     payload.pages = pagesCount
-    Subscribers.count({ userId: req.user._id }, (err2, subscribersCount) => {
+    Subscribers.count({userId: req.user._id}, (err2, subscribersCount) => {
       if (err2) {
-        return res.status(500).json({ status: 'failed', description: JSON.stringify(err2) })
+        return res.status(500)
+          .json({status: 'failed', description: JSON.stringify(err2)})
       }
       payload.subscribers = subscribersCount
-      Broadcasts.find({ userId: req.user._id }).sort('datetime').limit(10).exec(
+      Broadcasts.find({userId: req.user._id}).sort('datetime').limit(10).exec(
         (err3, recentBroadcasts) => {
           if (err3) {
-            return res.status(500).json({ status: 'failed', description: JSON.stringify(err3) })
+            return res.status(500)
+              .json({status: 'failed', description: JSON.stringify(err3)})
           }
           payload.recentBroadcasts = recentBroadcasts
-          Broadcasts.count({ userId: req.user._id }, (err4, broadcastsCount) => {
+          Broadcasts.count({userId: req.user._id}, (err4, broadcastsCount) => {
             if (err4) {
-              return res.status(500).json({ status: 'failed', description: JSON.stringify(err4) })
+              return res.status(500)
+                .json({status: 'failed', description: JSON.stringify(err4)})
             }
-            Polls.count({ userId: req.user._id }, (err5, pollsCount) => {
+            Polls.count({userId: req.user._id}, (err5, pollsCount) => {
               if (err5) {
                 return res.status(500).json({
                   status: 'failed',
                   description: JSON.stringify(err5)
                 })
               }
-              Surveys.count({ userId: req.user._id }, (err6, surveysCount) => {
+              Surveys.count({userId: req.user._id}, (err6, surveysCount) => {
                 if (err6) {
                   return res.status(500).json({
                     status: 'failed',
@@ -106,8 +112,7 @@ exports.seed = function (req, res) {
       accessToken: 'getToken',
       connected: true,
       userId: 5,
-      likes: 0,
-      numberOfFollowers: 0
+      likes: 0
     },
     {
       pageCode: '2',
@@ -117,8 +122,7 @@ exports.seed = function (req, res) {
       accessToken: 'getToken',
       connected: false,
       userId: 5,
-      likes: 50,
-      numberOfFollowers: 25
+      likes: 50
     },
     {
       pageCode: '3',
@@ -128,8 +132,7 @@ exports.seed = function (req, res) {
       accessToken: 'getToken',
       connected: false,
       userId: 5,
-      likes: 37,
-      numberOfFollowers: 89
+      likes: 37
     },
     {
       pageCode: '4',
@@ -139,19 +142,16 @@ exports.seed = function (req, res) {
       accessToken: 'getToken',
       connected: true,
       userId: 5,
-      likes: 53,
-      numberOfFollowers: 74
+      likes: 53
     }
   ]
 
-  Pages.insertMany(rawDocuments)
-    .then((mongooseDocuments) => {
-      logger.serverLog(TAG, 'Pages Table Seeded')
-      res.status(200).json({ status: 'Success' })
-    })
-    .catch((err) => {
-      /* Error handling */
-      logger.serverLog(TAG, 'Unable to seed the database')
-      res.status(500).json({ status: 'Failed' })
-    })
+  Pages.insertMany(rawDocuments).then((mongooseDocuments) => {
+    logger.serverLog(TAG, 'Pages Table Seeded')
+    res.status(200).json({status: 'Success'})
+  }).catch((err) => {
+    /* Error handling */
+    logger.serverLog(TAG, 'Unable to seed the database')
+    res.status(500).json({status: 'Failed'})
+  })
 }

@@ -1,9 +1,8 @@
 // WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
 // Zarmeen
 
-let mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  ObjectId = Schema.ObjectId
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
 const pollResponseSchema = new Schema({
   response: String, // response submitted by subscriber

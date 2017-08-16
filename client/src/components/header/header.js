@@ -4,7 +4,6 @@
 
 import React from 'react'
 import auth from '../../utility/auth.service'
-import cookie from 'react-cookie'
 
 class Header extends React.Component {
   render () {
@@ -30,14 +29,22 @@ class Header extends React.Component {
                       <li>
                         <a href='29-YourAccount-AccountSettings.html'>
 
-                          <svg className='olymp-menu-icon'><use xlinkHref='icons/icons.svg#olymp-menu-icon' /></svg>
+                          <svg className='olymp-menu-icon'>
+                            <use xlinkHref='icons/icons.svg#olymp-menu-icon' />
+                          </svg>
 
                           <span>Profile Settings</span>
                         </a>
                       </li>
                       <li>
-                        <a href='/' onClick={() => { auth.logout(); auth.removeNext(); this.props.history.push({pathname: '/'}) }}>
-                          <svg className='olymp-logout-icon'><use xlinkHref='icons/icons.svg#olymp-logout-icon' /></svg>
+                        <a href='/' onClick={() => {
+                          auth.logout()
+                          auth.removeNext()
+                          this.props.history.push({pathname: '/'})
+                        }}>
+                          <svg className='olymp-logout-icon'>
+                            <use xlinkHref='icons/icons.svg#olymp-logout-icon' />
+                          </svg>
 
                           <span>Log Out</span>
                         </a>
@@ -49,7 +56,10 @@ class Header extends React.Component {
               </div>
               <a href='#' className='author-name fn'>
                 <div className='author-title'>
-						Richard Henricks <svg className='olymp-dropdown-arrow-icon'><use xlinkHref='icons/icons.svg#olymp-dropdown-arrow-icon' /></svg>
+                  Richard Henricks
+                  <svg className='olymp-dropdown-arrow-icon'>
+                    <use xlinkHref='icons/icons.svg#olymp-dropdown-arrow-icon' />
+                  </svg>
                 </div>
 
               </a>

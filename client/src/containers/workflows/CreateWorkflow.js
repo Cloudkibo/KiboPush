@@ -5,11 +5,13 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {addWorkFlow, loadWorkFlowList} from '../../redux/actions/workflows.actions'
+import {
+  addWorkFlow,
+  loadWorkFlowList
+} from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 
 class CreateWorkflow extends React.Component {
@@ -43,8 +45,18 @@ class CreateWorkflow extends React.Component {
   }
 
   gotoWorkflow () {
-    console.log('Request Object', {condition: this.state.condition, keywords: this.state.keywords, reply: this.state.reply, isActive: this.state.isActive})
-    this.props.addWorkFlow({condition: this.state.condition, keywords: this.state.keywords, reply: this.state.reply, isActive: this.state.isActive})
+    console.log('Request Object', {
+      condition: this.state.condition,
+      keywords: this.state.keywords,
+      reply: this.state.reply,
+      isActive: this.state.isActive
+    })
+    this.props.addWorkFlow({
+      condition: this.state.condition,
+      keywords: this.state.keywords,
+      reply: this.state.reply,
+      isActive: this.state.isActive
+    })
     this.props.history.push({
       pathname: '/workflows'
     })
@@ -61,6 +73,7 @@ class CreateWorkflow extends React.Component {
   changeReply (event) {
     this.setState({reply: event.target.value})
   }
+
   changeActive (event) {
     this.setState({isActive: event.target.value})
   }
@@ -85,7 +98,8 @@ class CreateWorkflow extends React.Component {
 
                 <div className='form-group form-inline'>
 
-                  <select className='input-lg' onChange={this.changeCondition} value={this.state.condition}>
+                  <select className='input-lg' onChange={this.changeCondition}
+                    value={this.state.condition}>
                     <option value='message_is'>Message is</option>
                     <option value='message_contains'>Message Contains</option>
                     <option value='message_begins'>Message Begins with</option>
@@ -93,21 +107,30 @@ class CreateWorkflow extends React.Component {
                 </div>
                 <div>
                   <label>Keywords (Separated by comma)</label>
-                  <input type='text' className='form-control input-lg' onChange={this.changeKeywords} value={this.state.keywords} style={{width: 100 + '%'}} id='keywords' placeholder='Enter keywords separated by comma' />
+                  <input type='text' className='form-control input-lg'
+                    onChange={this.changeKeywords}
+                    value={this.state.keywords} style={{width: 100 + '%'}}
+                    id='keywords'
+                    placeholder='Enter keywords separated by comma' />
                 </div>
                 <div className='form-group'>
                   <label htmlFor='exampleInputReply'>Reply</label>
-                  <textarea className='form-control' onChange={this.changeReply} value={this.state.reply} rows='5' id='exampleInputReply' />
+                  <textarea className='form-control' onChange={this.changeReply}
+                    value={this.state.reply} rows='5'
+                    id='exampleInputReply' />
                 </div>
                 <div className='form-group'>
                   <label htmlFor='isActive'>Is Active</label>
-                  <select onChange={this.changeActive} value={this.state.isActive} id='isActive'>
+                  <select onChange={this.changeActive}
+                    value={this.state.isActive} id='isActive'>
                     <option value='Yes'>Yes</option>
                     <option value='No'>No</option>
                   </select>
                 </div>
 
-                <button onClick={this.gotoWorkflow} className='btn btn-primary'>Create</button>
+                <button onClick={this.gotoWorkflow} className='btn btn-primary'>
+                  Create
+                </button>
 
               </div>
             </div>
@@ -128,6 +151,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow}, dispatch)
+  return bindActionCreators(
+    {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWorkflow)

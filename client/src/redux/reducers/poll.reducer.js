@@ -1,9 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  polls: []
-
-}
+// const initialState = {
+//   polls: []
+// }
 
 export function pollsInfo (state = {}, action) {
   switch (action.type) {

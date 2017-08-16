@@ -5,11 +5,13 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {createbroadcast, loadBroadcastsList} from '../../redux/actions/broadcast.actions'
+import {
+  createbroadcast,
+  loadBroadcastsList
+} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 
 class CreateBroadcast extends React.Component {
@@ -39,7 +41,8 @@ class CreateBroadcast extends React.Component {
   }
 
   createBroadcast () {
-    this.props.createbroadcast({platform: 'Facebook', type: 'message', text: this.refs.message.value})
+    this.props.createbroadcast(
+      {platform: 'Facebook', type: 'message', text: this.refs.message.value})
     this.props.history.push({
       pathname: '/broadcasts'
     })
@@ -58,36 +61,53 @@ class CreateBroadcast extends React.Component {
           <br />
           <br />
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Send a Message to Facebook Subscribers</h2>
+            <h2 className='presentation-margin'>Send a Message to Facebook
+              Subscribers</h2>
             <div className='ui-block'>
               <div className='news-feed-form'>
 
                 <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel' aria-expanded='true'>
+                  <div className='tab-pane active' id='home-1' role='tabpanel'
+                    aria-expanded='true'>
 
-                    <div className='form-group with-icon label-floating is-empty'>
+                    <div
+                      className='form-group with-icon label-floating is-empty'>
                       <label className='control-label'>Say something...</label>
                       <textarea className='form-control' ref='message' />
                     </div>
                     <div className='add-options-message'>
-                      <a href='#' className='options-message' data-toggle='modal' data-target='#update-header-photo' data-placement='top' title data-original-title='ADD PHOTOS'>
+                      <a href='#' className='options-message'
+                        data-toggle='modal' data-target='#update-header-photo'
+                        data-placement='top' title
+                        data-original-title='ADD PHOTOS'>
                         <i className='fa fa-image' />
                         <span>Add Image</span>
                       </a>
-                      <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='TAG YOUR FRIENDS'>
+                      <a href='#' className='options-message'
+                        data-toggle='tooltip' data-placement='top' title
+                        data-original-title='TAG YOUR FRIENDS'>
                         <i className='fa fa-video-camera' />
                         <span>Add Video</span>
                       </a>
-                      <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='ADD LOCATION'>
+                      <a href='#' className='options-message'
+                        data-toggle='tooltip' data-placement='top' title
+                        data-original-title='ADD LOCATION'>
                         <i className='fa fa-link' />
                         <span>Add Link</span>
                       </a>
-                      <a href='#' className='options-message' data-toggle='tooltip' data-placement='top' title data-original-title='ADD LOCATION'>
+                      <a href='#' className='options-message'
+                        data-toggle='tooltip' data-placement='top' title
+                        data-original-title='ADD LOCATION'>
                         <i className='fa fa-volume-up' />
                         <span>Add Audio</span>
                       </a>
-                      <button className='btn btn-primary btn-sm' onClick={this.createBroadcast}> Create Broadcast</button>
-                      <button className='btn btn-sm btn-border-think btn-transparent c-grey'>Cancel</button>
+                      <button className='btn btn-primary btn-sm'
+                        onClick={this.createBroadcast}> Create Broadcast
+                      </button>
+                      <button
+                        className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                        Cancel
+                      </button>
                     </div>
 
                   </div>
@@ -112,6 +132,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadBroadcastsList: loadBroadcastsList, createbroadcast: createbroadcast}, dispatch)
+  return bindActionCreators(
+    {loadBroadcastsList: loadBroadcastsList, createbroadcast: createbroadcast},
+    dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBroadcast)

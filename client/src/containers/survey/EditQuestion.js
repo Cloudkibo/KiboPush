@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @jsx React.DOM */
 
 var React = require('react')
@@ -19,7 +20,8 @@ var EditQuestion = React.createClass({
   },
 
   render: function () {
-    var className = 'edit-question well well-active' + (this.props.className || '')
+    /* var className = 'edit-question well well-active' +
+      (this.props.className || '') */
 
     return (
       <div className='edit-question well well-active'>
@@ -38,7 +40,8 @@ var EditQuestion = React.createClass({
   },
 
   handleRemove: function () {
-    if (confirm('Are you sure you want to delete this ' + this.getTypeLabel())) {
+    if (confirm(
+        'Are you sure you want to delete this ' + this.getTypeLabel())) {
       this.props.onRemove(this.props.key)
     }
   }

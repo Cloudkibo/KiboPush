@@ -5,20 +5,21 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {loadSurveysList, sendsurvey} from '../../redux/actions/surveys.actions'
+import {
+  loadSurveysList,
+  sendsurvey
+} from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import {formatAMPM, handleDate} from '../../utility/utils'
-import {browserHistory} from 'react-router'
+import { handleDate } from '../../utility/utils'
 
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
-   		props.loadSurveysList()
+    props.loadSurveysList()
   }
 
   componentDidMount () {
@@ -36,15 +37,15 @@ class Survey extends React.Component {
   }
 
   gotoView (survey) {
-// 		 this.props.history.push({
-//    pathname: `/viewsurveydetail/${survey._id}`,
-//    state: survey
-//  }) 
+    // this.props.history.push({
+    //   pathname: `/viewsurveydetail/${survey._id}`,
+    //   state: survey,
+    // })
 
-	 this.props.history.push({
-   pathname: `/viewsurveydetail`,
-   state: survey._id,
- }) 
+    this.props.history.push({
+      pathname: `/viewsurveydetail`,
+      state: survey._id
+    })
 
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
@@ -55,6 +56,7 @@ class Survey extends React.Component {
       state: survey._id
     })
   }
+
   render () {
     return (
       <div>
@@ -65,12 +67,14 @@ class Survey extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Surveys</h3>
                   <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Survey</button>
+                    <button className='btn btn-primary btn-sm'> Create Survey
+                    </button>
                   </Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -85,23 +89,30 @@ class Survey extends React.Component {
                       </thead>
                       <tbody>
                         {
-                      				  this.props.surveys.map((survey, i) => (
-                        <tr>
-                          <td>{survey.title}</td>
-                          <td>{survey.description}</td>
-                          <td>{handleDate(survey.datetime)}</td>
-                          <td>
-                            <button className='btn btn-primary btn-sm' onClick={() => this.gotoView(survey)}>View</button>
-                            <button className='btn btn-primary btn-sm' onClick={() => this.gotoResults(survey)}>Report
-                        </button>
+                        this.props.surveys.map((survey, i) => (
+                          <tr>
+                            <td>{survey.title}</td>
+                            <td>{survey.description}</td>
+                            <td>{handleDate(survey.datetime)}</td>
+                            <td>
+                              <button className='btn btn-primary btn-sm'
+                                onClick={() => this.gotoView(survey)}>View
+                              </button>
+                              <button className='btn btn-primary btn-sm'
+                                onClick={() => this.gotoResults(survey)}>
+                                Report
+                              </button>
 
-                            <button className='btn btn-primary btn-sm' onClick={() => this.props.sendsurvey(survey)}> Send </button>
+                              <button className='btn btn-primary btn-sm'
+                                onClick={() => this.props.sendsurvey(
+                                        survey)}> Send
+                              </button>
 
-                          </td>
-                        </tr>
+                            </td>
+                          </tr>
 
-							))
-                      		 }
+                        ))
+                      }
                       </tbody>
                     </table>
                   </div>
@@ -126,6 +137,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadSurveysList: loadSurveysList, sendsurvey: sendsurvey}, dispatch)
+  return bindActionCreators(
+    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

@@ -5,18 +5,20 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import {addWorkFlow, loadWorkFlowList} from '../../redux/actions/workflows.actions'
+import {
+  addWorkFlow,
+  loadWorkFlowList
+} from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 
 class Workflows extends React.Component {
   componentWillMount () {
     if (!this.props.workflows) {
-    //  alert('calling workflows')
+      //  alert('calling workflows')
       this.props.loadWorkFlowList()
     }
   }
@@ -46,12 +48,15 @@ class Workflows extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Workflows</h3>
                   <Link to='createworkflow' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Workflow</button>
+                    <button className='btn btn-primary btn-sm'> Create
+                      Workflow
+                    </button>
                   </Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -68,23 +73,27 @@ class Workflows extends React.Component {
                       <tbody>
                         {
 
-                (this.props.workflows)
-                ? this.props.workflows.map((workflow, i) => (
-                  <tr>
+                        (this.props.workflows)
+                          ? this.props.workflows.map((workflow, i) => (
+                            <tr>
 
-                    <td>{workflow.condition}</td>
-                    <td>{workflow.keywords.join(',')}</td>
-                    <td>{workflow.reply}</td>
-                    <td>{workflow.isActive ? 'Yes' : 'No'}</td>
-                    <td>{workflow.sent}</td>
-                    <td>
-                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Edit</button>
-                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Disable</button>
-                    </td>
-                  </tr>
+                              <td>{workflow.condition}</td>
+                              <td>{workflow.keywords.join(',')}</td>
+                              <td>{workflow.reply}</td>
+                              <td>{workflow.isActive ? 'Yes' : 'No'}</td>
+                              <td>{workflow.sent}</td>
+                              <td>
+                                <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}>Edit
+                              </button>
+                                <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}>Disable
+                              </button>
+                              </td>
+                            </tr>
 
-                )) : <br />
-              }
+                        )) : <br />
+                      }
 
                       </tbody>
                     </table>
@@ -111,6 +120,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow}, dispatch)
+  return bindActionCreators(
+    {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Workflows)

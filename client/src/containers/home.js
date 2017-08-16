@@ -8,10 +8,6 @@ import Header from '../components/header/header'
 import HeaderResponsive from '../components/header/headerResponsive'
 
 class Home extends Component {
-  constructor (props, context) {
-    super(props, context)
-  }
-
   componentDidMount () {
 
   }
@@ -38,7 +34,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ }, dispatch)
+  return bindActionCreators({}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

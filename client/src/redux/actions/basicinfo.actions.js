@@ -20,7 +20,8 @@ export function getuserdetails () {
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
   }
-};
+}
+
 export function setBrowserVersion (data) {
   return {
     type: ActionTypes.LOAD_BROWSER_VERSION,

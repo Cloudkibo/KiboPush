@@ -6,24 +6,27 @@ import React from 'react'
 import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
+
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.getlink = this.getlink.bind(this)
-    this.state = {fblink: `https://m.me/${props.location.state.pageId}`, copied: false}
+    this.state = {
+      fblink: `https://m.me/${props.location.state.pageId}`,
+      copied: false
+    }
   }
 
   getlink () {
-    var linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' + this.props.location.state.pageName + '-' + this.props.location.state.pageId + '%2F&amp;src=sdkpreparse'
+    let linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' +
+      this.props.location.state.pageName + '-' +
+      this.props.location.state.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -55,26 +58,34 @@ class InviteSubscribers extends React.Component {
 
             <div className='ui-block'>
               <div className='news-feed-form'>
-                <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12' >
-                 Build your audience by sharing a page link on your timeline. This will let your friends know about your facebook page.
-                 <br />
-                  <a className='btn btn-blue' target='_blank' href={this.getlink()}><i className='fa fa-facebook' style={{marginRight: '10px'}} /><span>Share Page</span></a>
+                <div
+                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  Build your audience by sharing a page link on your timeline.
+                  This will let your friends know about your facebook page.
+                  <br />
+                  <a className='btn btn-blue' target='_blank'
+                    href={this.getlink()}><i className='fa fa-facebook'
+                      style={{marginRight: '10px'}} /><span>Share Page</span></a>
                   <hr />
                   This is a link to your page, you can send it to your friends
                   <br />
 
                   <input value={this.state.fblink} />
 
-                  <CopyToClipboard text={this.state.fblink} onCopy={() => this.setState({copied: true})}>
-                    <button onClick={() => { this.setState({copied: true}) }} className='uk-button uk-button-small uk-button-primary' style={{margin: 5}}>Copy</button>
+                  <CopyToClipboard text={this.state.fblink}
+                    onCopy={() => this.setState({copied: true})}>
+                    <button onClick={() => { this.setState({copied: true}) }}
+                      className='uk-button uk-button-small uk-button-primary'
+                      style={{margin: 5}}>Copy
+                    </button>
                   </CopyToClipboard>
                   {this.state.copied &&
                   <center>
                     <Alert type='success'>
-                        Copied!
-                      </Alert>
+                      Copied!
+                    </Alert>
                   </center>
-                }
+                  }
                 </div>
 
               </div>

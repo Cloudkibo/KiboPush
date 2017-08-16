@@ -5,11 +5,14 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import { loadOtherPagesList, enablePage, addPages } from '../../redux/actions/pages.actions'
+import {
+  addPages,
+  enablePage,
+  loadOtherPagesList
+} from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 
 class AddPage extends React.Component {
@@ -17,6 +20,7 @@ class AddPage extends React.Component {
     super(props)
     this.state = {counter: 0}
   }
+
   componentWillMount () {
     this.props.addPages()
   }
@@ -36,12 +40,14 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.otherPages && nextprops.otherPages.length <= 0 && this.state.counter < 2) {
+    if (nextprops.otherPages && nextprops.otherPages.length <= 0 &&
+      this.state.counter < 2) {
       console.log('calling addPages')
       this.props.addPages()
-      this.setState({counter: this.state.counter + 1 })
+      this.setState({counter: this.state.counter + 1})
     }
   }
+
   render () {
     return (
       <div>
@@ -52,24 +58,28 @@ class AddPage extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <main className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
+            <main
+              className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
               <h3>Add Pages</h3>
               {
-        (this.props.otherPages) &&
-         this.props.otherPages.map((page, i) => (
-           <div className='ui-block'>
-             <div className='birthday-item inline-items'>
+                (this.props.otherPages) &&
+                this.props.otherPages.map((page, i) => (
+                  <div className='ui-block'>
+                    <div className='birthday-item inline-items'>
 
-               <div className='birthday-author-name'>
-                 <a href='#' className='h6 author-name'>{page.pageName} </a>
+                      <div className='birthday-author-name'>
+                        <a href='#'
+                          className='h6 author-name'>{page.pageName} </a>
 
-               </div>
-               <button onClick={() => this.props.enablePage(page)} className='btn btn-sm bg-blue'>Connect</button>
+                      </div>
+                      <button onClick={() => this.props.enablePage(page)}
+                        className='btn btn-sm bg-blue'>Connect
+                      </button>
 
-             </div>
-           </div>
-        ))
-      }
+                    </div>
+                  </div>
+                ))
+              }
 
             </main>
 
@@ -89,6 +99,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadOtherPagesList: loadOtherPagesList, enablePage: enablePage, addPages: addPages}, dispatch)
+  return bindActionCreators({
+    loadOtherPagesList: loadOtherPagesList,
+    enablePage: enablePage,
+    addPages: addPages
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddPage)

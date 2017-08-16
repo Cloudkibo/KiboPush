@@ -5,17 +5,22 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {createsurvey} from '../../redux/actions/surveys.actions'
+import { createsurvey } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
-import { AlertList, Alert, AlertContainer } from 'react-bs-notifier'
+import { Alert } from 'react-bs-notifier'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {questionType: 'multichoice', surveyQuestions: [], showAlert: false, alertmsg: '', timeout: 2000}
+    this.state = {
+      questionType: 'multichoice',
+      surveyQuestions: [],
+      showAlert: false,
+      alertmsg: '',
+      timeout: 2000
+    }
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
     // statement : //value of question
@@ -38,6 +43,7 @@ class AddSurvey extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
+
   componentWillReceiveProps (nextprops) {
     if (nextprops.createwarning) {
       console.log('i am called')
@@ -47,27 +53,33 @@ class AddSurvey extends React.Component {
       })
     }
   }
+
   createSurvey (e) {
     e.preventDefault()
     let flag = 0
-    if (this.state.surveyQuestions.length == 0) {
-      this.setState({showAlert: true, alertmsg: 'A survey form requires atleast one question'})
+    if (this.state.surveyQuestions.length === 0) {
+      this.setState({
+        showAlert: true,
+        alertmsg: 'A survey form requires atleast one question'
+      })
     } else {
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
-          for (let k = 0; k < this.state.surveyQuestions[j].options.length; k++) {
-            if (this.state.surveyQuestions[j].options[k] == '') {
+          for (let k = 0; k <
+          this.state.surveyQuestions[j].options.length; k++) {
+            if (this.state.surveyQuestions[j].options[k] === '') {
               flag = 1
               console.log('empty')
               break
             }
           }
         }
-        if (flag == 1) {
+        if (flag === 1) {
           break
         }
       }
-      if (flag == 0 && this.refs.title.value != '' && this.refs.description.value != '') {
+      if (flag === 0 && this.refs.title.value !== '' &&
+        this.refs.description.value !== '') {
         var surveybody = {
           survey: {
             title: this.refs.title.value, // title of survey
@@ -78,21 +90,28 @@ class AddSurvey extends React.Component {
         }
         this.props.createsurvey(surveybody)
       } else {
-     // alert('Please fill all the fields.')
-        this.setState({showAlert: true, alertmsg: 'Please fill all the fields.'})
+        // alert('Please fill all the fields.')
+        this.setState(
+          {showAlert: true, alertmsg: 'Please fill all the fields.'})
       }
     }
   }
+
   addClick () {
     let surveyQuestions = this.state.surveyQuestions
     let choiceCount = 0
     let choiceValues = []
-    if (this.state.questionType == 'multichoice') {
+    if (this.state.questionType === 'multichoice') {
       choiceCount = 3 // by default no. of options will be 3
       choiceValues = ['', '', '']
     }
 
-    surveyQuestions.push({'statement': '', 'type': this.state.questionType, 'choiceCount': choiceCount, 'options': choiceValues})
+    surveyQuestions.push({
+      'statement': '',
+      'type': this.state.questionType,
+      'choiceCount': choiceCount,
+      'options': choiceValues
+    })
     this.setState({surveyQuestions: surveyQuestions})
     console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
@@ -104,7 +123,8 @@ class AddSurvey extends React.Component {
   addChoices (qindex) {
     let surveyQuestions = this.state.surveyQuestions.slice()
     let choices = surveyQuestions[qindex].options.slice()
-    surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount + 1
+    surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount +
+      1
     choices.push('')
     surveyQuestions[qindex].options = choices
     if (surveyQuestions[qindex].choiceCount >= 2) {
@@ -112,15 +132,20 @@ class AddSurvey extends React.Component {
     }
     this.setState({surveyQuestions})
   }
+
   onDismissAlert () {
     this.setState({showAlert: false, alertmsg: ''})
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log('removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
+    console.log(
+      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
-    if (surveyQuestions[qindex].choiceCount == 2) {
-      this.setState({showAlert: true, alertmsg: 'Atleast 2 options are required for each question'})
+    if (surveyQuestions[qindex].choiceCount === 2) {
+      this.setState({
+        showAlert: true,
+        alertmsg: 'Atleast 2 options are required for each question'
+      })
     } else {
       let choices = surveyQuestions[qindex].options.slice()
       console.log('choices before')
@@ -128,14 +153,19 @@ class AddSurvey extends React.Component {
       choices.splice(choiceIndex, 1)
       console.log('choices after')
       console.log(choices)
-      surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount - 1
+      surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
+        1
       surveyQuestions[qindex].options = choices
       this.setState({surveyQuestions: surveyQuestions})
     }
   }
+
   removeClick (i) {
     if (this.state.surveyQuestions.length >= 1) {
-      this.setState({showAlert: true, alertmsg: 'A survey form requires atleast one question'})
+      this.setState({
+        showAlert: true,
+        alertmsg: 'A survey form requires atleast one question'
+      })
     } else {
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
@@ -145,6 +175,7 @@ class AddSurvey extends React.Component {
       })
     }
   }
+
   handleChange (i, event) {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
@@ -165,11 +196,11 @@ class AddSurvey extends React.Component {
   }
 
   /* handleQuestionType (e) {
-        this.setState({
-        'questionType': e.target.value
+   this.setState({
+   'questionType': e.target.value
 
-      })
-    } */
+   })
+   } */
 
   createOptionsList (qindex) {
     console.log('qindex' + qindex)
@@ -179,22 +210,25 @@ class AddSurvey extends React.Component {
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group'>
-          <input type='text' placeholder={'Choice' + (j + 1)} className='form-control input-sm' onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
+          <input type='text' placeholder={'Choice' + (j + 1)}
+            className='form-control input-sm'
+            onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
-            <button className='btn btn-secondary' type='button' onClick={this.removeChoices.bind(this, j, qindex)}>
+            <button className='btn btn-secondary' type='button'
+              onClick={this.removeChoices.bind(this, j, qindex)}>
               <span className='fa fa-times' />
             </button>
           </span>
         </div>
-
-          )
+      )
     }
     return choiceItems || null
   }
+
   createUI () {
     let uiItems = []
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
-      if (this.state.surveyQuestions[i].type == 'text') {
+      if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <br />
@@ -202,21 +236,23 @@ class AddSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {i} </strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove' onClick={this.removeClick.bind(this, i)}>
+                  <a className='remove'
+                    onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
                 </div>
               </div>
               <div className='panel-body'>
                 <div className='form-group'>
-                  <input className='form-control' placeholder='Enter question here...' onChange={this.handleChange.bind(this, i)} />
+                  <input className='form-control'
+                    placeholder='Enter question here...'
+                    onChange={this.handleChange.bind(this, i)} />
                 </div>
               </div>
             </div>
 
           </div>
-
-            )
+        )
       } else {
         uiItems.push(
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
@@ -225,21 +261,24 @@ class AddSurvey extends React.Component {
               <div className='panel-heading clearfix'>
                 <strong className='panel-title'>Edit Question {i}</strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
-                  <a className='remove' onClick={this.removeClick.bind(this, i)}>
+                  <a className='remove'
+                    onClick={this.removeClick.bind(this, i)}>
                     <span className='fa fa-times' />
                   </a>
                 </div>
               </div>
               <div className='panel-body'>
                 <div className='form-group'>
-                  <input className='form-control' placeholder='Enter question here...' onChange={this.handleChange.bind(this, i)} />
+                  <input className='form-control'
+                    placeholder='Enter question here...'
+                    onChange={this.handleChange.bind(this, i)} />
                 </div>
 
                 <div className='form-group field field-array'>
                   <fieldset className='col-md-6 scheduler-border'>
                     <legend className='scheduler-border'>
-                    Choices
-                  </legend>
+                      Choices
+                    </legend>
                     <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                       <div className='col-xs-10'>
                         <div className='form-group field field-string'>
@@ -247,7 +286,10 @@ class AddSurvey extends React.Component {
                         </div>
                       </div>
                       <div className='col-sm-6 col-md-4'>
-                        <button className='btn btn-secondary btn-sm' onClick={this.addChoices.bind(this, i)}> Add Choices</button>
+                        <button className='btn btn-secondary btn-sm'
+                          onClick={this.addChoices.bind(this, i)}> Add
+                          Choices
+                        </button>
                       </div>
                     </div>
                   </fieldset>
@@ -256,8 +298,7 @@ class AddSurvey extends React.Component {
               </div>
             </div>
           </div>
-
-            )
+        )
       }
     }
     return uiItems || null
@@ -282,19 +323,23 @@ class AddSurvey extends React.Component {
               <div className='news-feed-form'>
 
                 <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel' aria-expanded='true'>
+                  <div className='tab-pane active' id='home-1' role='tabpanel'
+                    aria-expanded='true'>
 
                     <div className='col-xl-12'>
                       <div className='form-group'>
                         <label className='control-label'>Title</label>
-                        <input className='form-control' placeholder='Enter form title here' ref='title' />
+                        <input className='form-control'
+                          placeholder='Enter form title here' ref='title' />
                       </div>
                     </div>
                     <br />
                     <div className='col-xl-12'>
                       <div className='form-group'>
                         <label className='control-label'>Description</label>
-                        <textarea className='form-control' placeholder='Enter form description here' rows='3' ref='description' />
+                        <textarea className='form-control'
+                          placeholder='Enter form description here'
+                          rows='3' ref='description' />
                       </div>
                     </div>
                     <br />
@@ -303,32 +348,40 @@ class AddSurvey extends React.Component {
                       {this.createUI()}
                     </div>
                     {/*
-                        <div className='col-xl-12'>
+                     <div className='col-xl-12'>
 
-                      <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
-                      <div className='col-sm-6 col-md-4'>
-                        <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
-                          <option value='text'>Text</option>
-                          <option value='multichoice'>Multi Choice Question</option>
+                     <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
+                     <div className='col-sm-6 col-md-4'>
+                     <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
+                     <option value='text'>Text</option>
+                     <option value='multichoice'>Multi Choice Question</option>
 
-                        </select>
-                        <br />
-                        </div>
+                     </select>
+                     <br />
+                     </div>
 
-                    </div>
-                    */}
+                     </div>
+                     */}
 
                     <div className='col-sm-6 col-md-4'>
-                      <button className='btn btn-secondary btn-sm' onClick={this.addClick.bind(this)}> Add Questions</button>
+                      <button className='btn btn-secondary btn-sm'
+                        onClick={this.addClick.bind(this)}> Add Questions
+                      </button>
                     </div>
                     <div className='add-options-message'>
 
-                      <button className='btn btn-secondary' onClick={this.createSurvey}> Create Survey</button>
-                      <button className='btn btn-border-think btn-transparent c-grey'>Cancel</button>
+                      <button className='btn btn-secondary'
+                        onClick={this.createSurvey}> Create Survey
+                      </button>
+                      <button
+                        className='btn btn-border-think btn-transparent c-grey'>
+                        Cancel
+                      </button>
                     </div>
-                    {this.state.showAlert == true &&
+                    {this.state.showAlert === true &&
                     <center>
-                      <Alert type='danger' timeout={this.state.timeout} onDismiss={this.onDismissAlert.bind(this)}>
+                      <Alert type='danger' timeout={this.state.timeout}
+                        onDismiss={this.onDismissAlert.bind(this)}>
                         {this.state.alertmsg}
                       </Alert>
                     </center>

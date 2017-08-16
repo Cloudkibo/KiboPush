@@ -11,10 +11,6 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./user.controller')
 
-const logger = require('../../components/logger')
-
-const TAG = 'api/user/index.js'
-
 router.get('/', auth.isAuthenticated(), controller.index)
 
 router.get('/logout', controller.logout)

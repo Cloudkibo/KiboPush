@@ -1,40 +1,45 @@
+/* eslint-disable no-undef */
 /**
  * Created by sojharo on 20/07/2017.
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Dashboard from '../dashboard/dashboard'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import {getsurveyform, submitsurvey} from '../../redux/actions/surveys.actions'
+import {
+  getsurveyform,
+  submitsurvey
+} from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
-var handleDate = function (d) {
-  var c = new Date(d)
-  return c.toDateString()
-}
+
+// var handleDate = function (d) {
+//   var c = new Date(d)
+//   return c.toDateString()
+// }
 
 class ViewSurvey extends React.Component {
   constructor (props, context) {
-    super(props, context);
-    props.getsurveyform(props.params.id);
-   		this.submitSurvey = this.submitSurvey.bind(this)
-  }
-  submitSurvey (e) {
-  	e.preventDefault()
-  	var responses = []
-  	for (var j = 0; j < this.props.questions.length; j++) {
-  		responses.push({qid: this.props.questions[j]._id, response: this.refs[this.props.questions[j]._id].value})
-  	}
-  	console.log('submited responses')
-  	console.log(responses)
-    this.props.submitsurvey({'responses': responses, surveyId: this.props.params.id, subscriberId: this.props.params.subscriberid})
+    super(props, context)
+    props.getsurveyform(props.params.id)
+    this.submitSurvey = this.submitSurvey.bind(this)
   }
 
- 
+  submitSurvey (e) {
+    e.preventDefault()
+    var responses = []
+    for (var j = 0; j < this.props.questions.length; j++) {
+      responses.push({
+        qid: this.props.questions[j]._id,
+        response: this.refs[this.props.questions[j]._id].value
+      })
+    }
+    console.log('submited responses')
+    console.log(responses)
+    this.props.submitsurvey({
+      'responses': responses,
+      surveyId: this.props.params.id,
+      subscriberId: this.props.params.subscriberid
+    })
+  }
 
   componentDidMount () {
     alert('componentDidMount called in ViewSurvey')
@@ -50,6 +55,7 @@ class ViewSurvey extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
+
   gotoresp () {
     this.props.history.push({
       pathname: `/submitsurveyresponse`,
@@ -58,7 +64,8 @@ class ViewSurvey extends React.Component {
   }
 
   render () {
-    { this.props.response &&
+    {
+      this.props.response &&
       this.gotoresp()
     }
     return (
@@ -72,32 +79,40 @@ class ViewSurvey extends React.Component {
             <div className='ui-block'>
               <div className='ui-block-content'>
                 <div className='row'>
-                  <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div
+                    className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                     {this.props.questions.map((question, i) => (
-                  	question.type == 'text'
-                    ? <div className='form-group'>
-                      <label >Q. {question.statement}</label>
-                      <input className='form-control' type='text' placeholder ref={question._id} />
+                      question.type === 'text'
+                        ? <div className='form-group'>
+                          <label >Q. {question.statement}</label>
+                          <input className='form-control' type='text' placeholder
+                            ref={question._id} />
 
-                    </div>
-                    : <div className='form-group'>
-                      <label for='sel1'>Q. {question.statement}</label>
-                      <select className='form-control' id='sel1' ref={question._id}>
-                        {question.options.map((option, i) => (
-                          <option>{option}</option>
-					    ))
-					}
+                        </div>
+                        : <div className='form-group'>
+                          <label for='sel1'>Q. {question.statement}</label>
+                          <select className='form-control' id='sel1'
+                            ref={question._id}>
+                            {question.options.map((option, i) => (
+                              <option>{option}</option>
+                          ))
+                          }
 
-                      </select>
-                    </div>
+                          </select>
+                        </div>
 
                     ))
-              	 }
+                    }
 
                     <div className='add-options-message'>
 
-                      <button className='btn btn-secondary' onClick={this.submitSurvey}> Submit</button>
-                      <button className='btn btn-border-think btn-transparent c-grey'>Cancel</button>
+                      <button className='btn btn-secondary'
+                        onClick={this.submitSurvey}> Submit
+                      </button>
+                      <button
+                        className='btn btn-border-think btn-transparent c-grey'>
+                        Cancel
+                      </button>
                     </div>
 
                   </div>
@@ -107,7 +122,7 @@ class ViewSurvey extends React.Component {
             </div>
 
           </div>
-      }
+          }
         </div>
       </div>
     )
@@ -124,6 +139,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({getsurveyform: getsurveyform, submitsurvey: submitsurvey}, dispatch)
+  return bindActionCreators(
+    {getsurveyform: getsurveyform, submitsurvey: submitsurvey}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewSurvey)

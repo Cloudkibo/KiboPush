@@ -1,9 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  workflows: []
-
-}
+// const initialState = {
+//   workflows: []
+// }
 
 export function workflowsInfo (state = {}, action) {
   switch (action.type) {

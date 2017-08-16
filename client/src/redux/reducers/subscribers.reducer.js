@@ -2,7 +2,6 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   subscribers: []
-
 }
 
 export function subscribersInfo (state = initialState, action) {

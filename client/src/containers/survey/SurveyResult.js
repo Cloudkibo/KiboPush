@@ -9,7 +9,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import {loadsurveyresponses} from '../../redux/actions/surveys.actions'
+import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 
 class SurveyResult extends React.Component {
@@ -27,9 +27,10 @@ class SurveyResult extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
+
   componentDidMount () {
-    console.log("Survey ID: ", this.props.location.state);
-    this.props.loadsurveyresponses(this.props.location.state);
+    console.log('Survey ID: ', this.props.location.state)
+    this.props.loadsurveyresponses(this.props.location.state)
   }
 
   render () {
@@ -48,12 +49,13 @@ class SurveyResult extends React.Component {
               <div className='row'>
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>
-                    <h5 className='presentation-margin'>Title : {this.props.survey.title}</h5>
+                    <h5 className='presentation-margin'>Title
+                      : {this.props.survey.title}</h5>
                     <p>{this.props.survey.description}</p>
                   </div>
                 </div>
               </div>
-                }
+              }
 
               <div className='row'>
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
@@ -64,19 +66,22 @@ class SurveyResult extends React.Component {
                     <div className='ui-block-content'>
                       <ul className='list-group'>
                         {
-                            this.props.questions && this.props.questions.map((c) => (
-                              <div className='card'>
-                                <li
-                                  className='list-group-item'
-                                  style={{ cursor: 'pointer' }}
-                                  key={c._id}
+                          this.props.questions &&
+                          this.props.questions.map((c) => (
+                            <div className='card'>
+                              <li
+                                className='list-group-item'
+                                style={{cursor: 'pointer'}}
+                                key={c._id}
                               >
-                                  <strong>Q. {c.statement}</strong>
-                                </li>
-                                <Response responses={this.props.responses.filter((d) => d.questionId._id == c._id)} question={c} />
-                              </div>
-                            ))
-                          }
+                                <strong>Q. {c.statement}</strong>
+                              </li>
+                              <Response responses={this.props.responses.filter(
+                                (d) => d.questionId._id === c._id)}
+                                question={c} />
+                            </div>
+                          ))
+                        }
                       </ul>
                     </div>
                   </div>
@@ -92,7 +97,7 @@ class SurveyResult extends React.Component {
 
 function mapStateToProps (state) {
   console.log(state)
-  const { responses, survey, questions } = state.surveysInfo
+  const {responses, survey, questions} = state.surveysInfo
   return {
     responses, survey, questions
   }
