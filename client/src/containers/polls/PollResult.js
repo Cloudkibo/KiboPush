@@ -34,8 +34,8 @@ class PollResult extends React.Component {
     addScript.setAttribute('src', '../../../js/Chart.min.js')
     document.body.appendChild(addScript)
 
-    console.log(this.props.params.id)
-    this.props.getpollresults(this.props.params.id)
+    console.log(this.props.location.state)
+    this.props.getpollresults(this.props.location.state)
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.responses) {
