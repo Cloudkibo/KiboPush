@@ -16,36 +16,39 @@ import {formatAMPM, handleDate} from '../../utility/utils'
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsList()
+    if (!props.broadcasts) {
+      alert('calling')
+      props.loadBroadcastsList()
+    }
     this.sendBroadcast = this.sendBroadcast.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
-			// this.setState({broadcasts: nextProps.broadcasts});
+      // this.setState({broadcasts: nextProps.broadcasts});
     }
   }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+  }
 
   gotoEdit (broadcast) {
-		 this.props.history.push({
-   pathname: `/editbroadcast`,
-   state: broadcast._id,
- })
+    this.props.history.push({
+      pathname: `/editbroadcast`,
+      state: broadcast._id
+    })
   }
 
   sendBroadcast (broadcast) {
@@ -82,19 +85,19 @@ class Broadcast extends React.Component {
                       </thead>
                       <tbody>
                         {
-								this.props.broadcasts.map((broadcast, i) => (
-  <tr>
-    <td>{broadcast.platform}</td>
-    <td>{broadcast.type}</td>
-    <td>{handleDate(broadcast.datetime)}</td>
-    <td>{broadcast.text}</td>
-    <td>
-      <button className='btn btn-primary btn-sm' onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
-      <button onClick={() => this.sendBroadcast(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Send</button>
-    </td>
-  </tr>
-								))
-							}
+                this.props.broadcasts && this.props.broadcasts.map((broadcast, i) => (
+                  <tr>
+                    <td>{broadcast.platform}</td>
+                    <td>{broadcast.type}</td>
+                    <td>{handleDate(broadcast.datetime)}</td>
+                    <td>{broadcast.text}</td>
+                    <td>
+                      <button className='btn btn-primary btn-sm' onClick={() => this.gotoEdit(broadcast)} style={{float: 'left', margin: 2}}>Edit</button>
+                      <button onClick={() => this.sendBroadcast(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Send</button>
+                    </td>
+                  </tr>
+                ))
+              }
 
                       </tbody>
                     </table>

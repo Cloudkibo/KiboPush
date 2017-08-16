@@ -5,7 +5,7 @@ const initialState = {
 
 }
 
-export function pollsInfo (state = initialState, action) {
+export function pollsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FETCH_POLLS_LIST:
       return Object.assign({}, state, {
