@@ -15,7 +15,10 @@ import { bindActionCreators } from 'redux'
 
 class Workflows extends React.Component {
   componentWillMount () {
-    this.props.loadWorkFlowList()
+    if (!this.props.workflows) {
+    //  alert('calling workflows')
+      this.props.loadWorkFlowList()
+    }
   }
 
   componentDidMount () {
@@ -65,23 +68,23 @@ class Workflows extends React.Component {
                       <tbody>
                         {
 
-								(this.props.workflows)
-								? this.props.workflows.map((workflow, i) => (
-  <tr>
+                (this.props.workflows)
+                ? this.props.workflows.map((workflow, i) => (
+                  <tr>
 
-    <td>{workflow.condition}</td>
-    <td>{workflow.keywords.join(',')}</td>
-    <td>{workflow.reply}</td>
-    <td>{workflow.isActive ? 'Yes' : 'No'}</td>
-    <td>{workflow.sent}</td>
-    <td>
-      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Edit</button>
-      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Disable</button>
-    </td>
-  </tr>
+                    <td>{workflow.condition}</td>
+                    <td>{workflow.keywords.join(',')}</td>
+                    <td>{workflow.reply}</td>
+                    <td>{workflow.isActive ? 'Yes' : 'No'}</td>
+                    <td>{workflow.sent}</td>
+                    <td>
+                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Edit</button>
+                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>Disable</button>
+                    </td>
+                  </tr>
 
-								)) : <br />
-							}
+                )) : <br />
+              }
 
                       </tbody>
                     </table>

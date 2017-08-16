@@ -23,36 +23,39 @@ class Poll extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls) {
       console.log('Polls Updated', nextProps.polls)
-			// this.setState({broadcasts: nextProps.broadcasts});
+      // this.setState({broadcasts: nextProps.broadcasts});
     }
   }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
-   this.props.loadPollsList()
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+    if (!this.props.polls) {
+    //  alert('calling')
+      this.props.loadPollsList()
+    }
+  }
 
   gotoEdit (broadcast) {
-		 this.props.history.push({
-   pathname: '/editbroadcast',
-   state: broadcast
- })
+    this.props.history.push({
+      pathname: '/editbroadcast',
+      state: broadcast
+    })
   }
   gotoView (poll) {
- this.props.history.push({
-   pathname: `/pollResult`,
-   state: poll._id,
- })
+    this.props.history.push({
+      pathname: `/pollResult`,
+      state: poll._id
+    })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
   render () {
@@ -85,19 +88,19 @@ class Poll extends React.Component {
                       </thead>
                       <tbody>
                         { (this.props.polls)
-								? this.props.polls.map((poll, i) => (
-  <tr>
-    <td>{poll.platform}</td>
-    <td>{poll.statement}</td>
-    <td>{handleDate(poll.datetime)}</td>
-    <td>{poll.sent}</td>
-    <td>
-      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.props.sendpoll(poll)}>Send</button>
-      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.gotoView(poll)}>Report</button>
-    </td>
-  </tr>
-								)) : <br />
-							}
+                ? this.props.polls.map((poll, i) => (
+                  <tr>
+                    <td>{poll.platform}</td>
+                    <td>{poll.statement}</td>
+                    <td>{handleDate(poll.datetime)}</td>
+                    <td>{poll.sent}</td>
+                    <td>
+                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.props.sendpoll(poll)}>Send</button>
+                      <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.gotoView(poll)}>Report</button>
+                    </td>
+                  </tr>
+                )) : <br />
+              }
 
                       </tbody>
                     </table>
