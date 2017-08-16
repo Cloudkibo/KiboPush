@@ -20,33 +20,41 @@ class Page extends React.Component {
     this.removePage = this.removePage.bind(this)
   }
 
-	 componentWillMount () {
-	 	 this.props.getuserdetails()
-		 this.props.loadMyPagesList()
-	 }
+  componentWillMount () {
+    this.props.getuserdetails()
+    this.props.loadMyPagesList()
+  }
 
-	 componentDidMount () {
-   require('../../../public/js/jquery-3.2.0.min.js')
-   require('../../../public/js/jquery.min.js')
-   var addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/theme-plugins.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/material.min.js')
-   document.body.appendChild(addScript)
-   addScript = document.createElement('script')
-   addScript.setAttribute('src', '../../../js/main.js')
-   document.body.appendChild(addScript)
- }
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+  }
 
-	// addPages(fbId){
-	// 	this.props.addPages(fbId);
-	// 	// this.props.history
-	// }
+  // addPages(fbId){
+  //  this.props.addPages(fbId);
+  //  // this.props.history
+  // }
 
   removePage (page) {
     console.log('This is the page', page)
     this.props.removePage(page)
+  }
+  inviteSubscribers (page) {
+    console.log('invite Subscribers')
+    this.props.history.push({
+      pathname: '/invitesubscribers/',
+      state: {pageName: page.pageName, pageId: page.pageId}
+
+    })
   }
 
   render () {
@@ -79,18 +87,22 @@ class Page extends React.Component {
                       <tbody>
 
                         { (this.props.pages)
-								? this.props.pages.map((page, i) => (
-  <tr>
-    <td>{page.pagePic}</td>
-    <td>{page.pageName}</td>
-    <td>{page.likes}</td>
-    <td>{page.numberOfFollowers}</td>
-    <td><button onClick={() => this.removePage(page)} className='btn btn-primary btn-sm' style={{float: 'left'}}>Remove</button></td>
-  </tr>
+                ? this.props.pages.map((page, i) => (
+                  <tr>
+                    <td>{page.pagePic}</td>
+                    <td>{page.pageName}</td>
+                    <td>{page.likes}</td>
+                    <td>{page.numberOfFollowers}</td>
+                    <td>
+                      <button onClick={() => this.removePage(page)} className='btn btn-primary btn-sm' style={{float: 'left'}}>Remove</button>
+                      <button onClick={() => this.inviteSubscribers(page)} className='btn btn-primary btn-sm' style={{float: 'left'}}>Invite Subscribers</button>
+                    </td>
 
-								)) : <tr />
+                  </tr>
 
-							}
+                )) : <tr />
+
+              }
 
                       </tbody>
                     </table>

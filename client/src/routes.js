@@ -8,6 +8,7 @@ import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
 import Page from './containers/page/page'
 import AddPage from './containers/page/addPage'
+import InviteSubscribers from './containers/page/InviteSubscribers'
 import CreateBroadcast from './containers/broadcast/CreateBroadcast'
 import Surveys from './containers/survey/surveys'
 import ViewSurvey from './containers/survey/ViewSurvey'
@@ -96,6 +97,7 @@ const routes = (
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
+    <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
   </Route>
 
 )
