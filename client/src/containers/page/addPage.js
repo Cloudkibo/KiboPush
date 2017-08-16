@@ -31,6 +31,12 @@ class AddPage extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.otherPages && nextprops.otherPages.length <= 0) {
+      console.log('calling addPages')
+      this.props.addPages()
+    }
+  }
   render () {
     return (
       <div>
