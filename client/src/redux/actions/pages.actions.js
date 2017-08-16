@@ -7,7 +7,7 @@ import auth from '../../utility/auth.service'
 
 export function updatePagesList (data) {
   console.log('My Pages', data)
-  var data = [{
+  /* var data = [{
     '_id': '598c1afb8936443ddaea5f54',
     'pageId': '272774036462658',
     'pageName': 'Cafe',
@@ -24,7 +24,7 @@ export function updatePagesList (data) {
     'userId': '598c1ae28936443ddaea5f53',
     'connected': true,
     '__v': 0
-  }]
+  }] */
   return {
 
     type: ActionTypes.LOAD_PAGES_LIST,
