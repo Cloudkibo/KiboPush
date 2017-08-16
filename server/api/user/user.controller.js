@@ -17,6 +17,7 @@ exports.index = function (req, res) {
   })
 }
 
+// TODO discuss who did this
 exports.logout = function (req, res) {
   req.logout()
 

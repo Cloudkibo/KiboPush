@@ -1,0 +1,491 @@
+---
+swagger: '2.0'
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  version: v1
+  title: KiboPush API
+  description: |
+    Welcome to the KiboPush API documentation! Our API provides flexible tools that can be used in the creation of new, outstanding projects.
+    Please note that this documentation refers to the API 1.0 version. API 2.0 version is currently under construction and will be released soon.
+
+    Build something great!
+
+    ## Basic Usage
+    All KiboPush API requests start with `https://app.kibopush.com/api/`
+
+    The next segment of the URI path depends on the type of request. For example:
+
+    `https://app.kibopush.com/api/users/`
+
+    to get information of logged in user.
+
+    ## Authentication
+    Each client will be given Authorization token which should be added to header of each http request. Almost all the routes are authenticated therefore token is required.
+
+    In the next version of the API, we would automate the generation of this token for client applications. For now, this authorization token can be obtained from us on request. This token will expire within 4 days.
+
+    ## Error Handling
+    Errors are returned using standard HTTP error code syntax. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error (bad or missing parameters, not authenticated etc.), and codes in the 5xx range indicate an error with KiboPush’s servers. Any additional info is included in the body of the return call, JSON-formatted.
+
+  termsOfService: http://www.kibopush.com/privacy-policy
+
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
+host: app.kibopush.com
+basePath: /api
+schemes:
+  - https
+produces:
+  - application/json
+consumes:
+  - application/json
+
+################################################################################
+#                                  Security                                    #
+################################################################################
+securityDefinitions:
+  internalApiKey:
+    type: apiKey
+    in: header
+    name: Authorization
+################################################################################
+#                                           Paths                              #
+################################################################################
+paths:
+
+  /visitorcalls/createsession/:
+    post:
+      description: Create a new customer support session
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: customerID
+          in: formData
+          description: The unique id of the customer
+          type: string
+          required: true
+        - name: customerName
+          in: formData
+          description: The name of the customer
+          type: string
+          required: true
+        - name: email
+          in: formData
+          description: The email address of the customer
+          type: string
+          required: true
+        - name: country
+          in: formData
+          description: The country of the customer
+          type: string
+          required: true
+        - name: phone
+          in: formData
+          description: The phone number of the customer
+          type: string
+          required: true
+        - name: isMobile
+          in: formData
+          description: possible value, 'false' for web client and 'true' for mobile client
+          type: string
+          required: true
+        - name: messagechannel
+          in: formData
+          description: The message channel (sub group) where support is required
+          type: string
+          required: true
+        - name: session_id
+          in: formData
+          description: Unique id of the new session
+          type: string
+          required: true
+        - name: departmentid
+          in: formData
+          description: The unique id of the department (group) where support is required
+          type: string
+          required: true
+        - name: currentPage
+          in: formData
+          description: The title of the web page from where client wants to start support call (i.e. where web widget is installed)
+          type: string
+          required: true
+        - name: requesttime
+          in: formData
+          description: The time when support call session is created
+          type: string
+          required: true
+        - name: ipAddress
+          in: formData
+          description: The IP Address of client
+          type: string
+          required: true
+        - name: companyid
+          in: formData
+          description: The unique id of the company of which the widget is used by client to do support call
+          type: string
+          required: true
+        - name: socketid
+          in: formData
+          description: The socket.io unique id given to web widget
+          type: string
+          required: true
+        - name: platform
+          in: formData
+          description: Shows if the visitor is on mobile application widget or web widget. Possible values are "web", and "mobile"
+          type: string
+          required: true
+        - name: device
+          in: formData
+          description: Shows which mobile device it is, possible values are "android", "ios"
+          type: string
+          required: true
+        - name: device_version
+          in: formData
+          description: Shows version of mobile device OS
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  User:
+    description: Basic user information is stored here.
+    type: object
+    properties:
+      _id:
+        type: string
+        description: Primary key or unique id given to each record
+      name:
+        type: string
+        description: Full name of the user
+      email:
+        type: string
+        description: This is optional. As authentication is done through Facebook, some users may not share their email address.
+      locale:
+        type: string
+        description: Currently, we just store this value. Later, we would use it to provide more local experience.
+      gender:
+        type: string
+        description: The values for this depends on what we get from Facebook.
+      provider:
+        type: string
+        description: Currently, we are only doing authentication with Facebook. Later, we will use other providers too. For now, default value for this is 'facebook'.
+      timezone:
+        type: string
+        description: We get this value from Facebook.
+      fbId:
+        type: string
+        description: This is the facebook id of the user who logged in with us.
+      profilePic:
+        type: string
+        description: We store the URL of the facebook profile picture of user here.
+      createdAt:
+        type: string
+        description: Date and time when this record was created.
+      updatedAt:
+        type: string
+        description: Date and time when this record was last updated.
+
+  Broadcast:
+    type: object
+    description: Broadcasts are the messages that we want to send to our facebook page audience. These can be platform specific. In v1, the platform value is 'facebook' only.
+    properties:
+      _id:
+        description: Primary key or unique id given to each record
+        type: string
+      platform:
+        type: string
+        description: Name of the platform used for sending broadcast. In v1, the platform value is 'facebook' only.
+      type:
+        type: string
+        description: This can be either text or attachment. In v1, we support text broadcasts only.
+      text:
+        type: string
+        description: The value of text.
+      userId:
+        type: string
+        description: User who sent this broadcast to his/her page audience.
+      datetime:
+        type: string
+        description: Date and time when this record was created.
+
+  Page_Broadcast:
+    type: object
+    description: This is broadcast and page association table. We would use this to know which broadcast was sent to audience of which page. We can send broadcasts to multiple pages.
+    properties:
+      pageId:
+        type: string
+        description: Primary key or unique id of the page.
+      userId:
+        type: string
+        description: Primary key or user id of the user.
+      broadcastId:
+        type: string
+        description: Primary key or unique id of the broadcast sent.
+      datetime:
+        type: string
+        description: Date and time when this record was created.
+
+  Page_Poll:
+    type: object
+    description: This is poll and page association table. We would use this to know which poll was sent to audience of which page. We can send polls to multiple pages.
+    properties:
+      pageId:
+        type: string
+        description: Primary key or unique id of the page.
+      userId:
+        type: string
+        description: Primary key or user id of the user.
+      pollId:
+        type: string
+        description: Primary key or unique id of the poll sent.
+      datetime:
+        type: string
+        description: Date and time when this record was created.
+
+  Page_Survey:
+    type: object
+    description: This is survey and page association table. We would use this to know which survey was sent to audience of which page. We can send survey to multiple pages.
+    properties:
+      pageId:
+        type: string
+        description: Primary key or unique id of the page.
+      userId:
+        type: string
+        description: Primary key or user id of the user.
+      surveyId:
+        type: string
+        description: Primary key or unique id of the survey sent.
+      datetime:
+        type: string
+        description: Date and time when this record was created.
+
+  Page:
+    type: object
+    description: Here we would store the pages of user which are either connected or not.
+    properties:
+      pageId:
+        type: string
+        description: Page id is the unique id of the facebook page provided to us by Facebook.
+      pageName:
+        type: string
+        description: This is the name of the page.
+      pagePic:
+        type: string
+        description: This is the display picture of the page.
+      numberOfFollowers:
+        type: string
+        description: How many followers are following the page currently.
+      likes:
+        type: string
+        description: How many likes a page has currently.
+      connected:
+        type: string
+        description: Has user connected this page with KiboPush or not. If not connected, then user can't send broadcasts to followers of this page.
+      userId:
+        type: string
+        description: The unique id of the user.
+
+  Poll:
+    type: object
+    description: This is the main table for polls that are created to send to page audience in messenger.
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+      platform:
+        type: string
+        description: Name of the platform used for sending broadcast. In v1, the platform value is ‘facebook’ only.
+      statement:
+        type: string
+        description: Full form for message (i.e. I don’t know)
+      options:
+        type: string
+        description: Unique id of the company
+      userId:
+        type: string
+        description: Complete profile of the user who created the shortcut
+      datetime:
+        type: string
+        description: Date of creation
+      sent:
+        type: integer
+        description: Number of times this poll is sent
+  BusinessHours:
+    type: object
+    description: Any company can set its business hours and widget will be activated only during those hours.
+    properties:
+      start_time:
+        type: string
+        description: Start time of business day
+      end_time:
+        type: string
+        description: End time of business day
+      saturday_off:
+        type: string
+        description: Is saturday off day for company
+      sunday_off:
+        type: string
+        description: Is sunday off day for company
+      companyid:
+        type: string
+        description: Unique id of the company
+  AgentInitiatedCalls:
+    type: object
+    description: These are the calls or support sessions with customers which were initiated by agents.
+    properties:
+      uniqueid:
+        type: string
+      agentname:
+        type: string
+      agentemail:
+        type: string
+      departmentid:
+        type: string
+      username:
+        type: string
+      useremail:
+        type: string
+      question:
+        type: string
+      currentPage:
+        type: string
+      fullurl:
+        type: string
+      phone:
+        type: string
+      browser:
+        type: string
+      ipAddress:
+        type: string
+      country:
+        type: string
+      room:
+        type: string
+      date:
+        type: string
+      request_id:
+        type: string
+  Customer:
+    type: object
+    description: The record of the customer who starts support call on either web widget or mobile widget
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      country:
+        type: string
+      phone:
+        type: string
+      companyid:
+        type: string
+      isMobileClient:
+        type: string
+      customerID:
+        type: string
+
+  VisitorCallsWithCustomer:
+    type: object
+    description: Use this end-point to get information about all the visitor calls started on a company’s website. Complete information of visitor calls is given, i.e. who picked the call, what was the time, when the call was ended etc.
+    properties:
+      _id:
+        description: Unique id of the visitor call
+        type: string
+      customerid:
+        $ref: '#/definitions/Customer'
+      username:
+        type: string
+        description: Name of the visitor
+      useremail:
+        type: string
+        description: Email address of the visitor
+      phone:
+        type: string
+        description: Phone number of the visitor
+      country:
+        type: string
+        description: Country of the visitor
+      question:
+        type: string
+        description: Question that visitor asked
+      currentPage:
+        type: string
+        description: Page title of your website on which visitor was before clicking Live Help button
+      departmentid:
+        type: string
+        description: Department / Group id in which visitor has question (i.e. Sales)
+      fullurl:
+        type: string
+        description: Full URL of the web page on which visitor was before clicking Live Help button
+        #properties:
+        #  count:
+        #    type: integer
+        #  data:
+        #    type: array
+        #    items:
+        #      $ref: '#/definitions/Comment'
+      browser:
+        type: string
+        description: Browser of the visitor
+      ipAddress:
+        type: string
+        description: IP address of the visitor
+      room:
+        type: string
+        description: This is the unique id of your company
+      agentname:
+        type: string
+        description: Name of the agent who picked the call
+      agentemail:
+        type: string
+        description: Email address of the agent who picked the call
+      status:
+        type: string
+        description: Current status of the visitor call. Possible values are “waiting”, “progress”, “abandoned” and “completed”
+      initiator:
+        type: string
+        description: Shows if the visitor was invited by agent or visitor came to call by pressing live button and filling the form on widget. Possible values are “visitor” and “agent”
+      requesttime:
+        type: string
+        format: date-time
+        description: Time on which visitor requested the call
+      picktime:
+        type: string
+        format: date-time
+        description: Time on which visitor’s call was picked by any agent
+      endtime:
+        type: string
+        format: date-time
+        description: Time on which call between visitor and agent was ended. Agent is responsible to close the call by pressing Complete Call on website.
+      request_id:
+        type: string
+        description: This is the unique id given to the visitor call. This id is used in userchat table to track which chat message belong to which visitor call
+      callsummary:
+        type: string
+        description: Agent can give the call summary at the end of each call
+      calldescription:
+        type: string
+        description: Agent can give the call detailed description to define the issue of visitor
+      callresolution:
+        type: string
+        description: Agent can give the resolution summary to define how the issue of visitor was resolved
+      webrtc_browser:
+        type: string
+        description: It shows if the visitor is on webrtc supported browser or not (WebRTC is technology used to do video/audio calls between two peers. KiboEngage leverages this technology)

@@ -18,7 +18,7 @@ const pageSchema = new Schema({
   likes: {
     type: Number
   },
-  accessToken: {
+  accessToken: { // todo we should not give access token out
     type: String
   },
   connected: { // TODO add default value
