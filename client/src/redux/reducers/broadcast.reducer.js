@@ -23,6 +23,11 @@ export function broadcastsInfo (state = {}, action) {
         broadcast: state.broadcasts.filter((c) => c._id === action.data)[0]
       })
 
+    case ActionTypes.SHOW_FILE_UPLOAD_INDICATOR:
+      return Object.assign({}, state, {
+        showFileUploading: action.showFileUploading
+      })
+
     default:
       return state
   }

@@ -11,6 +11,8 @@ const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const TAG = 'api/broadcast/broadcast.controller.js'
 const needle = require('needle')
+const path = require('path')
+const fs = require('fs')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
@@ -40,6 +42,60 @@ exports.create = function (req, res) {
     }
     return res.status(200).json({status: 'success', payload: broadcast})
   })
+}
+
+exports.uploadfile = function (req, res) {
+  logger.serverLog(TAG, `Inside Upload file Broadcast, req body = ${JSON.stringify(req.body)}`)
+
+  if (req.body) {
+    var obj = JSON.parse(req.body.broadcast)
+    logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(req.obj)}`)
+
+    var serverPath = req.files.file.name
+    var fext = req.files.file.name.split('.')
+    serverPath += '.' + fext[fext.length - 1]
+    console.log('__dirname')
+    console.log(__dirname)
+    console.log(req.headers)
+    var dir = path.resolve(__dirname, 'broadcastfiles/')
+    console.log('req.files.file.size')
+    console.log(req.files.file.size)
+    if (req.files.file.size == 0) return res.send('No file submitted')
+
+    fs.readFile(req.files.file.path, function (err, data) {
+      var pathNew = dir + serverPath
+      req.body.path = serverPath
+      if (!err) {
+        fs.writeFile(pathNew, data, function (err) {
+          if (!err) {
+            console.log('writing file')
+            console.log(obj)
+            obj.fileurl = 'https://app.kibopush.com/broadcastfiles/' + serverPath
+
+            // save broadcast item
+            const broadcast = new Broadcasts({
+              platform: req.body.broadcast.platform, // TODO define this as enum with values, for now value is facebook
+              type: req.body.broadcast.type, // TODO define this as enum with values ['text','attachment']
+              text: req.body.broadcast.text, // message body
+              userId: req.user._id,
+              fileurl: obj.fileurl,
+              attachmentType: req.body.broadcast.attachmentType
+            })
+            broadcast.save((err, broadcast) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not created'})
+              }
+              return res.status(200).json({status: 'success', payload: broadcast})
+            })
+          }
+        })
+      }
+    })
+  } else {
+    return res.status(404)
+                  .json({status: 'failed', description: 'File data empty'})
+  }
 }
 
 exports.edit = function (req, res) {

@@ -1,6 +1,7 @@
 /**
  * Created by sojharo on 20/07/2017.
  */
+import path from 'path'
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development' // production
 
@@ -11,6 +12,7 @@ const config = require('./config/environment/index')
 
 const app = express()
 const httpApp = express()
+httpApp.use(express.static(path.resolve(__dirname, '../broadcastfiles')))
 
 mongoose.connect(config.mongo.uri, config.mongo.options)
 

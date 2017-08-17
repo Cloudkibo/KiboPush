@@ -10,7 +10,9 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   createbroadcast,
-  loadBroadcastsList
+  loadBroadcastsList,
+  updatefileuploadStatus,
+  uploadBroadcastfile
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 
@@ -18,6 +20,12 @@ class CreateBroadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createBroadcast = this.createBroadcast.bind(this)
+    this.state = {
+      userfile: null,
+      userfilename: ''
+    }
+    this._onChange = this._onChange.bind(this)
+    this.onFileSubmit = this.onFileSubmit.bind(this)
   }
 
   componentDidMount () {
@@ -42,10 +50,63 @@ class CreateBroadcast extends React.Component {
 
   createBroadcast () {
     this.props.createbroadcast(
-      {platform: 'Facebook', type: 'message', text: this.refs.message.value})
+      {platform: 'Facebook', type: 'text', text: this.refs.message.value})
     this.props.history.push({
       pathname: '/broadcasts'
     })
+  }
+  _onChange (e) {
+    e.preventDefault()
+    let files
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files
+    } else if (e.target) {
+      files = e.target.files
+    }
+
+    console.log(e.target.files[0])
+
+    this.setState({
+      userfile: e.target.files[0],
+      userfilename: e.target.files[0].name
+    })
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      this.setState({
+        src: reader.result
+      })
+      this.onFileSubmit()
+    }
+    reader.readAsDataURL(files[0])
+  }
+
+  onFileSubmit () {
+    var sendmessage = true
+    var fileData = new FormData()
+    this.refs.selectFile.value = null
+    if (this.state.userfile && this.state.userfile != '') {
+      this.props.updatefileuploadStatus(true)
+      var broadcast = {
+        platform: 'Facebook',
+        type: 'attachment',
+        text: this.refs.message.value,
+        attachmentType: this.state.userfile.type.split('/')[0]
+      }
+
+      fileData.append('file', this.state.userfile)
+      fileData.append('filename', this.state.userfile.name)
+      fileData.append('filetype', this.state.userfile.type)
+      fileData.append('filesize', this.state.userfile.size)
+      fileData.append('broadcast', JSON.stringify(broadcast))
+      this.props.uploadBroadcastfile(fileData)
+      this.setState({userfile: ''})
+      this.forceUpdate()
+    } else {
+      alert('Please choose a file to upload.')
+    }
+    // this.forceUpdate();
+    //     event.preventDefault();
   }
 
   render () {
@@ -76,31 +137,27 @@ class CreateBroadcast extends React.Component {
                       <textarea className='form-control' ref='message' />
                     </div>
                     <div className='add-options-message'>
-                      <a href='#' className='options-message'
-                        data-toggle='modal' data-target='#update-header-photo'
-                        data-placement='top' title
-                        data-original-title='ADD PHOTOS'>
-                        <i className='fa fa-image' />
-                        <span>Add Image</span>
-                      </a>
-                      <a href='#' className='options-message'
-                        data-toggle='tooltip' data-placement='top' title
-                        data-original-title='TAG YOUR FRIENDS'>
-                        <i className='fa fa-video-camera' />
-                        <span>Add Video</span>
-                      </a>
-                      <a href='#' className='options-message'
-                        data-toggle='tooltip' data-placement='top' title
-                        data-original-title='ADD LOCATION'>
-                        <i className='fa fa-link' />
-                        <span>Add Link</span>
-                      </a>
-                      <a href='#' className='options-message'
-                        data-toggle='tooltip' data-placement='top' title
-                        data-original-title='ADD LOCATION'>
-                        <i className='fa fa-volume-up' />
-                        <span>Add Audio</span>
-                      </a>
+                      <div className='form-group with-icon label-floating is-empty'>
+                        <label className='control-label'>Upload Attachment (Audio, Video or Image file)</label>
+
+                        <div style={{display: 'inline-block'}} data-tip='attachments'>
+                          <i style={styles.iconclass} onClick={() => {
+                            this.refs.selectFile.click()
+                          }}>
+                            <i style={{
+                              fontSize: '25px',
+                              position: 'absolute',
+                              left: '0',
+                              width: '100%',
+                              height: '2.5em',
+                              textAlign: 'center'
+                            }} className='fa fa-paperclip' />
+                          </i>
+                          <input ref='selectFile' type='file' onChange={this._onChange} style={{'display': 'none'}} />
+
+                        </div>
+                      </div>
+
                       <button className='btn btn-primary btn-sm'
                         onClick={this.createBroadcast}> Create Broadcast
                       </button>
@@ -109,6 +166,17 @@ class CreateBroadcast extends React.Component {
                         Cancel
                       </button>
                     </div>
+
+                    {
+                        this.state.userfilename && this.state.userfilename != '' &&
+                        <p style={{color: 'red'}}>{this.state.userfilename}</p>
+
+                      }
+                    {
+                        this.props.showFileUploading && this.props.showFileUploading == true &&
+                        <p style={{color: 'red'}}>Uploading file...Please wait</p>
+
+                      }
 
                   </div>
 
@@ -127,13 +195,26 @@ class CreateBroadcast extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    broadcasts: (state.broadcastsInfo.broadcasts)
+    broadcasts: (state.broadcastsInfo.broadcasts),
+    showFileUploading: (state.broadcastsInfo.showFileUploading)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadBroadcastsList: loadBroadcastsList, createbroadcast: createbroadcast},
+    {loadBroadcastsList: loadBroadcastsList, uploadBroadcastfile: uploadBroadcastfile, createbroadcast: createbroadcast, updatefileuploadStatus: updatefileuploadStatus},
     dispatch)
+}
+
+const styles = {
+
+  iconclass: {
+    height: 24,
+    padding: '0 15px',
+    width: 24,
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer'
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBroadcast)

@@ -13,6 +13,7 @@ router.post('/edit', auth.isAuthenticated(), controller.edit)
 router.post('/send', auth.isAuthenticated(), controller.send)
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
+router.post('/uploadfile', auth.isAuthenticated(), controller.uploadfile)
 
 router.get('/:id', controller.show)
 

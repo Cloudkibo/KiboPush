@@ -23,6 +23,19 @@ export function createbroadcast (broadcast) {
   }
 }
 
+export function uploadBroadcastfile (filedata) {
+  return (dispatch) => {
+    callApi('broadcasts/uploadfile', 'post', filedata)
+      .then(res => dispatch(addBroadcast(res.payload)))
+  }
+}
+export function updatefileuploadStatus (status) {
+  return {
+    showFileUploading: status,
+    type: ActionTypes.SHOW_FILE_UPLOAD_INDICATOR
+  }
+}
+
 export function addBroadcast (data) {
   // here we will add the broadcast
   console.log(data)
