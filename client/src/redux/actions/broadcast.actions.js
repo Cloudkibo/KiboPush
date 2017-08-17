@@ -43,7 +43,7 @@ export function editbroadcast (broadcast) {
   console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
-      .then(res => dispatch(editBroadcast(res.payload)))
+      .then(res => dispatch(loadBroadcastsList()))
   }
 }
 

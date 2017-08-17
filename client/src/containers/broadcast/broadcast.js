@@ -22,7 +22,7 @@ class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
     if (!props.broadcasts) {
-      alert('calling')
+    //  alert('calling')
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)

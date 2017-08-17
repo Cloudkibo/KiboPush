@@ -4,7 +4,7 @@ const initialState = {
   surveys: []
 }
 
-export function surveysInfo (state = initialState, action) {
+export function surveysInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.LOAD_SURVEYS_LIST:
       return Object.assign({}, state, {
