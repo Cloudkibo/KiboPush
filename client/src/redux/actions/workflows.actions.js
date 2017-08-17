@@ -27,6 +27,13 @@ export function updateWorkFlow (data) {
 export function addWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/create', 'post', data)
-      .then(res => dispatch(updateWorkFlow(data)))
+      .then(res => dispatch(updateWorkFlow(res.payload)))
+  }
+}
+
+export function disableworkflow (data) {
+  return (dispatch) => {
+    callApi('workflows/disable', 'post', data)
+      .then(res => dispatch(loadWorkFlowList()))
   }
 }
