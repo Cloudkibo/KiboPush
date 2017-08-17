@@ -89,6 +89,9 @@ class AddSurvey extends React.Component {
           questions: this.state.surveyQuestions
         }
         this.props.createsurvey(surveybody)
+        this.props.history.push({
+          pathname: '/surveys'
+        })
       } else {
         // alert('Please fill all the fields.')
         this.setState(

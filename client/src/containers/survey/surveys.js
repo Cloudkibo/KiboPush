@@ -19,7 +19,10 @@ import { handleDate } from '../../utility/utils'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysList()
+    if (!props.surveys) {
+    //  alert('calling')
+      props.loadSurveysList()
+    }
   }
 
   componentDidMount () {
@@ -89,7 +92,7 @@ class Survey extends React.Component {
                       </thead>
                       <tbody>
                         {
-                        this.props.surveys.map((survey, i) => (
+                        this.props.surveys && this.props.surveys.map((survey, i) => (
                           <tr>
                             <td>{survey.title}</td>
                             <td>{survey.description}</td>

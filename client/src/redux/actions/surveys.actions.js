@@ -61,18 +61,17 @@ export function createsurvey (survey) {
 
 export function addSurvey (data) {
   // here we will add the broadcast
-  /*  if(data.status =='success'){
-   alert('Survey created successfully.');
-   }
-   else{
-   alert('Error occurred in creating surveys');
-   }
-   console.log(data)
-   return {
-   type: ActionTypes.ADD_SURVEY,
-   data,
-   } */
-  browserHistory.push('/surveys')
+  /* if (data.status == 'success') {
+    alert('Survey created successfully.')
+  } else {
+    alert('Error occurred in creating surveys')
+  } */
+  console.log(data)
+  return {
+    type: ActionTypes.ADD_SURVEY,
+    data
+  }
+ // browserHistory.push('/surveys')
 }
 
 export function showSurveyResponse (data) {
