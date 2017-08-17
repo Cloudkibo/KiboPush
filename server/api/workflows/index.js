@@ -6,11 +6,13 @@ const router = express.Router()
 
 const controller = require('./workflows.controller')
 // const auth = require('../../auth/auth.service')
+const auth = require('../../auth/auth.service')
 
-router.get('/', controller.index)
-router.post('/create', controller.create)
-router.post('/edit', controller.edit)
-router.post('/active', controller.create)
+router.get('/', auth.isAuthenticated(), controller.index)
+router.post('/create', auth.isAuthenticated(), controller.create)
+router.post('/edit', auth.isAuthenticated(), controller.edit)
+router.post('/enable', auth.isAuthenticated(), controller.enable)
+router.post('/disable', auth.isAuthenticated(), controller.disable)
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 
