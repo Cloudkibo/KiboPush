@@ -55,7 +55,7 @@ class Header extends React.Component {
               </div>
               <a href='#' className='author-name fn'>
                 <div className='author-title'>
-                  {this.props.user.name}
+                  {(this.props.user)?this.props.user.name: ""}
                   <svg className='olymp-dropdown-arrow-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-dropdown-arrow-icon' />
                   </svg>
