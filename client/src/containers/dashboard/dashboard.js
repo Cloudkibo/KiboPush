@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
 
           </main>
           <aside
-            className='col-xl-4 pull-xl-6 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
+            className='col-xl-4 pull-xl-4 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
