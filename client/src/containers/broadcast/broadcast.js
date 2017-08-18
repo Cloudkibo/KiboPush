@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import {
   addBroadcast,
   loadBroadcastsList,
-  sendbroadcast
+  sendbroadcast, downloadFile
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -26,6 +26,7 @@ class Broadcast extends React.Component {
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.downloadFile = this.downloadFile.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -58,6 +59,9 @@ class Broadcast extends React.Component {
 
   sendBroadcast (broadcast) {
     this.props.sendbroadcast(broadcast)
+  }
+  downloadFile (broadcast) {
+    this.props.downloadFile(broadcast)
   }
 
   render () {
@@ -110,6 +114,7 @@ class Broadcast extends React.Component {
                                 className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>Send
                               </button>
+
                             </td>
                           </tr>
                         ))
@@ -143,7 +148,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList: loadBroadcastsList,
     addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast
+    sendbroadcast: sendbroadcast,
+    downloadFile: downloadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Broadcast)
