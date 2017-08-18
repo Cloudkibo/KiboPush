@@ -27,7 +27,7 @@ class Header extends React.Component {
           <div className='control-block'>
             <div className='author-page author vcard inline-items more'>
               <div className='author-thumb'>
-                <img alt='author' src={this.props.user.profilePic} className='avatar' />
+                <img alt='author' src={(this.props.user)?this.props.user.profilePic:""} className='avatar' />
                 <span className='icon-status online' />
                 <div className='more-dropdown more-with-triangle'>
                   <div className='mCustomScrollbar' data-mcs-theme='dark'>
