@@ -134,7 +134,6 @@ exports.send = function (req, res) {
   var messageData = {}
   if (req.body.type == 'attachment') {
     messageData = {
-      text: req.body.text,
       attachment: {
         type: req.body.attachmentType,
         payload: {
