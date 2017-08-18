@@ -164,12 +164,14 @@ class AddSurvey extends React.Component {
   }
 
   removeClick (i) {
-    if (this.state.surveyQuestions.length >= 1) {
+    if (this.state.surveyQuestions.length == 1) {
+      console.log('A survey form requires atleast one question');
       this.setState({
         showAlert: true,
         alertmsg: 'A survey form requires atleast one question'
       })
     } else {
+      console.log('delete this survey question');
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
       console.log(surveyQuestions)
