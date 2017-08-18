@@ -43,7 +43,7 @@ class Dashboard extends React.Component {
         <br /><br /><br /><br /><br /><br />
         <div className='row'>
           <main
-            className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
+            className='col-xl-4 push-xl-4 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
@@ -56,11 +56,24 @@ class Dashboard extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div className='ui-block' data-mh='friend-groups-item'>
+              <div className='friend-item friend-groups'>
+                <div className='friend-item-content'>
+                  <div className='friend-avatar'>
+                    <h1>{this.props.dashboard.subscribers}</h1>
+                    <div className='author-content'>
+                      <Link to='subscribers' className='h5 author-name'>Polls</Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
         
 
           </main>
           <aside
-            className='col-xl-3 pull-xl-6 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
+            className='col-xl-4 pull-xl-6 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
@@ -73,9 +86,22 @@ class Dashboard extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div className='ui-block' data-mh='friend-groups-item'>
+              <div className='friend-item friend-groups'>
+                <div className='friend-item-content'>
+                  <div className='friend-avatar'>
+                    <h1>{this.props.dashboard.pages}</h1>
+                    <div className='author-content'>
+                      <a href='#' className='h5 author-name'>Surveys</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
        
           </aside>
-          <aside className='col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+          <aside className='col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
@@ -84,6 +110,19 @@ class Dashboard extends React.Component {
                     <div className='author-content'>
                       <a href='#' className='h5 author-name'>Scheduled
                         Broadcasts</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                     <div className='ui-block' data-mh='friend-groups-item'>
+              <div className='friend-item friend-groups'>
+                <div className='friend-item-content'>
+                  <div className='friend-avatar'>
+                    <h1>{this.props.dashboard.scheduledBroadcast}</h1>
+                    <div className='author-content'>
+                      <a href='#' className='h5 author-name'>Broadcasts</a>
                     </div>
                   </div>
                 </div>
