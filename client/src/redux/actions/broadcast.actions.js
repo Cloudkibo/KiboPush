@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 
 export function showbroadcasts (data) {
   return {
@@ -20,6 +21,25 @@ export function createbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
       .then(res => dispatch(addBroadcast(res.payload)))
+  }
+}
+export const API_URL = '/api'
+
+export function uploadBroadcastfile (filedata) {
+  return (dispatch) => {
+    fetch(`${API_URL}/broadcasts/uploadfile`, {
+      method: 'post',
+      body: filedata,
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then((res) => dispatch(addBroadcast(res.payload)))
+  }
+}
+export function updatefileuploadStatus (status) {
+  return {
+    showFileUploading: status,
+    type: ActionTypes.SHOW_FILE_UPLOAD_INDICATOR
   }
 }
 

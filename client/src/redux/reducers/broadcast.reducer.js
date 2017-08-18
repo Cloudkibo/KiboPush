@@ -12,7 +12,8 @@ export function broadcastsInfo (state = {}, action) {
       })
     case ActionTypes.ADD_BROADCAST:
       return Object.assign({}, state, {
-        broadcasts: [...state.broadcasts, action.data]
+        broadcasts: [...state.broadcasts, action.data],
+        showFileUploading: false
       })
     case ActionTypes.EDIT_BROADCAST:
       return Object.assign({}, state, {
@@ -21,6 +22,11 @@ export function broadcastsInfo (state = {}, action) {
     case ActionTypes.GET_BROADCAST:
       return Object.assign({}, state, {
         broadcast: state.broadcasts.filter((c) => c._id === action.data)[0]
+      })
+
+    case ActionTypes.SHOW_FILE_UPLOAD_INDICATOR:
+      return Object.assign({}, state, {
+        showFileUploading: action.showFileUploading
       })
 
     default:
