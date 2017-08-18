@@ -19,6 +19,22 @@ export function pollsInfo (state = {}, action) {
         responses: action.sorted
       })
 
+    case ActionTypes.SEND_POLL_SUCCESS:
+      return Object.assign({}, state, {
+        successMessage: 'Poll sent successfully!'
+      })
+
+    case ActionTypes.SEND_POLL_FAILURE:
+      return Object.assign({}, state, {
+        errorMessage: 'Poll sending failed!'
+      })
+
+    case ActionTypes.CLEAR_ALERT:
+      return Object.assign({}, state, {
+        successMessage: '',
+        errorMessage: ''
+      })
+
     default:
       return state
   }
