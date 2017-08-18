@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import { AlertList } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -12,16 +13,31 @@ import { connect } from 'react-redux'
 import {
   addPoll,
   loadPollsList,
-  sendpoll
+  sendpoll,
+  clearAlertMessage
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 
 class Poll extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      alerts: []
+    }
+    this.generateAlert = this.generateAlert.bind(this)
+    this.dismissAlert = this.dismissAlert.bind(this)
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls) {
       console.log('Polls Updated', nextProps.polls)
       // this.setState({broadcasts: nextProps.broadcasts});
+    }
+    if (nextProps.successMessage || nextProps.errorMessage) {
+      this.generateAlert('success', nextProps.successMessage)
+    } else if (nextProps.errorMessage || nextProps.errorMessage) {
+      this.generateAlert('danger', nextProps.errorMessage)
     }
   }
 
@@ -58,6 +74,29 @@ class Poll extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
+  generateAlert (type, message) {
+    const newAlert = {
+      id: (new Date()).getTime(),
+      type: type,
+      message: message
+    }
+    this.setState({
+      alerts: [...this.state.alerts, newAlert]
+    })
+  }
+
+  dismissAlert (alert) {
+		// find the index of the alert that was dismissed
+    const idx = this.state.alerts.indexOf(alert)
+    this.props.clearAlertMessage()
+    if (idx >= 0) {
+      this.setState({
+				// remove the alert from the array
+        alerts: [...this.state.alerts.slice(0, idx), ...this.state.alerts.slice(idx + 1)]
+      })
+    }
+  }
+
   render () {
     return (
       <div>
@@ -77,6 +116,15 @@ class Poll extends React.Component {
                     <button className='btn btn-primary btn-sm'> Create Poll
                     </button>
                   </Link>
+                  {
+                    (this.props.successMessage || this.props.errorMessage) &&
+                    <AlertList
+                      position='top-right'
+                      alerts={this.state.alerts}
+                      dismissTitle='Dismiss'
+                      onDismiss={this.dismissAlert}
+                    />
+                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -131,13 +179,15 @@ class Poll extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    polls: (state.pollsInfo.polls)
+    polls: (state.pollsInfo.polls),
+    successMessage: (state.pollsInfo.successMessage),
+    errorMessage: (state.pollsInfo.errorMessage)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadPollsList: loadPollsList, addPoll: addPoll, sendpoll: sendpoll},
+    {loadPollsList: loadPollsList, addPoll: addPoll, sendpoll: sendpoll, clearAlertMessage: clearAlertMessage},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Poll)
