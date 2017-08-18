@@ -61,7 +61,7 @@ class Dashboard extends React.Component {
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.subscribers}</h1>
+                    <h1>{this.props.dashboard.polls}</h1>
                     <div className='author-content'>
                       <Link to='subscribers' className='h5 author-name'>Polls</Link>
                     </div>
@@ -91,7 +91,7 @@ class Dashboard extends React.Component {
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.pages}</h1>
+                    <h1>{this.props.dashboard.surveys}</h1>
                     <div className='author-content'>
                       <a href='#' className='h5 author-name'>Surveys</a>
                     </div>
@@ -120,7 +120,7 @@ class Dashboard extends React.Component {
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.scheduledBroadcast}</h1>
+                    <h1>{this.props.dashboard.messages}</h1>
                     <div className='author-content'>
                       <a href='#' className='h5 author-name'>Broadcasts</a>
                     </div>
