@@ -4,9 +4,18 @@
 
 import React from 'react'
 import auth from '../../utility/auth.service'
-
+import { connect } from 'react-redux'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { bindActionCreators } from 'redux'
 class Header extends React.Component {
+
+ componentWillMount () {
+    this.props.getuserdetails()
+  }
   render () {
+
+    console.log("This user details", this.props.user);
+    
     return (
       <header className='header' id='site-header'>
 
@@ -73,4 +82,18 @@ class Header extends React.Component {
   }
 }
 
-export default Header
+
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    user: (state.basicInfo.user)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    getuserdetails: getuserdetails,
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
+
