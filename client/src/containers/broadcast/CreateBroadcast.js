@@ -99,9 +99,13 @@ class CreateBroadcast extends React.Component {
       fileData.append('filetype', this.state.userfile.type)
       fileData.append('filesize', this.state.userfile.size)
       fileData.append('broadcast', JSON.stringify(broadcast))
+      console.log(fileData)
+      console.log(this.state.userfile)
       this.props.uploadBroadcastfile(fileData)
       this.setState({userfile: ''})
-      this.forceUpdate()
+      this.props.history.push({
+        pathname: '/broadcasts'
+      })
     } else {
       alert('Please choose a file to upload.')
     }

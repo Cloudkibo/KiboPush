@@ -49,44 +49,43 @@ exports.uploadfile = function (req, res) {
 
   if (req.body) {
     var obj = JSON.parse(req.body.broadcast)
-    logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(req.obj)}`)
+    logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
     var serverPath = req.files.file.name
-    var fext = req.files.file.name.split('.')
-    serverPath += '.' + fext[fext.length - 1]
     console.log('__dirname')
     console.log(__dirname)
-    console.log(req.headers)
-    var dir = path.resolve(__dirname, 'broadcastfiles/')
+    var dir = path.resolve(__dirname, '../../../broadcastFiles/')
+    console.log(dir)
     console.log('req.files.file.size')
     console.log(req.files.file.size)
     if (req.files.file.size == 0) return res.send('No file submitted')
 
     fs.readFile(req.files.file.path, function (err, data) {
-      var pathNew = dir + serverPath
-      req.body.path = serverPath
+      var pathNew = dir + '/userfiles/' + serverPath
+      console.log(pathNew)
       if (!err) {
         fs.writeFile(pathNew, data, function (err) {
           if (!err) {
             console.log('writing file')
             console.log(obj)
-            obj.fileurl = 'https://app.kibopush.com/broadcastfiles/' + serverPath
+            obj.fileurl = 'https://app.kibopush.com/broadcastFiles/userfiles/' + serverPath
 
             // save broadcast item
             const broadcast = new Broadcasts({
-              platform: req.body.broadcast.platform, // TODO define this as enum with values, for now value is facebook
-              type: req.body.broadcast.type, // TODO define this as enum with values ['text','attachment']
-              text: req.body.broadcast.text, // message body
+              platform: obj.platform, // TODO define this as enum with values, for now value is facebook
+              type: obj.type, // TODO define this as enum with values ['text','attachment']
+              text: obj.text, // message body
               userId: req.user._id,
               fileurl: obj.fileurl,
-              attachmentType: req.body.broadcast.attachmentType
+              attachmentType: obj.attachmentType
             })
-            broadcast.save((err, broadcast) => {
-              if (err) {
+            Broadcasts.create(broadcast, (err2, broadcastt) => {
+              if (err2) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not created'})
               }
-              return res.status(200).json({status: 'success', payload: broadcast})
+              console.log(broadcastt)
+              return res.status(200).json({status: 'success', payload: broadcastt})
             })
           }
         })
@@ -139,8 +138,22 @@ exports.send = function (req, res) {
    { platform: 'facebook',statement: req.body.text });
    */
 
-  const messageData = {
-    text: req.body.text
+  var messageData = {}
+  if (broadcast.type == 'attachment') {
+    messageData = {
+      text: req.body.text,
+      attachments: [{
+        type: req.body.attachmentType,
+        payload: {
+          url: req.body.fileurl
+        }
+
+      }]
+    }
+  } else {
+    messageData = {
+      text: req.body.text
+    }
   }
 
   Pages.find({userId: req.user._id}, (err, pages) => {

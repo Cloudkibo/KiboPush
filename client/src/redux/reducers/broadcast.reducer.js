@@ -12,7 +12,8 @@ export function broadcastsInfo (state = {}, action) {
       })
     case ActionTypes.ADD_BROADCAST:
       return Object.assign({}, state, {
-        broadcasts: [...state.broadcasts, action.data]
+        broadcasts: [...state.broadcasts, action.data],
+        showFileUploading: false
       })
     case ActionTypes.EDIT_BROADCAST:
       return Object.assign({}, state, {
