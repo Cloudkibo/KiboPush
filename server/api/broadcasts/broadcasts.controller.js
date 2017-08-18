@@ -55,19 +55,13 @@ exports.uploadfile = function (req, res) {
     console.log('__dirname')
     console.log(__dirname)
     var dir = path.resolve(__dirname, '../../../broadcastFiles/')
-    console.log(dir)
-    console.log('req.files.file.size')
-    console.log(req.files.file.size)
     if (req.files.file.size == 0) return res.send('No file submitted')
 
     fs.readFile(req.files.file.path, function (err, data) {
       var pathNew = dir + '/userfiles/' + serverPath
-      console.log(pathNew)
       if (!err) {
         fs.writeFile(pathNew, data, function (err) {
           if (!err) {
-            console.log('writing file')
-            console.log(obj)
             obj.fileurl = 'https://app.kibopush.com/broadcastFiles/userfiles/' + serverPath
 
             // save broadcast item
@@ -84,7 +78,6 @@ exports.uploadfile = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not created'})
               }
-              console.log(broadcastt)
               return res.status(200).json({status: 'success', payload: broadcastt})
             })
           }
@@ -142,13 +135,13 @@ exports.send = function (req, res) {
   if (req.body.type == 'attachment') {
     messageData = {
       text: req.body.text,
-      attachments: [{
+      attachment: {
         type: req.body.attachmentType,
         payload: {
           url: req.body.fileurl
         }
 
-      }]
+      }
     }
   } else {
     messageData = {
