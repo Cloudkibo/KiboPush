@@ -16,7 +16,7 @@ router.post('/send', auth.isAuthenticated(), controller.send)
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
 router.post('/uploadfile', auth.isAuthenticated(), multipartyMiddleware, controller.uploadfile)
-
+router.get('/downloadfile/:id', controller.download)
 router.get('/:id', controller.show)
 
 /* Seed Pages */

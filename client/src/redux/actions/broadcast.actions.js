@@ -84,3 +84,12 @@ export function sendbroadcast (broadcast) {
     })
   }
 }
+
+export function downloadFile (broadcast) {
+  return (dispatch) => {
+    callApi(`broadcasts/downloadfile/${broadcast._id}`).then(res => {
+      // dispatch(editBroadcast(res.payload));
+      console.log('Send Broadcast Response', res)
+    })
+  }
+}

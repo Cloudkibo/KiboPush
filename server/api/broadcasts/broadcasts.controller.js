@@ -51,7 +51,15 @@ exports.uploadfile = function (req, res) {
     var obj = JSON.parse(req.body.broadcast)
     logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
-    var serverPath = req.files.file.name
+    // var serverPath = req.files.file.name
+    var today = new Date()
+    var uid = Math.random().toString(36).substring(7)
+
+    var unique_id = 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth() + 1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds()
+    var serverPath = unique_id
+    var fext = req.files.file.name.split('.')
+    serverPath += '.' + fext[fext.length - 1]
+
     console.log('__dirname')
     console.log(__dirname)
     var dir = path.resolve(__dirname, '../../../broadcastFiles/')
@@ -62,7 +70,7 @@ exports.uploadfile = function (req, res) {
       if (!err) {
         fs.writeFile(pathNew, data, function (err) {
           if (!err) {
-            obj.fileurl = 'https://app.kibopush.com/broadcastFiles/userfiles/' + serverPath
+            obj.fileurl = serverPath
 
             // save broadcast item
             const broadcast = new Broadcasts({
@@ -123,7 +131,32 @@ exports.show = function (req, res) {
       return res.status(200).json({status: 'success', payload: broadcast})
     })
 }
+exports.download = function (req, res) {
+  Broadcasts.findById(req.params.id).populate('userId')
+    .exec((err, broadcast) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Broadcast not found'})
+      }
+      var dir = path.resolve(__dirname, '../../../broadcastFiles/')
+      var pathNew = dir + '/userfiles/' + broadcast.fileurl
 
+      // Check if file specified by the filePath exists
+      fs.exists(pathNew, function (exists) {
+        if (exists) {
+          // Content-type is very interesting part that guarantee that
+          // Web browser will handle response in an appropriate manner.
+          res.writeHead(200, {
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + broadcast.fileurl})
+          fs.createReadStream(pathNew).pipe(res)
+        } else {
+          res.writeHead(400, {'Content-Type': 'text/plain'})
+          res.end('ERROR File does NOT Exists')
+        }
+      })
+    })
+}
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside send broadcast ${JSON.stringify(req.body)}`)
   /*
@@ -137,7 +170,7 @@ exports.send = function (req, res) {
       attachment: {
         type: req.body.attachmentType,
         payload: {
-          url: req.body.fileurl
+          url: `https://app.kibopush.com/api/broadcasts/downloadfile/${req.body._id}`
         }
 
       }
