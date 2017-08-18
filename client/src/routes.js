@@ -17,6 +17,8 @@ import ViewSurveyDetail from './containers/survey/ViewSurveyDetail'
 import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
 import CreateWorkflow from './containers/workflows/CreateWorkflow'
+import EditWorkflow from './containers/workflows/EditWorkflow'
+
 import Workflows from './containers/workflows/Workflows'
 import EditBroadcast from './containers/broadcast/EditBroadcast'
 import CreatePoll from './containers/polls/CreatePoll'
@@ -88,6 +90,8 @@ const routes = (
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/editbroadcast' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
+    <Route path='/editworkflow' component={EditWorkflow} onEnter={requireAuth} />
+
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />

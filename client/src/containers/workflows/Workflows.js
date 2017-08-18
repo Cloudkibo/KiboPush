@@ -12,7 +12,8 @@ import { connect } from 'react-redux'
 import {
   addWorkFlow,
   loadWorkFlowList,
-  disableworkflow
+  disableworkflow,
+  enableworkflow
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 
@@ -20,6 +21,7 @@ class Workflows extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.disableWorkflow = this.disableWorkflow.bind(this)
+    this.enableWorkflow = this.enableWorkflow.bind(this)
   }
 
   componentWillMount () {
@@ -31,6 +33,15 @@ class Workflows extends React.Component {
 
   disableWorkflow (workflow) {
     this.props.disableworkflow(workflow)
+  }
+  enableWorkflow (workflow) {
+    this.props.enableworkflow(workflow)
+  }
+  gotoEdit (workflow) {
+    this.props.history.push({
+      pathname: `/editworkflow`,
+      state: workflow
+    })
   }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -93,11 +104,19 @@ class Workflows extends React.Component {
                               <td>{workflow.sent}</td>
                               <td>
                                 <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}>Edit
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.gotoEdit(workflow)}>Edit
                               </button>
-                                <button className='btn btn-primary btn-sm'
+                                {workflow.isActive == true
+                                ? <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
+
                               </button>
+                              : <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}} onClick={() => this.enableWorkflow(workflow)}>Enable
+
+                              </button>
+                            }
                               </td>
                             </tr>
 
@@ -130,6 +149,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow, disableworkflow}, dispatch)
+    {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow, enableworkflow, disableworkflow}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Workflows)
