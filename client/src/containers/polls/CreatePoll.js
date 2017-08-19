@@ -152,7 +152,7 @@ class CreatePoll extends React.Component {
                     <center><Alert type='danger'>
                       You have either left one or more responses empty or you
                       have not asked anything. Please ask something and fill all
-                      three responses in order to create this poll.
+                      three responses in order to create the poll.
                     </Alert></center>
                     }
                     <div className='add-options-message'>

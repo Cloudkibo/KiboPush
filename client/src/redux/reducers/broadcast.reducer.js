@@ -29,6 +29,22 @@ export function broadcastsInfo (state = {}, action) {
         showFileUploading: action.showFileUploading
       })
 
+    case ActionTypes.SEND_BROADCAST_SUCCESS:
+      return Object.assign({}, state, {
+        successMessage: 'Broadcast sent successfully.'
+      })
+
+    case ActionTypes.SEND_BROADCAST_FAILURE:
+      return Object.assign({}, state, {
+        errorMessage: 'Broadcast Sending Failed.'
+      })
+
+    case ActionTypes.CLEAR_ALERT:
+      return Object.assign({}, state, {
+        errorMessage: '',
+        successMessage: ''
+      })
+
     default:
       return state
   }

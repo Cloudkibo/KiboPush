@@ -75,11 +75,33 @@ export function editBroadcast (data) {
   }
 }
 
+export function sendBroadcastSuccess () {
+  return {
+    type: ActionTypes.SEND_BROADCAST_SUCCESS
+  }
+}
+
+export function sendBroadcastFailure () {
+  return {
+    type: ActionTypes.SEND_BROADCAST_FAILURE
+  }
+}
+
+export function clearAlertMessage () {
+  return {
+    type: ActionTypes.CLEAR_ALERT
+  }
+}
+
 export function sendbroadcast (broadcast) {
   console.log('Sending broadcast message', broadcast)
   return (dispatch) => {
     callApi('broadcasts/send', 'post', broadcast).then(res => {
-      // dispatch(editBroadcast(res.payload));
+      if (res.status === 'success') {
+        dispatch(sendBroadcastSuccess())
+      } else {
+        dispatch(sendBroadcastFailure())
+      }
       console.log('Send Broadcast Response', res)
     })
   }

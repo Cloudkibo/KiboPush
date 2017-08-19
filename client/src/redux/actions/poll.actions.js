@@ -29,10 +29,37 @@ export function loadPollsList () {
     callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
   }
 }
+
+export function sendPollSuccess () {
+  return {
+    type: ActionTypes.SEND_POLL_SUCCESS
+  }
+}
+
+export function sendPollFailure () {
+  return {
+    type: ActionTypes.SEND_POLL_FAILURE
+  }
+}
+
+export function clearAlertMessage () {
+  return {
+    type: ActionTypes.CLEAR_ALERT
+  }
+}
+
 export function sendpoll (poll) {
   return (dispatch) => {
     callApi('polls/send', 'post', poll)
-      .then(res => dispatch(sendpollresp(res.payload)))
+      .then(res => {
+        dispatch(sendpollresp(res.payload))
+        if (res.status === 'success') {
+          dispatch(sendPollSuccess())
+        } else {
+          dispatch(sendPollFailure())
+        }
+      }
+    )
   }
 }
 export function addPoll (token, data) {
