@@ -327,165 +327,149 @@ definitions:
       sent:
         type: integer
         description: Number of times this poll is sent
-  BusinessHours:
+
+  Poll_Response:
     type: object
-    description: Any company can set its business hours and widget will be activated only during those hours.
+    description: Responses to the poll given by facebook page audience is stored here.
     properties:
-      start_time:
+      response:
         type: string
-        description: Start time of business day
-      end_time:
+        description: Reponse text or body goes here
+      pollId:
         type: string
-        description: End time of business day
-      saturday_off:
+        description: This is the poll id for which response is given
+      subscriberId:
         type: string
-        description: Is saturday off day for company
-      sunday_off:
+        description: Subscriber Id is the id of facebook user who subscribed to your page and gave response to this poll.
+      datetime:
         type: string
-        description: Is sunday off day for company
-      companyid:
-        type: string
-        description: Unique id of the company
-  AgentInitiatedCalls:
+        description: Date of creation
+
+  Subscriber:
     type: object
-    description: These are the calls or support sessions with customers which were initiated by agents.
+    description: Subscribers are the facebook users who follow your page. All the required information about them is stored in this table.
     properties:
-      uniqueid:
+      pageScopedId:
         type: string
-      agentname:
+        description: Every facebook user who subscribes a page gets page scoped id.
+      firstName:
         type: string
-      agentemail:
+        description: First name of the subscriber
+      lastName:
         type: string
-      departmentid:
+        description: Last name of the subscriber
+      locale:
         type: string
-      username:
+        description: Locale of the subscriber
+      timezone:
         type: string
-      useremail:
-        type: string
-      question:
-        type: string
-      currentPage:
-        type: string
-      fullurl:
-        type: string
-      phone:
-        type: string
-      browser:
-        type: string
-      ipAddress:
-        type: string
-      country:
-        type: string
-      room:
-        type: string
-      date:
-        type: string
-      request_id:
-        type: string
-  Customer:
-    type: object
-    description: The record of the customer who starts support call on either web widget or mobile widget
-    properties:
-      name:
-        type: string
+        description: Current time zone of the subscriber
       email:
         type: string
-      country:
+        description: Email address of the subscriber
+      gender:
         type: string
-      phone:
+        description: Gender of the subscriber
+      senderId:
         type: string
-      companyid:
+        description: Sender id of the subscriber is used to send message
+      profilePic:
         type: string
-      isMobileClient:
+        description: Profile picture of the subscriber. We only save the URL of the picture provided to us by Facebook.
+      pageId:
         type: string
-      customerID:
+        description: Facebook Page Id of the page subscriber has followed.
+      userId:
         type: string
+        description: User Id of the admin of that page.
 
-  VisitorCallsWithCustomer:
+  Survey:
     type: object
-    description: Use this end-point to get information about all the visitor calls started on a company’s website. Complete information of visitor calls is given, i.e. who picked the call, what was the time, when the call was ended etc.
+    description: The record of the survey created by user. This is main table for survey. Other linked tables are Survey_Questions and Survey_Response
     properties:
-      _id:
-        description: Unique id of the visitor call
+      title:
         type: string
-      customerid:
-        $ref: '#/definitions/Customer'
-      username:
+        description: Title of the survey
+      description:
         type: string
-        description: Name of the visitor
-      useremail:
+        description: Detailed description of the survey
+      image:
         type: string
-        description: Email address of the visitor
-      phone:
+        description: Image attached to survey
+      userId:
         type: string
-        description: Phone number of the visitor
-      country:
+        description: User Id of the admin of that page.
+      datetime:
         type: string
-        description: Country of the visitor
-      question:
+        description: Date of creation
+
+  Survey_Response:
+    type: object
+    description: Here we store the responses coming for each question of the survey by subscribers
+    properties:
+      response:
+        description: Text of the response.
         type: string
-        description: Question that visitor asked
-      currentPage:
+      surveyId:
+        description: Unique id of the survey, question of which, answer belongs to
         type: string
-        description: Page title of your website on which visitor was before clicking Live Help button
-      departmentid:
+      questionId:
         type: string
-        description: Department / Group id in which visitor has question (i.e. Sales)
-      fullurl:
+        description: Unique Id of the question to which answer belongs to
+      subscriberId:
         type: string
-        description: Full URL of the web page on which visitor was before clicking Live Help button
-        #properties:
-        #  count:
-        #    type: integer
-        #  data:
-        #    type: array
-        #    items:
-        #      $ref: '#/definitions/Comment'
-      browser:
+        description: Unique id of facebook page follower who gave this answer
+      datetime:
         type: string
-        description: Browser of the visitor
-      ipAddress:
+        description: Date of creation
+
+  Survey_Question:
+    type: object
+    description: Here we store the questions which belong to a survey. This table is associated with Survey table.
+    properties:
+      statement:
+        description: This is the statement of the question
         type: string
-        description: IP address of the visitor
-      room:
+      options:
+        type: array
+        items:
+          type: string
+          description: Answer options given for a question
+      type:
         type: string
-        description: This is the unique id of your company
-      agentname:
+        description: Type of question, possible values are 'text', 'multichoice'
+      surveyId:
         type: string
-        description: Name of the agent who picked the call
-      agentemail:
+        description: Unique id of the survey to which question belongs
+      datetime:
         type: string
-        description: Email address of the agent who picked the call
-      status:
+        description: Date of creation
+
+  Workflow:
+    type: object
+    description: This table is used to store workflows. This is an experimental feature in v1.
+    properties:
+      condition:
+        description: Condition to trigger this workflow
         type: string
-        description: Current status of the visitor call. Possible values are “waiting”, “progress”, “abandoned” and “completed”
-      initiator:
+      keywords:
+        type: array
+        items:
+          type: string
+          description: Keywords are the words in the facebook page subscribers message which will trigger this workflow
+      reply:
         type: string
-        description: Shows if the visitor was invited by agent or visitor came to call by pressing live button and filling the form on widget. Possible values are “visitor” and “agent”
-      requesttime:
+        description: Reply which will be sent to user before triggerring the workflow
+      userId:
         type: string
-        format: date-time
-        description: Time on which visitor requested the call
-      picktime:
+        description: Unique id of the user which creates workflow for his/her pages
+      sent:
+        type: integer
+        description: Number of times this workflow is triggerred.
+      isActive:
+        type: boolean
+        description: Whether this workflow is enabled or disabled
+      datetime:
         type: string
-        format: date-time
-        description: Time on which visitor’s call was picked by any agent
-      endtime:
-        type: string
-        format: date-time
-        description: Time on which call between visitor and agent was ended. Agent is responsible to close the call by pressing Complete Call on website.
-      request_id:
-        type: string
-        description: This is the unique id given to the visitor call. This id is used in userchat table to track which chat message belong to which visitor call
-      callsummary:
-        type: string
-        description: Agent can give the call summary at the end of each call
-      calldescription:
-        type: string
-        description: Agent can give the call detailed description to define the issue of visitor
-      callresolution:
-        type: string
-        description: Agent can give the resolution summary to define how the issue of visitor was resolved
-      webrtc_browser:
-        type: string
-        description: It shows if the visitor is on webrtc supported browser or not (WebRTC is technology used to do video/audio calls between two peers. KiboEngage leverages this technology)
+        description: Date of creation
+

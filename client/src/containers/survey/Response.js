@@ -69,7 +69,7 @@ class Response extends React.Component {
 
   componentDidMount () {
     console.log('i am called in Response.js')
-    if (this.props.responses && this.props.question.type == 'multichoice') {
+    if (this.props.responses && this.props.question.type === 'multichoice') {
       var sorted = rank(this.props.responses, 'response')
       console.log('sorted data is ')
       console.log(sorted)
