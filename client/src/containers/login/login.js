@@ -4,7 +4,14 @@
 
 import React from 'react'
 
+
+import { log } from './../../utility/socketio'
+const TAG = 'containers/login/login'
+
 class Login extends React.Component {
+  componentDidMount () {
+    log(TAG, 'Login Container Mounted')
+  }
   render () {
     return (
       <div className='landing-page'>

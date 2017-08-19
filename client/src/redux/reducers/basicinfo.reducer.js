@@ -2,7 +2,8 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   browserName: '',
-  browserVersion: ''
+  browserVersion: '',
+  socketStatus: false
 }
 
 export function basicInfo (state = initialState, action) {
@@ -20,6 +21,11 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data
+      })
+
+    case ActionTypes.SET_SOCKET_STATUS:
+      return Object.assign({}, state, {
+        socketStatus: action.data
       })
     default:
       return state

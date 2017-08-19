@@ -9,6 +9,7 @@ import { Router, browserHistory } from 'react-router'
 
 import { configureStore } from './redux/store/store'
 import routes from './routes'
+import { initiateSocket } from './utility/socketio'
 
 import {setBrowserName, setBrowserVersion} from './redux/actions/basicinfo.actions'
 import {BROWSER_NAME, BROWSER_VERSION} from './utility/browser.utility'
@@ -20,6 +21,8 @@ const rootElement = document.getElementById('content')
 
 store.dispatch(setBrowserName(BROWSER_NAME))
 store.dispatch(setBrowserVersion(BROWSER_VERSION))
+
+initiateSocket(store)
 
 console.log(store.getState())
 
