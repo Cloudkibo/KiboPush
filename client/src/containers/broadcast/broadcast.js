@@ -20,6 +20,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import AlertContainer from 'react-alert'
 
 class Broadcast extends React.Component {
   constructor (props, context) {
@@ -47,8 +48,6 @@ class Broadcast extends React.Component {
       })
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
-    this.generateAlert = this.generateAlert.bind(this)
-    this.dismissAlert = this.dismissAlert.bind(this)
   }
 
   componentDidMount () {
@@ -83,38 +82,26 @@ class Broadcast extends React.Component {
       // this.setState({broadcasts: nextProps.broadcasts});
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
-      this.generateAlert('success', nextProps.successMessage)
+      this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage || nextProps.errorMessage) {
-      this.generateAlert('danger', nextProps.errorMessage)
+      this.msg.error(nextProps.errorMessage)
     }
   }
 
-  generateAlert (type, message) {
-    const newAlert = {
-      id: (new Date()).getTime(),
-      type: type,
-      message: message
-    }
-    this.setState({
-      alerts: [...this.state.alerts, newAlert]
-    })
-  }
 
-  dismissAlert (alert) {
-    // find the index of the alert that was dismissed
-    const idx = this.state.alerts.indexOf(alert)
-    this.props.clearAlertMessage()
-    if (idx >= 0) {
-      this.setState({
-        // remove the alert from the array
-        alerts: [...this.state.alerts.slice(0, idx), ...this.state.alerts.slice(idx + 1)]
-      })
-    }
-  }
 
   render () {
+
+   var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'light',
+        time: 5000,
+        transition: 'scale'
+      }
     return (
       <div>
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
