@@ -101,14 +101,18 @@ exports.addPages = function (req, res) {
       return res.status(404).json({status: 'failed', description: err})
     }
     logger.serverLog(TAG, user)
-    fetchPages(`https://graph.facebook.com/v2.10/${
+    if (req.user.provider === 'local') {
+      res.status(200).json({status: 'success', payload: []})
+    } else {
+      fetchPages(`https://graph.facebook.com/v2.10/${
       user.fbId}/accounts?access_token=${
       user.fbToken}`, user)
-    Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
-      logger.serverLog(TAG, pages)
-      logger.serverLog(TAG, `Error: ${err}`)
-      res.status(200).json({status: 'success', payload: pages})
-    })
+      Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
+        logger.serverLog(TAG, pages)
+        logger.serverLog(TAG, `Error: ${err}`)
+        res.status(200).json({status: 'success', payload: pages})
+      })
+    }
     //  return res.status(200).json({ status: 'success', payload: user});
   })
 }
