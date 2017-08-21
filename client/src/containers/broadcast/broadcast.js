@@ -72,7 +72,11 @@ class Broadcast extends React.Component {
   }
 
   sendBroadcast (broadcast) {
-    this.props.sendbroadcast(broadcast)
+    if(this.props.subscribers.length == 0){
+      this.msg.error("You dont have any Subscribers");
+    }else{
+      this.props.sendbroadcast(broadcast);
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -95,7 +99,7 @@ class Broadcast extends React.Component {
    var alertOptions = {
         offset: 14,
         position: 'bottom right',
-        theme: 'light',
+        theme: 'dark',
         time: 5000,
         transition: 'scale'
       }
