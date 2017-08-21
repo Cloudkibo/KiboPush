@@ -119,7 +119,10 @@ exports.addPages = function (req, res) {
       return res.status(500).json({status: 'failed', description: err})
     }
     logger.serverLog(TAG, user)
-    fetchPages(`https://graph.facebook.com/v2.10/${
+    if (req.user.provider === 'local') {
+      res.status(200).json({status: 'success', payload: []})
+    } else {
+      fetchPages(`https://graph.facebook.com/v2.10/${
       user.fbId}/accounts?access_token=${
       user.fbToken}`, user)
     Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
@@ -155,7 +158,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      Pages.findOne({pageId: item.id}, (err, page) => {
+      Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
         if (!page) {
           logger.serverLog(TAG, 'Page not found. Creating a page ')
           var pageItem = new Pages({
