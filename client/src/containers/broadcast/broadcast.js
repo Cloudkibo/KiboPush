@@ -28,15 +28,18 @@ class Broadcast extends React.Component {
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.state = {
+      alerts: []
+    }
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
-      this.state = {
+      this.setState({
         alerts: []
-      }
+      })
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
