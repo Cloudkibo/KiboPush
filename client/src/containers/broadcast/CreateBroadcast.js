@@ -186,10 +186,11 @@ class CreateBroadcast extends React.Component {
                       <button className='btn btn-primary btn-sm'
                         onClick={this.createBroadcast}> Create Broadcast
                       </button>
-                      <button
+                      <Link
+                        to='broadcasts'
                         className='btn btn-sm btn-border-think btn-transparent c-grey'>
                         Cancel
-                      </button>
+                      </Link>
                     </div>
 
                     {
