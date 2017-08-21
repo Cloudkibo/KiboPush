@@ -13,6 +13,7 @@ import {
   loadWorkFlowList
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 
 class CreateWorkflow extends React.Component {
   constructor (props) {
