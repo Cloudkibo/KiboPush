@@ -29,10 +29,8 @@ class CreateBroadcast extends React.Component {
     this.onFileSubmit = this.onFileSubmit.bind(this)
   }
 
-  
- 
-  showAlert(){
-    this.msg.success('Broadcast Successfully Created');
+  showAlert () {
+    this.msg.success('Broadcast Successfully Created')
   }
 
   componentDidMount () {
@@ -53,10 +51,10 @@ class CreateBroadcast extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
- }
+  }
 
   createBroadcast () {
-    this.showAlert();
+    this.showAlert()
     this.props.createbroadcast(
       {platform: 'Facebook', type: 'text', text: this.refs.message.value})
     this.props.history.push({
@@ -95,11 +93,17 @@ class CreateBroadcast extends React.Component {
     this.refs.selectFile.value = null
     if (this.state.userfile && this.state.userfile !== '') {
       this.props.updatefileuploadStatus(true)
+      var ftype = ''
+      if (this.state.userfile.type.split('/')[0] === 'image' || this.state.userfile.type.split('/')[0] === 'audio' || this.state.userfile.type.split('/')[0] === 'video') {
+        ftype = this.state.userfile.type.split('/')[0]
+      } else {
+        ftype = 'file'
+      }
       var broadcast = {
         platform: 'Facebook',
         type: 'attachment',
         text: this.refs.message.value,
-        attachmentType: this.state.userfile.type.split('/')[0]
+        attachmentType: ftype
       }
 
       fileData.append('file', this.state.userfile)
@@ -122,18 +126,17 @@ class CreateBroadcast extends React.Component {
   }
 
   render () {
-
     var alertOptions = {
-        offset: 14,
-        position: 'bottom right',
-        theme: 'light',
-        time: 5000,
-        transition: 'scale' 
-      }
+      offset: 14,
+      position: 'bottom right',
+      theme: 'light',
+      time: 5000,
+      transition: 'scale'
+    }
 
     return (
       <div>
-         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
