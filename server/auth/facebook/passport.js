@@ -106,7 +106,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      Pages.findOne({pageId: item.id}, (err, page) => {
+      Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
         if (err) return logger.serverLog(TAG, 'Error ' + JSON.stringify(err))
         if (!page) {
           logger.serverLog(TAG, 'Page not found. Creating a page ')
@@ -114,7 +114,8 @@ function fetchPages (url, user) {
             pageId: item.id,
             pageName: item.name,
             accessToken: item.access_token,
-            user
+            userId: user._id,
+            connected: false
           })
           // save model to MongoDB
           newPage.save((err2, page) => {
