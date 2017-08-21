@@ -11,8 +11,12 @@ const config = require('./config/environment/index')
 
 const app = express()
 const httpApp = express()
+
+// todo discuss with zarmeen
 app.use(express.static(path.resolve(__dirname, '../broadcastFiles')))
+
 mongoose.connect(config.mongo.uri, config.mongo.options)
+
 app.use(bodyParser.json({ limit: '20mb' }))
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 const appObj = (config.env === 'production') ? app : httpApp

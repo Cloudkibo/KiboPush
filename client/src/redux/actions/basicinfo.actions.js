@@ -28,3 +28,10 @@ export function setBrowserVersion (data) {
     data
   }
 }
+
+export function setSocketStatus (data) {
+  return {
+    type: ActionTypes.SET_SOCKET_STATUS,
+    data
+  }
+}

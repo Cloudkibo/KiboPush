@@ -17,6 +17,8 @@ import ViewSurveyDetail from './containers/survey/ViewSurveyDetail'
 import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
 import CreateWorkflow from './containers/workflows/CreateWorkflow'
+import EditWorkflow from './containers/workflows/EditWorkflow'
+
 import Workflows from './containers/workflows/Workflows'
 import EditBroadcast from './containers/broadcast/EditBroadcast'
 import CreatePoll from './containers/polls/CreatePoll'
@@ -26,10 +28,7 @@ import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToM
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
-  console.log(nextState)
-  auth.putNext(nextState.location.pathname)
   if (!auth.loggedIn()) {
-    console.log('you are not logged in.')
     replace({
       pathname: '/',
       state: { nextPathname: nextState.location.pathname }
@@ -40,37 +39,10 @@ function requireAuth (nextState, replace) {
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
     console.log('you are logged in. You cant go here.')
-    /**
-     * We don't want to use hashhistory in router.
-     * Pressing refresh takes us to the root route
-     * So, we store the current route in cookie "next"
-     * so after each refresh, we check, if we are logged
-     * in and next cookie is there, we redirect to that route.
-     * At logout, we remove the next cookie, so login will
-     * take to index route.
-     */
-    if (auth.getNext() && auth.getNext() !== '') {
-      const next = auth.getNext()
-      auth.removeNext()
-      replace({
-        pathname: next,
-        state: { nextPathname: nextState.location.pathname }
-      })
-    } else {
-      replace({
-        pathname: '/dashboard',
-        state: { nextPathname: nextState.location.pathname }
-      })
-    }
-  } else {
-    if (auth.getNext() && auth.getNext() !== '') {
-      const next = auth.getNext()
-      auth.removeNext()
-      replace({
-        pathname: next,
-        state: { nextPathname: nextState.location.pathname }
-      })
-    }
+    replace({
+      pathname: '/dashboard',
+      state: { nextPathname: nextState.location.pathname }
+    })
   }
 }
 
@@ -88,6 +60,8 @@ const routes = (
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/editbroadcast' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
+    <Route path='/editworkflow' component={EditWorkflow} onEnter={requireAuth} />
+
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />

@@ -30,10 +30,21 @@ export function addWorkFlow (data) {
       .then(res => dispatch(updateWorkFlow(res.payload)))
   }
 }
-
+export function editWorkFlow (data) {
+  return (dispatch) => {
+    callApi('workflows/edit', 'post', data)
+      .then(res => dispatch(loadWorkFlowList()))
+  }
+}
 export function disableworkflow (data) {
   return (dispatch) => {
     callApi('workflows/disable', 'post', data)
+      .then(res => dispatch(loadWorkFlowList()))
+  }
+}
+export function enableworkflow (data) {
+  return (dispatch) => {
+    callApi('workflows/enable', 'post', data)
       .then(res => dispatch(loadWorkFlowList()))
   }
 }

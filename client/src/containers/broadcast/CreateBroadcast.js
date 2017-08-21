@@ -85,7 +85,7 @@ class CreateBroadcast extends React.Component {
     var sendmessage = true
     var fileData = new FormData()
     this.refs.selectFile.value = null
-    if (this.state.userfile && this.state.userfile != '') {
+    if (this.state.userfile && this.state.userfile !== '') {
       this.props.updatefileuploadStatus(true)
       var broadcast = {
         platform: 'Facebook',
@@ -172,12 +172,12 @@ class CreateBroadcast extends React.Component {
                     </div>
 
                     {
-                        this.state.userfilename && this.state.userfilename != '' &&
+                        this.state.userfilename && this.state.userfilename !== '' &&
                         <p style={{color: 'red'}}>{this.state.userfilename}</p>
 
                       }
                     {
-                        this.props.showFileUploading && this.props.showFileUploading == true &&
+                        this.props.showFileUploading && this.props.showFileUploading === true &&
                         <p style={{color: 'red'}}>Uploading file...Please wait</p>
 
                       }

@@ -40,8 +40,13 @@ module.exports = function (app) {
     res.sendFile(path.join(config.root, 'client/landing.html'))
   })
 
+  app.route('/:url(api|auth)/*').get((req, res) => {
+    res.status(404).send({url: `${req.originalUrl} not found`})
+  }).post((req, res) => {
+    res.status(404).send({url: `${req.originalUrl} not found`})
+  })
+
   app.use((req, res) => {
-    // res.status(404).send({ url: `${req.originalUrl} not found` });
     res.redirect('/')
   })
 }

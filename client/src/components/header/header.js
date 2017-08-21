@@ -8,13 +8,11 @@ import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 class Header extends React.Component {
-
- componentWillMount () {
+  componentWillMount () {
     this.props.getuserdetails()
   }
   render () {
-
-    console.log("This user details", this.props.user);
+    console.log('This user details', this.props.user)
 
     return (
       <header className='header' id='site-header'>
@@ -27,7 +25,7 @@ class Header extends React.Component {
           <div className='control-block'>
             <div className='author-page author vcard inline-items more'>
               <div className='author-thumb'>
-                <img alt='author' src={(this.props.user)?this.props.user.profilePic:""} className='avatar' />
+                <img alt='author' src={(this.props.user) ? this.props.user.profilePic : ''} className='avatar' />
                 <span className='icon-status online' />
                 <div className='more-dropdown more-with-triangle'>
                   <div className='mCustomScrollbar' data-mcs-theme='dark'>
@@ -55,7 +53,7 @@ class Header extends React.Component {
               </div>
               <a href='#' className='author-name fn'>
                 <div className='author-title'>
-                  {(this.props.user)?this.props.user.name: ""}
+                  {(this.props.user) ? this.props.user.name : ''}
                   <svg className='olymp-dropdown-arrow-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-dropdown-arrow-icon' />
                   </svg>
@@ -72,7 +70,6 @@ class Header extends React.Component {
   }
 }
 
-
 function mapStateToProps (state) {
   console.log(state)
   return {
@@ -82,8 +79,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
+    getuserdetails: getuserdetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
-

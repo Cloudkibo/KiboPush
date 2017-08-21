@@ -69,7 +69,6 @@ class Dashboard extends React.Component {
                 </div>
               </div>
             </div>
-        
 
           </main>
           <aside
@@ -99,7 +98,7 @@ class Dashboard extends React.Component {
                 </div>
               </div>
             </div>
-       
+
           </aside>
           <aside className='col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
@@ -116,7 +115,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
 
-                     <div className='ui-block' data-mh='friend-groups-item'>
+            <div className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>

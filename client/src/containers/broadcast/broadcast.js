@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import { AlertList } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -13,7 +14,8 @@ import { connect } from 'react-redux'
 import {
   addBroadcast,
   loadBroadcastsList,
-  sendbroadcast, downloadFile
+  sendbroadcast,
+  clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -26,14 +28,18 @@ class Broadcast extends React.Component {
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
-    this.downloadFile = this.downloadFile.bind(this)
-  }
+   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
+    this.state = {
+      alerts: []
     }
+    this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.generateAlert = this.generateAlert.bind(this)
+    this.dismissAlert = this.dismissAlert.bind(this)
   }
 
   componentDidMount () {
@@ -60,8 +66,41 @@ class Broadcast extends React.Component {
   sendBroadcast (broadcast) {
     this.props.sendbroadcast(broadcast)
   }
-  downloadFile (broadcast) {
-    this.props.downloadFile(broadcast)
+ 
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+    if (nextProps.broadcasts) {
+      console.log('Broadcasts Updated', nextProps.broadcasts)
+      // this.setState({broadcasts: nextProps.broadcasts});
+    }
+    if (nextProps.successMessage || nextProps.errorMessage) {
+      this.generateAlert('success', nextProps.successMessage)
+    } else if (nextProps.errorMessage || nextProps.errorMessage) {
+      this.generateAlert('danger', nextProps.errorMessage)
+    }
+  }
+
+  generateAlert (type, message) {
+    const newAlert = {
+      id: (new Date()).getTime(),
+      type: type,
+      message: message
+    }
+    this.setState({
+      alerts: [...this.state.alerts, newAlert]
+    })
+  }
+
+  dismissAlert (alert) {
+		// find the index of the alert that was dismissed
+    const idx = this.state.alerts.indexOf(alert)
+    this.props.clearAlertMessage()
+    if (idx >= 0) {
+      this.setState({
+				// remove the alert from the array
+        alerts: [...this.state.alerts.slice(0, idx), ...this.state.alerts.slice(idx + 1)]
+      })
+    }
   }
 
   render () {
@@ -84,6 +123,15 @@ class Broadcast extends React.Component {
                       Broadcast
                     </button>
                   </Link>
+                  {
+                    (this.props.successMessage || this.props.errorMessage) &&
+                    <AlertList
+                      position='top-right'
+                      alerts={this.state.alerts}
+                      dismissTitle='Dismiss'
+                      onDismiss={this.dismissAlert}
+                    />
+                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -140,7 +188,9 @@ class Broadcast extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    broadcasts: (state.broadcastsInfo.broadcasts)
+    broadcasts: (state.broadcastsInfo.broadcasts),
+    successMessage: (state.broadcastsInfo.successMessage),
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 
@@ -149,7 +199,7 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsList: loadBroadcastsList,
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
-    downloadFile: downloadFile
+    clearAlertMessage: clearAlertMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Broadcast)
