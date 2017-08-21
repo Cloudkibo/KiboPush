@@ -61,8 +61,9 @@ exports.uploadfile = function (req, res) {
       }
     }
 
-    fileData.append('filedata', fs.createReadStream(req.files.file))
+    fileData.append('filedata', fs.createReadStream(req.files.file.path))
     fileData.append('message', JSON.stringify(message))
+    logger.serverLog(TAG, `File Data ${JSON.stringify(fileData)}`)
     Pages.find({userId: req.user._id}, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
