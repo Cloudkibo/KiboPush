@@ -11,6 +11,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
   loadBroadcastsList,
@@ -31,6 +32,10 @@ class Broadcast extends React.Component {
     this.state = {
       alerts: []
     }
+  }
+
+  componentWillMount(){
+    this.props.loadSubscribersList();
   }
 
   componentWillReceiveProps (nextProps) {
@@ -120,6 +125,19 @@ class Broadcast extends React.Component {
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
+
+              {
+                this.props.subscribers && this.props.subscribers.length == 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  Lets invite subscribers first. Don't worry, we will guide you on how you can invite subscribers.
+                  Click on 'Invite Subscribers' button on right side of the page title.
+
+                </div>
+              }
+              <br/>
+
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
                   <Link to='createbroadcast' className='pull-right'>
@@ -194,7 +212,8 @@ function mapStateToProps (state) {
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage)
+    errorMessage: (state.broadcastsInfo.errorMessage),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -203,7 +222,8 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsList: loadBroadcastsList,
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage
+    clearAlertMessage: clearAlertMessage,
+    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Broadcast)
