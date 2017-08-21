@@ -134,7 +134,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      Pages.findOne({pageId: item.id}, (err, page) => {
+      Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
         if (!page) {
           logger.serverLog(TAG, 'Page not found. Creating a page ')
           var pageItem = new Pages({
