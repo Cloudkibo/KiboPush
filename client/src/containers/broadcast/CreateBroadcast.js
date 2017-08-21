@@ -31,7 +31,7 @@ class CreateBroadcast extends React.Component {
 
   
  
-  showAlert = () => {
+  showAlert(){
     this.msg.success('Broadcast Successfully Created');
   }
 
