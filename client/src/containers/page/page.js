@@ -13,7 +13,10 @@ import {
   addPages,
   loadMyPagesList,
   removePage
+
 } from '../../redux/actions/pages.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 
@@ -26,6 +29,7 @@ class Page extends React.Component {
   componentWillMount () {
     this.props.getuserdetails()
     this.props.loadMyPagesList()
+    this.props.loadSubscribersList()
   }
 
   componentDidMount () {
@@ -74,6 +78,15 @@ class Page extends React.Component {
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
+                {this.props.subscribers && this.props.subscribers.length == 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  Lets invite subscribers first. Don't worry, we will guide you on how you can invite subscribers.
+                  Click on 'Invite Subscribers' button on right side of the page title.
+
+                </div>
+              }
                 <div className='birthday-item inline-items badges'>
                   <h3>Pages</h3>
                   <Link to='addPages' className='btn btn-primary btn-sm'
@@ -138,7 +151,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -147,7 +161,8 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     getuserdetails: getuserdetails,
     removePage: removePage,
-    addPages: addPages
+    addPages: addPages,
+    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page)
