@@ -93,7 +93,9 @@ class Sidebar extends Component {
                   <span>Subscribe to Messenger</span>
                 </ReactTooltip>
               </li>
-              <li>
+              {
+                /*
+                     <li>
                 <Link to='/stats' data-for='stats' data-tip>
                   <svg className='olymp-stats-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-stats-icon' />
@@ -103,6 +105,10 @@ class Sidebar extends Component {
                   <span>Analytics</span>
                 </ReactTooltip>
               </li>
+                
+                */
+              }
+           
               <li>
                 <Link to='/pages' data-for='pages' data-tip>
                   <svg className='olymp-manage-widgets-icon left-menu-icon'>
@@ -175,13 +181,15 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Subscribe To Messenger</span>
                 </Link>
               </li>
-
-              <li>
+              {/*
+                <li>
                 <Link to='stats'>
                   <svg className='olymp-stats-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Account Stats'><use xlinkHref='icons/icons.svg#olymp-stats-icon' /></svg>
                   <span className='left-menu-title'>Analytics</span>
                 </Link>
-              </li>
+                </li>  
+              */}
+              
               <li>
                 <Link to='/pages'>
                   <svg className='olymp-manage-widgets-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Manage Widgets'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
