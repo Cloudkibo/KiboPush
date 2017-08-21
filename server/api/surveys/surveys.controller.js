@@ -311,7 +311,8 @@ exports.send = function (req, res) {
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG,
-                      `Page access token from graph api error ${JSON.stringify(err)}`)
+                      `Page access token from graph api error ${JSON.stringify(
+                        err)}`)
                   }
 
                   logger.serverLog(TAG,
@@ -343,6 +344,10 @@ exports.send = function (req, res) {
                     needle.post(
                       `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                       data, (err, resp) => {
+                        if (err) {
+                          return res.status(500)
+                          .json({status: 'failed', description: JSON.stringify(err)})
+                        }
                         logger.serverLog(TAG,
                           `Sending survey to subscriber response ${JSON.stringify(
                             resp.body)}`)
