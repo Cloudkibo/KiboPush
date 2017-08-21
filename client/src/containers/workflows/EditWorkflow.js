@@ -26,7 +26,7 @@ class EditWorkflow extends React.Component {
       condition: props.location.state.condition,
       keywords: props.location.state.keywords,
       reply: props.location.state.reply,
-      isActive: props.location.state.isActive === true ? 'Yes' : 'No'
+      isActive: props.location.state.isActive == true ? 'Yes' : 'No'
     }
   }
 

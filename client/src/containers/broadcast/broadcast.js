@@ -27,6 +27,13 @@ class Broadcast extends React.Component {
     //  alert('calling')
       props.loadBroadcastsList()
     }
+    this.sendBroadcast = this.sendBroadcast.bind(this)
+   }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.broadcasts) {
+      console.log('Broadcasts Updated', nextProps.broadcasts)
+      // this.setState({broadcasts: nextProps.broadcasts});
     this.state = {
       alerts: []
     }
@@ -59,7 +66,7 @@ class Broadcast extends React.Component {
   sendBroadcast (broadcast) {
     this.props.sendbroadcast(broadcast)
   }
-
+ 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
@@ -155,6 +162,7 @@ class Broadcast extends React.Component {
                                 className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>Send
                               </button>
+
                             </td>
                           </tr>
                         ))
