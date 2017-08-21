@@ -13,7 +13,7 @@ const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
-
+const FormData = require('form-data')
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
   Broadcasts.find({userId: req.user._id}, (err, broadcasts) => {
