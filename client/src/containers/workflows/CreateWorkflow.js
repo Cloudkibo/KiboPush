@@ -131,6 +131,9 @@ class CreateWorkflow extends React.Component {
                 <button onClick={this.gotoWorkflow} className='btn btn-primary'>
                   Create
                 </button>
+                <Link to="workflows" className='btn btn-primary'>
+                  Back
+                </Link>
 
               </div>
             </div>

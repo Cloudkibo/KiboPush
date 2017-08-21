@@ -162,6 +162,7 @@ class CreatePoll extends React.Component {
                       </button>
                       <Link
                         to="/poll"
+                        style={{float: 'right', margin: 2}}
                         className='btn btn-sm btn-border-think btn-transparent c-grey'>
                         Cancel
                       </Link>
