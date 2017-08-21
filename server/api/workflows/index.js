@@ -16,7 +16,4 @@ router.post('/disable', auth.isAuthenticated(), controller.disable)
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 
-/* Seed Pages */
-router.get('/seed', controller.seed)
-
 module.exports = router

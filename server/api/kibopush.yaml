@@ -57,7 +57,7 @@ securityDefinitions:
 ################################################################################
 paths:
 
-  /visitorcalls/createsession/:
+  /users/:
     post:
       description: Create a new customer support session
       consumes:

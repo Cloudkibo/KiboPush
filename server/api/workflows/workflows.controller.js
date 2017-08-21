@@ -8,8 +8,13 @@ const TAG = 'api/workflows/workflows.controller.js'
 
 exports.index = function (req, res) {
   Workflows.find({userId: req.user._id}, (err, workflows) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
     logger.serverLog(TAG, workflows)
-    logger.serverLog(TAG, `Error: ${err}`)
     res.status(200).json(workflows)
   })
 }
@@ -33,7 +38,7 @@ exports.create = function (req, res) {
         description: 'Failed to insert record'
       })
     } else {
-      res.status(200).json({ status: 'Success', payload: workflow })
+      res.status(201).json({status: 'Success', payload: workflow})
     }
   })
 }
@@ -41,21 +46,24 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   Workflows.findById(req.body._id, (err, workflow) => {
     if (err) {
-      return res.status(404)
-        .json({status: 'failed', description: 'workflow not found'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
 
-    workflow.condition = req.body.condition,
-    workflow.keywords = req.body.keywords,
-    workflow.reply = req.body.reply,
-    workflow.isActive = (req.body.isActive === 'Yes'),
+    workflow.condition = req.body.condition
+    workflow.keywords = req.body.keywords
+    workflow.reply = req.body.reply
+    workflow.isActive = (req.body.isActive === 'Yes')
     workflow.save((err2) => {
-      if (err) {
-        return res.status(404)
-          .json({status: 'failed', description: 'workflow update failed.'})
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err2)}`
+        })
       }
-      return res.status(200)
-        .json({status: 'success', payload: req.body})
+      return res.status(200).json({status: 'success', payload: req.body})
     })
   })
 }
@@ -63,18 +71,21 @@ exports.edit = function (req, res) {
 exports.enable = function (req, res) {
   Workflows.findById(req.body._id, (err, workflow) => {
     if (err) {
-      return res.status(404)
-        .json({status: 'failed', description: 'workflow not found'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
 
-    workflow.isActive = true,
+    workflow.isActive = true
     workflow.save((err2) => {
-      if (err) {
-        return res.status(404)
-          .json({status: 'failed', description: 'workflow update failed.'})
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err2)}`
+        })
       }
-      return res.status(200)
-        .json({status: 'success', payload: req.body})
+      return res.status(200).json({status: 'success', payload: req.body})
     })
   })
 }
@@ -83,24 +94,27 @@ exports.disable = function (req, res) {
   logger.serverLog(TAG, 'Workflows' + JSON.stringify(req.body))
   Workflows.findById(req.body._id, (err, workflow) => {
     if (err) {
-      return res.status(404)
-        .json({status: 'failed', description: 'workflow not found'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
 
-    workflow.isActive = false,
+    workflow.isActive = false
     workflow.save((err2) => {
-      if (err) {
-        return res.status(404)
-          .json({status: 'failed', description: 'workflow update failed.'})
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err2)}`
+        })
       }
-      return res.status(200)
-        .json({status: 'success', payload: req.body})
+      return res.status(200).json({status: 'success', payload: req.body})
     })
   })
 }
 exports.sent = function (req, res) {
-  Workflows.update({ _id: req.body._id }, { sent: req.body.sent },
-    { multi: true }, (err) => {
+  Workflows.update({_id: req.body._id}, {sent: req.body.sent},
+    {multi: true}, (err) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
@@ -108,7 +122,7 @@ exports.sent = function (req, res) {
           description: 'Failed to update record'
         })
       } else {
-        res.status(200).json({ status: 'Success' })
+        res.status(200).json({status: 'Success'})
       }
     }
   )
@@ -119,55 +133,4 @@ exports.report = function (req, res) {
 }
 exports.send = function (req, res) {
 
-}
-
-exports.seed = function (req, res) {
-  const rawDocuments = [
-    {
-      condition: 'message_contains',
-      keywords: ['Hi', 'Hello', 'Howdy'],
-      reply: 'How are you?',
-      isActive: true,
-      sent: 0
-    },
-    {
-      condition: 'message_contains',
-      keywords: ['Hi', 'Hello', 'Howdy'],
-      reply: 'How are you?',
-      isActive: true,
-      sent: 0
-    },
-    {
-      condition: 'message_begins',
-      keywords: ['Hi', 'Hello', 'Howdy'],
-      reply: 'How are you?',
-      isActive: true,
-      sent: 0
-    },
-    {
-      condition: 'message_is',
-      keywords: ['Hi', 'Hello', 'Howdy'],
-      reply: 'How are you?',
-      isActive: true,
-      sent: 0
-    },
-    {
-      condition: 'message_is',
-      keywords: ['Hi', 'Hello', 'Howdy'],
-      reply: 'How are you?',
-      isActive: true,
-      sent: 0
-    }
-  ]
-
-  Workflows.insertMany(rawDocuments)
-    .then((mongooseDocuments) => {
-      logger.serverLog(TAG, 'Workflows Table Seeded')
-      res.status(200).json({ status: 'Success' })
-    })
-    .catch((err) => {
-      /* Error handling */
-      logger.serverLog(TAG, 'Unable to seed the database')
-      res.status(500).json({ status: 'Failed', err })
-    })
 }

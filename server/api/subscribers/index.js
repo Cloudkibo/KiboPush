@@ -9,7 +9,4 @@ const auth = require('../../auth/auth.service')
 
 router.get('/', auth.isAuthenticated(), controller.index)
 
-/* Seed Pages */
-router.get('/seed', controller.seed)
-
 module.exports = router

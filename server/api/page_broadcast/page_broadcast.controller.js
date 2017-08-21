@@ -11,9 +11,9 @@ exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
   PageBroadcasts.find({ userId: req.user._id }, (err, broadcasts) => {
     if (err) {
-      return res.status(404).json({
+      return res.status(500).json({
         status: 'failed',
-        description: 'User Broadcasts not found'
+        description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
     logger.serverLog(TAG, broadcasts)
@@ -25,9 +25,9 @@ exports.show = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
   PageBroadcasts.find({ broadcastId: req.params.id }, (err, broadcasts) => {
     if (err) {
-      return res.status(404).json({
+      return res.status(500).json({
         status: 'failed',
-        description: 'User Broadcasts not found'
+        description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
     logger.serverLog(TAG, broadcasts)

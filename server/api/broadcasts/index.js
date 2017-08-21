@@ -19,7 +19,4 @@ router.post('/uploadfile', auth.isAuthenticated(), multipartyMiddleware, control
 router.get('/downloadfile/:id', controller.download)
 router.get('/:id', controller.show)
 
-/* Seed Pages */
-router.get('/seed', controller.seed)
-
 module.exports = router

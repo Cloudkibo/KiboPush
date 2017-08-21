@@ -11,9 +11,9 @@ exports.index = function (req, res) {
   logger.serverLog(TAG, 'Page Polls get api is working')
   PagePolls.find({ userId: req.user._id }, (err, polls) => {
     if (err) {
-      return res.status(404).json({
+      return res.status(500).json({
         status: 'failed',
-        description: 'User Polls not found'
+        description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
     logger.serverLog(TAG, polls)
@@ -25,9 +25,9 @@ exports.show = function (req, res) {
   logger.serverLog(TAG, 'Polls get api is working')
   PagePolls.find({ pollId: req.params.id }, (err, polls) => {
     if (err) {
-      return res.status(404).json({
+      return res.status(500).json({
         status: 'failed',
-        description: 'User Polls not found'
+        description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
     logger.serverLog(TAG, polls)
