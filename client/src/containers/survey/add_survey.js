@@ -378,10 +378,12 @@ class AddSurvey extends React.Component {
                       <button className='btn btn-secondary'
                         onClick={this.createSurvey}> Create Survey
                       </button>
-                      <button
+                      <Link
+                        to="/surveys"
+                        style={{float: 'right', margin: 2}}
                         className='btn btn-border-think btn-transparent c-grey'>
                         Cancel
-                      </button>
+                      </Link>
                     </div>
                     {this.state.showAlert === true &&
                     <center>

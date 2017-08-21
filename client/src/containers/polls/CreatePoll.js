@@ -160,10 +160,11 @@ class CreatePoll extends React.Component {
                       <button className='btn btn-primary btn-sm'
                         onClick={this.createPoll}> Create Poll
                       </button>
-                      <button
+                      <Link
+                        to="/poll"
                         className='btn btn-sm btn-border-think btn-transparent c-grey'>
                         Cancel
-                      </button>
+                      </Link>
                     </div>
 
                   </div>
