@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { createsurvey } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
+import { Link } from 'react-router'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)

@@ -11,7 +11,7 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
-
+import { Link } from 'react-router'
 class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
