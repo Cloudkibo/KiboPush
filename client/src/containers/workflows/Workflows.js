@@ -107,7 +107,7 @@ class Workflows extends React.Component {
                                   style={{float: 'left', margin: 2}}
                                   onClick={() => this.gotoEdit(workflow)}>Edit
                               </button>
-                                {workflow.isActive == true
+                                {workflow.isActive === true
                                 ? <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
 

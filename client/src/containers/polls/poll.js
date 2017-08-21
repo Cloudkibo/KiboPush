@@ -86,13 +86,15 @@ class Poll extends React.Component {
   }
 
   dismissAlert (alert) {
-		// find the index of the alert that was dismissed
+    // find the index of the alert that was dismissed
     const idx = this.state.alerts.indexOf(alert)
     this.props.clearAlertMessage()
     if (idx >= 0) {
       this.setState({
-				// remove the alert from the array
-        alerts: [...this.state.alerts.slice(0, idx), ...this.state.alerts.slice(idx + 1)]
+        // remove the alert from the array
+        alerts: [
+          ...this.state.alerts.slice(0, idx),
+          ...this.state.alerts.slice(idx + 1)]
       })
     }
   }
@@ -187,7 +189,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadPollsList: loadPollsList, addPoll: addPoll, sendpoll: sendpoll, clearAlertMessage: clearAlertMessage},
+    {
+      loadPollsList: loadPollsList,
+      addPoll: addPoll,
+      sendpoll: sendpoll,
+      clearAlertMessage: clearAlertMessage
+    },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Poll)

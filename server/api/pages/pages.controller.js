@@ -52,6 +52,10 @@ exports.enable = function (req, res) {
           }
 
           needle.post(options.url, options, (error, response) => {
+            if (error) {
+              return res.status(500)
+              .json({status: 'failed', description: JSON.stringify(error)})
+            }
             logger.serverLog(TAG,
               `This is response ${JSON.stringify(response.body)}`)
             res.status(200).json({status: 'success', payload: pages})
@@ -89,6 +93,10 @@ exports.disable = function (req, res) {
           }
 
           needle.delete(options.url, options, (error, response) => {
+            if (error) {
+              return res.status(500)
+              .json({status: 'failed', description: JSON.stringify(error)})
+            }
             logger.serverLog(TAG,
               `This is response ${JSON.stringify(response.body)}`)
             res.status(200).json({status: 'success', payload: pages})
@@ -160,6 +168,9 @@ function fetchPages (url, user) {
 
     data.forEach((item) => {
       Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
+        if (err) {
+          logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+        }
         if (!page) {
           logger.serverLog(TAG, 'Page not found. Creating a page ')
           var pageItem = new Pages({

@@ -14,6 +14,10 @@ exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get Dashboard API called')
   const data = {}
   Pages.count((err, c) => {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: JSON.stringify(err)})
+    }
     data.pagesCount = c
     res.status(200).json(data)
   })
