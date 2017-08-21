@@ -24,7 +24,13 @@ class AddPage extends React.Component {
   componentWillMount () {
     this.props.addPages()
   }
+  gotoView () {
+    this.props.history.push({
+      pathname: `/pages`
 
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -80,7 +86,9 @@ class AddPage extends React.Component {
                   </div>
                 ))
               }
-
+              <button onClick={() => this.gotoView()}
+                className='btn btn-sm bg-blue'>Done
+             </button>
             </main>
 
           </div>
