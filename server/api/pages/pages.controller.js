@@ -125,14 +125,15 @@ exports.addPages = function (req, res) {
       fetchPages(`https://graph.facebook.com/v2.10/${
       user.fbId}/accounts?access_token=${
       user.fbToken}`, user)
-    Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
-      if (err) {
-        return res.status(500).json({status: 'failed', description: err})
-      }
-      logger.serverLog(TAG, pages)
-      logger.serverLog(TAG, `Error: ${err}`)
-      res.status(201).json({status: 'success', payload: pages})
-    })
+      Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
+        if (err) {
+          return res.status(500).json({status: 'failed', description: err})
+        }
+        logger.serverLog(TAG, pages)
+        logger.serverLog(TAG, `Error: ${err}`)
+        res.status(201).json({status: 'success', payload: pages})
+      })
+    }
     //  return res.status(200).json({ status: 'success', payload: user});
   })
 }
