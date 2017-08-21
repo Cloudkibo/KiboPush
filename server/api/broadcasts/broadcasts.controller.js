@@ -103,10 +103,12 @@ exports.uploadfile = function (req, res) {
             }) */
 
             var message = {
-              attachment: {
-                type: obj.attachmentType,
-                payload: {
-                  url: `https://app.kibopush.com/broadcastFiles/userfiles/${obj.fileurl}`
+              message: {
+                attachment: {
+                  type: obj.attachmentType,
+                  payload: {
+                    url: `https://app.kibopush.com/broadcastFiles/userfiles/${obj.fileurl}`
+                  }
                 }
               }
             }
