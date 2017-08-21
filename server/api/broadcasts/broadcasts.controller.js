@@ -87,7 +87,7 @@ exports.uploadfile = function (req, res) {
       })
       return res.status(200)
       .json({status: 'success', payload: 'Broadcast sent successfully.'})
-    })*/
+    })
     // var serverPath = req.files.file.name
    /* let today = new Date()
     let uid = Math.random().toString(36).substring(7)
