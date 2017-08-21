@@ -55,6 +55,7 @@
     "passport-facebook": "latest",
     "react": "^15.6.1",
     "react-addons-pure-render-mixin": "^15.6.0",
+    "react-alert": "^2.2.0",
     "react-autocomplete": "^1.0.0-rc2",
     "react-bootstrap": "^0.30.8",
     "react-bs-notifier": "^4.3.2",

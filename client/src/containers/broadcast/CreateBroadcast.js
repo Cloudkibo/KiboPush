@@ -15,6 +15,7 @@ import {
   uploadBroadcastfile
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class CreateBroadcast extends React.Component {
   constructor (props, context) {
@@ -26,6 +27,19 @@ class CreateBroadcast extends React.Component {
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
+  }
+
+  alertOptions = {
+    offset: 14,
+    position: 'bottom right',
+    theme: 'light',
+    time: 5000,
+    transition: 'scale'
+    
+  }
+ 
+  showAlert = () => {
+    this.msg.success('Broadcast Successfully Created');
   }
 
   componentDidMount () {
@@ -46,9 +60,10 @@ class CreateBroadcast extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
-  }
+ }
 
   createBroadcast () {
+    this.showAlert();
     this.props.createbroadcast(
       {platform: 'Facebook', type: 'text', text: this.refs.message.value})
     this.props.history.push({
@@ -116,6 +131,7 @@ class CreateBroadcast extends React.Component {
   render () {
     return (
       <div>
+         <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
