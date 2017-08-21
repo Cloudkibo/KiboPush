@@ -29,14 +29,7 @@ class CreateBroadcast extends React.Component {
     this.onFileSubmit = this.onFileSubmit.bind(this)
   }
 
-  alertOptions = {
-    offset: 14,
-    position: 'bottom right',
-    theme: 'light',
-    time: 5000,
-    transition: 'scale'
-    
-  }
+  
  
   showAlert = () => {
     this.msg.success('Broadcast Successfully Created');
@@ -129,9 +122,18 @@ class CreateBroadcast extends React.Component {
   }
 
   render () {
+
+    var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'light',
+        time: 5000,
+        transition: 'scale' 
+      }
+
     return (
       <div>
-         <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
