@@ -13,6 +13,4 @@ const controller = require('./user.controller')
 
 router.get('/', auth.isAuthenticated(), controller.index)
 
-router.get('/logout', controller.logout)
-
 module.exports = router

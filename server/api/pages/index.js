@@ -17,7 +17,4 @@ router.post('/enable', auth.isAuthenticated(), controller.enable)
 router.post('/disable', auth.isAuthenticated(), controller.disable)
 router.get('/addpages', auth.isAuthenticated(), controller.addPages)
 
-/* Seed Pages */
-router.get('/seed', controller.seed)
-
 module.exports = router

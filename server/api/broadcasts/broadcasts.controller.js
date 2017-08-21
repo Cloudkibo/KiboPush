@@ -9,7 +9,7 @@ const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
-const TAG = 'api/broadcast/broadcast.controller.js'
+const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
@@ -30,40 +30,48 @@ exports.create = function (req, res) {
   logger.serverLog(TAG,
     `Inside Create Broadcast, req body = ${JSON.stringify(req.body)}`)
   const broadcast = new Broadcasts({
-    platform: req.body.platform, // TODO define this as enum with values, for now value is facebook
-    type: req.body.type, // TODO define this as enum with values ['text','attachment']
-    text: req.body.text, // message body
+    platform: req.body.platform,
+    type: req.body.type,
+    text: req.body.text,
     userId: req.user._id
   })
   broadcast.save((err, broadcast) => {
     if (err) {
-      return res.status(404)
+      return res.status(500)
         .json({status: 'failed', description: 'Broadcasts not created'})
     }
-    return res.status(200).json({status: 'success', payload: broadcast})
+    return res.status(201).json({status: 'success', payload: broadcast})
   })
 }
 
 exports.uploadfile = function (req, res) {
-  logger.serverLog(TAG, `Inside Upload file Broadcast, req body = ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG,
+    `Inside Upload file Broadcast, req body = ${JSON.stringify(req.body)}`)
 
   if (req.body) {
-    var obj = JSON.parse(req.body.broadcast)
+    let obj = JSON.parse(req.body.broadcast)
     logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
     // var serverPath = req.files.file.name
-    var today = new Date()
-    var uid = Math.random().toString(36).substring(7)
+    let today = new Date()
+    let uid = Math.random().toString(36).substring(7)
 
-    var unique_id = 'f' + uid + '' + today.getFullYear() + '' + (today.getMonth() + 1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds()
-    var serverPath = unique_id
-    var fext = req.files.file.name.split('.')
+    let uniqueId = 'f' + uid + '' + today.getFullYear() + '' +
+      (today.getMonth() + 1) + '' + today.getDate() + '' + today.getHours() +
+      '' + today.getMinutes() + '' + today.getSeconds()
+    let serverPath = uniqueId
+    let fext = req.files.file.name.split('.')
     serverPath += '.' + fext[fext.length - 1]
 
-    console.log('__dirname')
     console.log(__dirname)
     var dir = path.resolve(__dirname, '../../../broadcastFiles/')
-    if (req.files.file.size == 0) return res.send('No file submitted')
+
+    if (req.files.file.size === 0) {
+      return res.status(400).json({
+        status: 'failed',
+        description: 'No file submitted'
+      })
+    }
 
     fs.readFile(req.files.file.path, function (err, data) {
       var pathNew = dir + '/userfiles/' + serverPath
@@ -74,27 +82,30 @@ exports.uploadfile = function (req, res) {
 
             // save broadcast item
             const broadcast = new Broadcasts({
-              platform: obj.platform, // TODO define this as enum with values, for now value is facebook
-              type: obj.type, // TODO define this as enum with values ['text','attachment']
-              text: obj.text, // message body
+              platform: obj.platform,
+              type: obj.type,
+              text: obj.text,
               userId: req.user._id,
               fileurl: obj.fileurl,
               attachmentType: obj.attachmentType
             })
             Broadcasts.create(broadcast, (err2, broadcastt) => {
               if (err2) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not created'})
+                return res.status(404).json({
+                  status: 'failed',
+                  description: 'Broadcasts not created'
+                })
               }
-              return res.status(200).json({status: 'success', payload: broadcastt})
+              return res.status(200)
+                .json({status: 'success', payload: broadcastt})
             })
           }
         })
       }
     })
   } else {
-    return res.status(404)
-                  .json({status: 'failed', description: 'File data empty'})
+    return res.status(400)
+      .json({status: 'failed', description: 'File data empty'})
   }
 }
 
@@ -103,18 +114,21 @@ exports.edit = function (req, res) {
     `This is body in edit broadcast ${JSON.stringify(req.body)}`)
   Broadcasts.findById(req.body.broadcast._id, (err, broadcast) => {
     if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!broadcast) {
       return res.status(404)
         .json({status: 'failed', description: 'Broadcasts not found'})
     }
 
     broadcast.text = req.body.broadcast.text
     broadcast.save((err2) => {
-      if (err) {
-        return res.status(404)
-          .json({status: 'failed', description: 'Broadcast update failed.'})
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Broadcast update failed'})
       }
-      return res.status(200)
-        .json({status: 'success', payload: req.body.broadcast})
+      return res.status(200).json({status: 'success', payload: broadcast})
     })
   })
 }
@@ -125,34 +139,46 @@ exports.show = function (req, res) {
     .populate('userId')
     .exec((err, broadcast) => {
       if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!broadcast) {
         return res.status(404)
           .json({status: 'failed', description: 'Broadcast not found'})
       }
       return res.status(200).json({status: 'success', payload: broadcast})
     })
 }
+
 exports.download = function (req, res) {
-  Broadcasts.findById(req.params.id).populate('userId')
+  Broadcasts.findById(req.params.id)
+    .populate('userId')
     .exec((err, broadcast) => {
       if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!broadcast) {
         return res.status(404)
           .json({status: 'failed', description: 'Broadcast not found'})
       }
-      var dir = path.resolve(__dirname, '../../../broadcastFiles/')
-      var pathNew = dir + '/userfiles/' + broadcast.fileurl
+      let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+      let pathNew = dir + '/userfiles/' + broadcast.fileurl
 
       // Check if file specified by the filePath exists
+      // todo see if fs.exists is deprecated, use new one
       fs.exists(pathNew, function (exists) {
         if (exists) {
           // Content-type is very interesting part that guarantee that
           // Web browser will handle response in an appropriate manner.
           res.writeHead(200, {
             'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment; filename=' + broadcast.fileurl})
+            'Content-Disposition': 'attachment; filename=' + broadcast.fileurl
+          })
           fs.createReadStream(pathNew).pipe(res)
         } else {
-          res.writeHead(400, {'Content-Type': 'text/plain'})
-          res.end('ERROR File does NOT Exists')
+          res.status(404)
+            .json({status: 'failed', description: 'File does not exist'})
         }
       })
     })
@@ -165,7 +191,7 @@ exports.send = function (req, res) {
    */
 
   var messageData = {}
-  if (req.body.type == 'attachment') {
+  if (req.body.type === 'attachment') {
     messageData = {
       attachment: {
         type: req.body.attachmentType,
@@ -236,64 +262,6 @@ exports.verifyhook = function (req, res) {
   }
 }
 
-exports.seed = function (req, res) {
-  const rawDocuments = [
-    {
-      platform: 'facebook',
-      type: 'message',
-      poll: {},
-      survey: [],
-      message: 'Seed Message 1',
-      userId: '1',
-      pageId: '1',
-      media: null,
-      link: null
-    },
-    {
-      platform: 'facebook',
-      type: 'message',
-      poll: {},
-      survey: [],
-      message: 'Seed Message 2',
-      userId: '1',
-      pageId: '1',
-      media: null,
-      link: null
-    },
-    {
-      platform: 'facebook',
-      type: 'message',
-      poll: {},
-      survey: [],
-      message: 'Seed Message 3',
-      userId: '1',
-      pageId: '1',
-      media: null,
-      link: null
-    },
-    {
-      platform: 'facebook',
-      type: 'message',
-      poll: {},
-      survey: [],
-      message: 'Seed Message 4',
-      userId: '1',
-      pageId: '1',
-      media: null,
-      link: null
-    }
-  ]
-
-  Broadcasts.insertMany(rawDocuments).then((mongooseDocuments) => {
-    logger.serverLog(TAG, 'Pages Table Seeded')
-    res.status(200).json({status: 'Success'})
-  }).catch((err) => {
-    /* Error handling */
-    logger.serverLog(TAG, 'Unable to seed the database: ' + JSON.stringify(err))
-    res.status(500).json({status: 'Failed', description: err})
-  })
-}
-
 // webhook for facebook
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}
@@ -307,7 +275,10 @@ exports.getfbMessage = function (req, res) {
       const sender = event.sender.id
       const page = event.recipient.id
       // get accesstoken of page
-      Pages.findOne({pageId: page}).then((page) => {
+      Pages.findOne({pageId: page}).then((err, page) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
         // fetch subsriber info from Graph API
         // fetch customer details
         logger.serverLog(TAG, `This is a page${JSON.stringify(page)}`)
@@ -342,9 +313,9 @@ exports.getfbMessage = function (req, res) {
             }
 
             Subscribers.findOne({senderId: sender}, (err, subscriber) => {
-              logger.serverLog(TAG, err)
+              if (err) logger.serverLog(TAG, err)
               logger.serverLog(TAG, subscriber)
-              if (subscriber == null) {
+              if (subscriber === null) {
                 // subsriber not found, create subscriber
                 Subscribers.create(payload, (err2, subsriber) => {
                   if (err2) {
@@ -353,11 +324,10 @@ exports.getfbMessage = function (req, res) {
                   logger.serverLog(TAG, 'new Subscriber added')
                 })
               } else {
-                // return res.status(200).json({ status: 'success', payload: subscriber });
               }
             })
           } else {
-
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
           }
         })
       })
@@ -372,7 +342,9 @@ exports.getfbMessage = function (req, res) {
         // find subscriber from sender id
         Subscribers.findOne({senderId: event.sender.id}, (err, subscriber) => {
           if (err) {
-            logger.serverLog(TAG, 'Error occured in finding subscriber')
+            logger.serverLog(TAG,
+              `Error occurred in finding subscriber ${JSON.stringify(
+                err)}`)
           }
 
           const pollbody = {
@@ -383,7 +355,7 @@ exports.getfbMessage = function (req, res) {
           }
           PollResponse.create(pollbody, (err, pollresponse) => {
             if (err) {
-              logger.serverLog(TAG, err)
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
           })
         })
@@ -393,7 +365,8 @@ exports.getfbMessage = function (req, res) {
         // find subscriber from sender id
         Subscribers.findOne({senderId: event.sender.id}, (err, subscriber) => {
           if (err) {
-            logger.serverLog(TAG, 'Error occured in finding subscriber')
+            logger.serverLog(TAG, `Error occurred in finding subscriber${JSON.stringify(
+              err)}`)
           }
 
           const surveybody = {
@@ -405,7 +378,7 @@ exports.getfbMessage = function (req, res) {
           }
           SurveyResponse.create(surveybody, (err1, surveyresponse) => {
             if (err1) {
-              logger.serverLog(TAG, err1)
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
             }
 
             // send the next question
@@ -414,7 +387,8 @@ exports.getfbMessage = function (req, res) {
               _id: {$gt: resp.question_id}
             }).populate('surveyId').exec((err2, questions) => {
               if (err2) {
-                logger.serverLog(TAG, 'Survey questions not found')
+                logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
+                  err2)}`)
               }
               logger.serverLog(TAG,
                 `Questions are ${JSON.stringify(questions)}`)
