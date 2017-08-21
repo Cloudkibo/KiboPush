@@ -28,14 +28,15 @@ class Broadcast extends React.Component {
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
-   }
+  }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
-    this.state = {
-      alerts: []
+      this.state = {
+        alerts: []
+      }
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
@@ -66,7 +67,7 @@ class Broadcast extends React.Component {
   sendBroadcast (broadcast) {
     this.props.sendbroadcast(broadcast)
   }
- 
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
@@ -92,12 +93,12 @@ class Broadcast extends React.Component {
   }
 
   dismissAlert (alert) {
-		// find the index of the alert that was dismissed
+    // find the index of the alert that was dismissed
     const idx = this.state.alerts.indexOf(alert)
     this.props.clearAlertMessage()
     if (idx >= 0) {
       this.setState({
-				// remove the alert from the array
+        // remove the alert from the array
         alerts: [...this.state.alerts.slice(0, idx), ...this.state.alerts.slice(idx + 1)]
       })
     }
