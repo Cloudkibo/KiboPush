@@ -76,7 +76,7 @@ exports.uploadfile = function (req, res) {
 
         needle.post(
             `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`,
-            fileData, { multipart: true, json: false, parse: false }, (err2, resp) => {
+            fdata, { multipart: true, json: false, parse: false }, (err2, resp) => {
               if (err2) {
                 return logger.serverLog(TAG,
                   `At upload file ${JSON.stringify(err2)}`)
