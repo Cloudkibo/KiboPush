@@ -215,39 +215,32 @@ exports.send = function (req, res) {
           logger.serverLog(TAG,
             `At Subscriber fetched ${JSON.stringify(subscriber)}`)
 
+          var messageData = {}
 
-           var messageData = {}
- 
-           var formData = 
+          if (req.body.type === 'attachment') {
+            messageData = {
+              'recipient': JSON.stringify({
+                'id': subscriber.senderId
+              }),
+              'message': JSON.stringify({
+                'attachment': {
+                  'type': obj.attachmentType,
+                  'payload': {}
+                }
+              }),
 
- 
-  if (req.body.type === 'attachment') 
-   {
-      messageData ={
-        'recipient': JSON.stringify({
-            'id': subscriber.senderId
-          }),
-          'message': JSON.stringify({
-            'attachment': {
-              'type': obj.attachmentType,
-              'payload': {}
+              'filedata': fileReaderStream
             }
-          }),
-
-          'filedata': fileReaderStream
-        }
-  } else {
-    messageData ={
-                          'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'text':req.body.text
-                             })
-                 }
-   
-  }
-         
+          } else {
+            messageData = {
+              'recipient': JSON.stringify({
+                'id': subscriber.senderId
+              }),
+              'message': JSON.stringify({
+                'text': req.body.text
+              })
+            }
+          }
 
           needle.post(
             `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
