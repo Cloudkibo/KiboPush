@@ -109,9 +109,11 @@ exports.uploadfile = function (req, res) {
               'recipient': JSON.stringify({
                 'id': '1230406063754028'
               }),
-              'attachment': JSON.stringify({
-                'type': obj.attachmentType,
-                'payload': {}
+              'message': JSON.stringify({
+                'attachment': {
+                  'type': obj.attachmentType,
+                  'payload': {}
+                }
               }),
 
               'filedata': fileReaderStream
