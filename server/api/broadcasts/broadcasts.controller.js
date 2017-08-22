@@ -76,7 +76,10 @@ exports.uploadfile = function (req, res) {
       if (!err) {
         fs.writeFile(pathNew, data, function (err) {
           if (!err) {
-            /* obj.fileurl = serverPath
+            let obj = JSON.parse(req.body.broadcast)
+            logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
+
+            obj.fileurl = pathNew
 
             // save broadcast item
             const broadcast = new Broadcasts({
@@ -96,71 +99,6 @@ exports.uploadfile = function (req, res) {
               }
               return res.status(200)
                 .json({status: 'success', payload: broadcastt})
-            }) */
-
-            let obj = JSON.parse(req.body.broadcast)
-            logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
-
-                // uploading file on FB server
-            var fileReaderStream = fs.createReadStream(pathNew)
-            console.log('fileReaderStream')
-            console.log(fileReaderStream)
-            var formData = {
-              'recipient': JSON.stringify({
-                'id': '1230406063754028'
-              }),
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': obj.attachmentType,
-                  'payload': {}
-                }
-              }),
-
-              'filedata': fileReaderStream
-            }
-
-           // fdata.append('filedata', fs.createReadStream(pathNew))
-           // fdata.append('message', JSON.stringify(message))
-            // logger.serverLog(TAG, `File Data ${JSON.stringify(fdata)}`)
-            Pages.find({userId: req.user._id}, (err, pages) => {
-              if (err) {
-                logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                return res.status(404)
-                    .json({status: 'failed', description: 'Pages not found'})
-              }
-
-              pages.forEach(page => {
-                logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
-
-                request({
-                  'method': 'POST',
-                  'json': true,
-                  'formData': formData,
-                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
-                },
-                    function (err, res, body) {
-                           //* **
-                      if (err) {
-                        console.log(err)
-                      } else {
-                        console.log(body)
-                      }
-                    })
-
-               /* needle.post(
-                        `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`,
-                        fdata, { multipart: true, json: false, parse: false }, (err2, resp) => {
-                          if (err2) {
-                            return logger.serverLog(TAG,
-                              `At upload file ${JSON.stringify(err2)}`)
-                          }
-                          logger.serverLog(TAG,
-                            `Upload attachment response ${JSON.stringify(
-                              resp)}`)
-                        }) */
-              })
-              return res.status(200)
-                  .json({status: 'success', payload: 'Broadcast sent successfully.'})
             })
           }
         })
@@ -253,22 +191,8 @@ exports.send = function (req, res) {
    { platform: 'facebook',statement: req.body.text });
    */
 
-  var messageData = {}
-  if (req.body.type === 'attachment') {
-    messageData = {
-      attachment: {
-        type: req.body.attachmentType,
-        payload: {
-          url: `https://app.kibopush.com/api/broadcasts/downloadfile/${req.body._id}`
-        }
-
-      }
-    }
-  } else {
-    messageData = {
-      text: req.body.text
-    }
-  }
+        // uploading file on FB server
+  var fileReaderStream = fs.createReadStream(req.body.fileurl)
 
   Pages.find({userId: req.user._id}, (err, pages) => {
     if (err) {
@@ -291,16 +215,43 @@ exports.send = function (req, res) {
           logger.serverLog(TAG,
             `At Subscriber fetched ${JSON.stringify(subscriber)}`)
 
-          const data = {
-            recipient: {
-              id: subscriber.senderId // this is the subscriber id
-            },
-            message: messageData
-          }
+
+           var messageData = {}
+ 
+           var formData = 
+
+ 
+  if (req.body.type === 'attachment') 
+   {
+      messageData ={
+        'recipient': JSON.stringify({
+            'id': subscriber.senderId
+          }),
+          'message': JSON.stringify({
+            'attachment': {
+              'type': obj.attachmentType,
+              'payload': {}
+            }
+          }),
+
+          'filedata': fileReaderStream
+        }
+  } else {
+    messageData ={
+                          'recipient': JSON.stringify({
+                              'id': subscriber.senderId
+                            }),
+                            'message': JSON.stringify({
+                              'text':req.body.text
+                             })
+                 }
+   
+  }
+         
 
           needle.post(
             `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
-            data, (err2, resp) => {
+            messageData, (err2, resp) => {
               if (err2) {
                 return logger.serverLog(TAG,
                   `At send message broadcast ${JSON.stringify(err2)}`)
