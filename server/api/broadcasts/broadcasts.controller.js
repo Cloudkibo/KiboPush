@@ -193,7 +193,8 @@ exports.send = function (req, res) {
 
         // uploading file on FB server
   var fileReaderStream = fs.createReadStream(req.body.fileurl)
-
+  console.log('fileReaderStream')
+  console.log(fileReaderStream)
   Pages.find({userId: req.user._id}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -242,7 +243,17 @@ exports.send = function (req, res) {
             }
           }
 
-          needle.post(
+          request({
+            'method': 'POST',
+            'json': true,
+            'formData': messageData,
+            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
+          },
+        function (err, res, body) {
+               //* **
+          console.log(body)
+        })
+         /* needle.post(
             `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
             messageData, (err2, resp) => {
               if (err2) {
@@ -252,7 +263,7 @@ exports.send = function (req, res) {
               logger.serverLog(TAG,
                 `Sent broadcast to subscriber response ${JSON.stringify(
                   resp.body)}`)
-            })
+            }) */
         })
       })
     })
