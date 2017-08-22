@@ -102,17 +102,17 @@ exports.uploadfile = function (req, res) {
             logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
                 // uploading file on FB server
+            var fileReaderStream = fs.createReadStream(pathNew)
+            console.log('fileReaderStream')
+            console.log(fileReaderStream)
+            var formData = {
+              'attachment': JSON.stringify({
+                'type': obj.attachmentType,
+                'payload': {}
+              }),
+              'filedata': fileReaderStream
+            }
 
-            var message = {
-              attachment: {
-                type: obj.attachmentType,
-                payload: {}
-              }
-            }
-            var fdata = {
-              filedata: fs.createReadStream(pathNew),
-              message: message
-            }
            // fdata.append('filedata', fs.createReadStream(pathNew))
            // fdata.append('message', JSON.stringify(message))
             logger.serverLog(TAG, `File Data ${JSON.stringify(fdata)}`)
@@ -126,7 +126,22 @@ exports.uploadfile = function (req, res) {
               pages.forEach(page => {
                 logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
 
-                needle.post(
+                request({
+                  'method': 'POST',
+                  'json': true,
+                  'formData': formData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
+                },
+                    function (err, res, body) {
+                           //* **
+                      if (err) {
+                        console.log(err)
+                      } else {
+                        console.log(body)
+                      }
+                    })
+
+               /* needle.post(
                         `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`,
                         fdata, { multipart: true, json: false, parse: false }, (err2, resp) => {
                           if (err2) {
@@ -135,8 +150,8 @@ exports.uploadfile = function (req, res) {
                           }
                           logger.serverLog(TAG,
                             `Upload attachment response ${JSON.stringify(
-                              resp.body)}`)
-                        })
+                              resp)}`)
+                        }) */
               })
               return res.status(200)
                   .json({status: 'success', payload: 'Broadcast sent successfully.'})
