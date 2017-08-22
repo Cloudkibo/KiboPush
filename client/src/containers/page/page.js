@@ -88,7 +88,7 @@ class Page extends React.Component {
 
                 </div>
               }
-              <br/>
+                <br />
                 <div className='birthday-item inline-items badges'>
                   <h3>Pages</h3>
                   <Link to='addPages' className='btn btn-primary btn-sm'

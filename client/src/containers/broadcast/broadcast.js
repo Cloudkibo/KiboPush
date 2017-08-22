@@ -35,8 +35,8 @@ class Broadcast extends React.Component {
     }
   }
 
-  componentWillMount(){
-    this.props.loadSubscribersList();
+  componentWillMount () {
+    this.props.loadSubscribersList()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -72,10 +72,10 @@ class Broadcast extends React.Component {
   }
 
   sendBroadcast (broadcast) {
-    if(this.props.subscribers.length == 0){
-      this.msg.error("You dont have any Subscribers");
-    }else{
-      this.props.sendbroadcast(broadcast);
+    if (this.props.subscribers.length == 0) {
+      this.msg.error('You dont have any Subscribers')
+    } else {
+      this.props.sendbroadcast(broadcast)
     }
   }
 
@@ -92,17 +92,14 @@ class Broadcast extends React.Component {
     }
   }
 
-
-
   render () {
-
-   var alertOptions = {
-        offset: 14,
-        position: 'bottom right',
-        theme: 'dark',
-        time: 5000,
-        transition: 'scale'
-      }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
@@ -117,7 +114,7 @@ class Broadcast extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
 
-              {
+                {
                 this.props.subscribers && this.props.subscribers.length == 0 &&
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Subscribers</h4>
@@ -127,7 +124,7 @@ class Broadcast extends React.Component {
 
                 </div>
               }
-              <br/>
+                <br />
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>

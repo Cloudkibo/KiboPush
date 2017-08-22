@@ -6,6 +6,15 @@ import React, {Component} from 'react'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
 class Sidebar extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.openUserGuide = this.openUserGuide.bind(this)
+  }
+
+  openUserGuide () {
+    window.open('http://localhost:3000/userGuide', 'Client Widget', 'width=700,height=600,resizable=yes')
+  }
+
   render () {
     return (
       <div className='fixed-sidebar'>
@@ -105,10 +114,10 @@ class Sidebar extends Component {
                   <span>Analytics</span>
                 </ReactTooltip>
               </li>
-                
+
                 */
               }
-           
+
               <li>
                 <Link to='/pages' data-for='pages' data-tip>
                   <svg className='olymp-manage-widgets-icon left-menu-icon'>
@@ -119,6 +128,16 @@ class Sidebar extends Component {
                   <span>Pages</span>
                 </ReactTooltip>
 
+              </li>
+              <li>
+                <Link to='/userGuide' data-for='userGuide' data-tip>
+                  <svg className='olymp-happy-faces-icon left-menu-icon' >
+                    <use xlinkHref='icons/icons.svg#olymp-star-icon' />
+                  </svg>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='float' id='userGuide'>
+                  <span>User Guide</span>
+                </ReactTooltip>
               </li>
             </ul>
           </div>
@@ -187,13 +206,19 @@ class Sidebar extends Component {
                   <svg className='olymp-stats-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Account Stats'><use xlinkHref='icons/icons.svg#olymp-stats-icon' /></svg>
                   <span className='left-menu-title'>Analytics</span>
                 </Link>
-                </li>  
+                </li>
               */}
-              
+
               <li>
                 <Link to='/pages'>
                   <svg className='olymp-manage-widgets-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Manage Widgets'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
                   <span className='left-menu-title'>Pages</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='userGuide'>
+                  <svg className='olymp-star-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='WORKFLOWS'><use xlinkHref='icons/icons.svg#olymp-star-icon' /></svg>
+                  <span className='left-menu-title'>User Guide</span>
                 </Link>
               </li>
             </ul>

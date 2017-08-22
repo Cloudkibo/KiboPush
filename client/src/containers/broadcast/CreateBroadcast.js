@@ -189,7 +189,7 @@ class CreateBroadcast extends React.Component {
                       </button>
                       <Link
                         to='broadcasts'
-                         style={{float: 'right', margin: 2}}
+                        style={{float: 'right', margin: 2}}
                         className='btn btn-sm btn-border-think btn-transparent c-grey'>
                         Cancel
                       </Link>

@@ -92,7 +92,7 @@ class CreateWorkflow extends React.Component {
           <br />
           <br />
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Create a CreateWorkflow</h2>
+            <h2 className='presentation-margin'>Create Workflow</h2>
             <div className='ui-block'>
               <div className='ui-block-content'>
                 <label>Rule</label>
@@ -132,7 +132,7 @@ class CreateWorkflow extends React.Component {
                 <button onClick={this.gotoWorkflow} className='btn btn-primary'>
                   Create
                 </button>
-                <Link to="workflows" className='btn btn-primary'>
+                <Link to='workflows' className='btn btn-primary'>
                   Back
                 </Link>
 
