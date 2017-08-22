@@ -193,8 +193,8 @@ exports.send = function (req, res) {
 
         // uploading file on FB server
   var fileReaderStream = fs.createReadStream(req.body.fileurl)
-  console.log('fileReaderStream')
-  console.log(fileReaderStream)
+ // console.log('fileReaderStream')
+ // console.log(fileReaderStream)
   Pages.find({userId: req.user._id}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -251,7 +251,13 @@ exports.send = function (req, res) {
           },
         function (err, res, body) {
                //* **
-          console.log(body)
+          if (err) {
+            return logger.serverLog(TAG,
+                  `At send message broadcast ${JSON.stringify(err2)}`)
+          }
+          logger.serverLog(TAG,
+                `Sent broadcast to subscriber response ${JSON.stringify(
+                  body)}`)
         })
          /* needle.post(
             `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
@@ -289,7 +295,7 @@ exports.getfbMessage = function (req, res) {
   for (let i = 0; i < messagingEvents.length; i++) {
     const event = req.body.entry[0].messaging[i]
     logger.serverLog(TAG, JSON.stringify(event))
-    if (event.message) {
+    if (event.message && event.message.is_echo == false) {
       const sender = event.sender.id
       const page = event.recipient.id
       // get accesstoken of page
