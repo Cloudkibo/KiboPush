@@ -102,17 +102,17 @@ exports.uploadfile = function (req, res) {
             logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
                 // uploading file on FB server
-            var fdata = {
-              filedata: fs.createReadStream(pathNew),
-              message: message
-            }
+
             var message = {
               attachment: {
                 type: obj.attachmentType,
                 payload: {}
               }
             }
-
+            var fdata = {
+              filedata: fs.createReadStream(pathNew),
+              message: message
+            }
            // fdata.append('filedata', fs.createReadStream(pathNew))
            // fdata.append('message', JSON.stringify(message))
             logger.serverLog(TAG, `File Data ${JSON.stringify(fdata)}`)
@@ -126,7 +126,7 @@ exports.uploadfile = function (req, res) {
               pages.forEach(page => {
                 logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
 
-                   /* needle.post(
+                needle.post(
                         `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`,
                         fdata, { multipart: true, json: false, parse: false }, (err2, resp) => {
                           if (err2) {
@@ -136,14 +136,7 @@ exports.uploadfile = function (req, res) {
                           logger.serverLog(TAG,
                             `Upload attachment response ${JSON.stringify(
                               resp.body)}`)
-                        }) */
-
-                request.post({url: `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`, formData: fdata}, function (err, httpResponse, body) {
-                  if (err) {
-                    return console.error('upload failed:', err)
-                  }
-                  console.log('Upload successful!  Server responded with:', body)
-                })
+                        })
               })
               return res.status(200)
                   .json({status: 'success', payload: 'Broadcast sent successfully.'})
