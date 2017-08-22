@@ -192,8 +192,7 @@ exports.send = function (req, res) {
    */
 
         // uploading file on FB server
-  var fileReaderStream = fs.createReadStream(req.body.fileurl)
- // console.log('fileReaderStream')
+  // console.log('fileReaderStream')
  // console.log(fileReaderStream)
   Pages.find({userId: req.user._id}, (err, pages) => {
     if (err) {
@@ -219,6 +218,8 @@ exports.send = function (req, res) {
           var messageData = {}
 
           if (req.body.type === 'attachment') {
+            var fileReaderStream = fs.createReadStream(req.body.fileurl)
+
             messageData = {
               'recipient': JSON.stringify({
                 'id': subscriber.senderId
