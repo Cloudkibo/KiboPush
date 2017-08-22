@@ -106,10 +106,12 @@ exports.uploadfile = function (req, res) {
     console.log('fileReaderStream')
     console.log(fileReaderStream)
     var formData = {
-      'attachment': JSON.stringify({
-        'type': obj.attachmentType,
-        'payload': {}
-      }),
+      'message': {
+        'attachment': JSON.stringify({
+          'type': obj.attachmentType,
+          'payload': {}
+        })
+      },
       'filedata': fileReaderStream
     }
 
