@@ -117,12 +117,12 @@ class Page extends React.Component {
                             <td>
                               <button onClick={() => this.removePage(page)}
                                 className='btn btn-primary btn-sm'
-                                style={{float: 'left'}}>Remove
+                                style={{float: 'left', margin: 2}}>Remove
                               </button>
                               <button
                                 onClick={() => this.inviteSubscribers(page)}
                                 className='btn btn-primary btn-sm'
-                                style={{float: 'left'}}>Invite Subscribers
+                                style={{float: 'left', margin: 2}}>Invite Subscribers
                               </button>
                             </td>
 
