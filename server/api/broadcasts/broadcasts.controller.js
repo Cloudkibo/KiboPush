@@ -106,7 +106,9 @@ exports.uploadfile = function (req, res) {
             console.log('fileReaderStream')
             console.log(fileReaderStream)
             var formData = {
-              'message': {
+               "recipient": JSON.stringify({
+                  "id":"1230406063754028"
+               }),
                 'attachment': JSON.stringify({
                   'type': obj.attachmentType,
                   'payload': {}
@@ -132,7 +134,7 @@ exports.uploadfile = function (req, res) {
                   'method': 'POST',
                   'json': true,
                   'formData': formData,
-                  'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + page.accessToken
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
                 },
                     function (err, res, body) {
                            //* **
