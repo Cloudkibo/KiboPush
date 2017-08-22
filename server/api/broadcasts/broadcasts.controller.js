@@ -14,6 +14,7 @@ const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
 const FormData = require('form-data')
+var request = require('request')
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
   Broadcasts.find({userId: req.user._id}, (err, broadcasts) => {
@@ -74,7 +75,7 @@ exports.uploadfile = function (req, res) {
       pages.forEach(page => {
         logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
 
-        needle.post(
+       /* needle.post(
             `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`,
             fdata, { multipart: true, json: false, parse: false }, (err2, resp) => {
               if (err2) {
@@ -84,7 +85,14 @@ exports.uploadfile = function (req, res) {
               logger.serverLog(TAG,
                 `Upload attachment response ${JSON.stringify(
                   resp.body)}`)
-            })
+            }) */
+
+        request.post({url: `https://graph.facebook.com/v2.6/me/message_attachments?access_token=${page.accessToken}`, formData: fdata}, function (err, httpResponse, body) {
+          if (err) {
+            return console.error('upload failed:', err)
+          }
+          console.log('Upload successful!  Server responded with:', body)
+        })
       })
       return res.status(200)
       .json({status: 'success', payload: 'Broadcast sent successfully.'})
