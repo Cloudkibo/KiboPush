@@ -102,7 +102,10 @@ exports.uploadfile = function (req, res) {
             logger.serverLog(TAG, `Inside Obj, obj = ${JSON.stringify(obj)}`)
 
                 // uploading file on FB server
-            var fdata = new FormData()
+            var fdata = {
+              filedata: fs.createReadStream(pathNew),
+              message: message
+            }
             var message = {
               attachment: {
                 type: obj.attachmentType,
@@ -110,8 +113,8 @@ exports.uploadfile = function (req, res) {
               }
             }
 
-            fdata.append('filedata', fs.createReadStream(pathNew))
-            fdata.append('message', JSON.stringify(message))
+           // fdata.append('filedata', fs.createReadStream(pathNew))
+           // fdata.append('message', JSON.stringify(message))
             logger.serverLog(TAG, `File Data ${JSON.stringify(fdata)}`)
             Pages.find({userId: req.user._id}, (err, pages) => {
               if (err) {
