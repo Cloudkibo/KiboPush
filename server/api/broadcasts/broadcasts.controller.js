@@ -224,7 +224,7 @@ exports.send = function (req, res) {
               }),
               'message': JSON.stringify({
                 'attachment': {
-                  'type': obj.attachmentType,
+                  'type': req.body.attachmentType,
                   'payload': {}
                 }
               }),
