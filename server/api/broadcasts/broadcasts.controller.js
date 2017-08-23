@@ -322,15 +322,15 @@ function sendautomatedmsg (req, page) {
     }
 
     logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
-    const sender = event.sender.id
-    const page = event.recipient.id
+    const sender = req.sender.id
+    const page = req.recipient.id
   //  'message_is'
   //  'message_contains'
   //  'message_begins'
     if (event.message.text) {
       var index = null
       for (let i = 0; i < workflows.length; i++) {
-        var user_msg = event.message.text
+        var user_msg = req.message.text
         var words = user_msg.trim().split(' ')
 
         logger.serverLog(TAG, 'User message is ' + user_msg)
@@ -352,7 +352,7 @@ function sendautomatedmsg (req, page) {
                 // user query matched with keywords, send response
                 // sending response to sender
         needle.get(
-                  `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
+                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
                   (err3, response) => {
                     if (err3) {
                       logger.serverLog(TAG,
@@ -367,7 +367,7 @@ function sendautomatedmsg (req, page) {
                       text: workflows[i].reply
                     }
                     const data = {
-                      recipient: {id: event.sender.id}, // this is the subscriber id
+                      recipient: {id: req.sender.id}, // this is the subscriber id
                       message: messageData
                     }
                     logger.serverLog(TAG, messageData)
