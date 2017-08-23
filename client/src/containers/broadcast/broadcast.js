@@ -119,9 +119,7 @@ class Broadcast extends React.Component {
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Subscribers</h4>
                   Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  Lets invite subscribers first. Don't worry, we will guide you on how you can invite subscribers.
-                  Click on 'Invite Subscribers' button on right side of the page title.
-
+                  Lets invite subscribers first.Go To the Pages Tab using the sidebar Click on 'Invite Subscribers' button on right side of the page title.
                 </div>
               }
                 <br />
