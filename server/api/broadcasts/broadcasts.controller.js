@@ -316,7 +316,7 @@ function savepoll (req) {
 function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-  Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
+  Workflows.find({userId: page.userId, isActive: true}).populate('userId').exec((err, workflows) => {
     if (err) {
       logger.serverLog(TAG, 'Workflows not found')
     }
@@ -324,17 +324,25 @@ function sendautomatedmsg (req, page) {
     logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
     const sender = event.sender.id
     const page = event.recipient.id
+  //  'message_is'
+  //  'message_contains'
+  //  'message_begins'
     if (event.message.text) {
-      var user_msg = event.message.text
-      var words = user_msg.split(' ')
-      logger.serverLog(TAG, 'User message is ' + user_msg)
-
       var index = null
       for (let i = 0; i < workflows.length; i++) {
+        var user_msg = event.message.text
+        var words = user_msg.trim().split(' ')
+
+        logger.serverLog(TAG, 'User message is ' + user_msg)
+
         logger.serverLog(TAG, workflows[i])
-        var results = _.intersection(words, workflows[i].keywords)
-        logger.serverLog(TAG, 'Results ' + results)
-        if (results.length > 0) {
+        if (workflows[i].condition === 'message_is' && _.indexOf(workflows[i].keywords, user_msg) != -1) {
+          index = i
+          break
+        } else if (workflows[i].condition === 'message_contains' && _.intersection(words, workflows[i].keywords).length > 0) {
+          index = i
+          break
+        } else if (workflows[i].condition === 'message_begins' && _.indexOf(workflows[i].keywords, words[0]) != -1) {
           index = i
           break
         }
