@@ -10,6 +10,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addPoll,
   loadPollsList,
@@ -27,6 +28,10 @@ class Poll extends React.Component {
     }
     this.generateAlert = this.generateAlert.bind(this)
     this.dismissAlert = this.dismissAlert.bind(this)
+  }
+
+   componentWillMount () {
+    this.props.loadSubscribersList()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -112,6 +117,18 @@ class Poll extends React.Component {
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
+
+              {
+                this.props.subscribers && this.props.subscribers.length == 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  Lets invite subscribers first.Go To the Pages Tab using the sidebar Click on 'Invite Subscribers' button on right side of the page title.
+                </div>
+              }
+                <br />
+
+
                 <div className='birthday-item inline-items badges'>
                   <h3>Polls</h3>
                   <Link to='createpoll' className='pull-right'>
@@ -183,7 +200,8 @@ function mapStateToProps (state) {
   return {
     polls: (state.pollsInfo.polls),
     successMessage: (state.pollsInfo.successMessage),
-    errorMessage: (state.pollsInfo.errorMessage)
+    errorMessage: (state.pollsInfo.errorMessage),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -193,7 +211,8 @@ function mapDispatchToProps (dispatch) {
       loadPollsList: loadPollsList,
       addPoll: addPoll,
       sendpoll: sendpoll,
-      clearAlertMessage: clearAlertMessage
+      clearAlertMessage: clearAlertMessage,
+      loadSubscribersList: loadSubscribersList
     },
     dispatch)
 }

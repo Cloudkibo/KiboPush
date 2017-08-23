@@ -8,6 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   loadSurveysList,
   sendsurvey
@@ -23,6 +24,10 @@ class Survey extends React.Component {
     //  alert('calling')
       props.loadSurveysList()
     }
+  }
+
+   componentWillMount () {
+    this.props.loadSubscribersList()
   }
 
   componentDidMount () {
@@ -73,6 +78,18 @@ class Survey extends React.Component {
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
+
+              {
+                this.props.subscribers && this.props.subscribers.length == 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  Lets invite subscribers first.Go To the Pages Tab using the sidebar Click on 'Invite Subscribers' button on right side of the page title.
+                </div>
+              }
+                <br />
+
+
                 <div className='birthday-item inline-items badges'>
                   <h3>Surveys</h3>
                   <Link to='addsurvey' className='pull-right'>
@@ -135,12 +152,13 @@ class Survey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey}, dispatch)
+    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)
