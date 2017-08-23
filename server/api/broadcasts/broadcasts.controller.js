@@ -313,7 +313,7 @@ exports.savepoll = function (req) {
   })
 }
 
-exports.send_automated_msg = function (req, page) {
+exports.sendautomatedmsg = function (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
     if (err) {
@@ -577,7 +577,7 @@ exports.getfbMessage = function (req, res) {
         })
       })
 
-      send_automated_msg(event, page)
+      sendautomatedmsg(event, page)
     }
 
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
