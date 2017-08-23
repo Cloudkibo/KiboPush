@@ -517,39 +517,36 @@ exports.getfbMessage = function (req, res) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
           }
         })
-      })
 
-      // sendautomatedmsg(event, page)
-
-      logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-      Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
-        if (err) {
-          logger.serverLog(TAG, 'Workflows not found')
-        }
-
-        logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
-        const sender = event.sender.id
-        const page = event.recipient.id
-        if (event.message.text) {
-          var user_msg = event.message.text
-          var words = user_msg.split(' ')
-          logger.serverLog(TAG, 'User message is ' + user_msg)
-
-          var index = null
-          for (let i = 0; i < workflows.length; i++) {
-            logger.serverLog(TAG, workflows[i])
-            var results = _.intersection(words, workflows[i].keywords)
-            logger.serverLog(TAG, 'Results ' + results)
-            if (results.length > 0) {
-              index = i
-              break
-            }
+        logger.serverLog(TAG, 'Page userid id is ' + page.userId)
+        Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
+          if (err) {
+            logger.serverLog(TAG, 'Workflows not found')
           }
 
-          if (index != null) {
+          logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
+          const sender = event.sender.id
+          const page = event.recipient.id
+          if (event.message.text) {
+            var user_msg = event.message.text
+            var words = user_msg.split(' ')
+            logger.serverLog(TAG, 'User message is ' + user_msg)
+
+            var index = null
+            for (let i = 0; i < workflows.length; i++) {
+              logger.serverLog(TAG, workflows[i])
+              var results = _.intersection(words, workflows[i].keywords)
+              logger.serverLog(TAG, 'Results ' + results)
+              if (results.length > 0) {
+                index = i
+                break
+              }
+            }
+
+            if (index != null) {
                 // user query matched with keywords, send response
                 // sending response to sender
-            needle.get(
+              needle.get(
                   `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
                   (err3, response) => {
                     if (err3) {
@@ -577,9 +574,12 @@ exports.getfbMessage = function (req, res) {
                             respp.body)}`)
                       })
                   })
+            }
           }
-        }
+        })
       })
+
+      // sendautomatedmsg(event, page)
     }
 
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
