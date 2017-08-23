@@ -316,25 +316,33 @@ function savepoll (req) {
 function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-  Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
+  Workflows.find({userId: page.userId, isActive: true}).populate('userId').exec((err, workflows) => {
     if (err) {
       logger.serverLog(TAG, 'Workflows not found')
     }
 
     logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
-    const sender = event.sender.id
-    const page = event.recipient.id
+    const sender = req.sender.id
+    const page = req.recipient.id
+  //  'message_is'
+  //  'message_contains'
+  //  'message_begins'
     if (event.message.text) {
-      var user_msg = event.message.text
-      var words = user_msg.split(' ')
-      logger.serverLog(TAG, 'User message is ' + user_msg)
-
       var index = null
       for (let i = 0; i < workflows.length; i++) {
+        var user_msg = req.message.text
+        var words = user_msg.trim().split(' ')
+
+        logger.serverLog(TAG, 'User message is ' + user_msg)
+
         logger.serverLog(TAG, workflows[i])
-        var results = _.intersection(words, workflows[i].keywords)
-        logger.serverLog(TAG, 'Results ' + results)
-        if (results.length > 0) {
+        if (workflows[i].condition === 'message_is' && _.indexOf(workflows[i].keywords, user_msg) != -1) {
+          index = i
+          break
+        } else if (workflows[i].condition === 'message_contains' && _.intersection(words, workflows[i].keywords).length > 0) {
+          index = i
+          break
+        } else if (workflows[i].condition === 'message_begins' && _.indexOf(workflows[i].keywords, words[0]) != -1) {
           index = i
           break
         }
@@ -344,7 +352,7 @@ function sendautomatedmsg (req, page) {
                 // user query matched with keywords, send response
                 // sending response to sender
         needle.get(
-                  `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
+                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
                   (err3, response) => {
                     if (err3) {
                       logger.serverLog(TAG,
@@ -359,7 +367,7 @@ function sendautomatedmsg (req, page) {
                       text: workflows[i].reply
                     }
                     const data = {
-                      recipient: {id: event.sender.id}, // this is the subscriber id
+                      recipient: {id: req.sender.id}, // this is the subscriber id
                       message: messageData
                     }
                     logger.serverLog(TAG, messageData)
