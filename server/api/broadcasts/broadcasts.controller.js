@@ -517,7 +517,7 @@ exports.getfbMessage = function (req, res) {
   for (let i = 0; i < messagingEvents.length; i++) {
     const event = req.body.entry[0].messaging[i]
     logger.serverLog(TAG, JSON.stringify(event))
-    if (event.message && event.message.is_echo == false) {
+    if (event.message && (event.message.is_echo == false || !event.message.is_echo)) {
       const sender = event.sender.id
       const page = event.recipient.id
       // get accesstoken of page
@@ -569,7 +569,6 @@ exports.getfbMessage = function (req, res) {
                   }
                   logger.serverLog(TAG, 'new Subscriber added')
                 })
-              } else {
               }
             })
           } else {
