@@ -327,7 +327,7 @@ function sendautomatedmsg (req, page) {
   //  'message_is'
   //  'message_contains'
   //  'message_begins'
-    if (event.message.text) {
+    if (req.message.text) {
       var index = null
       for (let i = 0; i < workflows.length; i++) {
         var user_msg = req.message.text
