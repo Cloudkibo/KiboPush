@@ -315,6 +315,65 @@ exports.savepoll = function (req) {
 
 exports.sendautomatedmsg = function (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
+  logger.serverLog(TAG, 'Page userid id is ' + page.userId)
+  Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
+    if (err) {
+      logger.serverLog(TAG, 'Workflows not found')
+    }
+
+    logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
+    const sender = event.sender.id
+    const page = event.recipient.id
+    if (event.message.text) {
+      var user_msg = event.message.text
+      var words = user_msg.split(' ')
+      logger.serverLog(TAG, 'User message is ' + user_msg)
+
+      var index = null
+      for (let i = 0; i < workflows.length; i++) {
+        logger.serverLog(TAG, workflows[i])
+        var results = _.intersection(words, workflows[i].keywords)
+        logger.serverLog(TAG, 'Results ' + results)
+        if (results.length > 0) {
+          index = i
+          break
+        }
+      }
+
+      if (index != null) {
+                // user query matched with keywords, send response
+                // sending response to sender
+        needle.get(
+                  `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
+                  (err3, response) => {
+                    if (err3) {
+                      logger.serverLog(TAG,
+                        `Page accesstoken from graph api Error${JSON.stringify(
+                          err3)}`)
+                    }
+
+                    logger.serverLog(TAG,
+                      `Page accesstoken from graph api ${JSON.stringify(
+                        response.body)}`)
+                    const messageData = {
+                      text: workflows[i].reply
+                    }
+                    const data = {
+                      recipient: {id: event.sender.id}, // this is the subscriber id
+                      message: messageData
+                    }
+                    logger.serverLog(TAG, messageData)
+                    needle.post(
+                      `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                      data, (err4, respp) => {
+                        logger.serverLog(TAG,
+                          `Sending workflow response to subscriber response ${JSON.stringify(
+                            respp.body)}`)
+                      })
+                  })
+      }
+    }
+  })
 }
 exports.savesurvey = function (req) {
      // this is the response of survey question
@@ -517,69 +576,8 @@ exports.getfbMessage = function (req, res) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
           }
         })
-
-        logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-        Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
-          if (err) {
-            logger.serverLog(TAG, 'Workflows not found')
-          }
-
-          logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
-          const sender = event.sender.id
-          const page = event.recipient.id
-          if (event.message.text) {
-            var user_msg = event.message.text
-            var words = user_msg.split(' ')
-            logger.serverLog(TAG, 'User message is ' + user_msg)
-
-            var index = null
-            for (let i = 0; i < workflows.length; i++) {
-              logger.serverLog(TAG, workflows[i])
-              var results = _.intersection(words, workflows[i].keywords)
-              logger.serverLog(TAG, 'Results ' + results)
-              if (results.length > 0) {
-                index = i
-                break
-              }
-            }
-
-            if (index != null) {
-                // user query matched with keywords, send response
-                // sending response to sender
-              needle.get(
-                  `https://graph.facebook.com/v2.10/${event.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
-                  (err3, response) => {
-                    if (err3) {
-                      logger.serverLog(TAG,
-                        `Page accesstoken from graph api Error${JSON.stringify(
-                          err3)}`)
-                    }
-
-                    logger.serverLog(TAG,
-                      `Page accesstoken from graph api ${JSON.stringify(
-                        response.body)}`)
-                    const messageData = {
-                      text: workflows[i].reply
-                    }
-                    const data = {
-                      recipient: {id: event.sender.id}, // this is the subscriber id
-                      message: messageData
-                    }
-                    logger.serverLog(TAG, messageData)
-                    needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                      data, (err4, respp) => {
-                        logger.serverLog(TAG,
-                          `Sending workflow response to subscriber response ${JSON.stringify(
-                            respp.body)}`)
-                      })
-                  })
-            }
-          }
-        })
+        sendautomatedmsg(event, page)
       })
-
-      // sendautomatedmsg(event, page)
     }
 
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
