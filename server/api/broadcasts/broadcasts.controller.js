@@ -352,7 +352,7 @@ function sendautomatedmsg (req, page) {
                 // user query matched with keywords, send response
                 // sending response to sender
         needle.get(
-                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
+                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
                   (err3, response) => {
                     if (err3) {
                       logger.serverLog(TAG,
@@ -364,7 +364,7 @@ function sendautomatedmsg (req, page) {
                       `Page accesstoken from graph api ${JSON.stringify(
                         response.body)}`)
                     const messageData = {
-                      text: workflows[i].reply
+                      text: workflows[index].reply
                     }
                     const data = {
                       recipient: {id: req.sender.id}, // this is the subscriber id
