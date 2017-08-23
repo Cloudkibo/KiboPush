@@ -3,12 +3,12 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { Alert } from 'react-bs-notifier'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
