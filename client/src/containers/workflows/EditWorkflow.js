@@ -92,7 +92,7 @@ class EditWorkflow extends React.Component {
           <br />
           <br />
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Edit  CreateWorkflow</h2>
+            <h2 className='presentation-margin'>Edit Workflow</h2>
             <div className='ui-block'>
               <div className='ui-block-content'>
                 <label>Rule</label>

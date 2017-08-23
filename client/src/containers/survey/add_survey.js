@@ -380,7 +380,7 @@ class AddSurvey extends React.Component {
                         onClick={this.createSurvey}> Create Survey
                       </button>
                       <Link
-                        to="/surveys"
+                        to='/surveys'
                         style={{float: 'right', margin: 2}}
                         className='btn btn-border-think btn-transparent c-grey'>
                         Cancel

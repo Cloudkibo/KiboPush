@@ -18,13 +18,17 @@ import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
 import CreateWorkflow from './containers/workflows/CreateWorkflow'
 import EditWorkflow from './containers/workflows/EditWorkflow'
-
+import UserGuide from './containers/userGuide/userGuide'
 import Workflows from './containers/workflows/Workflows'
 import EditBroadcast from './containers/broadcast/EditBroadcast'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
+import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
+import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
+import UserGuidePolls from './containers/userGuide/userGuidePolls'
+import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -38,7 +42,7 @@ function requireAuth (nextState, replace) {
 
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
-    console.log('you are logged in. You cant go here.')
+    console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
@@ -61,7 +65,11 @@ const routes = (
     <Route path='/editbroadcast' component={EditBroadcast} onEnter={requireAuth} />
     <Route path='/createpoll' component={CreatePoll} onEnter={requireAuth} />
     <Route path='/editworkflow' component={EditWorkflow} onEnter={requireAuth} />
-
+    <Route path='/userGuide' component={UserGuide} />
+    <Route path='/userGuide-broadcasts' component={UserGuideBroadcasts} />
+    <Route path='/userGuide-surveys' component={UserGuideSurveys} />
+    <Route path='/userGuide-polls' component={UserGuidePolls} />
+    <Route path='/userGuide-workflows' component={UserGuideWorkflows} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
