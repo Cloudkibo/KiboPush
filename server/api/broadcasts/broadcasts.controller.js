@@ -289,7 +289,7 @@ exports.verifyhook = function (req, res) {
   }
 }
 
-exports.savepoll = function (req) {
+function savepoll (req) {
      // find subscriber from sender id
   var resp = JSON.parse(req.postback.payload)
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
@@ -313,7 +313,7 @@ exports.savepoll = function (req) {
   })
 }
 
-exports.sendautomatedmsg = function (req, page) {
+function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   logger.serverLog(TAG, 'Page userid id is ' + page.userId)
   Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
@@ -375,7 +375,7 @@ exports.sendautomatedmsg = function (req, page) {
     }
   })
 }
-exports.savesurvey = function (req) {
+function savesurvey (req) {
      // this is the response of survey question
         // first save the response of survey
         // find subscriber from sender id
