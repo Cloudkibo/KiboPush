@@ -50,7 +50,7 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.subscribers}</h1>
                     <div className='author-content'>
-                      <Link to='subscribers' className='h5 author-name'>Subscribers</Link>
+                      <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
                     </div>
                   </div>
                 </div>
@@ -63,7 +63,7 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.activityChart.polls}</h1>
                     <div className='author-content'>
-                      <Link to='subscribers' className='h5 author-name'>Polls</Link>
+                      <Link to='/poll' className='h5 author-name'>Polls</Link>
                     </div>
                   </div>
                 </div>
@@ -79,7 +79,7 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.pages}</h1>
                     <div className='author-content'>
-                      <a href='#' className='h5 author-name'>Pages</a>
+                      <Link to='/pages' className='h5 author-name'>Pages</Link>
                     </div>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.activityChart.surveys}</h1>
                     <div className='author-content'>
-                      <a href='#' className='h5 author-name'>Surveys</a>
+                      <Link to='/surveys' className='h5 author-name'>Surveys</Link>
                     </div>
                   </div>
                 </div>
@@ -107,8 +107,8 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.scheduledBroadcast}</h1>
                     <div className='author-content'>
-                      <a href='#' className='h5 author-name'>Scheduled
-                        Broadcasts</a>
+                      <Link to='#' className='h5 author-name'>Scheduled
+                        Broadcasts</Link>
                     </div>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.activityChart.messages}</h1>
                     <div className='author-content'>
-                      <a href='#' className='h5 author-name'>Broadcasts</a>
+                      <Link to='/broadcasts' className='h5 author-name'>Broadcasts</Link>
                     </div>
                   </div>
                 </div>
