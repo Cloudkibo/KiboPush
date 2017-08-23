@@ -327,15 +327,22 @@ exports.send_automated_msg = function (req, page) {
       var words = user_msg.split(' ')
       logger.serverLog(TAG, 'User message is ' + user_msg)
 
-      workflows.forEach(workflow => {
-        logger.serverLog(TAG, workflow)
-        var results = _.intersection(words, workflows.keywords)
+      var index = null
+      for (let i = 0; i < workflows.length; i++) {
+        logger.serverLog(TAG, workflows[i])
+        var results = _.intersection(words, workflows[i].keywords)
         logger.serverLog(TAG, 'Results ' + results)
         if (results.length > 0) {
+          index = i
+          break
+        }
+      }
+
+      if (index != null) {
                 // user query matched with keywords, send response
-                //sending response to sender
-                needle.get(
-                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflow.userId.fbToken}`,
+                // sending response to sender
+        needle.get(
+                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[i].userId.fbToken}`,
                   (err3, response) => {
                     if (err3) {
                       logger.serverLog(TAG,
@@ -347,7 +354,7 @@ exports.send_automated_msg = function (req, page) {
                       `Page accesstoken from graph api ${JSON.stringify(
                         response.body)}`)
                     const messageData = {
-                      text: workflow.reply
+                      text: workflows[i].reply
                     }
                     const data = {
                       recipient: {id: req.sender.id}, // this is the subscriber id
@@ -360,14 +367,10 @@ exports.send_automated_msg = function (req, page) {
                         logger.serverLog(TAG,
                           `Sending workflow response to subscriber response ${JSON.stringify(
                             respp.body)}`)
-                       
                       })
                   })
-                break
-        }
-      })
+      }
     }
-
   })
 }
 exports.savesurvey = function (req) {
