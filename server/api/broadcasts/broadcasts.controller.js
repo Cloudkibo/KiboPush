@@ -521,12 +521,13 @@ exports.getfbMessage = function (req, res) {
 
       // sendautomatedmsg(event, page)
 
+      logger.serverLog(TAG, 'Page userid id is ' + page.userId)
       Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
         if (err) {
           logger.serverLog(TAG, 'Workflows not found')
         }
 
-        logger.serverLog(TAG, workflows)
+        logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
         const sender = event.sender.id
         const page = event.recipient.id
         if (event.message.text) {
