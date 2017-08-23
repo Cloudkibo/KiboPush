@@ -44,6 +44,7 @@ exports.enable = function (req, res) {
             })
           }
           logger.serverLog(TAG, pages)
+          // todo discuss again with zarmeen
           const options = {
             url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
             qs: {access_token: req.body.accessToken},

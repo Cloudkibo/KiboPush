@@ -30,8 +30,8 @@ class CreateBroadcast extends React.Component {
     this.onFileSubmit = this.onFileSubmit.bind(this)
   }
 
-  showAlert () {
-    this.msg.success('Broadcast Successfully Created')
+  showAlert (bodyText) {
+    this.msg.success(bodyText)
   }
 
   componentDidMount () {
@@ -55,12 +55,17 @@ class CreateBroadcast extends React.Component {
   }
 
   createBroadcast () {
-    this.showAlert()
-    this.props.createbroadcast(
-      {platform: 'Facebook', type: 'text', text: this.refs.message.value})
-    this.props.history.push({
-      pathname: '/broadcasts'
-    })
+    let msgBody = this.refs.message.value
+    if (msgBody === '' || msgBody === undefined) {
+      this.showAlert('Cannot send empty broadcast')
+    } else {
+      this.props.createbroadcast(
+        {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+      this.props.history.push({
+        pathname: '/broadcasts'
+      })
+      this.showAlert('Broadcast created.')
+    }
   }
   _onChange (e) {
     e.preventDefault()
