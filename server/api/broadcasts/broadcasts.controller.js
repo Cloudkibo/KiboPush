@@ -314,6 +314,7 @@ exports.savepoll = function (req) {
 }
 
 exports.send_automated_msg = function (req, page) {
+  logger.serverLog(TAG, 'send_automated_msg called')
   Workflows.find({userId: page.userId}).populate('userId').exec((err, workflows) => {
     if (err) {
       logger.serverLog(TAG, 'Workflows not found')
