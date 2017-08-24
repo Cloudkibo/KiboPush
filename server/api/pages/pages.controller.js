@@ -120,7 +120,6 @@ exports.addPages = function (req, res) {
     if (err) {
       return res.status(500).json({status: 'failed', description: err})
     }
-    logger.serverLog(TAG, user)
     if (req.user.provider === 'local') {
       res.status(200).json({status: 'success', payload: []})
     } else {
@@ -131,7 +130,7 @@ exports.addPages = function (req, res) {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
-        logger.serverLog(TAG, `Pages return by ${JSON.stringify(pages)}`)
+        logger.serverLog(TAG, `Pages returned ${JSON.stringify(pages)}`)
         res.status(201).json({status: 'success', payload: pages})
       })
     }
@@ -152,7 +151,7 @@ function fetchPages (url, user) {
     if (err !== null) {
       logger.serverLog(TAG, 'error from graph api to get pages list data: ')
       logger.serverLog(TAG, JSON.stringify(err))
-      return ;
+      return
     }
     logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
     logger.serverLog(TAG, JSON.stringify(resp.body))
@@ -166,7 +165,7 @@ function fetchPages (url, user) {
           logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
         }
         if (!page) {
-          logger.serverLog(TAG, 'Page not found. Creating a page ')
+          logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
           var pageItem = new Pages({
             pageId: item.id,
             pageName: item.name,
@@ -179,7 +178,7 @@ function fetchPages (url, user) {
             if (err) {
               logger.serverLog(TAG, `Error occured ${err}`)
             }
-            logger.serverLog(TAG, `Page ${item.name} created: ${page}`)
+            logger.serverLog(TAG, `Page ${item.name} created`)
           })
         }
       })
