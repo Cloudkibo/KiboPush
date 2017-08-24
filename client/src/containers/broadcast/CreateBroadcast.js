@@ -28,6 +28,7 @@ class CreateBroadcast extends React.Component {
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
+    this.gotoView = this.gotoView.bind(this)
   }
 
   showAlert (bodyText) {
@@ -56,15 +57,19 @@ class CreateBroadcast extends React.Component {
 
   createBroadcast () {
     let msgBody = this.refs.message.value
-    if (msgBody === '' || msgBody === undefined) {
+    if ((msgBody === '' || msgBody === undefined) && (this.state.userfile == '')) {
       this.showAlert('Cannot send empty broadcast')
     } else {
-      this.props.createbroadcast(
+      if (this.state.userfile && this.state.userfile !== '') {
+        this.onFileSubmit()
+      } else {
+        this.props.createbroadcast(
         {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+      }
       this.props.history.push({
         pathname: '/broadcasts'
       })
-      this.showAlert('Broadcast created.')
+      this.showAlert('Broadcast sent successfully.')
     }
   }
   _onChange (e) {
@@ -88,11 +93,15 @@ class CreateBroadcast extends React.Component {
       this.setState({
         src: reader.result
       })
-      this.onFileSubmit()
     }
     reader.readAsDataURL(files[0])
   }
+  gotoView (event) {
+    this.props.history.push({
+      pathname: `/broadcasts`
 
+    })
+  }
   onFileSubmit () {
     var sendmessage = true
     var fileData = new FormData()
@@ -167,6 +176,9 @@ class CreateBroadcast extends React.Component {
                       <label className='control-label'>Say something...</label>
                       <textarea className='form-control' ref='message' />
                     </div>
+                    <center>
+                      <h4> OR </h4>
+                    </center>
                     <div className='add-options-message'>
                       <div className='form-group with-icon label-floating is-empty'>
                         <label className='control-label'>Upload Attachment (Audio, Video or Image file)</label>
@@ -190,12 +202,12 @@ class CreateBroadcast extends React.Component {
                       </div>
 
                       <button className='btn btn-primary btn-sm'
-                        onClick={this.createBroadcast}> Create Broadcast
+                        onClick={this.createBroadcast}> Send Broadcast
                       </button>
                       <Link
                         to='broadcasts'
                         style={{float: 'right', margin: 2}}
-                        className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                        className='btn btn-sm btn-border-think btn-transparent c-grey' onClick={this.gotoView}>
                         Cancel
                       </Link>
                     </div>

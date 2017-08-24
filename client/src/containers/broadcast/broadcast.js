@@ -127,7 +127,7 @@ class Broadcast extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
                   <Link to='createbroadcast' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create
+                    <button className='btn btn-primary btn-sm'> Send
                       Broadcast
                     </button>
                   </Link>
@@ -148,7 +148,7 @@ class Broadcast extends React.Component {
                           <th>Type</th>
                           <th>Created At</th>
                           <th>Message</th>
-                          <th>Actions</th>
+
                         </tr>
                       </thead>
                       <tbody>
@@ -160,18 +160,7 @@ class Broadcast extends React.Component {
                             <td>{broadcast.type}</td>
                             <td>{handleDate(broadcast.datetime)}</td>
                             <td>{broadcast.text}</td>
-                            <td>
-                              <button className='btn btn-primary btn-sm'
-                                onClick={() => this.gotoEdit(broadcast)}
-                                style={{float: 'left', margin: 2}}>Edit
-                              </button>
-                              <button
-                                onClick={() => this.sendBroadcast(broadcast)}
-                                className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}>Send
-                              </button>
 
-                            </td>
                           </tr>
                         ))
                       }
