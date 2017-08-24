@@ -195,7 +195,7 @@ function fetchPages (url, user) {
                 if (err) {
                   logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
                 }
-                logger.serverLog(LOG, `Likes updated for ${page.pageName}`)
+                logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
               })
             }
           })
