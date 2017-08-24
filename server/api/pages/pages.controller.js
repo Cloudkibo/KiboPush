@@ -163,7 +163,7 @@ function fetchPages (url, user) {
         qs: {access_token: item.access_token},
         method: 'GET'
       }
-      needle.get(options2.url2, options, (error, fanCount) => {
+      needle.get(options2.url, options2, (error, fanCount) => {
         if (error !== null) {
           logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
