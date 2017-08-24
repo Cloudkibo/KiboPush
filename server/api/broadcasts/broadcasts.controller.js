@@ -209,10 +209,10 @@ exports.uploadfile = function (req, res) {
                 })
 
                 // unlink file
-                fs.unlink(pathNew, function (err) {
+               /* fs.unlink(pathNew, function (err) {
                   if (err) return logger.serverLog(TAG, err)
-                  return res.status(200).json({status: 'success', payload: broadcastt})
-                })
+                }) */
+                return res.status(200).json({status: 'success', payload: broadcastt})
               })
             })
           }
