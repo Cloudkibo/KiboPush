@@ -181,11 +181,11 @@ function fetchPages (url, user) {
             const options = {
               url: `https://graph.facebook.com/v2.10/${page.pageId}/?fields=fan_count&access_token=${item.access_token}`,
               qs: {access_token: item.access_token},
-              method: 'POST'
+              method: 'GET'
 
             }
 
-            needle.delete(options.url, options, (error, response) => {
+            needle.get(options.url, options, (error, response) => {
               if (error !== null) {
                 logger.serverLog(TAG, `Error occured ${error}`)
               } else {
