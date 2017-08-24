@@ -97,6 +97,19 @@ exports.create = function (req, res) {
   })
 }
 
+exports.deletefile = function (req, res) {
+  logger.serverLog(TAG, `Inside deletefile file Broadcast, req body = ${JSON.stringify(req.body)}`)
+    // unlink file
+  fs.unlink(req.body.filepath, function (err) {
+    if (err) {
+      logger.serverLog(TAG, err)
+      return res.status(404).json({status: 'failed', description: 'File not found'})
+    } else {
+      return res.status(200)
+                        .json({status: 'failed', payload: 'File deleted successfully'})
+    }
+  })
+}
 exports.uploadfile = function (req, res) {
   logger.serverLog(TAG,
     `Inside Upload file Broadcast, req body = ${JSON.stringify(req.body)}`)
@@ -208,10 +221,6 @@ exports.uploadfile = function (req, res) {
                   })
                 })
 
-                // unlink file
-               /* fs.unlink(pathNew, function (err) {
-                  if (err) return logger.serverLog(TAG, err)
-                }) */
                 return res.status(200).json({status: 'success', payload: broadcastt})
               })
             })

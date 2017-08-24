@@ -18,5 +18,5 @@ router.get('/webhook', controller.verifyhook)
 router.post('/uploadfile', auth.isAuthenticated(), multipartyMiddleware, controller.uploadfile)
 router.get('/downloadfile/:id', controller.download)
 router.get('/:id', controller.show)
-
+router.post('/deletefile', auth.isAuthenticated(), controller.deletefile)
 module.exports = router

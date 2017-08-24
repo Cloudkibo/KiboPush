@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+export const API_URL = '/api'
 
 export function showbroadcasts (data) {
   return {
@@ -23,8 +24,13 @@ export function createbroadcast (broadcast) {
       .then(res => dispatch(addBroadcast(res.payload)))
   }
 }
-export const API_URL = '/api'
 
+export function deletefile (data) {
+  return (dispatch) => {
+    callApi('broadcasts/deletefile', 'post', data)
+      .then(res => dispatch(addBroadcast(data)))
+  }
+}
 export function uploadBroadcastfile (filedata) {
   return (dispatch) => {
     fetch(`${API_URL}/broadcasts/uploadfile`, {
@@ -33,7 +39,7 @@ export function uploadBroadcastfile (filedata) {
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
-    }).then((res) => res.json()).then((res) => res).then((res) => dispatch(addBroadcast(res.payload)))
+    }).then((res) => res.json()).then((res) => res).then((res) => dispatch(deletefile(res.payload)))
   }
 }
 export function updatefileuploadStatus (status) {
