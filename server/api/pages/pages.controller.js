@@ -7,6 +7,7 @@ const Pages = require('./Pages.model')
 const TAG = 'api/pages/pages.controller.js'
 const Users = require('../user/Users.model')
 const needle = require('needle')
+const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called')
@@ -72,26 +73,29 @@ exports.disable = function (req, res) {
           description: 'Failed to update record'
         })
       } else {
-        Pages.find({connected: true, userId: req.user._id}, (err2, pages) => {
-          if (err2) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error${JSON.stringify(err)}`
-            })
-          }
-          const options = {
-            url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
-            qs: {access_token: req.body.accessToken},
-            method: 'DELETE'
-
-          }
-
-          needle.delete(options.url, options, (error, response) => {
-            if (error) {
-              return res.status(500)
-              .json({status: 'failed', description: JSON.stringify(error)})
+        // remove subscribers of the page
+        Subscribers.remove({pageId: req.body._id}, function () {
+          Pages.find({connected: true, userId: req.user._id}, (err2, pages) => {
+            if (err2) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error${JSON.stringify(err)}`
+              })
             }
-            res.status(200).json({status: 'success', payload: pages})
+            const options = {
+              url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+              qs: {access_token: req.body.accessToken},
+              method: 'DELETE'
+
+            }
+
+            needle.delete(options.url, options, (error, response) => {
+              if (error) {
+                return res.status(500)
+              .json({status: 'failed', description: JSON.stringify(error)})
+              }
+              res.status(200).json({status: 'success', payload: pages})
+            })
           })
         })
       }
