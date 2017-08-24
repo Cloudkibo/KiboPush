@@ -129,7 +129,6 @@ class Page extends React.Component {
                           <th>Page Pic</th>
                           <th>Page Name</th>
                           <th>Likes</th>
-                          <th>Followers</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -141,7 +140,6 @@ class Page extends React.Component {
                             <td>{page.pagePic}</td>
                             <td>{page.pageName}</td>
                             <td>{page.likes}</td>
-                            <td>{page.numberOfFollowers}</td>
                             <td>
                               <button onClick={() => this.showDialog(page)}
                                 className='btn btn-primary btn-sm'
