@@ -10,16 +10,14 @@ const needle = require('needle')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called')
-  logger.serverLog(TAG, req.user)
   Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
+      logger.serverLog(TAG, `Error: ${err}`)
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, pages)
-    logger.serverLog(TAG, `Error: ${err}`)
     res.status(200).json({status: 'success', payload: pages})
   })
 }
@@ -44,7 +42,6 @@ exports.enable = function (req, res) {
             })
           }
           logger.serverLog(TAG, pages)
-          // todo discuss again with zarmeen
           const options = {
             url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
             qs: {access_token: req.body.accessToken},
@@ -57,8 +54,6 @@ exports.enable = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: JSON.stringify(error)})
             }
-            logger.serverLog(TAG,
-              `This is response ${JSON.stringify(response.body)}`)
             res.status(200).json({status: 'success', payload: pages})
           })
         })
@@ -98,8 +93,6 @@ exports.disable = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: JSON.stringify(error)})
             }
-            logger.serverLog(TAG,
-              `This is response ${JSON.stringify(response.body)}`)
             res.status(200).json({status: 'success', payload: pages})
           })
         })
