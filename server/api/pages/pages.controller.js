@@ -158,40 +158,38 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
-        if (err) {
-          logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-        }
-        if (!page) {
-          logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
-          var pageItem = new Pages({
-            pageId: item.id,
-            pageName: item.name,
-            accessToken: item.access_token,
-            userId: user._id,
-            connected: false
-          })
-          // save model to MongoDB
-          pageItem.save((err, page) => {
+      const options2 = {
+        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count&access_token=${item.access_token}`,
+        qs: {access_token: item.access_token},
+        method: 'GET'
+      }
+      needle.get(options2.url2, options, (error, fanCount) => {
+        if (error !== null) {
+          logger.serverLog(TAG, `Error occurred ${error}`)
+        } else {
+          logger.serverLog(TAG, `Data by fb for likes ${JSON.stringify(fanCount.body)}`)
+          Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
             if (err) {
-              logger.serverLog(TAG, `Error occured ${err}`)
+              logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
             }
-            logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
-
-            const options = {
-              url: `https://graph.facebook.com/v2.10/${page.pageId}/?fields=fan_count&access_token=${item.access_token}`,
-              qs: {access_token: item.access_token},
-              method: 'GET'
-
+            if (!page) {
+              logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
+              var pageItem = new Pages({
+                pageId: item.id,
+                pageName: item.name,
+                accessToken: item.access_token,
+                userId: user._id,
+                likes: fanCount.body.fan_count,
+                connected: false
+              })
+              // save model to MongoDB
+              pageItem.save((err, page) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error occurred ${err}`)
+                }
+                logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
+              })
             }
-
-            needle.get(options.url, options, (error, response) => {
-              if (error !== null) {
-                logger.serverLog(TAG, `Error occured ${error}`)
-              } else {
-                logger.serverLog(TAG, `Data by fb for likes ${JSON.stringify(response.body)}`)
-              }
-            })
           })
         }
       })
