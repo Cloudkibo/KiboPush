@@ -41,7 +41,6 @@ exports.enable = function (req, res) {
               description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG, pages)
           const options = {
             url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
             qs: {access_token: req.body.accessToken},
@@ -80,7 +79,6 @@ exports.disable = function (req, res) {
               description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG, pages)
           const options = {
             url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
             qs: {access_token: req.body.accessToken},
