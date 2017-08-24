@@ -151,8 +151,69 @@ exports.uploadfile = function (req, res) {
                   description: 'Broadcasts not created'
                 })
               }
-              return res.status(200)
-                .json({status: 'success', payload: broadcastt})
+
+              Pages.find({userId: req.user._id}, (err, pages) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                  return res.status(404)
+                        .json({status: 'failed', description: 'Pages not found'})
+                }
+
+                pages.forEach(page => {
+                  logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
+
+                  Subscribers.find({pageId: page._id}, (err, subscribers) => {
+                    if (err) {
+                      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`)
+
+                    subscribers.forEach(subscriber => {
+                      logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscriber)}`)
+
+                      var messageData = {}
+
+                      if (broadcastt.type === 'attachment') {
+                        var fileReaderStream = fs.createReadStream(broadcastt.fileurl)
+
+                        messageData = {
+                          'recipient': JSON.stringify({
+                            'id': subscriber.senderId
+                          }),
+                          'message': JSON.stringify({
+                            'attachment': {
+                              'type': broadcastt.attachmentType,
+                              'payload': {}
+                            }
+                          }),
+
+                          'filedata': fileReaderStream
+                        }
+                      }
+
+                      request({
+                        'method': 'POST',
+                        'json': true,
+                        'formData': messageData,
+                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
+                      }, function (err, res, body) {
+                                   //* **
+                        if (err) {
+                          return logger.serverLog(TAG, `At send message broadcast ${JSON.stringify(err2)}`)
+                        }
+                        logger.serverLog(TAG, `Sent broadcast to subscriber response ${JSON.stringify(
+                                      body)}`)
+                      })
+                    })
+                  })
+                })
+
+                // unlink file
+                fs.unlink(pathNew, function (err) {
+                  if (err) return logger.serverLog(TAG, err)
+                  return res.status(200).json({status: 'success', payload: broadcastt})
+                })
+              })
             })
           }
         })
