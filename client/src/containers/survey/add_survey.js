@@ -291,12 +291,14 @@ class AddSurvey extends React.Component {
                           {this.createOptionsList(i)}
                         </div>
                       </div>
+                      {this.state.surveyQuestions[i].choiceCount < 3 &&
                       <div className='col-sm-6 col-md-4'>
                         <button className='btn btn-secondary btn-sm'
                           onClick={this.addChoices.bind(this, i)}> Add
                           Choices
                         </button>
                       </div>
+                    }
                     </div>
                   </fieldset>
 
