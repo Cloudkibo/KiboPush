@@ -60,6 +60,7 @@ class Page extends React.Component {
 
   removePage (page) {
     console.log('This is the page', page)
+    this.closeDialog()
     this.props.removePage(page)
   }
 
