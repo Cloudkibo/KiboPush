@@ -36,8 +36,10 @@ exports.setup = function (User, config) {
       needle.get(`${'https://graph.facebook.com/me?fields=' +
       'id,name,locale,email,timezone,gender,picture' +
       '&access_token='}${accessToken}`, options, (err, resp) => {
-        logger.serverLog(TAG, 'error from graph api to get user data: ')
-        logger.serverLog(TAG, JSON.stringify(err))
+        if (err !== null) {
+          logger.serverLog(TAG, 'error from graph api to get user data: ')
+          logger.serverLog(TAG, JSON.stringify(err))
+        }
         logger.serverLog(TAG, 'resp from graph api to get user data: ')
         logger.serverLog(TAG, JSON.stringify(resp.body))
 
