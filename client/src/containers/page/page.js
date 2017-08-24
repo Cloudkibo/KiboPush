@@ -117,7 +117,7 @@ class Page extends React.Component {
                           <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>
                             <h3>Remove Page</h3>
                             <p>If you remove this page you will loose all of its subscribers and you will not be able to send messages, polls, and surveys to them. Are you sure to remove this page?</p>
-                            <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.inviteSubscribers(this.state.page)} >Remove</button>
+                            <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.removePage(this.state.page)} >Remove</button>
                           </ModalDialog>
                         </ModalContainer>
                       }
