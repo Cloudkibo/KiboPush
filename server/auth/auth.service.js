@@ -30,8 +30,6 @@ function isAuthenticated () {
     })
     // Attach user to request
     .use((req, res, next) => {
-      logger.serverLog(TAG, `Here is user object ${JSON.stringify(req.user)}`)
-
       Users.findOne({ fbId: req.user._id }, (err, user) => {
         if (err) return res.status(500).json({ status: 'failed', description: 'Internal Server Error' })
         if (!user) return res.status(401).json({ status: 'failed', description: 'Unauthorized' })
