@@ -40,7 +40,7 @@ class SubscribeToMessenger extends React.Component {
     if (nextprops.pages && nextprops.pages.length > 0) {
       this.setState({
         'pageid': nextprops.pages[0].pageId,
-        'fblink': this.state.fblink + nextprops.pages[0].pageId
+        'fblink': 'https://m.me/' + nextprops.pages[0].pageId
 
       })
     } else if (nextprops.pages && nextprops.pages.length == 0) {
@@ -54,7 +54,7 @@ class SubscribeToMessenger extends React.Component {
   onChangeValue (event) {
     this.setState({
       'pageid': event.target.value,
-      'fblink': this.state.fblink + event.target.value
+      'fblink': 'https://m.me/' + event.target.value
 
     })
   }
