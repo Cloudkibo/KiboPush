@@ -174,7 +174,7 @@ class Poll extends React.Component {
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}
                                 onClick={() => this.gotoViewPoll(poll)}>
-                                Send
+                                View
                               </button>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}

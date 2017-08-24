@@ -58,23 +58,23 @@ class ViewPoll extends React.Component {
                     aria-expanded='true'>
                     <div className='form-group h5-floating is-empty'>
                       <h5 className='control-h5'>Question: </h5>
-                      <div></div>
+                        <div>{this.props.location.state.statement}</div>
                     </div>
                     <br />
                     <div
                       className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                       <fieldset className='input-group-vertical'>
-                        <div className='form-group'>
-                          <h5 className='sr-only'>Response1</h5>
-                          <div>.....</div>
+                        <div >
+                          <h5 >Response 1</h5>
+                          <div>{this.props.location.state.options[0]}</div>
                         </div>
-                        <div className='form-group'>
-                          <h5 className='sr-only'>Response2</h5>
-                          <div>Trs...</div>
+                        <div >
+                          <h5 >Response 2</h5>
+                          <div>{this.props.location.state.options[1]}</div>
                         </div>
-                        <div className='form-group'>
-                          <h5 className='sr-only'>Response3</h5>
-                          <div>Res..</div>
+                        <div>
+                          <h5>Response 3</h5>
+                          <div>{this.props.location.state.options[2]}</div>
                         </div>
 
                       </fieldset>
