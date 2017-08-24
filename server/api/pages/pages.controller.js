@@ -189,6 +189,14 @@ function fetchPages (url, user) {
                 }
                 logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
               })
+            } else {
+              page.likes = fanCount.body.fan_count
+              page.save((err) => {
+                if (err) {
+                  logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+                }
+                logger.serverLog(LOG, `Likes updated for ${page.pageName}`)
+              })
             }
           })
         }
