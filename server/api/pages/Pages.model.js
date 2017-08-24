@@ -11,9 +11,6 @@ const pageSchema = new Schema({
   pagePic: {
     type: String
   },
-  numberOfFollowers: {
-    type: Number
-  },
   likes: {
     type: Number
   },
