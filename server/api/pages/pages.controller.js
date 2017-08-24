@@ -176,7 +176,22 @@ function fetchPages (url, user) {
             if (err) {
               logger.serverLog(TAG, `Error occured ${err}`)
             }
-            logger.serverLog(TAG, `Page ${item.name} created`)
+            logger.serverLog(TAG, `Page ${item.name} created ${page}`)
+
+            const options = {
+              url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count&access_token=${item.access_token}`,
+              qs: {access_token: item.access_token},
+              method: 'POST'
+
+            }
+
+            needle.delete(options.url, options, (error, response) => {
+              if (error !== null) {
+                logger.serverLog(TAG, `Error occured ${error}`)
+              } else {
+                logger.serverLog(TAG, `Data by fb for likes ${response.body}`)
+              }
+            })
           })
         }
       })
