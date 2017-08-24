@@ -30,7 +30,7 @@ class Poll extends React.Component {
     this.dismissAlert = this.dismissAlert.bind(this)
   }
 
-   componentWillMount () {
+  componentWillMount () {
     this.props.loadSubscribersList()
   }
 
@@ -118,7 +118,7 @@ class Poll extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
 
-              {
+                {
                 this.props.subscribers && this.props.subscribers.length == 0 &&
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Subscribers</h4>
@@ -127,7 +127,6 @@ class Poll extends React.Component {
                 </div>
               }
                 <br />
-
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Polls</h3>

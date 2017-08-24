@@ -8,6 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 
@@ -46,6 +47,8 @@ class Subscriber extends React.Component {
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Subscribers</h3>
+                  <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
+                    style={{float: 'right'}}>Invite Subscribers</Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>

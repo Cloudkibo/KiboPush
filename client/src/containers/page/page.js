@@ -8,6 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
+import {ModalContainer, ModalDialog} from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
   addPages,
@@ -23,7 +24,12 @@ import { bindActionCreators } from 'redux'
 class Page extends React.Component {
   constructor (props) {
     super(props)
+    this.state = {
+      isShowingModal: false
+    }
     this.removePage = this.removePage.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentWillMount () {
@@ -54,6 +60,14 @@ class Page extends React.Component {
   removePage (page) {
     console.log('This is the page', page)
     this.props.removePage(page)
+  }
+
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
 
   inviteSubscribers (page) {
@@ -91,7 +105,7 @@ class Page extends React.Component {
                 <br />
                 <div className='birthday-item inline-items badges'>
                   <h3>Pages</h3>
-                  <Link to='addPages' className='btn btn-primary btn-sm'
+                  <Link to='/addPages' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Add Pages</Link>
 
                   <div className='table-responsive'>
@@ -120,10 +134,20 @@ class Page extends React.Component {
                                 style={{float: 'left', margin: 2}}>Remove
                               </button>
                               <button
-                                onClick={() => this.inviteSubscribers(page)}
+                                onClick={() => this.showDialog}
                                 className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>Invite Subscribers
                               </button>
+                              {
+                                  this.state.isShowingModal &&
+                                  <ModalContainer style={{width: '500px'}} onClose={this.closeDialog}>
+                                    <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>
+                                      <h3>Remove Page</h3>
+                                      <p>If you remove this page you will loose all of its subscribers and you will not be able to send messages, polls, and surveys to them. Are you sure to remove this page?</p>
+                                      <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.inviteSubscribers(page)} >Remove</button>
+                                    </ModalDialog>
+                                  </ModalContainer>
+                                }
                             </td>
 
                           </tr>
