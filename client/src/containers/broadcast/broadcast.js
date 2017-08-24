@@ -127,7 +127,7 @@ class Broadcast extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
                   <Link to='createbroadcast' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create
+                    <button className='btn btn-primary btn-sm'> Send
                       Broadcast
                     </button>
                   </Link>
