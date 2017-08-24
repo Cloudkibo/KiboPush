@@ -131,8 +131,7 @@ exports.addPages = function (req, res) {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
-        logger.serverLog(TAG, pages)
-        logger.serverLog(TAG, `Error: ${err}`)
+        logger.serverLog(TAG, `Pages return by ${JSON.stringify(pages)}`)
         res.status(201).json({status: 'success', payload: pages})
       })
     }
@@ -150,12 +149,13 @@ function fetchPages (url, user) {
 
   }
   needle.get(url, options, (err, resp) => {
-    logger.serverLog(TAG, 'error from graph api to get pages list data: ')
-    logger.serverLog(TAG, JSON.stringify(err))
+    if (err !== null) {
+      logger.serverLog(TAG, 'error from graph api to get pages list data: ')
+      logger.serverLog(TAG, JSON.stringify(err))
+      return ;
+    }
     logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
     logger.serverLog(TAG, JSON.stringify(resp.body))
-    logger.serverLog(TAG, 'user data for fetch pages: ')
-    logger.serverLog(TAG, JSON.stringify(user))
 
     const data = resp.body.data
     const cursor = resp.body.paging
