@@ -176,10 +176,10 @@ function fetchPages (url, user) {
             if (err) {
               logger.serverLog(TAG, `Error occured ${err}`)
             }
-            logger.serverLog(TAG, `Page ${item.name} created ${page}`)
+            logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
 
             const options = {
-              url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count&access_token=${item.access_token}`,
+              url: `https://graph.facebook.com/v2.10/${page.pageId}/?fields=fan_count&access_token=${item.access_token}`,
               qs: {access_token: item.access_token},
               method: 'POST'
 
@@ -189,7 +189,7 @@ function fetchPages (url, user) {
               if (error !== null) {
                 logger.serverLog(TAG, `Error occured ${error}`)
               } else {
-                logger.serverLog(TAG, `Data by fb for likes ${response.body}`)
+                logger.serverLog(TAG, `Data by fb for likes ${JSON.stringify(response.body)}`)
               }
             })
           })
