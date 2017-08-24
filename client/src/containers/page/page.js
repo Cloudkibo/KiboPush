@@ -25,7 +25,8 @@ class Page extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isShowingModal: false
+      isShowingModal: false,
+      page: {}
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -62,8 +63,11 @@ class Page extends React.Component {
     this.props.removePage(page)
   }
 
-  showDialog () {
-    this.setState({isShowingModal: true})
+  showDialog (page) {
+    this.setState({
+      isShowingModal: true,
+      page: page
+    })
   }
 
   closeDialog () {
@@ -107,7 +111,16 @@ class Page extends React.Component {
                   <h3>Pages</h3>
                   <Link to='/addPages' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Add Pages</Link>
-
+                    {
+                        this.state.isShowingModal &&
+                        <ModalContainer style={{width: '500px'}} onClose={this.closeDialog}>
+                          <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>
+                            <h3>Remove Page</h3>
+                            <p>If you remove this page you will loose all of its subscribers and you will not be able to send messages, polls, and surveys to them. Are you sure to remove this page?</p>
+                            <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.inviteSubscribers(this.state.page)} >Remove</button>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -129,25 +142,15 @@ class Page extends React.Component {
                             <td>{page.likes}</td>
                             <td>{page.numberOfFollowers}</td>
                             <td>
-                              <button onClick={() => this.removePage(page)}
+                              <button onClick={() => this.showDialog(page)}
                                 className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>Remove
                               </button>
                               <button
-                                onClick={() => this.showDialog}
+                                onClick={() => this.inviteSubscribers(page)}
                                 className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>Invite Subscribers
                               </button>
-                              {
-                                  this.state.isShowingModal &&
-                                  <ModalContainer style={{width: '500px'}} onClose={this.closeDialog}>
-                                    <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>
-                                      <h3>Remove Page</h3>
-                                      <p>If you remove this page you will loose all of its subscribers and you will not be able to send messages, polls, and surveys to them. Are you sure to remove this page?</p>
-                                      <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.inviteSubscribers(page)} >Remove</button>
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
                             </td>
 
                           </tr>
