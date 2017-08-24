@@ -152,25 +152,7 @@ class SubscribeToMessenger extends React.Component {
                       aria-expanded='true'>
 
                       <br />
-                       This is a link to your page, you can send it to your friends
-                  <br />
 
-                      <input value={this.state.fblink} />
-
-                      <CopyToClipboard text={this.state.fblink}
-                        onCopy={() => this.setState({copied: true})}>
-                        <button onClick={() => { this.setState({copied: true}) }}
-                          className='uk-button uk-button-small uk-button-primary'
-                          style={{margin: 5}}>Copy
-                    </button>
-                      </CopyToClipboard>
-                      {this.state.copied &&
-                      <center>
-                        <Alert type='success'>
-                      Copied!
-                    </Alert>
-                      </center>
-                    }
                       <div className='col-xl-12'>
                         <div className='form-group'>
                           <label for='colorbtn'> Choose Color</label>
@@ -202,6 +184,26 @@ class SubscribeToMessenger extends React.Component {
                               className='fa fa-facebook fa-lg' /> {this.state.buttonText}
                           </a>
                         </div>
+
+                         This is a link to your page, you can send it to your friends
+                  <br />
+
+                        <input value={this.state.fblink} />
+
+                        <CopyToClipboard text={this.state.fblink}
+                          onCopy={() => this.setState({copied: true})}>
+                          <button onClick={() => { this.setState({copied: true}) }}
+                            className='uk-button uk-button-small uk-button-primary'
+                            style={{margin: 5}}>Copy
+                    </button>
+                        </CopyToClipboard>
+                        {this.state.copied &&
+                        <center>
+                          <Alert type='success'>
+                      Copied!
+                    </Alert>
+                        </center>
+                    }
                       </div>
 
                     </div>
