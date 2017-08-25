@@ -67,7 +67,7 @@ export function addPoll (token, data) {
   console.log('Loading broadcast list')
   return (dispatch) => {
     callApi('polls/create', 'post', data)
-      .then(res => dispatch(createPoll(data)))
+      .then(res => dispatch(createPoll(res.payload)))
   }
 }
 function rank (items, prop) {
