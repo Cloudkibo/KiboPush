@@ -72,7 +72,7 @@ class PollResult extends React.Component {
               delay: 300        // delay of 500 ms after the canvas is considered inside the viewport
             },
             legend: {
-              display: false
+              display: true
             },
             scale: {
               gridLines: {
