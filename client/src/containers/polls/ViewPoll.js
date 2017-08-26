@@ -14,8 +14,8 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 class ViewPoll extends React.Component {
   constructor (props, context) {
-    super(props, context);
-    console.log("Poll View", this.props.location.state);
+    super(props, context)
+    console.log('Poll View', this.props.location.state)
   }
 
   componentDidMount () {
@@ -31,10 +31,6 @@ class ViewPoll extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-
-  
-
-
 
   render () {
     return (
@@ -58,7 +54,7 @@ class ViewPoll extends React.Component {
                     aria-expanded='true'>
                     <div className='form-group h5-floating is-empty'>
                       <h5 className='control-h5'>Question: </h5>
-                        <div>{this.props.location.state.statement}</div>
+                      <div>{this.props.location.state.statement}</div>
                     </div>
                     <br />
                     <div
@@ -80,7 +76,7 @@ class ViewPoll extends React.Component {
                       </fieldset>
                     </div>
                     <br />
-           
+
                     <div className='add-options-message'>
                       <Link
                         to='/poll'

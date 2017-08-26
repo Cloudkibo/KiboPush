@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { AlertList } from 'react-bs-notifier'
+import { AlertList, Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -128,10 +128,13 @@ class Poll extends React.Component {
 
                 {
                 this.props.subscribers && this.props.subscribers.length == 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  Lets invite subscribers first.Go To the Pages Tab using the sidebar Click on 'Invite Subscribers' button on right side of the page title.
+                <div style={{padding: '10px'}}>
+                  <center>
+                    <Alert type='info' headline='0 Subscribers' >
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                    </Alert>
+                  </center>
                 </div>
               }
                 <br />

@@ -25,17 +25,17 @@ class Sidebar extends Component {
     window.open('http://localhost:3000/userGuide', 'Client Widget', 'width=700,height=600,resizable=yes')
   }
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.keepOnPage);
+  componentDidMount () {
+    window.addEventListener('beforeunload', this.keepOnPage)
   }
 
-  componentWillUnmount() {
-  window.removeEventListener('beforeunload', this.keepOnPage);
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.keepOnPage)
   }
 
-  keepOnPage(e) {
-    auth.logout();
-    auth.removeNext();
+  keepOnPage (e) {
+    auth.logout()
+    auth.removeNext()
   }
 
   render () {

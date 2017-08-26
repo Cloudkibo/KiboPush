@@ -47,7 +47,7 @@ class Subscriber extends React.Component {
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Subscribers</h3>
-                  <Link to='/pages' className='btn btn-primary btn-sm'
+                  <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
                   <div className='table-responsive'>
                     <table className='table table-striped'>
