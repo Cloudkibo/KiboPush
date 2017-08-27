@@ -315,7 +315,7 @@ class AddSurvey extends React.Component {
   }
 
   render () {
-      alertOptions = {
+     var alertOptions = {
         offset: 14,
         position: 'bottom left',
         theme: 'light',
