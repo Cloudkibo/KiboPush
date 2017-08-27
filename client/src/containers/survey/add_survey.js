@@ -318,8 +318,8 @@ class AddSurvey extends React.Component {
   render () {
      var alertOptions = {
         offset: 14,
-        position: 'bottom left',
-        theme: 'light',
+        position: 'bottom right',
+        theme: 'dark',
         transition: 'scale'
       }
 
