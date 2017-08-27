@@ -60,10 +60,11 @@ class AddSurvey extends React.Component {
     e.preventDefault()
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
-      this.setState({
-        showAlert: true,
-        alertmsg: 'A survey form requires atleast one question'
-      })
+      // this.setState({
+      //   showAlert: true,
+      //   alertmsg: 'A survey form requires atleast one question'
+      // })
+      this.msg.error('A survey form requires atleast one question');
     } else {
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
