@@ -35,10 +35,6 @@ class Broadcast extends React.Component {
     }
   }
 
-  componentWillMount () {
-    this.props.loadSubscribersList()
-  }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
@@ -129,11 +125,20 @@ class Broadcast extends React.Component {
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
-                  <Link to='createbroadcast' className='pull-right'>
+                  {
+                this.props.subscribers && this.props.subscribers.length == 0
+
+                  ? <Link to='createbroadcast' className='pull-right'>
+                    <button className='btn btn-sm' disabled> Send
+                      Broadcast
+                    </button>
+                  </Link>
+                  : <Link to='createbroadcast' className='pull-right'>
                     <button className='btn btn-primary btn-sm'> Send
                       Broadcast
                     </button>
                   </Link>
+                }
                   {
                     (this.props.successMessage || this.props.errorMessage) &&
                     <AlertList

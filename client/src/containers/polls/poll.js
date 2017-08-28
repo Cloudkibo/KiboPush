@@ -31,7 +31,7 @@ class Poll extends React.Component {
   }
 
   componentWillMount () {
-    this.props.loadSubscribersList()
+   // this.props.loadSubscribersList()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -141,10 +141,16 @@ class Poll extends React.Component {
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Polls</h3>
-                  <Link to='createpoll' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Poll
+                  {this.props.subscribers && this.props.subscribers.length == 0
+                    ? <Link to='createpoll' className='pull-right'>
+                      <button className='btn btn-sm' disabled> Create Poll
                     </button>
-                  </Link>
+                    </Link>
+                : <Link to='createpoll' className='pull-right'>
+                  <button className='btn btn-primary btn-sm'> Create Poll
+                    </button>
+                </Link>
+                }
                   {
                     (this.props.successMessage || this.props.errorMessage) &&
                     <AlertList

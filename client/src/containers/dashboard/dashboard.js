@@ -8,12 +8,14 @@ import { connect } from 'react-redux'
 import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadDashboardData()
     props.loadMyPagesList()
+    props.loadSubscribersList()
   }
 
   componentWillReceiveProps (nextprops) {
@@ -140,13 +142,14 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList},
+    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
