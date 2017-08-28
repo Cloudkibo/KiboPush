@@ -169,16 +169,16 @@ function fetchPages (url, user) {
       }
       needle.get(options2.url, options2, (error, fanCount) => {
         if (error !== null) {
-          logger.serverLog(TAG, `Error occurred ${error}`)
+          return logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
           const options3 = {
-            url: `https://graph.facebook.com/v2.10/${item.id}/picture&access_token=${item.access_token}`,
+            url: `https://graph.facebook.com/v2.10/${item.id}/picture`,
             qs: {access_token: item.access_token},
             method: 'GET'
           }
           needle.get(options3.url, options3, (error2, pagePicUrl) => {
             if (error2 !== null) {
-              logger.serverLog(TAG, `Error occurred ${error2}`)
+              return logger.serverLog(TAG, `Error occurred ${error2}`)
             }
             logger.serverLog(TAG, `Data by fb for page Pic ${JSON.stringify(pagePicUrl.body)}`)
             Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
