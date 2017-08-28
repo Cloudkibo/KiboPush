@@ -5,6 +5,16 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
+import Icon from 'react-icons-kit'
+import { question } from 'react-icons-kit/icomoon'   // userGuide
+import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
+import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
+import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
+import { facebook } from 'react-icons-kit/fa/facebook'  // pages
+import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
+import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
+import auth from '../../utility/auth.service'
+
 class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
@@ -13,6 +23,19 @@ class Sidebar extends Component {
 
   openUserGuide () {
     window.open('http://localhost:3000/userGuide', 'Client Widget', 'width=700,height=600,resizable=yes')
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.keepOnPage);
+  }
+
+  componentWillUnmount() {
+  window.removeEventListener('beforeunload', this.keepOnPage);
+  }
+
+  keepOnPage(e) {
+    auth.logout();
+    auth.removeNext();
   }
 
   render () {
@@ -34,9 +57,9 @@ class Sidebar extends Component {
               </li>
               <li>
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
-                  <svg className='olymp-newsfeed-icon left-menu-icon'>
-                    <use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={dashboard} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='dashboard'>
                   <span>Dashboard</span>
@@ -54,12 +77,22 @@ class Sidebar extends Component {
               </li>
               <li>
                 <Link to='/broadcasts' data-for='broadcasts' data-tip>
-                  <svg className='olymp-badge-icon left-menu-icon'>
-                    <use xlinkHref='icons/icons.svg#olymp-badge-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='broadcasts'>
                   <span>Broadcasts</span>
+                </ReactTooltip>
+              </li>
+              <li>
+                <Link to='/poll' data-for='poll' data-tip>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={listAlt} size={20} />
+                  </div>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='float' id='poll'>
+                  <span>Polls</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -74,29 +107,19 @@ class Sidebar extends Component {
               </li>
               <li>
                 <Link to='/workflows' data-for='workflows' data-tip>
-                  <svg className='olymp-happy-faces-icon left-menu-icon' >
-                    <use xlinkHref='icons/icons.svg#olymp-star-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={ic_replay_30} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='workflows'>
                   <span>Workflows</span>
                 </ReactTooltip>
               </li>
               <li>
-                <Link to='/poll' data-for='poll' data-tip>
-                  <svg className='olymp-headphones-icon left-menu-icon' >
-                    <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
-                  </svg>
-                </Link>
-                <ReactTooltip place='right' type='dark' effect='float' id='poll'>
-                  <span>Polls</span>
-                </ReactTooltip>
-              </li>
-              <li>
                 <Link to='/subscribeToMessenger' data-for='subscribe' data-tip>
-                  <svg className='olymp-stats-icon left-menu-icon'>
-                    <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={facebookSquare} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='subscribe'>
                   <span>Subscribe to Messenger</span>
@@ -120,9 +143,9 @@ class Sidebar extends Component {
 
               <li>
                 <Link to='/pages' data-for='pages' data-tip>
-                  <svg className='olymp-manage-widgets-icon left-menu-icon'>
-                    <use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={facebook} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='pages'>
                   <span>Pages</span>
@@ -131,9 +154,9 @@ class Sidebar extends Component {
               </li>
               <li>
                 <Link to='/userGuide' data-for='userGuide' data-tip>
-                  <svg className='olymp-happy-faces-icon left-menu-icon' >
-                    <use xlinkHref='icons/icons.svg#olymp-star-icon' />
-                  </svg>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={question} size={20} />
+                  </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='userGuide'>
                   <span>User Guide</span>
@@ -159,44 +182,53 @@ class Sidebar extends Component {
               </li>
               <li>
                 <Link to='/dashboard'>
-                  <svg className='olymp-newsfeed-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='DASHBOARD'><use xlinkHref='icons/icons.svg#olymp-newsfeed-icon' /></svg>
-                  <span className='left-menu-title'>DASHBOARD</span>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Dashboard' style={{paddingRight: 20}}>
+                    <Icon icon={dashboard} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Dashboard</span>
                 </Link>
               </li>
               <li>
                 <Link to='/subscribers'>
-                  <svg className='olymp-happy-faces-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='SUBSCRIBERS'><use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' /></svg>
-                  <span className='left-menu-title'>SUBSCRIBERS</span>
+                  <svg className='olymp-happy-faces-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribers'><use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' /></svg>
+                  <span className='left-menu-title'>Subscribers</span>
                 </Link>
               </li>
               <li>
                 <Link to='/broadcasts'>
-                  <svg className='olymp-badge-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Community Badges'><use xlinkHref='icons/icons.svg#olymp-badge-icon' /></svg>
-                  <span className='left-menu-title'>BROADCASTS</span>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Broadcasts' style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Broadcasts</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/poll'>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Polls' style={{paddingRight: 20}}>
+                    <Icon icon={listAlt} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Polls</span>
                 </Link>
               </li>
               <li>
                 <Link to='/surveys'>
-                  <svg className='olymp-calendar-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='CALENDAR AND EVENTS'><use xlinkHref='icons/icons.svg#olymp-calendar-icon' /></svg>
-                  <span className='left-menu-title'>SURVEYS</span>
+                  <svg className='olymp-calendar-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Surveys'><use xlinkHref='icons/icons.svg#olymp-calendar-icon' /></svg>
+                  <span className='left-menu-title'>Surveys</span>
                 </Link>
               </li>
               <li>
                 <Link to='/workflows'>
-                  <svg className='olymp-star-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='WORKFLOWS'><use xlinkHref='icons/icons.svg#olymp-star-icon' /></svg>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Workflows' style={{paddingRight: 20}}>
+                    <Icon icon={ic_replay_30} size={20} />
+                  </div>
                   <span className='left-menu-title'>Workflows</span>
-                </Link>
-              </li>
-
-              <li>
-                <Link to='/poll'>
-                  <svg className='olymp-headphones-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='CREATE POLL'><use xlinkHref='icons/icons.svg#olymp-headphones-icon' /></svg>
-                  <span className='left-menu-title'>Create Poll</span>
                 </Link>
               </li>
               <li>
                 <Link to='/subscribeToMessenger'>
-                  <svg className='olymp-weather-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribe To Messenger'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribe To Messenger' style={{paddingRight: 20}}>
+                    <Icon icon={facebookSquare} size={20} />
+                  </div>
                   <span className='left-menu-title'>Subscribe To Messenger</span>
                 </Link>
               </li>
@@ -211,33 +243,21 @@ class Sidebar extends Component {
 
               <li>
                 <Link to='/pages'>
-                  <svg className='olymp-manage-widgets-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Manage Widgets'><use xlinkHref='icons/icons.svg#olymp-manage-widgets-icon' /></svg>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Pages' style={{paddingRight: 20}}>
+                    <Icon icon={facebook} size={20} />
+                  </div>
                   <span className='left-menu-title'>Pages</span>
                 </Link>
               </li>
               <li>
                 <Link to='userGuide'>
-                  <svg className='olymp-star-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='WORKFLOWS'><use xlinkHref='icons/icons.svg#olymp-star-icon' /></svg>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='User Guide' style={{paddingRight: 20}}>
+                    <Icon icon={question} size={20} />
+                  </div>
                   <span className='left-menu-title'>User Guide</span>
                 </Link>
               </li>
             </ul>
-
-            <div className='profile-completion'>
-
-              <div className='skills-item'>
-                <div className='skills-item-info'>
-                  <span className='skills-item-title'>Profile Completion</span>
-                  <span className='skills-item-count'><span className='count-animate' data-speed='1000' data-refresh-interval='50' data-to='76' data-from='0' /><span className='units'>76%</span></span>
-                </div>
-                <div className='skills-item-meter'>
-                  <span className='skills-item-meter-active bg-primary' style={{width: 76}} />
-                </div>
-              </div>
-
-              <span>Complete <Link to='#'>your profile</Link> so people can know more about you!</span>
-
-            </div>
           </div>
         </div>
       </div>

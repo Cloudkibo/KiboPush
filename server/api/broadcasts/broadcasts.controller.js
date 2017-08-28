@@ -414,6 +414,7 @@ exports.verifyhook = function (req, res) {
 
 function savepoll (req) {
      // find subscriber from sender id
+  logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)
   var resp = JSON.parse(req.postback.payload)
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
@@ -431,6 +432,8 @@ function savepoll (req) {
     PollResponse.create(pollbody, (err, pollresponse) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG, `Poll created ${JSON.stringify(pollresponse)}`)
       }
     })
   })

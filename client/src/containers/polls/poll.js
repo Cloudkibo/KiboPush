@@ -79,6 +79,14 @@ class Poll extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
+  gotoViewPoll (poll) {
+    this.props.history.push({
+      pathname: `/pollView`,
+      state: poll
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
+  }
+
   generateAlert (type, message) {
     const newAlert = {
       id: (new Date()).getTime(),
@@ -163,6 +171,11 @@ class Poll extends React.Component {
                             <td>{handleDate(poll.datetime)}</td>
                             <td>{poll.sent}</td>
                             <td>
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.gotoViewPoll(poll)}>
+                                View
+                              </button>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}
                                 onClick={() => this.props.sendpoll(poll)}>

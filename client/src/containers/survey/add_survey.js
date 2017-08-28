@@ -12,6 +12,7 @@ import { createsurvey } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -59,10 +60,11 @@ class AddSurvey extends React.Component {
     e.preventDefault()
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
-      this.setState({
-        showAlert: true,
-        alertmsg: 'A survey form requires atleast one question'
-      })
+      // this.setState({
+      //   showAlert: true,
+      //   alertmsg: 'A survey form requires atleast one question'
+      // })
+      this.msg.error('A survey form requires atleast one question');
     } else {
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
@@ -95,8 +97,9 @@ class AddSurvey extends React.Component {
         })
       } else {
         // alert('Please fill all the fields.')
-        this.setState(
-          {showAlert: true, alertmsg: 'Please fill all the fields.'})
+        // this.setState(
+        //   {showAlert: true, alertmsg: 'Please fill all the fields.'})
+        this.msg.error('Please fill all the fields.');
       }
     }
   }
@@ -313,8 +316,16 @@ class AddSurvey extends React.Component {
   }
 
   render () {
+     var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'dark',
+        transition: 'scale'
+      }
+
     return (
       <div>
+         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />

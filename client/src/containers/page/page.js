@@ -112,7 +112,7 @@ class Page extends React.Component {
                   <h3>Pages</h3>
                   <Link to='/addPages' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Add Pages</Link>
-                    {
+                  {
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}} onClose={this.closeDialog}>
                           <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>

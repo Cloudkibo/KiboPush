@@ -24,6 +24,7 @@ import EditBroadcast from './containers/broadcast/EditBroadcast'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
+import ViewPoll from './containers/polls/ViewPoll'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
@@ -75,6 +76,7 @@ const routes = (
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
     <Route path='/addsurvey' component={AddSurvey} onEnter={requireAuth} />
     <Route path='/pollResult' component={PollResult} onEnter={requireAuth} />
+    <Route path='/pollView' component={ViewPoll} onEnter={requireAuth} />
     <Route path='/surveyResult' component={SurveyResult} onEnter={requireAuth} />
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
