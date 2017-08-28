@@ -172,7 +172,7 @@ function fetchPages (url, user) {
           logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
           const options3 = {
-            url: `https://graph.facebook.com/v2.10/${item.id}/?picture&access_token=${item.access_token}`,
+            url: `https://graph.facebook.com/v2.10/${item.id}/picture&access_token=${item.access_token}`,
             qs: {access_token: item.access_token},
             method: 'GET'
           }
