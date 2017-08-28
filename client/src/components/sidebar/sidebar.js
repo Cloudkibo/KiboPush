@@ -139,7 +139,7 @@ class Sidebar extends Component {
 
               </li>
               <li>
-                <Link to='/userGuide' data-for='userGuide' data-tip>
+                <Link to='/userGuide' data-for='userGuide' data-tip target='_blank'>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={question} size={20} />
                   </div>
