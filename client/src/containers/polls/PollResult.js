@@ -18,9 +18,17 @@ import { bindActionCreators } from 'redux'
 class PollResult extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      totalResponses: 0
+    }
   }
 
   componentDidMount () {
+    let totalResponses
+    for (let i = 0; i < this.props.responses.length; i++) {
+      totalResponses += this.props.responses[i].count
+    }
+    this.setState({totalResponses: totalResponses})
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -115,11 +123,10 @@ class PollResult extends React.Component {
                         <li>
                           <div className='points'>
                             <span>
-                          Poll Sent
+                          Polls Sent So Far
                         </span>
                           </div>
-                          <div className='count-stat'>28
-                            <span className='indicator positive'> + 4</span>
+                          <div className='count-stat'>{this.props.polls.length}
                           </div>
                         </li>
                       </ul>
@@ -133,12 +140,15 @@ class PollResult extends React.Component {
                         <li>
                           <div className='points'>
                             <span>
-                          Poll Response
+                          Poll Responses
                         </span>
                           </div>
-                          <div className='count-stat'>450
-                            <span className='indicator negative'> - 12</span>
+                          { this.props.responses
+                          ? <div className='count-stat'>{this.state.totalResponses}
                           </div>
+                          : <div className='count-stat'>{this.state.totalResponses}
+                          </div>
+                        }
                         </li>
                       </ul>
                     </div>
