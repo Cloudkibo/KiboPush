@@ -180,7 +180,7 @@ function fetchPages (url, user) {
             if (error2 !== null) {
               return logger.serverLog(TAG, `Error occurred ${error2}`)
             }
-            logger.serverLog(TAG, `Data by fb for page Pic ${JSON.stringify(pagePicUrl.body)}`)
+            logger.serverLog(TAG, `Data by fb for page Pic ${JSON.stringify(pagePicUrl.body.data)}`)
             Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
               if (err) {
                 logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
