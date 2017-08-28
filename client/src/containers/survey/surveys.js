@@ -27,10 +27,6 @@ class Survey extends React.Component {
     }
   }
 
-  componentWillMount () {
-    this.props.loadSubscribersList()
-  }
-
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -95,10 +91,18 @@ class Survey extends React.Component {
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Surveys</h3>
-                  <Link to='addsurvey' className='pull-right'>
+                  {
+                this.props.subscribers && this.props.subscribers.length == 0
+
+                  ? <Link to='addsurvey' className='pull-right'>
+                    <button className='btn btn-sm' disabled> Create Survey
+                    </button>
+                  </Link>
+                  : <Link to='addsurvey' className='pull-right'>
                     <button className='btn btn-primary btn-sm'> Create Survey
                     </button>
                   </Link>
+                }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
