@@ -9,6 +9,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { Alert } from 'react-bs-notifier'
 import {
   loadSurveysList,
   sendsurvey
@@ -20,6 +21,12 @@ import { handleDate } from '../../utility/utils'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      index: '',
+      showAlert: false,
+      alertmsg: '',
+      timeout: 2000
+    }
     if (!props.surveys) {
     //  alert('calling')
       props.loadSurveysList()
@@ -65,6 +72,15 @@ class Survey extends React.Component {
     })
   }
 
+   setStateAlert(status,i)
+  {
+       this.setState({
+        index: i,
+        showAlert: status,
+        alertmsg: 'A survey form requires atleast one subscriber'
+      })
+  }
+
   render () {
     return (
       <div>
@@ -81,11 +97,13 @@ class Survey extends React.Component {
 
                 {
                 this.props.subscribers && this.props.subscribers.length == 0 &&
+              
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Subscribers</h4>
                   Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
                   Lets invite subscribers first.Go To the Pages Tab using the sidebar Click on 'Invite Subscribers' button on right side of the page title.
                 </div>
+               
               }
                 <br />
 
@@ -108,26 +126,62 @@ class Survey extends React.Component {
                       </thead>
                       <tbody>
                         {
+
+                    
                         this.props.surveys && this.props.surveys.map((survey, i) => (
                           <tr>
+                           
                             <td>{survey.title}</td>
                             <td>{survey.description}</td>
-                            <td>{handleDate(survey.datetime)}</td>
+                            <td>{handleDate(survey.datetime)}
+
+                                  { this.state.showAlert==true && this.state.index==i &&
+
+                    <right><Alert type='danger'>
+                      You cannot snd survey because you currently have no subscribers.
+                    </Alert></right>
+                    
+   }
+   </td>
                             <td>
                               <button className='btn btn-primary btn-sm'
                                 onClick={() => this.gotoView(survey)}>View
                               </button>
+                              
                               <button className='btn btn-primary btn-sm'
                                 onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
                               <button className='btn btn-primary btn-sm'
-                                onClick={() => this.props.sendsurvey(
-                                        survey)}> Send
-                              </button>
+                                onClick={() => 
+                                  {
+                                    console.log('this.props.subscribers');
+                                    console.log(this.props.subscribers.length);
+                                    console.log('this.state.showAlert');
+                                    console.log(this.state.showAlert);
+                                    if(this.props.subscribers && this.props.subscribers.length == 0 )
+                                      {        
+                                   this.setStateAlert(true,i);
 
+                
+                    console.log('no subscribers in render');
+                    }
+                    else{
+                       this.setStateAlert(false,i);
+                      
+                            console.log('there are some subscribers in render');
+                         
+                                  this.props.sendsurvey(
+                                        survey)
+                                      }
+
+                                      }}> Send
+                              </button>
+                               <br />
+                  
                             </td>
+
                           </tr>
 
                         ))
