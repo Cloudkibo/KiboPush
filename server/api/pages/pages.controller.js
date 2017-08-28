@@ -171,49 +171,39 @@ function fetchPages (url, user) {
         if (error !== null) {
           return logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
-          const options3 = {
-            url: `https://graph.facebook.com/v2.10/${item.id}/picture`,
-            qs: {access_token: item.access_token},
-            method: 'GET'
-          }
-          needle.get(options3.url, options3, (error2, pagePicUrl) => {
-            if (error2 !== null) {
-              return logger.serverLog(TAG, `Error occurred ${error2}`)
+          logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(fanCount.body.fan_count)}`)
+          Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
+            if (err) {
+              logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
             }
-            logger.serverLog(TAG, `Data by fb for page Pic ${JSON.stringify(pagePicUrl.body.data)}`)
-            Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
-              if (err) {
-                logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-              }
-              if (!page) {
-                logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
-                var pageItem = new Pages({
-                  pageId: item.id,
-                  pageName: item.name,
-                  accessToken: item.access_token,
-                  userId: user._id,
-                  likes: fanCount.body.fan_count,
-                  pagePic: pagePicUrl.body.data.url,
-                  connected: false
-                })
-                // save model to MongoDB
-                pageItem.save((err, page) => {
-                  if (err) {
-                    logger.serverLog(TAG, `Error occurred ${err}`)
-                  }
-                  logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
-                })
-              } else {
-                page.likes = fanCount.body.fan_count
-                page.pagePic = pagePicUrl.body.data.url
-                page.save((err) => {
-                  if (err) {
-                    logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-                  }
-                  logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
-                })
-              }
-            })
+            if (!page) {
+              logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
+              var pageItem = new Pages({
+                pageId: item.id,
+                pageName: item.name,
+                accessToken: item.access_token,
+                userId: user._id,
+                likes: fanCount.body.fan_count,
+                pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
+                connected: false
+              })
+              // save model to MongoDB
+              pageItem.save((err, page) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error occurred ${err}`)
+                }
+                logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
+              })
+            } else {
+              page.likes = fanCount.body.fan_count
+              page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+              page.save((err) => {
+                if (err) {
+                  logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+                }
+                logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+              })
+            }
           })
         }
       })
