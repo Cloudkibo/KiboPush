@@ -96,7 +96,7 @@ class InviteSubscribers extends React.Component {
                     <select value={this.state.selectPage.pageId} className='input-sm' onChange={this.onChangeValue}>
                       <option value={-1}>--Select Page--</option>
                       {this.props.pages && this.props.pages.map((page, i) => (
-                        <option onClick={this.onClickPage(page)} value={page.pageId}>{page.pageName}</option>
+                        <option value={page.pageId}>{page.pageName}</option>
                     ))
                     }
                     </select>
