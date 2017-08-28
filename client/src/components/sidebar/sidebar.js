@@ -13,7 +13,6 @@ import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
 import { facebook } from 'react-icons-kit/fa/facebook'  // pages
 import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
 import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
-import auth from '../../utility/auth.service'
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -23,19 +22,6 @@ class Sidebar extends Component {
 
   openUserGuide () {
     window.open('http://localhost:3000/userGuide', 'Client Widget', 'width=700,height=600,resizable=yes')
-  }
-
-  componentDidMount () {
-    window.addEventListener('beforeunload', this.keepOnPage)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('beforeunload', this.keepOnPage)
-  }
-
-  keepOnPage (e) {
-    auth.logout()
-    auth.removeNext()
   }
 
   render () {
