@@ -137,7 +137,7 @@ class Page extends React.Component {
                         { (this.props.pages)
                         ? this.props.pages.map((page, i) => (
                           <tr>
-                            <td>{page.pagePic}</td>
+                            <td><img alt='author' src={(page.pagePic) ? page.pagePic : ''} className='avatar' /></td>
                             <td>{page.pageName}</td>
                             <td>{page.likes}</td>
                             <td>

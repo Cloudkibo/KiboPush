@@ -171,37 +171,49 @@ function fetchPages (url, user) {
         if (error !== null) {
           logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
-          logger.serverLog(TAG, `Data by fb for likes ${JSON.stringify(fanCount.body)}`)
-          Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
-            if (err) {
-              logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+          const options3 = {
+            url: `https://graph.facebook.com/v2.10/${item.id}/?picture&access_token=${item.access_token}`,
+            qs: {access_token: item.access_token},
+            method: 'GET'
+          }
+          needle.get(options3.url, options3, (error2, pagePicUrl) => {
+            if (error2 !== null) {
+              logger.serverLog(TAG, `Error occurred ${error2}`)
             }
-            if (!page) {
-              logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
-              var pageItem = new Pages({
-                pageId: item.id,
-                pageName: item.name,
-                accessToken: item.access_token,
-                userId: user._id,
-                likes: fanCount.body.fan_count,
-                connected: false
-              })
-              // save model to MongoDB
-              pageItem.save((err, page) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error occurred ${err}`)
-                }
-                logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
-              })
-            } else {
-              page.likes = fanCount.body.fan_count
-              page.save((err) => {
-                if (err) {
-                  logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-                }
-                logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
-              })
-            }
+            logger.serverLog(TAG, `Data by fb for likes ${JSON.stringify(fanCount.body)}`)
+            Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
+              if (err) {
+                logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+              }
+              if (!page) {
+                logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
+                var pageItem = new Pages({
+                  pageId: item.id,
+                  pageName: item.name,
+                  accessToken: item.access_token,
+                  userId: user._id,
+                  likes: fanCount.body.fan_count,
+                  pagePic: pagePicUrl.body.data.url,
+                  connected: false
+                })
+                // save model to MongoDB
+                pageItem.save((err, page) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error occurred ${err}`)
+                  }
+                  logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
+                })
+              } else {
+                page.likes = fanCount.body.fan_count
+                page.pagePic = pagePicUrl.body.data.url
+                page.save((err) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+                  }
+                  logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+                })
+              }
+            })
           })
         }
       })
