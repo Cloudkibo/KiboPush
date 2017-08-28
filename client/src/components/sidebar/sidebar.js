@@ -6,6 +6,8 @@ import React, {Component} from 'react'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
 import Icon from 'react-icons-kit'
+import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+import UserGuide from '../../containers/userGuide/userGuide'
 import { question } from 'react-icons-kit/icomoon'   // userGuide
 import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
 import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
@@ -17,11 +19,19 @@ import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
 class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      isShowingModal: false
+    }
     this.openUserGuide = this.openUserGuide.bind(this)
+    this.closeUserGuide = this.closeUserGuide.bind(this)
   }
 
   openUserGuide () {
-    window.open('http://localhost:3000/userGuide', 'Client Widget', 'width=700,height=600,resizable=yes')
+    this.setState({isShowingModal: true})
+  }
+
+  closeUserGuide () {
+    this.setState({isShowingModal: false})
   }
 
   render () {
@@ -139,7 +149,7 @@ class Sidebar extends Component {
 
               </li>
               <li>
-                <Link to='/userGuide' data-for='userGuide' data-tip target='_blank'>
+                <Link onClick={this.openUserGuide} data-for='userGuide' data-tip target='_blank'>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={question} size={20} />
                   </div>
@@ -236,7 +246,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               <li>
-                <Link to='userGuide'>
+                <Link onClick={this.openUserGuide}>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='User Guide' style={{paddingRight: 20}}>
                     <Icon icon={question} size={20} />
                   </div>
@@ -245,6 +255,14 @@ class Sidebar extends Component {
               </li>
             </ul>
           </div>
+          {
+                this.state.isShowingModal &&
+                <ModalContainer style={{marginTop: '50px'}} onClose={this.closeUserGuide}>
+                  <ModalDialog style={{marginTop: '50px'}} onClose={this.closeUserGuide}>
+                    <UserGuide />
+                  </ModalDialog>
+                </ModalContainer>
+              }
         </div>
       </div>
     )

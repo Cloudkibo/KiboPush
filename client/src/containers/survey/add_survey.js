@@ -64,7 +64,7 @@ class AddSurvey extends React.Component {
       //   showAlert: true,
       //   alertmsg: 'A survey form requires atleast one question'
       // })
-      this.msg.error('A survey form requires atleast one question');
+      this.msg.error('A survey form requires atleast one question')
     } else {
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
@@ -99,7 +99,7 @@ class AddSurvey extends React.Component {
         // alert('Please fill all the fields.')
         // this.setState(
         //   {showAlert: true, alertmsg: 'Please fill all the fields.'})
-        this.msg.error('Please fill all the fields.');
+        this.msg.error('Please fill all the fields.')
       }
     }
   }
@@ -316,16 +316,16 @@ class AddSurvey extends React.Component {
   }
 
   render () {
-     var alertOptions = {
-        offset: 14,
-        position: 'bottom right',
-        theme: 'dark',
-        transition: 'scale'
-      }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      transition: 'scale'
+    }
 
     return (
       <div>
-         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
