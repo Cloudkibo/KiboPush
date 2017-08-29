@@ -238,11 +238,32 @@ class CreateBroadcast extends React.Component {
           </div>
           <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
             <h2 className='presentation-margin'>Targeting</h2>
-            <div className='ui-block'>
+            <div className='ui-block' style={{padding: 5}}>
             <div className='news-feed-form'>
                 <p>Select the type of customer you want to send broadcast to</p>
                   <button className='btn btn-primary btn-sm'> Add Condition </button>
-                   <div className='form-group with-icon label-floating is-empty'></div>
+                   <div className='form-group with-icon label-floating is-empty'>
+                    <div className="row">
+                       <div className='col-lg-6 col-md-6 col-sm-5 col-xs-12'>
+                        <select>
+                            <option selected="selected" value="volvo">Gender</option>
+                            <option value="saab">Locale</option>
+                            <option value="mercedes">Timezone</option>
+                            <option value="audi">First Name</option>
+                            <option value="audi">Last Name</option>
+                            <option value="audi">Email</option>
+                          </select>
+                       </div>
+
+                      <div className='col-lg-6 col-md-6 col-sm-5 col-xs-12'>
+                        <select>
+                            <option selected="selected" value="volvo">Male</option>
+                            <option value="saab">Female</option>
+                          </select>
+                       </div>
+
+                    </div>
+                   </div>
             </div>
             </div>
           </div>
