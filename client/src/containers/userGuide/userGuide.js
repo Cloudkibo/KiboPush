@@ -171,10 +171,7 @@ class UserGuide extends React.Component {
                 <img src='./img/userGuide/InviteSubscribersButton2.png' width='600px' />
                 <br />
                 <br />
-                Select page from dropdown and use the link you get to invite subscribers.
-                <br />
-                <img src='./img/userGuide/InviteSubscribersSelectPage1.png' width='600px' />
-                <br />
+                Use the link you get to invite subscribers.
                 <br />
                 <img src='./img/userGuide/InviteSubscribersSelectPage2.png' width='600px' />
                 <br />
