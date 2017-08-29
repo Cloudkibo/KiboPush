@@ -161,7 +161,7 @@ class CreateBroadcast extends React.Component {
           <br />
           <br />
           <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
             <h2 className='presentation-margin'>Send a Message to Facebook
               Subscribers</h2>
             <div className='ui-block'>
@@ -229,7 +229,13 @@ class CreateBroadcast extends React.Component {
               </div>
             </div>
           </div>
-
+          <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+            <h2 className='presentation-margin'>Targeting</h2>
+            <div className='ui-block'>
+                <p>Select the type of customer you want to send broadcast to</p>
+                  <button className='btn btn-sm'> Add Condition </button>
+            </div>
+          </div>
         </div>
       </div>
 
