@@ -45,11 +45,13 @@ class PollResult extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.responses) {
-      let totalResponses = 0
-      for (let i = 0; i < this.props.responses.length; i++) {
-        totalResponses += this.props.responses[i].count
+      if (nextprops.responses.length > 0) {
+        let totalResponses = 0
+        for (let i = 0; i < this.props.responses.length; i++) {
+          totalResponses += this.props.responses[i].count
+        }
+        this.setState({totalResponses: totalResponses})
       }
-      this.setState({totalResponses: totalResponses})
       var radarChart = document.getElementById('radar-chart')
       var counts = []
       var vals = []
