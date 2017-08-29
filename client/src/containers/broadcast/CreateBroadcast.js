@@ -26,11 +26,20 @@ class CreateBroadcast extends React.Component {
       userfile: null,
       userfilename: '',
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      targeting: [],
+      criteria: [
+        {target: 'Gender', type: 'select', options: ['Male', 'Female'], isPicked: false},
+        {target: 'Locale', type: 'select', options: ['en_US','af_ZA','ar_AR','az_AZ','pa_IN'], isPicked: false},
+        {target: 'First Name', type: 'input', isPicked: false},
+        {target: 'Last Name', type: 'input', isPicked: false},
+        {target: 'Email', type: 'input', isPicked: false},         
+      ]
     }
-    this._onChange = this._onChange.bind(this)
-    this.onFileSubmit = this.onFileSubmit.bind(this)
-    this.gotoView = this.gotoView.bind(this)
+    this._onChange = this._onChange.bind(this);
+    this.onFileSubmit = this.onFileSubmit.bind(this);
+    this.gotoView = this.gotoView.bind(this);
+    this.addNewTarget = this.addNewTarget.bind(this);
   }
 
   componentDidMount () {
@@ -51,6 +60,18 @@ class CreateBroadcast extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
+  }
+
+  addNewTarget(){
+    var temp = this.state.criteria.filter((obj) => { obj.isPicked == false; });
+    var items = this.state.target;
+    temp.map((obj) => {
+      items.append(
+          <p>{obj.target}</p>
+      );
+    })
+
+    this.setState({target: items});
   }
 
   createBroadcast () {
@@ -241,9 +262,12 @@ class CreateBroadcast extends React.Component {
             <div className='ui-block' style={{padding: 5}}>
             <div className='news-feed-form'>
                 <p>Select the type of customer you want to send broadcast to</p>
-                  <button className='btn btn-primary btn-sm'> Add Condition </button>
+                  <button className='btn btn-primary btn-sm' onClick={this.addNewTarget}> Add Condition </button>
                    <div>
-                    <div className="row">
+                  {this.state.targeting}
+                   {/*
+                     
+                   <div className="row">
                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
                         <div className="form-group">
                             <select>
@@ -265,7 +289,9 @@ class CreateBroadcast extends React.Component {
                        </div>
 
                     </div>
+                  */}
                    </div>
+                    
             </div>
             </div>
           </div>
