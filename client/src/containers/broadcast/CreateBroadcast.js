@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -15,7 +16,6 @@ import {
   uploadBroadcastfile
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 
 class CreateBroadcast extends React.Component {
@@ -24,15 +24,13 @@ class CreateBroadcast extends React.Component {
     this.createBroadcast = this.createBroadcast.bind(this)
     this.state = {
       userfile: null,
-      userfilename: ''
+      userfilename: '',
+      alertMessage: '',
+      alertType: ''
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
     this.gotoView = this.gotoView.bind(this)
-  }
-
-  showAlert (bodyText) {
-    this.msg.success(bodyText)
   }
 
   componentDidMount () {
@@ -57,9 +55,16 @@ class CreateBroadcast extends React.Component {
 
   createBroadcast () {
     let msgBody = this.refs.message.value
-    if ((msgBody === '' || msgBody === undefined) && (this.state.userfile == '')) {
-      this.showAlert('Cannot send empty broadcast')
+    if ((msgBody === '' || msgBody === undefined) && (this.state.userfile === '')) {
+      this.setState({
+        alertMessage: 'Cannot send empty broadcast!',
+        alertType: 'danger'
+      })
     } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
       if (this.state.userfile && this.state.userfile !== '') {
         this.onFileSubmit()
       } else {
@@ -69,7 +74,10 @@ class CreateBroadcast extends React.Component {
       this.props.history.push({
         pathname: '/broadcasts'
       })
-      this.showAlert('Broadcast sent successfully.')
+      this.setState({
+        alertMessage: 'Broadcast sent successfully!',
+        alertType: 'success'
+      })
     }
   }
   _onChange (e) {
@@ -141,17 +149,8 @@ class CreateBroadcast extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'light',
-      time: 5000,
-      transition: 'scale'
-    }
-
     return (
       <div>
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -222,6 +221,14 @@ class CreateBroadcast extends React.Component {
                         this.props.showFileUploading && this.props.showFileUploading === true &&
                         <p style={{color: 'red'}}>Uploading file...Please wait</p>
 
+                      }
+                    {
+                        this.state.alertMessage !== '' &&
+                        <center>
+                          <Alert type={this.state.alertType} >
+                            {this.state.alertMessage}
+                          </Alert>
+                        </center>
                       }
 
                   </div>
