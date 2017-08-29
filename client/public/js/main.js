@@ -376,6 +376,19 @@ console.log('Main Executed');
     return false
   })
 
+  $('.olymp-close-icon').on('click', function () {
+    /* console.log('i am called')
+    var classList = $(this).attr('class').split(' ')
+    var classList1 = $sidebar.attr('class').split(' ')
+    console.log('classlist')
+    console.log(classList)
+    console.log('classlist1')
+    console.log(classList1) */
+    $(this).toggleClass('active')
+    $(this).closest($sidebar).removeClass('open')
+    // $(this).closest($sidebar).addClass('open')
+    return false
+  })
     // Close on "Esc" click
   $window.keydown(function (eventObject) {
     if (eventObject.which == 27 && $sidebar.is(':visible')) {
