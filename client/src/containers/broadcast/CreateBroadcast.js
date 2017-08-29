@@ -68,7 +68,7 @@ class CreateBroadcast extends React.Component {
     console.log("Temp", temp);
     var items = this.state.targeting;
     temp.map((obj) => {
-      items.append(
+      items.push(
           <p>{obj.target}</p>
       );
     });
