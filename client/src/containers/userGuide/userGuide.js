@@ -148,6 +148,39 @@ class UserGuide extends React.Component {
               <li>You will be redirected to add pages screen. Here you can connect any Facebook pages you want to connect.</li>
               <img src='./img/userGuide/addPages.png' width='600px' />
             </ol>
+            <br />
+            <h4> How to invite subscribers? </h4>
+            <p>There are two ways through which you can invite subscribers.</p>
+            <ol>
+              <li>Go to subscribers page. Click on the Invite Subscribers button.
+                <br />
+                <img src='./img/userGuide/InviteSubscribersButton.png' width='600px' />
+                <br />
+                <br />
+                Select page from dropdown and use the link you get to invite subscribers.
+                <br />
+                <img src='./img/userGuide/InviteSubscribersSelectPage1.png' width='600px' />
+                <br />
+                <br />
+                <img src='./img/userGuide/InviteSubscribersSelectPage2.png' width='600px' />
+                <br />
+                <br />
+              </li>
+              <li>Go to Pages. Click on the Invite Subscribers button along the page on which you want people to become subscribers.
+                <br />
+                <img src='./img/userGuide/InviteSubscribersButton2.png' width='600px' />
+                <br />
+                <br />
+                Select page from dropdown and use the link you get to invite subscribers.
+                <br />
+                <img src='./img/userGuide/InviteSubscribersSelectPage1.png' width='600px' />
+                <br />
+                <br />
+                <img src='./img/userGuide/InviteSubscribersSelectPage2.png' width='600px' />
+                <br />
+                <br />
+              </li>
+            </ol>
           </div>
         }
         {
