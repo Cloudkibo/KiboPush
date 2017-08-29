@@ -64,7 +64,7 @@ class AddSurvey extends React.Component {
       //   showAlert: true,
       //   alertmsg: 'A survey form requires atleast one question'
       // })
-      this.msg.error('A survey form requires atleast one question');
+      this.msg.error('A survey form requires atleast one question')
     } else {
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
@@ -99,7 +99,7 @@ class AddSurvey extends React.Component {
         // alert('Please fill all the fields.')
         // this.setState(
         //   {showAlert: true, alertmsg: 'Please fill all the fields.'})
-        this.msg.error('Please fill all the fields.');
+        this.msg.error('Please fill all the fields.')
       }
     }
   }
@@ -207,7 +207,6 @@ class AddSurvey extends React.Component {
   /* handleQuestionType (e) {
    this.setState({
    'questionType': e.target.value
-
    })
    } */
 
@@ -221,6 +220,7 @@ class AddSurvey extends React.Component {
         <div className='input-group'>
           <input type='text' placeholder={'Choice' + (j + 1)}
             className='form-control input-sm'
+            value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
             <button className='btn btn-secondary' type='button'
@@ -255,6 +255,7 @@ class AddSurvey extends React.Component {
                 <div className='form-group'>
                   <input className='form-control'
                     placeholder='Enter question here...'
+                    value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
                 </div>
               </div>
@@ -280,6 +281,7 @@ class AddSurvey extends React.Component {
                 <div className='form-group'>
                   <input className='form-control'
                     placeholder='Enter question here...'
+                    value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
                 </div>
 
@@ -316,16 +318,16 @@ class AddSurvey extends React.Component {
   }
 
   render () {
-     var alertOptions = {
-        offset: 14,
-        position: 'bottom right',
-        theme: 'dark',
-        transition: 'scale'
-      }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      transition: 'scale'
+    }
 
     return (
       <div>
-         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -368,17 +370,14 @@ class AddSurvey extends React.Component {
                     </div>
                     {/*
                      <div className='col-xl-12'>
-
                      <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
                      <div className='col-sm-6 col-md-4'>
                      <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
                      <option value='text'>Text</option>
                      <option value='multichoice'>Multi Choice Question</option>
-
                      </select>
                      <br />
                      </div>
-
                      </div>
                      */}
 
