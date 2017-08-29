@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { AlertList, Alert } from 'react-bs-notifier'
+import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -25,23 +25,21 @@ import AlertContainer from 'react-alert'
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      alertMessage: '',
+      type: ''
+    }
     if (!props.broadcasts) {
     //  alert('calling')
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
-    this.state = {
-      alerts: []
-    }
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
-      this.setState({
-        alerts: []
-      })
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
   }
@@ -68,8 +66,11 @@ class Broadcast extends React.Component {
   }
 
   sendBroadcast (broadcast) {
-    if (this.props.subscribers.length == 0) {
-      this.msg.error('You dont have any Subscribers')
+    if (this.props.subscribers.length === 0) {
+      this.setState({
+        alertMessage: 'You dont have any Subscribers',
+        type: 'danger'
+      })
     } else {
       this.props.sendbroadcast(broadcast)
     }
@@ -81,24 +82,27 @@ class Broadcast extends React.Component {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
     }
-    if (nextProps.successMessage || nextProps.errorMessage) {
-      this.msg.success(nextProps.successMessage)
-    } else if (nextProps.errorMessage || nextProps.errorMessage) {
-      this.msg.error(nextProps.errorMessage)
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        type: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        type: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        type: ''
+      })
     }
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div>
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -139,15 +143,6 @@ class Broadcast extends React.Component {
                     </button>
                   </Link>
                 }
-                  {
-                    (this.props.successMessage || this.props.errorMessage) &&
-                    <AlertList
-                      position='top-right'
-                      alerts={this.state.alerts}
-                      dismissTitle='Dismiss'
-                      onDismiss={this.dismissAlert}
-                    />
-                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -176,7 +171,14 @@ class Broadcast extends React.Component {
                       </tbody>
                     </table>
                   </div>
-
+                  {
+                    this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.type} >
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+                  }
                 </div>
               </div>
 
