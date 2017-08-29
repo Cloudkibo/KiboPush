@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { AlertList, Alert } from 'react-bs-notifier'
+import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -24,7 +24,8 @@ class Poll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      alerts: []
+      alertMessage: '',
+      alertType: ''
     }
     this.generateAlert = this.generateAlert.bind(this)
     this.dismissAlert = this.dismissAlert.bind(this)
@@ -40,9 +41,20 @@ class Poll extends React.Component {
       // this.setState({broadcasts: nextProps.broadcasts});
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
-      this.generateAlert('success', nextProps.successMessage)
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
     } else if (nextProps.errorMessage || nextProps.errorMessage) {
-      this.generateAlert('danger', nextProps.errorMessage)
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
     }
   }
 
@@ -87,31 +99,6 @@ class Poll extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
-  generateAlert (type, message) {
-    const newAlert = {
-      id: (new Date()).getTime(),
-      type: type,
-      message: message
-    }
-    this.setState({
-      alerts: [...this.state.alerts, newAlert]
-    })
-  }
-
-  dismissAlert (alert) {
-    // find the index of the alert that was dismissed
-    const idx = this.state.alerts.indexOf(alert)
-    this.props.clearAlertMessage()
-    if (idx >= 0) {
-      this.setState({
-        // remove the alert from the array
-        alerts: [
-          ...this.state.alerts.slice(0, idx),
-          ...this.state.alerts.slice(idx + 1)]
-      })
-    }
-  }
-
   render () {
     return (
       <div>
@@ -151,15 +138,6 @@ class Poll extends React.Component {
                     </button>
                 </Link>
                 }
-                  {
-                    (this.props.successMessage || this.props.errorMessage) &&
-                    <AlertList
-                      position='top-right'
-                      alerts={this.state.alerts}
-                      dismissTitle='Dismiss'
-                      onDismiss={this.dismissAlert}
-                    />
-                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -202,7 +180,14 @@ class Poll extends React.Component {
                       </tbody>
                     </table>
                   </div>
-
+                  {
+                      this.state.alertMessage !== '' &&
+                      <center>
+                        <Alert type={this.state.alertType} >
+                          {this.state.alertMessage}
+                        </Alert>
+                      </center>
+                  }
                 </div>
               </div>
 
