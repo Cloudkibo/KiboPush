@@ -125,15 +125,30 @@ class Survey extends React.Component {
                               <button className='btn btn-primary btn-sm'
                                 onClick={() => this.gotoView(survey)}>View
                               </button>
-                              <button className='btn btn-primary btn-sm'
-                                onClick={() => this.gotoResults(survey)}>
+                              { this.props.subscribers && this.props.subscribers.length == 0
+                                ? <span>
+                                  <button className='btn  btn-sm' disabled
+                                    onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
-                              <button className='btn btn-primary btn-sm'
-                                onClick={() => this.props.sendsurvey(
+                                  <button className='btn  btn-sm' disabled
+                                    onClick={() => this.props.sendsurvey(
                                         survey)}> Send
                               </button>
+                                </span>
+                              : <span>
+                                <button className='btn btn-primary btn-sm'
+                                  onClick={() => this.gotoResults(survey)}>
+                                Report
+                              </button>
+
+                                <button className='btn btn-primary btn-sm'
+                                  onClick={() => this.props.sendsurvey(
+                                        survey)}> Send
+                              </button>
+                              </span>
+                              }
 
                             </td>
                           </tr>
