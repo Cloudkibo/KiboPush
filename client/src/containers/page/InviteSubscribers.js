@@ -57,7 +57,7 @@ class InviteSubscribers extends React.Component {
     if (event.target.value !== -1) {
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pagId === event.target.value) {
+        if (this.props.pages[i].pageId === event.target.value) {
           page = this.props.pages[i]
           break
         }
