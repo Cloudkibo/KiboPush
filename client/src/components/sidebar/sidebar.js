@@ -46,7 +46,7 @@ class Sidebar extends Component {
             <ul className='left-menu'>
               <li>
                 <a className='js-sidebar-open'>
-                  <svg className='olymp-menu-icon left-menu-icon'>
+                  <svg className='olymp-menu-icon left-menu-icon' >
                     <use xlinkHref='icons/icons.svg#olymp-menu-icon' />
                   </svg>
                 </a>
