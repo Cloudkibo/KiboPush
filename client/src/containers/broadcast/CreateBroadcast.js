@@ -245,14 +245,16 @@ class CreateBroadcast extends React.Component {
                    <div className='form-group with-icon label-floating is-empty'>
                     <div className="row">
                        <div className='col-lg-6 col-md-6 col-sm-5 col-xs-12'>
-                        <select>
-                            <option selected="selected" value="volvo">Gender</option>
-                            <option value="saab">Locale</option>
-                            <option value="mercedes">Timezone</option>
-                            <option value="audi">First Name</option>
-                            <option value="audi">Last Name</option>
-                            <option value="audi">Email</option>
-                          </select>
+                        <div className="form-group form-inline">
+                            <select className="input-sm">
+                                <option selected="selected" value="volvo">Gender</option>
+                                <option value="saab">Locale</option>
+                                <option value="mercedes">Timezone</option>
+                                <option value="audi">First Name</option>
+                                <option value="audi">Last Name</option>
+                                <option value="audi">Email</option>
+                              </select>
+                          </div>
                        </div>
 
                       <div className='col-lg-6 col-md-6 col-sm-5 col-xs-12'>
