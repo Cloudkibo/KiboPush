@@ -161,9 +161,8 @@ class CreateBroadcast extends React.Component {
           <br />
           <br />
         <div className="row">
-          <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-            <h2 className='presentation-margin'>Send a Message to Facebook
-              Subscribers</h2>
+          <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+            <h2 className='presentation-margin'>Send broadcast to subscribers</h2>
             <div className='ui-block'>
               <div className='news-feed-form'>
 
@@ -240,8 +239,11 @@ class CreateBroadcast extends React.Component {
           <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
             <h2 className='presentation-margin'>Targeting</h2>
             <div className='ui-block'>
+            <div className='news-feed-form'>
                 <p>Select the type of customer you want to send broadcast to</p>
                   <button className='btn btn-primary btn-sm'> Add Condition </button>
+                   <div className='form-group with-icon label-floating is-empty'></div>
+            </div>
             </div>
           </div>
         </div>
