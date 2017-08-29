@@ -65,13 +65,15 @@ class CreateBroadcast extends React.Component {
   addNewTarget(){
     console.log("Add new target called");
     var temp = this.state.criteria.filter((obj) => { obj.isPicked == false; });
+    console.log("Temp", temp);
     var items = this.state.targeting;
     temp.map((obj) => {
       items.append(
           <p>{obj.target}</p>
       );
-    })
+    });
 
+    console.log("items", items);
     this.setState({targeting: items});
   }
 
