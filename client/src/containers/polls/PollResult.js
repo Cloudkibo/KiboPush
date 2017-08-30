@@ -24,11 +24,6 @@ class PollResult extends React.Component {
   }
 
   componentDidMount () {
-    let totalResponses
-    for (let i = 0; i < this.props.responses.length; i++) {
-      totalResponses += this.props.responses[i].count
-    }
-    this.setState({totalResponses: totalResponses})
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -50,6 +45,13 @@ class PollResult extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.responses) {
+      if (nextprops.responses.length > 0) {
+        let totalResponses = 0
+        for (let i = 0; i < this.props.responses.length; i++) {
+          totalResponses += this.props.responses[i].count
+        }
+        this.setState({totalResponses: totalResponses})
+      }
       var radarChart = document.getElementById('radar-chart')
       var counts = []
       var vals = []

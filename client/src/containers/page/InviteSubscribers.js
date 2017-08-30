@@ -69,7 +69,7 @@ class InviteSubscribers extends React.Component {
     } else {
       this.setState({
         fblink: '',
-        selectPage: {pagId: -1}
+        selectPage: {pageId: -1}
       })
     }
   }
