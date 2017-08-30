@@ -88,36 +88,35 @@ exports.create = function (req, res) {
             return logger.serverLog(TAG,
                   `At send message broadcast ${JSON.stringify(err2)}`)
           }
-          sent_count = sent_count + 1
-          logger.serverLog(TAG, 'Sent broadcast to subscriber response' + sent_count)
+         // sent_count = sent_count + 1
+          logger.serverLog(TAG, 'Sent broadcast to subscriber response')
+                // update broadcast sent field
+          Broadcasts.findById(broadcast._id, (err, broadcast2) => {
+            if (err) {
+              return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            if (!broadcast2) {
+              return res.status(404)
+        .json({status: 'failed', description: 'Broadcasts not found'})
+            }
+
+            broadcast2.sent = broadcast2.sent + 1
+            broadcast2.save((err2, broadcast2) => {
+              if (err2) {
+                return res.status(500)
+          .json({status: 'failed', description: 'Broadcast update failed'})
+              }
+              logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
+            })
+          })
         })
           })
         })
       })
-      // update broadcast sent field
-      Broadcasts.findById(broadcast._id, (err, broadcast2) => {
-        if (err) {
-          return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
-        }
-        if (!broadcast2) {
-          return res.status(404)
-        .json({status: 'failed', description: 'Broadcasts not found'})
-        }
-
-        broadcast2.sent = sent_count
-        broadcast2.save((err2, broadcast2) => {
-          if (err2) {
-            return res.status(500)
-          .json({status: 'failed', description: 'Broadcast update failed'})
-          }
-          logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
-
-          return res.status(200)
-      .json({status: 'success', payload: {broadcast: broadcast2, sent_count: sent_count}})
-        })
-      })
     })
+    return res.status(200)
+      .json({status: 'success', payload: {broadcast: broadcast}})
   })
 }
 
