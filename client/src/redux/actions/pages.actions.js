@@ -50,7 +50,10 @@ export function removePage (page) {
   console.log('loadPagesList called')
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
-      .then(res => dispatch(updatePagesList(res.payload)))
+      .then(res => {
+        dispatch(updatePagesList(res.payload))
+        dispatch(updateOtherPages(res.payload))
+      })
   }
 }
 export function loadOtherPagesList () {
