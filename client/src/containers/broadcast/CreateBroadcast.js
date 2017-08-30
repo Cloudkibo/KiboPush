@@ -29,17 +29,39 @@ class CreateBroadcast extends React.Component {
       alertType: '',
       targeting: [],
       criteria: [
-        {target: 'Gender', type: 'select', options: ['Male', 'Female'], isPicked: false},
-        {target: 'Locale', type: 'select', options: ['en_US','af_ZA','ar_AR','az_AZ','pa_IN'], isPicked: false},
-        {target: 'First Name', type: 'input', isPicked: false},
-        {target: 'Last Name', type: 'input', isPicked: false},
-        {target: 'Email', type: 'input', isPicked: false},         
+        {
+          target: 'Gender',
+          type: 'select',
+          options: ['Male', 'Female'],
+          isPicked: false
+        },
+        {
+          target: 'Locale',
+          type: 'select',
+          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
+          isPicked: false
+        },
+        {
+          target: 'First Name',
+          type: 'input',
+          isPicked: false
+        },
+        {
+          target: 'Last Name',
+          type: 'input',
+          isPicked: false
+        },
+        {
+          target: 'Email',
+          type: 'input',
+          isPicked: false
+        }
       ]
     }
-    this._onChange = this._onChange.bind(this);
-    this.onFileSubmit = this.onFileSubmit.bind(this);
-    this.gotoView = this.gotoView.bind(this);
-    this.addNewTarget = this.addNewTarget.bind(this);
+    this._onChange = this._onChange.bind(this)
+    this.onFileSubmit = this.onFileSubmit.bind(this)
+    this.gotoView = this.gotoView.bind(this)
+    this.addNewTarget = this.addNewTarget.bind(this)
   }
 
   componentDidMount () {
@@ -62,24 +84,26 @@ class CreateBroadcast extends React.Component {
     }
   }
 
-  addNewTarget(){
-    console.log("Add new target called");
-    var temp = this.state.criteria.filter((obj) => { return obj.isPicked == false; });
-    console.log("Temp", temp);
-    var items = this.state.targeting;
+  addNewTarget () {
+    console.log('Add new target called')
+    var temp = this.state.criteria.filter(
+      (obj) => { return obj.isPicked === false })
+    console.log('Temp', temp)
+    var items = this.state.targeting
     temp.map((obj) => {
       items.push(
-          <p>{obj.target}</p>
-      );
-    });
+        <p>{obj.target}</p>
+      )
+    })
 
-    console.log("items", items);
-    this.setState({targeting: items});
+    console.log('items', items)
+    this.setState({targeting: items})
   }
 
   createBroadcast () {
     let msgBody = this.refs.message.value
-    if ((msgBody === '' || msgBody === undefined) && (this.state.userfile === '')) {
+    if ((msgBody === '' || msgBody === undefined) &&
+      (this.state.userfile === '')) {
       this.setState({
         alertMessage: 'Cannot send empty broadcast!',
         alertType: 'danger'
@@ -93,7 +117,7 @@ class CreateBroadcast extends React.Component {
         this.onFileSubmit()
       } else {
         this.props.createbroadcast(
-        {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
       }
       this.props.history.push({
         pathname: '/broadcasts'
@@ -104,6 +128,7 @@ class CreateBroadcast extends React.Component {
       })
     }
   }
+
   _onChange (e) {
     e.preventDefault()
     let files
@@ -120,6 +145,7 @@ class CreateBroadcast extends React.Component {
       userfilename: e.target.files[0].name
     })
 
+    // eslint-disable-next-line no-undef
     const reader = new FileReader()
     reader.onload = () => {
       this.setState({
@@ -128,20 +154,25 @@ class CreateBroadcast extends React.Component {
     }
     reader.readAsDataURL(files[0])
   }
+
   gotoView (event) {
     this.props.history.push({
       pathname: `/broadcasts`
 
     })
   }
+
   onFileSubmit () {
-    var sendmessage = true
+    // var sendmessage = true
+    // eslint-disable-next-line no-undef
     var fileData = new FormData()
     this.refs.selectFile.value = null
     if (this.state.userfile && this.state.userfile !== '') {
       this.props.updatefileuploadStatus(true)
       var ftype = ''
-      if (this.state.userfile.type.split('/')[0] === 'image' || this.state.userfile.type.split('/')[0] === 'audio' || this.state.userfile.type.split('/')[0] === 'video') {
+      if (this.state.userfile.type.split('/')[0] === 'image' ||
+        this.state.userfile.type.split('/')[0] === 'audio' ||
+        this.state.userfile.type.split('/')[0] === 'video') {
         ftype = this.state.userfile.type.split('/')[0]
       } else {
         ftype = 'file'
@@ -166,6 +197,8 @@ class CreateBroadcast extends React.Component {
         pathname: '/broadcasts'
       })
     } else {
+      // todo Imran please use soft alert here
+      // eslint-disable-next-line no-undef
       alert('Please choose a file to upload.')
     }
     // this.forceUpdate();
@@ -184,121 +217,135 @@ class CreateBroadcast extends React.Component {
           <br />
           <br />
           <br />
-        <div className="row">
-          <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-            <h2 className='presentation-margin'>Send broadcast to subscribers</h2>
-            <div className='ui-block'>
-              <div className='news-feed-form'>
+          <div className='row'>
+            <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+              <h2 className='presentation-margin'>Send broadcast to
+                subscribers</h2>
+              <div className='ui-block'>
+                <div className='news-feed-form'>
 
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel'
-                    aria-expanded='true'>
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='home-1' role='tabpanel'
+                      aria-expanded='true'>
 
-                    <div
-                      className='form-group with-icon label-floating is-empty'>
-                      <label className='control-label'>Say something...</label>
-                      <textarea className='form-control' ref='message' />
-                    </div>
-                    <center>
-                      <h4> OR </h4>
-                    </center>
-                    <div className='add-options-message'>
-                      <div className='form-group with-icon label-floating is-empty'>
-                        <label className='control-label'>Upload Attachment (Audio, Video or Image file)</label>
+                      <div
+                        className='form-group with-icon label-floating is-empty'>
+                        <label className='control-label'>Say
+                          something...</label>
+                        <textarea className='form-control' ref='message' />
+                      </div>
+                      <center>
+                        <h4> OR </h4>
+                      </center>
+                      <div className='add-options-message'>
+                        <div
+                          className='form-group with-icon label-floating is-empty'>
+                          <label className='control-label'>Upload Attachment
+                            (Audio, Video or Image file)</label>
 
-                        <div style={{display: 'inline-block'}} data-tip='attachments'>
-                          <i style={styles.iconclass} onClick={() => {
-                            this.refs.selectFile.click()
-                          }}>
-                            <i style={{
-                              fontSize: '25px',
-                              position: 'absolute',
-                              left: '0',
-                              width: '100%',
-                              height: '2.5em',
-                              textAlign: 'center'
-                            }} className='fa fa-paperclip' />
-                          </i>
-                          <input ref='selectFile' type='file' onChange={this._onChange} style={{'display': 'none'}} />
+                          <div style={{display: 'inline-block'}}
+                            data-tip='attachments'>
+                            <i style={styles.iconclass} onClick={() => {
+                              this.refs.selectFile.click()
+                            }}>
+                              <i style={{
+                                fontSize: '25px',
+                                position: 'absolute',
+                                left: '0',
+                                width: '100%',
+                                height: '2.5em',
+                                textAlign: 'center'
+                              }} className='fa fa-paperclip' />
+                            </i>
+                            <input ref='selectFile' type='file'
+                              onChange={this._onChange}
+                              style={{'display': 'none'}} />
 
+                          </div>
                         </div>
+
+                        <button className='btn btn-primary btn-sm'
+                          onClick={this.createBroadcast}> Send Broadcast
+                        </button>
+                        <Link
+                          to='broadcasts'
+                          style={{float: 'right', margin: 2}}
+                          className='btn btn-sm btn-border-think btn-transparent c-grey'
+                          onClick={this.gotoView}>
+                          Cancel
+                        </Link>
                       </div>
 
-                      <button className='btn btn-primary btn-sm'
-                        onClick={this.createBroadcast}> Send Broadcast
-                      </button>
-                      <Link
-                        to='broadcasts'
-                        style={{float: 'right', margin: 2}}
-                        className='btn btn-sm btn-border-think btn-transparent c-grey' onClick={this.gotoView}>
-                        Cancel
-                      </Link>
-                    </div>
-
-                    {
-                        this.state.userfilename && this.state.userfilename !== '' &&
+                      {
+                        this.state.userfilename &&
+                        this.state.userfilename !== '' &&
                         <p style={{color: 'red'}}>{this.state.userfilename}</p>
 
                       }
-                    {
-                        this.props.showFileUploading && this.props.showFileUploading === true &&
-                        <p style={{color: 'red'}}>Uploading file...Please wait</p>
+                      {
+                        this.props.showFileUploading &&
+                        this.props.showFileUploading === true &&
+                        <p style={{color: 'red'}}>Uploading file...Please
+                          wait</p>
 
                       }
-                    {
+                      {
                         this.state.alertMessage !== '' &&
                         <center>
-                          <Alert type={this.state.alertType} >
+                          <Alert type={this.state.alertType}>
                             {this.state.alertMessage}
                           </Alert>
                         </center>
                       }
 
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+              <h2 className='presentation-margin'>Targeting</h2>
+              <div className='ui-block' style={{padding: 5}}>
+                <div className='news-feed-form'>
+                  <p>Select the type of customer you want to send broadcast
+                    to</p>
+                  <button className='btn btn-primary btn-sm'
+                    onClick={this.addNewTarget}> Add Condition
+                  </button>
+                  <div>
+                    {this.state.targeting}
+                    {/*
+
+                     <div className="row">
+                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                     <div className="form-group">
+                     <select>
+                     <option selected="selected" value="volvo">Gender</option>
+                     <option value="saab">Locale</option>
+                     <option value="mercedes">Timezone</option>
+                     <option value="audi">First Name</option>
+                     <option value="audi">Last Name</option>
+                     <option value="audi">Email</option>
+                     </select>
+                     </div>
+                     </div>
+
+                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                     <select>
+                     <option selected="selected" value="volvo">Male</option>
+                     <option value="saab">Female</option>
+                     </select>
+                     </div>
+
+                     </div>
+                     */}
                   </div>
 
                 </div>
               </div>
             </div>
           </div>
-          <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-            <h2 className='presentation-margin'>Targeting</h2>
-            <div className='ui-block' style={{padding: 5}}>
-            <div className='news-feed-form'>
-                <p>Select the type of customer you want to send broadcast to</p>
-                  <button className='btn btn-primary btn-sm' onClick={this.addNewTarget}> Add Condition </button>
-                   <div>
-                  {this.state.targeting}
-                   {/*
-                     
-                   <div className="row">
-                       <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <div className="form-group">
-                            <select>
-                                <option selected="selected" value="volvo">Gender</option>
-                                <option value="saab">Locale</option>
-                                <option value="mercedes">Timezone</option>
-                                <option value="audi">First Name</option>
-                                <option value="audi">Last Name</option>
-                                <option value="audi">Email</option>
-                              </select>
-                          </div>
-                       </div>
-
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <select>
-                            <option selected="selected" value="volvo">Male</option>
-                            <option value="saab">Female</option>
-                          </select>
-                       </div>
-
-                    </div>
-                  */}
-                   </div>
-                    
-            </div>
-            </div>
-          </div>
-        </div>
         </div>
       </div>
 
@@ -316,7 +363,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadBroadcastsList: loadBroadcastsList, uploadBroadcastfile: uploadBroadcastfile, createbroadcast: createbroadcast, updatefileuploadStatus: updatefileuploadStatus},
+    {
+      loadBroadcastsList: loadBroadcastsList,
+      uploadBroadcastfile: uploadBroadcastfile,
+      createbroadcast: createbroadcast,
+      updatefileuploadStatus: updatefileuploadStatus
+    },
     dispatch)
 }
 

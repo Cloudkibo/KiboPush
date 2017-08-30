@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import { browserHistory } from 'react-router'
 
 export function showSurveys (data) {
   return {

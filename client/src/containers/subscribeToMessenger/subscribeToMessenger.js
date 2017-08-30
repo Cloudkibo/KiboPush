@@ -43,7 +43,7 @@ class SubscribeToMessenger extends React.Component {
         'fblink': 'https://m.me/' + nextprops.pages[0].pageId
 
       })
-    } else if (nextprops.pages && nextprops.pages.length == 0) {
+    } else if (nextprops.pages && nextprops.pages.length === 0) {
       // user has no connected pages
       this.setState({
         'showbutton': false
@@ -103,7 +103,7 @@ class SubscribeToMessenger extends React.Component {
           <br />
           <br />
           <br />
-          {this.state.showbutton == true
+          {this.state.showbutton === true
             ? <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
               <h2 className='presentation-margin'>Subscribe to Messenger</h2>
               <div className='ui-block'>
@@ -234,7 +234,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ loadMyPagesList: loadMyPagesList}, dispatch)
+  return bindActionCreators({ loadMyPagesList: loadMyPagesList }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   SubscribeToMessenger)

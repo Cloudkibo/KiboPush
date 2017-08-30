@@ -50,7 +50,7 @@ exports.create = function (req, res) {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         return res.status(404)
-        .json({status: 'failed', description: 'Pages not found'})
+          .json({status: 'failed', description: 'Pages not found'})
       }
 
       pages.forEach(page => {
@@ -61,11 +61,11 @@ exports.create = function (req, res) {
             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
           }
           logger.serverLog(TAG,
-          `Subscribers of page ${JSON.stringify(subscribers)}`)
+            `Subscribers of page ${JSON.stringify(subscribers)}`)
 
           subscribers.forEach(subscriber => {
             logger.serverLog(TAG,
-            `At Subscriber fetched ${JSON.stringify(subscriber)}`)
+              `At Subscriber fetched ${JSON.stringify(subscriber)}`)
             var messageData = {
               'recipient': JSON.stringify({
                 'id': subscriber.senderId
@@ -80,32 +80,36 @@ exports.create = function (req, res) {
               'method': 'POST',
               'json': true,
               'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
+              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
             },
-        function (err, res, body) {
-               //* **
-          if (err) {
-            return logger.serverLog(TAG,
-                  `At send message broadcast ${JSON.stringify(err2)}`)
-          }
-         // sent_count = sent_count + 1
-          logger.serverLog(TAG, 'Sent broadcast to subscriber response')
-          // update broadcast sent field
-          var pagebroadcast = new BroadcastPage({
-            pageId: page.pageId,
-            userId: req.user._id,
-            subscriberId: subscriber.senderId,
-            broadcastId: broadcast._id,
-            seen: false
-          })
-          pagebroadcast.save((err2, pagebroadcastsaved) => {
-            if (err2) {
-              return res.status(500)
-          .json({status: 'failed', description: 'PageBroadcast create failed'})
-            }
-            logger.serverLog(TAG, 'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
-          })
-        })
+              function (err, res, body) {
+                //* **
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At send message broadcast ${JSON.stringify(err)}`)
+                }
+                // sent_count = sent_count + 1
+                logger.serverLog(TAG, 'Sent broadcast to subscriber response')
+                // update broadcast sent field
+                var pagebroadcast = new BroadcastPage({
+                  pageId: page.pageId,
+                  userId: req.user._id,
+                  subscriberId: subscriber.senderId,
+                  broadcastId: broadcast._id,
+                  seen: false
+                })
+                pagebroadcast.save((err2, pagebroadcastsaved) => {
+                  if (err2) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'PageBroadcast create failed'
+                    })
+                  }
+                  logger.serverLog(TAG,
+                    'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
+                })
+              })
           })
         })
       })
@@ -116,16 +120,18 @@ exports.create = function (req, res) {
 }
 
 exports.deletefile = function (req, res) {
-  logger.serverLog(TAG, `Inside deletefile file Broadcast, req body = ${JSON.stringify(req.body)}`)
-    // unlink file
+  logger.serverLog(TAG,
+    `Inside deletefile file Broadcast, req body = ${JSON.stringify(req.body)}`)
+  // unlink file
   fs.unlink(req.body.fileurl, function (err) {
     if (err) {
       logger.serverLog(TAG, err)
-      return res.status(404).json({status: 'failed', description: 'File not found'})
+      return res.status(404)
+        .json({status: 'failed', description: 'File not found'})
     } else {
       logger.serverLog(TAG, 'file deleted')
       return res.status(200)
-                        .json({status: 'failed', payload: 'File deleted successfully'})
+        .json({status: 'failed', payload: 'File deleted successfully'})
     }
   })
 }
@@ -190,25 +196,30 @@ exports.uploadfile = function (req, res) {
                 if (err) {
                   logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   return res.status(404)
-                        .json({status: 'failed', description: 'Pages not found'})
+                    .json({status: 'failed', description: 'Pages not found'})
                 }
 
                 pages.forEach(page => {
-                  logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
+                  logger.serverLog(TAG,
+                    `Page in the loop ${JSON.stringify(page)}`)
 
                   Subscribers.find({pageId: page._id}, (err, subscribers) => {
                     if (err) {
-                      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                      return logger.serverLog(TAG,
+                        `Error ${JSON.stringify(err)}`)
                     }
-                    logger.serverLog(TAG, `Subscribers of page ${JSON.stringify(subscribers)}`)
+                    logger.serverLog(TAG,
+                      `Subscribers of page ${JSON.stringify(subscribers)}`)
 
                     subscribers.forEach(subscriber => {
-                      logger.serverLog(TAG, `At Subscriber fetched ${JSON.stringify(subscriber)}`)
+                      logger.serverLog(TAG,
+                        `At Subscriber fetched ${JSON.stringify(subscriber)}`)
 
                       var messageData = {}
 
                       if (broadcastt.type === 'attachment') {
-                        var fileReaderStream = fs.createReadStream(broadcastt.fileurl)
+                        var fileReaderStream = fs.createReadStream(
+                          broadcastt.fileurl)
 
                         messageData = {
                           'recipient': JSON.stringify({
@@ -229,17 +240,20 @@ exports.uploadfile = function (req, res) {
                         'method': 'POST',
                         'json': true,
                         'formData': messageData,
-                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
+                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                        page.accessToken
                       }, function (err, res, body) {
-                                   //* **
+                        //* **
                         if (err) {
-                          return logger.serverLog(TAG, `At send message broadcast ${JSON.stringify(err2)}`)
+                          return logger.serverLog(TAG,
+                            `At send message broadcast ${JSON.stringify(err2)}`)
                         }
-                        logger.serverLog(TAG, `Sent broadcast to subscriber response ${JSON.stringify(
-                                      body)}`)
+                        logger.serverLog(TAG,
+                          `Sent broadcast to subscriber response ${JSON.stringify(
+                            body)}`)
 
-                                      // update broadcast sent field
-                            // update broadcast sent field
+                        // update broadcast sent field
+                        // update broadcast sent field
                         var pagebroadcast = new BroadcastPage({
                           pageId: page.pageId,
                           userId: req.user._id,
@@ -249,17 +263,21 @@ exports.uploadfile = function (req, res) {
                         })
                         pagebroadcast.save((err2, pagebroadcastsaved) => {
                           if (err2) {
-                            return res.status(500)
-          .json({status: 'failed', description: 'PageBroadcast create failed'})
+                            return res.status(500).json({
+                              status: 'failed',
+                              description: 'PageBroadcast create failed'
+                            })
                           }
-                          logger.serverLog(TAG, 'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
+                          logger.serverLog(TAG, 'PageBroadcast saved' +
+                            JSON.stringify(pagebroadcastsaved))
                         })
                       })
                     })
                   })
                 })
 
-                return res.status(200).json({status: 'success', payload: {broadcast: broadcastt}})
+                return res.status(200)
+                  .json({status: 'success', payload: {broadcast: broadcastt}})
               })
             })
           }
@@ -330,6 +348,7 @@ exports.download = function (req, res) {
 
       // Check if file specified by the filePath exists
       // todo see if fs.exists is deprecated, use new one
+      // eslint-disable-next-line node/no-deprecated-api
       fs.exists(pathNew, function (exists) {
         if (exists) {
           // Content-type is very interesting part that guarantee that
@@ -346,16 +365,12 @@ exports.download = function (req, res) {
       })
     })
 }
+
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside send broadcast ${JSON.stringify(req.body)}`)
-  /*
-   Expected request body
-   { platform: 'facebook',statement: req.body.text });
-   */
-
-        // uploading file on FB server
+  // uploading file on FB server
   // console.log('fileReaderStream')
- // console.log(fileReaderStream)
+  // console.log(fileReaderStream)
   Pages.find({userId: req.user._id}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -363,79 +378,80 @@ exports.send = function (req, res) {
         .json({status: 'failed', description: 'Pages not found'})
     }
 
-    pages.forEach(page => {
-      logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
-
-      Subscribers.find({pageId: page._id}, (err, subscribers) => {
-        if (err) {
-          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        }
-        logger.serverLog(TAG,
-          `Subscribers of page ${JSON.stringify(subscribers)}`)
-
-        subscribers.forEach(subscriber => {
-          logger.serverLog(TAG,
-            `At Subscriber fetched ${JSON.stringify(subscriber)}`)
-
-          var messageData = {}
-
-          if (req.body.type === 'attachment') {
-            var fileReaderStream = fs.createReadStream(req.body.fileurl)
-
-            messageData = {
-              'recipient': JSON.stringify({
-                'id': subscriber.senderId
-              }),
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': req.body.attachmentType,
-                  'payload': {}
-                }
-              }),
-
-              'filedata': fileReaderStream
-            }
-          } else {
-            messageData = {
-              'recipient': JSON.stringify({
-                'id': subscriber.senderId
-              }),
-              'message': JSON.stringify({
-                'text': req.body.text
-              })
-            }
-          }
-
-          request({
-            'method': 'POST',
-            'json': true,
-            'formData': messageData,
-            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken
-          },
-        function (err, res, body) {
-               //* **
-          if (err) {
-            return logger.serverLog(TAG,
-                  `At send message broadcast ${JSON.stringify(err2)}`)
-          }
-          logger.serverLog(TAG,
-                `Sent broadcast to subscriber response ${JSON.stringify(
-                  body)}`)
-        })
-         /* needle.post(
-            `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
-            messageData, (err2, resp) => {
-              if (err2) {
-                return logger.serverLog(TAG,
-                  `At send message broadcast ${JSON.stringify(err2)}`)
-              }
-              logger.serverLog(TAG,
-                `Sent broadcast to subscriber response ${JSON.stringify(
-                  resp.body)}`)
-            }) */
-        })
-      })
-    })
+    // pages.forEach(page => {
+    //   logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
+    //
+    //   Subscribers.find({pageId: page._id}, (err, subscribers) => {
+    //     if (err) {
+    //       return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+    //     }
+    //     logger.serverLog(TAG,
+    //       `Subscribers of page ${JSON.stringify(subscribers)}`)
+    //
+    //     subscribers.forEach(subscriber => {
+    //       logger.serverLog(TAG,
+    //         `At Subscriber fetched ${JSON.stringify(subscriber)}`)
+    //
+    //       var messageData = {}
+    //
+    //       if (req.body.type === 'attachment') {
+    //         var fileReaderStream = fs.createReadStream(req.body.fileurl)
+    //
+    //         messageData = {
+    //           'recipient': JSON.stringify({
+    //             'id': subscriber.senderId
+    //           }),
+    //           'message': JSON.stringify({
+    //             'attachment': {
+    //               'type': req.body.attachmentType,
+    //               'payload': {}
+    //             }
+    //           }),
+    //
+    //           'filedata': fileReaderStream
+    //         }
+    //       } else {
+    //         messageData = {
+    //           'recipient': JSON.stringify({
+    //             'id': subscriber.senderId
+    //           }),
+    //           'message': JSON.stringify({
+    //             'text': req.body.text
+    //           })
+    //         }
+    //       }
+    //
+    //       request({
+    //         'method': 'POST',
+    //         'json': true,
+    //         'formData': messageData,
+    //         'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+    //           page.accessToken
+    //       },
+    //         function (err, res, body) {
+    //           //* **
+    //           if (err) {
+    //             return logger.serverLog(TAG,
+    //               `At send message broadcast ${JSON.stringify(err)}`)
+    //           }
+    //           logger.serverLog(TAG,
+    //             `Sent broadcast to subscriber response ${JSON.stringify(
+    //               body)}`)
+    //         })
+    //       /* needle.post(
+    //        `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+    //        messageData, (err2, resp) => {
+    //        if (err2) {
+    //        return logger.serverLog(TAG,
+    //        `At send message broadcast ${JSON.stringify(err2)}`)
+    //        }
+    //        logger.serverLog(TAG,
+    //        `Sent broadcast to subscriber response ${JSON.stringify(
+    //        resp.body)}`)
+    //        }) */
+    //     })
+    //   })
+    // })
     return res.status(200)
       .json({status: 'success', payload: 'Broadcast sent successfully.'})
   })
@@ -450,14 +466,14 @@ exports.verifyhook = function (req, res) {
 }
 
 function savepoll (req) {
-     // find subscriber from sender id
+  // find subscriber from sender id
   logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)
   var resp = JSON.parse(req.postback.payload)
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG,
-              `Error occurred in finding subscriber ${JSON.stringify(
-                err)}`)
+        `Error occurred in finding subscriber ${JSON.stringify(
+          err)}`)
     }
 
     const pollbody = {
@@ -479,83 +495,89 @@ function savepoll (req) {
 function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-  Workflows.find({userId: page.userId, isActive: true}).populate('userId').exec((err, workflows) => {
-    if (err) {
-      logger.serverLog(TAG, 'Workflows not found')
-    }
+  Workflows.find({userId: page.userId, isActive: true})
+    .populate('userId')
+    .exec((err, workflows) => {
+      if (err) {
+        logger.serverLog(TAG, 'Workflows not found')
+      }
 
-    logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
-    const sender = req.sender.id
-    const page = req.recipient.id
-  //  'message_is'
-  //  'message_contains'
-  //  'message_begins'
-    if (req.message.text) {
-      var index = null
-      for (let i = 0; i < workflows.length; i++) {
-        var user_msg = req.message.text
-        var words = user_msg.trim().split(' ')
+      logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
+      // const sender = req.sender.id
+      // const page = req.recipient.id
+      //  'message_is'
+      //  'message_contains'
+      //  'message_begins'
+      if (req.message.text) {
+        var index = null
+        for (let i = 0; i < workflows.length; i++) {
+          var userMsg = req.message.text
+          var words = userMsg.trim().split(' ')
 
-        logger.serverLog(TAG, 'User message is ' + user_msg)
+          logger.serverLog(TAG, 'User message is ' + userMsg)
 
-        logger.serverLog(TAG, workflows[i])
-        if (workflows[i].condition === 'message_is' && _.indexOf(workflows[i].keywords, user_msg) != -1) {
-          index = i
-          break
-        } else if (workflows[i].condition === 'message_contains' && _.intersection(words, workflows[i].keywords).length > 0) {
-          index = i
-          break
-        } else if (workflows[i].condition === 'message_begins' && _.indexOf(workflows[i].keywords, words[0]) != -1) {
-          index = i
-          break
+          logger.serverLog(TAG, workflows[i])
+          if (workflows[i].condition === 'message_is' &&
+            _.indexOf(workflows[i].keywords, userMsg) !== -1) {
+            index = i
+            break
+          } else if (workflows[i].condition === 'message_contains' &&
+            _.intersection(words, workflows[i].keywords).length > 0) {
+            index = i
+            break
+          } else if (workflows[i].condition === 'message_begins' &&
+            _.indexOf(workflows[i].keywords, words[0]) !== -1) {
+            index = i
+            break
+          }
+        }
+
+        if (index != null) {
+          // user query matched with keywords, send response
+          // sending response to sender
+          needle.get(
+            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
+            (err3, response) => {
+              if (err3) {
+                logger.serverLog(TAG,
+                  `Page accesstoken from graph api Error${JSON.stringify(
+                    err3)}`)
+              }
+
+              logger.serverLog(TAG,
+                `Page accesstoken from graph api ${JSON.stringify(
+                  response.body)}`)
+              const messageData = {
+                text: workflows[index].reply
+              }
+              const data = {
+                recipient: {id: req.sender.id}, // this is the subscriber id
+                message: messageData
+              }
+              logger.serverLog(TAG, messageData)
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
+                  logger.serverLog(TAG,
+                    `Sending workflow response to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+                })
+            })
         }
       }
-
-      if (index != null) {
-                // user query matched with keywords, send response
-                // sending response to sender
-        needle.get(
-                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
-                  (err3, response) => {
-                    if (err3) {
-                      logger.serverLog(TAG,
-                        `Page accesstoken from graph api Error${JSON.stringify(
-                          err3)}`)
-                    }
-
-                    logger.serverLog(TAG,
-                      `Page accesstoken from graph api ${JSON.stringify(
-                        response.body)}`)
-                    const messageData = {
-                      text: workflows[index].reply
-                    }
-                    const data = {
-                      recipient: {id: req.sender.id}, // this is the subscriber id
-                      message: messageData
-                    }
-                    logger.serverLog(TAG, messageData)
-                    needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                      data, (err4, respp) => {
-                        logger.serverLog(TAG,
-                          `Sending workflow response to subscriber response ${JSON.stringify(
-                            respp.body)}`)
-                      })
-                  })
-      }
-    }
-  })
+    })
 }
 function savesurvey (req) {
-     // this is the response of survey question
-        // first save the response of survey
-        // find subscriber from sender id
+  // this is the response of survey question
+  // first save the response of survey
+  // find subscriber from sender id
   var resp = JSON.parse(req.postback.payload)
 
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
-      logger.serverLog(TAG, `Error occurred in finding subscriber${JSON.stringify(
-              err)}`)
+      logger.serverLog(TAG,
+        `Error occurred in finding subscriber${JSON.stringify(
+          err)}`)
     }
 
     const surveybody = {
@@ -570,20 +592,20 @@ function savesurvey (req) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
       }
 
-            // send the next question
+      // send the next question
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}
       }).populate('surveyId').exec((err2, questions) => {
         if (err2) {
           logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
-                  err2)}`)
+            err2)}`)
         }
         logger.serverLog(TAG,
-                `Questions are ${JSON.stringify(questions)}`)
+          `Questions are ${JSON.stringify(questions)}`)
         if (questions.length > 0) {
           let firstQuestion = questions[0]
-                // create buttons
+          // create buttons
           const buttons = []
           let nextQuestionId = 'nil'
           if (questions.length > 1) {
@@ -604,77 +626,77 @@ function savesurvey (req) {
             })
           }
           logger.serverLog(TAG,
-                  `buttons created${JSON.stringify(buttons)}`)
+            `buttons created${JSON.stringify(buttons)}`)
           needle.get(
-                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
-                  (err3, response) => {
-                    if (err3) {
-                      logger.serverLog(TAG,
-                        `Page accesstoken from graph api Error${JSON.stringify(
-                          err3)}`)
-                    }
+            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
+            (err3, response) => {
+              if (err3) {
+                logger.serverLog(TAG,
+                  `Page accesstoken from graph api Error${JSON.stringify(
+                    err3)}`)
+              }
 
-                    logger.serverLog(TAG,
-                      `Page accesstoken from graph api ${JSON.stringify(
-                        response.body)}`)
-                    const messageData = {
-                      attachment: {
-                        type: 'template',
-                        payload: {
-                          template_type: 'button',
-                          text: firstQuestion.statement,
-                          buttons
+              logger.serverLog(TAG,
+                `Page accesstoken from graph api ${JSON.stringify(
+                  response.body)}`)
+              const messageData = {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'button',
+                    text: firstQuestion.statement,
+                    buttons
 
-                        }
-                      }
-                    }
-                    const data = {
-                      recipient: {id: req.sender.id}, // this is the subscriber id
-                      message: messageData
-                    }
-                    logger.serverLog(TAG, messageData)
-                    needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                      data, (err4, respp) => {
-                        logger.serverLog(TAG,
-                          `Sending survey to subscriber response ${JSON.stringify(
-                            respp.body)}`)
-                        if (err4) {
+                  }
+                }
+              }
+              const data = {
+                recipient: {id: req.sender.id}, // this is the subscriber id
+                message: messageData
+              }
+              logger.serverLog(TAG, messageData)
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
+                  logger.serverLog(TAG,
+                    `Sending survey to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+                  if (err4) {
 
-                        }
-                      })
-                  })
+                  }
+                })
+            })
         } else { // else send thank you message
           needle.get(
-                  `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
-                  (err3, response) => {
-                    if (err3) {
-                      logger.serverLog(TAG,
-                        `Page accesstoken from graph api Error${JSON.stringify(
-                          err3)}`)
-                    }
+            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
+            (err3, response) => {
+              if (err3) {
+                logger.serverLog(TAG,
+                  `Page accesstoken from graph api Error${JSON.stringify(
+                    err3)}`)
+              }
 
-                    logger.serverLog(TAG,
-                      `Page accesstoken from graph api ${JSON.stringify(
-                        response.body)}`)
-                    const messageData = {
-                      text: 'Thank you. Response submitted successfully.'
-                    }
-                    const data = {
-                      recipient: {id: req.sender.id}, // this is the subscriber id
-                      message: messageData
-                    }
-                    logger.serverLog(TAG, messageData)
-                    needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                      data, (err4, respp) => {
-                        logger.serverLog(TAG,
-                          `Sending survey to subscriber response ${JSON.stringify(
-                            respp.body)}`)
-                        if (err4) {
-                        }
-                      })
-                  })
+              logger.serverLog(TAG,
+                `Page accesstoken from graph api ${JSON.stringify(
+                  response.body)}`)
+              const messageData = {
+                text: 'Thank you. Response submitted successfully.'
+              }
+              const data = {
+                recipient: {id: req.sender.id}, // this is the subscriber id
+                message: messageData
+              }
+              logger.serverLog(TAG, messageData)
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
+                  logger.serverLog(TAG,
+                    `Sending survey to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+                  if (err4) {
+                  }
+                })
+            })
         }
       })
     })
@@ -692,7 +714,8 @@ exports.getfbMessage = function (req, res) {
   for (let i = 0; i < messagingEvents.length; i++) {
     const event = req.body.entry[0].messaging[i]
     logger.serverLog(TAG, JSON.stringify(event))
-    if (event.message && (event.message.is_echo == false || !event.message.is_echo)) {
+    if (event.message &&
+      (event.message.is_echo === false || !event.message.is_echo)) {
       const sender = event.sender.id
       const page = event.recipient.id
       // get accesstoken of page

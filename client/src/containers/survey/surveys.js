@@ -77,7 +77,7 @@ class Survey extends React.Component {
               <div className='ui-block'>
 
                 {
-                this.props.subscribers && this.props.subscribers.length == 0 &&
+                this.props.subscribers && this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
                   <center>
                     <Alert type='info' headline='0 Subscribers' >
@@ -92,7 +92,7 @@ class Survey extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>Surveys</h3>
                   {
-                this.props.subscribers && this.props.subscribers.length == 0
+                this.props.subscribers && this.props.subscribers.length === 0
 
                   ? <Link to='addsurvey' className='pull-right'>
                     <button className='btn btn-sm' disabled> Create Survey
@@ -125,7 +125,7 @@ class Survey extends React.Component {
                               <button className='btn btn-primary btn-sm'
                                 onClick={() => this.gotoView(survey)}>View
                               </button>
-                              { this.props.subscribers && this.props.subscribers.length == 0
+                              { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
                                   <button className='btn  btn-sm' disabled
                                     onClick={() => this.gotoResults(survey)}>

@@ -33,9 +33,11 @@ export function deletefile (data) {
 }
 export function uploadBroadcastfile (filedata) {
   return (dispatch) => {
+    // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/uploadfile`, {
       method: 'post',
       body: filedata,
+      // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })

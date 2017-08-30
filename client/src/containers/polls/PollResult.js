@@ -57,14 +57,16 @@ class PollResult extends React.Component {
       var vals = []
       var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']
       var backcolors = []
-      for (var j = 0; j < nextprops.responses.length; j++) {
+      for (let j = 0; j < nextprops.responses.length; j++) {
         counts.push(nextprops.responses[j].count)
         backcolors.push(colors[j])
         vals.push(nextprops.responses[j].value)
       }
       if (radarChart !== null) {
+        // eslint-disable-next-line camelcase
         var ctx_rc = radarChart.getContext('2d')
 
+        // eslint-disable-next-line camelcase
         var data_rc = {
           datasets: [
             {
@@ -73,7 +75,7 @@ class PollResult extends React.Component {
             }],
           labels: vals
         }
-
+        // eslint-disable-next-line no-unused-vars,no-undef
         var radarChartEl = new Chart(ctx_rc, {
           type: 'pie',
           data: data_rc,

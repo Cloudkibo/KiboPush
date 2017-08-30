@@ -64,6 +64,7 @@ class ViewSurvey extends React.Component {
   }
 
   render () {
+    // eslint-disable-next-line no-lone-blocks
     {
       this.props.response &&
       this.gotoresp()
