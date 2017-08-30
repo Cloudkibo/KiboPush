@@ -7,6 +7,7 @@ const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
+const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
@@ -36,11 +37,9 @@ exports.create = function (req, res) {
     platform: req.body.platform,
     type: req.body.type,
     text: req.body.text,
-    userId: req.user._id,
-    sent: 0,
-    tapped: 0
+    userId: req.user._id
+
   })
-  let sent_count = 0
   broadcast.save((err, broadcast) => {
     if (err) {
       return res.status(500)
@@ -91,25 +90,20 @@ exports.create = function (req, res) {
           }
          // sent_count = sent_count + 1
           logger.serverLog(TAG, 'Sent broadcast to subscriber response')
-                // update broadcast sent field
-          Broadcasts.findById(broadcast._id, (err, broadcast2) => {
-            if (err) {
+          // update broadcast sent field
+          var pagebroadcast = new BroadcastPage({
+            pageId: page.pageId,
+            userId: req.user._id,
+            subscriberId: subscriber.senderId,
+            broadcastId: broadcast._id,
+            seen: false
+          })
+          pagebroadcast.save((err2, pagebroadcastsaved) => {
+            if (err2) {
               return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+          .json({status: 'failed', description: 'PageBroadcast create failed'})
             }
-            if (!broadcast2) {
-              return res.status(404)
-        .json({status: 'failed', description: 'Broadcasts not found'})
-            }
-
-            broadcast2.sent = broadcast2.sent + 1
-            broadcast2.save((err2, broadcast2) => {
-              if (err2) {
-                return res.status(500)
-          .json({status: 'failed', description: 'Broadcast update failed'})
-              }
-              logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
-            })
+            logger.serverLog(TAG, 'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
           })
         })
           })
@@ -245,24 +239,20 @@ exports.uploadfile = function (req, res) {
                                       body)}`)
 
                                       // update broadcast sent field
-                        Broadcasts.findById(broadcast._id, (err, broadcast2) => {
-                          if (err) {
+                            // update broadcast sent field
+                        var pagebroadcast = new BroadcastPage({
+                          pageId: page.pageId,
+                          userId: req.user._id,
+                          subscriberId: subscriber.senderId,
+                          broadcastId: broadcastt._id,
+                          seen: false
+                        })
+                        pagebroadcast.save((err2, pagebroadcastsaved) => {
+                          if (err2) {
                             return res.status(500)
-                           .json({status: 'failed', description: 'Internal Server Error'})
+          .json({status: 'failed', description: 'PageBroadcast create failed'})
                           }
-                          if (!broadcast2) {
-                            return res.status(404)
-                           .json({status: 'failed', description: 'Broadcasts not found'})
-                          }
-
-                          broadcast2.sent = broadcast2.sent + 1
-                          broadcast2.save((err2, broadcast2) => {
-                            if (err2) {
-                              return res.status(500)
-                             .json({status: 'failed', description: 'Broadcast update failed'})
-                            }
-                            logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
-                          })
+                          logger.serverLog(TAG, 'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
                         })
                       })
                     })
