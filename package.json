@@ -9,7 +9,7 @@
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
     "build:react": "browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
-    "test": "standard --fix && echo \"NO CODE STYLE ERRORS FOUND. TESTS ARE UNDER CONSTRUCTION by SOJHARO\" && exit 0"
+    "test": "standard --fix && echo \"No code style errors founds. Code tests are under construction by Sojharo\" && exit 0"
   },
   "pre-commit": [
     "build:react",
