@@ -11,6 +11,10 @@
     "build:react": "browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
     "test": "standard --fix && echo \"NO CODE STYLE ERRORS FOUND. TESTS ARE UNDER CONSTRUCTION by SOJHARO\" && exit 0"
   },
+  "pre-commit": [
+    "build:react",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Cloudkibo/KiboPush.git"
@@ -19,12 +23,12 @@
     "kibo",
     "kibopush"
   ],
-  "author": "sojharo, dayem, zarmeen",
+  "author": "sojharo, dayem, zarmeen, imran",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Cloudkibo/KiboPush/issues"
+    "url": "https://github.com/Cloudkibo/KiboPush_Support/issues"
   },
-  "homepage": "https://github.com/Cloudkibo/KiboPush#readme",
+  "homepage": "http://www.kibopush.com",
   "dependencies": {
     "@terebentina/react-popover": "^2.0.0",
     "axios": "^0.16.2",
@@ -93,6 +97,7 @@
     "body-parser": "^1.17.2",
     "cross-env": "^5.0.1",
     "nodemon": "^1.11.0",
+    "pre-commit": "^1.2.2",
     "standard": "^10.0.3"
   },
   "standard": {
