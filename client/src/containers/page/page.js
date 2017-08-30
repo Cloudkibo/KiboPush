@@ -8,7 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
-import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
   addPages,
@@ -98,30 +98,44 @@ class Page extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 {
-                this.props.subscribers && this.props.subscribers.length == 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you don't have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  Lets invite subscribers first. Don't worry, we will guide you on how you can invite subscribers.
-                  Click on 'Invite Subscribers' button on right side of the page title.
+                  this.props.subscribers &&
+                  this.props.subscribers.length == 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you don't
+                    have any subscriber, you will not be able to broadcast
+                    message, polls and surveys.
+                    Lets invite subscribers first. Don't worry, we will guide
+                    you on how you can invite subscribers.
+                    Click on 'Invite Subscribers' button on right side of the
+                    page title.
 
-                </div>
-              }
+                  </div>
+                }
                 <br />
                 <div className='birthday-item inline-items badges'>
                   <h3>Pages</h3>
                   <Link to='/addPages' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Add Pages</Link>
                   {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}} onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}} onClose={this.closeDialog}>
-                            <h3>Remove Page</h3>
-                            <p>If you remove this page you will loose all of its subscribers and you will not be able to send messages, polls, and surveys to them. Are you sure to remove this page?</p>
-                            <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => this.removePage(this.state.page)} >Remove</button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                    this.state.isShowingModal &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialog}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <h3>Remove Page</h3>
+                        <p>If you remove this page you will loose all of its
+                          subscribers and you will not be able to send messages,
+                          polls, and surveys to them. Are you sure to remove
+                          this page?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => this.removePage(
+                                  this.state.page)}>Remove
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -136,23 +150,29 @@ class Page extends React.Component {
 
                         { (this.props.pages)
                         ? this.props.pages.map((page, i) => (
-                          <tr>
-                            <td><img alt='pic' src={(page.pagePic) ? page.pagePic : ''} className='avatar' /></td>
-                            <td>{page.pageName}</td>
-                            <td>{page.likes}</td>
-                            <td>
-                              <button onClick={() => this.showDialog(page)}
-                                className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}>Remove
-                              </button>
-                              <button
-                                onClick={() => this.inviteSubscribers(page)}
-                                className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}>Invite Subscribers
-                              </button>
-                            </td>
+                          (page.connected &&
+                            <tr>
+                              <td><img alt='pic'
+                                src={(page.pagePic) ? page.pagePic : ''}
+                                className='avatar' /></td>
+                              <td>{page.pageName}</td>
+                              <td>{page.likes}</td>
+                              <td>
+                                <button onClick={() => this.showDialog(page)}
+                                  className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}>
+                                  Remove
+                                </button>
+                                <button
+                                  onClick={() => this.inviteSubscribers(page)}
+                                  className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}>Invite
+                                  Subscribers
+                                </button>
+                              </td>
 
-                          </tr>
+                            </tr>
+                          )
 
                         )) : <tr />
 
