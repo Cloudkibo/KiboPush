@@ -128,7 +128,7 @@ exports.addPages = function (req, res) {
       fetchPages(`https://graph.facebook.com/v2.10/${
         user.fbId}/accounts?access_token=${
         user.fbToken}`, user)
-      Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
+      Pages.find({userId: req.user._id}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
