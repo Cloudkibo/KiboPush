@@ -72,7 +72,8 @@ exports.create = function (req, res) {
                 'id': subscriber.senderId
               }),
               'message': JSON.stringify({
-                'text': req.body.text
+                'text': req.body.text,
+                'metadata': 'This is a meta data'
               })
             }
 
@@ -179,6 +180,8 @@ exports.uploadfile = function (req, res) {
               text: obj.text,
               userId: req.user._id,
               fileurl: obj.fileurl,
+              sent: 0,
+              tapped: 0,
               attachmentType: obj.attachmentType
             })
             Broadcasts.create(broadcast, (err2, broadcastt) => {
@@ -240,12 +243,33 @@ exports.uploadfile = function (req, res) {
                         }
                         logger.serverLog(TAG, `Sent broadcast to subscriber response ${JSON.stringify(
                                       body)}`)
+
+                                      // update broadcast sent field
+                        Broadcasts.findById(broadcast._id, (err, broadcast2) => {
+                          if (err) {
+                            return res.status(500)
+                           .json({status: 'failed', description: 'Internal Server Error'})
+                          }
+                          if (!broadcast2) {
+                            return res.status(404)
+                           .json({status: 'failed', description: 'Broadcasts not found'})
+                          }
+
+                          broadcast2.sent = broadcast2.sent + 1
+                          broadcast2.save((err2, broadcast2) => {
+                            if (err2) {
+                              return res.status(500)
+                             .json({status: 'failed', description: 'Broadcast update failed'})
+                            }
+                            logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
+                          })
+                        })
                       })
                     })
                   })
                 })
 
-                return res.status(200).json({status: 'success', payload: broadcastt})
+                return res.status(200).json({status: 'success', payload: {broadcast: broadcastt}})
               })
             })
           }
@@ -669,6 +693,9 @@ function savesurvey (req) {
 // webhook for facebook
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}
+
+// {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
+
   logger.serverLog(TAG, 'message received from FB Subscriber')
   const messagingEvents = req.body.entry[0].messaging
 
