@@ -7,10 +7,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const pollSchema = new Schema({
-  pageId: [String],
+  pageId: String,
   userId: { type: Schema.ObjectId, ref: 'users' },
+  subscriberId: String,
   broadcastId: { type: Schema.ObjectId, ref: 'broadcasts' },
-  datetime: { type: Date, default: Date.now }
+  datetime: { type: Date, default: Date.now },
+  seen: {type: Boolean}
 })
 
 module.exports = mongoose.model('page_broadcasts', pollSchema)
