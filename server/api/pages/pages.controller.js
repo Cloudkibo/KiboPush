@@ -35,7 +35,7 @@ exports.enable = function (req, res) {
           description: 'Failed to update record'
         })
       } else {
-        Pages.find({connected: false, userId: req.user._id}, (err2, pages) => {
+        Pages.find({userId: req.user._id}, (err2, pages) => {
           if (err2) {
             return res.status(500).json({
               status: 'failed',
@@ -52,7 +52,7 @@ exports.enable = function (req, res) {
           needle.post(options.url, options, (error, response) => {
             if (error) {
               return res.status(500)
-              .json({status: 'failed', description: JSON.stringify(error)})
+                .json({status: 'failed', description: JSON.stringify(error)})
             }
             res.status(200).json({status: 'success', payload: pages})
           })
@@ -75,7 +75,7 @@ exports.disable = function (req, res) {
       } else {
         // remove subscribers of the page
         Subscribers.remove({pageId: req.body._id}, function () {
-          Pages.find({connected: true, userId: req.user._id}, (err2, pages) => {
+          Pages.find({userId: req.user._id}, (err2, pages) => {
             if (err2) {
               return res.status(500).json({
                 status: 'failed',
@@ -92,7 +92,7 @@ exports.disable = function (req, res) {
             needle.delete(options.url, options, (error, response) => {
               if (error) {
                 return res.status(500)
-              .json({status: 'failed', description: JSON.stringify(error)})
+                  .json({status: 'failed', description: JSON.stringify(error)})
               }
               res.status(200).json({status: 'success', payload: pages})
             })
@@ -126,8 +126,8 @@ exports.addPages = function (req, res) {
       res.status(200).json({status: 'success', payload: []})
     } else {
       fetchPages(`https://graph.facebook.com/v2.10/${
-      user.fbId}/accounts?access_token=${
-      user.fbToken}`, user)
+        user.fbId}/accounts?access_token=${
+        user.fbToken}`, user)
       Pages.find({userId: req.user._id, connected: false}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
@@ -171,13 +171,16 @@ function fetchPages (url, user) {
         if (error !== null) {
           return logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
-          logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(fanCount.body.fan_count)}`)
+          logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
+            fanCount.body.fan_count)}`)
           Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
             if (err) {
-              logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
             }
             if (!page) {
-              logger.serverLog(TAG, `Page ${item.name} not found. Creating a page`)
+              logger.serverLog(TAG,
+                `Page ${item.name} not found. Creating a page`)
               var pageItem = new Pages({
                 pageId: item.id,
                 pageName: item.name,
@@ -192,14 +195,16 @@ function fetchPages (url, user) {
                 if (err) {
                   logger.serverLog(TAG, `Error occurred ${err}`)
                 }
-                logger.serverLog(TAG, `Page ${item.name} created with id ${page.pageId}`)
+                logger.serverLog(TAG,
+                  `Page ${item.name} created with id ${page.pageId}`)
               })
             } else {
               page.likes = fanCount.body.fan_count
               page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
               page.save((err) => {
                 if (err) {
-                  logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+                  logger.serverLog(TAG,
+                    `Internal Server Error ${JSON.stringify(err)}`)
                 }
                 logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
               })
