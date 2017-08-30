@@ -10,7 +10,10 @@ var broadcastSchema = new Schema({
   type: String, // TODO define this as enum with values ['text','attachment']
   text: String, // message body
   userId: {type: Schema.ObjectId, ref: 'users'},
-  datetime: {type: Date, default: Date.now }
+  datetime: {type: Date, default: Date.now },
+  sent: Number,
+  tapped: Number
+
   //  pageId: String, [discuss with sojharo, will we keep it or not]
 })
 
