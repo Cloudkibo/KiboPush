@@ -89,9 +89,7 @@ exports.create = function (req, res) {
                   `At send message broadcast ${JSON.stringify(err2)}`)
           }
           sent_count = sent_count + 1
-          logger.serverLog(TAG,
-                `Sent broadcast to subscriber response ${JSON.stringify(
-                  body)}`)
+          logger.serverLog(TAG, 'Sent broadcast to subscriber response' + sent_count)
         })
           })
         })
@@ -113,6 +111,8 @@ exports.create = function (req, res) {
             return res.status(500)
           .json({status: 'failed', description: 'Broadcast update failed'})
           }
+          logger.serverLog(TAG, 'Broadcast updated' + JSON.stringify(broadcast2))
+
           return res.status(200)
       .json({status: 'success', payload: {broadcast: broadcast2, sent_count: sent_count}})
         })

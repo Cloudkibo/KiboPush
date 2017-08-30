@@ -21,7 +21,7 @@ export function createbroadcast (broadcast) {
   console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
-      .then(res => dispatch(addBroadcast(res.payload)))
+      .then(res => dispatch(addBroadcast(res.payload.broadcast)))
   }
 }
 
