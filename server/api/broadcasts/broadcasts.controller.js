@@ -36,8 +36,11 @@ exports.create = function (req, res) {
     platform: req.body.platform,
     type: req.body.type,
     text: req.body.text,
-    userId: req.user._id
+    userId: req.user._id,
+    sent: 0,
+    tapped: 0
   })
+  let sent_count = 0
   broadcast.save((err, broadcast) => {
     if (err) {
       return res.status(500)
@@ -72,6 +75,7 @@ exports.create = function (req, res) {
                 'text': req.body.text
               })
             }
+
             request({
               'method': 'POST',
               'json': true,
@@ -84,6 +88,7 @@ exports.create = function (req, res) {
             return logger.serverLog(TAG,
                   `At send message broadcast ${JSON.stringify(err2)}`)
           }
+          sent_count = sent_count + 1
           logger.serverLog(TAG,
                 `Sent broadcast to subscriber response ${JSON.stringify(
                   body)}`)
@@ -91,8 +96,27 @@ exports.create = function (req, res) {
           })
         })
       })
-      return res.status(200)
-      .json({status: 'success', payload: broadcast})
+      // update broadcast sent field
+      Broadcasts.findById(broadcast._id, (err, broadcast2) => {
+        if (err) {
+          return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        if (!broadcast2) {
+          return res.status(404)
+        .json({status: 'failed', description: 'Broadcasts not found'})
+        }
+
+        broadcast2.sent = sent_count
+        broadcast2.save((err2, broadcast2) => {
+          if (err2) {
+            return res.status(500)
+          .json({status: 'failed', description: 'Broadcast update failed'})
+          }
+          return res.status(200)
+      .json({status: 'success', payload: {broadcast: broadcast2, sent_count: sent_count}})
+        })
+      })
     })
   })
 }
