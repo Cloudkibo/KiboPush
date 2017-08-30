@@ -77,20 +77,20 @@ exports.setup = function (User, config) {
               }
               logger.serverLog(TAG,
                 `user is updated : ${JSON.stringify(userpaylaod)}`)
+              done(null, user)
               fetchPages(`https://graph.facebook.com/v2.10/${
                 user.fbId}/accounts?access_token=${
                 user.fbToken}`, user)
-              done(null, user)
             })
           } else {
             payload.save((error, newUser) => {
               if (error) {
                 return done(error)
               }
+              done(null, newUser)
               fetchPages(`https://graph.facebook.com/v2.10/${
                 payload.fbId}/accounts?access_token=${
                 payload.fbToken}`, newUser)
-              return done(null, newUser)
             })
           }
         })
