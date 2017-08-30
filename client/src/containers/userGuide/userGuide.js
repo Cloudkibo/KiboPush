@@ -1,6 +1,7 @@
 import React from 'react'
 import SideNav, { Nav, NavText } from 'react-sidenav'
-import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+// eslint-disable-next-line no-unused-vars
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import UserGuideBroadcasts from './userGuideBroadcasts'
 import UserGuidePolls from './userGuidePolls'
 import UserGuideSurveys from './userGuideSurveys'

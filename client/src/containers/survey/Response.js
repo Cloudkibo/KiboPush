@@ -88,8 +88,10 @@ class Response extends React.Component {
         vals.push(sorted[j].value)
       }
       if (radarChart !== null) {
+        // eslint-disable-next-line camelcase
         var ctx_rc = radarChart.getContext('2d')
 
+        // eslint-disable-next-line camelcase
         var data_rc = {
           datasets: [
             {
@@ -99,6 +101,7 @@ class Response extends React.Component {
           labels: vals
         }
 
+        // eslint-disable-next-line no-unused-vars,no-undef
         var radarChartEl = new Chart(ctx_rc, {
           type: 'pie',
           data: data_rc,

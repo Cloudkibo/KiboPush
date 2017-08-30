@@ -124,7 +124,7 @@ exports.addPages = function (req, res) {
     }
     if (req.user.provider === 'local') {
       res.status(200).json({status: 'success', payload: []})
-    } else {
+    } else { // todo this should be called from passportjs
       // fetchPages(`https://graph.facebook.com/v2.10/${
       //   user.fbId}/accounts?access_token=${
       //   user.fbToken}`, user)

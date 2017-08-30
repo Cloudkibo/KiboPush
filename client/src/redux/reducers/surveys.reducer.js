@@ -1,8 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  surveys: []
-}
+// const initialState = {
+//   surveys: []
+// }
 
 export function surveysInfo (state = {}, action) {
   switch (action.type) {

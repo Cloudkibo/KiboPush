@@ -6,8 +6,6 @@ import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 const socket = io('')
 let store
 
-const TAG = 'utility/socketio'
-
 export function initiateSocket (storeObj) {
   store = storeObj
   socket.connect()

@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /**
  * Created by sojharo on 20/07/2017.
  */

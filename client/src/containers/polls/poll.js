@@ -114,7 +114,7 @@ class Poll extends React.Component {
               <div className='ui-block'>
 
                 {
-                this.props.subscribers && this.props.subscribers.length == 0 &&
+                this.props.subscribers && this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
                   <center>
                     <Alert type='info' headline='0 Subscribers' >
@@ -128,7 +128,7 @@ class Poll extends React.Component {
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Polls</h3>
-                  {this.props.subscribers && this.props.subscribers.length == 0
+                  {this.props.subscribers && this.props.subscribers.length === 0
                     ? <Link to='createpoll' className='pull-right'>
                       <button className='btn btn-sm' disabled> Create Poll
                     </button>

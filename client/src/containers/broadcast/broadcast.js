@@ -14,13 +14,12 @@ import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
+  clearAlertMessage,
   loadBroadcastsList,
-  sendbroadcast,
-  clearAlertMessage
+  sendbroadcast
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import AlertContainer from 'react-alert'
 
 class Broadcast extends React.Component {
   constructor (props, context) {
@@ -30,16 +29,8 @@ class Broadcast extends React.Component {
       type: ''
     }
     if (!props.broadcasts) {
-    //  alert('calling')
+      //  alert('calling')
       props.loadBroadcastsList()
-    }
-    this.sendBroadcast = this.sendBroadcast.bind(this)
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
-      // this.setState({broadcasts: nextProps.broadcasts});
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
   }
@@ -82,6 +73,7 @@ class Broadcast extends React.Component {
       console.log('Broadcasts Updated', nextProps.broadcasts)
       // this.setState({broadcasts: nextProps.broadcasts});
     }
+    this.sendBroadcast = this.sendBroadcast.bind(this)
     if (nextProps.successMessage) {
       this.setState({
         alertMessage: nextProps.successMessage,
@@ -115,34 +107,39 @@ class Broadcast extends React.Component {
               <div className='ui-block'>
 
                 {
-                this.props.subscribers && this.props.subscribers.length == 0 &&
-                <div style={{padding: '10px'}}>
-                  <center>
-                    <Alert type='info' headline='0 Subscribers' >
-                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                    </Alert>
-                  </center>
-                </div>
-              }
+                  this.props.subscribers &&
+                  this.props.subscribers.length === 0 &&
+                  <div style={{padding: '10px'}}>
+                    <center>
+                      <Alert type='info' headline='0 Subscribers'>
+                        Your connected pages have zero subscribers. Unless you
+                        do not have any subscriber, you will not be able to
+                        broadcast message, polls and surveys.
+                        To invite subscribers click <Link
+                          to='/invitesubscribers'
+                          style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                      </Alert>
+                    </center>
+                  </div>
+                }
                 <br />
 
                 <div className='birthday-item inline-items badges'>
                   <h3>Broadcasts</h3>
                   {
-                this.props.subscribers && this.props.subscribers.length == 0
+                    this.props.subscribers && this.props.subscribers.length === 0
 
-                  ? <Link to='createbroadcast' className='pull-right'>
-                    <button className='btn btn-sm' disabled> Send
-                      Broadcast
-                    </button>
-                  </Link>
-                  : <Link to='createbroadcast' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Send
-                      Broadcast
-                    </button>
-                  </Link>
-                }
+                      ? <Link to='createbroadcast' className='pull-right'>
+                        <button className='btn btn-sm' disabled> Send
+                        Broadcast
+                      </button>
+                      </Link>
+                      : <Link to='createbroadcast' className='pull-right'>
+                        <button className='btn btn-primary btn-sm'> Send
+                        Broadcast
+                      </button>
+                      </Link>
+                  }
                   <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -174,7 +171,7 @@ class Broadcast extends React.Component {
                   {
                     this.state.alertMessage !== '' &&
                     <center>
-                      <Alert type={this.state.type} >
+                      <Alert type={this.state.type}>
                         {this.state.alertMessage}
                       </Alert>
                     </center>

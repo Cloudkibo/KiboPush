@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Created by sojharo on 27/07/2017.
  */
@@ -294,8 +295,7 @@ exports.send = function (req, res) {
             })
           }
           logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
-          for (let z = 0; z < pages.length; z++) // todo this for loop doesn't work with async code
-          {
+          for (let z = 0; z < pages.length; z++) {
             logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
             Subscribers.find({pageId: pages[z]._id}, (err, subscribers) => {
               logger.serverLog(TAG,
@@ -346,7 +346,10 @@ exports.send = function (req, res) {
                       data, (err, resp) => {
                         if (err) {
                           return res.status(500)
-                          .json({status: 'failed', description: JSON.stringify(err)})
+                            .json({
+                              status: 'failed',
+                              description: JSON.stringify(err)
+                            })
                         }
                         logger.serverLog(TAG,
                           `Sending survey to subscriber response ${JSON.stringify(

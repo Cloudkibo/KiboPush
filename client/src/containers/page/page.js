@@ -99,7 +99,7 @@ class Page extends React.Component {
               <div className='ui-block'>
                 {
                   this.props.subscribers &&
-                  this.props.subscribers.length == 0 &&
+                  this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
                     <h4 className='block'>0 Subscribers</h4>
                     Your connected pages have zero subscribers. Unless you don't
