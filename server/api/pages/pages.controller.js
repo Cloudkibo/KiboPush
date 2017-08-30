@@ -8,7 +8,6 @@ const TAG = 'api/pages/pages.controller.js'
 const Users = require('../user/Users.model')
 const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
-const fetchPages = require('../../auth/facebook/passport').fetchPages
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Get pages API called')
@@ -126,9 +125,9 @@ exports.addPages = function (req, res) {
     if (req.user.provider === 'local') {
       res.status(200).json({status: 'success', payload: []})
     } else {
-      fetchPages(`https://graph.facebook.com/v2.10/${
-        user.fbId}/accounts?access_token=${
-        user.fbToken}`, user)
+      // fetchPages(`https://graph.facebook.com/v2.10/${
+      //   user.fbId}/accounts?access_token=${
+      //   user.fbToken}`, user)
       Pages.find({userId: req.user._id}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})

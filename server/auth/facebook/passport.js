@@ -19,7 +19,7 @@ const options = {
   json: true
 }
 
-let setup = function (User, config) {
+exports.setup = function (User, config) {
   passport.use(new FacebookStrategy(
     {
       clientID: config.facebook.clientID,
@@ -99,8 +99,7 @@ let setup = function (User, config) {
   ))
 }
 
-let fetchPages = function (url, user) {
-  logger.serverLog(TAG, 'FETCH PAGES FUNCTION CALLED')
+function fetchPages (url, user) {
   const options = {
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application'
@@ -177,5 +176,3 @@ let fetchPages = function (url, user) {
     }
   })
 }
-
-module.exports = { fetchPages, setup }
