@@ -81,11 +81,11 @@ class AddPage extends React.Component {
                           className='h6 author-name'>{page.pageName} </a>
 
                       </div>
-                      (page.connected &&
+                      {(page.connected) &&
                       <button onClick={() => this.props.removePage(page)}
                         className='btn btn-sm bg-blue'>Disconnect
                       </button>
-                      )
+                      }
                       <button onClick={() => this.props.enablePage(page)}
                         className='btn btn-sm bg-blue'>Connect
                       </button>
