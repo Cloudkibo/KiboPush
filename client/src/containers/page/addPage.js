@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import {
   addPages,
   enablePage,
-  removePage
+  removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 
@@ -81,7 +81,7 @@ class AddPage extends React.Component {
 
                       </div>
                       {(page.connected) &&
-                      <button onClick={() => this.props.removePage(page)}
+                      <button onClick={() => this.props.removePageInAddPage(page)}
                         className='btn btn-sm bg-blue'>Disconnect
                       </button>
                       }
@@ -117,7 +117,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     enablePage: enablePage,
-    removePage: removePage,
+    removePageInAddPage: removePageInAddPage,
     addPages: addPages
   }, dispatch)
 }

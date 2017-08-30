@@ -47,15 +47,21 @@ export function loadMyPagesList () {
 }
 
 export function removePage (page) {
-  console.log('loadPagesList called')
+  console.log('remove page action called')
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
-      .then(res => {
-        dispatch(updatePagesList(res.payload))
-        dispatch(updateOtherPages(res.payload))
-      })
+      .then(res => dispatch(updatePagesList(res.payload)))
   }
 }
+
+export function removePageInAddPage (page) {
+  console.log('remove page in add page action called')
+  return (dispatch) => {
+    callApi('pages/disable', 'post', page)
+    .then(res => dispatch(updateOtherPages(res.payload)))
+  }
+}
+
 export function loadOtherPagesList () {
   console.log('loadOtherPagesList called')
   return (dispatch) => {
