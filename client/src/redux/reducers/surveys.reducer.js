@@ -27,6 +27,15 @@ export function surveysInfo (state = {}, action) {
         questions: action.questions,
         survey: action.survey
       })
+    case ActionTypes.SEND_SURVEY_SUCCESS:
+      return Object.assign({}, state, {
+        successMessage: 'Survey sent successfully.'
+      })
+
+    case ActionTypes.SEND_SURVEY_FAILURE:
+      return Object.assign({}, state, {
+        errorMessage: 'Survey Sending Failed.'
+      })
     case ActionTypes.SUBMIT_SURVEY:
       return Object.assign({}, state, {
         response: action.response

@@ -21,6 +21,10 @@ import { handleDate } from '../../utility/utils'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      alertMessage: '',
+      alertType: ''
+    }
     if (!props.surveys) {
     //  alert('calling')
       props.loadSurveysList()
@@ -55,6 +59,26 @@ class Survey extends React.Component {
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
 
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps called')
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+    }
+  }
+
   gotoResults (survey) {
     this.props.history.push({
       pathname: `/surveyResult`,
@@ -63,6 +87,7 @@ class Survey extends React.Component {
   }
 
   render () {
+    console.log('render method survey')
     return (
       <div>
         <Header />
@@ -95,7 +120,7 @@ class Survey extends React.Component {
                 this.props.subscribers && this.props.subscribers.length === 0
 
                   ? <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-sm' disabled> Create Survey
+                    <button className='btn btn-sm'> Create Survey
                     </button>
                   </Link>
                   : <Link to='addsurvey' className='pull-right'>
@@ -134,7 +159,7 @@ class Survey extends React.Component {
 
                                   <button className='btn  btn-sm' disabled
                                     onClick={() => this.props.sendsurvey(
-                                        survey)}> Send
+                                          survey)}> Send
                               </button>
                                 </span>
                               : <span>
@@ -158,7 +183,14 @@ class Survey extends React.Component {
                       </tbody>
                     </table>
                   </div>
-
+                  {
+                    this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+                  }
                 </div>
               </div>
 
@@ -175,7 +207,9 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     surveys: (state.surveysInfo.surveys),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    successMessage: (state.surveysInfo.successMessage),
+    errorMessage: (state.surveysInfo.errorMessage)
   }
 }
 
