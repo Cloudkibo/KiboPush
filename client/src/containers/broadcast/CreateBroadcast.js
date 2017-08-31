@@ -23,7 +23,7 @@ class CreateBroadcast extends React.Component {
     super(props, context)
     this.createBroadcast = this.createBroadcast.bind(this)
     this.state = {
-      userfile: null,
+      userfile: '',
       userfilename: '',
       alertMessage: '',
       alertType: '',
@@ -107,7 +107,7 @@ class CreateBroadcast extends React.Component {
   createBroadcast () {
     let msgBody = this.refs.message.value
     if ((msgBody === '' || msgBody === undefined) &&
-      (this.state.userfile === '')) {
+      (this.state.userfile === '' || this.state.userfile === null)) {
       this.setState({
         alertMessage: 'Cannot send empty broadcast!',
         alertType: 'danger'
