@@ -224,6 +224,8 @@ exports.uploadfile = function (req, res) {
                       var messageData = {}
 
                       if (broadcastt.type === 'attachment') {
+                        console.log('i am here at broadcastt.type')
+                        console.log('fileReaderStream ' + broadcastt.fileurl)
                         var fileReaderStream = fs.createReadStream(
                           broadcastt.fileurl)
 
