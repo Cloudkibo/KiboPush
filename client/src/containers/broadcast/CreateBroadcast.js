@@ -29,7 +29,7 @@ class CreateBroadcast extends React.Component {
       alertType: '',
       targeting: [],
       criteria: {
-       Gender: {  
+       Gender: {
           options: ['Male', 'Female'],
           isPicked: false,
         },
@@ -90,7 +90,7 @@ class CreateBroadcast extends React.Component {
     }
     this.setState({segmentValue: event.target.value, buttonLabel: label});
   }
-  
+
   addNewTarget () {
     console.log("Add new target called", this.state.segmentValue);
     var temp = this.state.criteria;
@@ -117,7 +117,11 @@ class CreateBroadcast extends React.Component {
         alertMessage: '',
         alertType: ''
       })
-      if (this.state.userfile && this.state.userfile !== '') {
+      if (this.state.userfile && this.refs.message.value && this.state.userfile !== '') {
+        this.onFileSubmit()
+        this.props.createbroadcast(
+          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+      } else if (this.state.userfile && this.state.userfile !== '') {
         this.onFileSubmit()
       } else {
         this.props.createbroadcast(
@@ -330,16 +334,16 @@ class CreateBroadcast extends React.Component {
                      </div>
 
                      </div>
-                 
+
                   <div>
                     {this.state.targeting}
-                    
+
 
                   {
                     this.state.criteria.Gender.isPicked && <div className="row">
                         <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
                           <div style={{padding: 5}}>
-                            <p>Gender is: </p> 
+                            <p>Gender is: </p>
                           </div>
                         </div>
                         <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
@@ -349,30 +353,13 @@ class CreateBroadcast extends React.Component {
                           </select>
                         </div>
                      </div>
-                  }   
+                  }
 
                   {
                     this.state.criteria.Locale.isPicked && <div className="row">
                         <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
                           <div style={{padding: 5}}>
-                            <p>Locale is: </p> 
-                          </div>
-                        </div>
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <select style={{padding: 5}}>
-                          <option selected="selected" value="en_US">en_US</option>
-                          <option value="en_UK">en_UK</option>
-                          <option value="en_IN">en_IN</option>
-                          </select>
-                        </div>
-                     </div>
-                  }
-                     
-                  {
-                    this.state.criteria.Page.isPicked && <div className="row">
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <div style={{padding: 5}}>
-                            <p>Page is: </p> 
+                            <p>Locale is: </p>
                           </div>
                         </div>
                         <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
@@ -385,8 +372,25 @@ class CreateBroadcast extends React.Component {
                      </div>
                   }
 
-                     
-                    
+                  {
+                    this.state.criteria.Page.isPicked && <div className="row">
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <div style={{padding: 5}}>
+                            <p>Page is: </p>
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <select style={{padding: 5}}>
+                          <option selected="selected" value="en_US">en_US</option>
+                          <option value="en_UK">en_UK</option>
+                          <option value="en_IN">en_IN</option>
+                          </select>
+                        </div>
+                     </div>
+                  }
+
+
+
                   </div>
 
                 </div>
