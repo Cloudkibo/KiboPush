@@ -23,8 +23,8 @@ export function updateOtherPages (data) {
 export function userpageconnect (data) {
   return {
     type: ActionTypes.PAGE_CONNECT_WARNING,
-    pages: res.payload.pages,
-    page_connected: res.payload.msg
+    pages: data.payload.pages,
+    page_connected: data.payload.msg
   }
 }
 
