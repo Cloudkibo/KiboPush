@@ -130,7 +130,7 @@ class Broadcast extends React.Component {
                     this.props.subscribers && this.props.subscribers.length === 0
 
                       ? <Link to='createbroadcast' className='pull-right'>
-                        <button className='btn btn-sm' > Send
+                        <button className='btn btn-sm' disabled> Send
                         Broadcast
                       </button>
                       </Link>
@@ -148,6 +148,8 @@ class Broadcast extends React.Component {
                           <th>Type</th>
                           <th>Created At</th>
                           <th>Message</th>
+                          <th>Sent</th>
+                          <th>Seen</th>
 
                         </tr>
                       </thead>
@@ -160,6 +162,8 @@ class Broadcast extends React.Component {
                             <td>{broadcast.type}</td>
                             <td>{handleDate(broadcast.datetime)}</td>
                             <td>{broadcast.text}</td>
+                            <td>{broadcast.sent}</td>
+                            <td>{broadcast.seen}</td>
 
                           </tr>
                         ))

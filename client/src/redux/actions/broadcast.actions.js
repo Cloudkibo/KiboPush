@@ -4,9 +4,24 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
 export function showbroadcasts (data) {
+  // we will have broadcast and page_broadcast_pages
+  console.log('showbroadcasts')
+  console.log(data)
+  let broadcasts = data.broadcasts
+  let pagebroadcasts = data.broadcastpages
+
+  for (let j = 0; j < broadcasts.length; j++) {
+    let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId == broadcasts[j]._id)
+    broadcasts[j].sent = pagebroadcast.length// total sent
+    let pagebroadcast_tapped = pagebroadcast.filter((c) => c.seen == true)
+    broadcasts[j].seen = pagebroadcast_tapped.length // total tapped
+    console.log('updated broadcast')
+    console.log(broadcasts[j])
+  }
+
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    data
+    broadcasts
   }
 }
 export function loadBroadcastsList () {
@@ -21,7 +36,7 @@ export function createbroadcast (broadcast) {
   console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
-      .then(res => dispatch(addBroadcast(res.payload.broadcast)))
+      .then(res => dispatch(loadBroadcastsList()))
   }
 }
 
