@@ -130,7 +130,7 @@ class Broadcast extends React.Component {
                     this.props.subscribers && this.props.subscribers.length === 0
 
                       ? <Link to='createbroadcast' className='pull-right'>
-                        <button className='btn btn-sm'> Send
+                        <button className='btn btn-sm' disabled> Send
                         Broadcast
                       </button>
                       </Link>
