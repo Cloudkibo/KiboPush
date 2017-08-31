@@ -26,7 +26,13 @@ exports.index = function (req, res) {
         .json({status: 'failed', description: 'Broadcasts not found'})
     }
     logger.serverLog(TAG, broadcasts)
-    res.status(200).json({status: 'success', payload: broadcasts})
+    BroadcastPage.find({userId: req.user._id}, (err, broadcastpages) => {
+      if (err) {
+        return res.status(404)
+        .json({status: 'failed', description: 'Broadcasts not found'})
+      }
+      res.status(200).json({status: 'success', payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}})
+    })
   })
 }
 
