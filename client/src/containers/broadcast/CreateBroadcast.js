@@ -28,40 +28,38 @@ class CreateBroadcast extends React.Component {
       alertMessage: '',
       alertType: '',
       targeting: [],
-      criteria: [
-        {
-          target: 'Gender',
-          type: 'select',
+      criteria: {
+       Gender: {  
           options: ['Male', 'Female'],
-          isPicked: false
+          isPicked: false,
         },
-        {
-          target: 'Locale',
-          type: 'select',
+        Locale: {
           options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
-          isPicked: false
+          isPicked: false,
         },
-        {
-          target: 'First Name',
-          type: 'input',
-          isPicked: false
+        Page: {
+          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
+          isPicked: false,
         },
-        {
-          target: 'Last Name',
-          type: 'input',
-          isPicked: false
-        },
-        {
-          target: 'Email',
-          type: 'input',
-          isPicked: false
-        }
-      ]
+      },
+      target:[],
+      segmentValue: '',
+      buttonLabel: 'Add Segment',
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
     this.gotoView = this.gotoView.bind(this)
     this.addNewTarget = this.addNewTarget.bind(this)
+    this.updateSegmentValue = this.updateSegmentValue.bind(this);
+  }
+
+  componentWillMount(){
+    var temp = [];
+    Object.keys(this.state.criteria).map((obj)=>{
+      temp.push(<option value={obj}>{obj}</option>)
+    });
+
+    this.setState({target: temp, segmentValue: Object.keys(this.state.criteria)[0]});
   }
 
   componentDidMount () {
@@ -84,21 +82,27 @@ class CreateBroadcast extends React.Component {
     }
   }
 
-  addNewTarget () {
-    console.log('Add new target called')
-    var temp = this.state.criteria.filter(
-      (obj) => { return obj.isPicked === false })
-    console.log('Temp', temp)
-    var items = this.state.targeting
-    temp.map((obj) => {
-      items.push(
-        <p>{obj.target}</p>
-      )
-    })
-
-    console.log('items', items)
-    this.setState({targeting: items})
+  updateSegmentValue(event){
+    console.log('updateSegmentValue called', event.target.value);
+    var label = "Add Segment";
+    if(this.state.criteria[event.target.value].isPicked == true){
+      label = "Remove Segment";
+    }
+    this.setState({segmentValue: event.target.value, buttonLabel: label});
   }
+  
+  addNewTarget () {
+    console.log("Add new target called", this.state.segmentValue);
+    var temp = this.state.criteria;
+    temp[this.state.segmentValue].isPicked = !temp[this.state.segmentValue].isPicked;
+      var label = "Add Segment";
+    if(temp[this.state.segmentValue].isPicked == true){
+      label = "Remove Segment";
+    }
+    this.setState({criteria: temp, buttonLabel: label});
+  }
+
+
 
   createBroadcast () {
     let msgBody = this.refs.message.value
@@ -306,40 +310,83 @@ class CreateBroadcast extends React.Component {
             </div>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
               <h2 className='presentation-margin'>Targeting</h2>
-              <div className='ui-block' style={{padding: 5}}>
+              <div className='ui-block' style={{padding: 15}}>
                 <div className='news-feed-form'>
                   <p>Select the type of customer you want to send broadcast
                     to</p>
-                  <button className='btn btn-primary btn-sm'
-                    onClick={this.addNewTarget}> Add Condition
-                  </button>
+                   <div className="row">
+                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                     <div>
+                        <select onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
+                            {this.state.target}
+                        </select>
+                     </div>
+                     </div>
+
+                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                     <button className='btn btn-primary btn-sm'
+                        onClick={this.addNewTarget}> {this.state.buttonLabel}
+                      </button>
+                     </div>
+
+                     </div>
+                 
                   <div>
                     {this.state.targeting}
-                    {/*
+                    
 
-                     <div className="row">
-                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                     <div className="form-group">
-                     <select>
-                     <option selected="selected" value="volvo">Gender</option>
-                     <option value="saab">Locale</option>
-                     <option value="mercedes">Timezone</option>
-                     <option value="audi">First Name</option>
-                     <option value="audi">Last Name</option>
-                     <option value="audi">Email</option>
-                     </select>
+                  {
+                    this.state.criteria.Gender.isPicked && <div className="row">
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <div style={{padding: 5}}>
+                            <p>Gender is: </p> 
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <select style={{padding: 5}}>
+                          <option selected="selected" value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          </select>
+                        </div>
                      </div>
-                     </div>
+                  }   
 
-                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                     <select>
-                     <option selected="selected" value="volvo">Male</option>
-                     <option value="saab">Female</option>
-                     </select>
+                  {
+                    this.state.criteria.Locale.isPicked && <div className="row">
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <div style={{padding: 5}}>
+                            <p>Locale is: </p> 
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <select style={{padding: 5}}>
+                          <option selected="selected" value="en_US">en_US</option>
+                          <option value="en_UK">en_UK</option>
+                          <option value="en_IN">en_IN</option>
+                          </select>
+                        </div>
                      </div>
+                  }
+                     
+                  {
+                    this.state.criteria.Page.isPicked && <div className="row">
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <div style={{padding: 5}}>
+                            <p>Page is: </p> 
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          <select style={{padding: 5}}>
+                          <option selected="selected" value="en_US">en_US</option>
+                          <option value="en_UK">en_UK</option>
+                          <option value="en_IN">en_IN</option>
+                          </select>
+                        </div>
+                     </div>
+                  }
 
-                     </div>
-                     */}
+                     
+                    
                   </div>
 
                 </div>
