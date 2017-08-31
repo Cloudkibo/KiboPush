@@ -8,6 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
 import {
   addWorkFlow,
   loadWorkFlowList
@@ -51,7 +52,16 @@ class CreateWorkflow extends React.Component {
       keywords: this.state.keywords,
       reply: this.state.reply,
       isActive: this.state.isActive
-    })
+    });
+    if(this.state.keywords.length === 0 ){
+      this.msg.error('Please fill the keywords field')
+      return;
+    }
+    if(this.state.reply === '' ){
+      this.msg.error('Please fill the reply field')
+      return;
+    }
+    
     this.props.addWorkFlow({
       condition: this.state.condition,
       keywords: this.state.keywords,
@@ -80,13 +90,21 @@ class CreateWorkflow extends React.Component {
   }
 
   render () {
+
+    var  alertOptions = {
+          offset: 14,
+          position: 'bottom right',
+          theme: 'dark',
+          time: 5000,
+          transition: 'scale'
+        }
     return (
       <div>
         <Header />
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-
+         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='container'>
           <br />
           <br />
