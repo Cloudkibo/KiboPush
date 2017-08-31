@@ -21,10 +21,11 @@ export function updateOtherPages (data) {
 }
 
 export function userpageconnect (data) {
+  console.log(data)
   return {
     type: ActionTypes.PAGE_CONNECT_WARNING,
-    pages: data.payload.pages,
-    page_connected: data.payload.msg
+    pages: data.pages,
+    page_connected: data.msg
   }
 }
 
