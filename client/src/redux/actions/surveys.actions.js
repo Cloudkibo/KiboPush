@@ -31,9 +31,16 @@ export function loadSurveysList () {
   }
 }
 export function sendsurvey (survey) {
+  console.log('send survey called')
   return (dispatch) => {
     callApi(`surveys/send`, 'post', survey)
-      .then(res => { alert('Survey sent successfully') })
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(sendSurveySuccess())
+        } else {
+          dispatch(sendSurveyFailure())
+        }
+      })
   }
 }
 export function getsurveyform (id) {
@@ -71,6 +78,18 @@ export function addSurvey (data) {
     data
   }
  // browserHistory.push('/surveys')
+}
+
+export function sendSurveySuccess () {
+  return {
+    type: ActionTypes.SEND_SURVEY_SUCCESS
+  }
+}
+
+export function sendSurveyFailure () {
+  return {
+    type: ActionTypes.SEND_SURVEY_FAILURE
+  }
 }
 
 export function showSurveyResponse (data) {

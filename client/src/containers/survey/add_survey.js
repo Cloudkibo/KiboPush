@@ -13,15 +13,14 @@ import { createsurvey } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
-import AlertContainer from 'react-alert'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
-      showAlert: false,
-      alertmsg: '',
+      alertMessage: '',
+      alertType: '',
       timeout: 2000
     }
     // surveyQuestions will be an array of json object
@@ -61,12 +60,15 @@ class AddSurvey extends React.Component {
     e.preventDefault()
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
-      // this.setState({
-      //   showAlert: true,
-      //   alertmsg: 'A survey form requires atleast one question'
-      // })
-      this.msg.error('A survey form requires atleast one question')
+       this.setState({
+         alertMessage: 'A survey form requires atleast one question',
+         alertType: 'danger'
+       })
     } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
           for (let k = 0; k <
@@ -97,10 +99,10 @@ class AddSurvey extends React.Component {
           pathname: '/surveys'
         })
       } else {
-        // alert('Please fill all the fields.')
-        // this.setState(
-        //   {showAlert: true, alertmsg: 'Please fill all the fields.'})
-        this.msg.error('Please fill all the fields.')
+        this.setState({
+          alertMessage: 'Please fill all the fields.',
+          alertType: 'danger'
+        })
       }
     }
   }
@@ -123,7 +125,10 @@ class AddSurvey extends React.Component {
     this.setState({surveyQuestions: surveyQuestions})
     console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
-      this.setState({showAlert: false, alertmsg: ''})
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
     }
     console.log(this.state.surveyQuestions)
   }
@@ -136,13 +141,12 @@ class AddSurvey extends React.Component {
     choices.push('')
     surveyQuestions[qindex].options = choices
     if (surveyQuestions[qindex].choiceCount >= 2) {
-      this.setState({showAlert: false, alertmsg: ''})
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
     }
     this.setState({surveyQuestions})
-  }
-
-  onDismissAlert () {
-    this.setState({showAlert: false, alertmsg: ''})
   }
 
   removeChoices (choiceIndex, qindex) {
@@ -151,8 +155,8 @@ class AddSurvey extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     if (surveyQuestions[qindex].choiceCount === 2) {
       this.setState({
-        showAlert: true,
-        alertmsg: 'Atleast 2 options are required for each question'
+        alertMessage: 'Atleast 2 options are required for each question',
+        alertType: 'danger'
       })
     } else {
       let choices = surveyQuestions[qindex].options.slice()
@@ -172,8 +176,8 @@ class AddSurvey extends React.Component {
     if (this.state.surveyQuestions.length === 1) {
       console.log('A survey form requires atleast one question')
       this.setState({
-        showAlert: true,
-        alertmsg: 'A survey form requires atleast one question'
+        alertMessage: 'A survey form requires atleast one question',
+        alertType: 'danger'
       })
     } else {
       console.log('delete this survey question')
@@ -328,7 +332,6 @@ class AddSurvey extends React.Component {
 
     return (
       <div>
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -399,11 +402,10 @@ class AddSurvey extends React.Component {
                         Cancel
                       </Link>
                     </div>
-                    {this.state.showAlert === true &&
+                    {this.state.alertMessage !== '' &&
                     <center>
-                      <Alert type='danger' timeout={this.state.timeout}
-                        onDismiss={this.onDismissAlert.bind(this)}>
-                        {this.state.alertmsg}
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
                       </Alert>
                     </center>
 

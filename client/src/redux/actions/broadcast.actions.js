@@ -36,7 +36,14 @@ export function createbroadcast (broadcast) {
   console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
-      .then(res => dispatch(loadBroadcastsList()))
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(sendBroadcastSuccess())
+        } else {
+          dispatch(sendBroadcastFailure())
+        }
+        dispatch(loadBroadcastsList())
+      })
   }
 }
 
