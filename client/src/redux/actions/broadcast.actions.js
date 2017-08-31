@@ -47,6 +47,7 @@ export function deletefile (data) {
   }
 }
 export function uploadBroadcastfile (filedata) {
+  console.log('Uploading broadcast file')
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/uploadfile`, {
