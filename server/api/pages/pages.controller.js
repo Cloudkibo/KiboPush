@@ -25,8 +25,19 @@ exports.index = function (req, res) {
 
 exports.enable = function (req, res) {
   logger.serverLog(TAG, `Enable page API called ${JSON.stringify(req.body)}`)
-
-  Pages.update({_id: req.body._id},
+  // check if page is already connected by some other user
+  // short term solution for issue Subscribers list is not updating (multi user issue) #307
+  Pages.find({pageId: req.body.pageId, connected: true, userId: { $ne: req.user._id }}, (err, pagesbyOther) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        error: err,
+        description: 'Failed to update record'
+      })
+    }
+    logger.serverLog(TAG, `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
+    if (pagesbyOther.length == 0) {
+      Pages.update({_id: req.body._id},
     {connected: true}, (err) => {
       if (err) {
         res.status(500).json({
@@ -54,11 +65,24 @@ exports.enable = function (req, res) {
               return res.status(500)
                 .json({status: 'failed', description: JSON.stringify(error)})
             }
-            res.status(200).json({status: 'success', payload: pages})
+            res.status(200).json({status: 'success', payload: {pages: pages}})
           })
         })
       }
     })
+    } else {
+      // page is already connected by someone else
+      Pages.find({userId: req.user._id}, (err2, pages) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({status: 'success', payload: {pages: pages, msg: 'Page is already connected by another user'}})
+      })
+    }
+  })
 }
 
 exports.disable = function (req, res) {

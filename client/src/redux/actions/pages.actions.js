@@ -20,12 +20,27 @@ export function updateOtherPages (data) {
   }
 }
 
+export function userpageconnect (data) {
+  return {
+    type: ActionTypes.PAGE_CONNECT_WARNING,
+    pages: res.payload.pages,
+    page_connected: res.payload.msg
+  }
+}
+
 export function enablePage (page) {
   console.log('enablePage called')
   console.log(page)
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
-      .then(res => dispatch(updateOtherPages(res.payload)))
+      .then(res => {
+        if (res.payload.msg) {
+          // the page is already connected by some other user
+          dispatch(userpageconnect(res.payload))
+        } else {
+          dispatch(updateOtherPages(res.payload.pages))
+        }
+      })
   }
 }
 export function addPages () {

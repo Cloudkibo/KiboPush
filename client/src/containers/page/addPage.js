@@ -14,11 +14,15 @@ import {
   removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
+import { Alert } from 'react-bs-notifier'
 
 class AddPage extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {counter: 0}
+    this.state = {counter: 0,
+      showAlert: false,
+      alertmsg: '',
+      timeout: 2000}
   }
 
   componentWillMount () {
@@ -54,8 +58,15 @@ class AddPage extends React.Component {
       this.props.addPages()
       this.setState({counter: this.state.counter + 1})
     }
+    if (nextprops.page_connected && nextprops.page_connected != '') {
+      this.setState({showAlert: true, alertmsg: nextprops.page_connected})
+    } else {
+      this.setState({showAlert: false, alertmsg: ''})
+    }
   }
-
+  onDismissAlert () {
+    this.setState({showAlert: false, alertmsg: ''})
+  }
   render () {
     return (
       <div>
@@ -69,6 +80,15 @@ class AddPage extends React.Component {
             <main
               className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
               <h3>Add Pages</h3>
+              {this.state.showAlert === true &&
+                <center>
+                  <Alert type='danger' timeout={this.state.timeout}
+                    onDismiss={this.onDismissAlert.bind(this)}>
+                    {this.state.alertmsg}
+                  </Alert>
+                </center>
+
+                    }
               {
                 (this.props.otherPages) &&
                 this.props.otherPages.map((page, i) => (
@@ -110,7 +130,8 @@ class AddPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    page_connected: (state.pagesInfo.page_connected)
   }
 }
 

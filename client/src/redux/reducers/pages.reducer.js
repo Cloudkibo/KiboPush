@@ -13,7 +13,13 @@ export function pagesInfo (state = [], action) {
       })
     case ActionTypes.FETCH_PAGES_LIST:
       return Object.assign({}, state, {
-        otherPages: action.data
+        otherPages: action.data,
+        page_connected: ''
+      })
+    case ActionTypes.PAGE_CONNECT_WARNING:
+      return Object.assign({}, state, {
+        otherPages: action.pages,
+        page_connected: action.page_connected
       })
     default:
       return state
