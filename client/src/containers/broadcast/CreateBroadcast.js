@@ -117,11 +117,7 @@ class CreateBroadcast extends React.Component {
         alertMessage: '',
         alertType: ''
       })
-      if (this.state.userfile && this.refs.message.value && this.state.userfile !== '') {
-        this.onFileSubmit()
-        this.props.createbroadcast(
-          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
-      } else if (this.state.userfile && this.state.userfile !== '') {
+      if (this.state.userfile && this.state.userfile !== '') {
         this.onFileSubmit()
       } else {
         this.props.createbroadcast(
@@ -242,9 +238,6 @@ class CreateBroadcast extends React.Component {
                           something...</label>
                         <textarea className='form-control' ref='message' />
                       </div>
-                      <center>
-                        <h4> OR </h4>
-                      </center>
                       <div className='add-options-message'>
                         <div
                           className='form-group with-icon label-floating is-empty'>
