@@ -11,10 +11,10 @@ export function showbroadcasts (data) {
   let pagebroadcasts = data.broadcastpages
 
   for (let j = 0; j < broadcasts.length; j++) {
-    let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId == broadcasts[j]._id)
+    let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
     broadcasts[j].sent = pagebroadcast.length// total sent
-    let pagebroadcast_tapped = pagebroadcast.filter((c) => c.seen == true)
-    broadcasts[j].seen = pagebroadcast_tapped.length // total tapped
+    let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    broadcasts[j].seen = pagebroadcastTapped.length // total tapped
     console.log('updated broadcast')
     console.log(broadcasts[j])
   }

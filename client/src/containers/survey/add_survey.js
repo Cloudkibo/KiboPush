@@ -60,10 +60,10 @@ class AddSurvey extends React.Component {
     e.preventDefault()
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
-       this.setState({
-         alertMessage: 'A survey form requires atleast one question',
-         alertType: 'danger'
-       })
+      this.setState({
+        alertMessage: 'A survey form requires atleast one question',
+        alertType: 'danger'
+      })
     } else {
       this.setState({
         alertMessage: '',
@@ -323,12 +323,12 @@ class AddSurvey extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      transition: 'scale'
-    }
+    // var alertOptions = {
+    //   offset: 14,
+    //   position: 'bottom right',
+    //   theme: 'dark',
+    //   transition: 'scale'
+    // }
 
     return (
       <div>

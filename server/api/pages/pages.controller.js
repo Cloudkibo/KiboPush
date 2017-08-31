@@ -36,7 +36,7 @@ exports.enable = function (req, res) {
       })
     }
     logger.serverLog(TAG, `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
-    if (pagesbyOther.length == 0) {
+    if (pagesbyOther.length === 0) {
       Pages.update({_id: req.body._id},
     {connected: true}, (err) => {
       if (err) {

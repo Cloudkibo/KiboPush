@@ -587,6 +587,9 @@ exports.verifyhook = function (req, res) {
 function updateseenstatus (req) {
   logger.serverLog(TAG, `Inside updateseenstatus ${JSON.stringify(req)}`)
   BroadcastPage.find({pageId: req.recipient.id, subscriberId: req.sender.id}, (err, pagebroadcasts) => {
+    if (err) {
+      logger.serverLog(TAG, `Inside updateseenstatus Error ${err}`)
+    }
     pagebroadcasts.forEach(pagebroadcast => {
       pagebroadcast.seen = true
       pagebroadcast.save((err2) => {

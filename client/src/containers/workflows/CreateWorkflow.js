@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /**
  * Created by sojharo on 20/07/2017.
  */
@@ -52,16 +53,16 @@ class CreateWorkflow extends React.Component {
       keywords: this.state.keywords,
       reply: this.state.reply,
       isActive: this.state.isActive
-    });
-    if(this.state.keywords.length === 0 ){
+    })
+    if (this.state.keywords.length === 0) {
       this.msg.error('Please fill the keywords field')
-      return;
+      return
     }
-    if(this.state.reply === '' ){
+    if (this.state.reply === '') {
       this.msg.error('Please fill the reply field')
-      return;
+      return
     }
-    
+
     this.props.addWorkFlow({
       condition: this.state.condition,
       keywords: this.state.keywords,
@@ -90,21 +91,20 @@ class CreateWorkflow extends React.Component {
   }
 
   render () {
-
-    var  alertOptions = {
-          offset: 14,
-          position: 'bottom right',
-          theme: 'dark',
-          time: 5000,
-          transition: 'scale'
-        }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='container'>
           <br />
           <br />
