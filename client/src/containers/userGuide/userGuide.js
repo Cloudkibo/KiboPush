@@ -150,6 +150,19 @@ class UserGuide extends React.Component {
               <img src='./img/userGuide/addPages.png' width='600px' />
             </ol>
             <br />
+            <h4> How to disconnect Facebook pages? </h4>
+            <p>To disconnect any page follow these steps:</p>
+            <ol>
+              <li>Click on pages from the sidebar.</li>
+              <img src='./img/userGuide/pages.png' width='600px' />
+              <br />
+              <li>On Pages screen, click on Add Pages button.</li>
+              <li>You will be redirected to add pages screen. Here you will see all of your pages. The pages you have connected will show a disconnect button along with the name.</li>
+              <img src='./img/userGuide/disconnectPages.png' width='600px' />
+              <br />
+              <li>Select the page you want to disconnect and click on disconnect button.</li>
+            </ol>
+            <br />
             <h4> How to invite subscribers? </h4>
             <p>There are two ways through which you can invite subscribers.</p>
             <ol>
