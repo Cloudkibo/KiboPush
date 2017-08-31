@@ -27,8 +27,6 @@ class Poll extends React.Component {
       alertMessage: '',
       alertType: ''
     }
-    this.generateAlert = this.generateAlert.bind(this)
-    this.dismissAlert = this.dismissAlert.bind(this)
   }
 
   componentWillMount () {
