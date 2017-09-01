@@ -48,10 +48,12 @@ exports.setup = function (User, config) {
         })
 
       logger.serverLog(TAG, `Short-lived Token: ${accessToken}`)
-      FBExtension.extendShortToken(accessToken).then((response) => {
+      FBExtension.extendShortToken(accessToken).then((error) => {
+        logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
+        return done(error)
+      }).fail((response) => {
         logger.serverLog(TAG, `Long-lived Token: ${response.access_token}`)
-        logger.serverLog(TAG, `Expires in : ${response.expires} secs.`)
-
+        accessToken = response.access_token
         needle.get(`${'https://graph.facebook.com/me?fields=' +
         'id,name,locale,email,timezone,gender,picture' +
         '&access_token='}${accessToken}`, options, (err, resp) => {
@@ -114,9 +116,6 @@ exports.setup = function (User, config) {
             }
           })
         })
-      }).fail((error) => {
-        logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
-        return done(error)
       })
     }
   ))
