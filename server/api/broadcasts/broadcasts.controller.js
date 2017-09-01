@@ -25,7 +25,7 @@ exports.index = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'Broadcasts not found'})
     }
-    logger.serverLog(TAG, broadcasts)
+    logger.serverLog(TAG, `Total broadcasts ${broadcasts.length}`)
     BroadcastPage.find({userId: req.user._id}, (err, broadcastpages) => {
       if (err) {
         return res.status(404)
@@ -85,7 +85,7 @@ exports.create = function (req, res) {
       }
 
       pages.forEach(page => {
-        logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
+        logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
 
         let subscriberFindCriteria = {pageId: page._id}
         if (req.body.isSegmented) {
@@ -101,11 +101,11 @@ exports.create = function (req, res) {
             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
           }
           logger.serverLog(TAG,
-            `Subscribers of page ${JSON.stringify(subscribers)}`)
+            `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
           subscribers.forEach(subscriber => {
             logger.serverLog(TAG,
-              `At Subscriber fetched ${JSON.stringify(subscriber)}`)
+              `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName}`)
             var messageData = {
               'recipient': JSON.stringify({
                 'id': subscriber.senderId
