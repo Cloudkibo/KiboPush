@@ -41,7 +41,7 @@ exports.setup = function (User, config) {
       FBExtension.permissionsGiven(profile.id, accessToken)
         .then(permissions => {
           profile.permissions = permissions
-          logger.serverLog(TAG, `Permissions given: ${profile.permissions}`)
+          logger.serverLog(TAG, `Permissions given: ${JSON.stringify(profile.permissions)}`)
         })
         .fail(e => {
           logger.serverLog(TAG, `Permissions check error: ${e}`)
@@ -114,7 +114,7 @@ exports.setup = function (User, config) {
           })
         })
       }).fail((error) => {
-        logger.serverLog(TAG, `Extending token error: ${error}`)
+        logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
         return done(error)
       })
     }
