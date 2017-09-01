@@ -18,7 +18,6 @@ exports.index = function (req, res) {
         description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, polls)
     res.status(200).json({status: 'success', payload: polls})
   })
 }
@@ -159,9 +158,9 @@ exports.send = function (req, res) {
           description: `Internal Server Error${JSON.stringify(err)}`
         })
     }
-    logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
-    for (let z = 0; z < pages.length; z++) { // todo for loop doesn't work with async code
-      logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
+    logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
+    for (let z = 0; z < pages.length; z++) {
+      logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
       let subscriberFindCriteria = {pageId: pages[z]._id}
       if (req.body.isSegmented) {
         if (req.body.segmentationGender) {
@@ -174,13 +173,12 @@ exports.send = function (req, res) {
         }
       }
       Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+        if (err) {
+          return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
+        }
         if (subscribers.length > 0) {
           logger.serverLog(TAG,
-            `Subscribers of page ${JSON.stringify(subscribers)}`)
-          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-          if (err) {
-            return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
-          }
+            `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
           // get accesstoken of page
           // -- Page tokens get expired therefore we need to fetch it from Graph api
           needle.get(
@@ -192,13 +190,11 @@ exports.send = function (req, res) {
               }
 
               logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(resp.body)}`)
+                `Page accesstoken from graph api ${JSON.stringify(resp.body.access_token)}`)
 
-              for (let j = 0; j < subscribers.length; j++) { // TODO again for loop is not good option
+              for (let j = 0; j < subscribers.length; j++) {
                 logger.serverLog(TAG,
-                  `At Subscriber fetched ${JSON.stringify(subscribers[j])}`)
-                logger.serverLog(TAG,
-                  `At Pages Token ${resp.body.access_token}`)
+                  `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
 
                 const data = {
                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
@@ -214,7 +210,7 @@ exports.send = function (req, res) {
                     if (err) {
                       logger.serverLog(TAG, err)
                       logger.serverLog(TAG,
-                        `ERror occured at subscriber :${JSON.stringify(
+                        `Error occured at subscriber :${JSON.stringify(
                           subscribers[j])}`)
                     }
 
