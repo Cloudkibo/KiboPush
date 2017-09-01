@@ -23,7 +23,6 @@ export function sendpollresp (data) {
 }
 
 export function loadPollsList () {
-  // here we will fetch list of subscribers from endpoint
   console.log('Loading broadcast list')
   return (dispatch) => {
     callApi('polls').then(res => dispatch(updatePollsList(res.payload)))

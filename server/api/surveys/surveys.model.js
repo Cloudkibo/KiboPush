@@ -9,8 +9,12 @@ const surveySchema = new Schema({
   description: String, // description of survey
   image: String, // image url
   userId: { type: Schema.ObjectId, ref: 'users' },
-  datetime: { type: Date, default: Date.now }
-  //  pageId: String, [discuss with sojharo, will we keep it or not]
+  datetime: { type: Date, default: Date.now },
+  isSegmented: { type: Boolean, default: false },
+  segmentationPageIds: [String],
+  segmentationLocale: String,
+  segmentationGender: String,
+  segmentationTimeZone: String
 })
 
 module.exports = mongoose.model('surveys', surveySchema)

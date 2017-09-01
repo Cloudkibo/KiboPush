@@ -4,6 +4,7 @@ const PollResponse = require('./pollresponse.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
+let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'
 
@@ -23,13 +24,26 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  const poll = new Polls({
+  let pollPayload = {
     platform: 'facebook',
     statement: req.body.statement,
     options: req.body.options,
     sent: 0,
     userId: req.user._id
-  })
+  }
+  if (req.body.isSegmented) {
+    pollPayload.isSegmented = true
+    pollPayload.segmentationPageIds = (req.body.pageIds)
+      ? req.body.pageIds
+      : null
+    pollPayload.segmentationGender = (req.body.gender)
+      ? req.body.gender
+      : null
+    pollPayload.segmentationLocale = (req.body.locale)
+      ? req.body.locale
+      : null
+  }
+  const poll = new Polls(pollPayload)
 
   // save model to MongoDB
   poll.save((err, pollCreated) => {
@@ -75,16 +89,16 @@ exports.getresponses = function (req, res) {
     .populate('pollId subscriberId')
     .exec((err, pollresponses) => {
       if (err) {
-        return res.status(500)
-          .json({
-            status: 'failed',
-            description: `Internal Server Error${JSON.stringify(err)}`
-          })
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
       }
 
       return res.status(200).json({status: 'success', payload: pollresponses})
     })
 }
+
 exports.report = function (req, res) {
 
 }
@@ -126,16 +140,40 @@ exports.send = function (req, res) {
     }
   }
   logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
-  Pages.find({userId: req.user._id, connected: true}, (err, pages) => {
+  let pagesFindCriteria = {userId: req.user._id, connected: true}
+  if (req.body.isSegmented) {
+    if (req.body.segmentationPageIds) {
+      _.merge(pagesFindCriteria, {
+        pageId: {
+          $in: req.body.segmentationPageIds
+        }
+      })
+    }
+  }
+  Pages.find(pagesFindCriteria, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       return res.status(500)
-        .json({status: 'failed', description: `Internal Server Error${JSON.stringify(err)}`})
+        .json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
     }
     logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
     for (let z = 0; z < pages.length; z++) { // todo for loop doesn't work with async code
       logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-      Subscribers.find({pageId: pages[z]._id}, (err, subscribers) => {
+      let subscriberFindCriteria = {pageId: pages[z]._id}
+      if (req.body.isSegmented) {
+        if (req.body.segmentationGender) {
+          _.merge(subscriberFindCriteria,
+            {gender: req.body.segmentationGender.toLowerCase()})
+        }
+        if (req.body.segmentationLocale) {
+          _.merge(subscriberFindCriteria,
+            {locale: req.body.segmentationLocale})
+        }
+      }
+      Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
         if (subscribers.length > 0) {
           logger.serverLog(TAG,
             `Subscribers of page ${JSON.stringify(subscribers)}`)
@@ -174,8 +212,6 @@ exports.send = function (req, res) {
                       `Sending poll to subscriber response ${JSON.stringify(
                         resp.body)}`)
                     if (err) {
-                      // TODO this will do problem, res should not be in loop
-                      // return res.status(404).json({ status: 'failed', description: err });
                       logger.serverLog(TAG, err)
                       logger.serverLog(TAG,
                         `ERror occured at subscriber :${JSON.stringify(

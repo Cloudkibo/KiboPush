@@ -11,12 +11,12 @@ const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
-var _ = require('lodash')
+let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
-var request = require('request')
+let request = require('request')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
@@ -29,9 +29,12 @@ exports.index = function (req, res) {
     BroadcastPage.find({userId: req.user._id}, (err, broadcastpages) => {
       if (err) {
         return res.status(404)
-        .json({status: 'failed', description: 'Broadcasts not found'})
+          .json({status: 'failed', description: 'Broadcasts not found'})
       }
-      res.status(200).json({status: 'success', payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}})
+      res.status(200).json({
+        status: 'success',
+        payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+      })
     })
   })
 }
@@ -39,20 +42,42 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   logger.serverLog(TAG,
     `Inside Create Broadcast, req body = ${JSON.stringify(req.body)}`)
-  const broadcast = new Broadcasts({
+  let broadcastPayload = {
     platform: req.body.platform,
     type: req.body.type,
     text: req.body.text,
     userId: req.user._id
-
-  })
+  }
+  if (req.body.isSegmented) {
+    broadcastPayload.isSegmented = true
+    broadcastPayload.segmentationPageIds = (req.body.pageIds)
+      ? req.body.pageIds
+      : null
+    broadcastPayload.segmentationGender = (req.body.gender)
+      ? req.body.gender
+      : null
+    broadcastPayload.segmentationLocale = (req.body.locale)
+      ? req.body.locale
+      : null
+  }
+  const broadcast = new Broadcasts(broadcastPayload)
   broadcast.save((err, broadcast) => {
     if (err) {
       return res.status(500)
         .json({status: 'failed', description: 'Broadcasts not created'})
     }
     // logic to send broadcast
-    Pages.find({userId: req.user._id}, (err, pages) => {
+    let pagesFindCriteria = {userId: req.user._id, connected: true}
+    if (req.body.isSegmented) {
+      if (req.body.pageIds) {
+        _.merge(pagesFindCriteria, {
+          pageId: {
+            $in: req.body.pageIds
+          }
+        })
+      }
+    }
+    Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         return res.status(404)
@@ -62,7 +87,16 @@ exports.create = function (req, res) {
       pages.forEach(page => {
         logger.serverLog(TAG, `Page in the loop ${JSON.stringify(page)}`)
 
-        Subscribers.find({pageId: page._id}, (err, subscribers) => {
+        let subscriberFindCriteria = {pageId: page._id}
+        if (req.body.isSegmented) {
+          if (req.body.gender) {
+            _.merge(subscriberFindCriteria, {gender: req.body.gender.toLowerCase()})
+          }
+          if (req.body.locale) {
+            _.merge(subscriberFindCriteria, {locale: req.body.locale})
+          }
+        }
+        Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
           if (err) {
             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
           }
@@ -180,7 +214,7 @@ exports.uploadfile = function (req, res) {
             obj.fileurl = pathNew
 
             // save broadcast item
-            const broadcast = new Broadcasts({
+            let broadcastPayload = {
               platform: obj.platform,
               type: obj.type,
               text: obj.text,
@@ -189,7 +223,20 @@ exports.uploadfile = function (req, res) {
               sent: 0,
               tapped: 0,
               attachmentType: obj.attachmentType
-            })
+            }
+            if (req.body.isSegmented) {
+              broadcastPayload.isSegmented = true
+              broadcastPayload.segmentationPageIds = (req.body.pageIds)
+                ? req.body.pageIds
+                : null
+              broadcastPayload.segmentationGender = (req.body.gender)
+                ? req.body.gender
+                : null
+              broadcastPayload.segmentationLocale = (req.body.locale)
+                ? req.body.locale
+                : null
+            }
+            const broadcast = new Broadcasts(broadcastPayload)
             Broadcasts.create(broadcast, (err2, broadcastt) => {
               if (err2) {
                 return res.status(404).json({
@@ -198,7 +245,17 @@ exports.uploadfile = function (req, res) {
                 })
               }
 
-              Pages.find({userId: req.user._id}, (err, pages) => {
+              let pagesFindCriteria = {userId: req.user._id, connected: true}
+              if (req.body.isSegmented) {
+                if (req.body.pageIds) {
+                  _.merge(pagesFindCriteria, {
+                    pageId: {
+                      $in: req.body.pageIds
+                    }
+                  })
+                }
+              }
+              Pages.find(pagesFindCriteria, (err, pages) => {
                 if (err) {
                   logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   return res.status(404)
@@ -209,43 +266,122 @@ exports.uploadfile = function (req, res) {
                   logger.serverLog(TAG,
                     `Page in the loop ${JSON.stringify(page)}`)
 
-                  Subscribers.find({pageId: page._id}, (err, subscribers) => {
-                    if (err) {
-                      return logger.serverLog(TAG,
-                        `Error ${JSON.stringify(err)}`)
+                  let subscriberFindCriteria = {pageId: page._id}
+                  if (req.body.isSegmented) {
+                    if (req.body.gender) {
+                      _.merge(subscriberFindCriteria,
+                        {gender: req.body.gender.toLowerCase()})
                     }
-                    logger.serverLog(TAG,
-                      `Subscribers of page ${JSON.stringify(subscribers)}`)
+                    if (req.body.locale) {
+                      _.merge(subscriberFindCriteria, {locale: req.body.locale})
+                    }
+                  }
+                  Subscribers.find(subscriberFindCriteria,
+                    (err, subscribers) => {
+                      if (err) {
+                        return logger.serverLog(TAG,
+                          `Error ${JSON.stringify(err)}`)
+                      }
+                      logger.serverLog(TAG,
+                        `Subscribers of page ${JSON.stringify(subscribers)}`)
 
-                    if (broadcastt.text !== '') {
-                      subscribers.forEach(subscriber => {
-                        logger.serverLog(TAG,
-                          `At Subscriber fetched ${JSON.stringify(subscriber)}`)
-                        var messageData = {
-                          'recipient': JSON.stringify({
-                            'id': subscriber.senderId
-                          }),
-                          'message': JSON.stringify({
-                            'text': broadcastt.text,
-                            'metadata': 'This is a meta data'
-                          })
-                        }
+                      if (broadcastt.text !== '') {
+                        subscribers.forEach(subscriber => {
+                          logger.serverLog(TAG,
+                            `At Subscriber fetched ${JSON.stringify(
+                              subscriber)}`)
+                          var messageData = {
+                            'recipient': JSON.stringify({
+                              'id': subscriber.senderId
+                            }),
+                            'message': JSON.stringify({
+                              'text': broadcastt.text,
+                              'metadata': 'This is a meta data'
+                            })
+                          }
 
-                        request({
-                          'method': 'POST',
-                          'json': true,
-                          'formData': messageData,
-                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                          request({
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                              page.accessToken
+                          },
+                            function (err, res, body) {
+                              //* **
+                              if (err) {
+                                return logger.serverLog(TAG,
+                                  `At send message broadcast ${JSON.stringify(
+                                    err)}`)
+                              }
+                              // sent_count = sent_count + 1
+                              logger.serverLog(TAG,
+                                'Sent broadcast to subscriber response')
+                              // update broadcast sent field
+                              var pagebroadcast = new BroadcastPage({
+                                pageId: page.pageId,
+                                userId: req.user._id,
+                                subscriberId: subscriber.senderId,
+                                broadcastId: broadcastt._id,
+                                seen: false
+                              })
+                              pagebroadcast.save((err2, pagebroadcastsaved) => {
+                                if (err2) {
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: 'PageBroadcast create failed'
+                                  })
+                                }
+                                logger.serverLog(TAG,
+                                  'PageBroadcast saved' +
+                                  JSON.stringify(pagebroadcastsaved))
+                              })
+                            })
+                        })
+                        subscribers.forEach(subscriber => {
+                          logger.serverLog(TAG,
+                            `At Subscriber fetched ${JSON.stringify(
+                              subscriber)}`)
+
+                          var messageData = {}
+
+                          if (broadcastt.type === 'attachment') {
+                            var fileReaderStream = fs.createReadStream(
+                              broadcastt.fileurl)
+
+                            messageData = {
+                              'recipient': JSON.stringify({
+                                'id': subscriber.senderId
+                              }),
+                              'message': JSON.stringify({
+                                'attachment': {
+                                  'type': broadcastt.attachmentType,
+                                  'payload': {}
+                                }
+                              }),
+
+                              'filedata': fileReaderStream
+                            }
+                          }
+
+                          request({
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
                             page.accessToken
-                        },
-                          function (err, res, body) {
+                          }, function (err, res, body) {
                             //* **
                             if (err) {
                               return logger.serverLog(TAG,
-                                `At send message broadcast ${JSON.stringify(err)}`)
+                                `At send message broadcast ${JSON.stringify(
+                                  err2)}`)
                             }
-                            // sent_count = sent_count + 1
-                            logger.serverLog(TAG, 'Sent broadcast to subscriber response')
+                            logger.serverLog(TAG,
+                              `Sent broadcast to subscriber response ${JSON.stringify(
+                                body)}`)
+
+                            // update broadcast sent field
                             // update broadcast sent field
                             var pagebroadcast = new BroadcastPage({
                               pageId: page.pageId,
@@ -261,138 +397,78 @@ exports.uploadfile = function (req, res) {
                                   description: 'PageBroadcast create failed'
                                 })
                               }
-                              logger.serverLog(TAG,
-                                'PageBroadcast saved' + JSON.stringify(pagebroadcastsaved))
+                              logger.serverLog(TAG, 'PageBroadcast saved' +
+                                JSON.stringify(pagebroadcastsaved))
                             })
                           })
-                      })
-                      subscribers.forEach(subscriber => {
-                        logger.serverLog(TAG,
-                          `At Subscriber fetched ${JSON.stringify(subscriber)}`)
-
-                        var messageData = {}
-
-                        if (broadcastt.type === 'attachment') {
-                          var fileReaderStream = fs.createReadStream(
-                            broadcastt.fileurl)
-
-                          messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'attachment': {
-                                'type': broadcastt.attachmentType,
-                                'payload': {}
-                              }
-                            }),
-
-                            'filedata': fileReaderStream
-                          }
-                        }
-
-                        request({
-                          'method': 'POST',
-                          'json': true,
-                          'formData': messageData,
-                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                          page.accessToken
-                        }, function (err, res, body) {
-                          //* **
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At send message broadcast ${JSON.stringify(err2)}`)
-                          }
+                        })
+                      } else {
+                        subscribers.forEach(subscriber => {
                           logger.serverLog(TAG,
-                            `Sent broadcast to subscriber response ${JSON.stringify(
-                              body)}`)
+                            `At Subscriber fetched ${JSON.stringify(
+                              subscriber)}`)
 
-                          // update broadcast sent field
-                          // update broadcast sent field
-                          var pagebroadcast = new BroadcastPage({
-                            pageId: page.pageId,
-                            userId: req.user._id,
-                            subscriberId: subscriber.senderId,
-                            broadcastId: broadcastt._id,
-                            seen: false
-                          })
-                          pagebroadcast.save((err2, pagebroadcastsaved) => {
-                            if (err2) {
-                              return res.status(500).json({
-                                status: 'failed',
-                                description: 'PageBroadcast create failed'
-                              })
+                          var messageData = {}
+
+                          if (broadcastt.type === 'attachment') {
+                            var fileReaderStream = fs.createReadStream(
+                              broadcastt.fileurl)
+
+                            messageData = {
+                              'recipient': JSON.stringify({
+                                'id': subscriber.senderId
+                              }),
+                              'message': JSON.stringify({
+                                'attachment': {
+                                  'type': broadcastt.attachmentType,
+                                  'payload': {}
+                                }
+                              }),
+
+                              'filedata': fileReaderStream
                             }
-                            logger.serverLog(TAG, 'PageBroadcast saved' +
-                              JSON.stringify(pagebroadcastsaved))
+                          }
+
+                          request({
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                            page.accessToken
+                          }, function (err, res, body) {
+                            //* **
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At send message broadcast ${JSON.stringify(
+                                  err2)}`)
+                            }
+                            logger.serverLog(TAG,
+                              `Sent broadcast to subscriber response ${JSON.stringify(
+                                body)}`)
+
+                            // update broadcast sent field
+                            // update broadcast sent field
+                            var pagebroadcast = new BroadcastPage({
+                              pageId: page.pageId,
+                              userId: req.user._id,
+                              subscriberId: subscriber.senderId,
+                              broadcastId: broadcastt._id,
+                              seen: false
+                            })
+                            pagebroadcast.save((err2, pagebroadcastsaved) => {
+                              if (err2) {
+                                return res.status(500).json({
+                                  status: 'failed',
+                                  description: 'PageBroadcast create failed'
+                                })
+                              }
+                              logger.serverLog(TAG, 'PageBroadcast saved' +
+                                JSON.stringify(pagebroadcastsaved))
+                            })
                           })
                         })
-                      })
-                    } else {
-                      subscribers.forEach(subscriber => {
-                        logger.serverLog(TAG,
-                          `At Subscriber fetched ${JSON.stringify(subscriber)}`)
-
-                        var messageData = {}
-
-                        if (broadcastt.type === 'attachment') {
-                          var fileReaderStream = fs.createReadStream(
-                            broadcastt.fileurl)
-
-                          messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'attachment': {
-                                'type': broadcastt.attachmentType,
-                                'payload': {}
-                              }
-                            }),
-
-                            'filedata': fileReaderStream
-                          }
-                        }
-
-                        request({
-                          'method': 'POST',
-                          'json': true,
-                          'formData': messageData,
-                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                          page.accessToken
-                        }, function (err, res, body) {
-                          //* **
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At send message broadcast ${JSON.stringify(err2)}`)
-                          }
-                          logger.serverLog(TAG,
-                            `Sent broadcast to subscriber response ${JSON.stringify(
-                              body)}`)
-
-                          // update broadcast sent field
-                          // update broadcast sent field
-                          var pagebroadcast = new BroadcastPage({
-                            pageId: page.pageId,
-                            userId: req.user._id,
-                            subscriberId: subscriber.senderId,
-                            broadcastId: broadcastt._id,
-                            seen: false
-                          })
-                          pagebroadcast.save((err2, pagebroadcastsaved) => {
-                            if (err2) {
-                              return res.status(500).json({
-                                status: 'failed',
-                                description: 'PageBroadcast create failed'
-                              })
-                            }
-                            logger.serverLog(TAG, 'PageBroadcast saved' +
-                              JSON.stringify(pagebroadcastsaved))
-                          })
-                        })
-                      })
-                    }
-                  })
+                      }
+                    })
                 })
 
                 return res.status(200)
@@ -409,6 +485,7 @@ exports.uploadfile = function (req, res) {
   }
 }
 
+// todo might remove this
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
     `This is body in edit broadcast ${JSON.stringify(req.body)}`)
@@ -485,6 +562,7 @@ exports.download = function (req, res) {
     })
 }
 
+// todo might remove
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside send broadcast ${JSON.stringify(req.body)}`)
   // uploading file on FB server
@@ -586,19 +664,20 @@ exports.verifyhook = function (req, res) {
 
 function updateseenstatus (req) {
   logger.serverLog(TAG, `Inside updateseenstatus ${JSON.stringify(req)}`)
-  BroadcastPage.find({pageId: req.recipient.id, subscriberId: req.sender.id}, (err, pagebroadcasts) => {
-    if (err) {
-      logger.serverLog(TAG, `Inside updateseenstatus Error ${err}`)
-    }
-    pagebroadcasts.forEach(pagebroadcast => {
-      pagebroadcast.seen = true
-      pagebroadcast.save((err2) => {
-        if (err2) {
-          logger.serverLog(TAG, `Inside updateseenstatus Error ${err2}`)
-        }
+  BroadcastPage.find({pageId: req.recipient.id, subscriberId: req.sender.id},
+    (err, pagebroadcasts) => {
+      if (err) {
+        logger.serverLog(TAG, `Inside updateseenstatus Error ${err}`)
+      }
+      pagebroadcasts.forEach(pagebroadcast => {
+        pagebroadcast.seen = true
+        pagebroadcast.save((err2) => {
+          if (err2) {
+            logger.serverLog(TAG, `Inside updateseenstatus Error ${err2}`)
+          }
+        })
       })
     })
-  })
 }
 function savepoll (req) {
   // find subscriber from sender id
@@ -667,7 +746,7 @@ function sendautomatedmsg (req, page) {
           }
         }
 
-        if (index != null) {
+        if (index) {
           // user query matched with keywords, send response
           // sending response to sender
           needle.get(
@@ -837,6 +916,7 @@ function savesurvey (req) {
     })
   })
 }
+
 // webhook for facebook
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}

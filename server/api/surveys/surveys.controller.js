@@ -8,6 +8,7 @@ const Surveys = require('./surveys.model')
 const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const TAG = 'api/surveys/surveys.controller.js'
+let _ = require('lodash')
 
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
@@ -43,11 +44,24 @@ exports.create = function (req, res) {
    type: String,
    },...]
    } */
-  const survey = new Surveys({
+  let surveyPayload = {
     title: req.body.survey.title,
     description: req.body.survey.description,
     userId: req.user._id
-  })
+  }
+  if (req.body.isSegmented) {
+    surveyPayload.isSegmented = true
+    surveyPayload.segmentationPageIds = (req.body.pageIds)
+      ? req.body.pageIds
+      : null
+    surveyPayload.segmentationGender = (req.body.gender)
+      ? req.body.gender
+      : null
+    surveyPayload.segmentationLocale = (req.body.locale)
+      ? req.body.locale
+      : null
+  }
+  const survey = new Surveys(surveyPayload)
 
   Surveys.create(survey, (err, survey) => {
     if (err) {
@@ -287,7 +301,17 @@ exports.send = function (req, res) {
         }
         logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`)
 
-        Pages.find({userId: req.user._id}, (err, pages) => {
+        let pagesFindCriteria = {userId: req.user._id, connected: true}
+        if (req.body.isSegmented) {
+          if (req.body.segmentationPageIds) {
+            _.merge(pagesFindCriteria, {
+              pageId: {
+                $in: req.body.segmentationPageIds
+              }
+            })
+          }
+        }
+        Pages.find(pagesFindCriteria, (err, pages) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
@@ -297,7 +321,18 @@ exports.send = function (req, res) {
           logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
           for (let z = 0; z < pages.length; z++) {
             logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-            Subscribers.find({pageId: pages[z]._id}, (err, subscribers) => {
+            let subscriberFindCriteria = {pageId: pages[z]._id}
+            if (req.body.isSegmented) {
+              if (req.body.segmentationGender) {
+                _.merge(subscriberFindCriteria,
+                  {gender: req.body.segmentationGender.toLowerCase()})
+              }
+              if (req.body.segmentationLocale) {
+                _.merge(subscriberFindCriteria,
+                  {locale: req.body.segmentationLocale})
+              }
+            }
+            Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
               logger.serverLog(TAG,
                 `Subscribers of page ${JSON.stringify(subscribers)}`)
               logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
@@ -345,11 +380,10 @@ exports.send = function (req, res) {
                       `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                       data, (err, resp) => {
                         if (err) {
-                          return res.status(500)
-                            .json({
-                              status: 'failed',
-                              description: JSON.stringify(err)
-                            })
+                          return res.status(500).json({
+                            status: 'failed',
+                            description: JSON.stringify(err)
+                          })
                         }
                         logger.serverLog(TAG,
                           `Sending survey to subscriber response ${JSON.stringify(
