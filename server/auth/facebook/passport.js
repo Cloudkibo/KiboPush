@@ -47,6 +47,7 @@ exports.setup = function (User, config) {
           logger.serverLog(TAG, `Permissions check error: ${e}`)
         })
 
+      logger.serverLog(TAG, `Short-lived Token: ${accessToken}`)
       FBExtension.extendShortToken(accessToken).then((response) => {
         logger.serverLog(TAG, `Long-lived Token: ${response.access_token}`)
         logger.serverLog(TAG, `Expires in : ${response.expires} secs.`)
