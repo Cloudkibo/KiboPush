@@ -8,7 +8,7 @@
     "start:prod": "cross-env NODE_ENV=production node server/app.js",
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
-    "build:react": "browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
+    "build:react": "echo 'Build reactjs bundle...' && browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
     "lint": "echo 'Pre-commit checks...' && standard --fix && echo \"No code style errors found.\"",
     "test": "echo \"Code tests are under construction by Sojharo\" && exit 0"
   },
