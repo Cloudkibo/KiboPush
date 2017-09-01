@@ -4,6 +4,7 @@
 
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
+const PassportFacebookExtension = require('passport-facebook-extension')
 const needle = require('needle')
 const _ = require('lodash')
 const Pages = require('../../api/pages/Pages.model')
@@ -33,67 +34,88 @@ exports.setup = function (User, config) {
           profile._json.name} with fb id: ${profile._json.id}`)
       }
 
-      needle.get(`${'https://graph.facebook.com/me?fields=' +
-      'id,name,locale,email,timezone,gender,picture' +
-      '&access_token='}${accessToken}`, options, (err, resp) => {
-        if (err !== null) {
-          logger.serverLog(TAG, 'error from graph api to get user data: ')
-          logger.serverLog(TAG, JSON.stringify(err))
-        }
-        logger.serverLog(TAG, 'resp from graph api to get user data: ')
-        logger.serverLog(TAG, JSON.stringify(resp.body))
+      let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+        config.facebook.clientSecret)
 
-        if (err) return done(err)
-
-        let payload = new Users({
-          name: resp.body.name,
-          locale: resp.body.locale,
-          gender: resp.body.gender,
-          provider: 'facebook',
-          timezone: resp.body.timezone,
-          profilePic: resp.body.picture.data.url,
-          fbToken: accessToken,
-          fbId: resp.body.id
+      // todo do this for permissions error
+      FBExtension.permissionsGiven(profile.id, accessToken)
+        .then(permissions => {
+          profile.permissions = permissions
+          logger.serverLog(TAG, `Permissions given: ${profile.permissions}`)
+        })
+        .fail(e => {
+          logger.serverLog(TAG, `Permissions check error: ${e}`)
         })
 
-        if (resp.body.email) {
-          payload = _.merge(payload, {email: resp.body.email})
-        }
+      FBExtension.extendShortToken(accessToken).then((response) => {
+        logger.serverLog(TAG, `Long-lived Token: ${response.access_token}`)
+        logger.serverLog(TAG, `Expires in : ${response.expires} secs.`)
 
-        Users.findOne({fbId: resp.body.id}, (err, user) => {
-          if (err) {
-            return done(err)
+        needle.get(`${'https://graph.facebook.com/me?fields=' +
+        'id,name,locale,email,timezone,gender,picture' +
+        '&access_token='}${accessToken}`, options, (err, resp) => {
+          if (err !== null) {
+            logger.serverLog(TAG, 'error from graph api to get user data: ')
+            logger.serverLog(TAG, JSON.stringify(err))
           }
-          if (!err && user !== null) {
-            logger.serverLog(TAG,
-              `previous fb token before login: ${user.fbToken}`)
-            user.updatedAt = Date.now()
-            user.fbToken = accessToken
-            logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
-            user.save((err, userpaylaod) => {
-              if (err) {
-                logger.serverLog(TAG, JSON.stringify(err))
-                return done(err)
-              }
+          logger.serverLog(TAG, 'resp from graph api to get user data: ')
+          logger.serverLog(TAG, JSON.stringify(resp.body))
+
+          if (err) return done(err)
+
+          let payload = new Users({
+            name: resp.body.name,
+            locale: resp.body.locale,
+            gender: resp.body.gender,
+            provider: 'facebook',
+            timezone: resp.body.timezone,
+            profilePic: resp.body.picture.data.url,
+            fbToken: accessToken,
+            fbId: resp.body.id
+          })
+
+          if (resp.body.email) {
+            payload = _.merge(payload, {email: resp.body.email})
+          }
+
+          Users.findOne({fbId: resp.body.id}, (err, user) => {
+            if (err) {
+              return done(err)
+            }
+            if (!err && user !== null) {
               logger.serverLog(TAG,
-                `user is updated : ${JSON.stringify(userpaylaod)}`)
-              done(null, user)
-              fetchPages(`https://graph.facebook.com/v2.10/${
-                user.fbId}/accounts?access_token=${
-                user.fbToken}`, user)
-            })
-          } else {
-            payload.save((error, newUser) => {
-              if (error) {
-                return done(error)
-              }
-              done(null, newUser)
-              fetchPages(`https://graph.facebook.com/v2.10/${
-                payload.fbId}/accounts?access_token=${
-                payload.fbToken}`, newUser)
-            })
-          }
+                `previous fb token before login: ${user.fbToken}`)
+              user.updatedAt = Date.now()
+              user.fbToken = accessToken
+              logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
+              user.save((err, userpaylaod) => {
+                if (err) {
+                  logger.serverLog(TAG, JSON.stringify(err))
+                  return done(err)
+                }
+                logger.serverLog(TAG,
+                  `user is updated : ${JSON.stringify(userpaylaod)}`)
+                done(null, user)
+                fetchPages(`https://graph.facebook.com/v2.10/${
+                  user.fbId}/accounts?access_token=${
+                  user.fbToken}`, user)
+              })
+            } else {
+              payload.save((error, newUser) => {
+                if (error) {
+                  return done(error)
+                }
+                done(null, newUser)
+                fetchPages(`https://graph.facebook.com/v2.10/${
+                  payload.fbId}/accounts?access_token=${
+                  payload.fbToken}`, newUser)
+              })
+            }
+          })
         })
+      }).fail((error) => {
+        logger.serverLog(TAG, `Extending token error: ${error}`)
+        return done(error)
       })
     }
   ))
