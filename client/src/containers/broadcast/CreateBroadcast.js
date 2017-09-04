@@ -17,6 +17,12 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import {
+  addPages,
+  loadMyPagesList,
+  removePage
+
+} from '../../redux/actions/pages.actions'
 
 class CreateBroadcast extends React.Component {
   constructor (props, context) {
@@ -36,11 +42,10 @@ class CreateBroadcast extends React.Component {
         Locale: {
           options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
           isPicked: false
-        },
-        Page: {
-          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
-          isPicked: false
         }
+      },
+      page: {
+        options: []
       },
       target: [],
       segmentValue: '',
@@ -54,6 +59,7 @@ class CreateBroadcast extends React.Component {
   }
 
   componentWillMount () {
+    // this.props.loadMyPagesList();
     var temp = []
     Object.keys(this.state.criteria).map((obj) => {
       temp.push(<option value={obj}>{obj}</option>)
@@ -80,6 +86,15 @@ class CreateBroadcast extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
+    // if(nextProps.pages){
+    //   var temp = [];
+    //   nextProps.pages.map((page) => {
+    //     temp.push(page.pageName);
+    //   });
+    //   var other = this.state.criteria;
+    //   other.Page.options = temp;
+    //   this.setState({criteria: other});
+    // }
   }
 
   updateSegmentValue (event) {
@@ -309,6 +324,26 @@ class CreateBroadcast extends React.Component {
                 <div className='news-feed-form'>
                   <p>Select the type of customer you want to send broadcast
                     to</p>
+
+                  {
+                    <div className='row'>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <div style={{padding: 5}}>
+                          <select style={{padding: 5}}>
+                            <option selected='selected' value='en_US'>en_US</option>
+                            <option value='en_UK'>en_UK</option>
+                            <option value='en_IN'>en_IN</option>
+                          </select>
+
+                        </div>
+                      </div>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <button className='btn btn-primary btn-sm'> Add Page
+                            </button>
+                      </div>
+                    </div>
+                  }
+
                   <div className='row'>
                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
                       <div>
@@ -362,23 +397,6 @@ class CreateBroadcast extends React.Component {
                     </div>
                   }
 
-                    {
-                    this.state.criteria.Page.isPicked && <div className='row'>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <div style={{padding: 5}}>
-                          <p>Page is: </p>
-                        </div>
-                      </div>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <select style={{padding: 5}}>
-                          <option selected='selected' value='en_US'>en_US</option>
-                          <option value='en_UK'>en_UK</option>
-                          <option value='en_IN'>en_IN</option>
-                        </select>
-                      </div>
-                    </div>
-                  }
-
                   </div>
 
                 </div>
@@ -396,7 +414,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
-    showFileUploading: (state.broadcastsInfo.showFileUploading)
+    showFileUploading: (state.broadcastsInfo.showFileUploading),
+    pages: (state.pagesInfo.pages)
   }
 }
 
@@ -406,7 +425,9 @@ function mapDispatchToProps (dispatch) {
       loadBroadcastsList: loadBroadcastsList,
       uploadBroadcastfile: uploadBroadcastfile,
       createbroadcast: createbroadcast,
-      updatefileuploadStatus: updatefileuploadStatus
+      updatefileuploadStatus: updatefileuploadStatus,
+      removePage: removePage,
+      addPages: addPages
     },
     dispatch)
 }

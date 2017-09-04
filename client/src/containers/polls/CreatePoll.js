@@ -21,10 +21,40 @@ class CreatePoll extends React.Component {
       statement: '',
       option1: '',
       option2: '',
-      option3: ''
+      option3: '',
+      targeting: [],
+      criteria: {
+        Gender: {
+          options: ['Male', 'Female'],
+          isPicked: false
+        },
+        Locale: {
+          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
+          isPicked: false
+        }
+      },
+      page: {
+        options: []
+      },
+      target: [],
+      segmentValue: '',
+      buttonLabel: 'Add Segment'
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
+
+    this.addNewTarget = this.addNewTarget.bind(this)
+    this.updateSegmentValue = this.updateSegmentValue.bind(this)
+  }
+
+  componentWillMount () {
+    // this.props.loadMyPagesList();
+    var temp = []
+    Object.keys(this.state.criteria).map((obj) => {
+      temp.push(<option value={obj}>{obj}</option>)
+    })
+
+    this.setState({target: temp, segmentValue: Object.keys(this.state.criteria)[0]})
   }
 
   componentDidMount () {
@@ -91,6 +121,26 @@ class CreatePoll extends React.Component {
     }
   }
 
+  updateSegmentValue (event) {
+    console.log('updateSegmentValue called', event.target.value)
+    var label = 'Add Segment'
+    if (this.state.criteria[event.target.value].isPicked === true) {
+      label = 'Remove Segment'
+    }
+    this.setState({segmentValue: event.target.value, buttonLabel: label})
+  }
+
+  addNewTarget () {
+    console.log('Add new target called', this.state.segmentValue)
+    var temp = this.state.criteria
+    temp[this.state.segmentValue].isPicked = !temp[this.state.segmentValue].isPicked
+    var label = 'Add Segment'
+    if (temp[this.state.segmentValue].isPicked === true) {
+      label = 'Remove Segment'
+    }
+    this.setState({criteria: temp, buttonLabel: label})
+  }
+
   render () {
     return (
       <div>
@@ -103,70 +153,154 @@ class CreatePoll extends React.Component {
           <br />
           <br />
           <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Ask Facebook Subscribers a
+          <div className='row'>
+            <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+              <h2 className='presentation-margin'>Ask Facebook Subscribers a
               Question</h2>
-            <div className='ui-block'>
-              <div className='news-feed-form'>
+              <div className='ui-block'>
+                <div className='news-feed-form'>
 
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel'
-                    aria-expanded='true'>
-                    <div className='form-group label-floating is-empty'>
-                      <label className='control-label'>Ask something...</label>
-                      <textarea className='form-control'
-                        value={this.state.statement}
-                        onChange={(e) => this.updateStatment(e)} />
-                    </div>
-                    <br />
-                    <div
-                      className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                      <label className='control-label'> Add 3 responses</label>
-                      <fieldset className='input-group-vertical'>
-                        <div className='form-group'>
-                          <label className='sr-only'>Response1</label>
-                          <input type='text' className='form-control'
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='home-1' role='tabpanel'
+                      aria-expanded='true'>
+                      <div className='form-group label-floating is-empty'>
+                        <label className='control-label'>Ask something...</label>
+                        <textarea className='form-control'
+                          value={this.state.statement}
+                          onChange={(e) => this.updateStatment(e)} />
+                      </div>
+                      <br />
+                      <div
+                        className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                        <label className='control-label'> Add 3 responses</label>
+                        <fieldset className='input-group-vertical'>
+                          <div className='form-group'>
+                            <label className='sr-only'>Response1</label>
+                            <input type='text' className='form-control'
                             value={this.state.option1}
                             onChange={(e) => this.updateOptions(e, 1)}
                             placeholder='Response 1' />
-                        </div>
-                        <div className='form-group'>
-                          <label className='sr-only'>Response2</label>
-                          <input type='text' className='form-control'
+                          </div>
+                          <div className='form-group'>
+                            <label className='sr-only'>Response2</label>
+                            <input type='text' className='form-control'
                             value={this.state.option2}
                             onChange={(e) => this.updateOptions(e, 2)}
                             placeholder='Response 2' />
-                        </div>
-                        <div className='form-group'>
-                          <label className='sr-only'>Response3</label>
-                          <input type='text' className='form-control'
+                          </div>
+                          <div className='form-group'>
+                            <label className='sr-only'>Response3</label>
+                            <input type='text' className='form-control'
                             value={this.state.option3}
                             onChange={(e) => this.updateOptions(e, 3)}
                             placeholder='Response 3' />
-                        </div>
+                          </div>
 
-                      </fieldset>
-                    </div>
-                    <br />
-                    { this.state.alert &&
-                    <center><Alert type='danger'>
+                        </fieldset>
+                      </div>
+                      <br />
+                      { this.state.alert &&
+                      <center><Alert type='danger'>
                       You have either left one or more responses empty or you
                       have not asked anything. Please ask something and fill all
                       three responses in order to create the poll.
                     </Alert></center>
                     }
-                    <div className='add-options-message'>
+                      <div className='add-options-message'>
 
-                      <button className='btn btn-primary btn-sm'
-                        onClick={this.createPoll}> Create Poll
+                        <button className='btn btn-primary btn-sm'
+                          onClick={this.createPoll}> Create Poll
                       </button>
-                      <Link
-                        to='/poll'
-                        style={{float: 'right', margin: 2}}
-                        className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                        <Link
+                          to='/poll'
+                          style={{float: 'right', margin: 2}}
+                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
                         Cancel
                       </Link>
+                      </div>
+
                     </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+              <h2 className='presentation-margin'>Targeting</h2>
+              <div className='ui-block' style={{padding: 15}}>
+                <div className='news-feed-form'>
+                  <p>Select the type of customer you want to send poll
+                    to</p>
+                  {
+                    <div className='row'>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <div style={{padding: 5}}>
+                          <select style={{padding: 5}}>
+                            <option selected='selected' value='en_US'>en_US</option>
+                            <option value='en_UK'>en_UK</option>
+                            <option value='en_IN'>en_IN</option>
+                          </select>
+
+                        </div>
+                      </div>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <button className='btn btn-primary btn-sm'> Add Page
+                            </button>
+                      </div>
+                    </div>
+                  }
+                  <div className='row'>
+                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                      <div>
+                        <select onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
+                          {this.state.target}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                      <button className='btn btn-primary btn-sm'
+                        onClick={this.addNewTarget}> {this.state.buttonLabel}
+                      </button>
+                    </div>
+
+                  </div>
+
+                  <div>
+                    {this.state.targeting}
+
+                    {
+                    this.state.criteria.Gender.isPicked && <div className='row'>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <div style={{padding: 5}}>
+                          <p>Gender is: </p>
+                        </div>
+                      </div>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <select style={{padding: 5}}>
+                          <option selected='selected' value='Male'>Male</option>
+                          <option value='Female'>Female</option>
+                        </select>
+                      </div>
+                    </div>
+                  }
+
+                    {
+                    this.state.criteria.Locale.isPicked && <div className='row'>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <div style={{padding: 5}}>
+                          <p>Locale is: </p>
+                        </div>
+                      </div>
+                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                        <select style={{padding: 5}}>
+                          <option selected='selected' value='en_US'>en_US</option>
+                          <option value='en_UK'>en_UK</option>
+                          <option value='en_IN'>en_IN</option>
+                        </select>
+                      </div>
+                    </div>
+                  }
 
                   </div>
 
