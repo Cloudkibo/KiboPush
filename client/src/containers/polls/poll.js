@@ -19,24 +19,53 @@ import {
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import ReactPaginate from 'react-paginate'
 
 class Poll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      pollsData: [],
+      totalLength: 0
     }
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentWillMount () {
    // this.props.loadSubscribersList()
   }
 
+  displayData (n, polls) {
+    console.log(polls)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > polls.length) {
+      limit = polls.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = polls[i]
+      index++
+    }
+    this.setState({pollsData: data})
+  }
+
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.polls)
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls) {
       console.log('Polls Updated', nextProps.polls)
       // this.setState({broadcasts: nextProps.broadcasts});
+      this.displayData(0, nextProps.polls)
+      this.setState({ totalLength: nextProps.polls.length })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -136,7 +165,8 @@ class Poll extends React.Component {
                     </button>
                 </Link>
                 }
-                  <div className='table-responsive'>
+                  { this.state.pollsData && this.state.pollsData.length > 0
+                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -148,8 +178,8 @@ class Poll extends React.Component {
                         </tr>
                       </thead>
                       <tbody>
-                        { (this.props.polls)
-                        ? this.props.polls.map((poll, i) => (
+                        {
+                        this.state.pollsData.map((poll, i) => (
                           <tr>
                             <td>{poll.platform}</td>
                             <td>{poll.statement}</td>
@@ -172,12 +202,26 @@ class Poll extends React.Component {
                               </button>
                             </td>
                           </tr>
-                        )) : <br />
+                        ))
                       }
-
                       </tbody>
                     </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a href=''>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
                   </div>
+                  : <div className='table-responsive'>
+                    <p> No data to display </p>
+                  </div>
+                }
                   {
                       this.state.alertMessage !== '' &&
                       <center>

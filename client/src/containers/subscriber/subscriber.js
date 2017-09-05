@@ -11,11 +11,18 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
+import ReactPaginate from 'react-paginate'
 
 class Subscriber extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadSubscribersList()
+    this.state = {
+      subscribersData: [],
+      totalLength: 0
+    }
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentDidMount () {
@@ -30,6 +37,37 @@ class Subscriber extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  displayData (n, subscribers) {
+    console.log(subscribers)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > subscribers.length) {
+      limit = subscribers.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = subscribers[i]
+      index++
+    }
+    this.setState({subscribersData: data})
+  }
+
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.subscribers)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+    if (nextProps.subscribers) {
+      console.log('Broadcasts Updated', nextProps.subscribers)
+      this.displayData(0, nextProps.subscribers)
+      this.setState({ totalLength: nextProps.subscribers.length })
+    }
   }
 
   render () {
@@ -49,7 +87,9 @@ class Subscriber extends React.Component {
                   <h3>Subscribers</h3>
                   <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
-                  <div className='table-responsive'>
+
+                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -62,7 +102,7 @@ class Subscriber extends React.Component {
                       </thead>
                       <tbody>
                         {
-                        this.props.subscribers.map((subscriber, i) => (
+                        this.state.subscribersData.map((subscriber, i) => (
                           <tr>
                             <td>{subscriber.firstName}</td>
                             <td>{subscriber.lastName}</td>
@@ -72,11 +112,24 @@ class Subscriber extends React.Component {
                           </tr>
                         ))
                       }
-
                       </tbody>
                     </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a href=''>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
                   </div>
-
+                  : <div className='table-responsive'>
+                    <p> No data to display </p>
+                  </div>
+                }
                 </div>
               </div>
 
