@@ -17,7 +17,7 @@ import {
 
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-
+import ReactPaginate from 'react-paginate'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 
@@ -26,17 +26,43 @@ class Page extends React.Component {
     super(props)
     this.state = {
       isShowingModal: false,
-      page: {}
+      page: {},
+      pagesData: [],
+      totalLength: 0
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentWillMount () {
     this.props.getuserdetails()
     this.props.loadMyPagesList()
     this.props.loadSubscribersList()
+  }
+
+  displayData (n, pages) {
+    console.log(pages)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > pages.length) {
+      limit = pages.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = pages[i]
+      index++
+    }
+    this.setState({pagesData: data})
+  }
+
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.pages)
   }
 
   componentDidMount () {
@@ -53,6 +79,15 @@ class Page extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+    if (nextProps.pages) {
+      console.log('Pages Updated', nextProps.pages)
+      this.displayData(0, nextProps.pages)
+      this.setState({ totalLength: nextProps.pages.length })
+    }
+  }
+
   // addPages(fbId){
   //  this.props.addPages(fbId);
   //  // this.props.history
@@ -61,6 +96,14 @@ class Page extends React.Component {
   removePage (page) {
     console.log('This is the page', page)
     this.closeDialog()
+    let index
+    for (let i = 0; i < this.state.pagesData.length; i++) {
+      if (this.state.pagesData[i].pageId === page.pageId) {
+        index = i
+        break
+      }
+    }
+    this.state.pagesData.splice(index, 1)
     this.props.removePage(page)
   }
 
@@ -136,7 +179,8 @@ class Page extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                   }
-                  <div className='table-responsive'>
+                  { this.props.pages && this.props.pages.length
+                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -148,8 +192,8 @@ class Page extends React.Component {
                       </thead>
                       <tbody>
 
-                        { (this.props.pages)
-                        ? this.props.pages.map((page, i) => (
+                        {
+                        this.state.pagesData.map((page, i) => (
                           (page.connected &&
                             <tr>
                               <td><img alt='pic'
@@ -174,14 +218,27 @@ class Page extends React.Component {
                             </tr>
                           )
 
-                        )) : <tr />
-
+                        ))
                       }
 
                       </tbody>
                     </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a href=''>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
                   </div>
-
+                  : <div className='table-responsive'>
+                    <p> No data to display </p>
+                  </div>
+                }
                 </div>
               </div>
 

@@ -20,19 +20,24 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import ReactPaginate from 'react-paginate'
 
 class Broadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       alertMessage: '',
-      type: ''
+      type: '',
+      broadcastsData: [],
+      totalLength: 0
     }
     if (!props.broadcasts) {
       //  alert('calling')
       props.loadBroadcastsList()
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentDidMount () {
@@ -47,6 +52,28 @@ class Broadcast extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  displayData (n, broadcasts) {
+    console.log(broadcasts)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > broadcasts.length) {
+      limit = broadcasts.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = broadcasts[i]
+      index++
+    }
+    this.setState({broadcastsData: data})
+  }
+
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.broadcasts)
   }
 
   gotoEdit (broadcast) {
@@ -71,7 +98,8 @@ class Broadcast extends React.Component {
     console.log('componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
-      // this.setState({broadcasts: nextProps.broadcasts});
+      this.displayData(0, nextProps.broadcasts)
+      this.setState({ totalLength: nextProps.broadcasts.length })
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
     if (nextProps.successMessage) {
@@ -140,38 +168,50 @@ class Broadcast extends React.Component {
                       </button>
                       </Link>
                   }
-                  <div className='table-responsive'>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Platform</th>
-                          <th>Type</th>
-                          <th>Created At</th>
-                          <th>Message</th>
-                          <th>Sent</th>
-                          <th>Seen</th>
-
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.props.broadcasts &&
-                        this.props.broadcasts.map((broadcast, i) => (
+                  { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                    ? <div className='table-responsive'>
+                      <table className='table table-striped'>
+                        <thead>
                           <tr>
-                            <td>{broadcast.platform}</td>
-                            <td>{broadcast.type}</td>
-                            <td>{handleDate(broadcast.datetime)}</td>
-                            <td>{broadcast.text}</td>
-                            <td>{broadcast.sent}</td>
-                            <td>{broadcast.seen}</td>
-
+                            <th>Platform</th>
+                            <th>Type</th>
+                            <th>Created At</th>
+                            <th>Message</th>
+                            <th>Sent</th>
+                            <th>Seen</th>
                           </tr>
-                        ))
-                      }
-
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {
+                            this.state.broadcastsData.map((broadcast, i) => (
+                              <tr>
+                                <td>{broadcast.platform}</td>
+                                <td>{broadcast.type}</td>
+                                <td>{handleDate(broadcast.datetime)}</td>
+                                <td>{broadcast.text}</td>
+                                <td>{broadcast.sent}</td>
+                                <td>{broadcast.seen}</td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <ReactPaginate previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a href=''>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 4)}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={3}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'} />
+                    </div>
+                  : <div className='table-responsive'>
+                    <p> No data to display </p>
                   </div>
+                }
                   {
                     this.state.alertMessage !== '' &&
                     <center>

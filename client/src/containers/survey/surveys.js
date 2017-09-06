@@ -17,18 +17,23 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { Alert } from 'react-bs-notifier'
 import { handleDate } from '../../utility/utils'
+import ReactPaginate from 'react-paginate'
 
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      surveysData: [],
+      totalLength: 0
     }
     if (!props.surveys) {
     //  alert('calling')
       props.loadSurveysList()
     }
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentDidMount () {
@@ -43,6 +48,28 @@ class Survey extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  displayData (n, surveys) {
+    console.log(surveys)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > surveys.length) {
+      limit = surveys.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = surveys[i]
+      index++
+    }
+    this.setState({surveysData: data})
+  }
+
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.surveys)
   }
 
   gotoView (survey) {
@@ -61,6 +88,11 @@ class Survey extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps called')
+    if (nextProps.surveys) {
+      console.log('Broadcasts Updated', nextProps.surveys)
+      this.displayData(0, nextProps.surveys)
+      this.setState({ totalLength: nextProps.surveys.length })
+    }
     if (nextProps.successMessage) {
       this.setState({
         alertMessage: nextProps.successMessage,
@@ -128,7 +160,8 @@ class Survey extends React.Component {
                     </button>
                   </Link>
                 }
-                  <div className='table-responsive'>
+                  { this.state.surveysData && this.state.surveysData.length > 0
+                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -141,16 +174,16 @@ class Survey extends React.Component {
                       </thead>
                       <tbody>
                         {
-                        this.props.surveys && this.props.surveys.map((survey, i) => (
-                          <tr>
-                            <td>{survey.title}</td>
-                            <td>{survey.description}</td>
-                            <td>{handleDate(survey.datetime)}</td>
-                            <td>
-                              <button className='btn btn-primary btn-sm'
-                                onClick={() => this.gotoView(survey)}>View
+                          this.state.surveysData.map((survey, i) => (
+                            <tr>
+                              <td>{survey.title}</td>
+                              <td>{survey.description}</td>
+                              <td>{handleDate(survey.datetime)}</td>
+                              <td>
+                                <button className='btn btn-primary btn-sm'
+                                  onClick={() => this.gotoView(survey)}>View
                               </button>
-                              { this.props.subscribers && this.props.subscribers.length === 0
+                                { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
                                   <button className='btn  btn-sm' disabled
                                     onClick={() => this.gotoResults(survey)}>
@@ -175,14 +208,29 @@ class Survey extends React.Component {
                               </span>
                               }
 
-                            </td>
-                          </tr>
+                              </td>
+                            </tr>
 
                         ))
                       }
                       </tbody>
                     </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a href=''>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
                   </div>
+                  : <div className='table-responsive'>
+                    <p> No data to display </p>
+                  </div>
+                }
                   {
                     this.state.alertMessage !== '' &&
                     <center>
