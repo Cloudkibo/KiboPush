@@ -27,25 +27,56 @@ exports.enable = function (req, res) {
   logger.serverLog(TAG, `Enable page API called ${JSON.stringify(req.body)}`)
   // check if page is already connected by some other user
   // short term solution for issue Subscribers list is not updating (multi user issue) #307
-  Pages.find({pageId: req.body.pageId, connected: true, userId: { $ne: req.user._id }}, (err, pagesbyOther) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        error: err,
-        description: 'Failed to update record'
-      })
-    }
-    logger.serverLog(TAG, `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
-    if (pagesbyOther.length === 0) {
-      Pages.update({_id: req.body._id},
-    {connected: true}, (err) => {
+  Pages.find(
+    {pageId: req.body.pageId, connected: true, userId: {$ne: req.user._id}},
+    (err, pagesbyOther) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
           error: err,
           description: 'Failed to update record'
         })
+      }
+      logger.serverLog(TAG,
+        `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
+      if (pagesbyOther.length === 0) {
+        Pages.update({_id: req.body._id},
+          {connected: true}, (err) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                error: err,
+                description: 'Failed to update record'
+              })
+            } else {
+              Pages.find({userId: req.user._id}, (err2, pages) => {
+                if (err2) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error${JSON.stringify(err)}`
+                  })
+                }
+                const options = {
+                  url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                  qs: {access_token: req.body.accessToken},
+                  method: 'POST'
+
+                }
+
+                needle.post(options.url, options, (error, response) => {
+                  if (error) {
+                    return res.status(500)
+                      .json(
+                        {status: 'failed', description: JSON.stringify(error)})
+                  }
+                  res.status(200)
+                    .json({status: 'success', payload: {pages: pages}})
+                })
+              })
+            }
+          })
       } else {
+        // page is already connected by someone else
         Pages.find({userId: req.user._id}, (err2, pages) => {
           if (err2) {
             return res.status(500).json({
@@ -53,36 +84,17 @@ exports.enable = function (req, res) {
               description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
-          const options = {
-            url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
-            qs: {access_token: req.body.accessToken},
-            method: 'POST'
-
-          }
-
-          needle.post(options.url, options, (error, response) => {
-            if (error) {
-              return res.status(500)
-                .json({status: 'failed', description: JSON.stringify(error)})
-            }
-            res.status(200).json({status: 'success', payload: {pages: pages}})
-          })
+          res.status(200)
+            .json({
+              status: 'success',
+              payload: {
+                pages: pages,
+                msg: 'Page is already connected by another user'
+              }
+            })
         })
       }
     })
-    } else {
-      // page is already connected by someone else
-      Pages.find({userId: req.user._id}, (err2, pages) => {
-        if (err2) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error${JSON.stringify(err)}`
-          })
-        }
-        res.status(200).json({status: 'success', payload: {pages: pages, msg: 'Page is already connected by another user'}})
-      })
-    }
-  })
 }
 
 exports.disable = function (req, res) {

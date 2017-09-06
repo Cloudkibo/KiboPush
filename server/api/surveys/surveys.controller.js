@@ -321,7 +321,10 @@ exports.send = function (req, res) {
           logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
           for (let z = 0; z < pages.length; z++) {
             logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
-            let subscriberFindCriteria = {pageId: pages[z]._id}
+            let subscriberFindCriteria = {
+              pageId: pages[z]._id,
+              isSubscribed: true
+            }
             if (req.body.isSegmented) {
               if (req.body.segmentationGender) {
                 _.merge(subscriberFindCriteria,

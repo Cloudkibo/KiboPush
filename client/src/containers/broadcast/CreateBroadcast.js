@@ -17,12 +17,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import {
-  addPages,
-  loadMyPagesList,
-  removePage
-
-} from '../../redux/actions/pages.actions'
+import { addPages, removePage } from '../../redux/actions/pages.actions'
 
 class CreateBroadcast extends React.Component {
   constructor (props, context) {
@@ -48,8 +43,8 @@ class CreateBroadcast extends React.Component {
         options: [{id: '1', name: 'WoxCut'},
                   {id: '2', name: 'KiboPush'},
                   {id: '3', name: 'Dayem Portfolio'},
-                  {id: '4', name: 'United Broke My Guitar'},
-                  ]
+                  {id: '4', name: 'United Broke My Guitar'}
+        ]
       },
       target: [],
       segmentValue: '',
@@ -59,8 +54,8 @@ class CreateBroadcast extends React.Component {
       segmentation: {
         page_id: [],
         locale: '',
-        gender: '',
-      },
+        gender: ''
+      }
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
@@ -129,24 +124,23 @@ class CreateBroadcast extends React.Component {
     this.setState({criteria: temp, buttonLabel: label})
   }
 
-  selectedPage(event){
+  selectedPage (event) {
     this.setState({selectedPage: event.target.value})
   }
 
-  addRemovePage(){
-    var temp = this.state.segmentation;
+  addRemovePage () {
+    var temp = this.state.segmentation
     if (temp.page_id.indexOf(this.state.selectedPage) > -1) {
-      temp.page_id = temp.page_id.filter(e => e !== this.state.selectedPage);
+      temp.page_id = temp.page_id.filter(e => e !== this.state.selectedPage)
     } else {
-        temp.page_id.push(this.state.selectedPage);
+      temp.page_id.push(this.state.selectedPage)
     }
-        this.setState({segmentation: temp});   
+    this.setState({segmentation: temp})
   }
 
   createBroadcast () {
-    
     // console.log("Segmentation Data", this.state.segmentation);
-   
+
     let msgBody = this.refs.message.value
     if ((msgBody === '' || msgBody === undefined) &&
       (this.state.userfile === '' || this.state.userfile === null)) {
@@ -252,8 +246,6 @@ class CreateBroadcast extends React.Component {
   }
 
   render () {
-
-    
     return (
       <div>
         <Header />
@@ -356,26 +348,24 @@ class CreateBroadcast extends React.Component {
                   <p>Select the type of customer you want to send broadcast
                     to</p>
 
-                  
-                    <div className='row'>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <div style={{padding: 5}}>
-                          <select style={{padding: 5}}>
-                            {
+                  <div className='row'>
+                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                      <div style={{padding: 5}}>
+                        <select style={{padding: 5}}>
+                          {
                               this.state.page.options.map((page) => {
-                                return <option value={page.id}>{page.name}</option>;
+                                return <option value={page.id}>{page.name}</option>
                               })
                             }
-                          </select>
+                        </select>
 
-                        </div>
-                      </div>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <button className='btn btn-primary btn-sm'> {this.state.addPageLabel}
-                            </button>
                       </div>
                     </div>
-                  
+                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                      <button className='btn btn-primary btn-sm'> {this.state.addPageLabel}
+                      </button>
+                    </div>
+                  </div>
 
                   <div className='row'>
                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>

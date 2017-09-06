@@ -161,7 +161,7 @@ exports.send = function (req, res) {
     logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
     for (let z = 0; z < pages.length; z++) {
       logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
-      let subscriberFindCriteria = {pageId: pages[z]._id}
+      let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
       if (req.body.isSegmented) {
         if (req.body.segmentationGender) {
           _.merge(subscriberFindCriteria,

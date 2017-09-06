@@ -87,10 +87,11 @@ exports.create = function (req, res) {
       pages.forEach(page => {
         logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
 
-        let subscriberFindCriteria = {pageId: page._id}
+        let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
         if (req.body.isSegmented) {
           if (req.body.gender) {
-            _.merge(subscriberFindCriteria, {gender: req.body.gender.toLowerCase()})
+            _.merge(subscriberFindCriteria,
+              {gender: req.body.gender.toLowerCase()})
           }
           if (req.body.locale) {
             _.merge(subscriberFindCriteria, {locale: req.body.locale})
@@ -266,7 +267,10 @@ exports.uploadfile = function (req, res) {
                   logger.serverLog(TAG,
                     `Page in the loop ${JSON.stringify(page)}`)
 
-                  let subscriberFindCriteria = {pageId: page._id}
+                  let subscriberFindCriteria = {
+                    pageId: page._id,
+                    isSubscribed: true
+                  }
                   if (req.body.isSegmented) {
                     if (req.body.gender) {
                       _.merge(subscriberFindCriteria,
@@ -728,6 +732,12 @@ function sendautomatedmsg (req, page) {
           var userMsg = req.message.text
           var words = userMsg.trim().split(' ')
 
+          if (userMsg.toLowerCase() === 'stop' ||
+            userMsg.toLowerCase() === 'unsubscribe') {
+            index = -10
+            break
+          }
+
           logger.serverLog(TAG, 'User message is ' + userMsg)
 
           logger.serverLog(TAG, workflows[i])
@@ -746,24 +756,38 @@ function sendautomatedmsg (req, page) {
           }
         }
 
-        if (index) {
-          // user query matched with keywords, send response
-          // sending response to sender
-          needle.get(
-            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
-            (err3, response) => {
-              if (err3) {
-                logger.serverLog(TAG,
-                  `Page accesstoken from graph api Error${JSON.stringify(
-                    err3)}`)
+        // user query matched with keywords, send response
+        // sending response to sender
+        needle.get(
+          `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
+          (err3, response) => {
+            if (err3) {
+              logger.serverLog(TAG,
+                `Page token error from graph api ${JSON.stringify(err3)}`)
+            }
+
+            if (index) {
+              let messageData = {}
+              if (index === -10) {
+                messageData = {
+                  text: 'You have unsubscribed from our broadcasts.'
+                }
+                Subscribers.update({senderId: req.sender.id},
+                  {isSubscribed: false}, (err) => {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Subscribers update subscription: ${JSON.stringify(
+                          err)}`)
+                    }
+                    logger.serverLog(TAG,
+                      `subscription removed for ${req.sender.id}`)
+                  })
+              } else {
+                messageData = {
+                  text: workflows[index].reply
+                }
               }
 
-              logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(
-                  response.body)}`)
-              const messageData = {
-                text: workflows[index].reply
-              }
               const data = {
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
@@ -776,8 +800,8 @@ function sendautomatedmsg (req, page) {
                     `Sending workflow response to subscriber response ${JSON.stringify(
                       respp.body)}`)
                 })
-            })
-        }
+            }
+          })
       }
     })
 }
@@ -968,7 +992,8 @@ exports.getfbMessage = function (req, res) {
               pageScopedId: '',
               email: '',
               senderId: sender,
-              pageId: page._id
+              pageId: page._id,
+              isSubscribed: true
             }
 
             Subscribers.findOne({senderId: sender}, (err, subscriber) => {
@@ -976,11 +1001,22 @@ exports.getfbMessage = function (req, res) {
               logger.serverLog(TAG, subscriber)
               if (subscriber === null) {
                 // subsriber not found, create subscriber
-                Subscribers.create(payload, (err2, subsriber) => {
+                Subscribers.create(payload, (err2) => {
                   if (err2) {
                     logger.serverLog(TAG, err2)
                   }
                   logger.serverLog(TAG, 'new Subscriber added')
+                })
+              } else {
+                subscriber.isSubscirbed = true
+                subscriber.save((err) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Subscriber update for true subscription ${JSON.stringify(
+                        err)}`)
+                  }
+                  logger.serverLog(TAG,
+                    `subscription renewed for ${subscriber.firstName}`)
                 })
               }
             })
