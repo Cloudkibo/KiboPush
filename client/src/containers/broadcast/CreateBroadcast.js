@@ -54,6 +54,8 @@ class CreateBroadcast extends React.Component {
       target: [],
       segmentValue: '',
       buttonLabel: 'Add Segment',
+      addPageLabel: 'Add Page',
+      selectedPage: '',
       segmentation: {
         page_id: [],
         locale: '',
@@ -65,6 +67,7 @@ class CreateBroadcast extends React.Component {
     this.gotoView = this.gotoView.bind(this)
     this.addNewTarget = this.addNewTarget.bind(this)
     this.updateSegmentValue = this.updateSegmentValue.bind(this)
+    this.selectedPage = this.selectedPage.bind(this)
   }
 
   componentWillMount () {
@@ -126,9 +129,23 @@ class CreateBroadcast extends React.Component {
     this.setState({criteria: temp, buttonLabel: label})
   }
 
+  selectedPage(event){
+    this.setState({selectedPage: event.target.value})
+  }
+
+  addRemovePage(){
+    var temp = this.state.segmentation;
+    if (temp.page_id.indexOf(this.state.selectedPage) > -1) {
+      temp.page_id = temp.page_id.filter(e => e !== this.state.selectedPage);
+    } else {
+        temp.page_id.push(this.state.selectedPage);
+    }
+        this.setState({segmentation: temp});   
+  }
+
   createBroadcast () {
     
-    console.log()
+    console.log("Segmentation Data", this.state.segmentation);
    
     // let msgBody = this.refs.message.value
     // if ((msgBody === '' || msgBody === undefined) &&
@@ -235,6 +252,8 @@ class CreateBroadcast extends React.Component {
   }
 
   render () {
+
+    
     return (
       <div>
         <Header />
@@ -352,7 +371,7 @@ class CreateBroadcast extends React.Component {
                         </div>
                       </div>
                       <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <button className='btn btn-primary btn-sm'> Add Page
+                        <button className='btn btn-primary btn-sm'> {this.state.addPageLabel}
                             </button>
                       </div>
                     </div>
