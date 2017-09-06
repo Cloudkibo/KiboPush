@@ -145,34 +145,34 @@ class CreateBroadcast extends React.Component {
 
   createBroadcast () {
     
-    console.log("Segmentation Data", this.state.segmentation);
+    // console.log("Segmentation Data", this.state.segmentation);
    
-    // let msgBody = this.refs.message.value
-    // if ((msgBody === '' || msgBody === undefined) &&
-    //   (this.state.userfile === '' || this.state.userfile === null)) {
-    //   this.setState({
-    //     alertMessage: 'Cannot send empty broadcast!',
-    //     alertType: 'danger'
-    //   })
-    // } else {
-    //   this.setState({
-    //     alertMessage: '',
-    //     alertType: ''
-    //   })
-    //   if (this.state.userfile && this.state.userfile !== '') {
-    //     this.onFileSubmit()
-    //   } else {
-    //     this.props.createbroadcast(
-    //       {platform: 'Facebook', type: 'text', text: this.refs.message.value})
-    //   }
-    //   this.props.history.push({
-    //     pathname: '/broadcasts'
-    //   })
-    //   this.setState({
-    //     alertMessage: 'Broadcast sent successfully!',
-    //     alertType: 'success'
-    //   })
-    // }
+    let msgBody = this.refs.message.value
+    if ((msgBody === '' || msgBody === undefined) &&
+      (this.state.userfile === '' || this.state.userfile === null)) {
+      this.setState({
+        alertMessage: 'Cannot send empty broadcast!',
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+      if (this.state.userfile && this.state.userfile !== '') {
+        this.onFileSubmit()
+      } else {
+        this.props.createbroadcast(
+          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+      }
+      this.props.history.push({
+        pathname: '/broadcasts'
+      })
+      this.setState({
+        alertMessage: 'Broadcast sent successfully!',
+        alertType: 'success'
+      })
+    }
   }
 
   _onChange (e) {
