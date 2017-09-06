@@ -45,11 +45,20 @@ class CreateBroadcast extends React.Component {
         }
       },
       page: {
-        options: []
+        options: [{id: '1', name: 'WoxCut'},
+                  {id: '2', name: 'KiboPush'},
+                  {id: '3', name: 'Dayem Portfolio'},
+                  {id: '4', name: 'United Broke My Guitar'},
+                  ]
       },
       target: [],
       segmentValue: '',
-      buttonLabel: 'Add Segment'
+      buttonLabel: 'Add Segment',
+      segmentation: {
+        page_id: [],
+        locale: '',
+        gender: '',
+      },
     }
     this._onChange = this._onChange.bind(this)
     this.onFileSubmit = this.onFileSubmit.bind(this)
@@ -118,32 +127,35 @@ class CreateBroadcast extends React.Component {
   }
 
   createBroadcast () {
-    let msgBody = this.refs.message.value
-    if ((msgBody === '' || msgBody === undefined) &&
-      (this.state.userfile === '' || this.state.userfile === null)) {
-      this.setState({
-        alertMessage: 'Cannot send empty broadcast!',
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
-      if (this.state.userfile && this.state.userfile !== '') {
-        this.onFileSubmit()
-      } else {
-        this.props.createbroadcast(
-          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
-      }
-      this.props.history.push({
-        pathname: '/broadcasts'
-      })
-      this.setState({
-        alertMessage: 'Broadcast sent successfully!',
-        alertType: 'success'
-      })
-    }
+    
+    console.log()
+   
+    // let msgBody = this.refs.message.value
+    // if ((msgBody === '' || msgBody === undefined) &&
+    //   (this.state.userfile === '' || this.state.userfile === null)) {
+    //   this.setState({
+    //     alertMessage: 'Cannot send empty broadcast!',
+    //     alertType: 'danger'
+    //   })
+    // } else {
+    //   this.setState({
+    //     alertMessage: '',
+    //     alertType: ''
+    //   })
+    //   if (this.state.userfile && this.state.userfile !== '') {
+    //     this.onFileSubmit()
+    //   } else {
+    //     this.props.createbroadcast(
+    //       {platform: 'Facebook', type: 'text', text: this.refs.message.value})
+    //   }
+    //   this.props.history.push({
+    //     pathname: '/broadcasts'
+    //   })
+    //   this.setState({
+    //     alertMessage: 'Broadcast sent successfully!',
+    //     alertType: 'success'
+    //   })
+    // }
   }
 
   _onChange (e) {
@@ -325,14 +337,16 @@ class CreateBroadcast extends React.Component {
                   <p>Select the type of customer you want to send broadcast
                     to</p>
 
-                  {
+                  
                     <div className='row'>
                       <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
                         <div style={{padding: 5}}>
                           <select style={{padding: 5}}>
-                            <option selected='selected' value='en_US'>en_US</option>
-                            <option value='en_UK'>en_UK</option>
-                            <option value='en_IN'>en_IN</option>
+                            {
+                              this.state.page.options.map((page) => {
+                                return <option value={page.id}>{page.name}</option>;
+                              })
+                            }
                           </select>
 
                         </div>
@@ -342,7 +356,7 @@ class CreateBroadcast extends React.Component {
                             </button>
                       </div>
                     </div>
-                  }
+                  
 
                   <div className='row'>
                     <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
