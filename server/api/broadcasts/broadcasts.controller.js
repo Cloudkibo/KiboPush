@@ -773,14 +773,14 @@ function sendautomatedmsg (req, page) {
                   text: 'You have unsubscribed from our broadcasts.'
                 }
                 Subscribers.update({senderId: req.sender.id},
-                  {isSubscribed: false}, (err) => {
+                  {isSubscribed: false}, (err, count) => {
                     if (err) {
                       logger.serverLog(TAG,
                         `Subscribers update subscription: ${JSON.stringify(
                           err)}`)
                     }
                     logger.serverLog(TAG,
-                      `subscription removed for ${req.sender.id}`)
+                      `subscription removed for ${req.sender.id} count ${count}`)
                   })
               } else {
                 messageData = {
