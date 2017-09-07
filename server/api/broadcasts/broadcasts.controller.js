@@ -1010,16 +1010,18 @@ exports.getfbMessage = function (req, res) {
                   logger.serverLog(TAG, 'new Subscriber added')
                 })
               } else {
-                Subscribers.update({senderId: sender},
-                  {isSubscribed: true}, (err) => {
-                    if (err) {
+                if (!event.read) {
+                  Subscribers.update({senderId: sender},
+                    {isSubscribed: true}, (err) => {
+                      if (err) {
+                        logger.serverLog(TAG,
+                          `Subscribers update subscription: ${JSON.stringify(
+                            err)}`)
+                      }
                       logger.serverLog(TAG,
-                        `Subscribers update subscription: ${JSON.stringify(
-                          err)}`)
-                    }
-                    logger.serverLog(TAG,
-                      `subscription renewed for ${subscriber.firstName}`)
-                  })
+                        `subscription renewed for ${subscriber.firstName}`)
+                    })
+                }
               }
             })
           } else {
