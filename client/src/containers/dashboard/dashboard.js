@@ -44,6 +44,54 @@ class Dashboard extends React.Component {
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
         <div className='row'>
+          <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+            <h2>Getting Started</h2>
+                <div className='row'>
+                    <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
+                      <div className='ui-block align-center' style={{padding: 25, height: 250}}>
+                        <h5>Step 1: </h5>
+                        <p>Select A Page From The Drop Down</p>
+                        <div class="col-xl-12 align-center padding80">
+                          <select>
+                            <option value="1">WoxCut</option>
+                            <option value="2">Dayem's Software</option>
+                            <option value="3">KiboPush</option>
+                          </select>
+                        </div>
+                       </div>
+                    </div>
+                    <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
+                        <div className='ui-block align-center' style={{padding: 25, height: 250}}>
+                          <h5>Step 2: </h5>
+                          <p>Become a subscriber of the page</p>
+                          <div class="col-xl-12 align-center padding80">
+                           <button className='btn btn-primary btn-sm'> Subscribe Now </button>
+                          </div>
+                        </div>
+                    </div>
+                    <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
+                        <div className='ui-block align-center' style={{padding: 25, height: 250}}>
+                          <h5>Step 3: </h5>
+                          <p>Try to send a test broadcast to see how it works</p>
+                          <div class="col-xl-12 align-center padding80">
+                            <button className='btn btn-primary btn-sm'> Send Test Broadcast </button>
+                          </div>
+                        </div>
+                    </div>
+                    <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
+                      <div className='ui-block align-center' style={{padding: 25, height: 250}}>
+                        <h5>Step 4: </h5>
+                        <p>Invite other people to subscribe by sharing this link: <a href="http://pagename.me/@page_name">http://pagename.me/@page_name</a></p>
+                        <div class="col-xl-12 align-center padding80">
+                          <button className='btn btn-primary btn-sm'> Copy Link </button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+             
+          </div>
+        </div>
+        <div className='row'>
           <main
             className='col-xl-4 push-xl-4 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
             <div className='ui-block' data-mh='friend-groups-item'>
