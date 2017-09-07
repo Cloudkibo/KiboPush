@@ -39,6 +39,17 @@ class Subscriber extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  searchSubscriber (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.subscribers.length; i++) {
+      if (this.props.subscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.subscribers[i].lastName.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.subscribers[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
   displayData (n, subscribers) {
     console.log(subscribers)
     let offset = n * 4
@@ -90,6 +101,10 @@ class Subscriber extends React.Component {
 
                   { this.state.subscribersData && this.state.subscribersData.length > 0
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
+                    </div>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
