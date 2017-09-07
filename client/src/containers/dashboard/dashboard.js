@@ -9,6 +9,9 @@ import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import {
+  createbroadcast
+} from '../../redux/actions/broadcast.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -53,6 +56,10 @@ class Dashboard extends React.Component {
      this.setState({inviteUrl: 'https://m.me/' + event.target.value})
   }
 
+  sendBroadcast(){
+    this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'});
+  }
+
   render () {
     return (
       <div className='container'>
@@ -81,7 +88,7 @@ class Dashboard extends React.Component {
                   <h5>Step 2: </h5>
                   <p>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
                   <div class='col-xl-12 align-center padding80'>
-                    <a className='btn btn-primary btn-sm'> Subscribe Now </a>
+                    <a href={this.state.inviteUrl} className='btn btn-primary btn-sm'> Subscribe Now </a>
                   </div>
                 </div>
               </div>
@@ -90,7 +97,7 @@ class Dashboard extends React.Component {
                   <h5>Step 3: </h5>
                   <p>Try to send a test broadcast to see how it works</p>
                   <div class='col-xl-12 align-center padding80'>
-                    <button className='btn btn-primary btn-sm'> Send Test Broadcast </button>
+                    <button onClick={this.sendBroadcast} className='btn btn-primary btn-sm'> Send Test Broadcast </button>
                   </div>
                 </div>
               </div>
@@ -213,7 +220,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList},
+    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList,createbroadcast: createbroadcast,},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
