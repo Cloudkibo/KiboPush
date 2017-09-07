@@ -55,9 +55,9 @@ class Dashboard extends React.Component {
                         <div class="col-xl-12 align-center padding80">
                           <select>
                             {
-                              this.props.pages.map((page) => {
+                              (this.props.pages) ? this.props.pages.map((page) => {
                                 <option value="1">{page.pageName}</option>
-                              })
+                              }) : <p> No Pages Found </p>
                             }
                             
                             <option value="2">Dayem's Software</option>
