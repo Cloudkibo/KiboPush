@@ -16,12 +16,18 @@ class Dashboard extends React.Component {
     props.loadDashboardData()
     props.loadMyPagesList()
     props.loadSubscribersList()
+    this.state = {
+      inviteUrl: '',
+    }
   }
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
+    }
+    if(nextprops.pages && nextprops.pages.length !== 0){
+      this.setState({inviteUrl: 'https://m.me/' + nextprops.pages[0].pageId})
     }
   }
 
@@ -37,6 +43,11 @@ class Dashboard extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
+  }
+
+  selectPage(event){
+     this.setState({inviteUrl: 'https://m.me/' + event.target.value})
   }
 
   render () {
@@ -52,7 +63,7 @@ class Dashboard extends React.Component {
                   <h5>Step 1: </h5>
                   <p>Select A Page From The Drop Down</p>
                   <div class='col-xl-12 align-center padding80'>
-                    <select>
+                    <select onChange={this.selectPage}>
                       {
                               (this.props.pages) ? this.props.pages.map((page) => {
                                 return <option value={page.pageId}>{page.pageName}</option>
@@ -65,9 +76,9 @@ class Dashboard extends React.Component {
               <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 2: </h5>
-                  <p>Become a subscriber of the page</p>
+                  <p>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
                   <div class='col-xl-12 align-center padding80'>
-                    <button className='btn btn-primary btn-sm'> Subscribe Now </button>
+                    <a className='btn btn-primary btn-sm'> Subscribe Now </a>
                   </div>
                 </div>
               </div>
@@ -83,7 +94,7 @@ class Dashboard extends React.Component {
               <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 4: </h5>
-                  <p>Invite other people to subscribe by sharing this link: <a href='http://pagename.me/@page_name'>http://pagename.me/@page_name</a></p>
+                  <p>Invite other people to subscribe by sharing this link: <a href= {this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
                   <div class='col-xl-12 align-center padding80'>
                     <button className='btn btn-primary btn-sm'> Copy Link </button>
                   </div>
