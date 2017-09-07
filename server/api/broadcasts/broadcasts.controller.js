@@ -713,7 +713,7 @@ function savepoll (req) {
 function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
   logger.serverLog(TAG, 'Page userid id is ' + page.userId)
-  Workflows.find({userId: page.userId, isActive: true})
+  Workflows.find({userId: page.userId._id, isActive: true})
     .populate('userId')
     .exec((err, workflows) => {
       if (err) {
@@ -759,7 +759,7 @@ function sendautomatedmsg (req, page) {
         // user query matched with keywords, send response
         // sending response to sender
         needle.get(
-          `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${workflows[index].userId.fbToken}`,
+          `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${page.userId.fbToken}`,
           (err3, response) => {
             if (err3) {
               logger.serverLog(TAG,
@@ -958,7 +958,9 @@ exports.getfbMessage = function (req, res) {
       const sender = event.sender.id
       const page = event.recipient.id
       // get accesstoken of page
-      Pages.findOne({pageId: page}, (err, page) => {
+      Pages.findOne({pageId: page})
+      .populate('userId')
+      .exec((err, page) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
