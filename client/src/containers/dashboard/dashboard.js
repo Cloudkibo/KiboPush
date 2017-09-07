@@ -12,6 +12,7 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -88,7 +89,7 @@ class Dashboard extends React.Component {
                   <h5>Step 2: </h5>
                   <p>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
                   <div class='col-xl-12 align-center padding80'>
-                    <a href={this.state.inviteUrl} className='btn btn-primary btn-sm'> Subscribe Now </a>
+                    <a href={this.state.inviteUrl} target="_blank" className='btn btn-primary btn-sm'> Subscribe Now </a>
                   </div>
                 </div>
               </div>
@@ -106,7 +107,11 @@ class Dashboard extends React.Component {
                   <h5>Step 4: </h5>
                   <p>Invite other people to subscribe by sharing this link: <a href= {this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
                   <div class='col-xl-12 align-center padding80'>
-                    <button className='btn btn-primary btn-sm'> Copy Link </button>
+                      <CopyToClipboard text={this.state.inviteUrl}
+                        onCopy={() => this.setState({copied: true})}>
+                          <button className='btn btn-primary btn-sm'> Copy Link </button>
+                      </CopyToClipboard>
+                    
                   </div>
                 </div>
               </div>
