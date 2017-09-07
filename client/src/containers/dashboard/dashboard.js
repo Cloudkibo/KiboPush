@@ -13,6 +13,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import AlertContainer from 'react-alert'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -62,9 +63,17 @@ class Dashboard extends React.Component {
   }
 
   render () {
+   var alertOptions = {
+          offset: 14,
+          position: 'bottom right',
+          theme: 'dark',
+          time: 5000,
+          transition: 'scale'
+        }
     return (
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
+         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='row'>
           <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <h2>Getting Started</h2>
@@ -108,7 +117,7 @@ class Dashboard extends React.Component {
                   <p>Invite other people to subscribe by sharing this link: <a href= {this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
                   <div class='col-xl-12 align-center padding80'>
                       <CopyToClipboard text={this.state.inviteUrl}
-                        onCopy={() => this.setState({copied: true})}>
+                        onCopy={() => this.msg.info('Link is copied')}>
                           <button className='btn btn-primary btn-sm'> Copy Link </button>
                       </CopyToClipboard>
                     
