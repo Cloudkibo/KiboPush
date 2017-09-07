@@ -737,6 +737,11 @@ function sendautomatedmsg (req, page) {
             index = -10
             break
           }
+          if (userMsg.toLowerCase() === 'start' ||
+            userMsg.toLowerCase() === 'subscribe') {
+            index = -11
+            break
+          }
 
           logger.serverLog(TAG, 'User message is ' + userMsg)
 
@@ -770,17 +775,31 @@ function sendautomatedmsg (req, page) {
               let messageData = {}
               if (index === -10) {
                 messageData = {
-                  text: 'You have unsubscribed from our broadcasts.'
+                  text: 'You have unsubscribed from our broadcasts. Send "Start" to subscribe again.'
                 }
                 Subscribers.update({senderId: req.sender.id},
-                  {isSubscribed: false}, (err, count) => {
+                  {isSubscribed: false}, (err) => {
                     if (err) {
                       logger.serverLog(TAG,
                         `Subscribers update subscription: ${JSON.stringify(
                           err)}`)
                     }
                     logger.serverLog(TAG,
-                      `subscription removed for ${req.sender.id} count ${count}`)
+                      `subscription removed for ${req.sender.id}`)
+                  })
+              } else if (index === -11) {
+                messageData = {
+                  text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
+                }
+                Subscribers.update({senderId: req.sender.id},
+                  {isSubscribed: true}, (err) => {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Subscribers update subscription: ${JSON.stringify(
+                          err)}`)
+                    }
+                    logger.serverLog(TAG,
+                      `subscription renewed for ${req.sender.id}`)
                   })
               } else {
                 messageData = {
@@ -1009,19 +1028,6 @@ exports.getfbMessage = function (req, res) {
                   }
                   logger.serverLog(TAG, 'new Subscriber added')
                 })
-              } else {
-                if (!event.read) {
-                  Subscribers.update({senderId: sender},
-                    {isSubscribed: true}, (err) => {
-                      if (err) {
-                        logger.serverLog(TAG,
-                          `Subscribers update subscription: ${JSON.stringify(
-                            err)}`)
-                      }
-                      logger.serverLog(TAG,
-                        `subscription renewed for ${subscriber.firstName}`)
-                    })
-                }
               }
             })
           } else {
