@@ -43,7 +43,9 @@ class Dashboard extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
+    if(this.props.pages && this.props.pages.length !== 0){
+      this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
+    }
   }
 
   selectPage(event){
