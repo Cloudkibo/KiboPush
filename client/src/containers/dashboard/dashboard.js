@@ -40,6 +40,7 @@ class Dashboard extends React.Component {
   }
 
   render () {
+    console.log("Pages: ", this.props.pages)
     return (
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
@@ -53,7 +54,12 @@ class Dashboard extends React.Component {
                         <p>Select A Page From The Drop Down</p>
                         <div class="col-xl-12 align-center padding80">
                           <select>
-                            <option value="1">WoxCut</option>
+                            {
+                              this.props.pages.map((page) => {
+                                <option value="1">{page.pageName}</option>
+                              })
+                            }
+                            
                             <option value="2">Dayem's Software</option>
                             <option value="3">KiboPush</option>
                           </select>
@@ -191,7 +197,8 @@ function mapStateToProps (state) {
   return {
     dashboard: (state.dashboardInfo.dashboard),
     pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pages: (state.pagesInfo.pages)
   }
 }
 
