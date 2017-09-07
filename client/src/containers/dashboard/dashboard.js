@@ -40,7 +40,7 @@ class Dashboard extends React.Component {
   }
 
   render () {
-    console.log("Pages: ", this.props.pages)
+    
     return (
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
@@ -56,12 +56,9 @@ class Dashboard extends React.Component {
                           <select>
                             {
                               (this.props.pages) ? this.props.pages.map((page) => {
-                                <option value="1">{page.pageName}</option>
+                                return <option value={page.pageId}>{page.pageName}</option>
                               }) : <p> No Pages Found </p>
                             }
-                            
-                            <option value="2">Dayem's Software</option>
-                            <option value="3">KiboPush</option>
                           </select>
                         </div>
                        </div>
