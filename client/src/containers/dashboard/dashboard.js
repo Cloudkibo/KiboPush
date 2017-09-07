@@ -19,6 +19,7 @@ class Dashboard extends React.Component {
     this.state = {
       inviteUrl: '',
     }
+    this.selectPage = this.selectPage.bind(this)
   }
 
   componentWillReceiveProps (nextprops) {
