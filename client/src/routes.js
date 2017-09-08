@@ -30,6 +30,7 @@ import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
 import UserGuidePolls from './containers/userGuide/userGuidePolls'
 import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
+import Autoposting from './containers/autoposting/autoposting'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -57,6 +58,7 @@ const routes = (
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Broadcast} onEnter={requireAuth} />
+    <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />

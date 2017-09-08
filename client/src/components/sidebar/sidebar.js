@@ -16,6 +16,7 @@ import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
 import { facebook } from 'react-icons-kit/fa/facebook'  // pages
 import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
 import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
+import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -80,6 +81,16 @@ class Sidebar extends Component {
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='broadcasts'>
                   <span>Broadcasts</span>
+                </ReactTooltip>
+              </li>
+              <li>
+                <Link to='/autoposting' data-for='autoposting' data-tip>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={pencilSquareO} size={20} />
+                  </div>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='float' id='autoposting'>
+                  <span>Autoposting</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -197,6 +208,14 @@ class Sidebar extends Component {
                     <Icon icon={bullhorn} size={20} />
                   </div>
                   <span className='left-menu-title'>Broadcasts</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/autoposting'>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Autoposting' style={{paddingRight: 20}}>
+                    <Icon icon={pencilSquareO} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Autoposting</span>
                 </Link>
               </li>
               <li>
