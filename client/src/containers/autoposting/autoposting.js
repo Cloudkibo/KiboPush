@@ -10,15 +10,18 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AddChannel from './addChannel'
+import ListItem from './ListItem'
 
 class Autoposting extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isShowingModal: false
+      isShowingModal: false,
+      showListItems: true
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.gotoSettings = this.gotoSettings.bind(this)
   }
 
   componentDidMount () {
@@ -41,6 +44,13 @@ class Autoposting extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  gotoSettings (item) {
+    this.props.history.push({
+      pathname: `/autoposting-itemsettings`,
+      state: item
+    })
   }
 
   render () {
@@ -73,7 +83,15 @@ class Autoposting extends React.Component {
                     }
 
                   <div className='table-responsive'>
-                    <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                    <br /><br />
+                    { this.state.showListItems
+                      ? <div>
+                        <ListItem openSettings={this.gotoSettings} title='Facebook Page' username='kibopush' />
+                        <ListItem openSettings={this.gotoSettings} title='YouTube Channel' username='cloudkibo' />
+                        <ListItem openSettings={this.gotoSettings} title='Twitter Account' username='jekram' />
+                      </div>
+                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                    }
                   </div>
                 </div>
               </div>
