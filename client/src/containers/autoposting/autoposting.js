@@ -61,7 +61,7 @@ class Autoposting extends React.Component {
                   <Link onClick={this.showDialog} className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Add Channel</Link>
 
-                    {
+                  {
                       this.state.isShowingModal &&
                       <ModalContainer style={{width: '500px'}}
                         onClose={this.closeDialog}>

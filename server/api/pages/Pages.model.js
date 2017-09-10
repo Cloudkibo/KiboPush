@@ -8,6 +8,9 @@ const pageSchema = new Schema({
   pageName: {
     type: String
   },
+  pageUserName: {
+    type: String
+  },
   pagePic: {
     type: String
   },

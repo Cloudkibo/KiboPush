@@ -41,7 +41,8 @@ exports.setup = function (User, config) {
       FBExtension.permissionsGiven(profile.id, accessToken)
         .then(permissions => {
           profile.permissions = permissions
-          logger.serverLog(TAG, `Permissions given: ${JSON.stringify(profile.permissions)}`)
+          logger.serverLog(TAG,
+            `Permissions given: ${JSON.stringify(profile.permissions)}`)
         })
         .fail(e => {
           logger.serverLog(TAG, `Permissions check error: ${e}`)
@@ -143,7 +144,7 @@ function fetchPages (url, user) {
 
     data.forEach((item) => {
       const options2 = {
-        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count&access_token=${item.access_token}`,
+        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
         qs: {access_token: item.access_token},
         method: 'GET'
       }
@@ -161,7 +162,7 @@ function fetchPages (url, user) {
             if (!page) {
               logger.serverLog(TAG,
                 `Page ${item.name} not found. Creating a page`)
-              var pageItem = new Pages({
+              let payloadPage = {
                 pageId: item.id,
                 pageName: item.name,
                 accessToken: item.access_token,
@@ -169,7 +170,12 @@ function fetchPages (url, user) {
                 likes: fanCount.body.fan_count,
                 pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
                 connected: false
-              })
+              }
+              if (fanCount.body.username) {
+                payloadPage = _.merge(payloadPage,
+                  {pageUserName: fanCount.body.username})
+              }
+              var pageItem = new Pages(payloadPage)
               // save model to MongoDB
               pageItem.save((err, page) => {
                 if (err) {
@@ -181,6 +187,7 @@ function fetchPages (url, user) {
             } else {
               page.likes = fanCount.body.fan_count
               page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+              if (fanCount.body.username) page.pageUserName = fanCount.body.username
               page.save((err) => {
                 if (err) {
                   logger.serverLog(TAG,
