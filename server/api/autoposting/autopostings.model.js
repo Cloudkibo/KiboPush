@@ -20,4 +20,4 @@ let broadcastSchema = new Schema({
   segmentationTimeZone: String
 })
 
-module.exports = mongoose.model('broadcasts', broadcastSchema)
+module.exports = mongoose.model('autopostings', broadcastSchema)
