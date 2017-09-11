@@ -103,7 +103,7 @@ class Dashboard extends React.Component {
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 1: </h5>
                   <p>Select A Page From The Drop Down</p>
-                  <div class='col-xl-12 align-center padding80'>
+                  <div className='col-xl-12 align-center padding80'>
                     <select onChange={this.selectPage}>
                       {
                               (this.props.pages) ? this.props.pages.map((page) => {
@@ -118,7 +118,7 @@ class Dashboard extends React.Component {
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 2: </h5>
                   <p>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
-                  <div class='col-xl-12 align-center padding80'>
+                  <div className='col-xl-12 align-center padding80'>
                     <a href={this.state.inviteUrl} target='_blank' className='btn btn-primary btn-sm'> Subscribe Now </a>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ class Dashboard extends React.Component {
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 3: </h5>
                   <p>Try to send a test broadcast to see how it works</p>
-                  <div class='col-xl-12 align-center padding80'>
+                  <div className='col-xl-12 align-center padding80'>
                     <button onClick={this.sendBroadcast} className='btn btn-primary btn-sm'> Send Test Broadcast </button>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ class Dashboard extends React.Component {
                 <div className='ui-block align-center' style={{padding: 25, height: 250}}>
                   <h5>Step 4: </h5>
                   <p>Invite other people to subscribe by sharing this link: <a href={this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
-                  <div class='col-xl-12 align-center padding80'>
+                  <div className='col-xl-12 align-center padding80'>
                     <CopyToClipboard text={this.state.inviteUrl}
                       onCopy={() => this.msg.info('Link is copied')}>
                       <button className='btn btn-primary btn-sm'> Copy Link </button>
