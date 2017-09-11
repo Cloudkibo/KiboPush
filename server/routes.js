@@ -23,6 +23,7 @@ module.exports = function (app) {
   app.use('/api/workflows', require('./api/workflows'))
   app.use('/api/subscribers', require('./api/subscribers'))
   app.use('/api/pages', require('./api/pages'))
+  app.use('/api/autoposting', require('./api/autoposting'))
   app.use('/api/surveys', require('./api/surveys'))
   app.use('/api/page_poll', require('./api/page_poll'))
   app.use('/api/page_survey', require('./api/page_survey'))
