@@ -35,7 +35,11 @@ class Dashboard extends React.Component {
       browserHistory.push('/addPages')
     }
     if (nextprops.pages && nextprops.pages.length !== 0) {
-      this.setState({inviteUrl: 'https://m.me/' + nextprops.pages[0].pageId})
+      if (nextprops.pages[0].pageUserName) {
+        this.setState({inviteUrl: 'https://m.me/' + nextprops.pages[0].pageUserName})
+      } else {
+        this.setState({inviteUrl: 'https://m.me/' + nextprops.pages[0].pageId})
+      }
     }
   }
 
@@ -52,12 +56,27 @@ class Dashboard extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     if (this.props.pages && this.props.pages.length !== 0) {
-      this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
+      if (this.props.pages[0].pageUserName) {
+        this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageUserName})
+      } else {
+        this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
+      }
     }
   }
 
   selectPage (event) {
-    this.setState({inviteUrl: 'https://m.me/' + event.target.value})
+    let page
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.pages[i].pageId === event.target.value) {
+        page = this.props.pages[i]
+        break
+      }
+    }
+    if (page.pageUserName) {
+      this.setState({inviteUrl: 'https://m.me/' + page.pageUserName})
+    } else {
+      this.setState({inviteUrl: 'https://m.me/' + page.pageId})
+    }
   }
 
   sendBroadcast () {

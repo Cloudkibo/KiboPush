@@ -38,11 +38,17 @@ class SubscribeToMessenger extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length > 0) {
-      this.setState({
-        'pageid': nextprops.pages[0].pageId,
-        'fblink': 'https://m.me/' + nextprops.pages[0].pageId
-
-      })
+      if (nextprops.pages[0].pageUserName) {
+        this.setState({
+          'pageid': nextprops.pages[0].pageId,
+          'fblink': 'https://m.me/' + nextprops.pages[0].pageUserName
+        })
+      } else {
+        this.setState({
+          'pageid': nextprops.pages[0].pageId,
+          'fblink': 'https://m.me/' + nextprops.pages[0].pageId
+        })
+      }
     } else if (nextprops.pages && nextprops.pages.length === 0) {
       // user has no connected pages
       this.setState({
@@ -52,11 +58,24 @@ class SubscribeToMessenger extends React.Component {
     }
   }
   onChangeValue (event) {
-    this.setState({
-      'pageid': event.target.value,
-      'fblink': 'https://m.me/' + event.target.value
-
-    })
+    let page
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.pages[i].pageId === event.target.value) {
+        page = this.props.pages[i]
+        break
+      }
+    }
+    if (page.pageUserName) {
+      this.setState({
+        'pageid': page.pageId,
+        'fblink': 'https://m.me/' + page.pageUserName
+      })
+    } else {
+      this.setState({
+        'pageid': page.pageId,
+        'fblink': 'https://m.me/' + page.pageId
+      })
+    }
   }
   onChange (event) {
     this.setState({
