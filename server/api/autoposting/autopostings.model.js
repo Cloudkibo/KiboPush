@@ -7,8 +7,9 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
-let broadcastSchema = new Schema({
+let autoPostingSchema = new Schema({
   userId: { type: Schema.ObjectId, ref: 'users' },
+  accountTitle: String,
   subscriptionUrl: String,
 // TODO make it enum, possible values: facebook, youtube, twitter etc
   subscriptionType: String,
@@ -20,4 +21,4 @@ let broadcastSchema = new Schema({
   segmentationTimeZone: String
 })
 
-module.exports = mongoose.model('autopostings', broadcastSchema)
+module.exports = mongoose.model('autopostings', autoPostingSchema)
