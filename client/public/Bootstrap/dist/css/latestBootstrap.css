@@ -5,6 +5,24 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
+.hoverborder{
+  border-color: #FF5E3A !important; 
+  border-style: dotted !important;
+  border-width: 2px !important; 
+}
+
+.hoverborder:hover{
+  border-color: #FF5E3A;
+  border-style: solid !important;
+  border-width: 2px; 
+  color: #FF5E3A;
+  cursor: pointer;
+}
+
+.hoverborder:hover > div > h5{
+  color: #FF5E3A;
+}
+
 @media screen and (max-width: 767px) {
   .table-responsive {
     width: 100%;

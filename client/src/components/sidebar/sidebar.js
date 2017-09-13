@@ -84,6 +84,16 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
+                <Link to='/convos' data-for='broadcasts' data-tip>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='float' id='broadcasts'>
+                  <span>Conversations</span>
+                </ReactTooltip>
+              </li>
+              <li>
                 <Link to='/autoposting' data-for='autoposting' data-tip>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={pencilSquareO} size={20} />
@@ -210,6 +220,16 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Broadcasts</span>
                 </Link>
               </li>
+
+              <li>
+                <Link to='/convos'>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Broadcasts' style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Conversations</span>
+                </Link>
+              </li>
+
               <li>
                 <Link to='/autoposting'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Autoposting' style={{paddingRight: 20}}>
