@@ -13,8 +13,9 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import AlertContainer from 'react-alert'
+import GettingStarted from './gettingStarted'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -23,19 +24,17 @@ class Dashboard extends React.Component {
     props.loadMyPagesList()
     props.loadSubscribersList()
     this.state = {
-      inviteUrl: ''
+      isShowingModal: false
     }
-    this.selectPage = this.selectPage.bind(this)
-    this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    }
-    if (nextprops.pages && nextprops.pages.length !== 0) {
-      this.setState({inviteUrl: 'https://m.me/' + nextprops.pages[0].pageId})
+    } else if (nextprops.subscribers && nextprops.subscribers.length === 0) {
+      this.setState({ isShowingModal: true })
     }
   }
 
@@ -51,17 +50,10 @@ class Dashboard extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if (this.props.pages && this.props.pages.length !== 0) {
-      this.setState({inviteUrl: 'https://m.me/' + this.props.pages[0].pageId})
-    }
   }
 
-  selectPage (event) {
-    this.setState({inviteUrl: 'https://m.me/' + event.target.value})
-  }
-
-  sendBroadcast () {
-    this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'})
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
 
   render () {
@@ -76,60 +68,14 @@ class Dashboard extends React.Component {
       <div className='container'>
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-        <div className='row'>
-          <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2>Getting Started</h2>
-            <div className='row'>
-              <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-                <div className='ui-block align-center' style={{padding: 25, height: 250}}>
-                  <h5>Step 1: </h5>
-                  <p>Select A Page From The Drop Down</p>
-                  <div class='col-xl-12 align-center padding80'>
-                    <select onChange={this.selectPage}>
-                      {
-                              (this.props.pages) ? this.props.pages.map((page) => {
-                                return <option value={page.pageId}>{page.pageName}</option>
-                              }) : <p> No Pages Found </p>
-                            }
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-                <div className='ui-block align-center' style={{padding: 25, height: 250}}>
-                  <h5>Step 2: </h5>
-                  <p>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
-                  <div class='col-xl-12 align-center padding80'>
-                    <a href={this.state.inviteUrl} target='_blank' className='btn btn-primary btn-sm'> Subscribe Now </a>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-                <div className='ui-block align-center' style={{padding: 25, height: 250}}>
-                  <h5>Step 3: </h5>
-                  <p>Try to send a test broadcast to see how it works</p>
-                  <div class='col-xl-12 align-center padding80'>
-                    <button onClick={this.sendBroadcast} className='btn btn-primary btn-sm'> Send Test Broadcast </button>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-                <div className='ui-block align-center' style={{padding: 25, height: 250}}>
-                  <h5>Step 4: </h5>
-                  <p>Invite other people to subscribe by sharing this link: <a href={this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
-                  <div class='col-xl-12 align-center padding80'>
-                    <CopyToClipboard text={this.state.inviteUrl}
-                      onCopy={() => this.msg.info('Link is copied')}>
-                      <button className='btn btn-primary btn-sm'> Copy Link </button>
-                    </CopyToClipboard>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
+            <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
+              <GettingStarted pages={this.props.pages} />
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='row'>
           <main
             className='col-xl-4 push-xl-4 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>

@@ -34,7 +34,12 @@ class InviteSubscribers extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.location.state && this.props.location.state.pageId) {
+    if (this.props.location.state && this.props.location.state.pageUserName) {
+      this.setState({
+        fblink: `https://m.me/${this.props.location.state.pageUserName}`,
+        selectPage: this.props.location.state
+      })
+    } else if (this.props.location.state && this.props.location.state.pageId) {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageId}`,
         selectPage: this.props.location.state
@@ -62,10 +67,17 @@ class InviteSubscribers extends React.Component {
           break
         }
       }
-      this.setState({
-        fblink: `https://m.me/${event.target.value}`,
-        selectPage: page
-      })
+      if (page.pageUserName) {
+        this.setState({
+          fblink: `https://m.me/${page.pageUserName}`,
+          selectPage: page
+        })
+      } else {
+        this.setState({
+          fblink: `https://m.me/${page.pageId}`,
+          selectPage: page
+        })
+      }
     } else {
       this.setState({
         fblink: '',
