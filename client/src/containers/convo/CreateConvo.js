@@ -18,6 +18,10 @@ import {
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
+import Image from './Image'
+import Video from './Video'
+import Audio from './Audio'
+import File from './File'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -262,12 +266,12 @@ class CreateConvo extends React.Component {
           </div>
             <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
               <h2 className='presentation-margin'>Broadcast</h2>
-              <div className='ui-block' style={{minHeight: 250}}>
-                <div className='news-feed-form'>
-
-                    <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4>
-
-                </div>
+              <div className='ui-block' style={{minHeight: 250, padding: 75}}>
+                   {/*<h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4>*/}
+                    <Image />
+                    <Video />
+                    <Audio />
+                    <File />
               </div>
               <button className='btn btn-primary btn-sm'> Send Conversation </button>
             </div>
