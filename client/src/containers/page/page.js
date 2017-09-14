@@ -45,14 +45,14 @@ class Page extends React.Component {
 
   displayData (n, pages) {
     console.log(pages)
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > pages.length) {
+    if ((offset + 5) > pages.length) {
       limit = pages.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = pages[i]
@@ -227,8 +227,8 @@ class Page extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a href=''>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
+                      marginPagesDisplayed={2}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}

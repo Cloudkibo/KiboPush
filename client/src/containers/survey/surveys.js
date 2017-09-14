@@ -21,16 +21,13 @@ import ReactPaginate from 'react-paginate'
 
 class Survey extends React.Component {
   constructor (props, context) {
+    props.loadSurveysList()
     super(props, context)
     this.state = {
       alertMessage: '',
       alertType: '',
       surveysData: [],
       totalLength: 0
-    }
-    if (!props.surveys) {
-    //  alert('calling')
-      props.loadSurveysList()
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -52,14 +49,14 @@ class Survey extends React.Component {
 
   displayData (n, surveys) {
     console.log(surveys)
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > surveys.length) {
+    if ((offset + 5) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -181,27 +178,32 @@ class Survey extends React.Component {
                               <td>{handleDate(survey.datetime)}</td>
                               <td>
                                 <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}
                                   onClick={() => this.gotoView(survey)}>View
                               </button>
                                 { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
                                   <button className='btn  btn-sm' disabled
+                                    style={{float: 'left', margin: 2}}
                                     onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
                                   <button className='btn  btn-sm' disabled
+                                    style={{float: 'left', margin: 2}}
                                     onClick={() => this.props.sendsurvey(
                                           survey)}> Send
                               </button>
                                 </span>
                               : <span>
                                 <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}
                                   onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
                                 <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}
                                   onClick={() => this.props.sendsurvey(
                                         survey)}> Send
                               </button>
@@ -219,8 +221,8 @@ class Survey extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a href=''>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
+                      marginPagesDisplayed={2}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}

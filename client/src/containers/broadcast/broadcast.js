@@ -56,14 +56,14 @@ class Broadcast extends React.Component {
 
   displayData (n, broadcasts) {
     console.log(broadcasts)
-    let offset = n * 4
+    let offset = n * 6
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 6) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 6
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -200,8 +200,8 @@ class Broadcast extends React.Component {
                         nextLabel={'next'}
                         breakLabel={<a href=''>...</a>}
                         breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 4)}
-                        marginPagesDisplayed={1}
+                        pageCount={Math.ceil(this.state.totalLength / 6)}
+                        marginPagesDisplayed={2}
                         pageRangeDisplayed={3}
                         onPageChange={this.handlePageClick}
                         containerClassName={'pagination'}
