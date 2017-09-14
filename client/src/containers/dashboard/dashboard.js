@@ -30,12 +30,12 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.pages && nextprops.pages.length === 0) {
+    /**if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
     } else if (nextprops.subscribers && nextprops.subscribers.length === 0) {
       this.setState({ isShowingModal: true })
-    }
+    }**/
   }
 
   componentDidMount () {

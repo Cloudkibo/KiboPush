@@ -23,6 +23,7 @@ import ReactPaginate from 'react-paginate'
 
 class Poll extends React.Component {
   constructor (props, context) {
+    props.loadPollsList()
     super(props, context)
     this.state = {
       alertMessage: '',
@@ -40,14 +41,14 @@ class Poll extends React.Component {
 
   displayData (n, polls) {
     console.log(polls)
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > polls.length) {
+    if ((offset + 5) > polls.length) {
       limit = polls.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = polls[i]
@@ -61,7 +62,7 @@ class Poll extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls) {
+    if (nextProps.polls && nextProps.polls.length > 0) {
       console.log('Polls Updated', nextProps.polls)
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
@@ -97,10 +98,6 @@ class Poll extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if (!this.props.polls) {
-      //  alert('calling')
-      this.props.loadPollsList()
-    }
   }
 
   gotoEdit (broadcast) {
@@ -191,15 +188,30 @@ class Poll extends React.Component {
                                 onClick={() => this.gotoViewPoll(poll)}>
                                 View
                               </button>
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}
-                                onClick={() => this.props.sendpoll(poll)}>
-                                Send
-                              </button>
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}
-                                onClick={() => this.gotoView(poll)}>Report
-                              </button>
+                              { this.props.subscribers && this.props.subscribers.length === 0
+                              ? <span>
+                                <button className='btn btn-sm' disabled
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.props.sendpoll(poll)}>
+                                  Send
+                                </button>
+                                <button className='btn btn-sm' disabled
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.gotoView(poll)}>Report
+                                </button>
+                              </span>
+                              : <span>
+                                <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.props.sendpoll(poll)}>
+                                  Send
+                                </button>
+                                <button className='btn btn-primary btn-sm'
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.gotoView(poll)}>Report
+                                </button>
+                              </span>
+                            }
                             </td>
                           </tr>
                         ))
@@ -210,8 +222,8 @@ class Poll extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a href=''>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
+                      marginPagesDisplayed={2}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
