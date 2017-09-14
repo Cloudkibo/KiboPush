@@ -3,7 +3,6 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -16,12 +15,12 @@ import {
   uploadBroadcastfile
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
+import Text from './Text'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -262,90 +261,85 @@ class CreateConvo extends React.Component {
           <br />
           <br />
           <div className='row'>
-          <div className='col-lg-2 col-md-2 col-sm-2 col-xs-12'>
-          </div>
+            <div className='col-lg-2 col-md-2 col-sm-2 col-xs-12' />
             <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
               <h2 className='presentation-margin'>Broadcast</h2>
               <div className='ui-block' style={{minHeight: 250, padding: 75}}>
-                   {/*<h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4>*/}
-                    <Image />
-                    <Video />
-                    <Audio />
-                    <File />
+                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                <Text />
+                <Image />
+                <Video />
+                <Audio />
+                <File />
               </div>
               <button className='btn btn-primary btn-sm'> Send Conversation </button>
             </div>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-            <h2 className='presentation-margin'>Components</h2>
-              <div className="row">
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                      <div className="align-center" style={{margin:5}}>
-                        <img  src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
-                        <h5>Text</h5>
-                      </div>
+              <h2 className='presentation-margin'>Components</h2>
+              <div className='row'>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Text</h5>
                     </div>
                   </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                        <div className="align-center" style={{margin:5}}>
-                        <img  src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
-                        <h5>Image</h5>
-                      </div>
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Image</h5>
                     </div>
                   </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                        <div className="align-center" style={{margin:5}}>
-                        <img  src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
-                        <h5>Card</h5>
-                      </div>
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Card</h5>
                     </div>
                   </div>
+                </div>
               </div>
-              <div className="row">
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                        <div className="align-center" style={{margin:5}}>
-                        <img  src='icons/layout.png' alt='Text' style={{maxHeight: 40}} />
-                        <h5>Gallery</h5>
-                      </div>
+              <div className='row'>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/layout.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Gallery</h5>
                     </div>
                   </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                        <div className="align-center" style={{margin:5}}>
-                          <img  src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                          <h5>Audio</h5>
-                      </div>
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Audio</h5>
                     </div>
                   </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                        <div className="align-center" style={{margin:5}}>
-                          <img  src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
-                          <h5>Video</h5>
-                      </div>
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>Video</h5>
                     </div>
                   </div>
+                </div>
               </div>
-              <div className="row">
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  
-                  </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    <div className="ui-block hoverborder" style={{minHeight: 75}}>
-                      <div className="align-center" style={{margin:5}}>
-                        <img  src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-                        <h5>File</h5>
-                      </div>
+              <div className='row'>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='ui-block hoverborder' style={{minHeight: 75}}>
+                    <div className='align-center' style={{margin: 5}}>
+                      <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                      <h5>File</h5>
                     </div>
                   </div>
-                  <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                    
-                  </div>
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
               </div>
-           
             </div>
           </div>
         </div>
@@ -377,15 +371,4 @@ function mapDispatchToProps (dispatch) {
     dispatch)
 }
 
-const styles = {
-
-  iconclass: {
-    height: 24,
-    padding: '0 15px',
-    width: 24,
-    position: 'relative',
-    display: 'inline-block',
-    cursor: 'pointer'
-  }
-}
 export default connect(mapStateToProps, mapDispatchToProps)(CreateConvo)
