@@ -6,21 +6,51 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 .hoverborder{
-  border-color: #FF5E3A !important; 
-  border-style: dotted !important;
-  border-width: 2px !important; 
+  border-color: #CCC;
+  border-style: dashed !important;
+  border-width: 2px !important;
+}
+
+.hoverborder h6, .hoverborder h4{
+  color: #CCC;
 }
 
 .hoverborder:hover{
   border-color: #FF5E3A;
+  cursor: pointer;
+}
+
+.hoverborder:hover h6, .hoverborder:hover h4{
+  color: #FF5E3A;
+}
+
+.hoverbordercomponent{
+  border-color: #FF5E3A !important;
+  border-style: dotted !important;
+  border-width: 2px !important;
+}
+
+.hoverbordercomponent:hover{
+  border-color: #FF5E3A;
   border-style: solid !important;
-  border-width: 2px; 
+  border-width: 2px;
   color: #FF5E3A;
   cursor: pointer;
 }
 
-.hoverborder:hover > div > h5{
+.hoverbordercomponent:hover > div > h5{
   color: #FF5E3A;
+}
+
+.hoverbordersolid{
+  border-color: #CCC;
+  border-style: solid !important;
+  border-width: 2px !important;
+}
+
+.hoverbordersolid:hover{
+  border-color: #FF5E3A;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 767px) {
