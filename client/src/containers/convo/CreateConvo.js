@@ -28,16 +28,15 @@ class CreateConvo extends React.Component {
     super(props, context)
     this.createBroadcast = this.createBroadcast.bind(this)
     this.state = {
-      list : [
-              {content: (<Image />), classes:['bigger']},
-             ],
+      list: [
+              {content: (<Image />), classes: ['bigger']}
+      ]
     }
-    
   }
 
   componentWillMount () {
     // this.props.loadMyPagesList();
- 
+
   }
 
   componentDidMount () {
@@ -69,7 +68,6 @@ class CreateConvo extends React.Component {
     // }
   }
 
-  
   createBroadcast () {
     // console.log("Segmentation Data", this.state.segmentation);
 
@@ -178,11 +176,6 @@ class CreateConvo extends React.Component {
   }
 
   render () {
-        
-                
-                
-                
-  
     return (
       <div>
         <Header />
@@ -195,12 +188,12 @@ class CreateConvo extends React.Component {
           <br />
           <br />
           <div className='row'>
-          <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'></div>
-              <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' style={{position: 'fixed', zIndex: 2}}>
+            <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12' />
+            <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' style={{position: 'fixed', zIndex: 2}}>
               <h2 className='presentation-margin'>Components</h2>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text />)}]})}} style={{minHeight: 75}}>
+                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Text</h5>
@@ -208,7 +201,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Image />)}]})}} style={{minHeight: 75}}>
+                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Image />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Image</h5>
@@ -234,7 +227,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio />)}]})}} style={{minHeight: 75}}>
+                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Audio</h5>
@@ -242,7 +235,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video />)}]})}} style={{minHeight: 75}}>
+                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Video</h5>
@@ -253,7 +246,7 @@ class CreateConvo extends React.Component {
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File />)}]})}} style={{minHeight: 75}}>
+                  <div className='ui-block hoverborder' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>File</h5>
@@ -267,13 +260,12 @@ class CreateConvo extends React.Component {
               <h2 className='presentation-margin'>Broadcast</h2>
               <div className='ui-block' style={{minHeight: 250, padding: 75}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type="vertical"/>
-              
-              
+                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+
               </div>
               <button className='btn btn-primary btn-sm'> Send Conversation </button>
             </div>
-          
+
           </div>
         </div>
       </div>
