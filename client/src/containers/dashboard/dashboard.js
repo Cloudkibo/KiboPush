@@ -36,6 +36,9 @@ class Dashboard extends React.Component {
     } else if (nextprops.subscribers && nextprops.subscribers.length === 0) {
       this.setState({ isShowingModal: true })
     }
+    if (nextprops.subscribers && nextprops.subscribers.length !== 0) {
+      this.setState({ isShowingModal: false })
+    }
   }
 
   componentDidMount () {
