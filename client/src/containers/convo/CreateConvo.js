@@ -21,6 +21,7 @@ import Video from './Video'
 import Audio from './Audio'
 import File from './File'
 import Text from './Text'
+import Card from './Card'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -271,6 +272,7 @@ class CreateConvo extends React.Component {
                 <Video />
                 <Audio />
                 <File />
+                <Card />
               </div>
               <button className='btn btn-primary btn-sm'> Send Conversation </button>
             </div>
