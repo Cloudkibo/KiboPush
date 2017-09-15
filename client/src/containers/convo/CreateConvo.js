@@ -25,14 +25,13 @@ import DragSortableList from 'react-drag-sortable'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
-    super(props, context)
-    this.createBroadcast = this.createBroadcast.bind(this)
+    super(props, context);
     this.state = {
-
-      list: [
-              {content: (<Image />), classes: ['bigger']}
-      ]
+      list: [],
+      broadcast: [],
     }
+
+    this.handleText = this.handleText.bind(this);
   }
 
   componentWillMount () {
@@ -69,63 +68,6 @@ class CreateConvo extends React.Component {
     // }
   }
 
-  createBroadcast () {
-    // console.log("Segmentation Data", this.state.segmentation);
-
-    let msgBody = this.refs.message.value
-    if ((msgBody === '' || msgBody === undefined) &&
-      (this.state.userfile === '' || this.state.userfile === null)) {
-      this.setState({
-        alertMessage: 'Cannot send empty broadcast!',
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
-      if (this.state.userfile && this.state.userfile !== '') {
-        this.onFileSubmit()
-      } else {
-        this.props.createbroadcast(
-          {platform: 'Facebook', type: 'text', text: this.refs.message.value})
-      }
-      this.props.history.push({
-        pathname: '/broadcasts'
-      })
-      this.setState({
-        alertMessage: 'Broadcast sent successfully!',
-        alertType: 'success'
-      })
-    }
-  }
-
-  _onChange (e) {
-    e.preventDefault()
-    let files
-    if (e.dataTransfer) {
-      files = e.dataTransfer.files
-    } else if (e.target) {
-      files = e.target.files
-    }
-
-    console.log(e.target.files[0])
-
-    this.setState({
-      userfile: e.target.files[0],
-      userfilename: e.target.files[0].name
-    })
-
-    // eslint-disable-next-line no-undef
-    const reader = new FileReader()
-    reader.onload = () => {
-      this.setState({
-        src: reader.result
-      })
-    }
-    reader.readAsDataURL(files[0])
-  }
-
   gotoView (event) {
     this.props.history.push({
       pathname: `/convos`
@@ -133,48 +75,10 @@ class CreateConvo extends React.Component {
     })
   }
 
-  onFileSubmit () {
-    // var sendmessage = true
-    // eslint-disable-next-line no-undef
-    var fileData = new FormData()
-    this.refs.selectFile.value = null
-    if (this.state.userfile && this.state.userfile !== '') {
-      this.props.updatefileuploadStatus(true)
-      var ftype = ''
-      if (this.state.userfile.type.split('/')[0] === 'image' ||
-        this.state.userfile.type.split('/')[0] === 'audio' ||
-        this.state.userfile.type.split('/')[0] === 'video') {
-        ftype = this.state.userfile.type.split('/')[0]
-      } else {
-        ftype = 'file'
-      }
-      var broadcast = {
-        platform: 'Facebook',
-        type: 'attachment',
-        text: this.refs.message.value,
-        attachmentType: ftype
-      }
-
-      fileData.append('file', this.state.userfile)
-      fileData.append('filename', this.state.userfile.name)
-      fileData.append('filetype', this.state.userfile.type)
-      fileData.append('filesize', this.state.userfile.size)
-      fileData.append('broadcast', JSON.stringify(broadcast))
-      console.log(fileData)
-      console.log(this.state.userfile)
-      this.props.uploadBroadcastfile(fileData)
-      this.setState({userfile: ''})
-      this.props.history.push({
-        pathname: '/broadcasts'
-      })
-    } else {
-      // todo Imran please use soft alert here
-      // eslint-disable-next-line no-undef
-      alert('Please choose a file to upload.')
-    }
-    // this.forceUpdate();
-    //     event.preventDefault();
+  handleText(obj){
+    console.log("Text obj changed of id: " + obj.id + " with text: " + obj.text);
   }
+ 
 
   render () {
     return (
@@ -195,7 +99,7 @@ class CreateConvo extends React.Component {
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text id={temp.length} handleText={this.handleText} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Text</h5>

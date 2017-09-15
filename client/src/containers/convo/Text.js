@@ -9,6 +9,11 @@ import { bindActionCreators } from 'redux'
 import TextareaAutosize from 'react-textarea-autosize'
 
 class Audio extends React.Component {
+
+  constructor (props, context) {
+    super(props, context);
+    this.handleChange = this.handleChange.bind(this);
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -23,11 +28,15 @@ class Audio extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  handleChange(event){
+      this.props.handleText({id: this.props.id, text: event.target.value});
+  }
+
   render () {
     return (
       <div>
         <div style={{marginBottom: '-7px'}}>
-          <textarea className='hoverbordersolid' rows='2' cols='37' placeholder='Enter your text...' />
+          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <div style={{paddingTop: '5px'}} className='align-center'>
