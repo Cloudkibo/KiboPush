@@ -14,6 +14,7 @@ const hub = 'http://pubsubhubbub.appspot.com/'
 let pubsub
 
 module.exports = function () {
+  logger.serverLog(TAG, config.pubsubhubbub)
   pubsub = pubSubHubbub.createServer(config.pubsubhubbub)
 
   pubsub.listen(config.pubsub_port)
@@ -48,6 +49,11 @@ module.exports = function () {
 
   pubsub.on('listen', () => {
     logger.serverLog(TAG, `Server listening on port ${pubsub.port}`)
-    pubsub.subscribe(topic, hub)
+    pubsub.subscribe(topic, hub, err => {
+      if (err) {
+        logger.serverLog(TAG, 'Error in subscribing to pubsubhubbub')
+        logger.serverLog(TAG, err)
+      }
+    })
   })
 }
