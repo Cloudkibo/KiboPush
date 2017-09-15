@@ -25,13 +25,14 @@ class Audio extends React.Component {
 
   render () {
     return (
-      <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-        <div className='align-center'>
-          <TextareaAutosize
-            minRows={3}
-            maxRows={6}
-            placeholder='Enter your text...'
-          />
+      <div>
+        <div style={{marginBottom: '-7px'}}>
+          <textarea className='hoverbordersolid' rows='2' cols='37' placeholder='Enter your text...' />
+        </div>
+        <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+          <div style={{paddingTop: '5px'}} className='align-center'>
+            <h6> + Add Button </h6>
+          </div>
         </div>
       </div>
     )

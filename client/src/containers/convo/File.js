@@ -41,16 +41,16 @@ class File extends React.Component {
     document.body.appendChild(addScript)
   }
 
- 
+
 
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
                 <div className="align-center">
                     <img  src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-                    <h4  style={{color: '#FF5E3A'}}> File </h4>
+                    <h4> File </h4>
                 </div>
-        </div>          
+        </div>
     )
   }
 }

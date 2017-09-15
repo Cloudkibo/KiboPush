@@ -41,16 +41,16 @@ class Audio extends React.Component {
     document.body.appendChild(addScript)
   }
 
- 
+
 
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
                 <div className="align-center">
                     <img  src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                    <h4  style={{color: '#FF5E3A'}}> Audio </h4>
+                    <h4> Audio </h4>
                 </div>
-        </div>          
+        </div>
     )
   }
 }
