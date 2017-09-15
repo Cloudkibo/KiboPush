@@ -14,7 +14,6 @@ const hub = 'http://pubsubhubbub.appspot.com/'
 let pubsub
 
 module.exports = function () {
-  logger.serverLog(TAG, JSON.stringify(config.pubsubhubbub))
   pubsub = pubSubHubbub.createServer(config.pubsubhubbub)
 
   pubsub.listen(config.pubsub_port)
