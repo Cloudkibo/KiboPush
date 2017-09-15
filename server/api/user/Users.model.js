@@ -6,7 +6,7 @@ const userSchema = new Schema({
   email: String,
   locale: String,
   gender: String,
-  provider: String,
+  provider: String, // facebook
   timezone: Number,
   fbId: String,
   profilePic: String,
