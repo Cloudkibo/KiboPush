@@ -9,7 +9,7 @@
 'use strict'
 
 const logger = require('./../components/logger')
-const TAG = 'config/socketio.js'
+// const TAG = 'config/socketio.js'
 
 // When the user disconnects.. perform this
 function onDisconnect (io2, socket) {
@@ -47,11 +47,11 @@ module.exports = function (socketio) {
     // Call onDisconnect.
     socket.on('disconnect', function () {
       onDisconnect(socketio, socket)
-      logger.serverLog(TAG, `SOCKET ${socket.id} DISCONNECTED AT ${new Date()}`)
+      // logger.serverLog(TAG, `SOCKET ${socket.id} DISCONNECTED AT ${new Date()}`)
     })
 
     // Call onConnect.
     onConnect(socketio, socket)
-    logger.serverLog(TAG, `SOCKET ${socket.id} CONNECTED at ${socket.connectedAt}`)
+    // logger.serverLog(TAG, `SOCKET ${socket.id} CONNECTED at ${socket.connectedAt}`)
   })
 }

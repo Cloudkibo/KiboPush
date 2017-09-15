@@ -666,6 +666,12 @@ exports.verifyhook = function (req, res) {
   }
 }
 
+exports.pubsubhook = function (req, res) {
+  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
+  logger.serverLog(TAG, JSON.stringify(req.body))
+  return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
 function updateseenstatus (req) {
   logger.serverLog(TAG, `Inside updateseenstatus ${JSON.stringify(req)}`)
   BroadcastPage.find({pageId: req.recipient.id, subscriberId: req.sender.id},
