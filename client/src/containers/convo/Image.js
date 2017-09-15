@@ -37,11 +37,11 @@ class Image extends React.Component {
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-        <div className='align-center'>
-          <img src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
-          <h4 style={{color: '#FF5E3A'}}> Image </h4>
+                <div className="align-center">
+                    <img  src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
+                    <h4> Image </h4>
+                </div>
         </div>
-      </div>
     )
   }
 }
