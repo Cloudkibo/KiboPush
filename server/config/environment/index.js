@@ -45,7 +45,6 @@ const all = {
   },
 
   pubsubhubbub: {
-    secret: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4',
     callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/broadcasts/pubsub/webhook`
   }
 }
