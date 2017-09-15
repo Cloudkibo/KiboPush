@@ -44,9 +44,9 @@ class CreateConvo extends React.Component {
       },
       page: {
         options: [{id: '1', name: 'WoxCut'},
-                  {id: '2', name: 'KiboPush'},
-                  {id: '3', name: 'Dayem Portfolio'},
-                  {id: '4', name: 'United Broke My Guitar'}
+          {id: '2', name: 'KiboPush'},
+          {id: '3', name: 'Dayem Portfolio'},
+          {id: '4', name: 'United Broke My Guitar'}
         ]
       },
       target: [],
