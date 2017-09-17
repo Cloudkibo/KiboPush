@@ -57,15 +57,6 @@ class CreateConvo extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
-    // if(nextProps.pages){
-    //   var temp = [];
-    //   nextProps.pages.map((page) => {
-    //     temp.push(page.pageName);
-    //   });
-    //   var other = this.state.criteria;
-    //   other.Page.options = temp;
-    //   this.setState({criteria: other});
-    // }
   }
 
   gotoView (event) {
@@ -77,7 +68,6 @@ class CreateConvo extends React.Component {
 
 
   handleText(obj){
-    // console.log("Text obj changed of id: " + obj.id + " with text: " + obj.text);
     var temp = this.state.broadcast;
     var isPresent = false;
     temp.map((data) => {
