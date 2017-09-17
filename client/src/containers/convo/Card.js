@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 
-class Text extends React.Component {
+class Card extends React.Component {
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -23,15 +23,17 @@ class Text extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  handleChange (event) {
-    this.props.handleText({id: this.props.id, text: event.target.value})
-  }
-
   render () {
     return (
       <div>
-        <div style={{marginBottom: '-7px'}}>
-          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
+        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
+          <div style={{display: 'flex', height: 170}} className='cardimageblock'>
+            <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+          </div>
+          <div>
+            <input style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
+            <textarea style={{borderStyle: 'none'}} rows='2' cols='37' placeholder='Enter subtitle...' />
+          </div>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button />
@@ -49,4 +51,4 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({}, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Text)
+export default connect(mapStateToProps, mapDispatchToProps)(Card)

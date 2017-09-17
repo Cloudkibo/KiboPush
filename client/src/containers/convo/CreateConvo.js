@@ -21,17 +21,17 @@ import Video from './Video'
 import Audio from './Audio'
 import File from './File'
 import Text from './Text'
+import Card from './Card'
 import DragSortableList from 'react-drag-sortable'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
-    super(props, context);
+    super(props, context)
     this.state = {
       list: [],
-      broadcast: [],
+      broadcast: []
     }
-
-    this.handleText = this.handleText.bind(this);
+    this.handleText = this.handleText.bind(this)
   }
 
   componentWillMount () {
@@ -74,6 +74,7 @@ class CreateConvo extends React.Component {
 
     })
   }
+
 
   handleText(obj){
     // console.log("Text obj changed of id: " + obj.id + " with text: " + obj.text);
@@ -131,7 +132,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Card</h5>
@@ -181,7 +182,7 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
               </div>
             </div>
-            <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+            <div style={{marginLeft: '-100px'}} className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
               <h2 className='presentation-margin'>Broadcast</h2>
               <div className='ui-block' style={{minHeight: 250, padding: 75}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
@@ -194,7 +195,6 @@ class CreateConvo extends React.Component {
           </div>
         </div>
       </div>
-
     )
   }
 }
