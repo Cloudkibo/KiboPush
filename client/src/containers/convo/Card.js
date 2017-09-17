@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Button from './Button'
 
 class Card extends React.Component {
   componentDidMount () {
@@ -35,9 +36,7 @@ class Card extends React.Component {
           </div>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <div style={{paddingTop: '5px'}} className='align-center'>
-            <h6> + Add Button </h6>
-          </div>
+          <Button />
         </div>
       </div>
     )

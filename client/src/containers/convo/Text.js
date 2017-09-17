@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Button from './Button'
 
 class Text extends React.Component {
   componentDidMount () {
@@ -22,16 +23,18 @@ class Text extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  handleChange (event) {
+    this.props.handleText({id: this.props.id, text: event.target.value})
+  }
+
   render () {
     return (
       <div>
         <div style={{marginBottom: '-7px'}}>
-          <textarea className='hoverbordersolid' rows='2' cols='37' placeholder='Enter your text...' />
+          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <div style={{paddingTop: '5px'}} className='align-center'>
-            <h6> + Add Button </h6>
-          </div>
+          <Button />
         </div>
       </div>
     )
