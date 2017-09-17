@@ -74,10 +74,11 @@ class CreateConvo extends React.Component {
 
     })
   }
-
+ 
   handleText (obj) {
     console.log('Text obj changed of id: ' + obj.id + ' with text: ' + obj.text)
   }
+ 
 
   render () {
     return (
