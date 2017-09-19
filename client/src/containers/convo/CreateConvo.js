@@ -22,6 +22,7 @@ import Audio from './Audio'
 import File from './File'
 import Text from './Text'
 import Card from './Card'
+import Gallery from './Gallery'
 import DragSortableList from 'react-drag-sortable'
 
 class CreateConvo extends React.Component {
@@ -130,7 +131,7 @@ class CreateConvo extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Gallery />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/layout.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Gallery</h5>
