@@ -9,17 +9,18 @@ let Schema = mongoose.Schema
 
 let broadcastSchema = new Schema({
   platform: String, // TODO define this as enum with values, for now value is facebook
+  payload: Schema.Types.Mixed,
   type: String, // TODO define this as enum with values ['text','attachment']
-  text: String, // message body
-  userId: { type: Schema.ObjectId, ref: 'users' },
-  datetime: { type: Date, default: Date.now },
+  text: String,
   fileurl: String,
   attachmentType: String,
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],
   segmentationLocale: String,
   segmentationGender: String,
-  segmentationTimeZone: String
+  segmentationTimeZone: String,
+  userId: { type: Schema.ObjectId, ref: 'users' },
+  datetime: { type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model('broadcasts', broadcastSchema)
