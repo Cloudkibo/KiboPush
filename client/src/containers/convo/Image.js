@@ -37,10 +37,10 @@ class Image extends React.Component {
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-      <input type="file" style={{position: 'absolute', opacity: 0, zIndex: 5, width: 100 + '%', height: 100+'%', cursor: 'pointer'}}/>
+        <input type='file' style={{position: 'absolute', opacity: 0, zIndex: 5, width: 100 + '%', height: 100 + '%', cursor: 'pointer'}} />
         <div className='align-center'>
-          <img src='icons/picture.png' style={{pointerEvents: 'none',  zIndex: -1}} alt='Text' style={{maxHeight: 40}} />
-          <h4 style={{pointerEvents: 'none',  zIndex: -1,}}> Image </h4>
+          <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+          <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
         </div>
       </div>
     )

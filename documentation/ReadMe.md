@@ -1,18 +1,8 @@
-## Operations Guide
+## Operations Guide (Production Only)
 
 #### Setup Database
 
-    sudo apt-get update
-    sudo apt-get install mysql-server
-    sudo mysql_secure_installation
-
-Create the database and users.
-    
-
-#### Install nodejs
-
-https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-16-04
-
+You should have MongoDB installed on your system.
 
 #### Install Forever
 
@@ -55,9 +45,9 @@ We need to set the following variables: (Just copy paste and then change the val
     DB_PORT=3306
     
 
-Now, run the migrations to setup the database schemas:
+Now, run the following command to install dependencies:
 
-    npm run start:migration:prod
+    npm install
    
 After this, we can run the server by running the script kibo_script.
 

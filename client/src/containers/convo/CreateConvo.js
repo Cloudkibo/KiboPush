@@ -66,27 +66,25 @@ class CreateConvo extends React.Component {
     })
   }
 
-
-  handleText(obj){
-    var temp = this.state.broadcast;
-    var isPresent = false;
+  handleText (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
     temp.map((data) => {
-      if(data.id == obj.id){
-        data.text = obj.text;
-        isPresent = true;
+      if (data.id === obj.id) {
+        data.text = obj.text
+        isPresent = true
       }
-    });
+    })
 
-    if(!isPresent){
-      temp.push({id: obj.id, text: obj.text});
+    if (!isPresent) {
+      temp.push({id: obj.id, text: obj.text})
     }
 
-    this.setState({broadcast: temp});
+    this.setState({broadcast: temp})
   }
- 
 
   render () {
-    console.log("Payload ", this.state.broadcast);
+    console.log('Payload ', this.state.broadcast)
     return (
       <div>
         <Header />
