@@ -74,6 +74,7 @@
     "react-drag-sortable": "^1.0.5",
     "react-dropdown": "^1.2.1",
     "react-facebook-login": "^3.6.2",
+    "react-files": "^2.4.3",
     "react-grid-layout": "^0.15.2",
     "react-icons": "^2.2.3",
     "react-icons-kit": "^1.0.7",
