@@ -42,6 +42,7 @@ class Card extends React.Component {
     var url = reader.readAsDataURL(file)
 
     reader.onloadend = function (e) {
+      this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
       this.setState({
         imgSrc: [reader.result]
       })
@@ -51,12 +52,14 @@ class Card extends React.Component {
   }
 
   handleChange (event) {
+    this.props.handleCard({id: this.props.id, title: event.target.value, subtitle: this.state.subtitle, imgSrc: this.state.imgSrc})
     this.setState({
       title: event.target.value
     })
   }
 
   handleSubtitle (event) {
+    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc})
     this.setState({
       subtitle: event.target.value
     })

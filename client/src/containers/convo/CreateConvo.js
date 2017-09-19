@@ -33,6 +33,7 @@ class CreateConvo extends React.Component {
       broadcast: []
     }
     this.handleText = this.handleText.bind(this)
+    this.handleCard = this.handleCard.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
   }
 
@@ -85,6 +86,25 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  handleCard (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.title = obj.title
+        data.imgSrc = obj.imgSrc
+        data.subtitle = obj.subtitle
+        isPresent = true
+      }
+    })
+
+    if (!isPresent) {
+      temp.push({id: obj.id, title: obj.title, subtitle: obj.subtitle, imgSrc: obj.imgSrc})
+    }
+
+    this.setState({broadcast: temp})
+  }
+
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { component.content.props.id != obj.id })
     this.setState({list: temp})
@@ -127,7 +147,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Card</h5>
