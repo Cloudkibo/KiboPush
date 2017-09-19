@@ -9,6 +9,15 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 
 class Card extends React.Component {
+
+  constructor (props, context) {
+    super(props, context)
+    this._onChange = this._onChange.bind(this)
+    this.state = {
+      imgSrc: ''
+    }
+  }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -23,12 +32,40 @@ class Card extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  _onChange () {
+  // Assuming only image
+    var file = this.refs.file.files[0]
+    var reader = new FileReader()
+    var url = reader.readAsDataURL(file)
+
+    reader.onloadend = function (e) {
+      this.setState({
+        imgSrc: [reader.result]
+      })
+    }.bind(this)
+    console.log(url) // Would see a path?
+  // TODO: concat files
+  }
+
   render () {
     return (
       <div>
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', height: 170}} className='cardimageblock'>
-            <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+          <div style={{display: 'flex', minHeight: 170}} className='cardimageblock'>
+          <input
+          ref='file'
+          type='file'
+          name='user[image]'
+          multiple='true'
+          onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+            
+         {
+          (this.state.imgSrc === '')
+          ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+          : <img style={{maxWidth: 375, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+         }
+            
+            
           </div>
           <div>
             <input style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
