@@ -18,6 +18,10 @@ class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
+    this._onChange = this._onChange.bind(this)
+    this.state = {
+      imgSrc: ''
+    }
   }
 
   componentDidMount () {
@@ -34,14 +38,40 @@ class Image extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  _onChange () {
+  // Assuming only image
+    var file = this.refs.file.files[0]
+    var reader = new FileReader()
+    var url = reader.readAsDataURL(file)
+
+    reader.onloadend = function (e) {
+      this.setState({
+        imgSrc: [reader.result]
+      })
+    }.bind(this)
+    console.log(url) // Would see a path?
+  // TODO: concat files
+  }
+
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-        <input type='file' style={{position: 'absolute', opacity: 0, zIndex: 5, width: 100 + '%', height: 100 + '%', cursor: 'pointer'}} />
-        <div className='align-center'>
-          <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-          <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
-        </div>
+        <input
+          ref='file'
+          type='file'
+          name='user[image]'
+          multiple='true'
+          onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+        {
+
+          (this.state.imgSrc === '')
+          ? <div className='align-center'>
+            <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+            <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
+          </div>
+          : <img style={{maxWidth: 375, margin: -25, padding: 25}} src={this.state.imgSrc} />
+        }
+
       </div>
     )
   }
