@@ -9,6 +9,10 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 
 class Text extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.handleChange = this.handleChange.bind(this)
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')

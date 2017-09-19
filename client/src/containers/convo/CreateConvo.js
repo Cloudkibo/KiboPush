@@ -33,6 +33,7 @@ class CreateConvo extends React.Component {
       broadcast: []
     }
     this.handleText = this.handleText.bind(this)
+    this.removeComponent = this.removeComponent.bind(this)
   }
 
   componentWillMount () {
@@ -84,8 +85,13 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  removeComponent (obj) {
+    var temp = this.state.list.filter((component) => { component.content.props.id != obj.id })
+    this.setState({list: temp})
+  }
+
   render () {
-    console.log('Payload ', this.state.broadcast)
+    console.log('Payload ', this.state)
     return (
       <div>
         <Header />
@@ -104,7 +110,7 @@ class CreateConvo extends React.Component {
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text id={temp.length} handleText={this.handleText} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Text</h5>
@@ -113,7 +119,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Image />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Image</h5>
@@ -121,7 +127,7 @@ class CreateConvo extends React.Component {
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Card</h5>
@@ -131,7 +137,7 @@ class CreateConvo extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Gallery />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/layout.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Gallery</h5>
@@ -140,7 +146,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Audio</h5>
@@ -149,7 +155,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Video</h5>
@@ -161,7 +167,7 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>File</h5>
