@@ -108,6 +108,7 @@ class Subscriber extends React.Component {
                     <table className='table table-striped'>
                       <thead>
                         <tr>
+                          <th>Profile Picture</th>
                           <th>Firstname</th>
                           <th>Lastname</th>
                           <th>Email</th>
@@ -119,6 +120,9 @@ class Subscriber extends React.Component {
                         {
                         this.state.subscribersData.map((subscriber, i) => (
                           <tr>
+                            <td><img alt='pic'
+                              src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                              className='img-circle' width='60' height='60' /></td>
                             <td>{subscriber.firstName}</td>
                             <td>{subscriber.lastName}</td>
                             <td>{subscriber.email}</td>
