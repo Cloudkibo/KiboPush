@@ -12,7 +12,8 @@ import {
   createbroadcast,
   loadBroadcastsList,
   updatefileuploadStatus,
-  uploadBroadcastfile
+  uploadBroadcastfile,
+  sendBroadcast,
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
@@ -35,6 +36,7 @@ class CreateConvo extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
+    this.sendConvo = this.sendConvo.bind(this)
   }
 
   componentWillMount () {
@@ -108,6 +110,32 @@ class CreateConvo extends React.Component {
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { component.content.props.id != obj.id })
     this.setState({list: temp})
+  }
+
+
+  sendConvo(){
+    var data = {
+        platform: 'facebook',
+        payload: [{
+                componentType: 'text',
+                text: 'Sample text convo', //user defined string,
+                buttons: [{
+                type: 'web_url',
+                  url: 'https://www.google.com/',//User defined link,
+                  title: 'Papaoutai', //User defined label
+                },
+                {
+                type: 'web_url',
+                  url: 'https://www.google.com/',//User defined link,
+                  title: 'Yellow', //User defined label
+                }, 
+            ]
+            }
+          ],
+        isSegmented: false,
+  }
+
+    this.props.sendBroadcast(data);
   }
 
   render () {
@@ -204,7 +232,7 @@ class CreateConvo extends React.Component {
                 <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
               </div>
-              <button className='btn btn-primary btn-sm'> Send Conversation </button>
+              <button onClick={this.sendConvo} className='btn btn-primary btn-sm'> Send Conversation </button>
             </div>
 
           </div>
@@ -231,7 +259,8 @@ function mapDispatchToProps (dispatch) {
       createbroadcast: createbroadcast,
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
-      addPages: addPages
+      addPages: addPages,
+      sendBroadcast: sendBroadcast,
     },
     dispatch)
 }
