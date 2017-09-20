@@ -12,10 +12,15 @@ class Button extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      openPopover: false
+      openPopover: false,
+      title: '',
+      url: ''
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleDone = this.handleDone.bind(this)
+    this.changeTitle = this.changeTitle.bind(this)
+    this.changeUrl = this.changeUrl.bind(this)
   }
 
   componentDidMount () {
@@ -37,7 +42,25 @@ class Button extends React.Component {
   }
 
   handleClose (e) {
-    this.setState({openPopover: false})
+    this.setState({openPopover: false, title: '', url: ''})
+  }
+
+  handleDone () {
+    this.props.onAdd({
+      type: 'web_url',
+      url: this.state.url, // User defined link,
+      title: this.state.title // User defined label
+    })
+
+    this.setState({openPopover: false, title: '', url: ''})
+  }
+
+  changeTitle (event) {
+    this.setState({title: event.target.value})
+  }
+
+  changeUrl (event) {
+    this.setState({url: event.target.value})
   }
 
   render () {
@@ -54,11 +77,11 @@ class Button extends React.Component {
             <h5 className='card-header'> Edit Button </h5>
             <div className='card-block'>
               <h7 className='card-text'> Button Title: </h7>
-              <input type='text' />
+              <input type='text' onChange={this.changeTitle} />
               <h7 className='card-text'> Open this website when user press this button: </h7>
-              <input type='text' placeholder='Enter a link...' />
+              <input type='text' onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
-              <button className='btn btn-primary btn-sm pull-right'> Done </button>
+              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
             </div>
           </div>

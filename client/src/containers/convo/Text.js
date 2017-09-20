@@ -12,6 +12,11 @@ class Text extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.handleChange = this.handleChange.bind(this)
+    this.addButton = this.addButton.bind(this)
+    this.state = {
+      button: [],
+      text: ''
+    }
   }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -28,7 +33,15 @@ class Text extends React.Component {
   }
 
   handleChange (event) {
-    this.props.handleText({id: this.props.id, text: event.target.value})
+    this.props.handleText({id: this.props.id, text: event.target.value, button: this.state.button})
+    this.setState({text: event.target.value})
+  }
+
+  addButton (obj) {
+    var temp = this.state.button
+    temp.push(obj)
+    this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
 
   render () {
@@ -37,8 +50,11 @@ class Text extends React.Component {
         <div style={{marginBottom: '-7px'}}>
           <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
         </div>
+        {(this.state.button) ? this.state.button.map((obj) => {
+          return <button className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{obj.title}</button>
+        }) : ''}
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <Button />
+          <Button onAdd={this.addButton} />
         </div>
       </div>
     )

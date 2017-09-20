@@ -147,14 +147,13 @@ export function downloadFile (broadcast) {
   }
 }
 
-
 export function sendBroadcast (data) {
   console.log('Sending Broadcast')
   console.log(data)
   return (dispatch) => {
     callApi('broadcasts/sendConversation', 'post', data)
       .then(res => {
-        console.log("Response got from sendConversation", res)
+        console.log('Response got from sendConversation', res)
         if (res.status === 'success') {
           dispatch(sendBroadcastSuccess())
         } else {

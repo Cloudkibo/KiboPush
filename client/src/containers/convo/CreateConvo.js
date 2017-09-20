@@ -13,7 +13,7 @@ import {
   loadBroadcastsList,
   updatefileuploadStatus,
   uploadBroadcastfile,
-  sendBroadcast,
+  sendBroadcast
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
@@ -77,12 +77,19 @@ class CreateConvo extends React.Component {
     temp.map((data) => {
       if (data.id === obj.id) {
         data.text = obj.text
+        if (obj.button.length > 0) {
+          data.button = obj.button
+        }
         isPresent = true
       }
     })
 
     if (!isPresent) {
-      temp.push({id: obj.id, text: obj.text})
+      if (obj.button.length > 0) {
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', button: obj.button})
+      } else {
+        temp.push({id: obj.id, text: obj.text, componentType: 'text'})
+      }
     }
 
     this.setState({broadcast: temp})
@@ -112,30 +119,14 @@ class CreateConvo extends React.Component {
     this.setState({list: temp})
   }
 
-
-  sendConvo(){
+  sendConvo () {
     var data = {
-        platform: 'facebook',
-        payload: [{
-                componentType: 'text',
-                text: 'Sample text convo', //user defined string,
-                buttons: [{
-                type: 'web_url',
-                  url: 'https://www.google.com/',//User defined link,
-                  title: 'Papaoutai', //User defined label
-                },
-                {
-                type: 'web_url',
-                  url: 'https://www.google.com/',//User defined link,
-                  title: 'Yellow', //User defined label
-                }, 
-            ]
-            }
-          ],
-        isSegmented: false,
-  }
+      platform: 'facebook',
+      payload: this.state.broadcast,
+      isSegmented: false
+    }
 
-    this.props.sendBroadcast(data);
+    this.props.sendBroadcast(data)
   }
 
   render () {
@@ -260,7 +251,7 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast,
+      sendBroadcast: sendBroadcast
     },
     dispatch)
 }
