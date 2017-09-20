@@ -198,7 +198,7 @@ class Page extends React.Component {
                             <tr>
                               <td><img alt='pic'
                                 src={(page.pagePic) ? page.pagePic : ''}
-                                className='avatar' /></td>
+                                className='img-rounded' width='60' height='60' /></td>
                               <td>{page.pageName}</td>
                               <td>{page.likes}</td>
                               <td>
