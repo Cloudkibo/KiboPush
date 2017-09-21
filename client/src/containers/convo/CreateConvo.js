@@ -120,9 +120,12 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
+    if(this.state.broadcast.length === 0){
+      return;
+    }
     var data = {
       platform: 'facebook',
-      payload: this.state.broadcast,
+      payload: this.state.broadcast[0],
       isSegmented: false
     }
 
