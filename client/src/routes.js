@@ -28,6 +28,7 @@ import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
+import UserDetails from './containers/operationalDashboard/viewUserDetails'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
@@ -92,6 +93,8 @@ const routes = (
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
     <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
+    <Route path='/viewUserDetails' component={UserDetails} onEnter={requireAuth} />
+
   </Route>
 
 )
