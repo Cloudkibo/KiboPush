@@ -368,6 +368,9 @@ exports.uploadfile = function (req, res) {
                           logger.serverLog(TAG, 'Inside File READER Stream')
                           logger.serverLog(TAG, fileReaderStream[0])
 
+                          console.log('Inside File READER Stream')
+                          console.log(fileReaderStream)
+
                           request({
                             'method': 'POST',
                             'json': true,
@@ -433,7 +436,9 @@ exports.uploadfile = function (req, res) {
                             }
                           }
                           logger.serverLog(TAG, 'Inside File READER Stream')
-                          logger.serverLog(TAG, fileReaderStream[0])
+                          logger.serverLog(TAG, fileReaderStream)
+                          console.log('Inside File READER Stream')
+                          console.log(fileReaderStream)
 
                           request({
                             'method': 'POST',
