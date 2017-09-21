@@ -430,6 +430,7 @@ exports.uploadfile = function (req, res) {
                               'filedata': fileReaderStream
                             }
                           }
+                          logger.serverLog(TAG, fileReaderStream)
 
                           request({
                             'method': 'POST',
