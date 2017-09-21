@@ -78,7 +78,7 @@ class CreateConvo extends React.Component {
       if (data.id === obj.id) {
         data.text = obj.text
         if (obj.button.length > 0) {
-          data.button = obj.button
+          data.buttons = obj.button
         }
         isPresent = true
       }
@@ -86,7 +86,7 @@ class CreateConvo extends React.Component {
 
     if (!isPresent) {
       if (obj.button.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', button: obj.button})
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button})
       } else {
         temp.push({id: obj.id, text: obj.text, componentType: 'text'})
       }
