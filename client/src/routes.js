@@ -4,6 +4,7 @@ import App from './sub.app.js'
 import Home from './containers/home'
 import Login from './containers/login/login'
 import Subscriber from './containers/subscriber/subscriber'
+import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
 import Convo from './containers/convo/convo'
@@ -58,6 +59,7 @@ function redirectAuthUsers (nextState, replace) {
 const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Login} onEnter={redirectAuthUsers} />
+    <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Broadcast} onEnter={requireAuth} />
