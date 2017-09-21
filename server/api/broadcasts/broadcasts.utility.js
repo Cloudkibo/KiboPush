@@ -31,6 +31,20 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
         }
       })
     }
+  } else if (['image', 'audio', 'file', 'video'].indexOf(
+      body.componentType) > -1) {
+    payload = {
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': body.componentType,
+          'payload': {}
+        }
+      }),
+      'filedata': body.data
+    }
   }
   return payload
 }
@@ -40,6 +54,16 @@ function prepareBroadCastPayload (req) {
     platform: req.body.platform,
     payload: req.body.payload,
     userId: req.user._id
+  }
+  // do not include data field if type is any of these binary objects
+  if (['image', 'audio', 'file', 'video'].indexOf(
+      req.body.payload.componentType) > -1) {
+    broadcastPayload.payload = {
+      componentType: req.body.payload.componentType,
+      fileName: req.body.payload.fileName,
+      type: req.body.payload.type,
+      size: req.body.payload.size
+    }
   }
   if (req.body.isSegmented) {
     broadcastPayload.isSegmented = true
