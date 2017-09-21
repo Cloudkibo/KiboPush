@@ -10,18 +10,30 @@ import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
-  createbroadcast
+  createbroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { AlertList } from 'react-bs-notifier'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      inviteUrl: props.pages[0].pageUserName ? `https://m.me/${props.pages[0].pageUserName}` : `https://m.me/${props.pages[0].pageId}`
+      inviteUrl: props.pages[0].pageUserName ? `https://m.me/${props.pages[0].pageUserName}` : `https://m.me/${props.pages[0].pageId}`,
+      alerts: []
     }
     this.selectPage = this.selectPage.bind(this)
     this.sendBroadcast = this.sendBroadcast.bind(this)
+    this.onAlertDismissed = this.onAlertDismissed.bind(this)
+    this.generateAlert = this.generateAlert.bind(this)
+  }
+
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.successMessage) {
+      this.generateAlert('success', nextprops.successMessage)
+    } else if (nextprops.errorMessage) {
+      this.generateAlert('danger', nextprops.errorMessage)
+    }
   }
 
   selectPage (event) {
@@ -40,13 +52,47 @@ class Dashboard extends React.Component {
   }
 
   sendBroadcast () {
+    this.props.clearAlertMessage()
     this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'})
+  }
+
+  generateAlert (type, message) {
+    const newAlert = {
+      id: (new Date()).getTime(),
+      type: type,
+      message: message
+    }
+
+    this.setState({
+      alerts: [...this.state.alerts, newAlert]
+    })
+  }
+
+  onAlertDismissed (alert) {
+    const alerts = this.state.alerts
+
+    // find the index of the alert that was dismissed
+    const idx = alerts.indexOf(alert)
+
+    if (idx >= 0) {
+      this.setState({
+        // remove the alert from the array
+        alerts: [...alerts.slice(0, idx), ...alerts.slice(idx + 1)]
+      })
+    }
   }
 
   render () {
     return (
       <div className='row'>
         <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <AlertList
+            position='top-right'
+            alerts={this.state.alerts}
+            timeout={3000}
+            dismissTitle='Dismiss'
+            onDismiss={this.onAlertDismissed}
+          />
           <h2>Getting Started</h2>
           <p>Your connected pages have zero subscribers. Unless you do not
           have any subscriber, you will not be able to broadcast
@@ -111,13 +157,15 @@ function mapStateToProps (state) {
   return {
     dashboard: (state.dashboardInfo.dashboard),
     pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    successMessage: (state.broadcastsInfo.successMessage),
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList, createbroadcast: createbroadcast},
+    {clearAlertMessage: clearAlertMessage, loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList, createbroadcast: createbroadcast},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
