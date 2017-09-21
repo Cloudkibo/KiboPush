@@ -54,6 +54,16 @@ class Sidebar extends Component {
                 </a>
               </li>
               <li>
+                <li>
+                  <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
+                    <div style={{paddingRight: 20}}>
+                      <Icon icon={dashboard} size={20} />
+                    </div>
+                  </Link>
+                  <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
+                    <span>Operational Dashboard</span>
+                  </ReactTooltip>
+                </li>
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={dashboard} size={20} />
@@ -196,6 +206,14 @@ class Sidebar extends Component {
                 <Link to='#' className='js-sidebar-open'>
                   <svg className='olymp-close-icon left-menu-icon'><use xlinkHref='icons/icons.svg#olymp-close-icon' /></svg>
                   <span className='left-menu-title'>Collapse Menu</span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/operationalDashboard'>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='operationalDashboard' style={{paddingRight: 20}}>
+                    <Icon icon={dashboard} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Operational Dashboard</span>
                 </Link>
               </li>
               <li>
