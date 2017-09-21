@@ -3,6 +3,7 @@
  */
 
 const fs = require('fs')
+const atob = require('atob')
 
 function prepareSendAPIPayload (subscriberId, body, cb) {
   let payload = {}
