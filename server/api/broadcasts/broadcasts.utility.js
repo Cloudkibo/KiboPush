@@ -2,6 +2,8 @@
  * Created by sojharo on 19/09/2017.
  */
 
+const fs = require('fs')
+
 function prepareSendAPIPayload (subscriberId, body, cb) {
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
@@ -43,7 +45,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
           'payload': {}
         }
       }),
-      'filedata': body.data
+      'filedata': fs.createReadStream(dataURLtoFile(body.data, body.fileName))
     }
   }
   return payload
@@ -78,6 +80,15 @@ function prepareBroadCastPayload (req) {
       : null
   }
   return broadcastPayload
+}
+
+function dataURLtoFile (dataurl, filename) {
+  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new File([u8arr], filename, {type: mime})
 }
 
 exports.prepareSendAPIPayload = prepareSendAPIPayload
