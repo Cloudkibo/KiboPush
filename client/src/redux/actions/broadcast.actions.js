@@ -18,10 +18,10 @@ export function showbroadcasts (data) {
     console.log('updated broadcast')
     console.log(broadcasts[j])
   }
-
+  var newBroadcast = broadcasts.reverse()
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts
+    broadcasts: newBroadcast
   }
 }
 export function loadBroadcastsList () {

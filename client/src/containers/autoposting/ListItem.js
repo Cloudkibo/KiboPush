@@ -36,18 +36,6 @@ class ListItem extends React.Component {
                   <br />No Filter
                 </p>
               </div>
-              <div style={{display: 'inline-block', padding: '10px'}}>
-                <p className='card-text'>
-                  <i className='fa fa-clock-o' aria-hidden='true' />
-                  <br />Limit sending time
-                </p>
-              </div>
-              <div style={{display: 'inline-block', padding: '20px'}}>
-                <p className='card-text'>
-                  <i className='fa fa-bell' aria-hidden='true' />
-                  <br />Silent Push
-                </p>
-              </div>
             </div>
           </div>
         </div>

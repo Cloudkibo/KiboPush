@@ -3,12 +3,15 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { loadAutopostingList } from '../../redux/actions/autoposting.actions'
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
 
@@ -19,6 +22,7 @@ class Autoposting extends React.Component {
       isShowingModal: false,
       showListItems: true
     }
+    props.loadAutopostingList()
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -68,8 +72,8 @@ class Autoposting extends React.Component {
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3>Autoposting</h3>
-                  <Link onClick={this.showDialog} className='btn btn-primary btn-sm'
-                    style={{float: 'right'}}>Add Channel</Link>
+                  <Link onClick={this.showDialog} className='btn btn-sm btn-primary'
+                    style={{float: 'right', color: '#003300'}}>Add Channel</Link>
 
                   {
                       this.state.isShowingModal &&
@@ -84,14 +88,21 @@ class Autoposting extends React.Component {
 
                   <div className='table-responsive'>
                     <br /><br />
-                    { this.state.showListItems
-                      ? <div>
-                        <ListItem openSettings={this.gotoSettings} title='Facebook Page' username='kibopush' />
-                        <ListItem openSettings={this.gotoSettings} title='YouTube Channel' username='cloudkibo' />
-                        <ListItem openSettings={this.gotoSettings} title='Twitter Account' username='jekram' />
-                      </div>
+                    {
+                      this.props.autopostingData && this.props.autopostingData.length > 0
+                      ? this.props.autopostingData.map((item, i) => (
+                        <ListItem key={item._id} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} />
+                      ))
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
                     }
+                    {/** this.state.showListItems
+                      ? <div>
+                        <ListItem key={1} openSettings={this.gotoSettings} title='Facebook Page' username='kibopush' />
+                        <ListItem key={2} openSettings={this.gotoSettings} title='YouTube Channel' username='cloudkibo' />
+                        <ListItem key={3} openSettings={this.gotoSettings} title='Twitter Account' username='jekram' />
+                      </div>
+                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                    **/}
                   </div>
                 </div>
               </div>
@@ -106,4 +117,16 @@ class Autoposting extends React.Component {
   }
 }
 
-export default Autoposting
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    autopostingData: (state.autopostingInfo.autopostingData)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    loadAutopostingList: loadAutopostingList
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Autoposting)

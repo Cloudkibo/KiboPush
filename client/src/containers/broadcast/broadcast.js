@@ -31,10 +31,7 @@ class Broadcast extends React.Component {
       broadcastsData: [],
       totalLength: 0
     }
-    if (!props.broadcasts) {
-      //  alert('calling')
-      props.loadBroadcastsList()
-    }
+    props.loadBroadcastsList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
