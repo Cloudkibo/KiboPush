@@ -63,22 +63,17 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
             'template_type': 'generic',
             'elements': [
               {
-                'title': 'Welcome to KiboPush',
-                'image_url': 'https://app.kibopush.com/img/logo.png',
-                'subtitle': 'Send broadcast to your page audience.',
-                'buttons': [
-                  {
-                    'type': 'web_url',
-                    'url': 'http://kibopush.com',
-                    'title': 'View Website'
-                  }
-                ]
+                'title': body.title,
+                'image_url': body.fileurl,
+                'subtitle': body.description,
+                'buttons': body.buttons
               }
             ]
           }
         }
       })
     }
+    deleteFile(body.fileurl)
   } else if (body.componentType === 'gallery') {
     payload = {
       'recipient': JSON.stringify({
