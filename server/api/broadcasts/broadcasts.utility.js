@@ -63,13 +63,53 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
             'template_type': 'generic',
             'elements': [
               {
-                'title': 'Welcome to Peter\'s Hats',
-                'image_url': 'https://petersfancybrownhats.com/company_image.png',
-                'subtitle': 'We\'ve got the right hat for everyone.',
+                'title': 'Welcome to KiboPush',
+                'image_url': 'https://app.kibopush.com/img/logo.png',
+                'subtitle': 'Send broadcast to your page audience.',
                 'buttons': [
                   {
                     'type': 'web_url',
-                    'url': 'https://petersfancybrownhats.com',
+                    'url': 'http://kibopush.com',
+                    'title': 'View Website'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      })
+    }
+  } else if (body.componentType === 'gallery') {
+    payload = {
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': 'Welcome to KiboPush',
+                'image_url': 'https://app.kibopush.com/img/logo.png',
+                'subtitle': 'Send broadcast to your page audience.',
+                'buttons': [
+                  {
+                    'type': 'web_url',
+                    'url': 'http://kibopush.com',
+                    'title': 'View Website'
+                  }
+                ]
+              },
+              {
+                'title': 'Welcome to KiboEngage',
+                'image_url': 'https://app.kibopush.com/img/logo.png',
+                'subtitle': 'Engage your customers. Give them real time support.',
+                'buttons': [
+                  {
+                    'type': 'web_url',
+                    'url': 'http://kiboengage.kibosupport.com',
                     'title': 'View Website'
                   }
                 ]
