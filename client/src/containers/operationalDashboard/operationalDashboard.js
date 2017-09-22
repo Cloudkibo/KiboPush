@@ -54,7 +54,8 @@ class OperationalDashboard extends React.Component {
                         <tr>
                           <td>Anisha</td>
                           <td>Static Data</td>
-                          <td><Link to='/viewUserDetails'>See more</Link></td>
+                          <td><Link to='/viewUserDetails' className='pull-right'>
+                            <button className='btn btn-primary btn-sm'>See more</button></Link></td>
                         </tr>
                       </tbody>
                     </table>
