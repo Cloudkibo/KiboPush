@@ -42,21 +42,23 @@ class Sidebar extends Component {
     this.setState({isShowingModal: false})
   }
   showOperationalDashboard () {
-    if (this.props.user.isSuperUser === true) {
-      return (
-        <li>
-          <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
-            <div style={{paddingRight: 20}}>
-              <Icon icon={dashboard} size={20} />
-            </div>
-          </Link>
-          <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
-            <span>Operational Dashboard</span>
-          </ReactTooltip>
-        </li>
-      )
-    } else {
-      return (<div>hi</div>)
+    if (this.props.user) {
+      if (this.props.user.isSuperUser) {
+        return (
+          <li>
+            <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
+              <div style={{paddingRight: 20}}>
+                <Icon icon={dashboard} size={20} />
+              </div>
+            </Link>
+            <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
+              <span>Operational Dashboard</span>
+            </ReactTooltip>
+          </li>
+        )
+      } else {
+        return (null)
+      }
     }
   }
   render () {
@@ -76,7 +78,7 @@ class Sidebar extends Component {
                   </svg>
                 </a>
               </li>
-              {this.showOperationalDashboard}
+              {this.showOperationalDashboard()}
               <li>
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <div style={{paddingRight: 20}}>
@@ -222,14 +224,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Collapse Menu</span>
                 </Link>
               </li>
-              <li>
-                <Link to='/operationalDashboard'>
-                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='operationalDashboard' style={{paddingRight: 20}}>
-                    <Icon icon={dashboard} size={20} />
-                  </div>
-                  <span className='left-menu-title'>Operational Dashboard</span>
-                </Link>
-              </li>
+              {this.showOperationalDashboard()}
               <li>
                 <Link to='/dashboard'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Dashboard' style={{paddingRight: 20}}>
