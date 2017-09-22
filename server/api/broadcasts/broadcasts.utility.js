@@ -2,8 +2,6 @@
  * Created by sojharo on 19/09/2017.
  */
 
-const fs = require('fs')
-
 function prepareSendAPIPayload (subscriberId, body, cb) {
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {

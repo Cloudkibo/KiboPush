@@ -102,5 +102,6 @@ function isAuthorizedWebHookTrigger () {
 exports.isAuthenticated = isAuthenticated
 exports.signToken = signToken
 exports.setTokenCookie = setTokenCookie
+exports.isAuthorizedSuperUser = isAuthorizedSuperUser
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
