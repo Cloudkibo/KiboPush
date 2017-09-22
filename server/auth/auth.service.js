@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
-const validateJwt = expressJwt({ secret: config.secrets.session })
+const validateJwt = expressJwt({secret: config.secrets.session})
 
 const logger = require('../components/logger')
 
@@ -30,9 +30,15 @@ function isAuthenticated () {
     })
     // Attach user to request
     .use((req, res, next) => {
-      Users.findOne({ fbId: req.user._id }, (err, user) => {
-        if (err) return res.status(500).json({ status: 'failed', description: 'Internal Server Error' })
-        if (!user) return res.status(401).json({ status: 'failed', description: 'Unauthorized' })
+      Users.findOne({fbId: req.user._id}, (err, user) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        if (!user) {
+          return res.status(401)
+          .json({status: 'failed', description: 'Unauthorized'})
+        }
 
         req.user = user
         next()
@@ -41,10 +47,26 @@ function isAuthenticated () {
 }
 
 /**
+ * Checks if the user role meets the minimum requirements of the route
+ */
+function isAuthorizedSuperUser () {
+  return compose()
+    .use(isAuthenticated())
+    .use(function meetsRequirements (req, res, next) {
+      if (req.user.isSuperUser) {
+        next()
+      } else {
+        res.send(403)
+      }
+    })
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken (id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresIn: 60 * 60 * 24 * 4 })
+  return jwt.sign({_id: id}, config.secrets.session,
+    {expiresIn: 60 * 60 * 24 * 4})
 }
 
 /**
@@ -65,17 +87,16 @@ function setTokenCookie (req, res) {
 
 // eslint-disable-next-line no-unused-vars
 function isAuthorizedWebHookTrigger () {
-  return compose()
-    .use((req, res, next) => {
-      const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||
-        req.socket.remoteAddress || req.connection.socket.remoteAddress
-      logger.serverLog(TAG, req.ip)
-      logger.serverLog(TAG, ip)
-      logger.serverLog(TAG, 'This is middleware')
-      logger.serverLog(TAG, req.body)
-      if (ip === '162.243.215.177') next()
-      else res.send(403)
-    })
+  return compose().use((req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||
+      req.socket.remoteAddress || req.connection.socket.remoteAddress
+    logger.serverLog(TAG, req.ip)
+    logger.serverLog(TAG, ip)
+    logger.serverLog(TAG, 'This is middleware')
+    logger.serverLog(TAG, req.body)
+    if (ip === '162.243.215.177') next()
+    else res.send(403)
+  })
 }
 
 exports.isAuthenticated = isAuthenticated

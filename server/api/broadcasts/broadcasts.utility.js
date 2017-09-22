@@ -3,7 +3,6 @@
  */
 
 const fs = require('fs')
-const atob = require('atob')
 
 function prepareSendAPIPayload (subscriberId, body, cb) {
   let payload = {}
@@ -46,7 +45,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
           'payload': {}
         }
       }),
-      'filedata': fs.createReadStream(dataURLtoFile(body.data, body.fileName))
+      'filedata': body.data
     }
   }
   return payload
@@ -81,15 +80,6 @@ function prepareBroadCastPayload (req) {
       : null
   }
   return broadcastPayload
-}
-
-function dataURLtoFile (dataurl, filename) {
-  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n)
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n)
-  }
-  return new File([u8arr], filename, {type: mime})
 }
 
 exports.prepareSendAPIPayload = prepareSendAPIPayload
