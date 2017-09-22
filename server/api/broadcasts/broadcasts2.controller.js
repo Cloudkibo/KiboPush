@@ -14,8 +14,9 @@ const Subscribers = require('../subscribers/Subscribers.model')
 // const Workflows = require('../workflows/Workflows.model')
 let _ = require('lodash')
 // const needle = require('needle')
-// const path = require('path')
-// const fs = require('fs')
+const path = require('path')
+const fs = require('fs')
+const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
 
@@ -125,4 +126,45 @@ exports.sendConversation = function (req, res) {
     return res.status(200)
       .json({status: 'success', payload: {broadcast: broadcast}})
   })
+}
+
+exports.upload = function (req, res) {
+  logger.serverLog(TAG,
+    `upload file route called. file is: ${JSON.stringify(req.files)}`)
+
+  var today = new Date()
+  var uid = crypto.randomBytes(5).toString('hex')
+  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' +
+    (today.getMonth() + 1) + '' + today.getDate()
+  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
+    today.getSeconds()
+  serverPath += '.' + req.files.file.type.split('/')[1]
+
+  console.log(__dirname)
+
+  var dir = path.resolve(__dirname, '../../../broadcastFiles/')
+
+  if (req.files.file.size === 0) {
+    return res.status(400).json({
+      status: 'failed',
+      description: 'No file submitted'
+    })
+  }
+
+  fs.rename(
+    req.files.file.path,
+    dir + '/userfiles/' + serverPath,
+    err => {
+      if (err) {
+        return res.status(500)
+        .json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+
+      return res.status(201)
+      .json({status: 'success', payload: dir + '/userfiles/' + serverPath})
+    }
+  )
 }

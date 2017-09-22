@@ -2,6 +2,10 @@
  * Created by sojharo on 19/09/2017.
  */
 
+const logger = require('../../components/logger')
+const TAG = 'api/broadcast/broadcasts.utility.js'
+const fs = require('fs')
+
 function prepareSendAPIPayload (subscriberId, body, cb) {
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
@@ -33,6 +37,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
+    let fileReaderStream = fs.createReadStream(body.fileurl)
     payload = {
       'recipient': JSON.stringify({
         'id': subscriberId
@@ -43,7 +48,47 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
           'payload': {}
         }
       }),
-      'filedata': body.data
+      'filedata': fileReaderStream
+    }
+    deleteFile(body.fileurl)
+  } else if (body.componentType === 'card') {
+    payload = {
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': 'Welcome to Peter\'s Hats',
+                'image_url': 'https://petersfancybrownhats.com/company_image.png',
+                'subtitle': 'We\'ve got the right hat for everyone.',
+                'default_action': {
+                  'type': 'web_url',
+                  'url': 'https://peterssendreceiveapp.ngrok.io/view?item=103',
+                  'messenger_extensions': true,
+                  'webview_height_ratio': 'tall',
+                  'fallback_url': 'https://peterssendreceiveapp.ngrok.io/'
+                },
+                'buttons': [
+                  {
+                    'type': 'web_url',
+                    'url': 'https://petersfancybrownhats.com',
+                    'title': 'View Website'
+                  }, {
+                    'type': 'postback',
+                    'title': 'Start Chatting',
+                    'payload': 'DEVELOPER_DEFINED_PAYLOAD'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      })
     }
   }
   return payload
@@ -54,16 +99,6 @@ function prepareBroadCastPayload (req) {
     platform: req.body.platform,
     payload: req.body.payload,
     userId: req.user._id
-  }
-  // do not include data field if type is any of these binary objects
-  if (['image', 'audio', 'file', 'video'].indexOf(
-      req.body.payload.componentType) > -1) {
-    broadcastPayload.payload = {
-      componentType: req.body.payload.componentType,
-      fileName: req.body.payload.fileName,
-      type: req.body.payload.type,
-      size: req.body.payload.size
-    }
   }
   if (req.body.isSegmented) {
     broadcastPayload.isSegmented = true
@@ -78,6 +113,19 @@ function prepareBroadCastPayload (req) {
       : null
   }
   return broadcastPayload
+}
+
+function deleteFile (fileurl) {
+  logger.serverLog(TAG,
+    `Inside deletefile file Broadcast, fileurl = ${fileurl}`)
+  // unlink file
+  fs.unlink(fileurl, function (err) {
+    if (err) {
+      logger.serverLog(TAG, err)
+    } else {
+      logger.serverLog(TAG, 'file deleted')
+    }
+  })
 }
 
 exports.prepareSendAPIPayload = prepareSendAPIPayload
