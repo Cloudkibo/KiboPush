@@ -17,6 +17,7 @@ import { facebook } from 'react-icons-kit/fa/facebook'  // pages
 import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
 import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
 import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
+import { connect } from 'react-redux'
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -54,7 +55,8 @@ class Sidebar extends Component {
                 </a>
               </li>
               <li>
-                <li>
+                {this.state.subscribersData.isSuperUser
+                ? <li>
                   <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
                     <div style={{paddingRight: 20}}>
                       <Icon icon={dashboard} size={20} />
@@ -63,7 +65,8 @@ class Sidebar extends Component {
                   <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
                     <span>Operational Dashboard</span>
                   </ReactTooltip>
-                </li>
+                </li> : null
+              }
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={dashboard} size={20} />
@@ -224,6 +227,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Dashboard</span>
                 </Link>
               </li>
+
               <li>
                 <Link to='/subscribers'>
                   <svg className='olymp-happy-faces-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribers'><use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' /></svg>
@@ -326,5 +330,10 @@ class Sidebar extends Component {
     )
   }
 }
-
-export default Sidebar
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    subscribers: (state.subscribersInfo.subscribers)
+  }
+}
+export default connect(mapStateToProps)(Sidebar)
