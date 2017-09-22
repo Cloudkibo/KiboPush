@@ -96,6 +96,9 @@ exports.sendConversation = function (req, res) {
                 if (err) {
                   return logger.serverLog(TAG,
                     `At send message broadcast ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG,
+                    `At send message broadcast response ${JSON.stringify(res)}`)
                 }
 
                 logger.serverLog(TAG,
