@@ -18,6 +18,8 @@ import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
 import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
 import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
 import { connect } from 'react-redux'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { bindActionCreators } from 'redux'
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -27,8 +29,11 @@ class Sidebar extends Component {
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
+    this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
   }
-
+  componentWillMount () {
+    this.props.getuserdetails()
+  }
   openUserGuide () {
     this.setState({isShowingModal: true})
   }
@@ -36,7 +41,24 @@ class Sidebar extends Component {
   closeUserGuide () {
     this.setState({isShowingModal: false})
   }
-
+  showOperationalDashboard () {
+    if (this.props.user.isSuperUser === true) {
+      return (
+        <li>
+          <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
+            <div style={{paddingRight: 20}}>
+              <Icon icon={dashboard} size={20} />
+            </div>
+          </Link>
+          <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
+            <span>Operational Dashboard</span>
+          </ReactTooltip>
+        </li>
+      )
+    } else {
+      return (<div>hi</div>)
+    }
+  }
   render () {
     return (
       <div className='fixed-sidebar'>
@@ -54,19 +76,8 @@ class Sidebar extends Component {
                   </svg>
                 </a>
               </li>
+              {this.showOperationalDashboard}
               <li>
-                {this.state.subscribersData.isSuperUser
-                ? <li>
-                  <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
-                    <div style={{paddingRight: 20}}>
-                      <Icon icon={dashboard} size={20} />
-                    </div>
-                  </Link>
-                  <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
-                    <span>Operational Dashboard</span>
-                  </ReactTooltip>
-                </li> : null
-              }
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <div style={{paddingRight: 20}}>
                     <Icon icon={dashboard} size={20} />
@@ -333,7 +344,13 @@ class Sidebar extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    subscribers: (state.subscribersInfo.subscribers)
+    user: (state.basicInfo.user)
   }
 }
-export default connect(mapStateToProps)(Sidebar)
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    getuserdetails: getuserdetails
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
