@@ -137,7 +137,7 @@ exports.upload = function (req, res) {
 
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
-  var serverPath = '/' + 'f' + uid + '' + today.getFullYear() + '' +
+  var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
     (today.getMonth() + 1) + '' + today.getDate()
   serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
     today.getSeconds()
