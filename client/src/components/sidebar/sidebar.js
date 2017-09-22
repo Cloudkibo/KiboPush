@@ -2,7 +2,7 @@
 /**
  * Created by sojharo on 20/07/2017.
  */
-//  abc
+
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
@@ -40,6 +40,24 @@ class Sidebar extends Component {
 
   closeUserGuide () {
     this.setState({isShowingModal: false})
+  }
+  showOperationalDashboard1 () {
+    if (this.props.user) {
+      if (this.props.user.isSuperUser) {
+        return (
+          <li>
+            <Link to='/operationalDashboard'>
+              <div data-toggle='tooltip' data-placement='right' title='' data-original-title='operationalDashboard' style={{paddingRight: 20}}>
+                <Icon icon={dashboard} size={20} />
+              </div>
+              <span className='left-menu-title'>Operational Dashboard</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
   }
   showOperationalDashboard () {
     if (this.props.user) {
@@ -224,7 +242,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Collapse Menu</span>
                 </Link>
               </li>
-              {this.showOperationalDashboard()}
+              {this.showOperationalDashboard1()}
               <li>
                 <Link to='/dashboard'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Dashboard' style={{paddingRight: 20}}>
