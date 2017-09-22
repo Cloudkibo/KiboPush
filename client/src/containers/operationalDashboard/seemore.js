@@ -5,7 +5,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
-class UserDetails extends React.Component {
+class Seemore extends React.Component {
   render () {
     return (
       <div>
@@ -37,7 +37,7 @@ class UserDetails extends React.Component {
                           <td>CloudKibo</td>
                           <td>5</td>
                           <td>10</td>
-                          <td><Link to='/' className='pull-right'>
+                          <td><Link to='/seesubscribers' className='pull-right'>
                             <button className='btn btn-primary btn-sm'>See Subscribers</button></Link>
                           </td>
                         </tr>
@@ -45,7 +45,7 @@ class UserDetails extends React.Component {
                           <td>FCS</td>
                           <td>5</td>
                           <td>10</td>
-                          <td><Link to='/' className='pull-right'>
+                          <td><Link to='//seesubscribers' className='pull-right'>
                             <button className='btn btn-primary btn-sm'>See Subscribers</button></Link>
                           </td>
                         </tr>
@@ -186,4 +186,4 @@ class UserDetails extends React.Component {
   }
 }
 
-export default UserDetails
+export default Seemore
