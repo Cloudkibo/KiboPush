@@ -73,7 +73,7 @@ class Audio extends React.Component {
         size: file.size
       }
       console.log(fileInfo)
-      this.props.handleFile(fileInfo)
+      this.props.handleAudio(fileInfo)
     }
   }
 
@@ -90,7 +90,7 @@ class Audio extends React.Component {
           onChange={this.onFilesChange}
           onError={this.onFilesError}
           accepts={['audio/*']}
-          maxFileSize={10000000}
+          maxFileSize={25000000}
           minFileSize={0}
           clickable
         >

@@ -90,7 +90,7 @@ class File extends React.Component {
           onChange={this.onFilesChange}
           onError={this.onFilesError}
           accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-          maxFileSize={10000000}
+          maxFileSize={25000000}
           minFileSize={0}
           clickable
         >

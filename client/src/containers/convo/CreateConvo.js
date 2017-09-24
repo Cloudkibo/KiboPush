@@ -38,6 +38,8 @@ class CreateConvo extends React.Component {
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleAudio = this.handleAudio.bind(this)
+    this.handleVideo = this.handleVideo.bind(this)
   }
 
   componentWillMount () {
@@ -125,6 +127,16 @@ class CreateConvo extends React.Component {
     this.sendConvo()
   }
 
+  handleAudio (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
+  }
+
+  handleVideo (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
+  }
+
   sendConvo () {
     if (this.state.broadcast.length === 0) {
       return
@@ -194,7 +206,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} handleAudio={this.handleAudio} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Audio</h5>
@@ -203,7 +215,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} handleVideo={this.handleVideo} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Video</h5>
