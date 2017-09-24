@@ -47,6 +47,12 @@ class Text extends React.Component {
   render () {
     return (
       <div>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: '2', marginTop: '-5px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
+            <i className='fa fa-times fa-stack-1x fa-inverse' />
+          </span>
+        </div>
         <div style={{marginBottom: '-7px'}}>
           <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
         </div>

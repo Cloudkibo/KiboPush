@@ -69,6 +69,12 @@ class Card extends React.Component {
     console.log('State: ', this.state)
     return (
       <div>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
+            <i className='fa fa-times fa-stack-1x fa-inverse' />
+          </span>
+        </div>
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           <div style={{display: 'flex', minHeight: 170}} className='cardimageblock'>
             <input

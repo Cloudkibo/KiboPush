@@ -84,22 +84,29 @@ class Audio extends React.Component {
 
   render () {
     return (
-      <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-        <Files
-          className='files-dropzone'
-          onChange={this.onFilesChange}
-          onError={this.onFilesError}
-          accepts={['audio/*']}
-          maxFileSize={25000000}
-          minFileSize={0}
-          clickable
+      <div>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
+          <span style={{cursor: 'pointer'}} className='fa-stack'>
+            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
+            <i className='fa fa-times fa-stack-1x fa-inverse' />
+          </span>
+        </div>
+        <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
+          <Files
+            className='files-dropzone'
+            onChange={this.onFilesChange}
+            onError={this.onFilesError}
+            accepts={['audio/*']}
+            maxFileSize={25000000}
+            minFileSize={0}
+            clickable
         >
-          <div className='align-center'>
-            <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-            <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
-          </div>
-        </Files>
-        {
+            <div className='align-center'>
+              <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
+              <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+            </div>
+          </Files>
+          {
           this.state.showDialog &&
             <ModalContainer style={{width: '300px'}}
               onClose={this.closeDialog}>
@@ -110,6 +117,7 @@ class Audio extends React.Component {
               </ModalDialog>
             </ModalContainer>
         }
+        </div>
       </div>
     )
   }
