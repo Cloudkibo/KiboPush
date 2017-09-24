@@ -38,6 +38,9 @@ class CreateConvo extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
+    this.handleFile = this.handleFile.bind(this)
+    this.handleAudio = this.handleAudio.bind(this)
+    this.handleVideo = this.handleVideo.bind(this)
     this.newConvo = this.newConvo.bind(this)
   }
 
@@ -119,6 +122,21 @@ class CreateConvo extends React.Component {
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { component.content.props.id = obj.id })
     this.setState({list: temp})
+  }
+
+  handleFile (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
+  }
+
+  handleAudio (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
+  }
+
+  handleVideo (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
   }
 
   sendConvo () {
@@ -212,7 +230,8 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} handleAudio={this.handleAudio} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 40}} />
                       <h5>Audio</h5>
@@ -221,7 +240,8 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} handleVideo={this.handleVideo}  />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/video.png' alt='Video' style={{maxHeight: 40}} />
                       <h5>Video</h5>
@@ -233,7 +253,8 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} handleFile={this.handleFile} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/file.png' alt='File' style={{maxHeight: 40}} />
                       <h5>File</h5>

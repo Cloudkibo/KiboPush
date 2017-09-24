@@ -12,6 +12,7 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -56,7 +57,23 @@ class File extends React.Component {
   onFilesChange (files) {
     console.log(files)
     if (files.length > 0) {
-      this.setState({file: files[files.length - 1]})
+      var file = files[files.length - 1]
+      this.setState({file: file})
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      this.props.uploadFile(fileData)
+      var fileInfo = {
+        componentType: 'file',
+        fileName: file.name,
+        fileurl: this.props.fileUrl,
+        type: file.type,
+        size: file.size
+      }
+      console.log(fileInfo)
+      this.props.handleFile(fileInfo)
     }
   }
 
@@ -73,7 +90,7 @@ class File extends React.Component {
           onChange={this.onFilesChange}
           onError={this.onFilesError}
           accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-          maxFileSize={10000000}
+          maxFileSize={25000000}
           minFileSize={0}
           clickable
         >
@@ -104,7 +121,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    fileUrl: (state.convosInfo.fileUrl)
   }
 }
 
@@ -114,7 +132,8 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    uploadFile: uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)

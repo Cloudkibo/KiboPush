@@ -12,12 +12,24 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import Files from 'react-files'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Video extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      file: '',
+      errorMsg: '',
+      showErrorDialogue: false
+    }
+    this.onFilesChange = this.onFilesChange.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentDidMount () {
@@ -34,13 +46,70 @@ class Video extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  showDialog (page) {
+    this.setState({showDialog: true})
+  }
+
+  closeDialog () {
+    this.setState({showDialog: false})
+  }
+
+  onFilesChange (files) {
+    console.log(files)
+    if (files.length > 0) {
+      var file = files[files.length - 1]
+      this.setState({file: file})
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      this.props.uploadFile(fileData)
+      var fileInfo = {
+        componentType: 'file',
+        fileName: file.name,
+        fileurl: this.props.fileUrl,
+        type: file.type,
+        size: file.size
+      }
+      console.log(fileInfo)
+      this.props.handleVideo(fileInfo)
+    }
+  }
+
+  onFilesError (error, file) {
+    console.log('error code ' + error.code + ': ' + error.message)
+    this.setState({errorMsg: error.message, showDialog: true})
+  }
+
   render () {
     return (
       <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-        <div className='align-center'>
-          <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
-          <h4> Video </h4>
-        </div>
+        <Files
+          className='files-dropzone'
+          onChange={this.onFilesChange}
+          onError={this.onFilesError}
+          accepts={['video/*']}
+          maxFileSize={25000000}
+          minFileSize={0}
+          clickable
+        >
+          <div className='align-center'>
+            <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+            <h4>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
+          </div>
+        </Files>
+        {
+          this.state.showDialog &&
+            <ModalContainer style={{width: '300px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '300px'}}
+                onClose={this.closeDialog}>
+                <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
+                <p>{this.state.errorMsg}</p>
+              </ModalDialog>
+            </ModalContainer>
+        }
       </div>
     )
   }
@@ -62,7 +131,8 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    uploadFile: uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Video)
