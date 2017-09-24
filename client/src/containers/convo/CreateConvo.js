@@ -37,6 +37,7 @@ class CreateConvo extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
+    this.handleFile = this.handleFile.bind(this)
   }
 
   componentWillMount () {
@@ -117,6 +118,11 @@ class CreateConvo extends React.Component {
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { component.content.props.id = obj.id })
     this.setState({list: temp})
+  }
+
+  handleFile (fileInfo) {
+    this.setState({broadcast: fileInfo})
+    this.sendConvo()
   }
 
   sendConvo () {
@@ -209,7 +215,7 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} handleFile={this.handleFile} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>File</h5>
