@@ -57,19 +57,20 @@ class File extends React.Component {
   onFilesChange (files) {
     console.log(files)
     if (files.length > 0) {
-      this.setState({file: files[files.length - 1]})
+      var file = files[files.length - 1]
+      this.setState({file: file})
       var fileData = new FormData()
-      fileData.append('file', this.state.file)
-      fileData.append('filename', this.state.file.name)
-      fileData.append('filetype', this.state.file.type)
-      fileData.append('filesize', this.state.file.size)
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
       this.props.uploadFile(fileData)
       var fileInfo = {
         componentType: 'file',
-        fileName: this.state.file.name,
+        fileName: file.name,
         fileurl: this.props.fileUrl,
-        type: this.state.file.type,
-        size: this.state.file.size
+        type: file.type,
+        size: file.size
       }
       console.log(fileInfo)
       this.props.handleFile(fileInfo)
