@@ -147,7 +147,7 @@ export function downloadFile (broadcast) {
   }
 }
 
-export function sendBroadcast (data) {
+export function sendBroadcast (data, msg) {
   console.log('Sending Broadcast')
   console.log(data)
   return (dispatch) => {
@@ -155,8 +155,10 @@ export function sendBroadcast (data) {
       .then(res => {
         console.log('Response got from sendConversation', res)
         if (res.status === 'success') {
+          msg.success('Conversation successfully sent')
           dispatch(sendBroadcastSuccess())
         } else {
+          msg.error('Failed to send conversation')
           dispatch(sendBroadcastFailure())
         }
         dispatch(loadBroadcastsList())

@@ -25,6 +25,7 @@ import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import DragSortableList from 'react-drag-sortable'
+import AlertContainer from 'react-alert'
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -40,6 +41,7 @@ class CreateConvo extends React.Component {
     this.handleFile = this.handleFile.bind(this)
     this.handleAudio = this.handleAudio.bind(this)
     this.handleVideo = this.handleVideo.bind(this)
+    this.newConvo = this.newConvo.bind(this)
   }
 
   componentWillMount () {
@@ -147,18 +149,31 @@ class CreateConvo extends React.Component {
       isSegmented: false
     }
 
-    this.props.sendBroadcast(data)
+    this.props.sendBroadcast(data, this.msg)
+  }
+
+  newConvo () {
+    this.setState({broadcast: [], list: []})
   }
 
   render () {
     console.log('Payload ', this.state)
+
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
+
     return (
       <div>
         <Header />
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='container'>
           <br />
           <br />
@@ -168,9 +183,18 @@ class CreateConvo extends React.Component {
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' style={{position: 'fixed', zIndex: 2}}>
               <h2 className='presentation-margin'>Components</h2>
               <div className='row'>
+                <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                  <button onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary btn-sm push-right'> Send Conversation </button>
+                </div>
+                <div className='col-lg-1 col-md-1 col-sm-1 col-xs-12' />
+                <div className='col-lg-5 col-md-5 col-sm-5 col-xs-12' >
+                  <button onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary btn-sm'> Test Conversation </button>
+                </div>
+              </div>
+              <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/text.png' alt='Text' style={{maxHeight: 40}} />
                       <h5>Text</h5>
@@ -179,17 +203,17 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/picture.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 40}} />
                       <h5>Image</h5>
                     </div>
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/card.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/card.png' alt='Card' style={{maxHeight: 40}} />
                       <h5>Card</h5>
                     </div>
                   </div>
@@ -197,27 +221,29 @@ class CreateConvo extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/layout.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 40}} />
                       <h5>Gallery</h5>
                     </div>
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} handleAudio={this.handleAudio} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} handleAudio={this.handleAudio} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 40}} />
                       <h5>Audio</h5>
                     </div>
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} handleVideo={this.handleVideo} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} handleVideo={this.handleVideo}  />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/video.png' alt='Video' style={{maxHeight: 40}} />
                       <h5>Video</h5>
                     </div>
                   </div>
@@ -227,24 +253,31 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} handleFile={this.handleFile} />)}]}) }} style={{minHeight: 75}}>
+
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} handleFile={this.handleFile} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
-                      <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='icons/file.png' alt='File' style={{maxHeight: 40}} />
                       <h5>File</h5>
                     </div>
                   </div>
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
               </div>
+              <div className='row'>
+                <button onClick={this.newConvo} className='btn btn-primary btn-sm' style={{width: 100 + '%'}}> New Conversation </button>
+              </div>
             </div>
             <div style={{marginLeft: '-100px'}} className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-              <h2 className='presentation-margin'>Broadcast</h2>
+              <h2 className='presentation-margin'>Conversation</h2>
+              <div style={{paddingBottom: 15}}>
+                <input type='text' className='hoverbordercomponent' placeholder='Conversation Title' style={{height: 50, textAlign: 'center', backgroundColor: '#EDF2F6' }} />
+              </div>
               <div className='ui-block' style={{minHeight: 250, padding: 75}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                 <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
               </div>
-              <button onClick={this.sendConvo} className='btn btn-primary btn-sm'> Send Conversation </button>
+
             </div>
 
           </div>
