@@ -96,7 +96,7 @@ class ItemSettings extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+              className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
                   <h3><i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}</h3>
@@ -116,42 +116,34 @@ class ItemSettings extends React.Component {
                       </div>
                       <fieldset className='form-group'>
                         <legend>Set Targetting</legend>
-                        <div className='row'>
-                          <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                            <div style={{padding: 5}}>
-                              <select style={{padding: 5}}>
-                                {
-                                    this.state.page.options.map((page) => {
-                                      return <option value={page.id}>{page.name}</option>
-                                    })
-                                  }
-                              </select>
-                            </div>
+                        <div className='form-group'>
+                          <div style={{width: '500px'}} className='input-group'>
+                            <select className='form-control' style={{width: '50px', padding: '5px'}}>
+                              {
+                                this.state.page.options.map((page) => {
+                                  return <option value={page.id}>{page.name}</option>
+                                })
+                              }
+                            </select>
+                            <button style={{margin: '5px'}} className='btn btn-primary btn-sm'> {this.state.addPageLabel}
+                            </button>
                           </div>
-                          <button className='btn btn-primary btn-sm'> {this.state.addPageLabel}
-                          </button>
                         </div>
-                        <div className='row'>
-                          <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                            <div>
-                              <select onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
-                                {this.state.target}
-                              </select>
-                            </div>
+                        <div className='form-group'>
+                          <div style={{width: '500px'}} className='input-group'>
+                            <select className='form-control' onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
+                              {this.state.target}
+                            </select>
+                            <button style={{margin: '5px'}} className='btn btn-primary btn-sm'
+                              onClick={this.addNewTarget}> {this.state.buttonLabel}
+                            </button>
                           </div>
-                          <button className='btn btn-primary btn-sm'
-                            onClick={this.addNewTarget}> {this.state.buttonLabel}
-                          </button>
                         </div>
                         <div>
                           {
-                          this.state.criteria.Gender.isPicked && <div className='row'>
-                            <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                              <div style={{padding: 5}}>
-                                <p>Gender is: </p>
-                              </div>
-                            </div>
-                            <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                          this.state.criteria.Gender.isPicked && <div className='form-group'>
+                            <div className='input-group'>
+                              <p>Gender is: </p>
                               <select style={{padding: 5}}>
                                 <option selected='selected' value='Male'>Male</option>
                                 <option value='Female'>Female</option>
@@ -160,13 +152,9 @@ class ItemSettings extends React.Component {
                           </div>
                           }
                           {
-                            this.state.criteria.Locale.isPicked && <div className='row'>
-                              <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                                <div style={{padding: 5}}>
-                                  <p>Locale is: </p>
-                                </div>
-                              </div>
-                              <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+                            this.state.criteria.Locale.isPicked && <div className='form-group'>
+                              <div className='input-group'>
+                                <p>Locale is: </p>
                                 <select style={{padding: 5}}>
                                   <option selected='selected' value='en_US'>en_US</option>
                                   <option value='en_UK'>en_UK</option>

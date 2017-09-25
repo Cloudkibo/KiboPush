@@ -88,21 +88,21 @@ class Autoposting extends React.Component {
 
                   <div className='table-responsive'>
                     <br /><br />
-                    {
+                    {/**
                       this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
                         <ListItem key={item._id} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} />
                       ))
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
-                    }
-                    {/** this.state.showListItems
+                    **/}
+                    { this.state.showListItems
                       ? <div>
                         <ListItem key={1} openSettings={this.gotoSettings} title='Facebook Page' username='kibopush' />
                         <ListItem key={2} openSettings={this.gotoSettings} title='YouTube Channel' username='cloudkibo' />
                         <ListItem key={3} openSettings={this.gotoSettings} title='Twitter Account' username='jekram' />
                       </div>
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
-                    **/}
+                    }
                   </div>
                 </div>
               </div>
