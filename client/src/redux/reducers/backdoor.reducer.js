@@ -1,8 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  users: [],
-  broadcasts: []
+  users: []
 }
 
 export function UsersInfo (state = initialState, action) {
