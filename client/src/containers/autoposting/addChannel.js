@@ -54,6 +54,7 @@ class AddChannel extends React.Component {
         break
     }
     this.props.createautoposting(autopostingData)
+    this.props.onClose()
   }
 
   onSelectItem (value) {

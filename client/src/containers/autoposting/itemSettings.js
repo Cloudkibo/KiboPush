@@ -4,36 +4,43 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
+import Select from 'react-select'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { editautoposting } from '../../redux/actions/autoposting.actions'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       page: {
-        options: [{id: '1', name: 'WoxCut'},
-                  {id: '2', name: 'KiboPush'},
-                  {id: '3', name: 'Dayem Portfolio'},
-                  {id: '4', name: 'United Broke My Guitar'}
+        options: []
+      },
+      Gender: {
+        options: [{label: 'Male', value: 'Male'},
+                  {label: 'Female', value: 'Female'}
         ]
       },
-      addPageLabel: 'Add Page',
-      target: [],
-      segmentValue: '',
-      buttonLabel: 'Add Segment',
-      criteria: {
-        Gender: {
-          options: ['Male', 'Female'],
-          isPicked: false
-        },
-        Locale: {
-          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
-          isPicked: false
-        }
-      }
+      Locale: {
+        options: [{label: 'en_US', value: 'en_US'},
+                  {label: 'af_ZA', value: 'af_ZA'},
+                  {label: 'ar_AR', value: 'ar_AR'},
+                  {label: 'az_AZ', value: 'az_AZ'},
+                  {label: 'pa_IN', value: 'pa_IN'}
+        ]
+      },
+      stayOpen: false,
+      disabled: false,
+      pageValue: [],
+      genderValue: [],
+      localeValue: [],
+      isActive: 'Active'
     }
+    this.handlePageChange = this.handlePageChange.bind(this)
+    this.handleGenderChange = this.handleGenderChange.bind(this)
+    this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
-    this.updateSegmentValue = this.updateSegmentValue.bind(this)
-    this.addNewTarget = this.addNewTarget.bind(this)
+    this.editAutoposting = this.editAutoposting.bind(this)
   }
 
   componentDidMount () {
@@ -48,44 +55,67 @@ class ItemSettings extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-  }
-
-  componentWillMount () {
-    // this.props.loadMyPagesList();
-    var temp = []
-    Object.keys(this.state.criteria).map((obj) => {
-      temp.push(<option value={obj}>{obj}</option>)
-    })
-
-    this.setState({target: temp, segmentValue: Object.keys(this.state.criteria)[0]})
-  }
-
-  updateSegmentValue (event) {
-    console.log('updateSegmentValue called', event.target.value)
-    var label = 'Add Segment'
-    if (this.state.criteria[event.target.value].isPicked === true) {
-      label = 'Remove Segment'
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
+    document.body.appendChild(addScript)
+    let options = []
+    for (var i = 0; i < this.props.pages.length; i++) {
+      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
     }
-    this.setState({segmentValue: event.target.value, buttonLabel: label})
+    this.setState({page: {options: options}})
   }
 
-  addNewTarget () {
-    console.log('Add new target called', this.state.segmentValue)
-    var temp = this.state.criteria
-    temp[this.state.segmentValue].isPicked = !temp[this.state.segmentValue].isPicked
-    var label = 'Add Segment'
-    if (temp[this.state.segmentValue].isPicked === true) {
-      label = 'Remove Segment'
+  handlePageChange (value) {
+    this.setState({ pageValue: value })
+  }
+
+  handleGenderChange (value) {
+    this.setState({ genderValue: value })
+  }
+
+  handleLocaleChange (value) {
+    this.setState({ localeValue: value })
+  }
+
+  handleSelectChange (event) {
+    console.log('isActive changed')
+    this.setState({ isActive: event.target.value })
+  }
+
+  editAutoposting () {
+    console.log(this.accountTitleValue.value)
+    var isSegmented = false
+    var segmentationGender = ''
+    var segmentationLocale = ''
+    var isActive = false
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmented = true
     }
-    this.setState({criteria: temp, buttonLabel: label})
-  }
-
-  handleSelectChange (value) {
-    console.log('onChange function called')
+    if (this.state.genderValue.length === 1) {
+      segmentationGender = this.state.genderValue[0]
+    }
+    if (this.state.localeValue.length === 1) {
+      segmentationGender = this.state.localeValue[0]
+    }
+    if (this.state.isActive === 'Active') {
+      isActive = true
+    } else {
+      isActive = false
+    }
+    const autopostingData = {
+      accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.title,
+      isSegmented: isSegmented,
+      segmentationPageIds: this.state.pageValue,
+      segmentationGender: segmentationGender,
+      segmentationLocale: segmentationLocale,
+      isActive: isActive
+    }
+    console.log(autopostingData)
+    this.props.editautoposting(autopostingData)
   }
 
   render () {
-    console.log(this.props.location.state)
+    const { disabled, stayOpen } = this.state
     return (
       <div>
         <Header />
@@ -105,11 +135,11 @@ class ItemSettings extends React.Component {
                     <form>
                       <div className='form-group'>
                         <label>Account Title</label>
-                        <input type='text' className='form-control' placeholder={this.props.location.state.title} />
+                        <input ref={(c) => { this.accountTitleValue = c }} type='text' className='form-control' placeholder={this.props.location.state.title} />
                       </div>
                       <div className='form-group'>
                         <label>Status</label>
-                        <select value='Active' onChange={() => this.handleSelectChange}>
+                        <select onChange={this.handleSelectChange} value={this.state.isActive}>
                           <option value='Active'>Active</option>
                           <option value='Disabled'>Disabled</option>
                         </select>
@@ -117,56 +147,44 @@ class ItemSettings extends React.Component {
                       <fieldset className='form-group'>
                         <legend>Set Targetting</legend>
                         <div className='form-group'>
-                          <div style={{width: '500px'}} className='input-group'>
-                            <select className='form-control' style={{width: '50px', padding: '5px'}}>
-                              {
-                                this.state.page.options.map((page) => {
-                                  return <option value={page.id}>{page.name}</option>
-                                })
-                              }
-                            </select>
-                            <button style={{margin: '5px'}} className='btn btn-primary btn-sm'> {this.state.addPageLabel}
-                            </button>
-                          </div>
+                          <Select
+                            closeOnSelect={!stayOpen}
+                            disabled={disabled}
+                            multi
+                            onChange={this.handlePageChange}
+                            options={this.state.page.options}
+                            placeholder='Select page(s)'
+                            simpleValue
+                            value={this.state.pageValue}
+                          />
                         </div>
                         <div className='form-group'>
-                          <div style={{width: '500px'}} className='input-group'>
-                            <select className='form-control' onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
-                              {this.state.target}
-                            </select>
-                            <button style={{margin: '5px'}} className='btn btn-primary btn-sm'
-                              onClick={this.addNewTarget}> {this.state.buttonLabel}
-                            </button>
-                          </div>
+                          <Select
+                            closeOnSelect={!stayOpen}
+                            disabled={disabled}
+                            multi
+                            onChange={this.handleGenderChange}
+                            options={this.state.Gender.options}
+                            placeholder='Select Gender'
+                            simpleValue
+                            value={this.state.genderValue}
+                          />
                         </div>
-                        <div>
-                          {
-                          this.state.criteria.Gender.isPicked && <div className='form-group'>
-                            <div className='input-group'>
-                              <p>Gender is: </p>
-                              <select style={{padding: 5}}>
-                                <option selected='selected' value='Male'>Male</option>
-                                <option value='Female'>Female</option>
-                              </select>
-                            </div>
-                          </div>
-                          }
-                          {
-                            this.state.criteria.Locale.isPicked && <div className='form-group'>
-                              <div className='input-group'>
-                                <p>Locale is: </p>
-                                <select style={{padding: 5}}>
-                                  <option selected='selected' value='en_US'>en_US</option>
-                                  <option value='en_UK'>en_UK</option>
-                                  <option value='en_IN'>en_IN</option>
-                                </select>
-                              </div>
-                            </div>
-                          }
+                        <div className='form-group'>
+                          <Select
+                            closeOnSelect={!stayOpen}
+                            disabled={disabled}
+                            multi
+                            onChange={this.handleLocaleChange}
+                            options={this.state.Locale.options}
+                            placeholder='Select Locale'
+                            simpleValue
+                            value={this.state.localeValue}
+                          />
                         </div>
                       </fieldset>
                     </form>
-                    <button style={{float: 'left', margin: 2}} className='btn btn-primary btn-sm'>Save Changes</button>
+                    <button onClick={this.editAutoposting} style={{float: 'left', margin: 2}} className='btn btn-primary btn-sm'>Save Changes</button>
                     <Link
                       style={{float: 'left', margin: 2}}
                       to='/autoposting'
@@ -187,4 +205,20 @@ class ItemSettings extends React.Component {
   }
 }
 
-export default ItemSettings
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    autopostingData: (state.autopostingInfo.autopostingData),
+    pages: (state.pagesInfo.pages)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators(
+    {
+      editautoposting: editautoposting
+    },
+    dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemSettings)
