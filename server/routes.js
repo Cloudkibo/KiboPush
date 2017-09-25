@@ -19,6 +19,7 @@ module.exports = function (app) {
   app.use('/api/things', require('./api/thing'))
   app.use('/api/users', require('./api/user'))
   app.use('/api/broadcasts', require('./api/broadcasts'))
+  app.use('/api/backdoor', require('./api/backdoor'))
   app.use('/api/polls', require('./api/polls'))
   app.use('/api/workflows', require('./api/workflows'))
   app.use('/api/subscribers', require('./api/subscribers'))
