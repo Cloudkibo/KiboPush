@@ -94,13 +94,17 @@ class OperationalDashboard extends React.Component {
                       <tbody>
                         {
                         this.state.usersData.map((user, i) => (
-                          <tr>
+                          user
+                          ? <tr>
                             <td>{user.name}</td>
-                            <td>5</td>
+                            <td>{5}</td>
                             <td><Link to='/seemore' className='pull-right'>
                               <button className='btn btn-primary btn-sm'>See more</button></Link>
                             </td>
                           </tr>
+                          : <div className='table-responsive'>
+                            <p> No data map </p>
+                          </div>
                         ))
                       }
                       </tbody>
