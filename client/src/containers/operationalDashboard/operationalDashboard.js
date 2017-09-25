@@ -82,7 +82,7 @@ class OperationalDashboard extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  { this.state.usersData && this.state.usersData.length > 0
                   ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -97,7 +97,7 @@ class OperationalDashboard extends React.Component {
                         this.state.usersData.map((user, i) => (
                           <tr>
                             <td>{user.name}</td>
-                            <td>{user.numberOfPages}</td>
+                            <td>5</td>
                             <td><Link to='/seemore' className='pull-right'>
                               <button className='btn btn-primary btn-sm'>See more</button></Link>
                             </td>
