@@ -10,7 +10,7 @@ import {surveysInfo} from './surveys.reducer.js'
 import {workflowsInfo} from './workflows.reducer.js'
 import {autopostingInfo} from './autoposting.reducer.js'
 import {convosInfo} from './convos.reducer.js'
-
+import {UsersInfo} from './backdoor.reducer'
 const appReducer = combineReducers({
   basicInfo,
   pagesInfo,
@@ -21,7 +21,8 @@ const appReducer = combineReducers({
   pollsInfo,
   dashboardInfo,
   autopostingInfo,
-  convosInfo
+  convosInfo,
+  UsersInfo
 })
 
 export default appReducer
