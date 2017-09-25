@@ -54,12 +54,11 @@ class OperationalDashboard extends React.Component {
       index++
     }
     this.setState({usersData: data})
+    console.log('in displayData', this.state.usersData)
   }
-
   handlePageClick (data) {
     this.displayData(data.selected, this.props.users)
   }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
@@ -95,13 +94,17 @@ class OperationalDashboard extends React.Component {
                       <tbody>
                         {
                         this.state.usersData.map((user, i) => (
-                          <tr>
+                          user
+                          ? <tr>
                             <td>{user.name}</td>
-                            <td>5</td>
+                            <td>{5}</td>
                             <td><Link to='/seemore' className='pull-right'>
                               <button className='btn btn-primary btn-sm'>See more</button></Link>
                             </td>
                           </tr>
+                          : <div className='table-responsive'>
+                            <p> No data map </p>
+                          </div>
                         ))
                       }
                       </tbody>
@@ -113,6 +116,7 @@ class OperationalDashboard extends React.Component {
                       pageCount={Math.ceil(this.state.totalLength / 4)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'} />
@@ -134,7 +138,7 @@ class OperationalDashboard extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('in mapStateToProps', state)
   return {
     users: (state.UsersInfo.users)
   }
