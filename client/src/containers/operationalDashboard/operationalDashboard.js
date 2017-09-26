@@ -119,7 +119,6 @@ class OperationalDashboard extends React.Component {
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
                               </button>
-                              </Link>
                             </td>
                           </tr>
                         ))
