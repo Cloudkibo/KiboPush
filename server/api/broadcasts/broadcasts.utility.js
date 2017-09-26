@@ -38,7 +38,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-    let fileReaderStream = fs.createReadStream(dir + body.fileurl)
+    let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl)
     payload = {
       'recipient': JSON.stringify({
         'id': subscriberId
@@ -74,7 +74,6 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
         }
       })
     }
-    deleteFile(body.fileurl)
   } else if (body.componentType === 'gallery') {
     payload = {
       'recipient': JSON.stringify({

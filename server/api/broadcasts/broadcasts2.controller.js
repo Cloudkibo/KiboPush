@@ -189,7 +189,7 @@ exports.delete = function (req, res) {
     `Inside delete file Broadcast`)
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   // unlink file
-  fs.unlink(dir + req.params.id, function (err) {
+  fs.unlink(dir + '/' + req.params.id, function (err) {
     if (err) {
       logger.serverLog(TAG, err)
       return res.status(404)
