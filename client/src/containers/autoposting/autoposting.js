@@ -81,7 +81,7 @@ class Autoposting extends React.Component {
                         onClose={this.closeDialog}>
                         <ModalDialog style={{width: '500px'}}
                           onClose={this.closeDialog}>
-                          <AddChannel />
+                          <AddChannel onClose={this.closeDialog} />
                         </ModalDialog>
                       </ModalContainer>
                     }

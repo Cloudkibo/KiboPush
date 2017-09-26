@@ -141,7 +141,8 @@ exports.upload = function (req, res) {
     (today.getMonth() + 1) + '' + today.getDate()
   serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
     today.getSeconds()
-  serverPath += '.' + req.files.file.type.split('/')[1]
+  let fext = req.files.file.name.split('.')
+  serverPath += '.' + fext[fext.length - 1]
 
   console.log(__dirname)
 
@@ -159,6 +160,7 @@ exports.upload = function (req, res) {
     dir + '/userfiles/' + serverPath,
     err => {
       if (err) {
+        console.log(err)
         return res.status(500)
         .json({
           status: 'failed',

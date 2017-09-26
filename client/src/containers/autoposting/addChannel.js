@@ -54,6 +54,7 @@ class AddChannel extends React.Component {
         break
     }
     this.props.createautoposting(autopostingData)
+    this.props.onClose()
   }
 
   onSelectItem (value) {
@@ -116,7 +117,7 @@ class AddChannel extends React.Component {
             <input ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
           </div>
           <button style={{float: 'right', margin: '10px'}}
-            onClick={this.createAutoposting('facebook')}
+            onClick={() => this.createAutoposting('facebook')}
             className='btn btn-primary btn-sm'>Add Facebook Account
           </button>
         </div>
@@ -128,7 +129,7 @@ class AddChannel extends React.Component {
             <input ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
           </div>
           <button style={{float: 'right', margin: '10px'}}
-            onClick={this.createAutoposting('twitter')}
+            onClick={() => this.createAutoposting('twitter')}
             className='btn btn-primary btn-sm'>Add Twitter Account
           </button>
         </div>
@@ -140,7 +141,7 @@ class AddChannel extends React.Component {
             <input ref={(c) => { this.youtubeSubscriptionUrl = c }} type='text' className='form-control' />
           </div>
           <button style={{float: 'right', margin: '10px'}}
-            onClick={this.createAutoposting('youtube')}
+            onClick={() => this.createAutoposting('youtube')}
             className='btn btn-primary btn-sm'>Add YouTube Account
           </button>
         </div>
