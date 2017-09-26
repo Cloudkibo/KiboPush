@@ -147,10 +147,7 @@ export function downloadFile (broadcast) {
   }
 }
 
-export function uploadRequest ({ file, name }) {
-  let data = new FormData()
-  data.append('file', document)
-  data.append('name', name)
+export function uploadRequest (data) {
   return (dispatch) => {
     callApi(`broadcasts/upload`, 'post', data).then(res => {
         // dispatch(editBroadcast(res.payload));

@@ -30,3 +30,21 @@ export function addFileUrl (fileUrl) {
     fileUrl
   }
 }
+
+export function uploadImage (image) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/broadcasts/upload`, {
+      method: 'post',
+      body: image,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => 
+       console.log("Image Upload Response", res.payload)
+      // dispatch(addFileUrl(res.payload))
+    
+    )
+  }
+}

@@ -13,6 +13,8 @@ import {
   sendbroadcast,
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
+
+import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 
 class Image extends React.Component {
@@ -39,7 +41,7 @@ class Image extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  _onChange () {
+  _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
     var reader = new FileReader()
@@ -51,10 +53,18 @@ class Image extends React.Component {
       })
     }.bind(this)
     console.log(url) // Would see a path?
-    this.props.uploadRequest({
-      file,
-      name: 'Awesome Cat Pic'
-    })
+
+    console.log(images)
+    if (images.length > 0) {
+      var image = images[images.length - 1]
+      var fileData = new FormData()
+      fileData.append('file', image)
+      fileData.append('filename', image.name)
+      fileData.append('filetype', image.type)
+      fileData.append('filesize', image.size)
+    this.props.uploadRequest(fileData)
+
+    }
   // TODO: concat files
   }
 
