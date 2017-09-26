@@ -39,9 +39,7 @@ class OperationalDashboard extends React.Component {
     document.body.appendChild(addScript)
   }
   displayData (n, users) {
-    //    abc
-    //  fawfdaw
-    console.log(users)
+    console.log('one', users)
     let offset = n * 4
     let data = []
     let limit
