@@ -144,8 +144,6 @@ exports.upload = function (req, res) {
   let fext = req.files.file.name.split('.')
   serverPath += '.' + fext[fext.length - 1]
 
-  console.log(__dirname)
-
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
 
   if (req.files.file.size === 0) {
@@ -160,12 +158,13 @@ exports.upload = function (req, res) {
     dir + '/userfiles/' + serverPath,
     err => {
       if (err) {
-        console.log(err)
         return res.status(500).json({
           status: 'failed',
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      logger.serverLog(TAG,
+        `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
       return res.status(201)
         .json({status: 'success', payload: serverPath})
     }
@@ -189,7 +188,7 @@ exports.delete = function (req, res) {
     `Inside delete file Broadcast`)
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   // unlink file
-  fs.unlink(dir + req.params.id, function (err) {
+  fs.unlink(dir + '/' + req.params.id, function (err) {
     if (err) {
       logger.serverLog(TAG, err)
       return res.status(404)
