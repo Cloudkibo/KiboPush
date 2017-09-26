@@ -33,7 +33,7 @@ export function deleteautoposting (id) {
   }
 }
 
-export function editbroadcast (data) {
+export function editautoposting (data) {
   console.log(data)
   return (dispatch) => {
     callApi('autoposting/edit', 'post', data)

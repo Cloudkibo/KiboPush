@@ -87,7 +87,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
             'elements': [
               {
                 'title': 'Welcome to KiboPush',
-                'image_url': 'https://app.kibopush.com/img/logo.png',
+                'image_url': 'https://visualhunt.com/photos/l/7/details-studies-book.jpg',
                 'subtitle': 'Send broadcast to your page audience.',
                 'buttons': [
                   {
@@ -99,7 +99,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
               },
               {
                 'title': 'Welcome to KiboEngage',
-                'image_url': 'https://app.kibopush.com/img/logo.png',
+                'image_url': 'https://visualhunt.com/photos/l/7/details-studies-book.jpg',
                 'subtitle': 'Engage your customers. Give them real time support.',
                 'buttons': [
                   {

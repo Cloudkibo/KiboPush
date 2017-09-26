@@ -18,6 +18,7 @@ router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
 router.post('/pubsub/webhook', controller.pubsubhook)
 router.post('/upload', auth.isAuthenticated(), multipartyMiddleware, controller2.upload)
+router.get('/download/:id', controller2.download)
 // todo will be deprecated soon till deletefile route
 router.post('/uploadfile', auth.isAuthenticated(), multipartyMiddleware, controller.uploadfile)
 router.get('/downloadfile/:id', controller.download)

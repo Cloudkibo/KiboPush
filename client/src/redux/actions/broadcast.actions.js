@@ -147,6 +147,23 @@ export function downloadFile (broadcast) {
   }
 }
 
+export function uploadRequest ({ file, name }) {
+  let data = new FormData()
+  data.append('file', document)
+  data.append('name', name)
+  return (dispatch) => {
+    callApi(`broadcasts/upload`, 'post', data).then(res => {
+        // dispatch(editBroadcast(res.payload));
+      console.log('Upload Action Response', res)
+      if (res.status === 'success') {
+        console.log('File Upload successfully')
+      } else {
+        console.log('Failed to upload')
+      }
+    })
+  }
+}
+
 export function sendBroadcast (data, msg) {
   console.log('Sending Broadcast')
   console.log(data)
@@ -156,10 +173,10 @@ export function sendBroadcast (data, msg) {
         console.log('Response got from sendConversation', res)
         if (res.status === 'success') {
           msg.success('Conversation successfully sent')
-          dispatch(sendBroadcastSuccess())
+          // dispatch(sendBroadcastSuccess())
         } else {
           msg.error('Failed to send conversation')
-          dispatch(sendBroadcastFailure())
+          // dispatch(sendBroadcastFailure())
         }
         dispatch(loadBroadcastsList())
       })
