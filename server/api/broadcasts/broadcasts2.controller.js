@@ -141,11 +141,12 @@ exports.upload = function (req, res) {
     (today.getMonth() + 1) + '' + today.getDate()
   serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
     today.getSeconds()
-  serverPath += '.' + req.files.file.type.split('/')[1]
+  let fext = req.files.file.name.split('.')
+  serverPath += '.' + fext[fext.length - 1]
 
   console.log(__dirname)
 
-  var dir = path.resolve(__dirname, '../../../broadcastFiles/')
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/')
 
   if (req.files.file.size === 0) {
     return res.status(400).json({
@@ -159,15 +160,26 @@ exports.upload = function (req, res) {
     dir + '/userfiles/' + serverPath,
     err => {
       if (err) {
-        return res.status(500)
-        .json({
+        console.log(err)
+        return res.status(500).json({
           status: 'failed',
           description: 'internal server error' + JSON.stringify(err)
         })
       }
 
       return res.status(201)
-      .json({status: 'success', payload: dir + '/userfiles/' + serverPath})
+        .json({status: 'success', payload: dir + '/userfiles/' + serverPath})
     }
   )
+}
+
+exports.download = function (req, res) {
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  try {
+    res.sendfile(req.params.id, {root: dir})
+  } catch (err) {
+    logger.serverLog(TAG,
+      `Inside Download file, err = ${JSON.stringify(err)}`)
+    res.status(201).json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
+  }
 }

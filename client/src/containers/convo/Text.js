@@ -7,12 +7,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
+import EditButton from './EditButton'
 
 class Text extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.handleChange = this.handleChange.bind(this)
     this.addButton = this.addButton.bind(this)
+    this.editButton = this.editButton.bind(this)
+    this.removeButton = this.removeButton.bind(this)
     this.state = {
       button: [],
       text: ''
@@ -43,6 +46,22 @@ class Text extends React.Component {
     this.setState({button: temp})
     this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
+  editButton (obj) {
+    var temp = this.state.button.map((elm, index) => {
+      if (index === obj.id) {
+        elm.title = obj.title
+        elm.url = obj.url
+      }
+      return elm
+    })
+    this.setState({button: temp})
+  }
+  removeButton (obj) {
+    console.log(obj)
+    var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
+    console.log('Filter', temp)
+    this.setState({button: temp})
+  }
 
   render () {
     return (
@@ -56,11 +75,12 @@ class Text extends React.Component {
         <div style={{marginBottom: '-7px'}}>
           <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25}} cols='37' placeholder='Enter your text...' />
         </div>
-        {(this.state.button) ? this.state.button.map((obj) => {
-          return <button className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{obj.title}</button>
+        {(this.state.button) ? this.state.button.map((obj, index) => {
+          return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button onAdd={this.addButton} />
+
         </div>
       </div>
     )

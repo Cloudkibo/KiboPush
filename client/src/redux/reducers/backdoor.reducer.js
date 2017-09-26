@@ -24,6 +24,17 @@ export function PagesInfo (state = initialState, action) {
       return Object.assign({}, state, {
         users: action.data
       })
+      default:
+        return state
+  }
+}
+
+export function broadcastsInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_BROADCASTS_LIST:
+      return Object.assign({}, state, {
+        broadcasts: action.data
+      })
 
     default:
       return state

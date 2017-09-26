@@ -126,17 +126,14 @@ class CreateConvo extends React.Component {
 
   handleFile (fileInfo) {
     this.setState({broadcast: fileInfo})
-    this.sendConvo()
   }
 
   handleAudio (fileInfo) {
     this.setState({broadcast: fileInfo})
-    this.sendConvo()
   }
 
   handleVideo (fileInfo) {
     this.setState({broadcast: fileInfo})
-    this.sendConvo()
   }
 
   sendConvo () {

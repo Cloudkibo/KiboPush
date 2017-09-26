@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
+//  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -39,7 +39,7 @@ class OperationalDashboard extends React.Component {
     document.body.appendChild(addScript)
   }
   displayData (n, users) {
-    console.log(users)
+    console.log('one', users)
     let offset = n * 4
     let data = []
     let limit
@@ -53,13 +53,13 @@ class OperationalDashboard extends React.Component {
       data[index] = users[i]
       index++
     }
-    this.setState({usersData: data})
+    console.log('data[index]', data)
+    this.setState({usersData: users})
+    console.log('in displayData', this.state.usersData)
   }
-
   handlePageClick (data) {
     this.displayData(data.selected, this.props.users)
   }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
@@ -67,6 +67,15 @@ class OperationalDashboard extends React.Component {
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
     }
+  }
+  goToBroadcasts (user) {
+    this.props.history.push({
+      pathname: `/seemore`,
+      state: [user._id, user.name]
+    })
+    console.log('State', this.state)
+    console.log('goToBroadcasts', user._id, user.name)
+    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
   render () {
     return (
@@ -82,7 +91,7 @@ class OperationalDashboard extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  { this.state.usersData && this.state.usersData.length > 0
                   ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -97,9 +106,11 @@ class OperationalDashboard extends React.Component {
                         this.state.usersData.map((user, i) => (
                           <tr>
                             <td>{user.name}</td>
-                            <td>{user.numberOfPages}</td>
-                            <td><Link to='/userDetails' component = { UserDetails } className='pull-right'>
-                              <button className='btn btn-primary btn-sm'>See more</button></Link>
+                            <td>{5}</td>
+                            <td>
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}>See more
+                              </button>
                             </td>
                           </tr>
                         ))
@@ -113,6 +124,7 @@ class OperationalDashboard extends React.Component {
                       pageCount={Math.ceil(this.state.totalLength / 4)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'} />
@@ -134,9 +146,10 @@ class OperationalDashboard extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('in mapStateToProps', state)
   return {
-    users: (state.UsersInfo.users)
+    users: state.UsersInfo.users
+  //  usersData: state.usersData
   }
 }
 
