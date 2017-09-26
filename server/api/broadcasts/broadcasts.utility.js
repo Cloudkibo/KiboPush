@@ -64,7 +64,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
             'elements': [
               {
                 'title': body.title,
-                'image_url': 'https://visualhunt.com/photos/l/7/details-studies-book.jpg', // body.fileurl,
+                'image_url': body.fileurl,
                 'subtitle': body.description,
                 'buttons': body.buttons
               }

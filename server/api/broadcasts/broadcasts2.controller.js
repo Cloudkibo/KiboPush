@@ -179,7 +179,7 @@ exports.download = function (req, res) {
     res.sendfile(req.params.id, {root: dir})
   } catch (err) {
     logger.serverLog(TAG,
-      `Inside Send conversation, req body = ${JSON.stringify(err)}`)
+      `Inside Download file, err = ${JSON.stringify(err)}`)
     res.status(201).json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
   }
 }
