@@ -166,8 +166,8 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-
-      return res.status(201).json({status: 'success', payload: serverPath})
+      return res.status(201)
+        .json({status: 'success', payload: serverPath})
     }
   )
 }
