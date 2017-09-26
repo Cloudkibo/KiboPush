@@ -46,13 +46,12 @@ class EditButton extends React.Component {
   }
 
   handleDone () {
+    this.setState({openPopover: false})
     this.props.onEdit({
-      id: this.props.id,
+      id: this.props.data.id,
       url: this.state.url, // User defined link,
       title: this.state.title // User defined label
     })
-
-    this.setState({openPopover: false})
   }
 
   changeTitle (event) {

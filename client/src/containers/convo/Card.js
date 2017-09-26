@@ -78,7 +78,14 @@ class Card extends React.Component {
   }
 
   editButton (obj) {
-    console.log(obj)
+    var temp = this.state.button.map((elm, index) => {
+      if (index === obj.id) {
+        elm.title = obj.title
+        elm.url = obj.url
+      }
+      return elm
+    })
+    this.setState({button: temp})
   }
   removeButton (obj) {
     console.log(obj)
