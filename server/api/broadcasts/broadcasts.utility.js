@@ -85,32 +85,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
           'type': 'template',
           'payload': {
             'template_type': 'generic',
-            'elements': [
-              {
-                'title': 'Welcome to KiboPush',
-                'image_url': 'https://visualhunt.com/photos/l/7/details-studies-book.jpg',
-                'subtitle': 'Send broadcast to your page audience.',
-                'buttons': [
-                  {
-                    'type': 'web_url',
-                    'url': 'http://kibopush.com',
-                    'title': 'View Website'
-                  }
-                ]
-              },
-              {
-                'title': 'Welcome to KiboEngage',
-                'image_url': 'https://visualhunt.com/photos/l/7/details-studies-book.jpg',
-                'subtitle': 'Engage your customers. Give them real time support.',
-                'buttons': [
-                  {
-                    'type': 'web_url',
-                    'url': 'http://kiboengage.kibosupport.com',
-                    'title': 'View Website'
-                  }
-                ]
-              }
-            ]
+            'elements': body.cards
           }
         }
       })
