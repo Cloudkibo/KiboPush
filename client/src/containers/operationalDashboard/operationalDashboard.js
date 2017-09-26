@@ -91,7 +91,7 @@ class OperationalDashboard extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  { this.state.usersData && this.state.usersData.length > 0
+                  { this.props.usersData && this.props.usersData.length > 0
                   ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
@@ -103,9 +103,8 @@ class OperationalDashboard extends React.Component {
                       </thead>
                       <tbody>
                         {
-                        this.state.usersData.map((user, i) => (
-                          user
-                          ? <tr>
+                        this.props.usersData.map((user) => (
+                          <tr>
                             <td>{user.name}</td>
                             <td>{5}</td>
                             <td>
@@ -114,9 +113,6 @@ class OperationalDashboard extends React.Component {
                               </button>
                             </td>
                           </tr>
-                          : <div className='table-responsive'>
-                            <p> No data map </p>
-                          </div>
                         ))
                       }
                       </tbody>
@@ -152,7 +148,8 @@ class OperationalDashboard extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    users: (state.UsersInfo.users)
+    users: state.UsersInfo.users,
+    usersData: state.usersData
   }
 }
 
