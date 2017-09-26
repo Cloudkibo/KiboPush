@@ -61,7 +61,7 @@ class Card extends React.Component {
     console.log(url) // Would see a path?
     console.log("Card Image in OnChange", file)
     this.props.uploadImage(file, {fileurl: '',
-     fileName: file.fileName,
+     fileName: file.name,
      type: file.type, 
      size: file.size}, this.updateImageUrl)
   }
