@@ -73,6 +73,7 @@ class OperationalDashboard extends React.Component {
       pathname: `/seemore`,
       state: [user._id, user.name]
     })
+    console.log('State', this.state)
     console.log('goToBroadcasts', user._id, user.name)
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
