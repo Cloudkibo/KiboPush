@@ -46,6 +46,6 @@ export function loadBroadcastsList (id) {
   console.log('loadBroadcastsList called', id)
   return (dispatch) => {
     callApi(`backdoor/allbroadcasts/${id}`)
-      .then(res => dispatch(updateBroadcastsList(res.payload)))
+      .then(res => dispatch(updateBroadcastsList(res)))
   }
 }
