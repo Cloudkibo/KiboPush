@@ -114,7 +114,7 @@ class CreateConvo extends React.Component {
           data.type = obj.type
           data.title = obj.title
           data.buttons = obj.buttons
-          data.description = obj.subtitle
+          data.description = obj.description
           isPresent = true
       }
     })
