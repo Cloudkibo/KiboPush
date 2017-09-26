@@ -70,8 +70,8 @@ class OperationalDashboard extends React.Component {
   }
   goToBroadcasts (user) {
     this.props.history.push({
-      pathname: `/seemore`,
-      state: [user._id, user.name]
+      pathname: `/userBroadcasts`,
+      state: user._id
     })
     console.log('State', this.state)
     console.log('goToBroadcasts', user._id, user.name)
@@ -117,7 +117,7 @@ class OperationalDashboard extends React.Component {
                             <td>{user.createdAt}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}>See more
+                                style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
                               </button>
                             </td>
                           </tr>
