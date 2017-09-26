@@ -123,7 +123,21 @@ class CreateConvo extends React.Component {
   }
 
   handleImage(obj){
-    console.log("Image Uploaded", obj)
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data = obj
+        isPresent = true
+      }
+    })
+
+    if (!isPresent) {
+      temp.push(obj)
+    }
+
+    this.setState({broadcast: temp})
+    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
