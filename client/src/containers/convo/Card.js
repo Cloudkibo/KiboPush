@@ -90,7 +90,7 @@ class Card extends React.Component {
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
      fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: event.target.value, buttons: this.state.button})
+     description: this.state.subtitle, buttons: this.state.button})
   }
 
   editButton (obj) {
@@ -104,7 +104,7 @@ class Card extends React.Component {
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
      fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: event.target.value, buttons: this.state.button})
+     description: this.state.subtitle, buttons: this.state.button})
   }
   removeButton (obj) {
     console.log(obj)
@@ -113,7 +113,7 @@ class Card extends React.Component {
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
      fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: event.target.value, buttons: this.state.button})
+     description: this.state.subtitle, buttons: this.state.button})
   }
 
   updateImageUrl(data){
