@@ -96,8 +96,11 @@ class OperationalDashboard extends React.Component {
                     <table className='table table-striped'>
                       <thead>
                         <tr>
+                          <th>Profile Pic</th>
                           <th>Users</th>
-                          <th>Number of Pages</th>
+                          <th>Email</th>
+                          <th>Gender</th>
+                          <th>Created At</th>
                           <th />
                         </tr>
                       </thead>
@@ -105,8 +108,13 @@ class OperationalDashboard extends React.Component {
                         {
                         this.state.usersData.map((user, i) => (
                           <tr>
+                            <td><img alt='pic'
+                              src={(user.profilePic) ? user.profilePic : ''}
+                              className='img-circle' width='60' height='60' /></td>
                             <td>{user.name}</td>
-                            <td>{5}</td>
+                            <td>{user.email}</td>
+                            <td>{user.gender}</td>
+                            <td>{user.createdAt}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}>See more
