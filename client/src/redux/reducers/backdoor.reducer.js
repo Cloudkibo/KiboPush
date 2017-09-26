@@ -29,7 +29,7 @@ export function PagesInfo (state = initialState, action) {
   }
 }
 
-export function BroadcastsInfo (state = initialState, action) {
+export function broadcastsInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_BROADCASTS_LIST:
       return Object.assign({}, state, {
