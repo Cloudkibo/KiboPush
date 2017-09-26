@@ -11,7 +11,6 @@ import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
 
 class UserDetails extends React.Component {
-
   render () {
     return (
       <div>
@@ -20,8 +19,8 @@ class UserDetails extends React.Component {
         <Sidebar />
         <Responsive />
         <div className='container'>
-        <br /><br /><br /><br /><br /><br />
-        <h3>Sania Siddiqui</h3>
+          <br /><br /><br /><br /><br /><br />
+          <h3>Sania Siddiqui</h3>
           <PagesInfo />
           <BroadcastsInfo />
           <SurveysInfo />
@@ -34,7 +33,7 @@ class UserDetails extends React.Component {
 
 export default UserDetails
 
-/*function mapStateToProps (state) {
+/* function mapStateToProps (state) {
   console.log(state.PagesInfo.pages)
   return {
     pages: (state.PagesInfo.pages)
@@ -45,4 +44,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({ loadPagesList: loadPagesList},
     dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Seemore)*/
+export default connect(mapStateToProps, mapDispatchToProps)(Seemore) */

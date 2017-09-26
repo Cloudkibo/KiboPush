@@ -21,7 +21,7 @@ export function updatePagesList (data) {
   console.log('Users Created Pages', data)
   return {
     type: ActionTypes.LOAD_PAGES_LIST,
-    data.payload
+    data: data.payload
   }
 }
 
@@ -36,10 +36,10 @@ export function loadPagesList () {
 export function updateBroadcastsList (data) {
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
-    data.payload
+    data: data.payload
   }
 }
-    
+
 export function loadBroadcastsList (id) {
   // surveyid is the _id of survey
   console.log('loadBroadcastsList called')

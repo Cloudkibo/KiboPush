@@ -24,8 +24,8 @@ export function PagesInfo (state = initialState, action) {
       return Object.assign({}, state, {
         users: action.data
       })
-      default:
-        return state
+    default:
+      return state
   }
 }
 
