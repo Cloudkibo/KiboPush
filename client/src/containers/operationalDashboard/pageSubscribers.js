@@ -5,7 +5,8 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
-class SeeSubscribers extends React.Component {
+
+class PageSubscribers extends React.Component {
   render () {
     return (
       <div>
@@ -77,4 +78,4 @@ class SeeSubscribers extends React.Component {
     )
   }
 }
-export default SeeSubscribers
+export default PageSubscribers

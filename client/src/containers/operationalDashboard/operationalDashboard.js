@@ -98,7 +98,7 @@ class OperationalDashboard extends React.Component {
                           <tr>
                             <td>{user.name}</td>
                             <td>{user.numberOfPages}</td>
-                            <td><Link to='/seemore' className='pull-right'>
+                            <td><Link to='/userDetails' component = { UserDetails } className='pull-right'>
                               <button className='btn btn-primary btn-sm'>See more</button></Link>
                             </td>
                           </tr>
