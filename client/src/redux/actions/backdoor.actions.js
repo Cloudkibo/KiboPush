@@ -5,7 +5,7 @@ export function updateUsersList (data) {
   console.log('Data Fetched From Users', data)
   return {
     type: ActionTypes.LOAD_USERS_LIST,
-    data
+    data: data.payload
   }
 }
 
