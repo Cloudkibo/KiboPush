@@ -46,9 +46,9 @@ export function uploadImage (file, data, handleUpload) {
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
-    }).then((res) => res.json()).then((res) => res).then(res => 
-       handleUpload({id: data.id, url: res.payload})
-      // dispatch(addFileUrl(res.payload))
-    )
+    }).then((res) => res.json()).then((res) => res).then(res => {
+       data.fileurl = 'https://app.kibopush.com/api/broadcasts/download/' + res.payload
+       handleUpload(data)
+    })
   }
 }
