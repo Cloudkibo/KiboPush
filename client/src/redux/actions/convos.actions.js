@@ -16,6 +16,13 @@ export function uploadFile (filedata) {
   }
 }
 
+export function handleFile (fileInfo) {
+  return {
+    type: ActionTypes.ADD_FILE_INFO,
+    fileInfo
+  }
+}
+
 export function addFileUrl (fileUrl) {
   console.log(fileUrl)
   return {
