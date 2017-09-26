@@ -176,7 +176,7 @@ exports.upload = function (req, res) {
 exports.download = function (req, res) {
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   try {
-    res.sendfile(req.params.fileid, {root: dir})
+    res.sendfile(req.params.id, {root: dir})
   } catch (err) {
     logger.serverLog(TAG,
       `Inside Send conversation, req body = ${JSON.stringify(err)}`)

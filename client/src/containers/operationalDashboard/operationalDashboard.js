@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
+//  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -39,7 +39,7 @@ class OperationalDashboard extends React.Component {
     document.body.appendChild(addScript)
   }
   displayData (n, users) {
-    console.log(users)
+    console.log('one', users)
     let offset = n * 4
     let data = []
     let limit
@@ -53,7 +53,8 @@ class OperationalDashboard extends React.Component {
       data[index] = users[i]
       index++
     }
-    this.setState({usersData: data})
+    console.log('data[index]', data)
+    this.setState({usersData: users})
     console.log('in displayData', this.state.usersData)
   }
   handlePageClick (data) {
@@ -66,6 +67,15 @@ class OperationalDashboard extends React.Component {
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
     }
+  }
+  goToBroadcasts (user) {
+    this.props.history.push({
+      pathname: `/seemore`,
+      state: [user._id, user.name]
+    })
+    console.log('State', this.state)
+    console.log('goToBroadcasts', user._id, user.name)
+    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
   render () {
     return (
@@ -98,8 +108,10 @@ class OperationalDashboard extends React.Component {
                           ? <tr>
                             <td>{user.name}</td>
                             <td>{5}</td>
-                            <td><Link to='/seemore' className='pull-right'>
-                              <button className='btn btn-primary btn-sm'>See more</button></Link>
+                            <td>
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}>See more
+                              </button>
                             </td>
                           </tr>
                           : <div className='table-responsive'>
