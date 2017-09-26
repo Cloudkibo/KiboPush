@@ -168,7 +168,7 @@ exports.upload = function (req, res) {
       }
 
       return res.status(201)
-        .json({status: 'success', payload: dir + '/userfiles/' + serverPath})
+        .json({status: 'success', payload: serverPath})
     }
   )
 }
