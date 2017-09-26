@@ -17,12 +17,29 @@ export function loadUsersList () {
   }
 }
 
+export function updatePagesList (data) {
+  console.log('Users Created Pages', data)
+  return {
+    type: ActionTypes.LOAD_PAGES_LIST,
+    data.payload
+  }
+}
+
+export function loadPagesList () {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPagesList called')
+  return (dispatch) => {
+    callApi('backdoor/allpages').then(res => dispatch(updatePagesList(res)))
+  }
+}
+
 export function updateBroadcastsList (data) {
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
-    data
+    data.payload
   }
 }
+    
 export function loadBroadcastsList (id) {
   // surveyid is the _id of survey
   console.log('loadBroadcastsList called')
