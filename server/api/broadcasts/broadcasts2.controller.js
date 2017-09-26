@@ -167,8 +167,7 @@ exports.upload = function (req, res) {
         })
       }
 
-      return res.status(201)
-        .json({status: 'success', payload: serverPath})
+      return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
 }
@@ -180,6 +179,25 @@ exports.download = function (req, res) {
   } catch (err) {
     logger.serverLog(TAG,
       `Inside Download file, err = ${JSON.stringify(err)}`)
-    res.status(201).json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
+    res.status(201)
+      .json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
   }
+}
+
+exports.delete = function (req, res) {
+  logger.serverLog(TAG,
+    `Inside delete file Broadcast`)
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  // unlink file
+  fs.unlink(dir + req.params.id, function (err) {
+    if (err) {
+      logger.serverLog(TAG, err)
+      return res.status(404)
+        .json({status: 'failed', description: 'File not found'})
+    } else {
+      logger.serverLog(TAG, 'file deleted')
+      return res.status(200)
+        .json({status: 'failed', payload: 'File deleted successfully'})
+    }
+  })
 }
