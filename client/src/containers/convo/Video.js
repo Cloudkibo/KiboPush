@@ -12,7 +12,7 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
-import { uploadFile } from '../../redux/actions/convos.actions'
+import { uploadFile, handleFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -64,16 +64,16 @@ class Video extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      this.props.uploadFile(fileData)
       var fileInfo = {
-        componentType: 'file',
+        componentType: 'video',
         fileName: file.name,
-        fileurl: this.props.fileUrl,
+        fileurl: '',
         type: file.type,
         size: file.size
       }
       console.log(fileInfo)
-      this.props.handleVideo(fileInfo)
+      this.props.handleFile(fileInfo)
+      this.props.uploadFile(fileData)
     }
   }
 
@@ -140,7 +140,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    handleFile: handleFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Video)
