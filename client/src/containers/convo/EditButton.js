@@ -8,13 +8,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
 
-class Button extends React.Component {
+class EditButton extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       openPopover: false,
-      title: '',
-      url: ''
+      title: this.props.data.title,
+      url: this.props.data.url
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -42,17 +42,17 @@ class Button extends React.Component {
   }
 
   handleClose (e) {
-    this.setState({openPopover: false, title: '', url: ''})
+    this.setState({openPopover: false})
   }
 
   handleDone () {
-    this.props.onAdd({
-      type: 'web_url',
+    this.props.onEdit({
+      id: this.props.id,
       url: this.state.url, // User defined link,
       title: this.state.title // User defined label
     })
 
-    this.setState({openPopover: false, title: '', url: ''})
+    this.setState({openPopover: false})
   }
 
   changeTitle (event) {
@@ -63,10 +63,19 @@ class Button extends React.Component {
     this.setState({url: event.target.value})
   }
 
+  handleRemove () {
+    this.props.onRemove({
+      id: this.props.data.id,
+      url: this.state.url, // User defined link,
+      title: this.state.title // User defined label
+    })
+    this.setState({openPopover: false})
+  }
+
   render () {
     return (
-      <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-        <h6 onClick={this.handleClick}> + Add Button </h6>
+      <div id='target' ref={(b) => { this.target = b }} className='align-center'>
+        <button onClick={this.handleClick} className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.title}</button>
         <Popover
           style={{width: '300px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
           placement='right'
@@ -74,12 +83,13 @@ class Button extends React.Component {
           show={this.state.openPopover}
           onHide={this.handleClose} >
           <div className='card'>
-            <h5 className='card-header'> Add Button </h5>
+            <h5 className='card-header'> Edit Button </h5>
+            <button onClick={this.handleRemove.bind(this)} className='btn btn-primary btn-sm pull-right'> Remove Button </button>
             <div className='card-block'>
               <h7 className='card-text'> Button Title: </h7>
-              <input type='text' onChange={this.changeTitle} />
+              <input type='text' value={this.state.title} onChange={this.changeTitle} />
               <h7 className='card-text'> Open this website when user press this button: </h7>
-              <input type='text' onChange={this.changeUrl} placeholder='Enter a link...' />
+              <input type='text' value={this.state.url} onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
@@ -99,4 +109,4 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({}, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Button)
+export default connect(mapStateToProps, mapDispatchToProps)(EditButton)

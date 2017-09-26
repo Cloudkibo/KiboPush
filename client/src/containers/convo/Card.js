@@ -7,16 +7,21 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
+import EditButton from './EditButton'
 
 class Card extends React.Component {
   constructor (props, context) {
     super(props, context)
     this._onChange = this._onChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.addButton = this.addButton.bind(this)
     this.handleSubtitle = this.handleSubtitle.bind(this)
+    this.editButton = this.editButton.bind(this)
+    this.removeButton = this.removeButton.bind(this)
     this.state = {
       imgSrc: '',
       title: '',
+      button: [],
       subtitle: ''
     }
   }
@@ -52,17 +57,34 @@ class Card extends React.Component {
   }
 
   handleChange (event) {
-    this.props.handleCard({id: this.props.id, title: event.target.value, subtitle: this.state.subtitle, imgSrc: this.state.imgSrc})
+    this.props.handleCard({id: this.props.id, title: event.target.value, subtitle: this.state.subtitle, imgSrc: this.state.imgSrc, button: this.state.button})
     this.setState({
       title: event.target.value
     })
   }
 
   handleSubtitle (event) {
-    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc})
+    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc, button: this.state.button})
     this.setState({
       subtitle: event.target.value
     })
+  }
+
+  addButton (obj) {
+    var temp = this.state.button
+    temp.push(obj)
+    this.setState({button: temp})
+    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc, button: this.state.button})
+  }
+
+  editButton (obj) {
+    console.log(obj)
+  }
+  removeButton (obj) {
+    console.log(obj)
+    var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
+    console.log('Filter', temp)
+    this.setState({button: temp})
   }
 
   render () {
@@ -96,8 +118,11 @@ class Card extends React.Component {
             <textarea onChange={this.handleSubtitle} style={{borderStyle: 'none'}} rows='2' cols='37' placeholder='Enter subtitle...' />
           </div>
         </div>
+        {(this.state.button) ? this.state.button.map((obj, index) => {
+          return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
+        }) : ''}
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <Button />
+          <Button onAdd={this.addButton} />
         </div>
       </div>
     )

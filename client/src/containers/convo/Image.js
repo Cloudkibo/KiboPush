@@ -10,7 +10,8 @@ import {
   addBroadcast,
   clearAlertMessage,
   loadBroadcastsList,
-  sendbroadcast
+  sendbroadcast,
+  uploadRequest
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 
@@ -50,6 +51,10 @@ class Image extends React.Component {
       })
     }.bind(this)
     console.log(url) // Would see a path?
+    this.props.uploadRequest({
+      file,
+      name: 'Awesome Cat Pic'
+    })
   // TODO: concat files
   }
 
@@ -101,7 +106,8 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    uploadRequest: uploadRequest
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)
