@@ -125,6 +125,7 @@ class CreateConvo extends React.Component {
   }
 
   handleFile (fileInfo) {
+    console.log('file url: ', this.props.fileUrl)
     fileInfo.fileurl = this.props.fileUrl
     console.log(fileInfo)
     this.setState({broadcast: fileInfo})
