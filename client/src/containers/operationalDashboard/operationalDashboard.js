@@ -103,7 +103,7 @@ class OperationalDashboard extends React.Component {
                       </thead>
                       <tbody>
                         {
-                        this.props.usersData.map((user) => (
+                        this.props.usersData.map((user, i) => (
                           <tr>
                             <td>{user.name}</td>
                             <td>{5}</td>
