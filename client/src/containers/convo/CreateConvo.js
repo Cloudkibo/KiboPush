@@ -67,7 +67,9 @@ class CreateConvo extends React.Component {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
     if (nextProps.fileInfo) {
-      this.setState({broadcast: nextProps.fileInfo})
+      var temp = this.state.broadcast
+      temp.push(nextProps.fileInfo)
+      this.setState({broadcast: temp})
     }
   }
 
