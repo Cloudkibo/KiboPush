@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-//  import { Link } from 'react-router'
+import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -70,8 +70,8 @@ class OperationalDashboard extends React.Component {
   }
   goToBroadcasts (user) {
     this.props.history.push({
-      pathname: `/userBroadcasts`,
-      state: user._id
+      pathname: `/userDetails`,
+      state: [user._id, user.name]
     })
     console.log('State', this.state)
     console.log('goToBroadcasts', user._id, user.name)
@@ -119,6 +119,7 @@ class OperationalDashboard extends React.Component {
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
                               </button>
+                              </Link>
                             </td>
                           </tr>
                         ))
