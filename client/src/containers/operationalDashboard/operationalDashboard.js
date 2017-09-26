@@ -70,8 +70,8 @@ class OperationalDashboard extends React.Component {
   }
   goToBroadcasts (user) {
     this.props.history.push({
-      pathname: `/seemore`,
-      state: [user._id, user.name]
+      pathname: `/userBroadcasts`,
+      state: user._id
     })
     console.log('State', this.state)
     console.log('goToBroadcasts', user._id, user.name)
@@ -96,8 +96,11 @@ class OperationalDashboard extends React.Component {
                     <table className='table table-striped'>
                       <thead>
                         <tr>
+                          <th>Profile Pic</th>
                           <th>Users</th>
-                          <th>Number of Pages</th>
+                          <th>Email</th>
+                          <th>Gender</th>
+                          <th>Created At</th>
                           <th />
                         </tr>
                       </thead>
@@ -105,11 +108,16 @@ class OperationalDashboard extends React.Component {
                         {
                         this.state.usersData.map((user, i) => (
                           <tr>
+                            <td><img alt='pic'
+                              src={(user.profilePic) ? user.profilePic : ''}
+                              className='img-circle' width='60' height='60' /></td>
                             <td>{user.name}</td>
-                            <td>{5}</td>
+                            <td>{user.email}</td>
+                            <td>{user.gender}</td>
+                            <td>{user.createdAt}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}>See more
+                                style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
                               </button>
                             </td>
                           </tr>
@@ -121,8 +129,8 @@ class OperationalDashboard extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a href=''>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
+                      marginPagesDisplayed={2}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
