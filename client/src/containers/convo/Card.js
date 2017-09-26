@@ -24,7 +24,11 @@ class Card extends React.Component {
       imgSrc: '',
       title: '',
       button: [],
-      subtitle: ''
+      subtitle: '',
+      fileurl: '',
+      fileName: '',
+      type: '',
+      size: '',
     }
   }
 
@@ -49,26 +53,32 @@ class Card extends React.Component {
     var url = reader.readAsDataURL(file)
 
     reader.onloadend = function (e) {
-      this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
+      // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
       this.setState({
         imgSrc: [reader.result]
       })
     }.bind(this)
     console.log(url) // Would see a path?
-    
     console.log("Card Image in OnChange", file)
-    this.props.uploadImage(file, {}, this.updateImageUrl)
+    this.props.uploadImage(file, {fileurl: '',
+     fileName: file.fileName,
+     type: file.type, 
+     size: file.size}, this.updateImageUrl)
   }
 
   handleChange (event) {
-    this.props.handleCard({id: this.props.id, title: event.target.value, subtitle: this.state.subtitle, imgSrc: this.state.imgSrc, button: this.state.button})
+    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: event.target.value,
+     description: this.state.subtitle, buttons: this.state.button})
     this.setState({
       title: event.target.value
     })
   }
 
   handleSubtitle (event) {
-    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc, button: this.state.button})
+    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
+     description: event.target.value, buttons: this.state.button})
     this.setState({
       subtitle: event.target.value
     })
@@ -78,7 +88,9 @@ class Card extends React.Component {
     var temp = this.state.button
     temp.push(obj)
     this.setState({button: temp})
-    this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: event.target.value, imgSrc: this.state.imgSrc, button: this.state.button})
+    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
+     description: event.target.value, buttons: this.state.button})
   }
 
   editButton (obj) {
@@ -90,16 +102,30 @@ class Card extends React.Component {
       return elm
     })
     this.setState({button: temp})
+    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
+     description: event.target.value, buttons: this.state.button})
   }
   removeButton (obj) {
     console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     console.log('Filter', temp)
     this.setState({button: temp})
+    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
+     description: event.target.value, buttons: this.state.button})
   }
 
   updateImageUrl(data){
-    console.log("Update Card Image Url", data.fileurl)
+    console.log("Update Card Image Url", )
+    this.setState({ fileurl: 'https://app.kibopush.com/api/broadcasts/download/' + data.fileurl,
+                    fileName: file.fileName,
+                    type: file.type, 
+                    size: file.size })
+
+   this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
+     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
+     description: event.target.value, buttons: this.state.button})
   }
 
   render () {

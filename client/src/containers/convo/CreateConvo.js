@@ -108,17 +108,13 @@ class CreateConvo extends React.Component {
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
-        data.title = obj.title
-        data.imgSrc = obj.imgSrc
-        data.subtitle = obj.subtitle
-        isPresent = true
+          data = obj
+          isPresent = true
       }
     })
-
     if (!isPresent) {
-      temp.push({id: obj.id, title: obj.title, subtitle: obj.subtitle, imgSrc: obj.imgSrc})
+      temp.push(obj)
     }
-
     this.setState({broadcast: temp})
   }
 
