@@ -37,7 +37,8 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
-    let fileReaderStream = fs.createReadStream(body.fileurl)
+    let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+    let fileReaderStream = fs.createReadStream(dir + body.fileurl)
     payload = {
       'recipient': JSON.stringify({
         'id': subscriberId
