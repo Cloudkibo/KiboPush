@@ -31,12 +31,12 @@ export function addFileUrl (fileUrl) {
   }
 }
 
-export function uploadImage (image) {
+export function uploadImage (data) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {
       method: 'post',
-      body: image,
+      body: data,
       // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`

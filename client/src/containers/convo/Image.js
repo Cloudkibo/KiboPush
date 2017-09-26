@@ -60,7 +60,7 @@ class Image extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-    this.props.uploadRequest(fileData)
+      this.props.uploadImage(fileData)
 
     
   // TODO: concat files
@@ -115,7 +115,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadRequest: uploadRequest
+    uploadRequest: uploadRequest,
+    uploadImage: uploadImage,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)
