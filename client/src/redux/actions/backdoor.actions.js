@@ -42,10 +42,9 @@ export function updateBroadcastsList (data) {
 }
 
 export function loadBroadcastsList (id) {
-  // surveyid is the _id of survey
   console.log('loadBroadcastsList called', id)
   return (dispatch) => {
     callApi(`backdoor/allbroadcasts/${id}`)
-      .then(res => dispatch(updateBroadcastsList(res.payload)))
+      .then(res => dispatch(updateBroadcastsList(res)))
   }
 }
