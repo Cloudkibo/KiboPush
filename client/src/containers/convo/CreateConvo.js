@@ -38,7 +38,6 @@ class CreateConvo extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
-    this.handleFile = this.handleFile.bind(this)
     this.handleAudio = this.handleAudio.bind(this)
     this.handleVideo = this.handleVideo.bind(this)
     this.newConvo = this.newConvo.bind(this)
