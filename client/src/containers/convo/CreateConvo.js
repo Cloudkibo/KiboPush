@@ -108,7 +108,7 @@ class CreateConvo extends React.Component {
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
-          data = obj
+          data = {...obj}
           isPresent = true
       }
     })
