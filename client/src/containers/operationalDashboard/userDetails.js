@@ -80,7 +80,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>Sania Siddiqui</h3>
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} />
+          <PagesInfo />
           <BroadcastsInfo userID={this.props.location.state} />
           <SurveysInfo />
           <PollsInfo />

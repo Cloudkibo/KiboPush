@@ -52,12 +52,12 @@ class BroadcastsInfo extends React.Component {
     console.log('in displayData', this.state.usersData)
   }
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.users)
+    this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
+    console.log('userbroadcasts componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
-      console.log('Users Updated', nextProps.broadcasts)
+      console.log('Broadcasts Updated', nextProps.broadcasts)
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
@@ -118,9 +118,9 @@ class BroadcastsInfo extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('user broadcasts', state)
   return {
-    broadcasts: (state.broadcastsInfo.broadcasts)
+    broadcasts: state.broadcastsInfo.broadcasts
   }
 }
 
