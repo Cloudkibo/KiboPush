@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
+//  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -70,7 +70,7 @@ class OperationalDashboard extends React.Component {
   }
   goToBroadcasts (user) {
     this.props.history.push({
-      pathname: `/userBroadcasts`,
+      pathname: `/userDetails`,
       state: user._id
     })
     console.log('State', this.state)

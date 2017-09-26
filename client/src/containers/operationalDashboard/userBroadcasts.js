@@ -6,8 +6,16 @@ import { bindActionCreators } from 'redux'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', this.props.location.state)    //  props.loadBroadcastsList(props.location.this.state)
+    console.log('constructor', this.userID)
+    props.loadBroadcastsList(this.userID)
+    this.state = {
+      broadcastsData: [],
+      totalLength: 0
+    }
+    //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
   }
   componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail')
@@ -24,6 +32,36 @@ class BroadcastsInfo extends React.Component {
     document.body.appendChild(addScript)
     console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
+  displayData (n, broadcasts) {
+    console.log('one', broadcasts)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > broadcasts.length) {
+      limit = broadcasts.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = broadcasts[i]
+      index++
+    }
+    console.log('data[index]', data)
+    this.setState({broadcastsData: broadcasts})
+    console.log('in displayData', this.state.usersData)
+  }
+  handlePageClick (data) {
+    this.displayData(data.selected, this.props.users)
+  }
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+    if (nextProps.broadcasts) {
+      console.log('Users Updated', nextProps.broadcasts)
+      this.displayData(0, nextProps.broadcasts)
+      this.setState({ totalLength: nextProps.broadcasts.length })
+    }
+  }
   render () {
     return (
       <div className='row'>
@@ -31,7 +69,7 @@ class BroadcastsInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Broadcasts</h4><br />
-              { this.props.location.state
+              { this.state.broadcastsData && this.state.broadcastsData.length > 0
               ? <div className='table-responsive'>
                 <table className='table table-striped'>
                   <thead>
@@ -45,7 +83,7 @@ class BroadcastsInfo extends React.Component {
                   </thead>
                   <tbody>
                     {
-                    this.props.location.state.map((broadcast, i) => (
+                    this.state.usersData.map((broadcast, i) => (
                       <tr>
                         <td>{broadcast.platform}</td>
                         <td>{broadcast.type}</td>

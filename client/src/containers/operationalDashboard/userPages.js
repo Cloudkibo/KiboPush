@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router'
-
 class PagesInfo extends React.Component {
   render () {
     return (
@@ -43,7 +42,7 @@ class PagesInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={Math.ceil(length / 4)}
+                  pageCount={Math.ceil(this.length / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
                   onPageChange={this.handlePageClick}
