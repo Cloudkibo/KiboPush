@@ -31,20 +31,24 @@ export function addFileUrl (fileUrl) {
   }
 }
 
-export function uploadImage (data) {
+export function uploadImage (file, data, handleUpload) {
+    var fileData = new FormData()
+    fileData.append('file', file)
+    fileData.append('filename', file.name)
+    fileData.append('filetype', file.type)
+    fileData.append('filesize', file.size)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {
       method: 'post',
-      body: data,
+      body: fileData,
       // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => 
-       console.log("Image Upload Response", res.payload)
+       handleUpload({id: data.id, url: res.payload})
       // dispatch(addFileUrl(res.payload))
-    
     )
   }
 }

@@ -36,6 +36,7 @@ class CreateConvo extends React.Component {
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.handleImage = this.handleImage.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
@@ -121,6 +122,10 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  handleImage(obj){
+    console.log("Image Uploaded", obj)
+  }
+
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     this.setState({list: temp})
@@ -191,7 +196,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/picture.png' alt='Image' style={{maxHeight: 40}} />
                       <h5>Image</h5>

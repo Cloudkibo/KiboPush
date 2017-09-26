@@ -55,13 +55,7 @@ class Image extends React.Component {
     console.log(url) // Would see a path?
 
     console.log("Images in OnChange", file)
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      this.props.uploadImage(fileData)
-
+    this.props.uploadImage(file, {id: this.props.id}, this.props.handleImage)
     
   // TODO: concat files
   }
