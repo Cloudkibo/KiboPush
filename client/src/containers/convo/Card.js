@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
+import { uploadImage } from '../../redux/actions/convos.actions'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -18,6 +19,7 @@ class Card extends React.Component {
     this.handleSubtitle = this.handleSubtitle.bind(this)
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
+    this.updateImageUrl = this.updateImageUrl.bind(this)
     this.state = {
       imgSrc: '',
       title: '',
@@ -53,7 +55,9 @@ class Card extends React.Component {
       })
     }.bind(this)
     console.log(url) // Would see a path?
-  // TODO: concat files
+    
+    console.log("Card Image in OnChange", file)
+    this.props.uploadImage(file, {}, this.updateImageUrl)
   }
 
   handleChange (event) {
@@ -92,6 +96,10 @@ class Card extends React.Component {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     console.log('Filter', temp)
     this.setState({button: temp})
+  }
+
+  updateImageUrl(data){
+    console.log("Update Card Image Url", data.fileurl)
   }
 
   render () {
@@ -142,6 +150,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({uploadImage: uploadImage,}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Card)
