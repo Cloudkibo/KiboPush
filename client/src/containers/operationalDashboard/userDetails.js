@@ -81,7 +81,7 @@ class UserDetails extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <h3>Sania Siddiqui</h3>
           <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} />
-          <BroadcastsInfo />
+          <BroadcastsInfo userID={this.props.location.state} />
           <SurveysInfo />
           <PollsInfo />
         </div>
