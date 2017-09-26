@@ -68,7 +68,7 @@ class File extends React.Component {
       var fileInfo = {
         componentType: 'file',
         fileName: file.name,
-        fileurl: this.props.fileUrl,
+        fileurl: '',
         type: file.type,
         size: file.size
       }
