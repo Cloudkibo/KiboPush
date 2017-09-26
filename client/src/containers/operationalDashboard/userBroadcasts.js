@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', this.userID)
-    props.loadBroadcastsList(this.userID)
+    console.log('constructor', props.userID)
+    props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
       totalLength: 0
