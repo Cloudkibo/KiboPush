@@ -6,8 +6,7 @@ import { bindActionCreators } from 'redux'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', props.location.this.state)
-    props.loadBroadcastsList(props.location.this.state)
+    console.log('constructor', this.props.location.state)    //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
   }
   componentDidMount () {
@@ -32,7 +31,7 @@ class BroadcastsInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Broadcasts</h4><br />
-              { this.props.broadcasts
+              { this.props.location.state
               ? <div className='table-responsive'>
                 <table className='table table-striped'>
                   <thead>
@@ -46,7 +45,7 @@ class BroadcastsInfo extends React.Component {
                   </thead>
                   <tbody>
                     {
-                    this.props.broadcasts.map((broadcast, i) => (
+                    this.props.location.state.map((broadcast, i) => (
                       <tr>
                         <td>{broadcast.platform}</td>
                         <td>{broadcast.type}</td>
@@ -83,7 +82,7 @@ class BroadcastsInfo extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    broadcasts: (state.BroadcastsInfo.broadcasts)
+    broadcasts: (state.broadcastsInfo.broadcasts)
   }
 }
 
