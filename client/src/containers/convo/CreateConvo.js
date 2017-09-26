@@ -67,6 +67,9 @@ class CreateConvo extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
+    if (nextProps.fileInfo) {
+      this.setState({broadcast: nextProps.fileInfo})
+    }
   }
 
   gotoView (event) {
@@ -124,13 +127,6 @@ class CreateConvo extends React.Component {
     this.setState({list: temp})
   }
 
-  handleFile (fileInfo) {
-    console.log('file url: ', this.props.fileUrl)
-    fileInfo.fileurl = this.props.fileUrl
-    console.log(fileInfo)
-    this.setState({broadcast: fileInfo})
-  }
-
   handleAudio (fileInfo) {
     this.setState({broadcast: fileInfo})
   }
@@ -174,7 +170,7 @@ class CreateConvo extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='container'>
           <br />
           <br />
@@ -252,7 +248,7 @@ class CreateConvo extends React.Component {
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12' />
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
 
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} handleFile={this.handleFile} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/file.png' alt='File' style={{maxHeight: 40}} />
                       <h5>File</h5>
@@ -268,7 +264,7 @@ class CreateConvo extends React.Component {
             <div style={{marginLeft: '-100px'}} className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
               <h2 className='presentation-margin'>Conversation</h2>
               <div style={{paddingBottom: 15}}>
-                <input type='text' className='hoverbordercomponent' placeholder='Conversation Title' style={{height: 50, textAlign: 'center', backgroundColor: '#EDF2F6' }} />
+                <input type='text' className='hoverbordercomponent' placeholder='Conversation Title' style={{height: 50, textAlign: 'center', backgroundColor: '#EDF2F6'}} />
               </div>
               <div className='ui-block' style={{minHeight: 250, padding: 75}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
@@ -291,7 +287,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
-    fileUrl: (state.convosInfo.fileUrl)
+    fileInfo: (state.convosInfo.fileInfo)
   }
 }
 

@@ -12,7 +12,7 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
-import { uploadFile } from '../../redux/actions/convos.actions'
+import { uploadFile, handleFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -64,7 +64,6 @@ class File extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      this.props.uploadFile(fileData)
       var fileInfo = {
         componentType: 'file',
         fileName: file.name,
@@ -74,6 +73,7 @@ class File extends React.Component {
       }
       console.log(fileInfo)
       this.props.handleFile(fileInfo)
+      this.props.uploadFile(fileData)
     }
   }
 
@@ -129,8 +129,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    fileUrl: (state.convosInfo.fileUrl)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -141,7 +140,8 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile
+    uploadFile: uploadFile,
+    handleFile: handleFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)
