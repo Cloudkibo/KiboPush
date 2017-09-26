@@ -34,6 +34,7 @@ export function loadPagesList () {
 }
 
 export function updateBroadcastsList (data) {
+  console.log('updateBroadcastsList', data.payload)
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
     data: data.payload
@@ -42,7 +43,7 @@ export function updateBroadcastsList (data) {
 
 export function loadBroadcastsList (id) {
   // surveyid is the _id of survey
-  console.log('loadBroadcastsList called')
+  console.log('loadBroadcastsList called', id)
   return (dispatch) => {
     callApi(`backdoor/allbroadcasts/${id}`)
       .then(res => dispatch(updateBroadcastsList(res.payload)))

@@ -1,7 +1,29 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-
+import { loadBroadcastsList } from '../../redux/actions/backdoor.actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 class BroadcastsInfo extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    console.log('constructor', this.props.location.state)    //  props.loadBroadcastsList(props.location.this.state)
+    // this.submitSurvey = this.submitSurvey.bind(this);
+  }
+  componentDidMount () {
+    console.log('componentDidMount called in ViewSurveyDetail')
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+    console.log('componentDidMount called in ViewSurveyDetail Finished')
+  }
   render () {
     return (
       <div className='row'>
@@ -9,17 +31,30 @@ class BroadcastsInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Broadcasts</h4><br />
-              <div className='table-responsive'>
+              { this.props.location.state
+              ? <div className='table-responsive'>
                 <table className='table table-striped'>
                   <thead>
                     <tr>
-                      <th>Broadcasts</th>
+                      <th>Platform</th>
                       <th>Type</th>
-                      <th>Number of Messages Read</th>
+                      <th>Text</th>
+                      <th>Date Time</th>
                       <th />
                     </tr>
                   </thead>
-                  <tbody />
+                  <tbody>
+                    {
+                    this.props.location.state.map((broadcast, i) => (
+                      <tr>
+                        <td>{broadcast.platform}</td>
+                        <td>{broadcast.type}</td>
+                        <td>{broadcast.text}</td>
+                        <td>{broadcast.datetime}</td>
+                      </tr>
+                    ))
+                  }
+                  </tbody>
                 </table>
                 <ReactPaginate previousLabel={'previous'}
                   nextLabel={'next'}
@@ -32,6 +67,10 @@ class BroadcastsInfo extends React.Component {
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
               </div>
+              : <div className='table-responsive'>
+                <p> No data to display </p>
+              </div>
+            }
             </div>
           </div>
         </main>
@@ -40,4 +79,15 @@ class BroadcastsInfo extends React.Component {
   }
 }
 
-export default BroadcastsInfo
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    broadcasts: (state.broadcastsInfo.broadcasts)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators(
+    {loadBroadcastsList: loadBroadcastsList}, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(BroadcastsInfo)

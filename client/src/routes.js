@@ -1,3 +1,4 @@
+
 import { Route, IndexRoute } from 'react-router'
 import React from 'react'
 import App from './sub.app.js'
@@ -29,7 +30,8 @@ import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
-import PageSubscribers from './containers/operationalDashboard/PageSubscribers'
+import UserBroadcasts from './containers/operationalDashboard/userBroadcasts'
+import PageSubscribers from './containers/operationalDashboard/pageSubscribers'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
@@ -96,6 +98,7 @@ const routes = (
     <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />
     <Route path='/pageSubscribers' component={PageSubscribers} onEnter={requireAuth} />
+    <Route path='/userBroadcasts' component={UserBroadcasts} onEnter={requireAuth} />
   </Route>
 
 )

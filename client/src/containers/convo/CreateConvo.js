@@ -125,6 +125,8 @@ class CreateConvo extends React.Component {
   }
 
   handleFile (fileInfo) {
+    fileInfo.fileurl = this.props.fileUrl
+    console.log(fileInfo)
     this.setState({broadcast: fileInfo})
   }
 
@@ -140,6 +142,7 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
       payload: this.state.broadcast[0],
@@ -286,7 +289,8 @@ function mapStateToProps (state) {
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     showFileUploading: (state.broadcastsInfo.showFileUploading),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    fileUrl: (state.convosInfo.fileUrl)
   }
 }
 
