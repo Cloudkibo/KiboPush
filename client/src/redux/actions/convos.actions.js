@@ -12,7 +12,7 @@ export function uploadFile (filedata) {
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
-    }).then(res => dispatch(addFileUrl(res)))
+    }).then(res => dispatch(addFileUrl(res.body)))
   }
 }
 
@@ -20,6 +20,6 @@ export function addFileUrl (fileUrl) {
   console.log(fileUrl)
   return {
     type: ActionTypes.ADD_FILE_URL,
-    fileUrl
+    fileUrl: fileUrl.payload
   }
 }
