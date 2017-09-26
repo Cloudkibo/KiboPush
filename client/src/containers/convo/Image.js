@@ -54,7 +54,7 @@ class Image extends React.Component {
     }.bind(this)
     console.log(url) // Would see a path?
 
-    console.log(images)
+    console.log("Images in OnChange", images)
     if (images.length > 0) {
       var image = images[images.length - 1]
       var fileData = new FormData()
