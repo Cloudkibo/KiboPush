@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadBroadcastsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { handleDate } from '../../utility/utils'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -77,7 +78,7 @@ class BroadcastsInfo extends React.Component {
                       <th>Platform</th>
                       <th>Type</th>
                       <th>Text</th>
-                      <th>Date Time</th>
+                      <th>Created At</th>
                       <th />
                     </tr>
                   </thead>
@@ -88,7 +89,7 @@ class BroadcastsInfo extends React.Component {
                         <td>{broadcast.platform}</td>
                         <td>{broadcast.type}</td>
                         <td>{broadcast.text}</td>
-                        <td>{broadcast.datetime}</td>
+                        <td>{handleDate(broadcast.datetime)}</td>
                       </tr>
                     ))
                   }
