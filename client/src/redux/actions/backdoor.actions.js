@@ -27,7 +27,7 @@ export function updatePagesList (data) {
 
 export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
-  console.log('loadPagesList called')
+  console.log('loadPagesList called', id)
   return (dispatch) => {
     callApi(`backdoor/allpages/${id}`).then(res => dispatch(updatePagesList(res)))
   }
@@ -46,5 +46,21 @@ export function loadBroadcastsList (id) {
   return (dispatch) => {
     callApi(`backdoor/allbroadcasts/${id}`)
       .then(res => dispatch(updateBroadcastsList(res)))
+  }
+}
+
+export function updatePageSubscribersList (data) {
+  console.log('updatePageSubscribersList', data.payload)
+  return {
+    type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
+    data: data.payload
+  }
+}
+
+export function loadPageSubscribersList (id) {
+  console.log('loadPageSubscribersList called', id)
+  return (dispatch) => {
+    callApi(`backdoor/allsubscribers/${id}`)
+      .then(res => dispatch(updatePageSubscribersList(res)))
   }
 }

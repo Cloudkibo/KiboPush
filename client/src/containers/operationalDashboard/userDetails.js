@@ -14,8 +14,8 @@ import { connect } from 'react-redux'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', props.userID)
-    const userID = this.props.location.state
+    console.log('constructor UserDetails', this.props.location.state._id)
+    const userID = this.props.location.state._id
     props.loadPagesList(userID)
     this.state = {
       pagesData: [],
@@ -95,7 +95,15 @@ class UserDetails extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pages', state)
   return {
-    pages: state.PagesInfo.pages
+    //pages: state.PagesInfo.pages
+    pages : [{pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'},
+              {pageName:'HI', likes:'10', connected:'2'}
+            ]
   }
 }
 
