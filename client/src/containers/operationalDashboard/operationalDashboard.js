@@ -71,7 +71,7 @@ class OperationalDashboard extends React.Component {
   goToBroadcasts (user) {
     this.props.history.push({
       pathname: `/userDetails`,
-      state: user._id
+      state: user
     })
     console.log('State', this.state)
     console.log('goToBroadcasts', user._id, user.name)
