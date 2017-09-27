@@ -40,3 +40,15 @@ export function BroadcastsInfo (state = initialState, action) {
       return state
   }
 }
+
+export function PageSubscribersInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST:
+      return Object.assign({}, state, {
+        pageSubscribers: action.data
+      })
+
+    default:
+      return state
+  }
+}

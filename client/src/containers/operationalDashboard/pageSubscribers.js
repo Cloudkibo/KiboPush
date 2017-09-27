@@ -7,6 +7,11 @@ import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 
 class PageSubscribers extends React.Component {
+  constructor(props,context) {
+    super(props,context);
+
+  }
+
   render () {
     return (
       <div>
@@ -65,7 +70,6 @@ class PageSubscribers extends React.Component {
               </div>
               <div className='add-options-message'>
                 <Link
-                  to='/seemore'
                   style={{float: 'right', margin: 2}}
                   className='btn btn-primary btn-sm'>
                   Back

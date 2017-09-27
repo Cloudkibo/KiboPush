@@ -14,9 +14,9 @@ import { connect } from 'react-redux'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', this.props.location.state)
+    console.log('constructor UserDetails', this.props.location.state._id)
     console.log('constructor', this.props)
-    const userID = this.props.location.state
+    const userID = this.props.location.state._id
     props.loadPagesList(userID)
     this.state = {
       pagesData: [],
