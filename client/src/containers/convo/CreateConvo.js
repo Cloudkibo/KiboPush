@@ -155,7 +155,7 @@ class CreateConvo extends React.Component {
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
-      payload: this.state.broadcast[0],
+      payload: this.state.broadcast,
       isSegmented: false
     }
 
