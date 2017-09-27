@@ -289,7 +289,7 @@ export function showSurveyResponse (data) {
    }
    }
    ] */
-
+  console.log('show survey responses', data)
   return {
     type: ActionTypes.ADD_RESPONSES,
     survey: data.survey,
