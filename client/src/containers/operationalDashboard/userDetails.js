@@ -95,15 +95,7 @@ class UserDetails extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pages', state)
   return {
-    //pages: state.PagesInfo.pages
-    pages : [{pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'},
-              {pageName:'HI', likes:'10', connected:'2'}
-            ]
+    pages: state.PagesInfo.pages
   }
 }
 
