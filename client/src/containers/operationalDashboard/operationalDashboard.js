@@ -107,7 +107,7 @@ class OperationalDashboard extends React.Component {
                   ? <div className='table-responsive'>
                     <div>
                       <label> Search </label>
-                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchUser} />
+                      <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
                     </div>
                     <table className='table table-striped'>
                       <thead>
