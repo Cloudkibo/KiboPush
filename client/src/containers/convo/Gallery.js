@@ -15,7 +15,7 @@ class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      cards: [{element: <Card />, key: 1}, {element: <Card />, key: 2}],
+      cards: [{element: <Card id={1} />, key: 1}, {element: <Card id={2}/>, key: 2}],
       showPlus: false
     }
     this.handleChange = this.handleChange.bind(this)
@@ -46,7 +46,7 @@ class Gallery extends React.Component {
 
   addSlide () {
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} />, key: temp.length + 1}]})
     this.slider.slickNext()
   }
 
