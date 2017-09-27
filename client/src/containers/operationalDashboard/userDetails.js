@@ -15,7 +15,7 @@ class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
     console.log('constructor', props.userID)
-    const userID = this.props.location.state
+    const userID = props.userID
     props.loadPagesList(userID)
     this.state = {
       pagesData: [],
