@@ -120,7 +120,7 @@ class BroadcastsInfo extends React.Component {
 function mapStateToProps (state) {
   console.log('user broadcasts', state)
   return {
-    broadcasts: state.broadcastsInfo.broadcasts
+    broadcasts: state.BroadcastsInfo.broadcasts
   }
 }
 
