@@ -25,11 +25,11 @@ export function updatePagesList (data) {
   }
 }
 
-export function loadPagesList () {
+export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
   console.log('loadPagesList called')
   return (dispatch) => {
-    callApi('backdoor/allpages').then(res => dispatch(updatePagesList(res)))
+    callApi(`backdoor/allpages/${id}`).then(res => dispatch(updatePagesList(res)))
   }
 }
 

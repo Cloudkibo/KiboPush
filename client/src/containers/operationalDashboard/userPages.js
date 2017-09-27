@@ -2,6 +2,10 @@ import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router'
 class PagesInfo extends React.Component {
+  constructor(props,context) {
+    super(props,context)
+  }
+
   render () {
     return (
       <div className='row'>
@@ -9,7 +13,7 @@ class PagesInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Pages</h4><br />
-              { this.pages != null && this.length > 0
+              { this.props.pages != null && this.props.length > 0
               ? <div className='table-responsive'>
                 <table className='table table-striped'>
                   <thead>
@@ -22,7 +26,7 @@ class PagesInfo extends React.Component {
                   </thead>
                   <tbody>
                     {
-                  this.pages.map((page, i) => (
+                  this.props.pages.map((page, i) => (
                     <tr>
                       <td>{page.pageName}</td>
                       <td>{page.likes}</td>
@@ -42,10 +46,10 @@ class PagesInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={Math.ceil(this.length / 4)}
+                  pageCount={Math.ceil(this.props.length / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
-                  onPageChange={this.handlePageClick}
+                  onPageChange={this.props.handlePageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
