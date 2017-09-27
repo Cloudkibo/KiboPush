@@ -79,9 +79,9 @@ class UserDetails extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          <h3>Sania Siddiqui</h3>
+          <h3>{this.props.location.state.name}</h3>
           <PagesInfo />
-          <BroadcastsInfo userID={this.props.location.state} />
+          <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo />
           <PollsInfo />
         </div>
