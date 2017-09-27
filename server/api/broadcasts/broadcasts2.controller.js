@@ -24,38 +24,61 @@ exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
     `Inside Send conversation, req body = ${JSON.stringify(req.body)}`)
   if (req.body.self) {
-    req.body.payload.forEach(payloadItem => {
-      let messageData = utility.prepareSendAPIPayload(
-        req.user.fbId,
-        payloadItem)
+    let pagesFindCriteria = {userId: req.user._id, connected: true}
 
-      logger.serverLog(TAG,
-        `Payload for Messenger Send API for test: ${JSON.stringify(
-          messageData)}`)
-
-      request(
-        {
-          'method': 'POST',
-          'json': true,
-          'formData': messageData,
-          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-          req.user.fbToken
-        },
-        function (err, res) {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At send message broadcast ${JSON.stringify(err)}`)
-          } else {
-            logger.serverLog(TAG,
-              `At send message broadcast response ${JSON.stringify(
-                res)}`)
+    if (req.body.isSegmented) {
+      if (req.body.pageIds) {
+        _.merge(pagesFindCriteria, {
+          pageId: {
+            $in: req.body.pageIds
           }
+        })
+      }
+    }
+
+    Pages.find(pagesFindCriteria, (err, pages) => {
+      if (err) {
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        return res.status(404)
+          .json({status: 'failed', description: 'Pages not found'})
+      }
+
+      pages.forEach(page => {
+        req.body.payload.forEach(payloadItem => {
+          let messageData = utility.prepareSendAPIPayload(
+            req.user.fbId,
+            payloadItem)
 
           logger.serverLog(TAG,
-            'Sent broadcast to subscriber to self for test')
+            `Payload for Messenger Send API for test: ${JSON.stringify(
+              messageData)}`)
+
+          request(
+            {
+              'method': 'POST',
+              'json': true,
+              'formData': messageData,
+              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+              page.accessToken
+            },
+            function (err, res) {
+              if (err) {
+                return logger.serverLog(TAG,
+                  `At send message broadcast ${JSON.stringify(err)}`)
+              } else {
+                logger.serverLog(TAG,
+                  `At send message broadcast response ${JSON.stringify(
+                    res)}`)
+              }
+
+              logger.serverLog(TAG,
+                'Sent broadcast to subscriber to self for test')
+            })
         })
+      })
     })
-    return
+    return res.status(200)
+    .json({status: 'success', payload: {broadcast: req.body}})
   }
 
   const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req))
