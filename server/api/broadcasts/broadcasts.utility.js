@@ -98,7 +98,8 @@ function prepareBroadCastPayload (req) {
   let broadcastPayload = {
     platform: req.body.platform,
     payload: req.body.payload,
-    userId: req.user._id
+    userId: req.user._id,
+    title: req.body.title
   }
   if (req.body.isSegmented) {
     broadcastPayload.isSegmented = true
