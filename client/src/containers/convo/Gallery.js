@@ -15,9 +15,9 @@ class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      broadcast: [],
       cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}],
       showPlus: false,
-      broadcast: [],
     }
     this.handleChange = this.handleChange.bind(this)
     this.addSlide = this.addSlide.bind(this)
