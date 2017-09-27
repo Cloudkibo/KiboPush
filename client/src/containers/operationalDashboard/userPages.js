@@ -2,10 +2,20 @@ import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router'
 class PagesInfo extends React.Component {
-  constructor(props,context) {
-    super(props,context)
+  constructor (props, context) {
+    super(props, context)
+    this.searchPage = this.searchPage.bind(this)
   }
-
+  searchPage (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.pages[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
   render () {
     return (
       <div className='row'>
@@ -15,6 +25,10 @@ class PagesInfo extends React.Component {
               <h4>Pages</h4><br />
               { this.props.pages != null && this.props.length > 0
               ? <div className='table-responsive'>
+                <div>
+                  <label> Search </label>
+                  <input type='text' placeholder='Search Pages' className='form-control' onChange={this.searchPage} />
+                </div>
                 <table className='table table-striped'>
                   <thead>
                     <tr>

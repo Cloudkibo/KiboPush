@@ -24,6 +24,7 @@ class UserDetails extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    //  this.searchPage = this.searchPage.bind(this)
   }
 
   displayData (n, pages) {
@@ -58,7 +59,6 @@ class UserDetails extends React.Component {
       this.setState({ totalLength: nextProps.pages.length })
     }
   }
-
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -83,7 +83,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages = {this.state.pagesData} length = {this.state.totalLength} handlePageClick = {this.handlePageClick}/>
+          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} />
           <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo />
           <PollsInfo />
