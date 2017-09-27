@@ -14,7 +14,9 @@ import { connect } from 'react-redux'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadPagesList()
+    console.log('constructor', props.userID)
+    const userID = this.props.location.state
+    props.loadPagesList(userID)
     this.state = {
       pagesData: [],
       totalLength: 0
@@ -24,7 +26,7 @@ class UserDetails extends React.Component {
   }
 
   displayData (n, pages) {
-    console.log('one', pages)
+    console.log(n, pages)
     let offset = n * 4
     let data = []
     let limit
@@ -80,7 +82,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>Sania Siddiqui</h3>
-          <PagesInfo />
+          <PagesInfo pages = {this.state.pagesData} length = {this.state.totalLength} handlePageClick = {this.handlePageClick}/>
           <BroadcastsInfo userID={this.props.location.state} />
           <SurveysInfo />
           <PollsInfo />
@@ -91,7 +93,7 @@ class UserDetails extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('in mapStateToProps', state)
+  console.log('in mapStateToProps for pages', state)
   return {
     pages: state.PagesInfo.pages
   }
