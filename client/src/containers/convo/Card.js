@@ -165,7 +165,7 @@ class Card extends React.Component {
   }
 
   render () {
-    console.log('Card State: ', this.state)
+    console.log('Card ID: ', this.props.id)
     return (
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
