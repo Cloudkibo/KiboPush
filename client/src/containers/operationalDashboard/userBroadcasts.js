@@ -49,7 +49,7 @@ class BroadcastsInfo extends React.Component {
     }
     console.log('data[index]', data)
     this.setState({broadcastsData: broadcasts})
-    console.log('in displayData', this.state.usersData)
+    console.log('in displayData', this.state.broadcastsData)
   }
   handlePageClick (data) {
     this.displayData(data.selected, this.props.broadcasts)
@@ -83,7 +83,7 @@ class BroadcastsInfo extends React.Component {
                   </thead>
                   <tbody>
                     {
-                    this.state.usersData.map((broadcast, i) => (
+                    this.state.broadcastsData.map((broadcast, i) => (
                       <tr>
                         <td>{broadcast.platform}</td>
                         <td>{broadcast.type}</td>
