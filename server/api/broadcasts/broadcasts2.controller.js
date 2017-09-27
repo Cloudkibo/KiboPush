@@ -23,6 +23,40 @@ let request = require('request')
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
     `Inside Send conversation, req body = ${JSON.stringify(req.body)}`)
+  if (req.body.self) {
+    req.body.payload.forEach(payloadItem => {
+      let messageData = utility.prepareSendAPIPayload(
+        req.user.fbId,
+        payloadItem)
+
+      logger.serverLog(TAG,
+        `Payload for Messenger Send API for test: ${JSON.stringify(
+          messageData)}`)
+
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+          req.user.fbToken
+        },
+        function (err, res) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At send message broadcast ${JSON.stringify(err)}`)
+          } else {
+            logger.serverLog(TAG,
+              `At send message broadcast response ${JSON.stringify(
+                res)}`)
+          }
+
+          logger.serverLog(TAG,
+            'Sent broadcast to subscriber to self for test')
+        })
+    })
+    return
+  }
 
   const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req))
 
@@ -74,54 +108,59 @@ exports.sendConversation = function (req, res) {
           logger.serverLog(TAG,
             `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
-          subscribers.forEach(subscriber => {
-            logger.serverLog(TAG,
-              `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName}`)
+          req.body.payload.forEach(payloadItem => {
+            subscribers.forEach(subscriber => {
+              logger.serverLog(TAG,
+                `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
+              let messageData = utility.prepareSendAPIPayload(
+                subscriber.senderId,
+                payloadItem)
 
-            let messageData = utility.prepareSendAPIPayload(subscriber.senderId,
-              req.body.payload)
+              logger.serverLog(TAG,
+                `Payload for Messenger Send API: ${JSON.stringify(
+                  messageData)}`)
 
-            logger.serverLog(TAG,
-              `Payload for Messenger Send API: ${JSON.stringify(messageData)}`)
-
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                page.accessToken
-              },
-              function (err, res) {
-                if (err) {
-                  return logger.serverLog(TAG,
-                    `At send message broadcast ${JSON.stringify(err)}`)
-                } else {
-                  logger.serverLog(TAG,
-                    `At send message broadcast response ${JSON.stringify(res)}`)
-                }
-
-                logger.serverLog(TAG,
-                  'Sent broadcast to subscriber')
-
-                // update broadcast sent field
-                let pagebroadcast = new BroadcastPage({
-                  pageId: page.pageId,
-                  userId: req.user._id,
-                  subscriberId: subscriber.senderId,
-                  broadcastId: broadcast._id,
-                  seen: false
-                })
-
-                pagebroadcast.save((err2) => {
-                  if (err2) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: 'PageBroadcast create failed'
-                    })
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                  page.accessToken
+                },
+                function (err, res) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At send message broadcast ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At send message broadcast response ${JSON.stringify(
+                        res)}`)
                   }
+
+                  logger.serverLog(TAG,
+                    'Sent broadcast to subscriber')
+
+                  // update broadcast sent field
+                  let pagebroadcast = new BroadcastPage({
+                    pageId: page.pageId,
+                    userId: req.user._id,
+                    subscriberId: subscriber.senderId,
+                    broadcastId: broadcast._id,
+                    seen: false
+                  })
+
+                  pagebroadcast.save((err2) => {
+                    if (err2) {
+                      logger.serverLog(TAG, {
+                        status: 'failed',
+                        description: 'PageBroadcast create failed',
+                        err2
+                      })
+                    }
+                  })
                 })
-              })
+            })
           })
         })
       })
@@ -165,8 +204,7 @@ exports.upload = function (req, res) {
       }
       logger.serverLog(TAG,
         `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
-      return res.status(201)
-        .json({status: 'success', payload: serverPath})
+      return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
 }

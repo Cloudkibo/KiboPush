@@ -11,6 +11,7 @@ let broadcastSchema = new Schema({
   platform: String, // TODO define this as enum with values, for now value is facebook
   payload: Schema.Types.Mixed,
   type: String, // TODO define this as enum with values ['text','attachment']
+  title: String,
   text: String,
   fileurl: String,
   attachmentType: String,
