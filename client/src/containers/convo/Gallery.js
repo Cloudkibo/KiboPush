@@ -15,11 +15,13 @@ class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      cards: [{element: <Card id={1} />, key: 1}, {element: <Card id={2}/>, key: 2}],
-      showPlus: false
+      cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}],
+      showPlus: false,
+      broadcast: [],
     }
     this.handleChange = this.handleChange.bind(this)
     this.addSlide = this.addSlide.bind(this)
+    this.handleCard = this.handleCard.bind(this)
   }
 
   componentDidMount () {
@@ -46,11 +48,35 @@ class Gallery extends React.Component {
 
   addSlide () {
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} handleCard={this.handleCard} />, key: temp.length + 1}]})
     this.slider.slickNext()
   }
 
+    handleCard (obj) {
+      var temp = this.state.broadcast
+      var isPresent = false
+      temp.map((data) => {
+        if (data.id === obj.id) {
+          data.fileName = obj.fileName
+          data.fileurl = obj.fileurl
+          data.size = obj.size
+          data.type = obj.type
+          data.title = obj.title
+          data.buttons = obj.buttons
+          data.description = obj.description
+          isPresent = true
+        }
+      })
+      if (!isPresent) {
+        temp.push(obj)
+      }
+      this.setState({broadcast: temp})
+  }
+
   render () {
+
+    console.log("Gallary Array", this.state.broadcast)
+
     var settings = {
       arrows: true,
       dots: true,
