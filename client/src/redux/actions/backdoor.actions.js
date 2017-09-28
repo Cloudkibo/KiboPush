@@ -48,3 +48,21 @@ export function loadBroadcastsList (id) {
       .then(res => dispatch(updateBroadcastsList(res)))
   }
 }
+
+export function loadPollList (id) {
+  console.log('load Poll called', id)
+  return (dispatch) => {
+    callApi(`backdoor/allpolls/${id}`)
+      .then(res => dispatch(updatePollList(res)))
+  }
+}
+
+export function updatePollList (data) {
+  console.log('updatePollList', data.payload)
+  return {
+    type: ActionTypes.LOAD_POLLS_LIST,
+    data: data.payload
+  }
+}
+
+// ahsan branch
