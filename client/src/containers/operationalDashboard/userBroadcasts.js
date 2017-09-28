@@ -135,12 +135,9 @@ class BroadcastsInfo extends React.Component {
 
 function mapStateToProps (state) {
   console.log('user broadcasts', state)
-  if (state.BroadcastsInfo) {
+  return {
     broadcasts: state.BroadcastsInfo.broadcasts
-  } else {
-    broadcasts : []
   }
-  return broadcasts
 }
 
 function mapDispatchToProps (dispatch) {

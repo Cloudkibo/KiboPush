@@ -83,7 +83,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} func={this.displayData} />
+          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} />
           <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo />
           <PollsInfo />
@@ -95,12 +95,9 @@ class UserDetails extends React.Component {
 
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pages', state)
-  if (state.PagesInfo) {
+  return {
     pages: state.PagesInfo.pages
-  } else {
-    pages: []
   }
-  return pages
 }
 
 function mapDispatchToProps (dispatch) {
