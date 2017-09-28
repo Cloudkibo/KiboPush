@@ -128,12 +128,12 @@ class CreateConvo extends React.Component {
     handleGallery (obj) {
     var temp = this.state.broadcast
     var isPresent = false
+    obj.cards.forEach((d) => {
+          delete d.id
+        })
     temp.map((data) => {
       if (data.id === obj.id) {
         data.cards = obj.cards
-        // data.cards.forEach((d) => {
-        //   delete d.id
-        // })
         isPresent = true
       }
     })
