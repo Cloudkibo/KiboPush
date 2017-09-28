@@ -131,7 +131,7 @@ class CreateConvo extends React.Component {
     temp.map((data) => {
       if (data.id === obj.id) {
         data.cards = obj.cards
-        data.cards.map((d) => {
+        data.cards.forEach((d) => {
           delete d.id
         })
         isPresent = true
