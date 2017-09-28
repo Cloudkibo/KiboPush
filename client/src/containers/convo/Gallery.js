@@ -62,14 +62,24 @@ class Gallery extends React.Component {
           data.title = obj.title
           data.buttons = obj.buttons
           data.subtitle = obj.description
+          if(data.buttons.length == 0){
+            delete data.buttons;
+          }
           isPresent = true
         }
       })
       if (!isPresent) {
-        temp.push({id: obj.id, title: obj.title, image_url: obj.fileurl, subtitle: obj.description, buttons: obj.buttons})
+        if(obj.buttons.length > 0){
+          temp.push({id: obj.id, title: obj.title, image_url: obj.fileurl, subtitle: obj.description, buttons: obj.buttons})
+        }else{
+          temp.push({id: obj.id, title: obj.title, image_url: obj.fileurl, subtitle: obj.description})
+        }
       }
       this.setState({broadcast: temp})
-      this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: this.state.broadcast})
+      temp.map((data) => {
+        delete data.id
+      })
+      this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: temp})
   }
 
   render () {
