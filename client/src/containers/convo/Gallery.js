@@ -14,14 +14,15 @@ import LeftArrow from './LeftArrow'
 class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {
-      broadcast: [],
-      cards: [],
-      showPlus: false,
-    }
     this.handleChange = this.handleChange.bind(this)
     this.addSlide = this.addSlide.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.state = {
+      broadcast: [],
+      cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}],
+      showPlus: false,
+    }
+    
   }
 
   componentDidMount () {
@@ -36,7 +37,6 @@ class Gallery extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    this.setState({card: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}]})
   }
 
   handleChange (index) {
@@ -54,24 +54,24 @@ class Gallery extends React.Component {
   }
 
     handleCard (obj) {
-      var temp = this.state.broadcast
-      var isPresent = false
-      temp.map((data) => {
-        if (data.id === obj.id) {
-          data.fileName = obj.fileName
-          data.fileurl = obj.fileurl
-          data.size = obj.size
-          data.type = obj.type
-          data.title = obj.title
-          data.buttons = obj.buttons
-          data.description = obj.description
-          isPresent = true
-        }
-      })
-      if (!isPresent) {
-        temp.push(obj)
-      }
-      this.setState({broadcast: temp})
+      // var temp = this.state.broadcast
+      // var isPresent = false
+      // temp.map((data) => {
+      //   if (data.id === obj.id) {
+      //     data.fileName = obj.fileName
+      //     data.fileurl = obj.fileurl
+      //     data.size = obj.size
+      //     data.type = obj.type
+      //     data.title = obj.title
+      //     data.buttons = obj.buttons
+      //     data.description = obj.description
+      //     isPresent = true
+      //   }
+      // })
+      // if (!isPresent) {
+      //   temp.push(obj)
+      // }
+      this.setState({broadcast: [obj]})
   }
 
   render () {
