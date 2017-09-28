@@ -55,6 +55,7 @@ class Gallery extends React.Component {
 
     handleCard (obj) {
       var temp = this.state.broadcast
+      console.log("Handle Card Object Receeived", obj)
       var isPresent = false
       temp.map((data) => {
         if (data.id === obj.id) {
