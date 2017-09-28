@@ -36,6 +36,7 @@ class CreateConvo extends React.Component {
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
@@ -108,14 +109,14 @@ class CreateConvo extends React.Component {
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
-          data.fileName = obj.fileName
-          data.fileurl = obj.fileurl
-          data.size = obj.size
-          data.type = obj.type
-          data.title = obj.title
-          data.buttons = obj.buttons
-          data.description = obj.description
-          isPresent = true
+        data.fileName = obj.fileName
+        data.fileurl = obj.fileurl
+        data.size = obj.size
+        data.type = obj.type
+        data.title = obj.title
+        data.buttons = obj.buttons
+        data.description = obj.description
+        isPresent = true
       }
     })
     if (!isPresent) {
@@ -124,7 +125,25 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
-  handleImage(obj){
+    handleGallery (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.cards.forEach((d) => {
+          delete d.id
+        })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.cards = obj.cards
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
+  handleImage (obj) {
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -155,7 +174,7 @@ class CreateConvo extends React.Component {
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
-      payload: this.state.broadcast[0],
+      payload: this.state.broadcast,
       isSegmented: false
     }
 
@@ -231,7 +250,7 @@ class CreateConvo extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 40}} />
                       <h5>Gallery</h5>

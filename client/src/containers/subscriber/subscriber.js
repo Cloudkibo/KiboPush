@@ -23,6 +23,7 @@ class Subscriber extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchSubscriber = this.searchSubscriber.bind(this)
   }
 
   componentDidMount () {

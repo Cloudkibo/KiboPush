@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadBroadcastsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { handleDate } from '../../utility/utils'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -16,6 +17,7 @@ class BroadcastsInfo extends React.Component {
     // this.submitSurvey = this.submitSurvey.bind(this);
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchBroadcast = this.searchBroadcast.bind(this)
   }
   componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail')
@@ -62,6 +64,16 @@ class BroadcastsInfo extends React.Component {
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
   }
+  searchBroadcast (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.broadcasts.length; i++) {
+      if (this.props.broadcasts[i].text.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.broadcasts[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
   render () {
     return (
       <div className='row'>
@@ -71,13 +83,17 @@ class BroadcastsInfo extends React.Component {
               <h4>Broadcasts</h4><br />
               { this.state.broadcastsData && this.state.broadcastsData.length > 0
               ? <div className='table-responsive'>
+                <div>
+                  <label> Search </label>
+                  <input type='text' placeholder='Search Broadcasts' className='form-control' onChange={this.searchBroadcast} />
+                </div>
                 <table className='table table-striped'>
                   <thead>
                     <tr>
                       <th>Platform</th>
                       <th>Type</th>
                       <th>Text</th>
-                      <th>Date Time</th>
+                      <th>Created At</th>
                       <th />
                     </tr>
                   </thead>
@@ -88,7 +104,7 @@ class BroadcastsInfo extends React.Component {
                         <td>{broadcast.platform}</td>
                         <td>{broadcast.type}</td>
                         <td>{broadcast.text}</td>
-                        <td>{broadcast.datetime}</td>
+                        <td>{handleDate(broadcast.datetime)}</td>
                       </tr>
                     ))
                   }

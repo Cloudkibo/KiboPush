@@ -237,12 +237,6 @@ class Sidebar extends Component {
 
           <div className='mCustomScrollbar' data-mcs-theme='dark'>
             <ul className='left-menu'>
-              <li>
-                <Link to='#' className='js-sidebar-open'>
-                  <svg className='olymp-close-icon left-menu-icon'><use xlinkHref='icons/icons.svg#olymp-close-icon' /></svg>
-                  <span className='left-menu-title'>Collapse Menu</span>
-                </Link>
-              </li>
               {this.showOperationalDashboard1()}
               <li>
                 <Link to='/dashboard'>

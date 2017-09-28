@@ -25,11 +25,11 @@ export function updatePagesList (data) {
   }
 }
 
-export function loadPagesList () {
+export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
-  console.log('loadPagesList called')
+  console.log('loadPagesList called', id)
   return (dispatch) => {
-    callApi('backdoor/allpages').then(res => dispatch(updatePagesList(res)))
+    callApi(`backdoor/allpages/${id}`).then(res => dispatch(updatePagesList(res)))
   }
 }
 
@@ -61,8 +61,22 @@ export function updatePollList (data) {
   console.log('updatePollList', data.payload)
   return {
     type: ActionTypes.LOAD_POLLS_LIST,
+     data: data.payload
+  }
+}
+
+export function updatePageSubscribersList (data) {
+  console.log('updatePageSubscribersList', data.payload)
+  return {
+    type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
     data: data.payload
   }
 }
 
-// ahsan branch
+export function loadPageSubscribersList (id) {
+  console.log('loadPageSubscribersList called', id)
+  return (dispatch) => {
+    callApi(`backdoor/allsubscribers/${id}`)
+      .then(res => dispatch(updatePageSubscribersList(res)))
+  }
+}

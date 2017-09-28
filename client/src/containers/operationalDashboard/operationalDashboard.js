@@ -12,6 +12,7 @@ import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { handleDate } from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -23,6 +24,7 @@ class OperationalDashboard extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchUser = this.searchUser.bind(this)
   }
 
   componentDidMount () {
@@ -77,6 +79,16 @@ class OperationalDashboard extends React.Component {
     console.log('goToBroadcasts', user._id, user.name)
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
+  searchUser (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.users.length; i++) {
+      if (this.props.users[i].name.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.users[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
   render () {
     return (
       <div>
@@ -93,6 +105,10 @@ class OperationalDashboard extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   { this.state.usersData && this.state.usersData.length > 0
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
+                    </div>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -114,7 +130,7 @@ class OperationalDashboard extends React.Component {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
-                            <td>{user.createdAt}</td>
+                            <td>{handleDate(user.createdAt)}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
