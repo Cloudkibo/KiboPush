@@ -7,7 +7,8 @@ import { Link } from 'react-router'
 import Select from 'react-select'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { editautoposting } from '../../redux/actions/autoposting.actions'
+import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
+import { Alert } from 'react-bs-notifier'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -34,8 +35,11 @@ class ItemSettings extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
-      isActive: 'Active'
+      isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
+      alertMessage: '',
+      alertType: ''
     }
+    props.clearAlertMessages()
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
@@ -63,6 +67,25 @@ class ItemSettings extends React.Component {
       options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
     }
     this.setState({page: {options: options}})
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+    }
   }
 
   handlePageChange (value) {
@@ -103,7 +126,8 @@ class ItemSettings extends React.Component {
       isActive = false
     }
     const autopostingData = {
-      accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.title,
+      _id: this.props.location.state.item._id,
+      accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.location.state.title,
       isSegmented: isSegmented,
       segmentationPageIds: this.state.pageValue,
       segmentationGender: segmentationGender,
@@ -190,8 +214,17 @@ class ItemSettings extends React.Component {
                       to='/autoposting'
                       className='btn btn-sm btn-border-think btn-transparent c-grey'
                     >
-                      Cancel
+                      Back
                     </Link>
+                    <br />
+                    {
+                      this.state.alertMessage !== '' &&
+                      <center>
+                        <Alert type={this.state.alertType}>
+                          {this.state.alertMessage}
+                        </Alert>
+                      </center>
+                    }
                   </div>
                 </div>
               </div>
@@ -209,14 +242,17 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    successMessage: (state.autopostingInfo.successMessageEdit),
+    errorMessage: (state.autopostingInfo.errorMessageEdit)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      editautoposting: editautoposting
+      editautoposting: editautoposting,
+      clearAlertMessages: clearAlertMessages
     },
     dispatch)
 }
