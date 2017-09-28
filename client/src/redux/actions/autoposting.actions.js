@@ -69,7 +69,7 @@ export function createautoposting (data) {
 
 export function deleteautoposting (id) {
   return (dispatch) => {
-    callApi(`autoposting/:${id}`, 'delete')
+    callApi(`autoposting/${id}`, 'delete')
       .then(res => dispatch(loadAutopostingList()))
   }
 }
