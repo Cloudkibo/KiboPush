@@ -76,9 +76,6 @@ class Gallery extends React.Component {
         }
       }
       this.setState({broadcast: temp})
-      temp.map((data) => {
-        delete data.id
-      })
       this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: temp})
   }
 
