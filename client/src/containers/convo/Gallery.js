@@ -76,7 +76,7 @@ class Gallery extends React.Component {
         }
       }
       this.setState({broadcast: temp})
-      this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: temp})
+      this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: this.state.broadcast})
   }
 
   render () {
