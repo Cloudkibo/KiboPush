@@ -16,7 +16,7 @@ class Gallery extends React.Component {
     super(props, context)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}],
+      cards: [],
       showPlus: false,
     }
     this.handleChange = this.handleChange.bind(this)
@@ -36,6 +36,7 @@ class Gallery extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    this.setState({card: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card  id={2} handleCard={this.handleCard} />, key: 2}]})
   }
 
   handleChange (index) {
