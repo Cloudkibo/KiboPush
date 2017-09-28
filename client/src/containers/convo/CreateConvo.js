@@ -36,6 +36,7 @@ class CreateConvo extends React.Component {
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
@@ -115,6 +116,21 @@ class CreateConvo extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.description = obj.description
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
+    handleGallery (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.cards = obj.cards
         isPresent = true
       }
     })
@@ -231,7 +247,7 @@ class CreateConvo extends React.Component {
               </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
+                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }} style={{minHeight: 75}}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 40}} />
                       <h5>Gallery</h5>
