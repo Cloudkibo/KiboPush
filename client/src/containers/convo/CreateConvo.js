@@ -128,6 +128,9 @@ class CreateConvo extends React.Component {
     handleGallery (obj) {
     var temp = this.state.broadcast
     var isPresent = false
+    obj.cards.map((data) => {
+        delete data.id
+    })
     temp.map((data) => {
       if (data.id === obj.id) {
         data.cards = obj.cards
