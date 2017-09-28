@@ -43,7 +43,7 @@ class UserDetails extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({pagesData: pages})
+    this.setState({pagesData: data})
     console.log('in displayData', this.state.pagesData)
   }
 
@@ -96,7 +96,14 @@ class UserDetails extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pages', state)
   return {
-    pages: state.PagesInfo.pages
+    //pages: state.PagesInfo.pages
+    pages : [{_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145' ,pageName : 'PageName', likes : '10', connect :'2'},
+              {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '11', connect :'2'},
+            {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '12', connect :'2'},
+          {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '13', connect :'2'},
+        {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '14', connect :'2'},
+      {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '15', connect :'2'},
+    {_id:'59a3fd7348ad4b1769c6322d',pageId: '1870232553118145',pageName : 'PageName', likes : '16', connect :'2'}]
   }
 }
 

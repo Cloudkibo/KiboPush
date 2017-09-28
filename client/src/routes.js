@@ -97,7 +97,7 @@ const routes = (
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
     <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />
-    <Route path='/pageSubscribers' component={PageSubscribers} onEnter={requireAuth} />
+    <Route path='/pageSubscribers/:id/:pageId' component={PageSubscribers} onEnter={requireAuth} />
     <Route path='/userBroadcasts' component={UserBroadcasts} onEnter={requireAuth} />
   </Route>
 

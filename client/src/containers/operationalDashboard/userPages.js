@@ -16,6 +16,7 @@ class PagesInfo extends React.Component {
     this.props.func(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+
   render () {
     return (
       <div className='row'>
@@ -44,12 +45,11 @@ class PagesInfo extends React.Component {
                     <tr>
                       <td>{page.pageName}</td>
                       <td>{page.likes}</td>
-                      <td>{page.connected}</td>
+                      <td>{page.connect}</td>
                       <td>
-                        <Link to='/pageSubscribers'><button className='btn btn-primary btn-sm'
-                          style={{float: 'left', margin: 2}}>See Subscribers
-                        </button>
-                        </Link>
+                      <Link to={`/pageSubscribers/${page._id}/${page.pageId}`} className='btn btn-primary btn-sm'>
+                      See Subscribers
+                      </Link>
                       </td>
                     </tr>
                   ))
