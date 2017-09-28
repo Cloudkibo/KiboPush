@@ -58,25 +58,23 @@ class Gallery extends React.Component {
       var isPresent = false
       temp.map((data) => {
         if (data.id === obj.id) {
-          data.fileName = obj.fileName
-          data.fileurl = obj.fileurl
-          data.size = obj.size
-          data.type = obj.type
+          data.image_url = obj.fileurl
           data.title = obj.title
           data.buttons = obj.buttons
-          data.description = obj.description
+          data.subtitle = obj.description
           isPresent = true
         }
       })
       if (!isPresent) {
-        temp.push(obj)
+        temp.push({id: obj.id, title: obj.title, image_url: obj.fileurl, subtitle: obj.description, buttons: obj.buttons})
       }
       this.setState({broadcast: temp})
+      console.log("Handle Gallery", {componentType: 'gallery', cards: this.state.broadcast})
   }
 
   render () {
 
-    console.log("Gallary Array", this.state.broadcast)
+    console.log("Gallary Array", this.state)
 
     var settings = {
       arrows: true,
