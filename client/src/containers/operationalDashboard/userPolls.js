@@ -114,9 +114,12 @@ class PollsInfo extends React.Component {
 
 function mapStateToProps (state) {
   console.log('user polls', state)
-  return {
-    polls: state.Polls.broadcasts
+  if (state.Polls) {
+    polls : state.Polls.broadcasts
+  } else {
+    polls : []
   }
+  return polls
 }
 
 function mapDispatchToProps (dispatch) {

@@ -173,10 +173,12 @@ class OperationalDashboard extends React.Component {
 }
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
-  return {
+  if (state.UsersInfo) {
     users: state.UsersInfo.users
-  //  usersData: state.usersData
+  } else {
+    users: []
   }
+  return users
 }
 
 function mapDispatchToProps (dispatch) {
