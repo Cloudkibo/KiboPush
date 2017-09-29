@@ -11,7 +11,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { loadAutopostingList, clearAlertMessages } from '../../redux/actions/autoposting.actions'
+import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
 import { Alert } from 'react-bs-notifier'
@@ -21,15 +21,20 @@ class Autoposting extends React.Component {
     super(props)
     this.state = {
       isShowingModal: false,
+      isShowingModalDelete: false,
       showListItems: true,
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      deleteid: ''
     }
     props.loadAutopostingList()
     props.clearAlertMessages()
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
+    this.updateDeleteID = this.updateDeleteID.bind(this)
   }
 
   componentDidMount () {
@@ -65,12 +70,25 @@ class Autoposting extends React.Component {
     }
   }
 
+  updateDeleteID (id) {
+    this.setState({deleteid: id})
+    this.showDialogDelete()
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  showDialogDelete () {
+    this.setState({isShowingModalDelete: true})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
 
   gotoSettings (item) {
@@ -108,6 +126,24 @@ class Autoposting extends React.Component {
                         </ModalDialog>
                       </ModalContainer>
                     }
+                  {
+                    this.state.isShowingModalDelete &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialogDelete}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialogDelete}>
+                        <h3>Delete Integration</h3>
+                        <p>Are you sure you want to delete this integration?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.props.deleteautoposting(this.state.deleteid)
+                            this.closeDialogDelete()
+                          }}>Delete
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
 
                   <div className='table-responsive'>
                     <br /><br />
@@ -125,18 +161,10 @@ class Autoposting extends React.Component {
                     {
                       this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
-                        <ListItem key={item._id} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} item={item} />
+                        <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} item={item} />
                       ))
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
                     }
-                    {/** this.state.showListItems
-                      ? <div>
-                        <ListItem key={1} openSettings={this.gotoSettings} title='Facebook Page' username='kibopush' />
-                        <ListItem key={2} openSettings={this.gotoSettings} title='YouTube Channel' username='cloudkibo' />
-                        <ListItem key={3} openSettings={this.gotoSettings} title='Twitter Account' username='jekram' />
-                      </div>
-                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
-                    **/}
                   </div>
                 </div>
               </div>
@@ -163,7 +191,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadAutopostingList: loadAutopostingList,
-    clearAlertMessages: clearAlertMessages
+    clearAlertMessages: clearAlertMessages,
+    deleteautoposting: deleteautoposting
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Autoposting)
