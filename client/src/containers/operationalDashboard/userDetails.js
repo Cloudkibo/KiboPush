@@ -45,6 +45,7 @@ class UserDetails extends React.Component {
     console.log('data[index]', data)
     this.setState({pagesData: data})
     console.log('in displayData', this.state.pagesData)
+    this.setState({ totalLength: this.state.pagesData.length })
   }
 
   handlePageClick (data) {
@@ -83,7 +84,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} />
+          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} displayData={this.displayData} />
           <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo />
           <PollsInfo userID={this.props.location.state._id} />

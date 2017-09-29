@@ -13,8 +13,7 @@ class PagesInfo extends React.Component {
         filtered.push(this.props.pages[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    this.props.displayData(0, filtered)
   }
 
   render () {
