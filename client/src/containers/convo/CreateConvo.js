@@ -66,8 +66,8 @@ class CreateConvo extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
-    if (nextProps.fileInfo) {
-      var temp = []
+    if (nextProps.fileInfo.fileUrl !== '' && nextProps.fileInfo.fileName !== this.props.fileInfo.fileName) {
+      var temp = this.state.broadcast
       temp.push(nextProps.fileInfo)
       this.setState({broadcast: temp})
     }
@@ -217,7 +217,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-1 col-md-1 col-sm-1 col-xs-12' />
                 <div className='col-lg-5 col-md-5 col-sm-5 col-xs-12' >
-                  <button onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary btn-sm'> Test Conversation </button>
+                  <button className='btn btn-primary btn-sm' disabled> Test Conversation </button>
                 </div>
               </div>
               <div className='row'>
