@@ -54,16 +54,16 @@ class Image extends React.Component {
     }.bind(this)
     console.log(url) // Would see a path?
 
-    console.log("Images in OnChange", file)
+    console.log('Images in OnChange', file)
     this.props.uploadImage(file, {
       id: this.props.id,
       componentType: 'image',
       fileName: file.name,
       fileurl: '',
-      type: file.type, //jpg, png, gif
-      size: file.size,
-      }, this.props.handleImage)
-    
+      type: file.type, // jpg, png, gif
+      size: file.size
+    }, this.props.handleImage)
+
   // TODO: concat files
   }
 
@@ -117,7 +117,7 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
     uploadRequest: uploadRequest,
-    uploadImage: uploadImage,
+    uploadImage: uploadImage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)

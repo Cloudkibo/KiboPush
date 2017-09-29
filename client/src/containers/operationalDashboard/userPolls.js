@@ -8,7 +8,7 @@ class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
     console.log('constructor', props.userID)
-    props.loadPollsList(props.userID)
+    props.loadPollList(props.userID)
     this.state = {
       Polls: [],
       totalLength: 0
@@ -100,9 +100,9 @@ class PollsInfo extends React.Component {
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
               </div>
-                            : <div className='table-responsive'>
-                              <p> No data to display </p>
-                            </div>
+                    : <div className='table-responsive'>
+                      <p> No data to display </p>
+                    </div>
             }
             </div>
           </div>

@@ -28,7 +28,7 @@ class Card extends React.Component {
       fileurl: '',
       fileName: '',
       type: '',
-      size: '',
+      size: ''
     }
   }
 
@@ -59,26 +59,38 @@ class Card extends React.Component {
       })
     }.bind(this)
     console.log(url) // Would see a path?
-    console.log("Card Image in OnChange", file)
+    console.log('Card Image in OnChange', file)
     this.props.uploadImage(file, {fileurl: '',
-     fileName: file.name,
-     type: file.type, 
-     size: file.size}, this.updateImageUrl)
+      fileName: file.name,
+      type: file.type,
+      size: file.size}, this.updateImageUrl)
   }
 
   handleChange (event) {
-    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: event.target.value,
-     description: this.state.subtitle, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: event.target.value,
+      description: this.state.subtitle,
+      buttons: this.state.button})
     this.setState({
       title: event.target.value
     })
   }
 
   handleSubtitle (event) {
-    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: event.target.value, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: event.target.value,
+      buttons: this.state.button})
     this.setState({
       subtitle: event.target.value
     })
@@ -88,9 +100,15 @@ class Card extends React.Component {
     var temp = this.state.button
     temp.push(obj)
     this.setState({button: temp})
-    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: this.state.subtitle, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
   }
 
   editButton (obj) {
@@ -102,30 +120,48 @@ class Card extends React.Component {
       return elm
     })
     this.setState({button: temp})
-    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: this.state.subtitle, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
   }
   removeButton (obj) {
     console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     console.log('Filter', temp)
     this.setState({button: temp})
-    this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: this.state.subtitle, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
   }
 
-  updateImageUrl(data){
-    console.log("Update Card Image Url", )
+  updateImageUrl (data) {
+    console.log('Update Card Image Url')
     this.setState({ fileurl: 'https://app.kibopush.com/api/broadcasts/download/' + data.fileurl,
-                    fileName: data.fileName,
-                    type: data.type, 
-                    size: data.size })
+      fileName: data.fileName,
+      type: data.type,
+      size: data.size })
 
-   this.props.handleCard({id: this.props.id, componentType: 'card', fileurl: this.state.fileurl,
-     fileName: this.state.fileName, type: this.state.type, size: this.state.size, title: this.state.title,
-     description: event.target.value, buttons: this.state.button})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: event.target.value,
+      buttons: this.state.button})
   }
 
   render () {
@@ -176,6 +212,6 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({uploadImage: uploadImage,}, dispatch)
+  return bindActionCreators({uploadImage: uploadImage}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Card)
