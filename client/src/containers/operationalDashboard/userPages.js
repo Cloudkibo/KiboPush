@@ -14,7 +14,6 @@ class PagesInfo extends React.Component {
       }
     }
     this.props.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
 
   render () {

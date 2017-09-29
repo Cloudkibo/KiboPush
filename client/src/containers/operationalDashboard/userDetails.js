@@ -45,6 +45,7 @@ class UserDetails extends React.Component {
     console.log('data[index]', data)
     this.setState({pagesData: data})
     console.log('in displayData', this.state.pagesData)
+    this.setState({ totalLength: this.state.pagesData.length })
   }
 
   handlePageClick (data) {
