@@ -12,10 +12,11 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
-import { uploadFile, handleFile } from '../../redux/actions/convos.actions'
+import { uploadFile, handleFile, setLoading } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import Halogen from 'halogen'
 
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -24,7 +25,8 @@ class File extends React.Component {
     this.state = {
       file: '',
       errorMsg: '',
-      showErrorDialogue: false
+      showErrorDialogue: false,
+      loading: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -44,6 +46,13 @@ class File extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.loading) {
+      this.setState({loading: false})
+      this.props.setLoading()
+    }
   }
 
   showDialog (page) {
@@ -72,6 +81,7 @@ class File extends React.Component {
         size: file.size
       }
       console.log(fileInfo)
+      this.setState({loading: true})
       this.props.handleFile(fileInfo)
       this.props.uploadFile(fileData)
     }
@@ -92,20 +102,24 @@ class File extends React.Component {
           </span>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-          <Files
-            className='files-dropzone'
-            onChange={this.onFilesChange}
-            onError={this.onFilesError}
-            accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
-            maxFileSize={25000000}
-            minFileSize={0}
-            clickable
-        >
-            <div className='align-center'>
-              <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-              <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
-            </div>
-          </Files>
+          {
+            this.state.loading
+            ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+            : <Files
+              className='files-dropzone'
+              onChange={this.onFilesChange}
+              onError={this.onFilesError}
+              accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
+              maxFileSize={25000000}
+              minFileSize={0}
+              clickable
+          >
+              <div className='align-center'>
+                <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
+              </div>
+            </Files>
+          }
           {
           this.state.showDialog &&
           <ModalContainer style={{width: '300px'}}
@@ -129,7 +143,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    loading: (state.convosInfo.loading)
   }
 }
 
@@ -141,7 +156,8 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
     uploadFile: uploadFile,
-    handleFile: handleFile
+    handleFile: handleFile,
+    setLoading: setLoading
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)

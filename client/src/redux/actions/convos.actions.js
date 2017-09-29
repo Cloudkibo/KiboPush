@@ -31,6 +31,12 @@ export function addFileUrl (fileUrl) {
   }
 }
 
+export function setLoading () {
+  return {
+    type: ActionTypes.SET_LOADING
+  }
+}
+
 export function uploadImage (file, data, handleUpload) {
   var fileData = new FormData()
   fileData.append('file', file)
