@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux'
 class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', props.userID)
+    console.log('constructor pollsinfo', props.userID)
     props.loadPollsList(props.userID)
     this.state = {
       PollData: [],
@@ -100,9 +100,9 @@ class PollsInfo extends React.Component {
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
               </div>
-                            : <div className='table-responsive'>
-                              <p> No data to display </p>
-                            </div>
+            : <div className='table-responsive'>
+              <p> No data to display </p>
+            </div>
             }
             </div>
           </div>
