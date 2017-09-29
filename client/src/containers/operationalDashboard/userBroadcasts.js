@@ -114,9 +114,10 @@ class BroadcastsInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={5}
+                  pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
+                  onPageChange={this.handlePageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
