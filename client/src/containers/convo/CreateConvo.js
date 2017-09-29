@@ -378,8 +378,8 @@ class CreateConvo extends React.Component {
               </fieldset>
               <div className='row'>
                 <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
-                <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
+                <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
+                <button style={{float: 'left', marginLeft: 20}} onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
               </div>
             </div>
             <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
