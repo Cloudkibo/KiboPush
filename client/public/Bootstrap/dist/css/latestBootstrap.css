@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 
-.hoverbordercomponent:hover > div > h5{
+.hoverbordercomponent:hover > div > h6{
   color: #FF5E3A;
 }
 
