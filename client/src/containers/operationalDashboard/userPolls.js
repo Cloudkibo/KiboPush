@@ -10,7 +10,7 @@ class PollsInfo extends React.Component {
     console.log('constructor', props.userID)
     props.loadPollsList(props.userID)
     this.state = {
-      Polls: [],
+      PollData: [],
       totalLength: 0
     }
     this.displayData = this.displayData.bind(this)
@@ -49,8 +49,8 @@ class PollsInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({pollData: poll})
-    console.log('in displayData', this.state.pollData)
+    this.setState({PollData: poll})
+    console.log('in displayData', this.state.PollData)
   }
 
   handlePageClick (data) {
@@ -64,7 +64,7 @@ class PollsInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Broadcasts</h4><br />
-              { this.state.pollData && this.state.pollData.length > 0
+              { this.state.PollData && this.state.PollData.length > 0
               ? <div className='table-responsive'>
                 <table className='table table-striped'>
                   <thead>
@@ -78,7 +78,7 @@ class PollsInfo extends React.Component {
                   </thead>
                   <tbody>
                     {
-                    this.state.pollData.map((poll, i) => (
+                    this.state.PollData.map((poll, i) => (
                       <tr>
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
@@ -115,8 +115,7 @@ class PollsInfo extends React.Component {
 function mapStateToProps (state) {
   console.log('user polls', state)
   return {
-  //  polls: state.Polls.broadcasts
-  polls: []
+    polls: state.PollsInfo.polls
   }
 }
 

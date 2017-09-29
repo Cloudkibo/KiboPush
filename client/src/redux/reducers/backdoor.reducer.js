@@ -53,3 +53,14 @@ export function PageSubscribersInfo (state = initialState, action) {
       return state
   }
 }
+export function PollsInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_POLLS_LIST:
+      return Object.assign({}, state, {
+        polls: action.data
+      })
+
+    default:
+      return state
+  }
+}

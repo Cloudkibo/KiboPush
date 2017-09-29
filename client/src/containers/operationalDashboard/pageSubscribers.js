@@ -10,8 +10,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 class PageSubscribers extends React.Component {
-  constructor(props,context) {
-    super(props,context)
+  constructor (props, context) {
+    super(props, context)
     const pageId = this.props.params.pageId
     const userId = this.props.params.id
     props.loadPageSubscribersList(pageId)
@@ -79,7 +79,7 @@ class PageSubscribers extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-          <h4>Subscribers List</h4>
+            <h4>Subscribers List</h4>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>

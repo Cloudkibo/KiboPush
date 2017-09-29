@@ -32,6 +32,7 @@ import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
 import UserBroadcasts from './containers/operationalDashboard/userBroadcasts'
 import PageSubscribers from './containers/operationalDashboard/pageSubscribers'
+import UserPolls from './containers/operationalDashboard/userPolls'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
@@ -99,6 +100,7 @@ const routes = (
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />
     <Route path='/pageSubscribers/:id/:pageId' component={PageSubscribers} onEnter={requireAuth} />
     <Route path='/userBroadcasts' component={UserBroadcasts} onEnter={requireAuth} />
+    <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
   </Route>
 
 )

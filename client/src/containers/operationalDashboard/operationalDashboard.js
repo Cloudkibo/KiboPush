@@ -71,7 +71,7 @@ class OperationalDashboard extends React.Component {
     }
   }
   goToBroadcasts (user) {
-    console.log(this.props);
+    console.log(this.props.user)
     this.props.history.push({
       pathname: `/userDetails`,
       state: user
@@ -91,7 +91,6 @@ class OperationalDashboard extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   render () {
-    const user = {_id : "59c057fdec330620b880160c", name : 'sania siddiqui'};
     return (
       <div>
         <Header />

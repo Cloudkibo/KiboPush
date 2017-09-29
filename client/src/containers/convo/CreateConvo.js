@@ -125,12 +125,12 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
-    handleGallery (obj) {
+  handleGallery (obj) {
     var temp = this.state.broadcast
     var isPresent = false
     obj.cards.forEach((d) => {
-          delete d.id
-        })
+      delete d.id
+    })
     temp.map((data) => {
       if (data.id === obj.id) {
         data.cards = obj.cards
