@@ -141,7 +141,7 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: state.PageSubscribersInfo.subscribers
+    pageSubscribers: state.PageSubscribersInfo.pageSubscribers
   }
 }
 
