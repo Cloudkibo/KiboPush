@@ -10,6 +10,41 @@ export function showautoposting (data) {
     autoposting: data
   }
 }
+
+export function createAutopostingSuccess () {
+  return {
+    type: ActionTypes.CREATE_AUTOPOSTING_SUCCESS,
+    successMessage: 'Changes saved successfully!'
+  }
+}
+
+export function createAutopostingFailure (message) {
+  return {
+    type: ActionTypes.CREATE_AUTOPOSTING_FAILURE,
+    errorMessage: message
+  }
+}
+
+export function clearAlertMessages () {
+  return {
+    type: ActionTypes.CLEAR_AUTOPOSTING_ALERT_MESSAGES
+  }
+}
+
+export function editAutopostingSuccess () {
+  return {
+    type: ActionTypes.EDIT_AUTOPOSTING_SUCCESS,
+    successMessage: 'Changes saved successfully!'
+  }
+}
+
+export function editAutopostingFailure (message) {
+  return {
+    type: ActionTypes.EDIT_AUTOPOSTING_FAILURE,
+    errorMessage: message
+  }
+}
+
 export function loadAutopostingList () {
   return (dispatch) => {
     callApi('autoposting').then(res => dispatch(showautoposting(res.payload)))
@@ -21,7 +56,13 @@ export function createautoposting (data) {
   return (dispatch) => {
     callApi('autoposting/create', 'post', data)
       .then(res => {
-        dispatch(loadAutopostingList())
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(createAutopostingSuccess())
+          dispatch(loadAutopostingList())
+        } else {
+          dispatch(createAutopostingFailure(res.description))
+        }
       })
   }
 }
@@ -37,6 +78,14 @@ export function editautoposting (data) {
   console.log(data)
   return (dispatch) => {
     callApi('autoposting/edit', 'post', data)
-      .then(res => dispatch(loadAutopostingList()))
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(editAutopostingSuccess())
+          dispatch(loadAutopostingList())
+        } else {
+          dispatch(editAutopostingFailure(res.description))
+        }
+      })
   }
 }

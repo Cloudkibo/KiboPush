@@ -7,6 +7,34 @@ export function autopostingInfo (state = {}, action) {
         autopostingData: action.autoposting
       })
 
+    case ActionTypes.CREATE_AUTOPOSTING_SUCCESS:
+      return Object.assign({}, state, {
+        successMessageCreate: action.successMessage
+      })
+
+    case ActionTypes.CREATE_AUTOPOSTING_FAILURE:
+      return Object.assign({}, state, {
+        errorMessageCreate: action.errorMessage
+      })
+
+    case ActionTypes.EDIT_AUTOPOSTING_SUCCESS:
+      return Object.assign({}, state, {
+        successMessageEdit: action.successMessage
+      })
+
+    case ActionTypes.EDIT_AUTOPOSTING_FAILURE:
+      return Object.assign({}, state, {
+        errorMessageEdit: action.errorMessage
+      })
+
+    case ActionTypes.CLEAR_AUTOPOSTING_ALERT_MESSAGES:
+      return Object.assign({}, state, {
+        successMessageEdit: '',
+        errorMessageEdit: '',
+        successMessageCreate: '',
+        errorMessageCreate: ''
+      })
+
     default:
       return state
   }

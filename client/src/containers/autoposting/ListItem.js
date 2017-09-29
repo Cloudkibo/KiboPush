@@ -16,7 +16,8 @@ class ListItem extends React.Component {
     const item = {
       title: this.props.title,
       icon: icon,
-      iconColor: color
+      iconColor: color,
+      item: this.props.item
     }
     return (
       <div onClick={() => this.props.openSettings(item)} style={{cursor: 'pointer', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', margin: '10px', borderRadius: '5px', border: '1px solid #ccc'}} className='card'>
@@ -28,12 +29,12 @@ class ListItem extends React.Component {
           <div className='pull-right' style={{display: 'inline-block', padding: '10px'}}>
             <div style={{width: '100%', textAlign: 'center'}}>
               <div style={{display: 'inline-block', padding: '10px'}}>
-                <p className='card-text'>Active</p>
+                <p className='card-text'>{this.props.item.isActive ? 'Active' : 'Disabled'}</p>
               </div>
               <div style={{display: 'inline-block', padding: '10px'}}>
                 <p className='card-text'>
                   <i className='fa fa-filter' aria-hidden='true' />
-                  <br />No Filter
+                  <br />{this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
                 </p>
               </div>
             </div>

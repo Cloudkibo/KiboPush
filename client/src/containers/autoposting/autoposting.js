@@ -11,18 +11,22 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { loadAutopostingList } from '../../redux/actions/autoposting.actions'
+import { loadAutopostingList, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
+import { Alert } from 'react-bs-notifier'
 
 class Autoposting extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       isShowingModal: false,
-      showListItems: true
+      showListItems: true,
+      alertMessage: '',
+      alertType: ''
     }
     props.loadAutopostingList()
+    props.clearAlertMessages()
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -40,6 +44,25 @@ class Autoposting extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+    }
   }
 
   showDialog () {
@@ -89,9 +112,20 @@ class Autoposting extends React.Component {
                   <div className='table-responsive'>
                     <br /><br />
                     {
+                      this.state.alertMessage !== '' &&
+                      <div>
+                        <center>
+                          <Alert type={this.state.alertType}>
+                            {this.state.alertMessage}
+                          </Alert>
+                        </center>
+                        <br />
+                      </div>
+                    }
+                    {
                       this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
-                        <ListItem key={item._id} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} />
+                        <ListItem key={item._id} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} item={item} />
                       ))
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
                     }
@@ -120,13 +154,16 @@ class Autoposting extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    autopostingData: (state.autopostingInfo.autopostingData)
+    autopostingData: (state.autopostingInfo.autopostingData),
+    successMessage: (state.autopostingInfo.successMessageCreate),
+    errorMessage: (state.autopostingInfo.errorMessageCreate)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadAutopostingList: loadAutopostingList
+    loadAutopostingList: loadAutopostingList,
+    clearAlertMessages: clearAlertMessages
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Autoposting)
