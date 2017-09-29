@@ -598,7 +598,7 @@ exports.getfbMessage = function (req, res) {
             `This is a response from graph api${JSON.stringify(response.body)}`)
           const subsriber = response.body
           logger.serverLog(TAG,
-            `This is subsriber ${JSON.stringify(subsriber)}`)
+            `This is subscriber ${JSON.stringify(subsriber)}`)
 
           if (!error) {
             const payload = {
