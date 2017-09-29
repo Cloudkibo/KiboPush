@@ -91,6 +91,7 @@ class OperationalDashboard extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   render () {
+    const user = {_id:"599fdc33c8ab5027378d778d", name: 'siddiqui'}
     return (
       <div>
         <Header />
@@ -100,9 +101,13 @@ class OperationalDashboard extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
+          <button className='btn btn-primary btn-sm'
+            style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
+          </button>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
+
                 <div className='birthday-item inline-items badges'>
                   { this.state.usersData && this.state.usersData.length > 0
                   ? <div className='table-responsive'>
