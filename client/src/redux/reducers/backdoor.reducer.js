@@ -64,3 +64,15 @@ export function PollsInfo (state = initialState, action) {
       return state
   }
 }
+
+export function SurveysInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_SURVEYS_LIST:
+      return Object.assign({}, state, {
+        surveys: action.data
+      })
+
+    default:
+      return state
+  }
+}
