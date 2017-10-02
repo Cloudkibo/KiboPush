@@ -23,7 +23,7 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
   } else if (body.componentType === 'sms' && !body.buttons) {
     payload = {
       'recipient': JSON.stringify({
-        'id': '03323800399'
+        'phone_number': '03323800399'
       }),
       'message': JSON.stringify({
         'text': body.text,
