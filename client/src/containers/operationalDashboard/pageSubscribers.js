@@ -80,11 +80,11 @@ class PageSubscribers extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <h4>Subscribers List</h4>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
+                <h4>Subscribers List</h4>
                   { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                   ? <div className='table-responsive'>
                     <table className='table table-striped'>
