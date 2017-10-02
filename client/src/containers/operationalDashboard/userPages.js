@@ -33,8 +33,8 @@ class PagesInfo extends React.Component {
                   <thead>
                     <tr>
                       <th>Pages</th>
-                      <th>Number of Followers</th>
-                      <th>Number of Subscribers</th>
+                      <th>Likes</th>
+                      <th>Connected</th>
                       <th />
                     </tr>
                   </thead>
@@ -44,9 +44,9 @@ class PagesInfo extends React.Component {
                     <tr>
                       <td>{page.pageName}</td>
                       <td>{page.likes}</td>
-                      <td>{page.connect}</td>
+                      <td>{page.connected}</td>
                       <td>
-                        <Link to={`/pageSubscribers/${page._id}/${page.pageId}`} className='btn btn-primary btn-sm'>
+                        <Link to={`/pageSubscribers/${page._id}/${page.pageId}/${page.pageName}`} className='btn btn-primary btn-sm'>
                       See Subscribers
                       </Link>
                       </td>

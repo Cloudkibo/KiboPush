@@ -49,7 +49,7 @@ class PollsInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({PollData: poll})
+    this.setState({PollData: data})
     console.log('in displayData', this.state.PollData)
   }
 
@@ -82,7 +82,7 @@ class PollsInfo extends React.Component {
                       <tr>
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
-                        <td>{poll.datetime}</td>
+                        <td>{handleDate(poll.datetime)}</td>
                         <td>{poll.options}</td>
                       </tr>
                     ))
@@ -115,7 +115,7 @@ class PollsInfo extends React.Component {
 function mapStateToProps (state) {
   console.log('user polls', state)
   return {
-    polls: state.pollsInfo.polls
+    polls: state.PollsInfo.polls
   }
 }
 

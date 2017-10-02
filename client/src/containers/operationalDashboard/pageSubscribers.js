@@ -13,10 +13,11 @@ class PageSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
     const pageId = this.props.params.pageId
+    const pageName = this.props.params.pageName
     const id = this.props.params.id
-
     props.loadPageSubscribersList(id)
     this.state = {
+      pageName : pageName,
       pageSubscribersData: [],
       totalLength: 0
     }
@@ -80,11 +81,12 @@ class PageSubscribers extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <h4>Subscribers List</h4>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
+                <h3>{ this.state.pageName }</h3><br/>
+                <h4>Subscribers List</h4>
                   { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                   ? <div className='table-responsive'>
                     <table className='table table-striped'>
@@ -128,7 +130,10 @@ class PageSubscribers extends React.Component {
                 }
                 </div>
               </div>
-
+              <div className='back-button' style={{float:'right'}}>
+                <Link className='btn btn-primary btn-sm'>Back
+                </Link>
+              </div>
             </main>
 
           </div>
@@ -141,7 +146,7 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: state.PageSubscribersInfo.subscribers
+    pageSubscribers: state.PageSubscribersInfo.pageSubscribers
   }
 }
 

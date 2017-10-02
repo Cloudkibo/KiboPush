@@ -56,7 +56,7 @@ class OperationalDashboard extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({usersData: users})
+    this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }
   handlePageClick (data) {

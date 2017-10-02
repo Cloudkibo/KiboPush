@@ -50,7 +50,7 @@ class BroadcastsInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({broadcastsData: broadcasts})
+    this.setState({broadcastsData: data})
     console.log('in displayData', this.state.broadcastsData)
   }
   handlePageClick (data) {
