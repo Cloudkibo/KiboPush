@@ -13,7 +13,9 @@ class PagesInfo extends React.Component {
         filtered.push(this.props.pages[i])
       }
     }
-    this.props.displayData(0, filtered)
+    if (filtered && filtered.length > 0) {
+      this.props.displayData(0, filtered)
+    }
   }
 
   render () {
