@@ -11,12 +11,9 @@ class PagesInfo extends React.Component {
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value)) {
         filtered.push(this.props.pages[i])
-        console.log('search pages', this.props.pages[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.props.displayData(0, filtered)
-    }
+    this.props.displayData(0, filtered)
   }
 
   render () {
@@ -49,7 +46,7 @@ class PagesInfo extends React.Component {
                       <td>{page.likes}</td>
                       <td>{page.connected}</td>
                       <td>
-                        <Link to={`/pageSubscribers/${page._id}/${page.pageId}`} className='btn btn-primary btn-sm'>
+                        <Link to={`/pageSubscribers/${page._id}/${page.pageId}/${page.pageName}`} className='btn btn-primary btn-sm'>
                       See Subscribers
                       </Link>
                       </td>
