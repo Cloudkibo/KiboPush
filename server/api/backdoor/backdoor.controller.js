@@ -14,7 +14,7 @@ const Surveys = require('../surveys/surveys.model')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all users api is working')
-  Users.find({_id: {$ne: req.user._id}}, (err, users) => {
+  Users.find({}, (err, users) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',

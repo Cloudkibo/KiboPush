@@ -79,3 +79,18 @@ export function loadPageSubscribersList (id) {
       .then(res => dispatch(updatePageSubscribersList(res)))
   }
 }
+
+export function updateSurveysList (data) {
+  console.log('updateSurveysList', data.payload)
+  return {
+    type: ActionTypes.LOAD_SURVEYS_LIST,
+    data: data.payload
+  }
+}
+export function loadSurveysList (id) {
+  console.log('load Polls called: ', id)
+  return (dispatch) => {
+    callApi(`backdoor/allsurveys/${id}`)
+      .then(res => dispatch(updateSurveysList(res)))
+  }
+}

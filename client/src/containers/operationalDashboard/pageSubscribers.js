@@ -13,8 +13,9 @@ class PageSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
     const pageId = this.props.params.pageId
-    const userId = this.props.params.id
-    props.loadPageSubscribersList(pageId)
+    const id = this.props.params.id
+
+    props.loadPageSubscribersList(id)
     this.state = {
       pageSubscribersData: [],
       totalLength: 0
@@ -140,7 +141,7 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: state.PageSubscribersInfo.subscribers
+    pageSubscribers: state.PageSubscribersInfo.pageSubscribers
   }
 }
 

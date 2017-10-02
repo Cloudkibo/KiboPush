@@ -63,7 +63,7 @@ class PollsInfo extends React.Component {
         <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
-              <h4>Broadcasts</h4><br />
+              <h4>Polls</h4><br />
               { this.state.PollData && this.state.PollData.length > 0
               ? <div className='table-responsive'>
                 <table className='table table-striped'>
@@ -82,7 +82,7 @@ class PollsInfo extends React.Component {
                       <tr>
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
-                        <td>{poll.datetime}</td>
+                        <td>{handleDate(poll.datetime)}</td>
                         <td>{poll.options}</td>
                       </tr>
                     ))
@@ -115,7 +115,7 @@ class PollsInfo extends React.Component {
 function mapStateToProps (state) {
   console.log('user polls', state)
   return {
-    polls: state.pollsInfo.polls
+    polls: state.PollsInfo.polls
   }
 }
 
