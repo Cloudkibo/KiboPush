@@ -88,7 +88,7 @@ export function updateSurveysList (data) {
   }
 }
 export function loadSurveysList (id) {
-  console.log('load Polls called: ', id)
+  console.log('load Surveys called: ', id)
   return (dispatch) => {
     callApi(`backdoor/allsurveys/${id}`)
       .then(res => dispatch(updateSurveysList(res)))
