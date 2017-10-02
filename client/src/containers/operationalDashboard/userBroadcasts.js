@@ -83,8 +83,10 @@ class BroadcastsInfo extends React.Component {
         console.log('searchBroadcasts filtered', this.props.broadcasts[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
   }
   render () {
     return (

@@ -11,9 +11,12 @@ class PagesInfo extends React.Component {
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value)) {
         filtered.push(this.props.pages[i])
+        console.log('search pages', this.props.pages[i])
       }
     }
-    this.props.displayData(0, filtered)
+    if (filtered && filtered.length > 0) {
+      this.props.displayData(0, filtered)
+    }
   }
 
   render () {
