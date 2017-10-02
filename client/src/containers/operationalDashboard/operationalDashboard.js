@@ -146,8 +146,8 @@ class OperationalDashboard extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a href=''>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
