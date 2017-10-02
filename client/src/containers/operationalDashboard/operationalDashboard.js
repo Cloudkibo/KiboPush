@@ -87,8 +87,11 @@ class OperationalDashboard extends React.Component {
         filtered.push(this.props.users[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    console.log('filtered length=', filtered.length)
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
   }
   render () {
     return (
