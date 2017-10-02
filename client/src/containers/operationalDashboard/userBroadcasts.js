@@ -4,6 +4,8 @@ import { loadBroadcastsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import Moment from 'moment'
+import _ from 'lodash'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -49,8 +51,16 @@ class BroadcastsInfo extends React.Component {
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data[index]', data)
-    this.setState({broadcastsData: broadcasts})
+      // var sortedBroadcasts = broadcasts.sort((a, b) => {
+      //   return new Date(broadcasts.datetime).getTime() - new Date(broadcasts.datetime).getTime()
+      // }).reverse()
+    var sortedBroadcasts = _.sortBy(broadcasts, function (o) {
+      return new Moment(o.datetime)
+    }).reverse()
+
+    console.log('broadcasts', broadcasts)
+    console.log('sortedBroadcasts', sortedBroadcasts)
+    this.setState({broadcastsData: sortedBroadcasts})
     console.log('in displayData', this.state.broadcastsData)
   }
   handlePageClick (data) {
@@ -69,6 +79,8 @@ class BroadcastsInfo extends React.Component {
     for (let i = 0; i < this.props.broadcasts.length; i++) {
       if (this.props.broadcasts[i].text.toLowerCase().includes(event.target.value)) {
         filtered.push(this.props.broadcasts[i])
+        console.log('searchBroadcasts', this.props.broadcasts[i])
+        console.log('searchBroadcasts filtered', this.props.broadcasts[i])
       }
     }
     this.displayData(0, filtered)
