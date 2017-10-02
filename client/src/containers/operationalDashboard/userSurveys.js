@@ -49,7 +49,7 @@ class SurveysInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({SurveyData: surveys})
+    this.setState({SurveyData: data})
     console.log('in displayData', this.state.SurveyData)
   }
 

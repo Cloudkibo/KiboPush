@@ -49,7 +49,7 @@ class PollsInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({PollData: poll})
+    this.setState({PollData: data})
     console.log('in displayData', this.state.PollData)
   }
 
