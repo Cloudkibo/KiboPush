@@ -79,6 +79,8 @@ class BroadcastsInfo extends React.Component {
     for (let i = 0; i < this.props.broadcasts.length; i++) {
       if (this.props.broadcasts[i].text.toLowerCase().includes(event.target.value)) {
         filtered.push(this.props.broadcasts[i])
+        console.log('searchBroadcasts', this.props.broadcasts[i])
+        console.log('searchBroadcasts filtered', this.props.broadcasts[i])
       }
     }
     this.displayData(0, filtered)
