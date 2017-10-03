@@ -68,8 +68,9 @@ class SurveysInfo extends React.Component {
   searchSurveys (event) {
     var filtered = []
     for (let i = 0; i < this.props.surveys.length; i++) {
+      console.log('props surveys', this.props.surveys[i])
       if (this.props.surveys[i].title.toLowerCase().includes(event.target.value)) {
-        filtered.push(this.props.polls[i])
+        filtered.push(this.props.surveys[i])
       }
     }
     if (filtered && filtered.length > 0) {
