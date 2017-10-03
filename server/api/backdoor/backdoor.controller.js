@@ -12,7 +12,8 @@ const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 
-let mongoose = require('mongoose')
+const mongoose = require('mongoose')
+const _ = require('lodash')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all users api is working')
@@ -57,16 +58,11 @@ exports.allpages = function (req, res) {
           description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
         })
       }
-      logger.serverLog(TAG, `Total pages subscribers count ${JSON.stringify(gotSubscribersCount)}`)
       for (let i = 0; i < pages.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
-          logger.serverLog(TAG, `Page id comparison ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-          logger.serverLog(TAG, pages[i]._id.toString())
-          logger.serverLog(TAG, gotSubscribersCount[j]._id.pageId.toString())
-          logger.serverLog(TAG, (pages[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()))
           if (pages[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
             logger.serverLog(TAG, `MATCH ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            pages[i].subscribersCount = gotSubscribersCount[j].count
+            pages[i] = _.merge(pages[i], {subscriberCount: gotSubscribersCount.count})
           }
         }
       }
