@@ -63,6 +63,7 @@ exports.allpages = function (req, res) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pages[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
             logger.serverLog(TAG, `MATCH ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
+            logger.serverLog(TAG, `${gotSubscribersCount[j]}`)
             pagesPayload.push(_.merge(pages[i], {subscriberCount: gotSubscribersCount[j].count}))
           }
         }
