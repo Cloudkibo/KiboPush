@@ -39,9 +39,34 @@ exports.allpages = function (req, res) {
       })
     }
     logger.serverLog(TAG, `Total pages ${pages.length}`)
-    res.status(200).json({
-      status: 'success',
-      payload: pages
+    Subscribers.aggregate({
+      $match: {
+        userId: req.params.userid
+      }
+    }, {
+      $group: {
+        _id: {pageId: '$pageId'},
+        count: {$sum: 1}
+      }
+    }, (err2, gotSubscribersCount) => {
+      if (err2) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+        })
+      }
+      for (let i = 0; i < pages.length; i++) {
+        for (let j = 0; j < gotSubscribersCount; j++) {
+          if (pages[i]._id === gotSubscribersCount[j]._id.pageId) {
+            pages[i].subscribersCount = gotSubscribersCount[j].count
+            break
+          }
+        }
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: pages
+      })
     })
   })
 }
