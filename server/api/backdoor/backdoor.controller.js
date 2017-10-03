@@ -58,17 +58,18 @@ exports.allpages = function (req, res) {
           description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
         })
       }
+      let pagesPayload = []
       for (let i = 0; i < pages.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pages[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
             logger.serverLog(TAG, `MATCH ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            pages[i] = _.merge(pages[i], {subscriberCount: gotSubscribersCount[j].count})
+            pagesPayload.push(_.merge(pages[i], {subscriberCount: gotSubscribersCount[j].count}))
           }
         }
       }
       res.status(200).json({
         status: 'success',
-        payload: pages
+        payload: pagesPayload
       })
     })
   })
