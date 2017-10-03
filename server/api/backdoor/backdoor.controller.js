@@ -60,6 +60,7 @@ exports.allpages = function (req, res) {
       logger.serverLog(TAG, `Total pages subscribers count ${JSON.stringify(gotSubscribersCount)}`)
       for (let i = 0; i < pages.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
+          logger.serverLog(TAG, `Page id comparison ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
           if (pages[i]._id === gotSubscribersCount[j]._id.pageId) {
             pages[i].subscribersCount = gotSubscribersCount[j].count
             break
