@@ -39,7 +39,7 @@ exports.allpages = function (req, res) {
       })
     }
     logger.serverLog(TAG, `Total pages ${pages.length}`)
-    Subscribers.aggregate({
+    Subscribers.aggregate([{
       $match: {
         userId: req.params.userid
       }
@@ -48,7 +48,7 @@ exports.allpages = function (req, res) {
         _id: {pageId: '$pageId'},
         count: {$sum: 1}
       }
-    }, (err2, gotSubscribersCount) => {
+    }], (err2, gotSubscribersCount) => {
       if (err2) {
         return res.status(404).json({
           status: 'failed',
@@ -57,7 +57,7 @@ exports.allpages = function (req, res) {
       }
       logger.serverLog(TAG, `Total pages subscribers count ${JSON.stringify(gotSubscribersCount)}`)
       for (let i = 0; i < pages.length; i++) {
-        for (let j = 0; j < gotSubscribersCount; j++) {
+        for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pages[i]._id === gotSubscribersCount[j]._id.pageId) {
             pages[i].subscribersCount = gotSubscribersCount[j].count
             break
