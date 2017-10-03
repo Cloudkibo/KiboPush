@@ -60,22 +60,24 @@ exports.allpages = function (req, res) {
       }
       let pagesPayload = []
       for (let i = 0; i < pages.length; i++) {
+        pagesPayload.push({
+          _id: pages[i]._id,
+          pageId: pages[i].pageId,
+          pageName: pages[i].pageName,
+          userId: pages[i].userId,
+          pagePic: pages[i].pagePic,
+          connected: pages[i].connected,
+          pageUserName: pages[i].pageUserName,
+          likes: pages[i].likes
+        })
+      }
+      for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
-          if (pages[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG, `MATCH ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
+          if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
+            logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
             logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pages[i])}`)
-            pagesPayload.push({
-              _id: pages[i]._id,
-              pageId: pages[i].pageId,
-              pageName: pages[i].pageName,
-              userId: pages[i].userId,
-              pagePic: pages[i].pagePic,
-              connected: pages[i].connected,
-              pageUserName: pages[i].pageUserName,
-              likes: pages[i].likes,
-              subscribers: gotSubscribersCount[j].count
-            })
+            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
+            pagesPayload.subscribers = gotSubscribersCount[j].count
           }
         }
       }
