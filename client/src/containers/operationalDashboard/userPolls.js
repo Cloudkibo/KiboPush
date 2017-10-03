@@ -16,6 +16,7 @@ class PollsInfo extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchPolls = this.searchPolls.bind(this)
   }
 
   componentDidMount () {
@@ -83,6 +84,10 @@ class PollsInfo extends React.Component {
               <h4>Polls</h4><br />
               { this.state.PollData && this.state.PollData.length > 0
               ? <div className='table-responsive'>
+                <div>
+                  <label> Search </label>
+                  <input type='text' placeholder='Search Polls' className='form-control' onChange={this.searchPolls} />
+                </div>
                 <table className='table table-striped'>
                   <thead>
                     <tr>

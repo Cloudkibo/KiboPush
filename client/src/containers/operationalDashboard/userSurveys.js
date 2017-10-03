@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadSurveysList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { handleDate } from '../../utility/utils'
 
 class SurveysInfo extends React.Component {
   constructor (props, context) {
@@ -15,6 +16,7 @@ class SurveysInfo extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchSurveys = this.searchSurveys.bind(this)
   }
 
   componentDidMount () {
@@ -48,7 +50,6 @@ class SurveysInfo extends React.Component {
       data[index] = surveys[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({SurveyData: data})
     console.log('in displayData', this.state.SurveyData)
   }
@@ -56,7 +57,24 @@ class SurveysInfo extends React.Component {
   handlePageClick (data) {
     this.displayData(data.selected, this.props.surveys)
   }
-
+  componentWillReceiveProps (nextProps) {
+    console.log('userSurveys componentWillReceiveProps is called')
+    if (nextProps.surveys) {
+      console.log('Surveys Updated', nextProps.surveys)
+      this.displayData(0, nextProps.surveys)
+      this.setState({ totalLength: nextProps.surveys.length })
+    }
+  }
+  searchSurveys (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.surveys.length; i++) {
+      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.polls[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
   render () {
     return (
       <div className='row'>
@@ -68,7 +86,7 @@ class SurveysInfo extends React.Component {
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
-                  <input type='text' placeholder='Search Survey' className='form-control' onChange={this.searchBroadcast} />
+                  <input type='text' placeholder='Search Survey' className='form-control' onChange={this.searchSurveys} />
                 </div>
                 <table className='table table-striped'>
                   <thead>
