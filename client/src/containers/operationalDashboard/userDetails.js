@@ -34,8 +34,10 @@ class UserDetails extends React.Component {
         filtered.push(this.props.pages[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: this.state.pagesData.length })
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: this.state.pagesData.length })
+    }
   }
 
   displayData (n, pages) {

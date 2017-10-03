@@ -72,8 +72,10 @@ class PollsInfo extends React.Component {
         filtered.push(this.props.polls[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
   }
   render () {
     return (
@@ -94,8 +96,6 @@ class PollsInfo extends React.Component {
                       <th>Platform</th>
                       <th>Descripton</th>
                       <th>Created at</th>
-                      <th>Sent</th>
-                      <th />
                     </tr>
                   </thead>
                   <tbody>
@@ -105,7 +105,6 @@ class PollsInfo extends React.Component {
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
                         <td>{handleDate(poll.datetime)}</td>
-                        <td>{poll.options}</td>
                       </tr>
                     ))
                   }
