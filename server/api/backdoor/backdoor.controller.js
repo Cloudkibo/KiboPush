@@ -63,8 +63,8 @@ exports.allpages = function (req, res) {
           logger.serverLog(TAG, `Page id comparison ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
           logger.serverLog(TAG, pages[i]._id)
           logger.serverLog(TAG, gotSubscribersCount[j]._id.pageId)
-          logger.serverLog(TAG, (pages[i]._id === gotSubscribersCount[j]._id.pageId))
-          if (pages[i]._id === gotSubscribersCount[j]._id.pageId) {
+          logger.serverLog(TAG, (pages[i]._id == gotSubscribersCount[j]._id.pageId))
+          if (pages[i]._id == gotSubscribersCount[j]._id.pageId) {
             logger.serverLog(TAG, `MATCH ${pages[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
             pages[i].subscribersCount = gotSubscribersCount[j].count
           }
