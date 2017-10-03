@@ -72,8 +72,10 @@ class PollsInfo extends React.Component {
         filtered.push(this.props.polls[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
   }
   render () {
     return (
