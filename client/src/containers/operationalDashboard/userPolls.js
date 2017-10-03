@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadPollsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { handleDate } from '../../utility/utils'
 
 class PollsInfo extends React.Component {
   constructor (props, context) {
@@ -48,15 +49,31 @@ class PollsInfo extends React.Component {
       data[index] = poll[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({PollData: data})
-    console.log('in displayData', this.state.PollData)
+    console.log('in displayData of userPolls', this.state.PollData)
   }
 
   handlePageClick (data) {
     this.displayData(data.selected, this.props.polls)
   }
-
+  componentWillReceiveProps (nextProps) {
+    console.log('userPolls componentWillReceiveProps is called')
+    if (nextProps.polls) {
+      console.log('Polls Updated', nextProps.polls)
+      this.displayData(0, nextProps.polls)
+      this.setState({ totalLength: nextProps.polls.length })
+    }
+  }
+  searchPolls (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.polls.length; i++) {
+      if (this.props.polls[i].statement.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.polls[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
   render () {
     return (
       <div className='row'>
@@ -93,16 +110,17 @@ class PollsInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={5}
+                  pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
+                  onPageChange={this.handlePageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
               </div>
-            : <div className='table-responsive'>
-              <p> No data to display </p>
-            </div>
+              : <div className='table-responsive'>
+                <p> No data to display </p>
+              </div>
             }
             </div>
           </div>
