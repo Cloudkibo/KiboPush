@@ -86,7 +86,7 @@ class UserDetails extends React.Component {
           <h3>{this.props.location.state.name}</h3>
           <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} displayData={this.displayData} />
           <BroadcastsInfo userID={this.props.location.state._id} />
-          <SurveysInfo />
+          <SurveysInfo userID={this.props.location.state._id} />
           <PollsInfo userID={this.props.location.state._id} />
         </div>
       </div>
