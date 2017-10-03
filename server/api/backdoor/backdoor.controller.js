@@ -55,6 +55,7 @@ exports.allpages = function (req, res) {
           description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
         })
       }
+      logger.serverLog(TAG, `Total pages subscribers count ${JSON.stringify(gotSubscribersCount)}`)
       for (let i = 0; i < pages.length; i++) {
         for (let j = 0; j < gotSubscribersCount; j++) {
           if (pages[i]._id === gotSubscribersCount[j]._id.pageId) {
