@@ -72,8 +72,10 @@ class SurveysInfo extends React.Component {
         filtered.push(this.props.polls[i])
       }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
   }
   render () {
     return (
@@ -114,9 +116,10 @@ class SurveysInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={5}
+                  pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
+                  onPageChange={this.handlePageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
