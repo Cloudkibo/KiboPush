@@ -43,12 +43,13 @@ class PollResult extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('in componentWillReceiveProps', nextprops)
+    console.log('in componentWillReceiveProps', nextprops.responses)
     if (nextprops.responses) {
+      console.log('after if', nextprops.responses)
       if (nextprops.responses.length > 0) {
         let totalResponses = 0
-        for (let i = 0; i < this.props.responses.length; i++) {
-          totalResponses += this.props.responses[i].count
+        for (let i = 0; i < nextprops.responses.length; i++) {
+          totalResponses += nextprops.responses[i].count
         }
         this.setState({totalResponses: totalResponses})
       }
