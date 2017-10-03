@@ -4,16 +4,6 @@ import { Link } from 'react-router'
 class PagesInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.searchPage = this.searchPage.bind(this)
-  }
-  searchPage (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value)) {
-        filtered.push(this.props.pages[i])
-      }
-    }
-    this.props.displayData(0, filtered)
   }
 
   render () {
@@ -27,7 +17,7 @@ class PagesInfo extends React.Component {
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
-                  <input type='text' placeholder='Search Pages' className='form-control' onChange={this.searchPage} />
+                  <input type='text' placeholder='Search Pages' className='form-control' onChange={this.props.searchPage} />
                 </div>
                 <table className='table table-striped'>
                   <thead>
