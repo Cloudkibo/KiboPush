@@ -13,7 +13,6 @@ const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 
 let mongoose = require('mongoose')
-let Schema = mongoose.Schema
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all users api is working')
@@ -33,7 +32,7 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all pages api is working')
+  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -44,7 +43,7 @@ exports.allpages = function (req, res) {
     logger.serverLog(TAG, `Total pages ${pages.length}`)
     Subscribers.aggregate([{
       $match: {
-        userId: Schema.ObjectId(req.params.userid)
+        userId: mongoose.Types.ObjectId(req.params.userid)
       }
     }, {
       $group: {
