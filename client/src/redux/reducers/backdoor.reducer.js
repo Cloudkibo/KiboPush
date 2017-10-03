@@ -4,7 +4,8 @@ const initialState = {
   users: [],
   broadcasts: [],
   pages: [],
-  polls: []
+  polls: [],
+  surveys: []
 }
 
 export function UsersInfo (state = initialState, action) {
