@@ -77,7 +77,7 @@ exports.allpages = function (req, res) {
             logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
             logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
             logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
-            pagesPayload.subscribers = gotSubscribersCount[j].count
+            pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
       }
