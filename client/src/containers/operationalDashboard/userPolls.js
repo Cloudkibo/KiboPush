@@ -96,8 +96,6 @@ class PollsInfo extends React.Component {
                       <th>Platform</th>
                       <th>Descripton</th>
                       <th>Created at</th>
-                      <th>Sent</th>
-                      <th />
                     </tr>
                   </thead>
                   <tbody>
@@ -107,7 +105,6 @@ class PollsInfo extends React.Component {
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
                         <td>{handleDate(poll.datetime)}</td>
-                        <td>{poll.options}</td>
                       </tr>
                     ))
                   }

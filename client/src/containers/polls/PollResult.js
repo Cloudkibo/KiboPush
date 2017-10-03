@@ -21,6 +21,8 @@ class PollResult extends React.Component {
     this.state = {
       totalResponses: 0
     }
+    console.log('this.props.location.state', this.props.location.state)
+    this.props.getpollresults(this.props.location.state)
   }
 
   componentDidMount () {
@@ -38,12 +40,10 @@ class PollResult extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/Chart.min.js')
     document.body.appendChild(addScript)
-
-    console.log(this.props.location.state)
-    this.props.getpollresults(this.props.location.state)
   }
 
   componentWillReceiveProps (nextprops) {
+    console.log('in componentWillReceiveProps', nextprops)
     if (nextprops.responses) {
       if (nextprops.responses.length > 0) {
         let totalResponses = 0
@@ -190,7 +190,7 @@ class PollResult extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('mapStateToProps pollresult', state)
   return {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses)
