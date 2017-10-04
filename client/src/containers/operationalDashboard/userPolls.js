@@ -68,7 +68,7 @@ class PollsInfo extends React.Component {
   searchPolls (event) {
     var filtered = []
     for (let i = 0; i < this.props.polls.length; i++) {
-      if (this.props.polls[i].statement.toLowerCase().includes(event.target.value) || this.props.polls[i].statement.toUpperCase().includes(event.target.value) || this.props.polls[i].statement.includes(event.target.value)) {
+      if (this.props.polls[i].statement.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.polls[i])
       }
     }

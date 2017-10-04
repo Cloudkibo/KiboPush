@@ -35,7 +35,7 @@ class UserDetails extends React.Component {
 >>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
     var filtered = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value) || this.props.pages[i].pageName.toUpperCase().includes(event.target.value) || this.props.pages[i].pageName.includes(event.target.value)) {
+      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.pages[i])
       }
     }
