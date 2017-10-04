@@ -17,13 +17,14 @@ class PagesInfo extends React.Component {
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
-                  <input type='text' placeholder='Search Pages' className='form-control' onChange={this.props.searchPage} />
+                  <input type='text' placeholder='Search Pages' className='form-control' onChange={(event) =>{this.props.search(event,'pages')}} />
                 </div>
                 <table className='table table-striped'>
                   <thead>
                     <tr>
                       <th>Pages</th>
-                      <th>Likes</th>
+                      <th>Number of Likes</th>
+                      <th>Number of Subscribers</th>
                       <th>Connected</th>
                       <th />
                     </tr>
@@ -34,9 +35,10 @@ class PagesInfo extends React.Component {
                     <tr>
                       <td>{page.pageName}</td>
                       <td>{page.likes}</td>
-                      <td>{page.connected}</td>
+                      <td>{page.connected ? 'true' : 'false'}</td>
+                      <td>{page.subscribers}</td>
                       <td>
-                        <Link to={`/pageSubscribers/${page._id}/${page.pageId}/${page.pageName}`} className='btn btn-primary btn-sm'>
+                        <Link to={`/pageSubscribers/${page._id}/${page.pageName}`} className='btn btn-primary btn-sm'>
                       See Subscribers
                       </Link>
                       </td>
@@ -52,7 +54,7 @@ class PagesInfo extends React.Component {
                   pageCount={Math.ceil(this.props.length / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
-                  onPageChange={this.props.handlePageClick}
+                  onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />

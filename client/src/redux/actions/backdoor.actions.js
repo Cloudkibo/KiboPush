@@ -94,3 +94,10 @@ export function loadSurveysList (id) {
       .then(res => dispatch(updateSurveysList(res)))
   }
 }
+
+export function saveUserInformation(user) {
+  return {
+    type: ActionTypes.SAVE_USER_INFORMATION,
+    data : user
+  }
+}

@@ -4,7 +4,8 @@ const initialState = {
   users: [],
   broadcasts: [],
   pages: [],
-  polls: []
+  polls: [],
+  currentUser : null
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -70,6 +71,19 @@ export function SurveysInfo (state = initialState, action) {
     case ActionTypes.LOAD_SURVEYS_LIST:
       return Object.assign({}, state, {
         surveys: action.data
+      })
+
+    default:
+      return state
+  }
+}
+
+export function getCurrentUser (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.SAVE_USER_INFORMATION:
+      console.log('getCurrentUser',action.data)
+      return Object.assign({}, state, {
+        currentUser: action.data
       })
 
     default:

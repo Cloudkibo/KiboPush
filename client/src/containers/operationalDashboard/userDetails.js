@@ -23,11 +23,12 @@ class UserDetails extends React.Component {
       totalLength: 0
     }
     this.displayData = this.displayData.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
-    this.searchPage = this.searchPage.bind(this)
+    this.handleClickEvent = this.handleClickEvent.bind(this)
+    this.search = this.search.bind(this)
   }
 
- searchPage (event) {
+ search (event, name) {
+   console.log(name)
     var filtered = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value)) {
@@ -58,7 +59,8 @@ class UserDetails extends React.Component {
     console.log('in displayData', this.state.pagesData)
   }
 
-  handlePageClick (data) {
+  handleClickEvent (data) {
+    console.log(data.name)
     this.displayData(data.selected, this.props.pages)
   }
 
@@ -94,7 +96,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} displayData={this.displayData} searchPage ={this.searchPage} />
+          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handleClickEvent} displayData={this.displayData} search ={this.search} />
           <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo />
           <PollsInfo userID={this.props.location.state._id} />
@@ -105,14 +107,15 @@ class UserDetails extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for pages', state)
+  console.log('in mapStateToProps for pages, current', state)
   return {
     pages: state.PagesInfo.pages
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPagesList: loadPagesList},
-    dispatch)
+  return bindActionCreators({
+    loadPagesList: loadPagesList
+  },dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)
