@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 class PageSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
-    const pageId = this.props.params.pageId
     const pageName = this.props.params.pageName
     const id = this.props.params.id
     props.loadPageSubscribersList(id)
@@ -23,7 +22,19 @@ class PageSubscribers extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+<<<<<<< HEAD
+    this.backToUserDetails = this.backToUserDetails.bind(this)
+  }
+  backToUserDetails() {
+    const user = this.props.currentUser
+    console.log('back to user details', user, this.props)
+    this.props.history.push({
+      pathname: `/userDetails`,
+      state: user
+    })
+=======
     this.searchSubscribers = this.searchSubscribers.bind(this)
+>>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
   }
 
   displayData (n, pageSubscribers) {
@@ -148,9 +159,15 @@ class PageSubscribers extends React.Component {
                 }
                 </div>
               </div>
+<<<<<<< HEAD
+              <div className='back-button' style={{float:'right', margin:2}}>
+                <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
+                </button>
+=======
               <div className='back-button' style={{float: 'right'}}>
                 <Link className='btn btn-primary btn-sm'>Back
                 </Link>
+>>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
               </div>
             </main>
 
@@ -164,7 +181,8 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: state.PageSubscribersInfo.pageSubscribers
+    pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
+    currentUser : (state.getCurrentUser.currentUser)
   }
 }
 
