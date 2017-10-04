@@ -184,14 +184,14 @@ class PollResult extends React.Component {
                         'margin': '0 auto'
                       }}>
                         <canvas id='radar-chart' width={250} height={170} />
-                      </div>
-                      <div className='add-options-message'>
-                        <Link
-                          to='/poll'
-                          style={{float: 'right', margin: 2}}
-                          className='btn btn-primary btn-sm'>
-                          Back
-                        </Link>
+                        <div className='add-options-message'>
+                          <Link
+                            to='/poll'
+                            style={{float: 'right', margin: 2}}
+                            className='btn btn-primary btn-sm'>
+                            Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
