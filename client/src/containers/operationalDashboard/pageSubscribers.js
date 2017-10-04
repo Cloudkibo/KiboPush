@@ -57,6 +57,19 @@ class PageSubscribers extends React.Component {
       this.setState({ totalLength: nextProps.pageSubscribers.length })
     }
   }
+  searchSubscribers (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.pageSubscribers.length; i++) {
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName === event.target.value || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName === event.target.value) {
+        filtered.push(this.props.pages[i])
+      }
+    }
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: this.state.pagesData.length })
+    }
+  }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -89,6 +102,10 @@ class PageSubscribers extends React.Component {
                   <h4>Subscribers List</h4>
                   { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscribers} />
+                    </div>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
