@@ -23,6 +23,7 @@ class PageSubscribers extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchSubscribers = this.searchSubscribers.bind(this)
   }
 
   displayData (n, pageSubscribers) {
