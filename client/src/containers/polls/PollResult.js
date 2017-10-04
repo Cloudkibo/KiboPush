@@ -7,6 +7,8 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
+import { Link } from 'react-router'
+
 import { connect } from 'react-redux'
 import {
   addPoll,
@@ -21,8 +23,8 @@ class PollResult extends React.Component {
     this.state = {
       totalResponses: 0
     }
-    console.log('this.props.location.state', this.props.location.state)
-    this.props.getpollresults(this.props.location.state)
+    console.log('this.props.location.state', this.props.location.state._id)
+    this.props.getpollresults(this.props.location.state._id)
   }
 
   componentDidMount () {
@@ -121,6 +123,13 @@ class PollResult extends React.Component {
             <div className='container'>
               <br />
               <div className='row'>
+                <div className='col-lg-12 col-sm-12 col-xs-12'>
+                  <div className='ui-block responsive-flex'>
+                    <h5 className='presentation-margin'>Title: {this.props.location.state.statement}</h5>
+                  </div>
+                </div>
+              </div>
+              <div className='row'>
                 <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                   <div className='ui-block'>
                     <div className='ui-block-content'>
@@ -175,6 +184,14 @@ class PollResult extends React.Component {
                         'margin': '0 auto'
                       }}>
                         <canvas id='radar-chart' width={250} height={170} />
+                        <div className='add-options-message'>
+                          <Link
+                            to='/poll'
+                            style={{float: 'right', margin: 2}}
+                            className='btn btn-primary btn-sm'>
+                            Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

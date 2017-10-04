@@ -110,7 +110,7 @@ class Poll extends React.Component {
   gotoView (poll) {
     this.props.history.push({
       pathname: `/pollResult`,
-      state: poll._id
+      state: poll
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }

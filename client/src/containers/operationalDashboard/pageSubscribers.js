@@ -23,6 +23,8 @@ class PageSubscribers extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchSubscribers = this.searchSubscribers.bind(this)
+    this.backToUserDetails = this.backToUserDetails.bind(this)
   }
 
   displayData (n, pageSubscribers) {
@@ -57,6 +59,29 @@ class PageSubscribers extends React.Component {
       this.setState({ totalLength: nextProps.pageSubscribers.length })
     }
   }
+  searchSubscribers (event) {
+    var filtered = []
+    console.log('length', this.props.pageSubscribers)
+    for (let i = 0; i < this.props.pageSubscribers.length; i++) {
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
+        filtered.push(this.props.pageSubscribers[i])
+      }
+    }
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: this.state.pageSubscribersData.length })
+    }
+  }
+
+  backToUserDetails() {
+    const user = this.props.currentUser
+    console.log('back to user details', user, this.props)
+    this.props.history.push({
+      pathname: `/userDetails`,
+      state: user
+    })
+  }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -89,6 +114,10 @@ class PageSubscribers extends React.Component {
                   <h4>Subscribers List</h4>
                   { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscribers} />
+                    </div>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -130,9 +159,9 @@ class PageSubscribers extends React.Component {
                 }
                 </div>
               </div>
-              <div className='back-button' style={{float: 'right'}}>
-                <Link className='btn btn-primary btn-sm'>Back
-                </Link>
+              <div className='back-button' style={{float: 'right', margin : 2}}>
+                <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
+                </button>
               </div>
             </main>
 
@@ -146,7 +175,8 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: state.PageSubscribersInfo.pageSubscribers
+    pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
+    currentUser : (state.getCurrentUser.currentUser)
   }
 }
 

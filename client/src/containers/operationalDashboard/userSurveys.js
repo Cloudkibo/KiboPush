@@ -69,7 +69,7 @@ class SurveysInfo extends React.Component {
     var filtered = []
     for (let i = 0; i < this.props.surveys.length; i++) {
       console.log('props surveys', this.props.surveys[i])
-      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value)) {
+      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.surveys[i])
       }
     }
@@ -96,7 +96,6 @@ class SurveysInfo extends React.Component {
                     <tr>
                       <th>Title</th>
                       <th>Descripton</th>
-                      <th> Text </th>
                       <th>Created at</th>
                     </tr>
                   </thead>
@@ -106,7 +105,6 @@ class SurveysInfo extends React.Component {
                       <tr>
                         <td>{survey.title}</td>
                         <td>{survey.description}</td>
-                        <td>{survey.text}</td>
                         <td>{handleDate(survey.datetime)}</td>
                       </tr>
                     ))

@@ -10,6 +10,7 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadUsersList } from '../../redux/actions/backdoor.actions'
+import { saveUserInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { handleDate } from '../../utility/utils'
@@ -72,6 +73,7 @@ class OperationalDashboard extends React.Component {
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
+    this.props.saveUserInformation(user)
     this.props.history.push({
       pathname: `/userDetails`,
       state: user
@@ -83,7 +85,7 @@ class OperationalDashboard extends React.Component {
   searchUser (event) {
     var filtered = []
     for (let i = 0; i < this.props.users.length; i++) {
-      if (this.props.users[i].name.toLowerCase().includes(event.target.value)) {
+      if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.users[i])
       }
     }
@@ -175,13 +177,15 @@ class OperationalDashboard extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    users: state.UsersInfo.users
+    users: (state.UsersInfo.users),
+    currentUser : (state.getCurrentUser.currentUser)
   //  usersData: state.usersData
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadUsersList: loadUsersList},
+  return bindActionCreators({loadUsersList: loadUsersList,
+    saveUserInformation: saveUserInformation},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
