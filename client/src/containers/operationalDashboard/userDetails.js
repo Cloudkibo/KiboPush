@@ -27,15 +27,11 @@ class UserDetails extends React.Component {
     this.search = this.search.bind(this)
   }
 
-<<<<<<< HEAD
  search (event, name) {
    console.log(name)
-=======
-  searchPage (event) {
->>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
     var filtered = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
+      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value) || this.props.pages[i].pageName.toUpperCase().includes(event.target.value) || this.props.pages[i].pageName.includes(event.target.value)) {
         filtered.push(this.props.pages[i])
       }
     }
@@ -102,11 +98,7 @@ class UserDetails extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>{this.props.location.state.name}</h3>
-<<<<<<< HEAD
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handleClickEvent} displayData={this.displayData} search ={this.search} />
-=======
-          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handlePageClick={this.handlePageClick} displayData={this.displayData} searchPage={this.searchPage} />
->>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
+          <PagesInfo pages={this.state.pagesData} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search ={this.search} />
           <BroadcastsInfo userID={this.props.location.state._id} />
           <SurveysInfo userID={this.props.location.state._id} />
           <PollsInfo userID={this.props.location.state._id} />
