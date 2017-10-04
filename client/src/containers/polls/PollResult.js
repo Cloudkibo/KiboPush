@@ -7,6 +7,8 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
+import { Link } from 'react-router'
+
 import { connect } from 'react-redux'
 import {
   addPoll,
@@ -21,6 +23,8 @@ class PollResult extends React.Component {
     this.state = {
       totalResponses: 0
     }
+    console.log('this.props.location.state', this.props.location.state._id)
+    this.props.getpollresults(this.props.location.state._id)
   }
 
   componentDidMount () {
@@ -38,17 +42,16 @@ class PollResult extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/Chart.min.js')
     document.body.appendChild(addScript)
-
-    console.log(this.props.location.state)
-    this.props.getpollresults(this.props.location.state)
   }
 
   componentWillReceiveProps (nextprops) {
+    console.log('in componentWillReceiveProps', nextprops.responses)
     if (nextprops.responses) {
+      console.log('after if', nextprops.responses)
       if (nextprops.responses.length > 0) {
         let totalResponses = 0
-        for (let i = 0; i < this.props.responses.length; i++) {
-          totalResponses += this.props.responses[i].count
+        for (let i = 0; i < nextprops.responses.length; i++) {
+          totalResponses += nextprops.responses[i].count
         }
         this.setState({totalResponses: totalResponses})
       }
@@ -120,6 +123,13 @@ class PollResult extends React.Component {
             <div className='container'>
               <br />
               <div className='row'>
+                <div className='col-lg-12 col-sm-12 col-xs-12'>
+                  <div className='ui-block responsive-flex'>
+                    <h5 className='presentation-margin'>Title: {this.props.location.state.statement}</h5>
+                  </div>
+                </div>
+              </div>
+              <div className='row'>
                 <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                   <div className='ui-block'>
                     <div className='ui-block-content'>
@@ -174,6 +184,14 @@ class PollResult extends React.Component {
                         'margin': '0 auto'
                       }}>
                         <canvas id='radar-chart' width={250} height={170} />
+                        <div className='add-options-message'>
+                          <Link
+                            to='/poll'
+                            style={{float: 'right', margin: 2}}
+                            className='btn btn-primary btn-sm'>
+                            Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -190,7 +208,7 @@ class PollResult extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('mapStateToProps pollresult', state)
   return {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses)

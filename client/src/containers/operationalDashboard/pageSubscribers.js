@@ -16,12 +16,13 @@ class PageSubscribers extends React.Component {
     const id = this.props.params.id
     props.loadPageSubscribersList(id)
     this.state = {
-      pageName : pageName,
+      pageName: pageName,
       pageSubscribersData: [],
       totalLength: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+<<<<<<< HEAD
     this.backToUserDetails = this.backToUserDetails.bind(this)
   }
   backToUserDetails() {
@@ -31,6 +32,9 @@ class PageSubscribers extends React.Component {
       pathname: `/userDetails`,
       state: user
     })
+=======
+    this.searchSubscribers = this.searchSubscribers.bind(this)
+>>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
   }
 
   displayData (n, pageSubscribers) {
@@ -65,6 +69,19 @@ class PageSubscribers extends React.Component {
       this.setState({ totalLength: nextProps.pageSubscribers.length })
     }
   }
+  searchSubscribers (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.pageSubscribers.length; i++) {
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.includes(event.target.value) || this.props.pageSubscribers[i].firstName.valueOf() === event.target.value.valueOf() || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.includes(event.target.value)) {
+        filtered.push(this.props.PageSubscribers[i])
+      }
+    }
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: this.state.pageSubscribersData.length })
+    }
+  }
+
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -93,10 +110,14 @@ class PageSubscribers extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                <h3>{ this.state.pageName }</h3><br/>
-                <h4>Subscribers List</h4>
+                  <h3>{ this.state.pageName }</h3><br />
+                  <h4>Subscribers List</h4>
                   { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscribers} />
+                    </div>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -138,9 +159,15 @@ class PageSubscribers extends React.Component {
                 }
                 </div>
               </div>
+<<<<<<< HEAD
               <div className='back-button' style={{float:'right', margin:2}}>
                 <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
                 </button>
+=======
+              <div className='back-button' style={{float: 'right'}}>
+                <Link className='btn btn-primary btn-sm'>Back
+                </Link>
+>>>>>>> a2900c9d850358798db6722ee6a69519fdf5cd10
               </div>
             </main>
 

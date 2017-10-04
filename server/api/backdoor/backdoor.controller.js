@@ -12,6 +12,9 @@ const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 
+const mongoose = require('mongoose')
+const _ = require('lodash')
+
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all users api is working')
   Users.find({}, (err, users) => {
@@ -30,7 +33,7 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all pages api is working')
+  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -39,9 +42,49 @@ exports.allpages = function (req, res) {
       })
     }
     logger.serverLog(TAG, `Total pages ${pages.length}`)
-    res.status(200).json({
-      status: 'success',
-      payload: pages
+    Subscribers.aggregate([{
+      $match: {
+        userId: mongoose.Types.ObjectId(req.params.userid)
+      }
+    }, {
+      $group: {
+        _id: {pageId: '$pageId'},
+        count: {$sum: 1}
+      }
+    }], (err2, gotSubscribersCount) => {
+      if (err2) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+        })
+      }
+      let pagesPayload = []
+      for (let i = 0; i < pages.length; i++) {
+        pagesPayload.push({
+          _id: pages[i]._id,
+          pageId: pages[i].pageId,
+          pageName: pages[i].pageName,
+          userId: pages[i].userId,
+          pagePic: pages[i].pagePic,
+          connected: pages[i].connected,
+          pageUserName: pages[i].pageUserName,
+          likes: pages[i].likes
+        })
+      }
+      for (let i = 0; i < pagesPayload.length; i++) {
+        for (let j = 0; j < gotSubscribersCount.length; j++) {
+          if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
+            logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
+            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
+            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
+            pagesPayload[i].subscribers = gotSubscribersCount[j].count
+          }
+        }
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: pagesPayload
+      })
     })
   })
 }

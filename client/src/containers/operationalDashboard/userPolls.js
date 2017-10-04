@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate'
 import { loadPollsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { handleDate } from '../../utility/utils'
 
 class PollsInfo extends React.Component {
   constructor (props, context) {
@@ -15,6 +16,7 @@ class PollsInfo extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchPolls = this.searchPolls.bind(this)
   }
 
   componentDidMount () {
@@ -48,15 +50,33 @@ class PollsInfo extends React.Component {
       data[index] = poll[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({PollData: data})
-    console.log('in displayData', this.state.PollData)
+    console.log('in displayData of userPolls', this.state.PollData)
   }
 
   handlePageClick (data) {
     this.displayData(data.selected, this.props.polls)
   }
-
+  componentWillReceiveProps (nextProps) {
+    console.log('userPolls componentWillReceiveProps is called')
+    if (nextProps.polls) {
+      console.log('Polls Updated', nextProps.polls)
+      this.displayData(0, nextProps.polls)
+      this.setState({ totalLength: nextProps.polls.length })
+    }
+  }
+  searchPolls (event) {
+    var filtered = []
+    for (let i = 0; i < this.props.polls.length; i++) {
+      if (this.props.polls[i].statement.toLowerCase().includes(event.target.value) || this.props.polls[i].statement.toUpperCase().includes(event.target.value) || this.props.polls[i].statement.includes(event.target.value)) {
+        filtered.push(this.props.polls[i])
+      }
+    }
+    if (filtered && filtered.length > 0) {
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
+    }
+  }
   render () {
     return (
       <div className='row'>
@@ -66,14 +86,16 @@ class PollsInfo extends React.Component {
               <h4>Polls</h4><br />
               { this.state.PollData && this.state.PollData.length > 0
               ? <div className='table-responsive'>
+                <div>
+                  <label> Search </label>
+                  <input type='text' placeholder='Search Polls' className='form-control' onChange={this.searchPolls} />
+                </div>
                 <table className='table table-striped'>
                   <thead>
                     <tr>
                       <th>Platform</th>
                       <th>Descripton</th>
                       <th>Created at</th>
-                      <th>Sent</th>
-                      <th />
                     </tr>
                   </thead>
                   <tbody>
@@ -83,7 +105,6 @@ class PollsInfo extends React.Component {
                         <td>{poll.platform}</td>
                         <td>{poll.statement}</td>
                         <td>{handleDate(poll.datetime)}</td>
-                        <td>{poll.options}</td>
                       </tr>
                     ))
                   }
@@ -93,16 +114,17 @@ class PollsInfo extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a href=''>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={5}
+                  pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
+                  onPageChange={this.handlePageClick}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
               </div>
-            : <div className='table-responsive'>
-              <p> No data to display </p>
-            </div>
+              : <div className='table-responsive'>
+                <p> No data to display </p>
+              </div>
             }
             </div>
           </div>
