@@ -30,7 +30,7 @@ class UserDetails extends React.Component {
   searchPage (event) {
     var filtered = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value) || this.props.pages[i].pageName.toUpperCase().includes(event.target.value) || this.props.pages[i].pageName === event.target.value) {
+      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value) || this.props.pages[i].pageName.toUpperCase().includes(event.target.value) || this.props.pages[i].pageName.includes(event.target.value)) {
         filtered.push(this.props.pages[i])
       }
     }

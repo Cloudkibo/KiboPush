@@ -83,7 +83,7 @@ class OperationalDashboard extends React.Component {
   searchUser (event) {
     var filtered = []
     for (let i = 0; i < this.props.users.length; i++) {
-      if (this.props.users[i].name.toLowerCase().includes(event.target.value) || this.props.users[i].name.toUpperCase().includes(event.target.value) || this.props.users[i].name.valueOf() === event.target.value.valueOf()) {
+      if (this.props.users[i].name.toLowerCase().includes(event.target.value) || this.props.users[i].name.toUpperCase().includes(event.target.value) || this.props.users[i].name.includes(event.target.value)) {
         filtered.push(this.props.users[i])
       }
     }
