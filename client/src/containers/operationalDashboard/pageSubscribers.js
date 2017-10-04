@@ -62,7 +62,7 @@ class PageSubscribers extends React.Component {
     var filtered = []
     console.log('length', this.props.pageSubscribers)
     for (let i = 0; i < this.props.pageSubscribers.length; i++) {
-      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.includes(event.target.value) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.includes(event.target.value)) {
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.pageSubscribers[i])
       }
     }
