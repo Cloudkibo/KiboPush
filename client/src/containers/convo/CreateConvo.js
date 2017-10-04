@@ -239,9 +239,14 @@ class CreateConvo extends React.Component {
     var data = {
       platform: 'facebook',
       payload: this.state.broadcast,
-      isSegmented: false
-    }
+      isSegmented: true,
+      segmentationPageIds: this.state.pageValue,
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
+      segmentationTimeZone: '',
 
+    }
+    console.log("Data sent: ", data)
     this.props.sendBroadcast(data, this.msg)
     this.setState({broadcast: [], list: []})
   }
