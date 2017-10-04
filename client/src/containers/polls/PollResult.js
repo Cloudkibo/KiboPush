@@ -125,7 +125,7 @@ class PollResult extends React.Component {
               <div className='row'>
                 <div className='col-lg-12 col-sm-12 col-xs-12'>
                   <div className='ui-block responsive-flex'>
-                    <h5 className='presentation-margin'>Statement: {this.props.location.state.statement}</h5>
+                    <h5 className='presentation-margin'>Title: {this.props.location.state.statement}</h5>
                   </div>
                 </div>
               </div>

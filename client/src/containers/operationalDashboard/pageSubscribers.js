@@ -60,7 +60,7 @@ class PageSubscribers extends React.Component {
   searchSubscribers (event) {
     var filtered = []
     for (let i = 0; i < this.props.pageSubscribers.length; i++) {
-      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName === event.target.value || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName === event.target.value) {
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.valueOf() === event.target.value.valueOf() || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.valueOf() === event.target.value.valueOf()) {
         filtered.push(this.props.pages[i])
       }
     }
