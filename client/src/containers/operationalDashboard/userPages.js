@@ -35,8 +35,8 @@ class PagesInfo extends React.Component {
                     <tr>
                       <td>{page.pageName}</td>
                       <td>{page.likes}</td>
-                      <td>{page.connected ? 'true' : 'false'}</td>
                       <td>{page.subscribers}</td>
+                      <td>{page.connected ? 'true' : 'false'}</td>
                       <td>
                         <Link to={`/pageSubscribers/${page._id}/${page.pageName}`} className='btn btn-primary btn-sm'>
                       See Subscribers
