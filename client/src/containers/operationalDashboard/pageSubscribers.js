@@ -60,13 +60,13 @@ class PageSubscribers extends React.Component {
   searchSubscribers (event) {
     var filtered = []
     for (let i = 0; i < this.props.pageSubscribers.length; i++) {
-      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName === event.target.value || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName === event.target.value) {
-        filtered.push(this.props.pages[i])
+      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].firstName.includes(event.target.value) || this.props.pageSubscribers[i].firstName.valueOf() === event.target.value.valueOf() || this.props.pageSubscribers[i].lastName.toUpperCase().includes(event.target.value) || this.props.pageSubscribers[i].lastName.includes(event.target.value)) {
+        filtered.push(this.props.PageSubscribers[i])
       }
     }
     if (filtered && filtered.length > 0) {
       this.displayData(0, filtered)
-      this.setState({ totalLength: this.state.pagesData.length })
+      this.setState({ totalLength: this.state.pageSubscribersData.length })
     }
   }
 
