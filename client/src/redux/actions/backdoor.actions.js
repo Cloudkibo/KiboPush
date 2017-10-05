@@ -20,7 +20,7 @@ export function loadUsersList () {
 export function updatePagesList (data) {
   console.log('Users Created Pages', data)
   return {
-    type: ActionTypes.LOAD_PAGES_LIST,
+    type: ActionTypes.LOAD_BACKDOOR_PAGES_LIST,
     data: data.payload
   }
 }

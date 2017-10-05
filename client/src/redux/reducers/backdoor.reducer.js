@@ -22,7 +22,7 @@ export function UsersInfo (state = initialState, action) {
 
 export function PagesInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.LOAD_PAGES_LIST:
+    case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:
       return Object.assign({}, state, {
         pages: action.data
       })
