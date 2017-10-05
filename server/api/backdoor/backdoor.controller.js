@@ -68,7 +68,8 @@ exports.allpages = function (req, res) {
           pagePic: pages[i].pagePic,
           connected: pages[i].connected,
           pageUserName: pages[i].pageUserName,
-          likes: pages[i].likes
+          likes: pages[i].likes,
+          subscribers: 0
         })
       }
       for (let i = 0; i < pagesPayload.length; i++) {
