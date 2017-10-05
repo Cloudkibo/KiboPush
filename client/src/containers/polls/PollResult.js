@@ -188,7 +188,7 @@ class PollResult extends React.Component {
                           <Link
                             to='/poll'
                             style={{float: 'right', margin: 2}}
-                            className='btn btn-primary btn-sm'>
+                            className='pull-right btn btn-primary btn-sm'>
                             Back
                           </Link>
                         </div>
