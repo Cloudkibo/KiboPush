@@ -109,6 +109,16 @@ class Sidebar extends Component {
                 </ReactTooltip>
               </li>
               <li>
+                <Link to='/growthTools' data-for='growthTools' data-tip>
+                  <div style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='float' id='growthTools'>
+                  <span>Growth Tools</span>
+                </ReactTooltip>
+              </li>
+              <li>
                 <Link to='/subscribers' data-for='subscribers' data-tip>
                   <svg className='olymp-star-icon left-menu-icon'>
                     <use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' />

@@ -1339,3 +1339,18 @@ p {
 
 .card-header .collapsed i {
   transform: rotate(-90deg); }
+
+
+  .file-upload-area {
+      margin-top: 50px;
+      margin-bottom: 50px;
+      width: auto !important;
+      text-align: center;
+      padding: 25px;
+      border:dashed;
+      height: 210px
+  }
+  .textArea {
+    width : 50% !important;
+    margin-top : 10px
+  }

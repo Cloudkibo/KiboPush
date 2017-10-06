@@ -6,6 +6,8 @@ import Home from './containers/home'
 import Login from './containers/login/login'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
+import GrowthTools from './containers/GrowthTools/growthTools'
+import CustomerMatching from './containers/GrowthTools/customerMatchingUsingPhNum'
 import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
 import Convo from './containers/convo/convo'
@@ -103,6 +105,8 @@ const routes = (
     <Route path='/userBroadcasts' component={UserBroadcasts} onEnter={requireAuth} />
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
+    <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
+    <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
 
   </Route>
 
