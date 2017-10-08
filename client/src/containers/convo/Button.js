@@ -69,7 +69,7 @@ class Button extends React.Component {
         <h6 onClick={this.handleClick}> + Add Button </h6>
         <Popover
           style={{width: '300px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
-          placement='right'
+          placement='left'
           target={this.target}
           show={this.state.openPopover}
           onHide={this.handleClose} >

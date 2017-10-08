@@ -10,6 +10,12 @@
   color: #ccc;
 }
 
+@media only screen and (min-width: 1025px) {
+    .fixed {
+        position: fixed;
+    }
+}
+
 .slick-prev:hover:before,
 .slick-next:hover:before {
   color: #FF5E3A;

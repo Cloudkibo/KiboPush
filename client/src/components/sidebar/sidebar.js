@@ -82,7 +82,7 @@ class Sidebar extends Component {
   }
   render () {
     return (
-      <div className='fixed-sidebar open'>
+      <div className='fixed-sidebar'>
         <div className='fixed-sidebar-left sidebar--small' id='sidebar-left'>
           <Link to='02-ProfilePage.html' className='logo'>
             <img src='img/logo.png' alt='Olympus' />

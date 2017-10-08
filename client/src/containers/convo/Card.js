@@ -192,7 +192,7 @@ class Card extends React.Component {
           </div>
           <div>
             <input onChange={this.handleChange} style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} style={{borderStyle: 'none'}} rows='2' cols='37' placeholder='Enter subtitle...' />
+            <textarea onChange={this.handleSubtitle} style={{borderStyle: 'none', width: 100 + '%'}} rows='2' placeholder='Enter subtitle...' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
