@@ -757,6 +757,7 @@ function sendautomatedmsg (req, page) {
                 `Page token error from graph api ${JSON.stringify(err3)}`)
             }
 
+            logger.serverLog(TAG, `value of index is ${index}`)
             if (index) {
               let messageData = {}
               if (index === -10) {
