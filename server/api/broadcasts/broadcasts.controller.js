@@ -585,7 +585,6 @@ exports.getfbMessage = function (req, res) {
         }
         // fetch subsriber info from Graph API
         // fetch customer details
-        logger.serverLog(TAG, `This is a page${JSON.stringify(page)}`)
         const options = {
           url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
           qs: {access_token: page.accessToken},
@@ -594,11 +593,7 @@ exports.getfbMessage = function (req, res) {
         }
 
         needle.get(options.url, options, (error, response) => {
-          logger.serverLog(TAG,
-            `This is a response from graph api${JSON.stringify(response.body)}`)
           const subsriber = response.body
-          logger.serverLog(TAG,
-            `This is subscriber ${JSON.stringify(subsriber)}`)
 
           if (!error) {
             const payload = {
@@ -619,7 +614,6 @@ exports.getfbMessage = function (req, res) {
 
             Subscribers.findOne({senderId: sender}, (err, subscriber) => {
               if (err) logger.serverLog(TAG, err)
-              logger.serverLog(TAG, subscriber)
               if (subscriber === null) {
                 // subsriber not found, create subscriber
                 Subscribers.create(payload, (err2) => {
@@ -706,15 +700,12 @@ function savepoll (req) {
 
 function sendautomatedmsg (req, page) {
   logger.serverLog(TAG, 'send_automated_msg called')
-  logger.serverLog(TAG, 'Page userid id is ' + page.userId)
   Workflows.find({userId: page.userId._id, isActive: true})
     .populate('userId')
     .exec((err, workflows) => {
       if (err) {
         logger.serverLog(TAG, 'Workflows not found')
       }
-
-      logger.serverLog(TAG, 'Workflows fetched' + JSON.stringify(workflows))
       // const sender = req.sender.id
       // const page = req.recipient.id
       //  'message_is'
@@ -737,9 +728,10 @@ function sendautomatedmsg (req, page) {
             break
           }
 
-          logger.serverLog(TAG, 'User message is ' + userMsg)
+          logger.serverLog(TAG,
+            `User message is ${userMsg} compared with ${JSON.stringify(
+              workflows[i].keywords)}`)
 
-          logger.serverLog(TAG, workflows[i])
           if (workflows[i].condition === 'message_is' &&
             _.indexOf(workflows[i].keywords, userMsg) !== -1) {
             index = i
@@ -796,6 +788,8 @@ function sendautomatedmsg (req, page) {
                       `subscription renewed for ${req.sender.id}`)
                   })
               } else {
+                logger.serverLog(TAG,
+                  `workflow reply being sent ${workflows[index].reply}`)
                 messageData = {
                   text: workflows[index].reply
                 }
@@ -805,7 +799,6 @@ function sendautomatedmsg (req, page) {
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
-              logger.serverLog(TAG, messageData)
               needle.post(
                 `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
                 data, (err4, respp) => {
