@@ -95,9 +95,9 @@ export function loadSurveysList (id) {
   }
 }
 
-export function saveUserInformation(user) {
+export function saveUserInformation (user) {
   return {
     type: ActionTypes.SAVE_USER_INFORMATION,
-    data : user
+    data: user
   }
 }

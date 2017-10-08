@@ -4,7 +4,6 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import ReactPaginate from 'react-paginate'
-import { Link } from 'react-router'
 import { loadPageSubscribersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -12,7 +11,7 @@ import { connect } from 'react-redux'
 class PageSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
-    const pageId = this.props.params.pageId
+    // const pageId = this.props.params.pageId
     const pageName = this.props.params.pageName
     const id = this.props.params.id
     props.loadPageSubscribersList(id)
@@ -73,7 +72,7 @@ class PageSubscribers extends React.Component {
     }
   }
 
-  backToUserDetails() {
+  backToUserDetails () {
     const user = this.props.currentUser
     console.log('back to user details', user, this.props)
     this.props.history.push({
@@ -159,7 +158,7 @@ class PageSubscribers extends React.Component {
                 }
                 </div>
               </div>
-              <div className='back-button' style={{float: 'right', margin : 2}}>
+              <div className='back-button' style={{float: 'right', margin: 2}}>
                 <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
                 </button>
               </div>
@@ -176,7 +175,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
     pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
-    currentUser : (state.getCurrentUser.currentUser)
+    currentUser: (state.getCurrentUser.currentUser)
   }
 }
 

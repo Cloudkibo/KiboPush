@@ -109,6 +109,20 @@ exports.send = function (req, res) {
    { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
    */
 
+  Polls.findById(req.body._id, (err, poll) => {
+    if (err) {
+      return logger.serverLog(TAG, `Send Error on Polls ${JSON.stringify(err)}`)
+    }
+    poll.sent = poll.sent + 1
+    poll.save((err2) => {
+      if (err2) {
+        logger.serverLog(TAG, `Save Error on Polls send ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG, `Sent value updated for poll ${poll.sent}`)
+      return res.status(200).json({status: 'success', payload: poll})
+    })
+  })
+
   const messageData = {
     attachment: {
       type: 'template',
@@ -152,11 +166,10 @@ exports.send = function (req, res) {
   Pages.find(pagesFindCriteria, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-      return res.status(500)
-        .json({
-          status: 'failed',
-          description: `Internal Server Error${JSON.stringify(err)}`
-        })
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
     }
     logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
     for (let z = 0; z < pages.length; z++) {
@@ -190,7 +203,8 @@ exports.send = function (req, res) {
               }
 
               logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(resp.body.access_token)}`)
+                `Page accesstoken from graph api ${JSON.stringify(
+                  resp.body.access_token)}`)
 
               for (let j = 0; j < subscribers.length; j++) {
                 logger.serverLog(TAG,
@@ -221,7 +235,5 @@ exports.send = function (req, res) {
         }
       })
     }
-    return res.status(200)
-      .json({status: 'success', payload: 'Poll sent successfully.'})
   })
 }

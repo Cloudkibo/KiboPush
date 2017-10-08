@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router'
@@ -13,11 +14,11 @@ class PagesInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Pages</h4><br />
-              { this.props.pages != null && this.props.length > 0
+              { this.props.pages !== null && this.props.length > 0
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
-                  <input type='text' placeholder='Search Pages' className='form-control' onChange={(event) =>{this.props.search(event,'pages')}} />
+                  <input type='text' placeholder='Search Pages' className='form-control' onChange={(event) => { this.props.search(event, 'pages') }} />
                 </div>
                 <table className='table table-striped'>
                   <thead>

@@ -31,8 +31,6 @@ import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 
-
-
 class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -61,7 +59,7 @@ class CreateConvo extends React.Component {
       localeValue: [],
       isShowingModal: false,
       convoTitle: 'Conversation Title',
-      steps: [],
+      steps: []
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -107,26 +105,26 @@ class CreateConvo extends React.Component {
     this.setState({page: {options: options}})
 
     this.addSteps([{
-                    title: 'Component',
-                    text: 'You can add components to your conversation using these button',
-                    selector: 'div#text',
-                    position: 'bottom-left',
-                    type: 'hover',
-                    isFixed: true,},
-                    {
-                    title: 'Edit Title',
-                    text: 'You can edit the title of your conversation by clicking the pencil icon',
-                    selector: 'i#convoTitle',
-                    position: 'bottom-left',
-                    type: 'hover',
-                    isFixed: true,},
-                    {
-                    title: 'Send Conversation',
-                    text: 'You can send your conversation using these buttons',
-                    selector: 'button#send',
-                    position: 'bottom-left',
-                    type: 'hover',
-                    isFixed: true,}]);
+      title: 'Component',
+      text: 'You can add components to your conversation using these button',
+      selector: 'div#text',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Edit Title',
+      text: 'You can edit the title of your conversation by clicking the pencil icon',
+      selector: 'i#convoTitle',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Send Conversation',
+      text: 'You can send your conversation using these buttons',
+      selector: 'button#send',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true}])
   }
 
   componentWillReceiveProps (nextProps) {
@@ -271,10 +269,10 @@ class CreateConvo extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationLocale: this.state.localeValue,
       segmentationGender: this.state.genderValue,
-      segmentationTimeZone: '',
+      segmentationTimeZone: ''
 
     }
-    console.log("Data sent: ", data)
+    console.log('Data sent: ', data)
     this.props.sendBroadcast(data, this.msg)
     this.setState({broadcast: [], list: []})
   }
@@ -283,27 +281,25 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
 
-  addSteps(steps) {
-    let joyride = this.refs.joyride;
-        
     if (!Array.isArray(steps)) {
-        steps = [steps];
+      steps = [steps]
     }
-    
-    if (!steps.length) {
-        return false;
-    }
-    var temp = this.state.steps;
-    this.setState({
-        steps : temp.concat(steps)
-    });
-}
- 
-  addTooltip(data) {
-    this.refs.joyride.addTooltip(data);
-}
 
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
+  }
 
   render () {
     console.log('Payload ', this.state)
@@ -319,7 +315,7 @@ class CreateConvo extends React.Component {
 
     return (
       <div>
-        <Joyride ref="joyride" run={true} steps={this.state.steps} debug={false} type={'continuous'} showStepsProgress={true} showSkipButton={true} />
+        <Joyride ref='joyride' run steps={this.state.steps} debug={false} type={'continuous'} showStepsProgress showSkipButton />
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -335,7 +331,7 @@ class CreateConvo extends React.Component {
               <div style={{padding: '25px'}} className='row' />
               <div className='row'>
                 <div className='col-3'>
-                  <div className='ui-block hoverbordercomponent' id="text" onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
                     <div className='align-center' style={{margin: 5}}>
                       <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                       <h6>Text</h6>
@@ -435,7 +431,7 @@ class CreateConvo extends React.Component {
               <div className='row'>
                 <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
                 <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
-                <button style={{float: 'left', marginLeft: 20}} id="send" onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
+                <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
               </div>
             </div>
             <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
@@ -443,7 +439,7 @@ class CreateConvo extends React.Component {
               <StickyDiv offsetTop={70}>
                 <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                   <div style={{padding: '5px'}}>
-                    <h3>{this.state.convoTitle} <i onClick={this.showDialog} id="convoTitle" style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                    <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
                   </div>
                 </div>
               </StickyDiv>

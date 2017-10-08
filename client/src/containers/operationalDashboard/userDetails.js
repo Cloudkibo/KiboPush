@@ -118,6 +118,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPagesList: loadPagesList
-  },dispatch)
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)

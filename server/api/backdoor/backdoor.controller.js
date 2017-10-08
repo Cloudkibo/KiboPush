@@ -13,7 +13,6 @@ const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 
 const mongoose = require('mongoose')
-const _ = require('lodash')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all users api is working')
