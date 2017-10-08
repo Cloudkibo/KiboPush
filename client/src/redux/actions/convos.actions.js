@@ -38,6 +38,7 @@ export function setLoading () {
 }
 
 export function uploadImage (file, data, handleUpload) {
+  // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
   fileData.append('filename', file.name)

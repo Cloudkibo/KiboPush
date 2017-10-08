@@ -5,7 +5,7 @@ const initialState = {
   broadcasts: [],
   pages: [],
   polls: [],
-  currentUser : null
+  currentUser: null
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -81,7 +81,7 @@ export function SurveysInfo (state = initialState, action) {
 export function getCurrentUser (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SAVE_USER_INFORMATION:
-      console.log('getCurrentUser',action.data)
+      console.log('getCurrentUser', action.data)
       return Object.assign({}, state, {
         currentUser: action.data
       })

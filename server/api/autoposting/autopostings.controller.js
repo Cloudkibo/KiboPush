@@ -123,3 +123,9 @@ exports.destroy = function (req, res) {
     })
   })
 }
+
+exports.twitterwebhook = function (req, res) {
+  logger.serverLog(TAG, 'Twitter Webhook Called')
+  logger.serverLog(TAG, JSON.stringify(req.body))
+  return res.status(200).json({status: 'success', description: 'got the data.'})
+}

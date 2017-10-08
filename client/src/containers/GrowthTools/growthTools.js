@@ -5,7 +5,6 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 
-
 class GrowthTools extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -15,7 +14,6 @@ class GrowthTools extends React.Component {
       totalLength: 0
     }
   }
-
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
@@ -59,7 +57,7 @@ class GrowthTools extends React.Component {
                     <tbody>
                       <tr>
                         <td>
-                          <Link to={`/customerMatchingUsingPhNum`}  style = {{color : '#337ab7'}}>
+                          <Link to={`/customerMatchingUsingPhNum`} style={{color: '#337ab7'}}>
                             Customer Matching Using Phone Numbers
                           </Link>
                         </td>

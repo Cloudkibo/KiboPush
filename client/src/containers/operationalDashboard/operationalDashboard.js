@@ -9,8 +9,10 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
-import { loadUsersList } from '../../redux/actions/backdoor.actions'
-import { saveUserInformation } from '../../redux/actions/backdoor.actions'
+import {
+  loadUsersList,
+  saveUserInformation
+} from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { handleDate } from '../../utility/utils'
@@ -178,7 +180,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     users: (state.UsersInfo.users),
-    currentUser : (state.getCurrentUser.currentUser)
+    currentUser: (state.getCurrentUser.currentUser)
   //  usersData: state.usersData
   }
 }
