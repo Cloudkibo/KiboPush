@@ -77,7 +77,7 @@ class EditButton extends React.Component {
         <button onClick={this.handleClick} className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.title}</button>
         <Popover
           style={{width: '300px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
-          placement='right'
+          placement='left'
           target={this.target}
           show={this.state.openPopover}
           onHide={this.handleClose} >
