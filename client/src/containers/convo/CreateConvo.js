@@ -30,6 +30,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
+var MessengerPlugin = require("react-messenger-plugin").default;
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -42,7 +43,8 @@ class CreateConvo extends React.Component {
       },
       Gender: {
         options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'}
+                  {label: 'Female', value: 'Female'},
+                  {label: 'Other', value: 'Other'}
         ]
       },
       Locale: {
@@ -281,8 +283,8 @@ class CreateConvo extends React.Component {
       payload: this.state.broadcast,
       isSegmented: true,
       segmentationPageIds: this.state.pageValue,
-      segmentationLocale: this.state.localeValue,
-      segmentationGender: this.state.genderValue,
+      segmentationLocale: this.state.localeValue.split(","),
+      segmentationGender: this.state.genderValue.split(","),
       segmentationTimeZone: ''
 
     }
@@ -446,6 +448,10 @@ class CreateConvo extends React.Component {
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
+                  <MessengerPlugin
+                      appId="1429073230510150"
+                      pageId="458107491218881"
+                    />
                 </div>
               </div>
             </div>

@@ -16,7 +16,7 @@ import {
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-var MessengerPlugin = require("react-messenger-plugin").default;
+
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -91,10 +91,6 @@ class Dashboard extends React.Component {
                     <h1>{this.props.dashboard.subscribers}</h1>
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
-                         <MessengerPlugin
-                          appId="1429073230510150"
-                          pageId="458107491218881"
-                        />
                     </div>
                   </div>
                 </div>
