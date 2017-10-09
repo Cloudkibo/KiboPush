@@ -171,9 +171,8 @@ class Convo extends React.Component {
                         <thead>
                           <tr>
                             <th>Platform</th>
-                            <th>Type</th>
+                            <th>Title</th>
                             <th>Created At</th>
-                            <th>Message</th>
                             <th>Sent</th>
                             <th>Seen</th>
                           </tr>
@@ -185,7 +184,6 @@ class Convo extends React.Component {
                                 <td>{broadcast.platform}</td>
                                 <td>{broadcast.type}</td>
                                 <td>{handleDate(broadcast.datetime)}</td>
-                                <td>{broadcast.text}</td>
                                 <td>{broadcast.sent}</td>
                                 <td>{broadcast.seen}</td>
                               </tr>
