@@ -73,12 +73,12 @@ class Text extends React.Component {
           </span>
         </div>
         <div style={{marginBottom: '-7px'}}>
-          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25, width: 100+'%'}} placeholder='Enter your text...' />
+          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25, width: 100 + '%'}} placeholder='Enter your text...' />
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, width: 100+'%'}}>
+        <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%'}}>
           <Button onAdd={this.addButton} />
 
         </div>
