@@ -65,6 +65,7 @@ class CreateConvo extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
@@ -130,11 +131,6 @@ class CreateConvo extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
-    }
-    if (nextProps.fileInfo.fileUrl !== '') {
-      var temp = this.state.broadcast
-      temp.push(nextProps.fileInfo)
-      this.setState({broadcast: temp})
     }
   }
 
@@ -251,6 +247,24 @@ class CreateConvo extends React.Component {
     // console.log("Image Uploaded", obj)
   }
 
+  handleFile (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data = obj
+        isPresent = true
+      }
+    })
+
+    if (!isPresent) {
+      temp.push(obj)
+    }
+
+    this.setState({broadcast: temp})
+    // console.log("Image Uploaded", obj)
+  }
+
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
@@ -327,113 +341,113 @@ class CreateConvo extends React.Component {
           <br />
           <div className='row'>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                <div style={{padding: '25px'}} className='row' />
-                <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
-                        </div>
+              <div style={{padding: '25px'}} className='row' />
+              <div>
+                <div className='row' >
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                        <h6>Text</h6>
                       </div>
                     </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center' style={{margin: 5}}>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
-                        </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                        <h6>Image</h6>
                       </div>
                     </div>
-                    <fieldset className='form-group'>
-                      <h3>Set Targeting:</h3>
-                      <div className='form-group'>
-                        <Select
-                          closeOnSelect={!stayOpen}
-                          disabled={disabled}
-                          multi
-                          onChange={this.handlePageChange}
-                          options={this.state.page.options}
-                          placeholder='Select page(s)'
-                          simpleValue
-                          value={this.state.pageValue}
-                        />
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                        <h6>Card</h6>
                       </div>
-                      <div className='form-group'>
-                        <Select
-                          closeOnSelect={!stayOpen}
-                          disabled={disabled}
-                          multi
-                          onChange={this.handleGenderChange}
-                          options={this.state.Gender.options}
-                          placeholder='Select Gender'
-                          simpleValue
-                          value={this.state.genderValue}
-                        />
-                      </div>
-                      <div className='form-group'>
-                        <Select
-                          closeOnSelect={!stayOpen}
-                          disabled={disabled}
-                          multi
-                          onChange={this.handleLocaleChange}
-                          options={this.state.Locale.options}
-                          placeholder='Select Locale(s)'
-                          simpleValue
-                          value={this.state.localeValue}
-                        />
-                      </div>
-                    </fieldset>
-                    <div className='row'>
-                      <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
                     </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                        <h6>Gallery</h6>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <div className='row'>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                        <h6>Audio</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                        <h6>Video</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                      <div className='align-center' style={{margin: 5}}>
+                        <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                        <h6>File</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <fieldset className='form-group'>
+                  <h3>Set Targeting:</h3>
+                  <div className='form-group'>
+                    <Select
+                      closeOnSelect={!stayOpen}
+                      disabled={disabled}
+                      multi
+                      onChange={this.handlePageChange}
+                      options={this.state.page.options}
+                      placeholder='Select page(s)'
+                      simpleValue
+                      value={this.state.pageValue}
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <Select
+                      closeOnSelect={!stayOpen}
+                      disabled={disabled}
+                      multi
+                      onChange={this.handleGenderChange}
+                      options={this.state.Gender.options}
+                      placeholder='Select Gender'
+                      simpleValue
+                      value={this.state.genderValue}
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <Select
+                      closeOnSelect={!stayOpen}
+                      disabled={disabled}
+                      multi
+                      onChange={this.handleLocaleChange}
+                      options={this.state.Locale.options}
+                      placeholder='Select Locale(s)'
+                      simpleValue
+                      value={this.state.localeValue}
+                    />
+                  </div>
+                </fieldset>
+                <div className='row'>
+                  <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
+                </div>
+              </div>
             </div>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
               <div style={{padding: '25px'}} className='row' />

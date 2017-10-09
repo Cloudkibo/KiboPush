@@ -2,7 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function uploadFile (filedata) {
+export function uploadFile (filedata, fileInfo, handleFunction) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {
@@ -12,22 +12,10 @@ export function uploadFile (filedata) {
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
-    }).then((res) => res.json()).then((res) => res).then(res => dispatch(addFileUrl(res.payload)))
-  }
-}
-
-export function handleFile (fileInfo) {
-  return {
-    type: ActionTypes.ADD_FILE_INFO,
-    fileInfo
-  }
-}
-
-export function addFileUrl (fileUrl) {
-  console.log(fileUrl)
-  return {
-    type: ActionTypes.ADD_FILE_URL,
-    fileUrl
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      fileInfo.fileurl = res.payload
+      handleFunction(fileInfo)
+    })
   }
 }
 
