@@ -246,7 +246,14 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Dashboard</span>
                 </Link>
               </li>
-
+              <li>
+                <Link to='/growthTools'>
+                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Growth Tools' style={{paddingRight: 20}}>
+                    <Icon icon={bullhorn} size={20} />
+                  </div>
+                  <span className='left-menu-title'>Growth Tools</span>
+                </Link>
+              </li>
               <li>
                 <Link to='/subscribers'>
                   <svg className='olymp-happy-faces-icon left-menu-icon' data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribers'><use xlinkHref='icons/icons.svg#olymp-happy-faces-icon' /></svg>
