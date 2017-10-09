@@ -91,8 +91,7 @@ class Dashboard extends React.Component {
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
                       <div className='fb-send-to-messenger'
-                        messenger_app_id='1429073230510150'
-                        page_id='458107491218881'
+                        ref={(elm) => { elm.setAttribute('messenger_app_id', '1429073230510150'); elm.setAttribute('page_id', '458107491218881'); }}
                         data-ref='PASS_THROUGH_PARAM'
                         color='blue'
                         size='standard' />
