@@ -33,8 +33,9 @@ class Dashboard extends React.Component {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
-      this.setState({ isShowingModal: true })
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0) {
+      this.setState({isShowingModal: true})
     }
   }
 
@@ -90,8 +91,8 @@ class Dashboard extends React.Component {
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
                       <div class='fb-send-to-messenger'
-                        messenger_app_id='APP_ID'
-                        page_id='PAGE_ID'
+                        messenger_app_id='1429073230510150'
+                        page_id='151990922046256'
                         data-ref='PASS_THROUGH_PARAM'
                         color='blue'
                         size='standard' />
@@ -136,7 +137,8 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.activityChart.surveys}</h1>
                     <div className='author-content'>
-                      <Link to='/surveys' className='h5 author-name'>Surveys</Link>
+                      <Link to='/surveys'
+                        className='h5 author-name'>Surveys</Link>
                     </div>
                   </div>
                 </div>
@@ -191,7 +193,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList, createbroadcast: createbroadcast},
+    {
+      loadDashboardData: loadDashboardData,
+      loadMyPagesList: loadMyPagesList,
+      loadSubscribersList: loadSubscribersList,
+      createbroadcast: createbroadcast
+    },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
