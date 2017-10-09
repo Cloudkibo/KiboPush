@@ -16,6 +16,7 @@ import {
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+var MessengerPlugin = require("react-messenger-plugin");
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -90,11 +91,10 @@ class Dashboard extends React.Component {
                     <h1>{this.props.dashboard.subscribers}</h1>
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
-                      <div className='fb-send-to-messenger'
-                        ref={(elm) => { elm.setAttribute('messenger_app_id', '1429073230510150'); elm.setAttribute('page_id', '458107491218881'); }}
-                        data-ref='PASS_THROUGH_PARAM'
-                        color='blue'
-                        size='standard' />
+                         <MessengerPlugin
+                          appId="1429073230510150"
+                          pageId="458107491218881"
+                        />
                     </div>
                   </div>
                 </div>
