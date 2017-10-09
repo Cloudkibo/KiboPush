@@ -712,7 +712,7 @@ function sendautomatedmsg (req, page) {
       //  'message_contains'
       //  'message_begins'
       if (req.message.text) {
-        var index = null
+        var index = -2
         for (let i = 0; i < workflows.length; i++) {
           var userMsg = req.message.text
           var words = userMsg.trim().split(' ')
