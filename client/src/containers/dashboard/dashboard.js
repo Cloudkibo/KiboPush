@@ -89,13 +89,12 @@ class Dashboard extends React.Component {
                     <h1>{this.props.dashboard.subscribers}</h1>
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
-                      <div class="fb-send-to-messenger" 
-                            messenger_app_id="APP_ID" 
-                            page_id="PAGE_ID" 
-                            data-ref="PASS_THROUGH_PARAM" 
-                            color="blue" 
-                            size="standard">
-                          </div>   
+                      <div class='fb-send-to-messenger'
+                        messenger_app_id='APP_ID'
+                        page_id='PAGE_ID'
+                        data-ref='PASS_THROUGH_PARAM'
+                        color='blue'
+                        size='standard' />
                     </div>
                   </div>
                 </div>

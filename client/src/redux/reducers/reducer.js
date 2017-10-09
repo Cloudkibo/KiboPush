@@ -10,7 +10,7 @@ import {surveysInfo} from './surveys.reducer.js'
 import {workflowsInfo} from './workflows.reducer.js'
 import {autopostingInfo} from './autoposting.reducer.js'
 import {convosInfo} from './convos.reducer.js'
-import {reducer as formReducer} from  'redux-form';
+import {reducer as formReducer} from 'redux-form'
 import {getFileUploadResponse} from './growthTools.reducer.js'
 import {UsersInfo, PagesInfo, BroadcastsInfo, PageSubscribersInfo, PollsInfo, SurveysInfo, getCurrentUser} from './backdoor.reducer'
 
@@ -33,7 +33,7 @@ const appReducer = combineReducers({
   SurveysInfo,
   getCurrentUser,
   getFileUploadResponse,
-  form : formReducer
+  form: formReducer
 })
 
 export default appReducer

@@ -54,10 +54,10 @@ exports.create = function (req, res) {
             ? req.body.pageIds
             : null
           autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-            ? req.body.gender
+            ? req.body.segmentationGender
             : null
           autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-            ? req.body.locale
+            ? req.body.segmentationLocale
             : null
         }
         const autoPosting = new AutoPosting(autoPostingPayload)
