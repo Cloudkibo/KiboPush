@@ -2,7 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function uploadFile (filedata, fileInfo, handleFunction) {
+export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {
@@ -14,14 +14,9 @@ export function uploadFile (filedata, fileInfo, handleFunction) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       fileInfo.fileurl = res.payload
+      setLoading()
       handleFunction(fileInfo)
     })
-  }
-}
-
-export function setLoading () {
-  return {
-    type: ActionTypes.SET_LOADING
   }
 }
 
