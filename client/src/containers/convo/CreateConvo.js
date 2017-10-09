@@ -65,6 +65,7 @@ class CreateConvo extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
@@ -130,11 +131,6 @@ class CreateConvo extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
-    }
-    if (nextProps.fileInfo.fileUrl !== '') {
-      var temp = this.state.broadcast
-      temp.push(nextProps.fileInfo)
-      this.setState({broadcast: temp})
     }
   }
 
@@ -234,6 +230,24 @@ class CreateConvo extends React.Component {
   }
 
   handleImage (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data = obj
+        isPresent = true
+      }
+    })
+
+    if (!isPresent) {
+      temp.push(obj)
+    }
+
+    this.setState({broadcast: temp})
+    // console.log("Image Uploaded", obj)
+  }
+
+  handleFile (obj) {
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -365,7 +379,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
                       <div className='align-center' style={{margin: 5}}>
                         <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                         <h6>Audio</h6>
@@ -373,7 +387,7 @@ class CreateConvo extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
                       <div className='align-center' style={{margin: 5}}>
                         <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
                         <h6>Video</h6>
@@ -381,7 +395,7 @@ class CreateConvo extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} onRemove={this.removeComponent} />)}]}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
                       <div className='align-center' style={{margin: 5}}>
                         <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                         <h6>File</h6>
@@ -401,7 +415,7 @@ class CreateConvo extends React.Component {
                       placeholder='Select page(s)'
                       simpleValue
                       value={this.state.pageValue}
-                        />
+                    />
                   </div>
                   <div className='form-group'>
                     <Select
@@ -413,7 +427,7 @@ class CreateConvo extends React.Component {
                       placeholder='Select Gender'
                       simpleValue
                       value={this.state.genderValue}
-                        />
+                    />
                   </div>
                   <div className='form-group'>
                     <Select
@@ -425,7 +439,7 @@ class CreateConvo extends React.Component {
                       placeholder='Select Locale(s)'
                       simpleValue
                       value={this.state.localeValue}
-                        />
+                    />
                   </div>
                 </fieldset>
                 <div className='row'>

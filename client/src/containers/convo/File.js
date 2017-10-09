@@ -12,7 +12,7 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
-import { uploadFile, handleFile, setLoading } from '../../redux/actions/convos.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -32,6 +32,7 @@ class File extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.setLoading = this.setLoading.bind(this)
   }
 
   componentDidMount () {
@@ -48,19 +49,16 @@ class File extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (!nextProps.loading) {
-      this.setState({loading: false})
-      this.props.setLoading()
-    }
-  }
-
   showDialog (page) {
     this.setState({showDialog: true})
   }
 
   closeDialog () {
     this.setState({showDialog: false})
+  }
+
+  setLoading () {
+    this.setState({loading: false})
   }
 
   onFilesChange (files) {
@@ -74,16 +72,15 @@ class File extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       var fileInfo = {
+        id: this.props.id,
         componentType: 'file',
         fileName: file.name,
-        fileurl: '',
         type: file.type,
         size: file.size
       }
       console.log(fileInfo)
       this.setState({loading: true})
-      this.props.handleFile(fileInfo)
-      this.props.uploadFile(fileData)
+      this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
 
@@ -143,8 +140,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    loading: (state.convosInfo.loading)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -155,9 +151,7 @@ function mapDispatchToProps (dispatch) {
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
     loadSubscribersList: loadSubscribersList,
-    uploadFile: uploadFile,
-    handleFile: handleFile,
-    setLoading: setLoading
+    uploadFile: uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)
