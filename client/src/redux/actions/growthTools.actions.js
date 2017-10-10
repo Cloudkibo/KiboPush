@@ -9,6 +9,7 @@ export function sendresp (data) {
   }
 }
 export function saveFileForPhoneNumbers (file, invitationMessage) {
+  console.log('saveFileForPhoneNumbers', file)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
@@ -19,7 +20,7 @@ export function saveFileForPhoneNumbers (file, invitationMessage) {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      console.log('response', res)
+      console.log('response', res.status)
     })
   }
 }
