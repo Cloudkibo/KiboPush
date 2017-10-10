@@ -17,6 +17,7 @@ import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
+
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -33,8 +34,9 @@ class Dashboard extends React.Component {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
-      this.setState({ isShowingModal: true })
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0) {
+      this.setState({isShowingModal: true})
     }
   }
 
@@ -50,6 +52,9 @@ class Dashboard extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/fb.js')
+    // document.body.appendChild(addScript)
   }
 
   closeDialog () {
@@ -127,7 +132,8 @@ class Dashboard extends React.Component {
                   <div className='friend-avatar'>
                     <h1>{this.props.dashboard.activityChart.surveys}</h1>
                     <div className='author-content'>
-                      <Link to='/surveys' className='h5 author-name'>Surveys</Link>
+                      <Link to='/surveys'
+                        className='h5 author-name'>Surveys</Link>
                     </div>
                   </div>
                 </div>
@@ -182,7 +188,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList, createbroadcast: createbroadcast},
+    {
+      loadDashboardData: loadDashboardData,
+      loadMyPagesList: loadMyPagesList,
+      loadSubscribersList: loadSubscribersList,
+      createbroadcast: createbroadcast
+    },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

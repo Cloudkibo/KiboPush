@@ -712,19 +712,19 @@ function sendautomatedmsg (req, page) {
       //  'message_contains'
       //  'message_begins'
       if (req.message.text) {
-        var index = null
+        var index = -3
         for (let i = 0; i < workflows.length; i++) {
           var userMsg = req.message.text
           var words = userMsg.trim().split(' ')
 
           if (userMsg.toLowerCase() === 'stop' ||
             userMsg.toLowerCase() === 'unsubscribe') {
-            index = -10
+            index = -101
             break
           }
           if (userMsg.toLowerCase() === 'start' ||
             userMsg.toLowerCase() === 'subscribe') {
-            index = -11
+            index = -111
             break
           }
 
@@ -762,7 +762,7 @@ function sendautomatedmsg (req, page) {
             if (index) {
               index--
               let messageData = {}
-              if (index === -10) {
+              if (index === -101) {
                 messageData = {
                   text: 'You have unsubscribed from our broadcasts. Send "Start" to subscribe again.'
                 }
@@ -776,7 +776,7 @@ function sendautomatedmsg (req, page) {
                     logger.serverLog(TAG,
                       `subscription removed for ${req.sender.id}`)
                   })
-              } else if (index === -11) {
+              } else if (index === -111) {
                 messageData = {
                   text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
                 }

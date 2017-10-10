@@ -46,6 +46,13 @@ const all = {
 
   pubsubhubbub: {
     callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/broadcasts/pubsub/webhook`
+  },
+
+  twitter: {
+    consumerKey: process.env.TWITTER_CONSUMER_KEY || '7aIqEjxEBPqzBOqWTiF7uosVl',
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET || 'zxbH46wrUyUoJk9cG9s3OqV0B5xAAjM9puAtrLSwnf9L7Utx9h',
+    token: process.env.TWITTER_TOKEN || '2616186000-sxO4PtLZVrOqG0QtrtWzrUx9BzdG0KyFY2SOmhR',
+    tokenSecret: process.env.TWITTER_TOKEN_SECRET || 'N5K1Myf8wsKSWKpAK5amLpBK81ips0z8KUKvS7tsxhIqD'
   }
 }
 

@@ -6,6 +6,9 @@ const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
 const TAG = 'api/autoposting/autopostings.controller.js'
 
+const crypto = require('crypto')
+const config = require('../../config/environment/index')
+
 exports.index = function (req, res) {
   AutoPosting.find({userId: req.user._id}, (err, autoposting) => {
     if (err) {
@@ -23,52 +26,54 @@ exports.create = function (req, res) {
   // todo check for individual content creator services validity
   logger.serverLog(TAG,
     `Inside Create Autoposting, req body = ${JSON.stringify(req.body)}`)
-  AutoPosting.find({userId: req.user._id, subscriptionUrl: req.body.subscriptionUrl}, (error, gotData) => {
-    if (error) {
-      res.status(500).json({
-        status: 'Failed',
-        error: error,
-        description: 'Internal Server Error'
-      })
-    }
-    if (gotData.length > 0) {
-      res.status(403).json({
-        status: 'Failed',
-        description: 'Cannot add duplicate accounts.'
-      })
-    } else {
-      let autoPostingPayload = {
-        userId: req.user._id,
-        subscriptionUrl: req.body.subscriptionUrl,
-        subscriptionType: req.body.subscriptionType,
-        accountTitle: req.body.accountTitle
+  AutoPosting.find(
+    {userId: req.user._id, subscriptionUrl: req.body.subscriptionUrl},
+    (error, gotData) => {
+      if (error) {
+        res.status(500).json({
+          status: 'Failed',
+          error: error,
+          description: 'Internal Server Error'
+        })
       }
-      if (req.body.isSegmented) {
-        autoPostingPayload.isSegmented = true
-        autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-          ? req.body.pageIds
-          : null
-        autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-          ? req.body.gender
-          : null
-        autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-          ? req.body.locale
-          : null
-      }
-      const autoPosting = new AutoPosting(autoPostingPayload)
-      autoPosting.save((err, createdRecord) => {
-        if (err) {
-          res.status(500).json({
-            status: 'Failed',
-            error: err,
-            description: 'Failed to insert record'
-          })
-        } else {
-          res.status(201).json({status: 'success', payload: createdRecord})
+      if (gotData.length > 0) {
+        res.status(403).json({
+          status: 'Failed',
+          description: 'Cannot add duplicate accounts.'
+        })
+      } else {
+        let autoPostingPayload = {
+          userId: req.user._id,
+          subscriptionUrl: req.body.subscriptionUrl,
+          subscriptionType: req.body.subscriptionType,
+          accountTitle: req.body.accountTitle
         }
-      })
-    }
-  })
+        if (req.body.isSegmented) {
+          autoPostingPayload.isSegmented = true
+          autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+            ? req.body.pageIds
+            : null
+          autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+            ? req.body.segmentationGender
+            : null
+          autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+            ? req.body.segmentationLocale
+            : null
+        }
+        const autoPosting = new AutoPosting(autoPostingPayload)
+        autoPosting.save((err, createdRecord) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              error: err,
+              description: 'Failed to insert record'
+            })
+          } else {
+            res.status(201).json({status: 'success', payload: createdRecord})
+          }
+        })
+      }
+    })
 }
 
 exports.edit = function (req, res) {
@@ -108,16 +113,16 @@ exports.destroy = function (req, res) {
   AutoPosting.findById(req.params.id, (err, autoposting) => {
     if (err) {
       return res.status(500)
-      .json({status: 'failed', description: 'Internal Server Error'})
+        .json({status: 'failed', description: 'Internal Server Error'})
     }
     if (!autoposting) {
       return res.status(404)
-      .json({status: 'failed', description: 'Record not found'})
+        .json({status: 'failed', description: 'Record not found'})
     }
     autoposting.remove((err2) => {
       if (err2) {
         return res.status(500)
-        .json({status: 'failed', description: 'AutoPosting update failed'})
+          .json({status: 'failed', description: 'AutoPosting update failed'})
       }
       return res.status(204).end()
     })
@@ -128,4 +133,24 @@ exports.twitterwebhook = function (req, res) {
   logger.serverLog(TAG, 'Twitter Webhook Called')
   logger.serverLog(TAG, JSON.stringify(req.body))
   return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
+exports.twitterverify = function (req, res) {
+  logger.serverLog(TAG, 'Twitter verify webhook called')
+  logger.serverLog(TAG, JSON.stringify(req.params))
+
+  const hmac = crypto.createHmac('sha256', config.twitter.consumerSecret)
+
+  hmac.on('readable', () => {
+    const data = hmac.read()
+    if (data) {
+      logger.serverLog(TAG, data.toString('hex'))
+      return res.status(200).json({
+        response_token: `sha256=${data.toString('hex')}`
+      })
+    }
+  })
+
+  hmac.write(req.params.crc_token)
+  hmac.end()
 }
