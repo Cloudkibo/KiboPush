@@ -12,8 +12,8 @@ const surveySchema = new Schema({
   datetime: { type: Date, default: Date.now },
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],
-  segmentationLocale: String,
-  segmentationGender: String,
+  segmentationLocale: [String],
+  segmentationGender: [String],
   segmentationTimeZone: String
 })
 

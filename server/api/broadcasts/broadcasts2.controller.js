@@ -28,7 +28,7 @@ exports.sendConversation = function (req, res) {
 
     if (req.body.isSegmented) {
       if (req.body.pageIds) {
-        _.merge(pagesFindCriteria, {
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
           pageId: {
             $in: req.body.pageIds
           }
@@ -78,7 +78,7 @@ exports.sendConversation = function (req, res) {
       })
     })
     return res.status(200)
-    .json({status: 'success', payload: {broadcast: req.body}})
+      .json({status: 'success', payload: {broadcast: req.body}})
   }
 
   const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req))
@@ -93,7 +93,7 @@ exports.sendConversation = function (req, res) {
 
     if (req.body.isSegmented) {
       if (req.body.pageIds) {
-        _.merge(pagesFindCriteria, {
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
           pageId: {
             $in: req.body.pageIds
           }
@@ -115,11 +115,19 @@ exports.sendConversation = function (req, res) {
 
         if (req.body.isSegmented) {
           if (req.body.gender) {
-            _.merge(subscriberFindCriteria,
-              {gender: req.body.gender.toLowerCase()})
+            subscriberFindCriteria = _.merge(subscriberFindCriteria,
+              {
+                gender: {
+                  $in: req.body.gender
+                }
+              })
           }
           if (req.body.locale) {
-            _.merge(subscriberFindCriteria, {locale: req.body.locale})
+            subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+              locale: {
+                $in: req.body.locale
+              }
+            })
           }
         }
 

@@ -17,8 +17,8 @@ let broadcastSchema = new Schema({
   attachmentType: String,
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],
-  segmentationLocale: String,
-  segmentationGender: String,
+  segmentationLocale: [String],
+  segmentationGender: [String],
   segmentationTimeZone: String,
   userId: { type: Schema.ObjectId, ref: 'users' },
   datetime: { type: Date, default: Date.now }
