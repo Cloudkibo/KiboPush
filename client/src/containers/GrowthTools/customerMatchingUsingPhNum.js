@@ -4,12 +4,9 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { Field, reduxForm } from 'redux-form'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {
-  saveFileForPhoneNumbers
-} from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -18,17 +15,15 @@ class CustomerMatching extends React.Component {
       textAreaValue: '' }
 
     this.onTextChange = this.onTextChange.bind(this)
-    this.renderTextField = this.renderTextField.bind(this)
+    this.onButtonSubmit = this.onButtonSubmit.bind(this)
   }
 
-  onSubmit (values) {
-    console.log('onsubmit', values)
+  onButtonSubmit(e)  {
     saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
   }
 
-  onTextChange (e) {
-    console.log('text change', e.target.value)
-    this.setState({textAreaValue: e.target.value})
+  onTextChange(e) {
+    this.setState({textAreaValue : e.target.value})
   }
 
   onDrop (files) {
@@ -37,18 +32,8 @@ class CustomerMatching extends React.Component {
     })
   }
 
-  renderTextField (field) {
-    const className = `form-group ${field.meta.touched && field.meta.error ? 'has-danger' : ''}`
-    return (
-      <div className={className}>
-        <textarea className='textArea form-control' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
-        <span className='text-help' style={{color: 'red'}}>{field.meta.touched ? field.meta.error : '' }</span>
-      </div>
-    )
-  }
-
   render () {
-    const { handleSubmit } = this.props
+
     return (
       <div>
         <Header />
@@ -68,32 +53,29 @@ class CustomerMatching extends React.Component {
               file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
               an invitation on Facebook Messenger.</h7>
                   <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
-                    <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                      <Dropzone className='file-upload-area' onDrop={this.onDrop.bind(this)} accept='.csv'>
-                        <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
-                        <h6>File Selected</h6>
-                        <span>
-                          {
+                    <Dropzone className='file-upload-area' onDrop={this.onDrop.bind(this)} accept='.csv'>
+                      <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
+                      <h6>File Selected</h6>
+                      <span>
+                        {
                          this.state.files.map(f => <span>{f.name} - {f.size} bytes</span>)
                        }
-                        </span>
-                      </Dropzone>
-                      <div className='row'>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <span>Selected File :
-                      {
-                        this.state.files.map(f => <span>{f.name} - {f.size} bytes</span>)
-                      }
-                          </span>
-                        </div>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <Field name='invitationMessage' className='textArea' component={this.renderTextField} value={this.state.textAreaValue} onChange={this.onTextChange} />
-                        </div>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <button className='btn btn-primary' type='submit'>Submit</button>
-                        </div>
+                      </span>
+                    </Dropzone>
+                    <div className='row'>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <label>File Selected</label>
+                        <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } />
+                        <span className = 'text-help' style = {{color : 'red'}}></span>
                       </div>
-                    </form>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
+                        <span className = 'text-help' style = {{color : 'red'}}></span>
+                      </div>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <button className='btn btn-primary' onClick = {this.onButtonSubmit}>Submit</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -105,14 +87,6 @@ class CustomerMatching extends React.Component {
   }
 }
 
-function validate (values) {
-  const errors = {}
-  console.log('validate', values)
-  if (!values.invitationMessage) {
-    errors.invitationMessage = 'Enter an invitation message'
-  }
-  return errors
-}
 
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
@@ -126,9 +100,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({saveFileForPhoneNumbers: saveFileForPhoneNumbers},
     dispatch)
 }
-export default reduxForm({
-  validate: validate,
-  form: 'CustomerMappingForm'
-})(
-    connect(mapStateToProps, mapDispatchToProps)(CustomerMatching)
-)
+export default connect(mapStateToProps,mapDispatchToProps)(CustomerMatching);
