@@ -56,7 +56,7 @@ class CreateConvo extends React.Component {
       },
       stayOpen: false,
       disabled: false,
-      pageValue: [],
+      pageValue: '',
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
@@ -282,7 +282,7 @@ class CreateConvo extends React.Component {
       platform: 'facebook',
       payload: this.state.broadcast,
       isSegmented: true,
-      segmentationPageIds: this.state.pageValue,
+      segmentationPageIds: [this.state.pageValue],
       segmentationLocale: this.state.localeValue.split(","),
       segmentationGender: this.state.genderValue.split(","),
       segmentationTimeZone: '',
@@ -499,7 +499,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
-    fileInfo: (state.convosInfo.fileInfo)
+    fileInfo: (state.convosInfo.fileInfo),
+    user: (state.basicInfo.user),
   }
 }
 
@@ -513,7 +514,7 @@ function mapDispatchToProps (dispatch) {
       removePage: removePage,
       addPages: addPages,
       sendBroadcast: sendBroadcast,
-      user: (state.basicInfo.user),
+      
     },
     dispatch)
 }
