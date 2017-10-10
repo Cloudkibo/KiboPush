@@ -42,6 +42,7 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
+  logger.serverLog(TAG, JSON.stringify(req.body))
   logger.serverLog(TAG,
     `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
   logger.serverLog(TAG, req.files.file.path)
