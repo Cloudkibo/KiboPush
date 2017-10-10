@@ -17,6 +17,7 @@ import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
+
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -51,9 +52,9 @@ class Dashboard extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/fb.js')
-    document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/fb.js')
+    // document.body.appendChild(addScript)
   }
 
   closeDialog () {
@@ -90,12 +91,6 @@ class Dashboard extends React.Component {
                     <h1>{this.props.dashboard.subscribers}</h1>
                     <div className='author-content'>
                       <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
-                      <div class='fb-send-to-messenger'
-                        messenger_app_id='1429073230510150'
-                        page_id='151990922046256'
-                        data-ref='PASS_THROUGH_PARAM'
-                        color='blue'
-                        size='standard' />
                     </div>
                   </div>
                 </div>

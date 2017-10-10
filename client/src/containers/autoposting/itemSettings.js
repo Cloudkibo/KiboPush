@@ -19,7 +19,8 @@ class ItemSettings extends React.Component {
       },
       Gender: {
         options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'}
+                  {label: 'Female', value: 'Female'},
+                  {label: 'Other', value: 'Other'}
         ]
       },
       Locale: {
@@ -32,9 +33,9 @@ class ItemSettings extends React.Component {
       },
       stayOpen: false,
       disabled: false,
-      pageValue: [],
-      genderValue: [],
-      localeValue: [],
+      pageValue: this.props.location.state.item.segmentationPageIds,
+      genderValue: this.props.location.state.item.segmentationGender,
+      localeValue: this.props.location.state.item.segmentationLocale,
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
       alertType: ''
@@ -108,17 +109,12 @@ class ItemSettings extends React.Component {
   editAutoposting () {
     console.log(this.accountTitleValue.value)
     var isSegmented = false
-    var segmentationGender = ''
-    var segmentationLocale = ''
     var isActive = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    var temppages = this.state.pageValue.split(',')
+    var tempgender = this.state.genderValue.split(',')
+    var templocale = this.state.localeValue.split(',')
+    if (temppages.length > 0 || tempgender.length > 0 || templocale.length > 0) {
       isSegmented = true
-    }
-    if (this.state.genderValue.length === 1) {
-      segmentationGender = this.state.genderValue[0]
-    }
-    if (this.state.localeValue.length === 1) {
-      segmentationGender = this.state.localeValue[0]
     }
     if (this.state.isActive === 'Active') {
       isActive = true
@@ -129,9 +125,9 @@ class ItemSettings extends React.Component {
       _id: this.props.location.state.item._id,
       accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.location.state.title,
       isSegmented: isSegmented,
-      segmentationPageIds: this.state.pageValue,
-      segmentationGender: segmentationGender,
-      segmentationLocale: segmentationLocale,
+      segmentationPageIds: temppages,
+      segmentationGender: tempgender,
+      segmentationLocale: templocale,
       isActive: isActive
     }
     console.log(autopostingData)
@@ -159,7 +155,7 @@ class ItemSettings extends React.Component {
                     <form>
                       <div className='form-group'>
                         <label>Account Title</label>
-                        <input ref={(c) => { this.accountTitleValue = c }} type='text' className='form-control' placeholder={this.props.location.state.title} />
+                        <input ref={(c) => { this.accountTitleValue = c }} type='text' className='form-control' defaultValue={this.props.location.state.title} />
                       </div>
                       <div className='form-group'>
                         <label>Status</label>
