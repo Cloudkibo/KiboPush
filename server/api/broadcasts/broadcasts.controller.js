@@ -582,6 +582,8 @@ exports.getfbMessage = function (req, res) {
           }
           logger.serverLog(TAG,
             'The subscriber id of admin is added to the page')
+          logger.serverLog(TAG,
+            updated)
         })
       return
     }
