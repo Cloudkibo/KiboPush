@@ -19,7 +19,7 @@ class CustomerMatching extends React.Component {
   }
 
   onButtonSubmit(e)  {
-    saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
+    this.props.saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
   }
 
   onTextChange(e) {
