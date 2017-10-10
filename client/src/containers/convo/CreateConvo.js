@@ -304,11 +304,6 @@ class CreateConvo extends React.Component {
       platform: 'facebook',
       self: 'true',
       payload: this.state.broadcast,
-      isSegmented: true,
-      segmentationPageIds: ['458107491218881'],
-      segmentationLocale: this.state.localeValue.split(","),
-      segmentationGender: this.state.genderValue.split(","),
-      segmentationTimeZone: '',
       title: this.state.convoTitle,
 
     }
