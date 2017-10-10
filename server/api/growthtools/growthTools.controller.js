@@ -61,9 +61,9 @@ exports.upload = function (req, res) {
       var a = fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
-        logger.serverLog(TAG, data)
+        logger.serverLog(TAG, JSON.stringify(data))
       })
-      logger.serverLog(a)
+      logger.serverLog(JSON.stringify(a))
       return res.status(201).json({status: 'success', payload: serverPath})
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
