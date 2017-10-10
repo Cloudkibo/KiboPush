@@ -581,9 +581,8 @@ exports.getfbMessage = function (req, res) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
           logger.serverLog(TAG,
-            'The subscriber id of admin is added to the page')
-          logger.serverLog(TAG,
-            updated)
+            `The subscriber id of admin is added to the page ${JSON.stringify(
+              updated)}`)
         })
       return
     }
