@@ -52,9 +52,9 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
-      return res.status(201).json({status: 'success', payload: serverPath})
+    //  logger.serverLog(TAG,
+    //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
+    //  return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
   var a = fs.createReadStream(req.files.file.path)
