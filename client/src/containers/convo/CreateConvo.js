@@ -70,6 +70,7 @@ class CreateConvo extends React.Component {
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
+    this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
@@ -294,6 +295,28 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
+    testConvo () {
+    if (this.state.broadcast.length === 0) {
+      return
+    }
+    console.log(this.state.broadcast)
+    var data = {
+      platform: 'facebook',
+      self: 'true',
+      payload: this.state.broadcast,
+      isSegmented: true,
+      segmentationPageIds: ['458107491218881'],
+      segmentationLocale: this.state.localeValue.split(","),
+      segmentationGender: this.state.genderValue.split(","),
+      segmentationTimeZone: '',
+      title: this.state.convoTitle,
+
+    }
+    console.log('Data sent: ', data)
+    this.props.sendBroadcast(data, this.msg)
+    this.setState({broadcast: [], list: []})
+  }
+
   newConvo () {
     this.setState({broadcast: [], list: []})
   }
@@ -447,7 +470,7 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
                   <MessengerPlugin
                       appId="1429073230510150"
