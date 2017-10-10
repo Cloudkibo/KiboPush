@@ -812,7 +812,7 @@ function sendautomatedmsg (req, page) {
                     logger.serverLog(TAG,
                       `subscription renewed for ${req.sender.id}`)
                   })
-              } else {
+              } else if (index > -1) {
                 logger.serverLog(TAG,
                   `workflow reply being sent ${workflows[index].reply}`)
                 messageData = {
