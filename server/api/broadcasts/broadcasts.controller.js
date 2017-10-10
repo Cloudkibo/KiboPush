@@ -574,17 +574,19 @@ exports.getfbMessage = function (req, res) {
   if (req.body.object) {
     if (req.body.object === 'page') {
       let payload = req.body.entry[0]
-      Pages.update({pageId: payload.id, userId: payload.messaging[0].optin.ref},
-        {adminSubscriberId: payload.messaging[0].sender.id},
-        {multi: false}, (err, updated) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-          logger.serverLog(TAG,
-            `The subscriber id of admin is added to the page ${JSON.stringify(
-              updated)}`)
-        })
-      return
+      if (payload.messaging[0].optin) {
+        Pages.update({pageId: payload.id, userId: payload.messaging[0].optin.ref},
+          {adminSubscriberId: payload.messaging[0].sender.id},
+          {multi: false}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG,
+              `The subscriber id of admin is added to the page ${JSON.stringify(
+                updated)}`)
+          })
+        return
+      }
     }
   }
 
