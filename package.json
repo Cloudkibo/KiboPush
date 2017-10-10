@@ -41,6 +41,7 @@
     "compression": "^1.7.0",
     "connect-multiparty": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "csv-parser": "^1.11.0",
     "debug": "^2.6.8",
     "errorhandler": "^1.5.0",
     "express": "^4.15.3",
