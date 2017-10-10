@@ -21,6 +21,7 @@ exports.index = function (req, res) {
 }
 
 exports.upload = function (req, res) {
+  logger.serverLog(TAG, req)
   logger.serverLog(TAG,
     `upload file route called. file is: ${JSON.stringify(req.files)}`)
   var serverPath = req.files.file.path
@@ -50,9 +51,10 @@ exports.upload = function (req, res) {
       return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
-  fs.createReadStream('./file.csv')
+  var a = fs.createReadStream('./file.csv')
   .pipe(csv())
   .on('data', function (data) {
     logger.serverLog(TAG, data)
   })
+  logger.serverLog(a)
 }
