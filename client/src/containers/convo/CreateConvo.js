@@ -56,7 +56,7 @@ class CreateConvo extends React.Component {
       },
       stayOpen: false,
       disabled: false,
-      pageValue: [],
+      pageValue: '',
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
@@ -70,6 +70,7 @@ class CreateConvo extends React.Component {
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
+    this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
@@ -282,10 +283,28 @@ class CreateConvo extends React.Component {
       platform: 'facebook',
       payload: this.state.broadcast,
       isSegmented: true,
-      segmentationPageIds: this.state.pageValue,
+      segmentationPageIds: [this.state.pageValue],
       segmentationLocale: this.state.localeValue.split(","),
       segmentationGender: this.state.genderValue.split(","),
-      segmentationTimeZone: ''
+      segmentationTimeZone: '',
+      title: this.state.convoTitle,
+
+    }
+    console.log('Data sent: ', data)
+    this.props.sendBroadcast(data, this.msg)
+    this.setState({broadcast: [], list: []})
+  }
+
+    testConvo () {
+    if (this.state.broadcast.length === 0) {
+      return
+    }
+    console.log(this.state.broadcast)
+    var data = {
+      platform: 'facebook',
+      self: 'true',
+      payload: this.state.broadcast,
+      title: this.state.convoTitle,
 
     }
     console.log('Data sent: ', data)
@@ -411,7 +430,7 @@ class CreateConvo extends React.Component {
                     <Select
                       closeOnSelect={!stayOpen}
                       disabled={disabled}
-                      multi
+                      multi={false}
                       onChange={this.handlePageChange}
                       options={this.state.page.options}
                       placeholder='Select page(s)'
@@ -446,11 +465,12 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
                   <MessengerPlugin
                       appId="1429073230510150"
                       pageId="458107491218881"
+                      passthroughParams={this.props.user._id}
                     />
                 </div>
               </div>
@@ -497,7 +517,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
-    fileInfo: (state.convosInfo.fileInfo)
+    fileInfo: (state.convosInfo.fileInfo),
+    user: (state.basicInfo.user),
   }
 }
 
@@ -510,7 +531,8 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast
+      sendBroadcast: sendBroadcast,
+      
     },
     dispatch)
 }

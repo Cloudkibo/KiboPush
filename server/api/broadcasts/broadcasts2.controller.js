@@ -46,7 +46,7 @@ exports.sendConversation = function (req, res) {
       pages.forEach(page => {
         req.body.payload.forEach(payloadItem => {
           let messageData = utility.prepareSendAPIPayload(
-            req.user.fbId,
+            page.adminSubscriberId,
             payloadItem)
 
           logger.serverLog(TAG,
@@ -64,10 +64,10 @@ exports.sendConversation = function (req, res) {
             function (err, res) {
               if (err) {
                 return logger.serverLog(TAG,
-                  `At send message broadcast ${JSON.stringify(err)}`)
+                  `At send test message broadcast ${JSON.stringify(err)}`)
               } else {
                 logger.serverLog(TAG,
-                  `At send message broadcast response ${JSON.stringify(
+                  `At send test message broadcast response ${JSON.stringify(
                     res)}`)
               }
 

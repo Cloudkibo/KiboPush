@@ -7,29 +7,88 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
+import {  AlertList, Alert, AlertContainer } from 'react-bs-notifier'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = { files: [],
-      textAreaValue: '' }
+      textAreaValue: '',
+      fileErrors: [],
+      messageErrors : [],
+      alertMessage : '',
+      type: ''
+     }
 
     this.onTextChange = this.onTextChange.bind(this)
-    this.onButtonSubmit = this.onButtonSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.validate = this.validate.bind(this)
   }
 
-  onButtonSubmit(e)  {
-    this.props.saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
+  handleSubmit(e)  {
+    e.preventDefault();
+    if (this.validate()) {
+      saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
+    }
   }
 
   onTextChange(e) {
+
     this.setState({textAreaValue : e.target.value})
+    if (e.target.value) {
+      this.setState({ messageErrors : []})
+    } else {
+      this.setState({
+          messageErrors : [{errorMsg :  'Enter an invitation message'}]
+      })
+    }
   }
 
   onDrop (files) {
     this.setState({
-      files
+      files : files,
+      fileErrors : []
     })
+  }
+
+  validate()  {
+    var errors = false
+    console.log('validate',this.state)
+    if (this.state.files && this.state.files.length < 1) {
+          this.setState({
+              fileErrors : [{errorMsg :  'Upload a file'}]
+          })
+          errors = true
+      }
+    if (this.state.textAreaValue == '' && this.state.textAreaValue.length < 1) {
+          this.setState({
+              messageErrors : [{errorMsg :  'Enter an invitation message'}]
+          })
+          errors = true
+      }
+      return !errors
+  }
+
+  componentWillReceiveProps (nextProps) {
+
+    console.log('componentWillReceiveProps is called',nextProps)
+
+    if (nextProps.uploadResponse.successMessage != '') {
+      this.setState({
+        alertMessage: nextProps.uploadResponse.successMessage,
+        type: 'success'
+      })
+    } else if (nextProps.uploadResponse.errorMessage != '') {
+      this.setState({
+        alertMessage: nextProps.uploadResponse.errorMessage,
+        type: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        type: ''
+      })
+    }
   }
 
   render () {
@@ -62,20 +121,38 @@ class CustomerMatching extends React.Component {
                        }
                       </span>
                     </Dropzone>
-                    <div className='row'>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <label>File Selected</label>
-                        <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } />
-                        <span className = 'text-help' style = {{color : 'red'}}></span>
+                    <form onSubmit= {this.handleSubmit}>
+                      <div className='row'>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <label>File Selected</label>
+                          <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } style = {{ width : '50%'}}/>
+                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
+                            {
+                             this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
+                            }
+                          </div>
+                        </div>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
+                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
+                              {
+                               this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
+                              }
+                          </div>
+                        </div>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <input type="submit" className = 'btn btn-primary' value="Submit" style = {{width : '10%'}}/>
+                        </div>
+                        {
+                          this.state.alertMessage !== '' &&
+                          <center>
+                            <Alert type={this.state.type}>
+                              {this.state.alertMessage}
+                            </Alert>
+                          </center>
+                        }
                       </div>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
-                        <span className = 'text-help' style = {{color : 'red'}}></span>
-                      </div>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <button className='btn btn-primary' onClick = {this.onButtonSubmit}>Submit</button>
-                      </div>
-                    </div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -91,8 +168,9 @@ class CustomerMatching extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    uploadResponse: state.getFileUploadResponse.fileUploadResponse
-  //  usersData: state.usersData
+    uploadResponse: state.getFileUploadResponse
+    //uploadResponse: {successMessage : 'Your File has been uploaded'}
+    //uploadResponse: {errorMessage : 'Your File has errors'}
   }
 }
 

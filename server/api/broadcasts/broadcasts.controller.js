@@ -569,6 +569,25 @@ exports.getfbMessage = function (req, res) {
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
 
   logger.serverLog(TAG, 'message received from FB Subscriber')
+  logger.serverLog(TAG, 'Payload of webhook is ' + JSON.stringify(req.body))
+
+  if (req.body.object) {
+    if (req.body.object === 'page') {
+      let payload = req.body.entry[0]
+      Pages.update({pageId: payload.id, userId: payload.messaging[0].optin.ref},
+        {adminSubscriberId: payload.messaging[0].sender.id},
+        {multi: false}, (err, updated) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          logger.serverLog(TAG,
+            `The subscriber id of admin is added to the page ${JSON.stringify(
+              updated)}`)
+        })
+      return
+    }
+  }
+
   const messagingEvents = req.body.entry[0].messaging
 
   for (let i = 0; i < messagingEvents.length; i++) {

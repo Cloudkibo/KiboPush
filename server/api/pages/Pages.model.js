@@ -23,7 +23,10 @@ const pageSchema = new Schema({
   connected: { // TODO add default value
     type: Boolean
   },
-  userId: {type: Schema.ObjectId, ref: 'users'}
+  userId: {type: Schema.ObjectId, ref: 'users'},
+  adminSubscriberId: {
+    type: String
+  }
 
 })
 
