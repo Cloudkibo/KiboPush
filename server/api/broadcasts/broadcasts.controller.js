@@ -782,6 +782,7 @@ function sendautomatedmsg (req, page) {
             index++
             if (index) {
               index--
+              logger.serverLog(TAG, `value of index is ${index}`)
               let messageData = {}
               if (index === -101) {
                 messageData = {
