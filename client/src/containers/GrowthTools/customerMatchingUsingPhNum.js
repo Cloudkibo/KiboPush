@@ -21,18 +21,15 @@ class CustomerMatching extends React.Component {
      }
 
     this.onTextChange = this.onTextChange.bind(this)
-    this.onButtonSubmit = this.onButtonSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
     this.validate = this.validate.bind(this)
   }
 
-  onButtonSubmit(e)  {
-<<<<<<< HEAD
+  handleSubmit(e)  {
+    e.preventDefault();
     if (this.validate()) {
       saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
     }
-=======
-    this.props.saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
->>>>>>> ada8c492c00acff2b4314d090131c9790daf7919
   }
 
   onTextChange(e) {
@@ -124,36 +121,38 @@ class CustomerMatching extends React.Component {
                        }
                       </span>
                     </Dropzone>
-                    <div className='row'>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <label>File Selected</label>
-                        <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } style = {{ width : '50%'}}/>
-                        <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
-                          {
-                           this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
-                          }
-                        </div>
-                      </div>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
-                        <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
+                    <form onSubmit= {this.handleSubmit}>
+                      <div className='row'>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <label>File Selected</label>
+                          <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } style = {{ width : '50%'}}/>
+                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
                             {
-                             this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
+                             this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
                             }
+                          </div>
                         </div>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
+                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
+                              {
+                               this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
+                              }
+                          </div>
+                        </div>
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                          <input type="submit" className = 'btn btn-primary' value="Submit" style = {{width : '10%'}}/>
+                        </div>
+                        {
+                          this.state.alertMessage !== '' &&
+                          <center>
+                            <Alert type={this.state.type}>
+                              {this.state.alertMessage}
+                            </Alert>
+                          </center>
+                        }
                       </div>
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <button className='btn btn-primary' onClick = {this.onButtonSubmit}>Submit</button>
-                      </div>
-                      {
-                        this.state.alertMessage !== '' &&
-                        <center>
-                          <Alert type={this.state.type}>
-                            {this.state.alertMessage}
-                          </Alert>
-                        </center>
-                      }
-                    </div>
+                    </form>
                   </div>
                 </div>
               </div>
