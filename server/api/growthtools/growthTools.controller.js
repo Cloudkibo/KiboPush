@@ -5,7 +5,7 @@
 //  const GrowthTools = require('./growthTools.model')
 
 const logger = require('../../components/logger')
-const TAG = 'api/growthTools/growthTools.controller.js'
+const TAG = 'api/growthtools/growthTools.controller.js'
 const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
@@ -21,11 +21,8 @@ exports.index = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-  logger.serverLog(TAG, req)
   logger.serverLog(TAG,
-    `upload file route called. request is: ${JSON.stringify(req)}`)
-  logger.serverLog(TAG,
-    `upload file route called. file is: ${JSON.stringify(req.files)}`)
+  `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
   var serverPath = req.files.file.path
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
@@ -52,15 +49,16 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
+      var a = fs.createReadStream(dir + '/userfiles/' + serverPath)
+      .pipe(csv())
+      .on('data', function (data) {
+        logger.serverLog(TAG, data)
+      })
+      logger.serverLog(a)
       return res.status(201).json({status: 'success', payload: serverPath})
+    //  logger.serverLog(TAG,
+    //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
+    //  return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
-  var a = fs.createReadStream(req.files.file.path)
-  .pipe(csv())
-  .on('data', function (data) {
-    logger.serverLog(TAG, data)
-  })
-  logger.serverLog(a)
 }
