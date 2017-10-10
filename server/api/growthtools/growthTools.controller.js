@@ -5,7 +5,7 @@
 //  const GrowthTools = require('./growthTools.model')
 
 const logger = require('../../components/logger')
-const TAG = 'api/growthTools/growthTools.controller.js'
+const TAG = 'api/growthtools/growthTools.controller.js'
 const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
