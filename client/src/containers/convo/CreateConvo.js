@@ -285,7 +285,8 @@ class CreateConvo extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationLocale: this.state.localeValue.split(","),
       segmentationGender: this.state.genderValue.split(","),
-      segmentationTimeZone: ''
+      segmentationTimeZone: '',
+      title: this.state.convoTitle,
 
     }
     console.log('Data sent: ', data)
