@@ -285,7 +285,8 @@ class CreateConvo extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationLocale: this.state.localeValue.split(","),
       segmentationGender: this.state.genderValue.split(","),
-      segmentationTimeZone: ''
+      segmentationTimeZone: '',
+      title: this.state.convoTitle,
 
     }
     console.log('Data sent: ', data)
@@ -411,7 +412,7 @@ class CreateConvo extends React.Component {
                     <Select
                       closeOnSelect={!stayOpen}
                       disabled={disabled}
-                      multi
+                      multi={false}
                       onChange={this.handlePageChange}
                       options={this.state.page.options}
                       placeholder='Select page(s)'
@@ -451,6 +452,7 @@ class CreateConvo extends React.Component {
                   <MessengerPlugin
                       appId="1429073230510150"
                       pageId="458107491218881"
+                      passthroughParams={this.props.user._id}
                     />
                 </div>
               </div>
@@ -510,7 +512,8 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast
+      sendBroadcast: sendBroadcast,
+      user: (state.basicInfo.user),
     },
     dispatch)
 }
