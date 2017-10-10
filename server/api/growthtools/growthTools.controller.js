@@ -23,6 +23,8 @@ exports.index = function (req, res) {
 exports.upload = function (req, res) {
   logger.serverLog(TAG, req)
   logger.serverLog(TAG,
+    `upload file route called. request is: ${JSON.stringify(req)}`)
+  logger.serverLog(TAG,
     `upload file route called. file is: ${JSON.stringify(req.files)}`)
   var serverPath = req.files.file.path
 
@@ -34,7 +36,11 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
+  logger.serverLog(TAG,
+    `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
   logger.serverLog(TAG, req.files.file.path)
+  logger.serverLog(TAG,
+    `upload file route called. req.files.file: ${JSON.stringify(req.files.file)}`)
   logger.serverLog(TAG, req.files.file)
   fs.rename(
     req.files.file.path,
@@ -51,7 +57,7 @@ exports.upload = function (req, res) {
       return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
-  var a = fs.createReadStream('./file.csv')
+  var a = fs.createReadStream(req.files.file.path)
   .pipe(csv())
   .on('data', function (data) {
     logger.serverLog(TAG, data)
