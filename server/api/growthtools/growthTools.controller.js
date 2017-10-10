@@ -3,13 +3,14 @@
  */
 
 //  const GrowthTools = require('./growthTools.model')
-
+const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
 const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
+let request = require('request')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG,
@@ -59,12 +60,49 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      var a = fs.createReadStream(dir + '/userfiles' + serverPath)
+      fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
         logger.serverLog(TAG, JSON.stringify(data))
+        let pagesFindCriteria = {userId: req.user._id, connected: true}
+
+        Pages.find(pagesFindCriteria, (err, pages) => {
+          if (err) {
+            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            return res.status(404)
+              .json({status: 'failed', description: 'Pages not found'})
+          }
+          pages.forEach(page => {
+            let messageData = {
+              'recipient': JSON.stringify({
+                'phone_number': data.phone_numbers
+              }),
+              'message': JSON.stringify({
+                'text': req.body.text,
+                'metadata': 'This is a meta data'
+              })
+            }
+            request(
+              {
+                'method': 'POST',
+                'json': true,
+                'formData': messageData,
+                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+              },
+              function (err, res) {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At invite to messenger using phone ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG,
+                    `At invite to messenger using phone ${JSON.stringify(
+                      res)}`)
+                }
+              })
+          })
+        })
       })
-      logger.serverLog(JSON.stringify(a))
       return res.status(201).json({status: 'success', payload: serverPath})
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
