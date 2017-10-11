@@ -465,11 +465,11 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={this.testConvo}> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '') ? true:false} onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
                   <MessengerPlugin
                       appId="1429073230510150"
-                      pageId="458107491218881"
+                      pageId={this.state.pageValue}
                       passthroughParams={this.props.user._id}
                     />
                 </div>
