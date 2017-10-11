@@ -65,21 +65,23 @@ exports.upload = function (req, res) {
         if (data.phone_numbers && data.name) {
           var result = data.phone_numbers.replace(/[- )(]/g, '')
           logger.serverLog(TAG, JSON.stringify(data))
-          var savePhoneNumber = new PhoneNumber({
-            name: data.name,
+          // var savePhoneNumber = new PhoneNumber({
+          //   name: data.name,
+          //   number: result,
+          //   userId: req.user._id
+          // })
+          PhoneNumber.update({number: result}, {name: data.name,
             number: result,
-            userId: req.user._id
-          })
-          savePhoneNumber.save((err2, phonenumbersaved) => {
-            if (err2) {
-              return res.status(500).json({
-                status: 'failed',
-                description: 'phone number create failed'
-              })
-            }
-            logger.serverLog(TAG,
+            userId: req.user._id}, {upsert: true}, (err2, phonenumbersaved) => {
+              if (err2) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'phone number create failed'
+                })
+              }
+              logger.serverLog(TAG,
               'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
-          })
+            })
           let pagesFindCriteria = {userId: req.user._id, connected: true}
           Pages.find(pagesFindCriteria, (err, pages) => {
             if (err) {
