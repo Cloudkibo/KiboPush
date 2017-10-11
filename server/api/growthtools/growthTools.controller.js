@@ -3,6 +3,7 @@
  */
 
 //  const GrowthTools = require('./growthTools.model')
+const PhoneNumber = require('./growthtools.model')
 const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
@@ -63,8 +64,22 @@ exports.upload = function (req, res) {
       .on('data', function (data) {
         var result = data.phone_numbers.replace(/[- )(]/g, '')
         logger.serverLog(TAG, JSON.stringify(data))
+        var savePhoneNumber = new PhoneNumber({
+          name: data.name,
+          number: result,
+          userId: req.user._id
+        })
+        savePhoneNumber.save((err2, phonenumbersaved) => {
+          if (err2) {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'phone number create failed'
+            })
+          }
+          logger.serverLog(TAG,
+            'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
+        })
         let pagesFindCriteria = {userId: req.user._id, connected: true}
-
         Pages.find(pagesFindCriteria, (err, pages) => {
           if (err) {
             logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -102,7 +117,8 @@ exports.upload = function (req, res) {
           })
         })
       })
-      return res.status(201).json({status: 'success', payload: serverPath})
+      fs.unlinkSync(dir + '/userfiles' + serverPath)
+      return res.status(201).json({status: 'success'})
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
     //  return res.status(201).json({status: 'success', payload: serverPath})
