@@ -26,7 +26,7 @@ exports.index = function (req, res) {
 
 exports.upload = function (req, res) {
   logger.serverLog(TAG,
-  `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
+  `upload file route called. req.files.file.path: ${JSON.stringify(req.files)}`)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
