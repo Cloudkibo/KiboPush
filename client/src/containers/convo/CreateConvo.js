@@ -514,6 +514,7 @@ class CreateConvo extends React.Component {
                         appId="1429073230510150"
                         pageId={this.state.pageValue}
                         passthroughParams={this.props.user._id}
+                        onClick={() => { this.setState({showMessengerModal: false}) }}
                       />
                     </ModalDialog>
                   </ModalContainer>
