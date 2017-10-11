@@ -86,8 +86,6 @@ exports.upload = function (req, res) {
           Pages.find(pagesFindCriteria, (err, pages) => {
             if (err) {
               logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-              return res.status(404)
-                .json({status: 'failed', description: 'Pages not found'})
             }
             pages.forEach(page => {
               let messageData = {
@@ -119,13 +117,14 @@ exports.upload = function (req, res) {
                 })
             })
           })
+          return res.status(201).json({status: 'success'})
         } else {
           return res.status(404)
             .json({status: 'failed', description: 'Incorrect column names'})
         }
       })
       fs.unlinkSync(dir + '/userfiles' + serverPath)
-      return res.status(201).json({status: 'success'})
+
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
     //  return res.status(201).json({status: 'success', payload: serverPath})
