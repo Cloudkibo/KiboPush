@@ -297,6 +297,7 @@ class CreateConvo extends React.Component {
   }
 
     testConvo () {
+    
     this.setState({showMessengerModal: true})
     // if (this.state.broadcast.length === 0) {
     //   return
@@ -339,7 +340,7 @@ class CreateConvo extends React.Component {
   }
 
   render () {
-    console.log('Payload ', this.state)
+    console.log('Pages ', this.props.pages)
 
     var alertOptions = {
       offset: 14,
