@@ -17,7 +17,6 @@ import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
-
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)

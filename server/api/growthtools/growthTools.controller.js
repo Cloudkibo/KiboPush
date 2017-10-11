@@ -43,13 +43,12 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-  logger.serverLog(TAG, JSON.stringify(req.body))
+  logger.serverLog(TAG,
+    `upload file route called. req.body: ${JSON.stringify(req.body)}`)
   logger.serverLog(TAG,
     `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
-  logger.serverLog(TAG, req.files.file.path)
   logger.serverLog(TAG,
     `upload file route called. req.files.file: ${JSON.stringify(req.files.file)}`)
-  logger.serverLog(TAG, req.files.file)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles' + serverPath,
@@ -105,9 +104,6 @@ exports.upload = function (req, res) {
         })
       })
       return res.status(201).json({status: 'success', payload: serverPath})
-    //  logger.serverLog(TAG,
-    //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
-    //  return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
 }
