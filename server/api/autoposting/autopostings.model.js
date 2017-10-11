@@ -16,8 +16,8 @@ let autoPostingSchema = new Schema({
   isActive: { type: Boolean, default: true },
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],
-  segmentationLocale: String,
-  segmentationGender: String,
+  segmentationLocale: [String],
+  segmentationGender: [String],
   segmentationTimeZone: String
 })
 

@@ -3,12 +3,15 @@
  */
 
 //  const GrowthTools = require('./growthTools.model')
-
+const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
 const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
+const crypto = require('crypto')
+let request = require('request')
+
 exports.index = function (req, res) {
   logger.serverLog(TAG,
     'Index route is called')
@@ -21,12 +24,16 @@ exports.index = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-  logger.serverLog(TAG, req)
   logger.serverLog(TAG,
-    `upload file route called. request is: ${JSON.stringify(req)}`)
-  logger.serverLog(TAG,
-    `upload file route called. file is: ${JSON.stringify(req.files)}`)
-  var serverPath = req.files.file.path
+  `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
+  var today = new Date()
+  var uid = crypto.randomBytes(5).toString('hex')
+  var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
+    (today.getMonth() + 1) + '' + today.getDate()
+  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
+    today.getSeconds()
+  let fext = req.files.file.name.split('.')
+  serverPath += '.' + fext[fext.length - 1]
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
 
@@ -36,6 +43,7 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
+  logger.serverLog(TAG, JSON.stringify(req.body))
   logger.serverLog(TAG,
     `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
   logger.serverLog(TAG, req.files.file.path)
@@ -44,7 +52,7 @@ exports.upload = function (req, res) {
   logger.serverLog(TAG, req.files.file)
   fs.rename(
     req.files.file.path,
-    dir + '/userfiles/' + serverPath,
+    dir + '/userfiles' + serverPath,
     err => {
       if (err) {
         return res.status(500).json({
@@ -52,15 +60,53 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      fs.createReadStream(dir + '/userfiles' + serverPath)
+      .pipe(csv())
+      .on('data', function (data) {
+        logger.serverLog(TAG, JSON.stringify(data))
+        let pagesFindCriteria = {userId: req.user._id, connected: true}
+
+        Pages.find(pagesFindCriteria, (err, pages) => {
+          if (err) {
+            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            return res.status(404)
+              .json({status: 'failed', description: 'Pages not found'})
+          }
+          pages.forEach(page => {
+            let messageData = {
+              'recipient': JSON.stringify({
+                'phone_number': data.phone_numbers
+              }),
+              'message': JSON.stringify({
+                'text': req.body.text,
+                'metadata': 'This is a meta data'
+              })
+            }
+            request(
+              {
+                'method': 'POST',
+                'json': true,
+                'formData': messageData,
+                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+              },
+              function (err, res) {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At invite to messenger using phone ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG,
+                    `At invite to messenger using phone ${JSON.stringify(
+                      res)}`)
+                }
+              })
+          })
+        })
+      })
+      return res.status(201).json({status: 'success', payload: serverPath})
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
     //  return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
-  var a = fs.createReadStream(req.files.file.path)
-  .pipe(csv())
-  .on('data', function (data) {
-    logger.serverLog(TAG, data)
-  })
-  logger.serverLog(a)
 }

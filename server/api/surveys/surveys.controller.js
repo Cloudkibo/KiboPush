@@ -304,7 +304,7 @@ exports.send = function (req, res) {
         let pagesFindCriteria = {userId: req.user._id, connected: true}
         if (req.body.isSegmented) {
           if (req.body.segmentationPageIds) {
-            _.merge(pagesFindCriteria, {
+            pagesFindCriteria = _.merge(pagesFindCriteria, {
               pageId: {
                 $in: req.body.segmentationPageIds
               }
@@ -327,12 +327,19 @@ exports.send = function (req, res) {
             }
             if (req.body.isSegmented) {
               if (req.body.segmentationGender) {
-                _.merge(subscriberFindCriteria,
-                  {gender: req.body.segmentationGender.toLowerCase()})
+                subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                  {
+                    gender: {
+                      $in: req.body.segmentationGender
+                    }
+                  })
               }
               if (req.body.segmentationLocale) {
-                _.merge(subscriberFindCriteria,
-                  {locale: req.body.segmentationLocale})
+                subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                  locale: {
+                    $in: req.body.segmentationLocale
+                  }
+                })
               }
             }
             Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
