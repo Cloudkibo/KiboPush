@@ -4,40 +4,27 @@ class UserGuideBroadcasts extends React.Component {
   render () {
     return (
       <div style={{float: 'left', width: '600px', marginTop: 50}}>
-        <h2> Broadcasts </h2>
+        <h2> Conversations </h2>
         <p> This feature allows you to broadcast messages to your Messenger subscribers. You can send engaging contents, videos, images, links, etc. </p>
         <br />
-        <h4> How to create a broadcast? </h4>
-        <p>You need to perform the following steps o create a broadcast:</p>
+        <h4> How to create and send conversations? </h4>
+        <p>To create and send conversation follow the steps given below:</p>
         <ol>
-          <li>Click on broadcasts from the sidebar.</li>
-          <img src='./img/userGuide/broadcasts.png' width='600px' />
+          <li>Click on conversations from the sidebar.</li>
+          <img src='./img/userGuide/convos1.png' width='600px' />
           <br />
-          <li>On Broadcasts page, click on create broadcast button.</li>
-          <li>You will be redirected to create broadcast page. Type the message, attach any attachments if you want, and click on Create Broadcast button. </li>
-          <img src='./img/userGuide/createBroadcast.png' width='600px' />
-        </ol>
-        <br />
-        <h4> How to edit a broadcast? </h4>
-        <p>For editing a broadcast:</p>
-        <ol>
-          <li>Click on broadcasts from the sidebar.</li>
-          <img src='./img/userGuide/broadcasts.png' width='600px' />
+          <li>On Conversations page, click on send conversation button.</li>
+          <img src='./img/userGuide/convos2.png' width='600px' />
           <br />
-          <li>On Broadcasts page, you will see all the created broadcasts.</li>
-          <li>Select a broadcast you want to edit and click on Edit button.</li>
-          <li>You will be redirected to edit broadcast page. Here you can edit the broadcast.</li>
-          <li>Once you are done with the editing click on Save Broadcast button to save the changes.</li>
-          <img src='./img/userGuide/editBroadcast.png' width='600px' />
-        </ol>
-        <br />
-        <h4> How to send a broadcast? </h4>
-        <p>To send a broadcast, follow the steps given below:</p>
-        <ol>
-          <li>Click on Broadcasts from the sidebar.</li>
-          <img src='./img/userGuide/broadcasts.png' width='600px' />
+          <li>You will be redirected to create conversation page. Folow the three step process, by moving your mouse towards red glowing circle, to understand the objects. You can send a component separately or with combination of other components as well. </li>
+          <img src='./img/userGuide/convos3.png' width='600px' />
           <br />
-          <li>Select the broadcast you want to send and click on send button.</li>
+          <li> Select the components you want to send. Enter text, attach attachments, select targeting, edit conversation title if you want.</li>
+          <li>To preview your conversation, click on the Test Conversation button. It will send the convrsation to your messenger account. There you can preview the conversation and see how it will be shown to your subscribers.</li>
+          <img src='./img/userGuide/convos4.png' width='600px' />
+          <br />
+          <li>When you are ready to send the conversations to your subscribers, click on the Send Conversation button.</li>
+          <img src='./img/userGuide/convos5.png' width='600px' />
         </ol>
       </div>
     )
