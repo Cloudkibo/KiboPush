@@ -297,22 +297,29 @@ class CreateConvo extends React.Component {
   }
 
     testConvo () {
+    for(let i = 0; i < this.props.pages.length; i++){
+      if(this.props.pages[i].pageId === this.state.pageValue){
+        if(!this.props.pages[i].adminSubscriberId){
+          this.setState({showMessengerModal: true})
+          return
+        }
+      }
+    }
     
-    this.setState({showMessengerModal: true})
-    // if (this.state.broadcast.length === 0) {
-    //   return
-    // }
-    // console.log(this.state.broadcast)
-    // var data = {
-    //   platform: 'facebook',
-    //   self: 'true',
-    //   payload: this.state.broadcast,
-    //   title: this.state.convoTitle,
+    if (this.state.broadcast.length === 0) {
+      return
+    }
+    console.log(this.state.broadcast)
+    var data = {
+      platform: 'facebook',
+      self: 'true',
+      payload: this.state.broadcast,
+      title: this.state.convoTitle,
 
-    // }
-    // console.log('Data sent: ', data)
-    // this.props.sendBroadcast(data, this.msg)
-    // this.setState({broadcast: [], list: []})
+    }
+    console.log('Data sent: ', data)
+    this.props.sendBroadcast(data, this.msg)
+    this.setState({broadcast: [], list: []})
   }
 
   newConvo () {
