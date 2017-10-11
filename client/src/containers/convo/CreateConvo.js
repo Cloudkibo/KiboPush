@@ -61,7 +61,8 @@ class CreateConvo extends React.Component {
       localeValue: [],
       isShowingModal: false,
       convoTitle: 'Conversation Title',
-      steps: []
+      steps: [],
+      showMessengerModal: false,
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -296,20 +297,21 @@ class CreateConvo extends React.Component {
   }
 
     testConvo () {
-    if (this.state.broadcast.length === 0) {
-      return
-    }
-    console.log(this.state.broadcast)
-    var data = {
-      platform: 'facebook',
-      self: 'true',
-      payload: this.state.broadcast,
-      title: this.state.convoTitle,
+    this.setState({showMessengerModal: true})
+    // if (this.state.broadcast.length === 0) {
+    //   return
+    // }
+    // console.log(this.state.broadcast)
+    // var data = {
+    //   platform: 'facebook',
+    //   self: 'true',
+    //   payload: this.state.broadcast,
+    //   title: this.state.convoTitle,
 
-    }
-    console.log('Data sent: ', data)
-    this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
+    // }
+    // console.log('Data sent: ', data)
+    // this.props.sendBroadcast(data, this.msg)
+    // this.setState({broadcast: [], list: []})
   }
 
   newConvo () {
@@ -491,6 +493,19 @@ class CreateConvo extends React.Component {
                     <ModalDialog style={{width: '500px'}}
                       onClose={this.closeDialog}>
                       <h3>Rename:</h3>
+                      <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
+                      <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                    </ModalDialog>
+                  </ModalContainer>
+                }
+
+                {
+                  this.state.showMessengerModal &&
+                  <ModalContainer style={{width: '500px'}}
+                    onClose={this.closeDialog}>
+                    <ModalDialog style={{width: '500px'}}
+                      onClose={this.closeDialog}>
+                      <h3>Connect to Messenger:</h3>
                       <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
                       <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
                     </ModalDialog>
