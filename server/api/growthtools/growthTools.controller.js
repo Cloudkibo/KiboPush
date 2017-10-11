@@ -63,6 +63,7 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
+        var result = data.phone_numbers.replace(/[- )(]/g, '')
         logger.serverLog(TAG, JSON.stringify(data))
         let pagesFindCriteria = {userId: req.user._id, connected: true}
 
@@ -75,7 +76,7 @@ exports.upload = function (req, res) {
           pages.forEach(page => {
             let messageData = {
               'recipient': JSON.stringify({
-                'phone_number': data.phone_numbers
+                'phone_number': result
               }),
               'message': JSON.stringify({
                 'text': req.body.text,
