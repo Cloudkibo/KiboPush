@@ -1,8 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  successMessage : '',
-  errorMessage  :  ''
+  status : '',
+  description  : ''
 }
 
 export function getFileUploadResponse (state = initialState, action) {
