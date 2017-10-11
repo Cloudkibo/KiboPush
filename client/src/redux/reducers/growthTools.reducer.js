@@ -1,7 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  files: [],
   successMessage : '',
   errorMessage  :  ''
 }

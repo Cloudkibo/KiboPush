@@ -9,10 +9,9 @@ export function sendresp (data) {
   }
 }
 export function saveFileForPhoneNumbers (file, invitationMessage) {
-  console.log('Before dispatch', file, invitationMessage)
+  console.log('saveFileForPhoneNumbers', file, invitationMessage)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    console.log('In dispatch', file, invitationMessage)
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
       body: {
@@ -23,11 +22,8 @@ export function saveFileForPhoneNumbers (file, invitationMessage) {
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
-    }).then((res) => console.log("Response", res)).catch((err) => { console.log("Error uploading file", err)})
-    /*then((res) => res.json()).then((res) => res).then(res => {
+    }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('response', res.status)
-    })*/
+    })
   }
-
-  console.log('After dispatch', file, invitationMessage)
 }

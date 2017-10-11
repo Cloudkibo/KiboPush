@@ -28,7 +28,7 @@ class CustomerMatching extends React.Component {
   handleSubmit(e)  {
     e.preventDefault();
     if (this.validate()) {
-      saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
+      this.props.saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
     }
   }
 
