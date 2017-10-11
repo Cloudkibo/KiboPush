@@ -16,7 +16,7 @@ export function saveFileForPhoneNumbers (file, invitationMessage) {
       method: 'post',
       body: {
         file:file,
-        invitationMessage : invitationMessage
+        text : invitationMessage
       },
       // eslint-disable-next-line no-undef
       headers: new Headers({
