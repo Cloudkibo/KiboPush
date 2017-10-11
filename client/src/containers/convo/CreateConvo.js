@@ -469,11 +469,7 @@ class CreateConvo extends React.Component {
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '') ? true:false} onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
-                  <MessengerPlugin
-                      appId="1429073230510150"
-                      pageId={this.state.pageValue}
-                      passthroughParams={this.props.user._id}
-                    />
+                  
                 </div>
               </div>
             </div>
@@ -502,12 +498,15 @@ class CreateConvo extends React.Component {
                 {
                   this.state.showMessengerModal &&
                   <ModalContainer style={{width: '500px'}}
-                    onClose={this.closeDialog}>
+                    onClose={() => {this.setState({showMessengerModal: false})}}>
                     <ModalDialog style={{width: '500px'}}
-                      onClose={this.closeDialog}>
+                      onClose={() => {this.setState({showMessengerModal: false})}}>
                       <h3>Connect to Messenger:</h3>
-                      <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
-                      <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                      <MessengerPlugin
+                        appId="1429073230510150"
+                        pageId={this.state.pageValue}
+                        passthroughParams={this.props.user._id}
+                      />
                     </ModalDialog>
                   </ModalContainer>
                 }
