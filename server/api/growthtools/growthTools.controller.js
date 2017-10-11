@@ -62,60 +62,65 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
-        var result = data.phone_numbers.replace(/[- )(]/g, '')
-        logger.serverLog(TAG, JSON.stringify(data))
-        var savePhoneNumber = new PhoneNumber({
-          name: data.name,
-          number: result,
-          userId: req.user._id
-        })
-        savePhoneNumber.save((err2, phonenumbersaved) => {
-          if (err2) {
-            return res.status(500).json({
-              status: 'failed',
-              description: 'phone number create failed'
-            })
-          }
-          logger.serverLog(TAG,
-            'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
-        })
-        let pagesFindCriteria = {userId: req.user._id, connected: true}
-        Pages.find(pagesFindCriteria, (err, pages) => {
-          if (err) {
-            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-            return res.status(404)
-              .json({status: 'failed', description: 'Pages not found'})
-          }
-          pages.forEach(page => {
-            let messageData = {
-              'recipient': JSON.stringify({
-                'phone_number': result
-              }),
-              'message': JSON.stringify({
-                'text': req.body.text,
-                'metadata': 'This is a meta data'
+        if (data.phone_numbers && data.name) {
+          var result = data.phone_numbers.replace(/[- )(]/g, '')
+          logger.serverLog(TAG, JSON.stringify(data))
+          var savePhoneNumber = new PhoneNumber({
+            name: data.name,
+            number: result,
+            userId: req.user._id
+          })
+          savePhoneNumber.save((err2, phonenumbersaved) => {
+            if (err2) {
+              return res.status(500).json({
+                status: 'failed',
+                description: 'phone number create failed'
               })
             }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                page.accessToken
-              },
-              function (err, res) {
-                if (err) {
-                  return logger.serverLog(TAG,
-                    `At invite to messenger using phone ${JSON.stringify(err)}`)
-                } else {
-                  logger.serverLog(TAG,
-                    `At invite to messenger using phone ${JSON.stringify(
-                      res)}`)
-                }
-              })
+            logger.serverLog(TAG,
+              'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
           })
-        })
+          let pagesFindCriteria = {userId: req.user._id, connected: true}
+          Pages.find(pagesFindCriteria, (err, pages) => {
+            if (err) {
+              logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+              return res.status(404)
+                .json({status: 'failed', description: 'Pages not found'})
+            }
+            pages.forEach(page => {
+              let messageData = {
+                'recipient': JSON.stringify({
+                  'phone_number': result
+                }),
+                'message': JSON.stringify({
+                  'text': req.body.text,
+                  'metadata': 'This is a meta data'
+                })
+              }
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                  page.accessToken
+                },
+                function (err, res) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At invite to messenger using phone ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At invite to messenger using phone ${JSON.stringify(
+                        res)}`)
+                  }
+                })
+            })
+          })
+        } else {
+          return res.status(404)
+            .json({status: 'failed', description: 'Incorrect column names'})
+        }
       })
       fs.unlinkSync(dir + '/userfiles' + serverPath)
       return res.status(201).json({status: 'success'})
