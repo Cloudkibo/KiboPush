@@ -50,7 +50,7 @@ class PagesInfo extends React.Component {
                 </table>
                 <ReactPaginate previousLabel={'previous'}
                   nextLabel={'next'}
-                  breakLabel={<a href=''>...</a>}
+                  breakLabel={<a>...</a>}
                   breakClassName={'break-me'}
                   pageCount={Math.ceil(this.props.length / 4)}
                   marginPagesDisplayed={1}
