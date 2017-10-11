@@ -71,14 +71,14 @@ class CustomerMatching extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called', nextProps)
 
-    if (nextProps.uploadResponse.successMessage != '') {
+    if (nextProps.uploadResponse.status === 'success') {
       this.setState({
-        alertMessage: nextProps.uploadResponse.successMessage,
+        alertMessage: 'Your file has been uploaded',
         type: 'success'
       })
-    } else if (nextProps.uploadResponse.errorMessage != '') {
+    } else if (nextProps.uploadResponse.status === 'failed') {
       this.setState({
-        alertMessage: nextProps.uploadResponse.errorMessage,
+        alertMessage: nextProps.uploadResponse.description,
         type: 'danger'
       })
     } else {
@@ -165,8 +165,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.getFileUploadResponse
-    // uploadResponse: {successMessage : 'Your File has been uploaded'}
-    // uploadResponse: {errorMessage : 'Your File has errors'}
+    //uploadResponse: {status :'success'}
+    //uploadResponse: {status :'failed' , description: 'Some problem'}
   }
 }
 
