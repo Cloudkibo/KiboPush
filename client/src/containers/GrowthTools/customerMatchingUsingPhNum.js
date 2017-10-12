@@ -48,10 +48,12 @@ class CustomerMatching extends React.Component {
       fileData.append('filename', file[0].name)
       fileData.append('filetype', file[0].type)
       fileData.append('filesize', file[0].size)
+      fileData.append('text', this.state.textAreaValue)
+
     }
 
     if (this.validate()) {
-      this.props.saveFileForPhoneNumbers(fileData, this.state.textAreaValue)
+      this.props.saveFileForPhoneNumbers(fileData)
     }
   }
 
@@ -128,20 +130,30 @@ class CustomerMatching extends React.Component {
                     file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
                     an invitation on Facebook Messenger.</h7>
                   <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
-                    <Files
-                      className='file-upload-area'
-                      onChange={this.onFilesChange}
-                      onError={this.onFilesError}
-                      accepts={['.csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
-                      multiple={false}
-                      maxFileSize={25000000}
-                      minFileSize={0}
-                      clickable>
-                      <div className='align-center'>
-                        <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-                        <h4>Upload here</h4>
-                        <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
-                        <h4>{this.state.file !== '' ? this.state.file[0].name : ''}</h4>
+                  <Files
+                    className='file-upload-area'
+                    onChange={this.onFilesChange}
+                    onError={this.onFilesError}
+                    accepts={['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+                    multiple = {false}
+                    maxFileSize={25000000}
+                    minFileSize={0}
+                    clickable>
+                    <div className='align-center'>
+                      <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                      <h4>Upload here</h4>
+                      <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
+                      <h4>{this.state.file !== '' ? this.state.file[0].name : ''}</h4>
+                    </div>
+                  </Files>
+                  <div className='row'>
+                    <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                      <label>File Selected</label>
+                      <input type='text' disabled='true' value={this.state.file ? this.state.file[0].name : ''} style={{ width: '50%'}} />
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                        {
+                         this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
+                        }
                       </div>
                     </Files>
                     <div className='row'>
