@@ -4,7 +4,7 @@ import callApi from '../../utility/api.caller.service'
 export function updatePollsList (data) {
   return {
     type: ActionTypes.FETCH_POLLS_LIST,
-    data
+    data: data.reverse()
   }
 }
 

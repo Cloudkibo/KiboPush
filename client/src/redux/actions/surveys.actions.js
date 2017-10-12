@@ -5,7 +5,7 @@ import callApi from '../../utility/api.caller.service'
 export function showSurveys (data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
-    data
+    data: data.reverse()
   }
 }
 

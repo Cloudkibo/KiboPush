@@ -4,7 +4,7 @@ import request from 'superagent'
 export const API_URL = '/api'
 
 export function sendresp (data) {
-  console.log('sendresp',data)
+  console.log('sendresp', data)
   return {
     type: ActionTypes.SAVE_PHONE_NUMBERS,
     data

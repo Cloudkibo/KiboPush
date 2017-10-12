@@ -163,11 +163,13 @@ class CreateConvo extends React.Component {
   }
 
   handleGenderChange (value) {
-    this.setState({ genderValue: value })
+    var temp = value.split(',')
+    this.setState({ genderValue: temp })
   }
 
   handleLocaleChange (value) {
-    this.setState({ localeValue: value })
+    var temp = value.split(',')
+    this.setState({ localeValue: temp })
   }
 
   handleText (obj) {
@@ -279,14 +281,18 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    var isSegmentedValue = false
+    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmentedValue = true
+    }
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
       payload: this.state.broadcast,
-      isSegmented: true,
+      isSegmented: isSegmentedValue,
       segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue.split(','),
-      segmentationGender: this.state.genderValue.split(','),
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
       segmentationTimeZone: '',
       title: this.state.convoTitle
 
@@ -475,7 +481,7 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '')} onClick={this.testConvo}> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
 
                 </div>
