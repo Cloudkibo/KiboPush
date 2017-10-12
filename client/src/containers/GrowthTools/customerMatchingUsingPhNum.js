@@ -26,11 +26,11 @@ class CustomerMatching extends React.Component {
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
   }
-  onFilesChange(files) {
-      this.setState({
-        file: files,
-        fileErrors: []
-      })
+  onFilesChange (files) {
+    this.setState({
+      file: files,
+      fileErrors: []
+    })
     console.log(this.state.file[0])
   }
   onFilesError (error, file) {
@@ -41,7 +41,6 @@ class CustomerMatching extends React.Component {
   }
 
   handleSubmit () {
-
     var file = this.state.file
     if (file && file != '') {
       var fileData = new FormData()
@@ -128,8 +127,8 @@ class CustomerMatching extends React.Component {
                   <h3>Customer Matching Using Phone Numbers</h3>
                   <br />
                   <h7>Upload a file with .csv extension containing phone numbers of your customers to invite them for a chat on messenger. The
-              file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
-              an invitation on Facebook Messenger.</h7>
+                    file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
+                    an invitation on Facebook Messenger.</h7>
                   <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
                   <Files
                     className='file-upload-area'
@@ -156,27 +155,37 @@ class CustomerMatching extends React.Component {
                          this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
                         }
                       </div>
-                    </div>
-                    <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                      <textarea className='textArea' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
-                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
-                        {
-                           this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
-                        }
+                    </Files>
+                    <div className='row'>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <label>File Selected</label>
+                        <input type='text' disabled='true' value={this.state.file ? this.state.file[0].name : ''} style={{ width: '50%'}} />
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                          {
+                            this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
+                          }
+                        </div>
                       </div>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <textarea className='textArea' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                          {
+                            this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
+                          }
+                        </div>
+                      </div>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <button onClick={this.handleSubmit} className='btn btn-primary'>Submit </button>
+                      </div>
+                      {
+                        this.state.alertMessage !== '' &&
+                        <center>
+                          <Alert type={this.state.type}>
+                            {this.state.alertMessage}
+                          </Alert>
+                        </center>
+                      }
                     </div>
-                    <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                      <button onClick={this.handleSubmit} className='btn btn-primary'>Submit </button>
-                    </div>
-                    {
-                      this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.type}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-                    }
-                  </div>
                   </div>
                 </div>
               </div>
