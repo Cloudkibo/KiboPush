@@ -13,7 +13,7 @@ export function sendresp (data) {
 export function saveFileForPhoneNumbers (files, invitationMessage) {
 
   var file = files[0]
-/*  var fileData = new FormData()
+/*var fileData = new FormData()
   fileData.append('file', file)
   fileData.append('name', file.name)
   fileData.append('filetype', file.type)
@@ -38,6 +38,7 @@ export function saveFileForPhoneNumbers (files, invitationMessage) {
     var req = request.post(`${API_URL}/growthtools/upload`);
     req.attach(file.name, file);
     req.field('text', invitationMessage);
+    req.field('Authorization', `Bearer ${auth.getToken()}`);
     req.end((err,res) => {
       console.log('response', res, err)
       if (err) {
