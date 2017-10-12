@@ -39,10 +39,10 @@ export function saveFileForPhoneNumbers (files, invitationMessage) {
     req.attach(file.name, file);
     req.field('text', invitationMessage);
     req.end((err,res) => {
+      console.log('response', res, err)
       if (err) {
         var data = {err: true, status:res.status , description :  res.statusText}
       }  else {
-        console.log('response', res, err)
         var data = {err:false , status: res.status , description :  res.statusText}
       }
         dispatch(sendresp(data))
