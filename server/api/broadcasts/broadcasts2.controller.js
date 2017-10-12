@@ -92,13 +92,12 @@ exports.sendConversation = function (req, res) {
     let pagesFindCriteria = {userId: req.user._id, connected: true}
 
     if (req.body.isSegmented) {
-      if (req.body.pageIds.length > 0) {
+      if (req.body.segmentationPageIds.length > 0) {
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           pageId: {
-            $in: req.body.pageIds
+            $in: req.body.segmentationPageIds
           }
         })
-        logger.serverLog(TAG, `pageIds array condition for targeting matched`)
       }
     }
 
@@ -117,22 +116,20 @@ exports.sendConversation = function (req, res) {
         let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
 
         if (req.body.isSegmented) {
-          if (req.body.gender.length > 0) {
+          if (req.body.segmentationGender.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria,
               {
                 gender: {
-                  $in: req.body.gender
+                  $in: req.body.segmentationGender
                 }
               })
-            logger.serverLog(TAG, `gender array condition for targeting matched`)
           }
-          if (req.body.locale.length > 0) {
+          if (req.body.segmentationLocale.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
               locale: {
-                $in: req.body.locale
+                $in: req.body.segmentationLocale
               }
             })
-            logger.serverLog(TAG, `locale array condition for targeting matched`)
           }
         }
 
