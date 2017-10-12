@@ -299,11 +299,10 @@ exports.send = function (req, res) {
             })
           })
         }
-        logger.serverLog(TAG, `buttons created${JSON.stringify(buttons)}`)
 
         let pagesFindCriteria = {userId: req.user._id, connected: true}
         if (req.body.isSegmented) {
-          if (req.body.segmentationPageIds) {
+          if (req.body.segmentationPageIds.length > 0) {
             pagesFindCriteria = _.merge(pagesFindCriteria, {
               pageId: {
                 $in: req.body.segmentationPageIds
@@ -318,15 +317,13 @@ exports.send = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages)}`)
           for (let z = 0; z < pages.length; z++) {
-            logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
             let subscriberFindCriteria = {
               pageId: pages[z]._id,
               isSubscribed: true
             }
             if (req.body.isSegmented) {
-              if (req.body.segmentationGender) {
+              if (req.body.segmentationGender.length > 0) {
                 subscriberFindCriteria = _.merge(subscriberFindCriteria,
                   {
                     gender: {
@@ -334,7 +331,7 @@ exports.send = function (req, res) {
                     }
                   })
               }
-              if (req.body.segmentationLocale) {
+              if (req.body.segmentationLocale.length > 0) {
                 subscriberFindCriteria = _.merge(subscriberFindCriteria, {
                   locale: {
                     $in: req.body.segmentationLocale
@@ -343,9 +340,6 @@ exports.send = function (req, res) {
               }
             }
             Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-              logger.serverLog(TAG,
-                `Subscribers of page ${JSON.stringify(subscribers)}`)
-              logger.serverLog(TAG, `Page at Z ${JSON.stringify(pages[z])}`)
               if (err) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Subscribers not found'})
@@ -360,15 +354,7 @@ exports.send = function (req, res) {
                         err)}`)
                   }
 
-                  logger.serverLog(TAG,
-                    `Page accesstoken from graph api ${JSON.stringify(
-                      resp.body)}`)
-
                   for (let j = 0; j < subscribers.length; j++) {
-                    logger.serverLog(TAG,
-                      `At Subscriber fetched ${JSON.stringify(subscribers[j])}`)
-                    logger.serverLog(TAG,
-                      `At Pages Token ${resp.body.access_token}`)
 
                     const messageData = {
                       attachment: {

@@ -175,9 +175,6 @@ exports.sendConversation = function (req, res) {
                     }
                   }
 
-                  logger.serverLog(TAG,
-                    'Sent broadcast to subscriber')
-
                   // update broadcast sent field
                   let pagebroadcast = new BroadcastPage({
                     pageId: page.pageId,
