@@ -98,6 +98,7 @@ exports.sendConversation = function (req, res) {
             $in: req.body.pageIds
           }
         })
+        logger.serverLog(TAG, `pageIds array condition for targeting matched`)
       }
     }
 
@@ -123,6 +124,7 @@ exports.sendConversation = function (req, res) {
                   $in: req.body.gender
                 }
               })
+            logger.serverLog(TAG, `gender array condition for targeting matched`)
           }
           if (req.body.locale.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
@@ -130,6 +132,7 @@ exports.sendConversation = function (req, res) {
                 $in: req.body.locale
               }
             })
+            logger.serverLog(TAG, `locale array condition for targeting matched`)
           }
         }
 
