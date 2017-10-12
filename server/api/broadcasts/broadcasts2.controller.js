@@ -101,6 +101,8 @@ exports.sendConversation = function (req, res) {
       }
     }
 
+    logger.serverLog(TAG, `Page Criteria for segmentation ${pagesFindCriteria}`)
+
     Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -131,6 +133,8 @@ exports.sendConversation = function (req, res) {
           }
         }
 
+        logger.serverLog(TAG, `Subscribers Criteria for segmentation ${subscriberFindCriteria}`)
+
         Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
           if (err) {
             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -146,10 +150,6 @@ exports.sendConversation = function (req, res) {
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
                 payloadItem)
-
-              logger.serverLog(TAG,
-                `Payload for Messenger Send API: ${JSON.stringify(
-                  messageData)}`)
 
               request(
                 {
