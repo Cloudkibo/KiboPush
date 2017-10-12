@@ -7,7 +7,7 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
-import {  AlertList, Alert, AlertContainer } from 'react-bs-notifier'
+import { AlertList, Alert, AlertContainer } from 'react-bs-notifier'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -15,63 +15,61 @@ class CustomerMatching extends React.Component {
     this.state = { files: [],
       textAreaValue: '',
       fileErrors: [],
-      messageErrors : [],
-      alertMessage : '',
+      messageErrors: [],
+      alertMessage: '',
       type: ''
-     }
+    }
 
     this.onTextChange = this.onTextChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.validate = this.validate.bind(this)
   }
 
-  handleSubmit(e)  {
-    e.preventDefault();
+  handleSubmit (e) {
+    e.preventDefault()
     if (this.validate()) {
       saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
     }
   }
 
-  onTextChange(e) {
-
-    this.setState({textAreaValue : e.target.value})
+  onTextChange (e) {
+    this.setState({textAreaValue: e.target.value})
     if (e.target.value) {
-      this.setState({ messageErrors : []})
+      this.setState({ messageErrors: []})
     } else {
       this.setState({
-          messageErrors : [{errorMsg :  'Enter an invitation message'}]
+        messageErrors: [{errorMsg: 'Enter an invitation message'}]
       })
     }
   }
 
   onDrop (files) {
     this.setState({
-      files : files,
-      fileErrors : []
+      files: files,
+      fileErrors: []
     })
   }
 
-  validate()  {
+  validate () {
     var errors = false
-    console.log('validate',this.state)
+    console.log('validate', this.state)
     if (this.state.files && this.state.files.length < 1) {
-          this.setState({
-              fileErrors : [{errorMsg :  'Upload a file'}]
-          })
-          errors = true
-      }
+      this.setState({
+        fileErrors: [{errorMsg: 'Upload a file'}]
+      })
+      errors = true
+    }
     if (this.state.textAreaValue == '' && this.state.textAreaValue.length < 1) {
-          this.setState({
-              messageErrors : [{errorMsg :  'Enter an invitation message'}]
-          })
-          errors = true
-      }
-      return !errors
+      this.setState({
+        messageErrors: [{errorMsg: 'Enter an invitation message'}]
+      })
+      errors = true
+    }
+    return !errors
   }
 
   componentWillReceiveProps (nextProps) {
-
-    console.log('componentWillReceiveProps is called',nextProps)
+    console.log('componentWillReceiveProps is called', nextProps)
 
     if (nextProps.uploadResponse.successMessage != '') {
       this.setState({
@@ -92,7 +90,6 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <Header />
@@ -121,27 +118,27 @@ class CustomerMatching extends React.Component {
                        }
                       </span>
                     </Dropzone>
-                    <form onSubmit= {this.handleSubmit}>
+                    <form onSubmit={this.handleSubmit}>
                       <div className='row'>
                         <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
                           <label>File Selected</label>
-                          <input type = "text" disabled = 'true' value = { this.state.files[0] ? this.state.files[0].name : '' } style = {{ width : '50%'}}/>
-                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
+                          <input type='text' disabled='true' value={this.state.files[0] ? this.state.files[0].name : ''} style={{ width: '50%'}} />
+                          <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
                             {
                              this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
                             }
                           </div>
                         </div>
                         <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <textarea className='textArea'  placeholder='Enter Invitation Message' value = { this.state.textAreaValue } onChange = {this.onTextChange}/>
-                          <div className = 'col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style = {{color : 'red'}}>
-                              {
+                          <textarea className='textArea' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
+                          <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                            {
                                this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
                               }
                           </div>
                         </div>
                         <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <input type="submit" className = 'btn btn-primary' value="Submit" style = {{width : '10%'}}/>
+                          <input type='submit' className='btn btn-primary' value='Submit' style={{width: '10%'}} />
                         </div>
                         {
                           this.state.alertMessage !== '' &&
@@ -164,13 +161,12 @@ class CustomerMatching extends React.Component {
   }
 }
 
-
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.getFileUploadResponse
-    //uploadResponse: {successMessage : 'Your File has been uploaded'}
-    //uploadResponse: {errorMessage : 'Your File has errors'}
+    // uploadResponse: {successMessage : 'Your File has been uploaded'}
+    // uploadResponse: {errorMessage : 'Your File has errors'}
   }
 }
 
@@ -178,4 +174,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({saveFileForPhoneNumbers: saveFileForPhoneNumbers},
     dispatch)
 }
-export default connect(mapStateToProps,mapDispatchToProps)(CustomerMatching);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerMatching)

@@ -30,7 +30,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-var MessengerPlugin = require("react-messenger-plugin").default;
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -284,10 +284,10 @@ class CreateConvo extends React.Component {
       payload: this.state.broadcast,
       isSegmented: true,
       segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue.split(","),
-      segmentationGender: this.state.genderValue.split(","),
+      segmentationLocale: this.state.localeValue.split(','),
+      segmentationGender: this.state.genderValue.split(','),
       segmentationTimeZone: '',
-      title: this.state.convoTitle,
+      title: this.state.convoTitle
 
     }
     console.log('Data sent: ', data)
@@ -295,7 +295,7 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
-    testConvo () {
+  testConvo () {
     if (this.state.broadcast.length === 0) {
       return
     }
@@ -304,7 +304,7 @@ class CreateConvo extends React.Component {
       platform: 'facebook',
       self: 'true',
       payload: this.state.broadcast,
-      title: this.state.convoTitle,
+      title: this.state.convoTitle
 
     }
     console.log('Data sent: ', data)
@@ -468,9 +468,9 @@ class CreateConvo extends React.Component {
                   <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
                   <MessengerPlugin
-                      appId="1429073230510150"
-                      pageId="458107491218881"
-                      passthroughParams={this.props.user._id}
+                    appId='1429073230510150'
+                    pageId='458107491218881'
+                    passthroughParams={this.props.user._id}
                     />
                 </div>
               </div>
@@ -518,7 +518,7 @@ function mapStateToProps (state) {
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
     fileInfo: (state.convosInfo.fileInfo),
-    user: (state.basicInfo.user),
+    user: (state.basicInfo.user)
   }
 }
 
@@ -531,8 +531,8 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast,
-      
+      sendBroadcast: sendBroadcast
+
     },
     dispatch)
 }
