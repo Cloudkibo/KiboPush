@@ -127,7 +127,41 @@ class LiveChat extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
-            <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+              <div className="ui-block">
+
+                  <div className="ui-block-title">
+                    <h6 className="title">Messages</h6>
+                  </div>
+
+                  <ul className="widget w-activity-feed notification-list">
+                    <li>
+                      <div className="author-thumb">
+                        <img src="img/avatar49-sm.jpg" alt="author" />
+                      </div>
+                      <div className="notification-event">
+                        <a href="#" className="h6 notification-friend">Marina Polson</a> commented on Jason Mark’s <a href="#" className="notification-link">photo.</a>.
+                        <span className="notification-date"><time className="entry-date updated" datetime="2004-07-24T18:18">2 mins ago</time></span>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="author-thumb">
+                        <img src="img/avatar9-sm.jpg" alt="author"/>
+                      </div>
+                      <div className="notification-event">
+                        <a href="#" className="h6 notification-friend">Jake Parker </a> liked Nicholas Grissom’s <a href="#" className="notification-link">status update.</a>.
+                        <span className="notification-date"><time className="entry-date updated" datetime="2004-07-24T18:18">5 mins ago</time></span>
+                      </div>
+                    </li>
+
+
+
+
+                  </ul>
+                </div>
+          </div>
+            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
 
               <div className='ui-block popup-chat'>
                 <div className='ui-block-title'>
@@ -324,6 +358,107 @@ class LiveChat extends React.Component {
 
               </div>
 
+            </div>
+            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+              <div className="ui-block">
+                  <div className="friend-item">
+                    <div className="friend-header-thumb">
+                      <img src="img/friend3.jpg" alt="friend" />
+                    </div>
+
+                    <div className="friend-item-content">
+
+                      <div className="more">
+                        <ul className="more-dropdown">
+                          <li>
+                            <a href="#">Report Profile</a>
+                          </li>
+                          <li>
+                            <a href="#">Block Profile</a>
+                          </li>
+                          <li>
+                            <a href="#">Turn Off Notifications</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="friend-avatar">
+                        <div className="author-thumb">
+                          <img src="img/avatar3.jpg" alt="author" />
+                        </div>
+                        <div className="author-content">
+                          <a href="#" className="h5 author-name">Nicholas Grissom</a>
+                          <div className="country">Los Angeles, CA</div>
+                        </div>
+                      </div>
+
+                      <div className="swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal" id="swiper-unique-id-2">
+                        <div className="swiper-wrapper" ><div className="swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next" data-swiper-slide-index="1" >
+                            <p className="friend-about" data-swiper-parallax="-500" >
+                              Hi!, I’m Marina and I’m a Community Manager for “Gametube”. Gamer and full-time mother.
+                            </p>
+
+                            <div className="friend-since" data-swiper-parallax="-100" >
+                              <span>Friends Since:</span>
+                              <div className="h6">December 2014</div>
+                            </div>
+                          </div>
+                          <div className="swiper-slide swiper-slide-active" data-swiper-slide-index="0" >
+                            <div className="friend-count" data-swiper-parallax="-500" >
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">49</div>
+                                <div className="title">Friends</div>
+                              </a>
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">132</div>
+                                <div className="title">Photos</div>
+                              </a>
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">5</div>
+                                <div className="title">Videos</div>
+                              </a>
+                            </div>
+                            <div className="control-block-button" data-swiper-parallax="-100" >
+                     
+
+                          
+
+                            </div>
+                          </div>
+
+                          <div className="swiper-slide swiper-slide-next swiper-slide-duplicate-prev" data-swiper-slide-index="1" >
+                            <p className="friend-about" data-swiper-parallax="-500" >
+                              Hi!, I’m Marina and I’m a Community Manager for “Gametube”. Gamer and full-time mother.
+                            </p>
+
+                            <div className="friend-since" data-swiper-parallax="-100">
+                              <span>Friends Since:</span>
+                              <div className="h6">December 2014</div>
+                            </div>
+                          </div>
+                        <div className="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="0" >
+                            <div className="friend-count" data-swiper-parallax="-500" >
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">49</div>
+                                <div className="title">Friends</div>
+                              </a>
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">132</div>
+                                <div className="title">Photos</div>
+                              </a>
+                              <a href="#" className="friend-count-item">
+                                <div className="h6">5</div>
+                                <div className="title">Videos</div>
+                              </a>
+                            </div>
+                            <div className="control-block-button" data-swiper-parallax="-100" >
+                      
+                            </div>
+                          </div></div>
+                        <div className="swiper-pagination pagination-swiper-unique-id-2 swiper-pagination-clickable swiper-pagination-bullets"><span className="swiper-pagination-bullet swiper-pagination-bullet-active"></span><span className="swiper-pagination-bullet"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
 
           </div>
