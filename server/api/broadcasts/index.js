@@ -12,8 +12,6 @@ const multipartyMiddleware = multiparty()
 
 router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/sendConversation', auth.isAuthenticated(), multipartyMiddleware, controller2.sendConversation)
-// todo create will be deprecated soon
-router.post('/create', auth.isAuthenticated(), controller.create)
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
 router.post('/pubsub/webhook', controller.pubsubhook)

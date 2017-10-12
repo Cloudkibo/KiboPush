@@ -155,7 +155,7 @@ class CustomerMatching extends React.Component {
                          this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
                         }
                       </div>
-                    </Files>
+                    </div>
                     <div className='row'>
                       <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
                         <label>File Selected</label>
