@@ -149,7 +149,7 @@ class Survey extends React.Component {
                 this.props.subscribers && this.props.subscribers.length === 0
 
                   ? <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-sm' disabled> Create Survey
+                    <button className='btn btn-sm' > Create Survey
                     </button>
                   </Link>
                   : <Link to='addsurvey' className='pull-right'>
