@@ -1,5 +1,5 @@
 import React from 'react'
-import Dropzone from 'react-dropzone'
+import Files from 'react-files'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -7,12 +7,12 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
-import { AlertList, Alert, AlertContainer } from 'react-bs-notifier'
+import { Alert } from 'react-bs-notifier'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = { files: [],
+    this.state = { file: '',
       textAreaValue: '',
       fileErrors: [],
       messageErrors: [],
@@ -23,12 +23,35 @@ class CustomerMatching extends React.Component {
     this.onTextChange = this.onTextChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.validate = this.validate.bind(this)
+    this.onFilesChange = this.onFilesChange.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
+  }
+  onFilesChange (files) {
+    this.setState({
+      file: files,
+      fileErrors: []
+    })
+    console.log(this.state.file[0])
+  }
+  onFilesError (error, file) {
+    console.log('error code ' + error.code + ': ' + error.message)
+    this.setState({
+      fileErrors: [{errorMsg: error.message}]
+    })
   }
 
-  handleSubmit (e) {
-    e.preventDefault()
+  handleSubmit () {
+    var file = this.state.file
+    if (file && file != '') {
+      var fileData = new FormData()
+      fileData.append('file', file[0])
+      fileData.append('filename', file[0].name)
+      fileData.append('filetype', file[0].type)
+      fileData.append('filesize', file[0].size)
+    }
+
     if (this.validate()) {
-      saveFileForPhoneNumbers(this.state.files, this.state.textAreaValue)
+      this.props.saveFileForPhoneNumbers(fileData, this.state.textAreaValue)
     }
   }
 
@@ -43,17 +66,10 @@ class CustomerMatching extends React.Component {
     }
   }
 
-  onDrop (files) {
-    this.setState({
-      files: files,
-      fileErrors: []
-    })
-  }
-
   validate () {
     var errors = false
     console.log('validate', this.state)
-    if (this.state.files && this.state.files.length < 1) {
+    if (this.state.file == '') {
       this.setState({
         fileErrors: [{errorMsg: 'Upload a file'}]
       })
@@ -70,17 +86,20 @@ class CustomerMatching extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called', nextProps)
-
-    if (nextProps.uploadResponse.successMessage != '') {
-      this.setState({
-        alertMessage: nextProps.uploadResponse.successMessage,
-        type: 'success'
-      })
-    } else if (nextProps.uploadResponse.errorMessage != '') {
-      this.setState({
-        alertMessage: nextProps.uploadResponse.errorMessage,
-        type: 'danger'
-      })
+    var err = nextProps.uploadResponse.fileUploadResponse.err
+    var res = nextProps.uploadResponse.fileUploadResponse
+    if (err != '') {
+      if (err) {
+        this.setState({
+          alertMessage: (`${res.status} : ${res.description}`),
+          type: 'danger'
+        })
+      } else {
+        this.setState({
+          alertMessage: (`${res.status} : ${res.description}`),
+          type: 'success'
+        })
+      }
     } else {
       this.setState({
         alertMessage: '',
@@ -106,50 +125,55 @@ class CustomerMatching extends React.Component {
                   <h3>Customer Matching Using Phone Numbers</h3>
                   <br />
                   <h7>Upload a file with .csv extension containing phone numbers of your customers to invite them for a chat on messenger. The
-              file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
-              an invitation on Facebook Messenger.</h7>
+                    file should contain a column with the name 'phone_numbers'. This column should list all the customers&#39; phone numbers. The phone number will be used to send him
+                    an invitation on Facebook Messenger.</h7>
                   <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
-                    <Dropzone className='file-upload-area' onDrop={this.onDrop.bind(this)} accept='.csv'>
-                      <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
-                      <h6>File Selected</h6>
-                      <span>
-                        {
-                         this.state.files.map(f => <span>{f.name} - {f.size} bytes</span>)
-                       }
-                      </span>
-                    </Dropzone>
-                    <form onSubmit={this.handleSubmit}>
-                      <div className='row'>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <label>File Selected</label>
-                          <input type='text' disabled='true' value={this.state.files[0] ? this.state.files[0].name : ''} style={{ width: '50%'}} />
-                          <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
-                            {
-                             this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
-                            }
-                          </div>
-                        </div>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <textarea className='textArea' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
-                          <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
-                            {
-                               this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
-                              }
-                          </div>
-                        </div>
-                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <input type='submit' className='btn btn-primary' value='Submit' style={{width: '10%'}} />
-                        </div>
-                        {
-                          this.state.alertMessage !== '' &&
-                          <center>
-                            <Alert type={this.state.type}>
-                              {this.state.alertMessage}
-                            </Alert>
-                          </center>
-                        }
+                    <Files
+                      className='file-upload-area'
+                      onChange={this.onFilesChange}
+                      onError={this.onFilesError}
+                      accepts={['.csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+                      multiple={false}
+                      maxFileSize={25000000}
+                      minFileSize={0}
+                      clickable>
+                      <div className='align-center'>
+                        <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                        <h4>Upload here</h4>
+                        <p>Try dropping some files here, or click to select files to upload. Only '.csv' files are accepted</p>
+                        <h4>{this.state.file !== '' ? this.state.file[0].name : ''}</h4>
                       </div>
-                    </form>
+                    </Files>
+                    <div className='row'>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <label>File Selected</label>
+                        <input type='text' disabled='true' value={this.state.file ? this.state.file[0].name : ''} style={{ width: '50%'}} />
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                          {
+                            this.state.fileErrors.map(f => <span>{f.errorMsg}</span>)
+                          }
+                        </div>
+                      </div>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <textarea className='textArea' placeholder='Enter Invitation Message' value={this.state.textAreaValue} onChange={this.onTextChange} />
+                        <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help' style={{color: 'red'}}>
+                          {
+                            this.state.messageErrors.map(m => <span>{m.errorMsg}</span>)
+                          }
+                        </div>
+                      </div>
+                      <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <button onClick={this.handleSubmit} className='btn btn-primary'>Submit </button>
+                      </div>
+                      {
+                        this.state.alertMessage !== '' &&
+                        <center>
+                          <Alert type={this.state.type}>
+                            {this.state.alertMessage}
+                          </Alert>
+                        </center>
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
@@ -165,8 +189,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.getFileUploadResponse
-    // uploadResponse: {successMessage : 'Your File has been uploaded'}
-    // uploadResponse: {errorMessage : 'Your File has errors'}
+    // uploadResponse: {status :'success'}
+    // uploadResponse: {status :'failed' , description: 'Some problem'}
   }
 }
 

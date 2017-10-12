@@ -90,15 +90,18 @@ class ItemSettings extends React.Component {
   }
 
   handlePageChange (value) {
-    this.setState({ pageValue: value })
+    var temp = value.split(',')
+    this.setState({ pageValue: temp })
   }
 
   handleGenderChange (value) {
-    this.setState({ genderValue: value })
+    var temp = value.split(',')
+    this.setState({ genderValue: temp })
   }
 
   handleLocaleChange (value) {
-    this.setState({ localeValue: value })
+    var temp = value.split(',')
+    this.setState({ localeValue: temp })
   }
 
   handleSelectChange (event) {
@@ -110,10 +113,7 @@ class ItemSettings extends React.Component {
     console.log(this.accountTitleValue.value)
     var isSegmented = false
     var isActive = false
-    var temppages = this.state.pageValue.split(',')
-    var tempgender = this.state.genderValue.split(',')
-    var templocale = this.state.localeValue.split(',')
-    if (temppages.length > 0 || tempgender.length > 0 || templocale.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmented = true
     }
     if (this.state.isActive === 'Active') {
@@ -125,9 +125,9 @@ class ItemSettings extends React.Component {
       _id: this.props.location.state.item._id,
       accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.location.state.title,
       isSegmented: isSegmented,
-      segmentationPageIds: temppages,
-      segmentationGender: tempgender,
-      segmentationLocale: templocale,
+      segmentationPageIds: this.state.pageValue,
+      segmentationGender: this.state.genderValue,
+      segmentationLocale: this.state.localeValue,
       isActive: isActive
     }
     console.log(autopostingData)

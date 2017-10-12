@@ -43,6 +43,7 @@ import UserGuidePolls from './containers/userGuide/userGuidePolls'
 import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
 import ItemSettings from './containers/autoposting/itemSettings'
+import LiveChat from './containers/liveChat/live'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -107,7 +108,7 @@ const routes = (
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
-
+    <Route path='/live' component={LiveChat} onEnter={requireAuth} />
   </Route>
 
 )

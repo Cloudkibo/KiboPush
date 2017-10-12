@@ -149,7 +149,7 @@ class Survey extends React.Component {
                 this.props.subscribers && this.props.subscribers.length === 0
 
                   ? <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-sm' disabled> Create Survey
+                    <button className='btn btn-sm' > Create Survey
                     </button>
                   </Link>
                   : <Link to='addsurvey' className='pull-right'>
@@ -219,7 +219,7 @@ class Survey extends React.Component {
                     </table>
                     <ReactPaginate previousLabel={'previous'}
                       nextLabel={'next'}
-                      breakLabel={<a href=''>...</a>}
+                      breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
                       pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={2}
