@@ -92,7 +92,7 @@ exports.sendConversation = function (req, res) {
     let pagesFindCriteria = {userId: req.user._id, connected: true}
 
     if (req.body.isSegmented) {
-      if (req.body.pageIds) {
+      if (req.body.pageIds.length > 0) {
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           pageId: {
             $in: req.body.pageIds
@@ -101,7 +101,7 @@ exports.sendConversation = function (req, res) {
       }
     }
 
-    logger.serverLog(TAG, `Page Criteria for segmentation ${pagesFindCriteria}`)
+    logger.serverLog(TAG, `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
 
     Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
@@ -116,7 +116,7 @@ exports.sendConversation = function (req, res) {
         let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
 
         if (req.body.isSegmented) {
-          if (req.body.gender) {
+          if (req.body.gender.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria,
               {
                 gender: {
@@ -124,7 +124,7 @@ exports.sendConversation = function (req, res) {
                 }
               })
           }
-          if (req.body.locale) {
+          if (req.body.locale.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
               locale: {
                 $in: req.body.locale
@@ -133,7 +133,7 @@ exports.sendConversation = function (req, res) {
           }
         }
 
-        logger.serverLog(TAG, `Subscribers Criteria for segmentation ${subscriberFindCriteria}`)
+        logger.serverLog(TAG, `Subscribers Criteria for segmentation ${JSON.stringify(subscriberFindCriteria)}`)
 
         Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
           if (err) {
