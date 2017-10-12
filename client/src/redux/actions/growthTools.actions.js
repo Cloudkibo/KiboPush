@@ -11,16 +11,13 @@ export function sendresp (data) {
   }
 }
 
-export function saveFileForPhoneNumbers (filedata, invitationMessage) {
+export function saveFileForPhoneNumbers (filedata) {
   return (dispatch) => {
-    console.log('In dispatch', filedata.get('file'),invitationMessage)
+    console.log('In dispatch', filedata.get('file'))
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
-      body: {
-        file : filedata,
-        text : invitationMessage
-      },
+      body: filedata,
       // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`

@@ -49,10 +49,12 @@ class CustomerMatching extends React.Component {
       fileData.append('filename', file[0].name)
       fileData.append('filetype', file[0].type)
       fileData.append('filesize', file[0].size)
+      fileData.append('text', this.state.textAreaValue)
+
     }
 
     if (this.validate()) {
-      this.props.saveFileForPhoneNumbers(fileData, this.state.textAreaValue)
+      this.props.saveFileForPhoneNumbers(fileData)
     }
   }
 
@@ -133,7 +135,7 @@ class CustomerMatching extends React.Component {
                     className='file-upload-area'
                     onChange={this.onFilesChange}
                     onError={this.onFilesError}
-                    accepts={['.csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
+                    accepts={['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']}
                     multiple = {false}
                     maxFileSize={25000000}
                     minFileSize={0}
