@@ -10,21 +10,15 @@ export function sendresp (data) {
     data
   }
 }
-export function saveFileForPhoneNumbers (files, invitationMessage) {
-  var file = files[0]
-/* var fileData = new FormData()
-  fileData.append('file', file)
-  fileData.append('name', file.name)
-  fileData.append('filetype', file.type)
-  fileData.append('filesize', file.size)
-  console.log('saveFileForPhoneNumbers',fileData.get('file') ,invitationMessage) */
 
+export function saveFileForPhoneNumbers (filedata, invitationMessage) {
   return (dispatch) => {
+    console.log('In dispatch', filedata.get('file'),invitationMessage)
     // eslint-disable-next-line no-undef
-    /* fetch(`${API_URL}/growthtools/upload`, {
+    fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
       body: {
-        file : fileData,
+        file : filedata,
         text : invitationMessage
       },
       // eslint-disable-next-line no-undef
@@ -32,20 +26,7 @@ export function saveFileForPhoneNumbers (files, invitationMessage) {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      console.log('response', res.status)
-    }) */
-    var req = request.post(`${API_URL}/growthtools/upload`)
-    req.attach(file.name, file)
-    req.field('text', invitationMessage)
-    req.field('Authorization', `Bearer ${auth.getToken()}`)
-    req.end((err, res) => {
-      console.log('response', res, err)
-      if (err) {
-        var data = {err: true, status: res.status, description: res.statusText}
-      } else {
-        var data = {err: false, status: res.status, description: res.statusText}
-      }
-      dispatch(sendresp(data))
+      console.log('respone', res)
     })
   }
 }
