@@ -22,7 +22,7 @@ export function saveFileForPhoneNumbers (file, invitationMessage) {
       method: 'post',
       body: {
         file: fileData,
-        text : invitationMessage
+        text: invitationMessage
       },
       // eslint-disable-next-line no-undef
       headers: new Headers({

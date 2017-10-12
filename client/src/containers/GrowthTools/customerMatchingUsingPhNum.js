@@ -165,8 +165,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.getFileUploadResponse
-    //uploadResponse: {status :'success'}
-    //uploadResponse: {status :'failed' , description: 'Some problem'}
+    // uploadResponse: {status :'success'}
+    // uploadResponse: {status :'failed' , description: 'Some problem'}
   }
 }
 
