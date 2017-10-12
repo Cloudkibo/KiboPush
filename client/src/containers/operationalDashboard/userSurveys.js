@@ -113,7 +113,7 @@ class SurveysInfo extends React.Component {
                 </table>
                 <ReactPaginate previousLabel={'previous'}
                   nextLabel={'next'}
-                  breakLabel={<a href=''>...</a>}
+                  breakLabel={<a>...</a>}
                   breakClassName={'break-me'}
                   pageCount={Math.ceil(this.state.totalLength / 4)}
                   marginPagesDisplayed={1}

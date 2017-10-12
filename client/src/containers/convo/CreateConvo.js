@@ -30,7 +30,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-var MessengerPlugin = require("react-messenger-plugin").default;
+var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
@@ -62,7 +62,7 @@ class CreateConvo extends React.Component {
       isShowingModal: false,
       convoTitle: 'Conversation Title',
       steps: [],
-      showMessengerModal: false,
+      showMessengerModal: false
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -285,10 +285,10 @@ class CreateConvo extends React.Component {
       payload: this.state.broadcast,
       isSegmented: true,
       segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue.split(","),
-      segmentationGender: this.state.genderValue.split(","),
+      segmentationLocale: this.state.localeValue.split(','),
+      segmentationGender: this.state.genderValue.split(','),
       segmentationTimeZone: '',
-      title: this.state.convoTitle,
+      title: this.state.convoTitle
 
     }
     console.log('Data sent: ', data)
@@ -296,16 +296,16 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
-    testConvo () {
-    for(let i = 0; i < this.props.pages.length; i++){
-      if(this.props.pages[i].pageId === this.state.pageValue){
-        if(!this.props.pages[i].adminSubscriberId){
+  testConvo () {
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.pages[i].pageId === this.state.pageValue) {
+        if (!this.props.pages[i].adminSubscriberId) {
           this.setState({showMessengerModal: true})
           return
         }
       }
     }
-    
+
     if (this.state.broadcast.length === 0) {
       return
     }
@@ -314,7 +314,7 @@ class CreateConvo extends React.Component {
       platform: 'facebook',
       self: 'true',
       payload: this.state.broadcast,
-      title: this.state.convoTitle,
+      title: this.state.convoTitle
 
     }
     console.log('Data sent: ', data)
@@ -475,9 +475,9 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '') ? true:false} onClick={this.testConvo}> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '')} onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
-                  
+
                 </div>
               </div>
             </div>
@@ -503,15 +503,15 @@ class CreateConvo extends React.Component {
                   </ModalContainer>
                 }
 
-                {
+              {
                   this.state.showMessengerModal &&
                   <ModalContainer style={{width: '500px'}}
-                    onClose={() => {this.setState({showMessengerModal: false})}}>
+                    onClose={() => { this.setState({showMessengerModal: false}) }}>
                     <ModalDialog style={{width: '500px'}}
-                      onClose={() => {this.setState({showMessengerModal: false})}}>
+                      onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <h3>Connect to Messenger:</h3>
                       <MessengerPlugin
-                        appId="1429073230510150"
+                        appId='1429073230510150'
                         pageId={this.state.pageValue}
                         passthroughParams={this.props.user._id}
                         onClick={() => { this.setState({showMessengerModal: false}) }}
@@ -541,7 +541,7 @@ function mapStateToProps (state) {
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
     fileInfo: (state.convosInfo.fileInfo),
-    user: (state.basicInfo.user),
+    user: (state.basicInfo.user)
   }
 }
 
@@ -554,8 +554,8 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast,
-      
+      sendBroadcast: sendBroadcast
+
     },
     dispatch)
 }

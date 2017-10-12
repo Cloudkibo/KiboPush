@@ -9,12 +9,21 @@ export function sendresp (data) {
   }
 }
 export function saveFileForPhoneNumbers (file, invitationMessage) {
-  console.log('saveFileForPhoneNumbers', file)
+  console.log('saveFileForPhoneNumbers', file[0], invitationMessage)
+  var fileData = new FormData()
+  fileData.append('file', file[0])
+  fileData.append('filename', file[0].name)
+  fileData.append('filetype', file[0].type)
+  fileData.append('filesize', file[0].size)
+
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
-      body: file,
+      body: {
+        file: fileData,
+        text : invitationMessage
+      },
       // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`

@@ -3,6 +3,7 @@
  */
 
 //  const GrowthTools = require('./growthTools.model')
+const PhoneNumber = require('./growthtools.model')
 const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
@@ -25,7 +26,7 @@ exports.index = function (req, res) {
 
 exports.upload = function (req, res) {
   logger.serverLog(TAG,
-  `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
+  `upload file route called. req.files.file.path: ${JSON.stringify(req.files)}`)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -46,10 +47,8 @@ exports.upload = function (req, res) {
   logger.serverLog(TAG, JSON.stringify(req.body))
   logger.serverLog(TAG,
     `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
-  logger.serverLog(TAG, req.files.file.path)
   logger.serverLog(TAG,
     `upload file route called. req.files.file: ${JSON.stringify(req.files.file)}`)
-  logger.serverLog(TAG, req.files.file)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles' + serverPath,
@@ -63,47 +62,69 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
-        logger.serverLog(TAG, JSON.stringify(data))
-        let pagesFindCriteria = {userId: req.user._id, connected: true}
-
-        Pages.find(pagesFindCriteria, (err, pages) => {
-          if (err) {
-            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-            return res.status(404)
-              .json({status: 'failed', description: 'Pages not found'})
-          }
-          pages.forEach(page => {
-            let messageData = {
-              'recipient': JSON.stringify({
-                'phone_number': data.phone_numbers
-              }),
-              'message': JSON.stringify({
-                'text': req.body.text,
-                'metadata': 'This is a meta data'
-              })
+        if (data.phone_numbers && data.name) {
+          var result = data.phone_numbers.replace(/[- )(]/g, '')
+          logger.serverLog(TAG, JSON.stringify(data))
+          // var savePhoneNumber = new PhoneNumber({
+          //   name: data.name,
+          //   number: result,
+          //   userId: req.user._id
+          // })
+          PhoneNumber.update({number: result}, {name: data.name,
+            number: result,
+            userId: req.user._id}, {upsert: true}, (err2, phonenumbersaved) => {
+              if (err2) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'phone number create failed'
+                })
+              }
+              logger.serverLog(TAG,
+              'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
+            })
+          let pagesFindCriteria = {userId: req.user._id, connected: true}
+          Pages.find(pagesFindCriteria, (err, pages) => {
+            if (err) {
+              logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
             }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                page.accessToken
-              },
-              function (err, res) {
-                if (err) {
-                  return logger.serverLog(TAG,
-                    `At invite to messenger using phone ${JSON.stringify(err)}`)
-                } else {
-                  logger.serverLog(TAG,
-                    `At invite to messenger using phone ${JSON.stringify(
-                      res)}`)
-                }
-              })
+            pages.forEach(page => {
+              let messageData = {
+                'recipient': JSON.stringify({
+                  'phone_number': result
+                }),
+                'message': JSON.stringify({
+                  'text': req.body.text,
+                  'metadata': 'This is a meta data'
+                })
+              }
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                  page.accessToken
+                },
+                function (err, res) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At invite to messenger using phone ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At invite to messenger using phone ${JSON.stringify(
+                        res)}`)
+                  }
+                })
+            })
           })
-        })
+          return res.status(201).json({status: 'success'})
+        } else {
+          return res.status(404)
+            .json({status: 'failed', description: 'Incorrect column names'})
+        }
       })
-      return res.status(201).json({status: 'success', payload: serverPath})
+      fs.unlinkSync(dir + '/userfiles' + serverPath)
+
     //  logger.serverLog(TAG,
     //    `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
     //  return res.status(201).json({status: 'success', payload: serverPath})

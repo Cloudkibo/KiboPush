@@ -111,7 +111,7 @@ class UserGuide extends React.Component {
               <NavText style={{color: this.state.colorGS}}> Getting Started </NavText>
             </Nav>
             <Nav id='broadcasts'>
-              <NavText style={{color: this.state.colorB}}> Broadcasts </NavText>
+              <NavText style={{color: this.state.colorB}}> Conversations </NavText>
             </Nav>
             <Nav id='surveys'>
               <NavText style={{color: this.state.colorS}}> Surveys </NavText>
