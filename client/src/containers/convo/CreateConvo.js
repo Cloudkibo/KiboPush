@@ -163,11 +163,13 @@ class CreateConvo extends React.Component {
   }
 
   handleGenderChange (value) {
-    this.setState({ genderValue: value })
+    var temp = value.split(',')
+    this.setState({ genderValue: temp })
   }
 
   handleLocaleChange (value) {
-    this.setState({ localeValue: value })
+    var temp = value.split(',')
+    this.setState({ localeValue: temp })
   }
 
   handleText (obj) {
@@ -285,8 +287,8 @@ class CreateConvo extends React.Component {
       payload: this.state.broadcast,
       isSegmented: true,
       segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue.split(','),
-      segmentationGender: this.state.genderValue.split(','),
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
       segmentationTimeZone: '',
       title: this.state.convoTitle
 
