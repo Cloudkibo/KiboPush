@@ -61,6 +61,7 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      let respSent = false
       fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
@@ -119,7 +120,11 @@ exports.upload = function (req, res) {
                 })
             })
           })
-          return res.status(201).json({status: 'success'})
+
+          if (respSent === false) {
+            respSent = true
+            return res.status(201).json({status: 'success'})
+          }
         } else {
           return res.status(404)
             .json({status: 'failed', description: 'Incorrect column names'})
