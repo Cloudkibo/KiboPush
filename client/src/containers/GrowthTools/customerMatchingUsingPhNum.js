@@ -70,17 +70,20 @@ class CustomerMatching extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called', nextProps)
-
-    if (nextProps.uploadResponse.status === 'success') {
-      this.setState({
-        alertMessage: 'Your file has been uploaded',
-        type: 'success'
-      })
-    } else if (nextProps.uploadResponse.status === 'failed') {
-      this.setState({
-        alertMessage: nextProps.uploadResponse.description,
-        type: 'danger'
-      })
+    var err = nextProps.uploadResponse.fileUploadResponse.err
+    var res = nextProps.uploadResponse.fileUploadResponse
+    if (err != '') {
+      if (err) {
+        this.setState({
+          alertMessage: (`${res.status} : ${res.description}`),
+          type: 'danger'
+        })
+      } else {
+        this.setState({
+          alertMessage: (`${res.status} : ${res.description}`),
+          type: 'success'
+        })
+      }
     } else {
       this.setState({
         alertMessage: '',

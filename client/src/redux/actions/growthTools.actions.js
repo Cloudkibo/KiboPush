@@ -1,28 +1,32 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import request from 'superagent'
 export const API_URL = '/api'
 
 export function sendresp (data) {
+  console.log('sendresp',data)
   return {
     type: ActionTypes.SAVE_PHONE_NUMBERS,
     data
   }
 }
-export function saveFileForPhoneNumbers (file, invitationMessage) {
-  console.log('saveFileForPhoneNumbers', file[0], invitationMessage)
-  var fileData = new FormData()
-  fileData.append('file', file[0])
-  fileData.append('filename', file[0].name)
-  fileData.append('filetype', file[0].type)
-  fileData.append('filesize', file[0].size)
+export function saveFileForPhoneNumbers (files, invitationMessage) {
+
+  var file = files[0]
+/*  var fileData = new FormData()
+  fileData.append('file', file)
+  fileData.append('name', file.name)
+  fileData.append('filetype', file.type)
+  fileData.append('filesize', file.size)
+  console.log('saveFileForPhoneNumbers',fileData.get('file') ,invitationMessage)*/
 
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/growthtools/upload`, {
+    /*fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
       body: {
-        file: fileData,
-        text: invitationMessage
+        file : fileData,
+        text : invitationMessage
       },
       // eslint-disable-next-line no-undef
       headers: new Headers({
@@ -30,6 +34,18 @@ export function saveFileForPhoneNumbers (file, invitationMessage) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('response', res.status)
+    })*/
+    var req = request.post(`${API_URL}/growthtools/upload`);
+    req.attach(file.name, file);
+    req.field('text', invitationMessage);
+    req.end((err,res) => {
+      console.log('response', res, err)
+      if (err) {
+        var data = {err: true, status:res.status , description :  res.statusText}
+      }  else {
+        var data = {err:false , status: res.status , description :  res.statusText}
+      }
+        dispatch(sendresp(data))
     })
   }
 }
