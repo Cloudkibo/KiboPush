@@ -167,9 +167,15 @@ exports.sendConversation = function (req, res) {
                     return logger.serverLog(TAG,
                       `At send message broadcast ${JSON.stringify(err)}`)
                   } else {
-                    logger.serverLog(TAG,
-                      `At send message broadcast response ${JSON.stringify(
-                        res)}`)
+                    if (res.statusCode !== 200) {
+                      logger.serverLog(TAG,
+                        `At send message broadcast response ${JSON.stringify(
+                          res.body.error)}`)
+                    } else {
+                      logger.serverLog(TAG,
+                        `At send message broadcast response ${JSON.stringify(
+                          res.body.message_id)}`)
+                    }
                   }
 
                   logger.serverLog(TAG,
