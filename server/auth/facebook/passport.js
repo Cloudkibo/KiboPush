@@ -143,6 +143,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
+      createMenuForPage(item)
       const options2 = {
         url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
         qs: {access_token: item.access_token},
@@ -204,4 +205,30 @@ function fetchPages (url, user) {
       fetchPages(cursor.next, user)
     }
   })
+}
+
+function createMenuForPage (page) {
+  var valueformenu = [
+    {
+      'locale': 'default',
+      'composer_input_disabled': true,
+      'call_to_actions': [
+        {
+          'type': 'web_url',
+          'title': 'Powered by KiboPush',
+          'url': 'http://kibopush.com/',
+          'webview_height_ratio': 'full'
+        }
+      ]
+    },
+    {
+      'locale': 'zh_CN',
+      'composer_input_disabled': false
+    }
+  ]
+  const makerequest = {
+    url: `https://graph.facebook.com/v2.6/me/messenger_profile?fields=persistent_menu:${valueformenu}&access_token=${page.access_token}`,
+    method: 'POST'
+  }
+  needle.post(makerequest.url)
 }
