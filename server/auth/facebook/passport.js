@@ -221,10 +221,6 @@ function createMenuForPage (page) {
           'webview_height_ratio': 'full'
         }
       ]
-    },
-    {
-      'locale': 'zh_CN',
-      'composer_input_disabled': false
     }
   ]
   }
