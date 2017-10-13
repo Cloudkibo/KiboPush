@@ -67,16 +67,16 @@ class Response extends React.Component {
     this.setState({showPopover: false})
   }
 
-  componentDidMount () {
+  componentWillRecieveProps (nextProps) {
     console.log('i am called in Response.js')
-    if (this.props.responses && this.props.question.type === 'multichoice') {
-      var sorted = rank(this.props.responses, 'response')
+    if (nextProps.responses && nextProps.question.type === 'multichoice') {
+      var sorted = rank(nextProps.responses, 'response')
       console.log('sorted data is ')
       console.log(sorted)
       // this.setState({responseVal:sorted});
 
-      var radarChart = document.getElementById(this.props.question._id)
-      console.log('radarChart of ' + this.props.question._id)
+      var radarChart = document.getElementById(nextProps.question._id)
+      console.log('radarChart of ' + nextProps.question._id)
       console.log(radarChart)
       var counts = []
       var vals = []
