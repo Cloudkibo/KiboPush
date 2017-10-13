@@ -32,14 +32,14 @@ exports.create = function (req, res) {
   }
   if (req.body.isSegmented) {
     pollPayload.isSegmented = true
-    pollPayload.segmentationPageIds = (req.body.pageIds)
-      ? req.body.pageIds
+    pollPayload.segmentationPageIds = (req.body.segmentationPageIds)
+      ? req.body.segmentationPageIds
       : null
-    pollPayload.segmentationGender = (req.body.gender)
-      ? req.body.gender
+    pollPayload.segmentationGender = (req.body.segmentationGender)
+      ? req.body.segmentationGender
       : null
-    pollPayload.segmentationLocale = (req.body.locale)
-      ? req.body.locale
+    pollPayload.segmentationLocale = (req.body.segmentationLocale)
+      ? req.body.segmentationLocale
       : null
   }
   const poll = new Polls(pollPayload)

@@ -520,7 +520,8 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    pages: (state.pagesInfo.pages)
   }
 }
 
