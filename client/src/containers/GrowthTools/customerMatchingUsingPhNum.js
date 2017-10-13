@@ -223,16 +223,15 @@ class CustomerMatching extends React.Component {
                         </div>
                         {
                           this.state.alertMessage !== '' &&
-                          <center>
                             <Alert type={this.state.type}>
                               {this.state.alertMessage} <br/>
                               <a href="#" className="alert-link" onClick= {this.clickAlert}>Click here to select another file</a>
                             </Alert>
-                          </center>
                         }
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </main>
           </div>
