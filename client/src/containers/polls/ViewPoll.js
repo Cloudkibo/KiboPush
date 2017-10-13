@@ -12,12 +12,12 @@ import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 class ViewPoll extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     console.log('Poll View', this.props.location.state)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -31,7 +31,7 @@ class ViewPoll extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Header />
@@ -46,47 +46,37 @@ class ViewPoll extends React.Component {
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <h2 className='presentation-margin'>View Poll</h2>
             <div className='ui-block'>
-              <div className='news-feed-form'>
+              <div className='container'>
+                <div className='news-feed-form'>
 
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel'
-                    aria-expanded='true'>
-                    <div className='form-group h5-floating is-empty'>
-                      <h5 className='control-h5'>Question: </h5>
-                      <div>{this.props.location.state.statement}</div>
-                    </div>
-                    <br />
-                    <div
-                      className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                      <fieldset className='input-group-vertical'>
-                        <div >
-                          <h5 >Response 1</h5>
-                          <div>{this.props.location.state.options[0]}</div>
-                        </div>
-                        <div >
-                          <h5 >Response 2</h5>
-                          <div>{this.props.location.state.options[1]}</div>
-                        </div>
-                        <div>
-                          <h5>Response 3</h5>
-                          <div>{this.props.location.state.options[2]}</div>
-                        </div>
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='home-1' role='tabpanel'
+                      aria-expanded='true'>
+                      <br />
 
-                      </fieldset>
-                    </div>
-                    <br />
+                      <div className='form-group'>
+                        <label>Q. {this.props.location.state.statement}</label>
+                        <ol className='table-bordered'>
+                          <div className='container'>
+                            <li>{this.props.location.state.options[0]}</li>
+                            <li>{this.props.location.state.options[1]}</li>
+                            <li>{this.props.location.state.options[2]}</li>
+                          </div>
+                        </ol>
+                      </div>
+                      <br />
 
-                    <div className='add-options-message'>
-                      <Link
-                        to='/poll'
-                        style={{float: 'right', margin: 2}}
-                        className='btn btn-sm btn-border-think btn-transparent c-grey'>
-                        Back
+                      <div className='add-options-message'>
+                        <Link
+                          to='/poll'
+                          style={{ float: 'right', margin: 2 }}
+                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                          Back
                       </Link>
+                      </div>
+
                     </div>
-
                   </div>
-
                 </div>
               </div>
             </div>
@@ -99,15 +89,15 @@ class ViewPoll extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log(state)
   return {
     polls: (state.pollsInfo.polls)
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll},
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loadPollsList: loadPollsList, addPoll: addPoll },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll)
