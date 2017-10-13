@@ -24,6 +24,9 @@ export function saveFileForPhoneNumbers (filedata) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
+      var data = {status : res.status , description : res.description}
+      console.log(data)
+      dispatch(sendresp(data))
     })
   }
 }

@@ -90,21 +90,18 @@ class CustomerMatching extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called', nextProps)
-    var err = nextProps.uploadResponse.fileUploadResponse.err
     var res = nextProps.uploadResponse.fileUploadResponse
-    if (err != '') {
-      if (err) {
+    if (res.status === 'failed') {
         this.setState({
           alertMessage: (`${res.status} : ${res.description}`),
           type: 'danger'
         })
-      } else {
+      } else if (res.status === 'success') {
         this.setState({
           alertMessage: (`${res.status} : ${res.description}`),
           type: 'success'
         })
-      }
-    } else {
+      } else {
       this.setState({
         alertMessage: '',
         type: ''
@@ -143,7 +140,10 @@ class CustomerMatching extends React.Component {
                       onChange={this.onFilesChange}
                       onError={this.onFilesError}
                       accepts={[
+                        'text/comma-separated-values',
                         'text/csv',
+                        'application/csv',
+                        '.csv',
                         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                         'application/vnd.ms-excel']}
                       multiple={false}
@@ -161,23 +161,6 @@ class CustomerMatching extends React.Component {
                           : ''}</h4>
                       </div>
                     </Files>
-                    <div className='row'>
-                      <div
-                        className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <label>File Selected</label>
-                        <input type='text' disabled='true'
-                          value={this.state.file
-                                 ? this.state.file[0].name
-                                 : ''} style={{width: '50%'}} />
-                        <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
-                          style={{color: 'red'}}>
-                          {
-                            this.state.fileErrors.map(
-                              f => <span>{f.errorMsg}</span>)
-                          }
-                        </div>
-                      </div>
                       <div className='row'>
                         <div
                           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
@@ -228,7 +211,6 @@ class CustomerMatching extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>
             </main>
           </div>
         </div>
