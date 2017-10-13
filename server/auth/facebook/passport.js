@@ -209,20 +209,21 @@ function fetchPages (url, user) {
 }
 
 function createMenuForPage (page) {
-  var valueformenu = { 'persistent_menu': [
-    {
-      'locale': 'default',
-      'composer_input_disabled': true,
-      'call_to_actions': [
-        {
-          'type': 'web_url',
-          'title': 'Powered by KiboPush',
-          'url': 'http://kibopush.com/',
-          'webview_height_ratio': 'full'
-        }
-      ]
-    }
-  ]
+  var valueformenu = {
+    'persistent_menu': [
+      {
+        'locale': 'default',
+        'composer_input_disabled': true,
+        'call_to_actions': [
+          {
+            'type': 'web_url',
+            'title': 'Powered by KiboPush',
+            'url': 'https://www.messenger.com/t/151990922046256',
+            'webview_height_ratio': 'full'
+          }
+        ]
+      }
+    ]
   }
   request(
     {
@@ -237,8 +238,7 @@ function createMenuForPage (page) {
           `At set persistent_menu ${JSON.stringify(err)}`)
       } else {
         logger.serverLog(TAG,
-          `At set persistent_menu response ${JSON.stringify(
-            res)}`)
+          `At set persistent_menu response ${JSON.stringify(res)}`)
       }
     })
 }
