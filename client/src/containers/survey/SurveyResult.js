@@ -26,12 +26,11 @@ class SurveyResult extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-
-    this.props.loadsurveyresponses(this.props.location.state)
   }
 
   componentDidMount () {
     console.log('Survey ID: ', this.props.location.state)
+    this.props.loadsurveyresponses(this.props.location.state)
   }
 
   render () {
