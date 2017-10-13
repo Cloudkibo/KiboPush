@@ -14,9 +14,6 @@ const Workflows = require('../workflows/Workflows.model')
 let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
-const path = require('path')
-const fs = require('fs')
-let request = require('request')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')

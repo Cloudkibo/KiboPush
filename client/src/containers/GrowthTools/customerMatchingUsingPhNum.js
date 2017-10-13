@@ -178,37 +178,36 @@ class CustomerMatching extends React.Component {
                           : ''}</h4>
                       </div>
                     </Files>
-                      <div className='row'>
-                        <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <label>File Selected</label>
-                          <input type='text' disabled='true'
-                            value={this.state.file
+                    <div className='row'>
+                      <div
+                        className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <label>File Selected</label>
+                        <input type='text' disabled='true'
+                          value={this.state.file
                                    ? this.state.file[0].name
                                    : ''} style={{width: '50%'}} />
-                          <div
-                            className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
-                            style={{color: 'red'}}>
-                            {
+                        <div
+                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
+                          style={{color: 'red'}}>
+                          {
                               this.state.fileErrors.map(
                                 f => <span>{f.errorMsg}</span>)
                             }
-                          </div>
                         </div>
+                      </div>
+                      <div
+                        className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        <textarea className='textArea'
+                          placeholder='Enter Invitation Message'
+                          value={this.state.textAreaValue}
+                          onChange={this.onTextChange} />
                         <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          <textarea className='textArea'
-                            placeholder='Enter Invitation Message'
-                            value={this.state.textAreaValue}
-                            onChange={this.onTextChange} />
-                          <div
-                            className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
-                            style={{color: 'red'}}>
-                            {
+                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
+                          style={{color: 'red'}}>
+                          {
                               this.state.messageErrors.map(
                                 m => <span>{m.errorMsg}</span>)
                             }
-                          </div>
                         </div>
                         <div
                           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
@@ -231,10 +230,10 @@ class CustomerMatching extends React.Component {
                             </Alert>
                           </center>
                         }
-                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
             </main>
           </div>
         </div>
