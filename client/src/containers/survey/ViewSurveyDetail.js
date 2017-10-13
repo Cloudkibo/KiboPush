@@ -98,12 +98,15 @@ class ViewSurveyDetail extends React.Component {
                         </div>
                         : <div className='form-group'>
                           <label for='sel1'>Q. {question.statement}</label>
-                          <ol className='form-control' id='sel1'
+                          <ol className='table-bordered' id='sel1'
                             ref={question._id}>
-                            {question.options.map((option, i) => (
-                              <li>{option}</li>
+                            <div className='container'>
+                              {question.options.map((option, i) => (
+                                <li>{option}</li>
                           ))
+
                           }
+                            </div>
 
                           </ol>
                         </div>
