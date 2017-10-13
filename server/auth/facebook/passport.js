@@ -224,21 +224,32 @@ function createMenuForPage (page) {
     }
   ]
   }
-  request(
-    {
-      'method': 'POST',
-      'json': true,
-      'formData': valueformenu,
-      'uri': `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
-    },
-    function (err, res) {
-      if (err) {
-        return logger.serverLog(TAG,
-          `At set persistent_menu ${JSON.stringify(err)}`)
-      } else {
-        logger.serverLog(TAG,
-          `At set persistent_menu response ${JSON.stringify(
-            res)}`)
-      }
-    })
+  const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+
+  needle.request('post', requesturl, valueformenu, {json:true}, function(err, resp) {
+           if (!err) {
+               console.log(resp.body) ;
+           }
+
+           if (err) {
+               console.log('neddle error');
+           }
+ }
+  // request(
+  //   {
+  //     'method': 'POST',
+  //     'json': true,
+  //     'formData': valueformenu,
+  //     'uri': `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+  //   },
+  //   function (err, res) {
+  //     if (err) {
+  //       return logger.serverLog(TAG,
+  //         `At set persistent_menu ${JSON.stringify(err)}`)
+  //     } else {
+  //       logger.serverLog(TAG,
+  //         `At set persistent_menu response ${JSON.stringify(
+  //           res)}`)
+  //     }
+  //   })
 }
