@@ -12,6 +12,7 @@ const Users = require('../../api/user/Users.model')
 
 const logger = require('../../components/logger')
 const TAG = 'api/auth/facebook/passport'
+let request = require('request')
 
 const options = {
   headers: {
@@ -143,6 +144,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
+      createMenuForPage(item)
       const options2 = {
         url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
         qs: {access_token: item.access_token},
@@ -204,4 +206,39 @@ function fetchPages (url, user) {
       fetchPages(cursor.next, user)
     }
   })
+}
+
+function createMenuForPage (page) {
+  var valueformenu = { 'persistent_menu': [
+    {
+      'locale': 'default',
+      'composer_input_disabled': true,
+      'call_to_actions': [
+        {
+          'type': 'web_url',
+          'title': 'Powered by KiboPush',
+          'url': 'http://kibopush.com/',
+          'webview_height_ratio': 'full'
+        }
+      ]
+    }
+  ]
+  }
+  request(
+    {
+      'method': 'POST',
+      'json': true,
+      'formData': valueformenu,
+      'uri': `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+    },
+    function (err, res) {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At set persistent_menu ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG,
+          `At set persistent_menu response ${JSON.stringify(
+            res)}`)
+      }
+    })
 }
