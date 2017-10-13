@@ -18,7 +18,8 @@ class CustomerMatching extends React.Component {
       fileErrors: [],
       messageErrors: [],
       alertMessage: '',
-      type: ''
+      type: '',
+      disabled : false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -26,6 +27,19 @@ class CustomerMatching extends React.Component {
     this.validate = this.validate.bind(this)
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
+    this.clickAlert = this.clickAlert.bind(this)
+  }
+  clickAlert (e) {
+      e.preventDefault()
+      this.setState({
+        file: '',
+        textAreaValue: '',
+        fileErrors: [],
+        messageErrors: [],
+        alertMessage: '',
+        type: '',
+        disabled : false
+      })
   }
 
   onFilesChange (files) {
@@ -94,17 +108,20 @@ class CustomerMatching extends React.Component {
     if (res.status === 'failed') {
         this.setState({
           alertMessage: (`${res.status} : ${res.description}`),
-          type: 'danger'
+          type: 'danger',
+          disabled: true
         })
       } else if (res.status === 'success') {
         this.setState({
-          alertMessage: (`${res.status} : ${res.description}`),
-          type: 'success'
+          alertMessage: ('Your file has been uploaded successfully.'),
+          type: 'success',
+          disabled: true
         })
       } else {
       this.setState({
         alertMessage: '',
-        type: ''
+        type: '',
+        disabled: false
       })
     }
   }
@@ -125,13 +142,13 @@ class CustomerMatching extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>Customer Matching Using Phone Numbers</h3>
                   <br />
-                  <h7>Upload a file with .csv extension containing phone numbers
+                  <h7>Upload a file with '.csv', '.xls' or '.xlsx' extension containing phone numbers
                     of your customers to invite them for a chat on messenger.
                     The
-                    file should contain a column with the name 'phone_numbers'.
-                    This column should list all the customers&#39; phone
-                    numbers. The phone number will be used to send him
-                    an invitation on Facebook Messenger.
+                    file should contain columns 'names' and 'phone_numbers'
+                    The columns should contain the list all the customers&#39; name and phone
+                    numbers respectively. An invitation message will be sent on Facebook messenger
+                    to all the customers listed using their phone numbers.
                   </h7>
                   <div
                     className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
@@ -154,8 +171,8 @@ class CustomerMatching extends React.Component {
                         <img src='icons/file.png' alt='Text'
                           style={{maxHeight: 40}} />
                         <h4>Upload here</h4>
-                        <p>Try dropping some files here, or click to select
-                          files to upload. Only '.csv' files are accepted</p>
+                        <p>Try dropping some files here, or click to select a
+                          file to upload. Only '.csv', '.xlsx', '.xls' files are accepted</p>
                         <h4>{this.state.file !== ''
                           ? this.state.file[0].name
                           : ''}</h4>
@@ -195,15 +212,22 @@ class CustomerMatching extends React.Component {
                         </div>
                         <div
                           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                        { this.state.disabled ?
                           <button onClick={this.handleSubmit}
-                            className='btn btn-primary'>Submit
+                            className='btn btn-primary' disabled >Submit
                           </button>
+                          :
+                          <button onClick={this.handleSubmit}
+                            className='btn btn-primary' >Submit
+                          </button>
+                        }
                         </div>
                         {
                           this.state.alertMessage !== '' &&
                           <center>
                             <Alert type={this.state.type}>
-                              {this.state.alertMessage}
+                              {this.state.alertMessage} <br/>
+                              <a href="#" className="alert-link" onClick= {this.clickAlert}>Click here to select another file</a>
                             </Alert>
                           </center>
                         }
