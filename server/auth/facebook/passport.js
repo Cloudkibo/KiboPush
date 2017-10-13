@@ -226,15 +226,14 @@ function createMenuForPage (page) {
   }
   const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
 
-  needle.request('post', requesturl, valueformenu, {json:true}, function(err, resp) {
-           if (!err) {
-               console.log(resp.body) ;
-           }
-
-           if (err) {
-               console.log('neddle error');
-           }
- }
+  needle.request('post', requesturl, valueformenu, {json: true}, function (err, resp) {
+    if (!err) {
+      console.log(resp.body)
+    }
+    if (err) {
+      console.log('neddle error')
+    }
+  })
   // request(
   //   {
   //     'method': 'POST',
