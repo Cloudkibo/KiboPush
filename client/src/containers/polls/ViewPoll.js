@@ -12,12 +12,12 @@ import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 class ViewPoll extends React.Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     console.log('Poll View', this.props.location.state)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -31,7 +31,7 @@ class ViewPoll extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  render() {
+  render () {
     return (
       <div>
         <Header />
@@ -89,14 +89,14 @@ class ViewPoll extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   console.log(state)
   return {
     polls: (state.pollsInfo.polls)
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return bindActionCreators({ loadPollsList: loadPollsList, addPoll: addPoll },
     dispatch)
 }
