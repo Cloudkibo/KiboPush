@@ -26,7 +26,9 @@ exports.index = function (req, res) {
 
 exports.upload = function (req, res) {
   logger.serverLog(TAG,
-  `upload file route called. req.files.file.path: ${JSON.stringify(req.files)}`)
+  `upload file route called. req.files: ${JSON.stringify(req.files)}`)
+  logger.serverLog(TAG,
+  `upload file route called. req.files.text: ${JSON.stringify(req.files.text)}`)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -44,7 +46,7 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-  logger.serverLog(TAG, JSON.stringify(req.body))
+  logger.serverLog(TAG, JSON.stringify(req.body.text))
   logger.serverLog(TAG,
     `upload file route called. req.files.file.path: ${JSON.stringify(req.files.file.path)}`)
   logger.serverLog(TAG,
@@ -59,6 +61,7 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      let respSent = false
       fs.createReadStream(dir + '/userfiles' + serverPath)
       .pipe(csv())
       .on('data', function (data) {
@@ -117,7 +120,11 @@ exports.upload = function (req, res) {
                 })
             })
           })
-          return res.status(201).json({status: 'success'})
+
+          if (respSent === false) {
+            respSent = true
+            return res.status(201).json({status: 'success'})
+          }
         } else {
           return res.status(404)
             .json({status: 'failed', description: 'Incorrect column names'})

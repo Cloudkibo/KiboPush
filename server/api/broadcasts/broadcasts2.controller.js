@@ -92,14 +92,16 @@ exports.sendConversation = function (req, res) {
     let pagesFindCriteria = {userId: req.user._id, connected: true}
 
     if (req.body.isSegmented) {
-      if (req.body.pageIds) {
+      if (req.body.segmentationPageIds.length > 0) {
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           pageId: {
-            $in: req.body.pageIds
+            $in: req.body.segmentationPageIds
           }
         })
       }
     }
+
+    logger.serverLog(TAG, `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
 
     Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
@@ -114,22 +116,24 @@ exports.sendConversation = function (req, res) {
         let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
 
         if (req.body.isSegmented) {
-          if (req.body.gender) {
+          if (req.body.segmentationGender.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria,
               {
                 gender: {
-                  $in: req.body.gender
+                  $in: req.body.segmentationGender
                 }
               })
           }
-          if (req.body.locale) {
+          if (req.body.segmentationLocale.length > 0) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
               locale: {
-                $in: req.body.locale
+                $in: req.body.segmentationLocale
               }
             })
           }
         }
+
+        logger.serverLog(TAG, `Subscribers Criteria for segmentation ${JSON.stringify(subscriberFindCriteria)}`)
 
         Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
           if (err) {
@@ -147,10 +151,6 @@ exports.sendConversation = function (req, res) {
                 subscriber.senderId,
                 payloadItem)
 
-              logger.serverLog(TAG,
-                `Payload for Messenger Send API: ${JSON.stringify(
-                  messageData)}`)
-
               request(
                 {
                   'method': 'POST',
@@ -164,13 +164,16 @@ exports.sendConversation = function (req, res) {
                     return logger.serverLog(TAG,
                       `At send message broadcast ${JSON.stringify(err)}`)
                   } else {
-                    logger.serverLog(TAG,
-                      `At send message broadcast response ${JSON.stringify(
-                        res)}`)
+                    if (res.statusCode !== 200) {
+                      logger.serverLog(TAG,
+                        `At send message broadcast response ${JSON.stringify(
+                          res.body.error)}`)
+                    } else {
+                      logger.serverLog(TAG,
+                        `At send message broadcast response ${JSON.stringify(
+                          res.body.message_id)}`)
+                    }
                   }
-
-                  logger.serverLog(TAG,
-                    'Sent broadcast to subscriber')
 
                   // update broadcast sent field
                   let pagebroadcast = new BroadcastPage({

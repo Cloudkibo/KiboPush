@@ -87,18 +87,18 @@ exports.setup = function (User, config) {
               return done(err)
             }
             if (!err && user !== null) {
-              logger.serverLog(TAG,
-                `previous fb token before login: ${user.fbToken}`)
+              // logger.serverLog(TAG,
+              //   `previous fb token before login: ${user.fbToken}`)
               user.updatedAt = Date.now()
               user.fbToken = accessToken
-              logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
+              // logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
               user.save((err, userpaylaod) => {
                 if (err) {
                   logger.serverLog(TAG, JSON.stringify(err))
                   return done(err)
                 }
-                logger.serverLog(TAG,
-                  `user is updated : ${JSON.stringify(userpaylaod)}`)
+                // logger.serverLog(TAG,
+                //   `user is updated : ${JSON.stringify(userpaylaod)}`)
                 done(null, user)
                 fetchPages(`https://graph.facebook.com/v2.10/${
                   user.fbId}/accounts?access_token=${
@@ -136,8 +136,8 @@ function fetchPages (url, user) {
       logger.serverLog(TAG, JSON.stringify(err))
       return
     }
-    logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
-    logger.serverLog(TAG, JSON.stringify(resp.body))
+    // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
+    // logger.serverLog(TAG, JSON.stringify(resp.body))
 
     const data = resp.body.data
     const cursor = resp.body.paging
@@ -152,8 +152,8 @@ function fetchPages (url, user) {
         if (error !== null) {
           return logger.serverLog(TAG, `Error occurred ${error}`)
         } else {
-          logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
-            fanCount.body.fan_count)}`)
+          // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
+          //   fanCount.body.fan_count)}`)
           Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
             if (err) {
               logger.serverLog(TAG,
@@ -193,7 +193,7 @@ function fetchPages (url, user) {
                   logger.serverLog(TAG,
                     `Internal Server Error ${JSON.stringify(err)}`)
                 }
-                logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+                // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
               })
             }
           })

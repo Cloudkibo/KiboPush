@@ -43,15 +43,15 @@ class CreateConvo extends React.Component {
       },
       Gender: {
         options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Other', value: 'Other'}
+          {label: 'Female', value: 'Female'},
+          {label: 'Other', value: 'Other'}
         ]
       },
       Locale: {
         options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+          {label: 'af_ZA', value: 'af_ZA'},
+          {label: 'ar_AR', value: 'ar_AR'},
+          {label: 'pa_IN', value: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -497,34 +497,34 @@ class CreateConvo extends React.Component {
                 </div>
               </StickyDiv>
               {
-                  this.state.isShowingModal &&
-                  <ModalContainer style={{width: '500px'}}
+                this.state.isShowingModal &&
+                <ModalContainer style={{width: '500px'}}
+                  onClose={this.closeDialog}>
+                  <ModalDialog style={{width: '500px'}}
                     onClose={this.closeDialog}>
-                    <ModalDialog style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <h3>Rename:</h3>
-                      <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
-                      <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                    </ModalDialog>
-                  </ModalContainer>
-                }
+                    <h3>Rename:</h3>
+                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
+                    <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                  </ModalDialog>
+                </ModalContainer>
+              }
 
               {
-                  this.state.showMessengerModal &&
-                  <ModalContainer style={{width: '500px'}}
+                this.state.showMessengerModal &&
+                <ModalContainer style={{width: '500px'}}
+                  onClose={() => { this.setState({showMessengerModal: false}) }}>
+                  <ModalDialog style={{width: '500px'}}
                     onClose={() => { this.setState({showMessengerModal: false}) }}>
-                    <ModalDialog style={{width: '500px'}}
-                      onClose={() => { this.setState({showMessengerModal: false}) }}>
-                      <h3>Connect to Messenger:</h3>
-                      <MessengerPlugin
-                        appId='1429073230510150'
-                        pageId={this.state.pageValue}
-                        passthroughParams={this.props.user._id}
-                        onClick={() => { this.setState({showMessengerModal: false}) }}
-                      />
-                    </ModalDialog>
-                  </ModalContainer>
-                }
+                    <h3>Connect to Messenger:</h3>
+                    <MessengerPlugin
+                      appId='1429073230510150'
+                      pageId={this.state.pageValue}
+                      passthroughParams={this.props.user._id}
+                      onClick={() => { this.setState({showMessengerModal: false}) }}
+                    />
+                  </ModalDialog>
+                </ModalContainer>
+              }
               <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                 <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
