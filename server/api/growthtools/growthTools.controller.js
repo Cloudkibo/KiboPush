@@ -123,7 +123,7 @@ exports.upload = function (req, res) {
 
           if (respSent === false) {
             respSent = true
-            return res.status(201).json({status: 'success'})
+            return res.status(201).json({status: 'success', description: 'Contacts were invited to your messenger'})
           }
         } else {
           return res.status(404)

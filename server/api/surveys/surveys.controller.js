@@ -355,7 +355,6 @@ exports.send = function (req, res) {
                   }
 
                   for (let j = 0; j < subscribers.length; j++) {
-
                     const messageData = {
                       attachment: {
                         type: 'template',
