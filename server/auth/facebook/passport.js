@@ -209,20 +209,21 @@ function fetchPages (url, user) {
 }
 
 function createMenuForPage (page) {
-  var valueformenu = { 'persistent_menu': [
-    {
-      'locale': 'default',
-      'composer_input_disabled': true,
-      'call_to_actions': [
-        {
-          'type': 'web_url',
-          'title': 'Powered by KiboPush',
-          'url': 'http://kibopush.com/',
-          'webview_height_ratio': 'full'
-        }
-      ]
-    }
-  ]
+  var valueformenu = {
+    'persistent_menu': [
+      {
+        'locale': 'default',
+        'composer_input_disabled': true,
+        'call_to_actions': [
+          {
+            'type': 'web_url',
+            'title': 'Powered by KiboPush',
+            'url': 'https://www.messenger.com/t/151990922046256',
+            'webview_height_ratio': 'full'
+          }
+        ]
+      }
+    ]
   }
   const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
 
