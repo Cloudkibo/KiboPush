@@ -161,7 +161,7 @@ class Autoposting extends React.Component {
                     {
                       this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
-                        <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} title={item.accountTitle} username={item.userId} item={item} />
+                        <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} />
                       ))
                       : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
                     }

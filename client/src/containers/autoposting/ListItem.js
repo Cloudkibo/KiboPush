@@ -3,13 +3,13 @@ import React from 'react'
 class ListItem extends React.Component {
   render () {
     let icon, color
-    if (this.props.title === 'Facebook Page') {
+    if (this.props.type === 'facebook') {
       icon = 'fa fa-facebook'
       color = '#365899'
-    } else if (this.props.title === 'YouTube Channel') {
+    } else if (this.props.type === 'youtube') {
       icon = 'fa fa-youtube'
       color = '#cc181e'
-    } else {
+    } else if (this.props.type === 'twitter') {
       icon = 'fa fa-twitter'
       color = '#00aced'
     }
