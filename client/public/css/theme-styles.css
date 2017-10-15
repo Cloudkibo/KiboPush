@@ -1354,3 +1354,8 @@ p {
     width : 50% !important;
     margin-top : 10px
   }
+
+  .alert {
+    word-wrap: break-word;
+    margin-top: 5%;
+  }

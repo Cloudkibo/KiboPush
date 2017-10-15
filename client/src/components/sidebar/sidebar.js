@@ -4,6 +4,7 @@
  */
 
 import React, {Component} from 'react'
+import Joyride from 'react-joyride'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
 import Icon from 'react-icons-kit'
@@ -25,14 +26,96 @@ class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isShowingModal: false
+      isShowingModal: false,
+      steps: []
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
+    this.addSteps = this.addSteps.bind(this)
+    this.addTooltip = this.addTooltip.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
+  }
+  componentDidMount () {
+    this.addSteps([
+      {
+        title: 'Dashboard',
+        text: 'The Dashboard provides you with a summary of information regarding your pages',
+        selector: 'li#dashboard',
+        position: 'top-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Growth Tools',
+        text: 'The growth tools allow you to upload csv files of customers, to integrate with messenger',
+        selector: 'li#growthTools',
+        position: 'left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Subscribers',
+        text: 'It allows you to see the list of subscribers',
+        selector: 'li#subscribers',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Conversation',
+        text: 'Allow you to broadcast a totally customizable message to your subscribers',
+        selector: 'li#convos',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+
+      {
+        title: 'Auto-Posting',
+        text: 'Details of Auto-Posting',
+        selector: 'li#autoposting',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Polls',
+        text: 'Allows you to send Polls to your subscribers',
+        selector: 'li#polls',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+
+      {
+        title: 'Surveys',
+        text: 'Allows you to send multiple polls',
+        selector: 'li#surveys',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Workflows',
+        text: 'Workflows allow you to auto-reply to certain keywords or messages to your page',
+        selector: 'li#workflows',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+
+      {
+        title: 'Pages',
+        text: 'Allows you to connect or disconnect pages',
+        selector: 'li#pages',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+
+      {
+        title: 'UserGuide',
+        text: 'Still confused? Check our User Guide',
+        selector: 'li#userguide',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true}
+
+    ])
   }
   openUserGuide () {
     this.setState({isShowingModal: true})
@@ -60,6 +143,26 @@ class Sidebar extends Component {
       }
     }
   }
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
+
+    if (!Array.isArray(steps)) {
+      steps = [steps]
+    }
+
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
+  }
+
   showOperationalDashboard () {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
@@ -83,6 +186,7 @@ class Sidebar extends Component {
   render () {
     return (
       <div className='fixed-sidebar'>
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} showStepsProgress showSkipButton />
         <div className='fixed-sidebar-left sidebar--small' id='sidebar-left'>
           <Link to='/dashboard' className='logo'>
             <img src='img/logo.png' alt='Olympus' />
@@ -98,7 +202,7 @@ class Sidebar extends Component {
                 </a>
               </li>
               {this.showOperationalDashboard()}
-              <li>
+              <li id='dashboard'>
                 <Link to='/dashboard' data-toggle='tooltip' data-for='dashboard' data-tip>
                   <div style={{paddingRight: 20}}>
 
@@ -110,7 +214,7 @@ class Sidebar extends Component {
                   <span>Dashboard</span>
                 </ReactTooltip>
               </li>
-              <li>
+              <li id='growthTools'>
                 <Link to='/growthTools' data-for='growthTools' data-tip>
                   <div style={{paddingRight: 20}}>
                     <img class='icon icons8-Line-Chart' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEiklEQVR4Xu1bOWzUWBj+3njGExGOBIVDYsMRQBwCgdiFDWI5tcVScEikSGhCkKiIRDF0FAsFXSIoQrXSBhrYIhSEIrsFhxCIcChixQqECBAgSFxKIg4pY49t9L+RZ+3MYXuOMPa8V3nsZ7////7vv+w3DBU+WIXrDwGAYECFIyBcoMIJIIJgRhfoPNx9CsBeMCwMBEMMDIHhbKyr7cREfdIA6GjvPs2AI4FQPF2JE7GutuPW02kAdLZ3jwKo+al5G6bVTQ8EDp8/fsL9v64DBoZiZ9oWOQFg0ITt7bsDobypxLWuXn4Y62qzGT0TA9IAuEfogWF989YUKH47VxAA5s1WVvjtnACgcBcA1jdvm+AC/jlXEAOCEA0FAF5dwA9Wn1o3PeWWlJW+fPxkE3tq3YxU5vLMAD8AoNfWQNm9k4sqX+5DaGTMJrY+swbKruT1qnMXvNUB460tfsDAtYwCAMEA4QIiBnhqhkQQ9EEWCN8dgPRqGFBVaIsXIbFhXdasELgsQMqHHz9BJCpxpdW4hsSKZVlBCBwA0QsXITMNB442cgDOdvRDMSTEW/ZlZEHwADjfg6hkoDX2M1f4j5O3YEQiiO9vqgwAIldvQHr9BnJVmCusjCeQWLMKibWrgw8AGxmD/M8VMEXhVqehrVyWVfmy7AVSEZyEX9rAredmMEVF5O8rCI2OItGwEInNG93cVl7NkBnBrZLnoq91XuRmP6RnL0CdoPrbrzDkJAOcRlkFQYrgRN9Dxzb9H8CqqxFvyv0qXhp8gcitfk57hZSfWeOkd+p6eQFwvgdMVe0A5IjgpIXV79VNjdCW2L5vOAJRNgBIVLzcHcgocLKa+zGN1vn6vXWRsgDA9F8SjAIYpTEewevn8WNihV5bC/WXRhu98/X7ogMQ/vc/SE+fJ4XOM3KT/6qbN0Kvn2djAVE8cvM2QqNjMGQZ+pzZkF4P82Mz3Xn1+6ICEH7wEASArfbOUXiYi1t9V6+eAnXH1qzBi6gu3bmP8PMhfrt1LWKJumOLo69nm1CwC0R7eiEnxu21d7gqZ+SmqB2+N8AtqM+ZlVTeRdryWue7QaVwACbU3uc67/DyU5s7G/qSBuj1P0B68JDnaBr0RlZ6+54feylYaH40w1pxjWWt80sOAFFT7u0D+/rVVntnWthKW7qeT8oyCyW3dX5JAbCmIPJh+k00JqtrK5cj9GoY0uAzhN594D7rtj11EppijvToSXKt+fU5X3Y4PYuu5+UCNuUdSk+55xKqNMXWnhJgStMeN/KVfI5nAOItTammw03dbWaJYtK2mKh4BoAKEuq43ChvCkoghAaTdQK5SLbevJiKuX2WZwC4Eh47LrfCfI95ngEIkvJ5BUGKAW6Klu9hzXzW9MwA8WHEBx9GvDBBMMDt5/GOw3+OMcZmxHft9PTKyYs1JnsudaTRy30wDOPl0TMHbRvAM+0Upc3Ev0+2kJO0nvNmaRKks737uGEYBxhjCyZJsJIuQ5ZnjNF2edtOcVpU/GWmpND74OGCAT4wUklFFAwoKbw+eLhggA+MVFIRvwHnc1RuhuptKgAAAABJRU5ErkJggg==' />
@@ -120,7 +224,7 @@ class Sidebar extends Component {
                   <span>Growth Tools</span>
                 </ReactTooltip>
               </li>
-              <li>
+              <li id='subscribers'>
                 <Link to='/subscribers' data-for='subscribers' data-tip>
                   <img class='icon icons8-Business-Building' width='30' height='30' src='data:image/png;base64,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' />
                 </Link>
@@ -128,6 +232,7 @@ class Sidebar extends Component {
                   <span>Subscribers</span>
                 </ReactTooltip>
               </li>
+
               <li>
                 <Link to='/live' data-for='live' data-tip>
                   <img class='icon icons8-Business-Building' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAIEElEQVR4Xu1bb2xT1xX/vT+OHSfGiSEiaaAEhFoCRcBUwdpt7WipBqylhS+TJrTl5UM1qZlU5LRfpmmt+pWsSEv4NgJru6pVy5+2AqrSUEJbkkyAAxVJR9QEiEtCILYTJ/H/V9378oz97Pee33NCEtX3k+N77r3n/M45v3vuvQ6DWW77G1rPkiUam4Wts7yUqekZU6MMDGpqaBWJuLtZmPW1DKiVFJ11pQoAKCJgvqXEA4+A+RYRBQDMEIeRMUqPFyJgnu0KminQ1ND6DwCvAigz4vUHKOsHcMDdLLxpdk1VAJoaWt8AQABYCO1Nd7NA9DXctADwEc//Ye84Kirihid+EANGRjh88K6DLOV3NwvlZtZUBWD/K4f8DMM4FwIAoigGGlvqTaVpIQW0wmaB8IDp/Ce26xZC8r7t2leXU4r9OBrOSU4WmhwfNyQvC7uOfkY/5nvIKgCgB38hAqYrt0IKKDgg8O4JxEdIqQBwFS449+6in2UOKPr0FNhRUqgBifJyRHZtTwu21P6YcxHGnn0qrd/5ZTu4wBj9Llv/nHNAOgDlcO59UR0AVxkiL+xQBSDuXISABgDZ+uccADXuKOwCP5dtsMABaSRY4IAkJRQ4oMAB0llArw5Y8GeBfOuABQ9AvnUAE4mC8fkQnpxMVnuixZIxLRONgp+uCGlVWWxHvKQYC7IQYoIT4D1Xwd7ygolEMoyN24sRrapEtLoSFu8QrDcHQQBQNgKU/P2cHYf16gBZaeJpvusi2KE7YCYm0myxWgCbTTqRB8bpG2rW5nTcP7UHJ0TEEyliIg64W4R9qoN1OkzfB+hxAFmXGfWj6PMv07xNjFleacGSMjapWiwOXO4JY2LqPghLF7OoquBR5rgvJw8IhUX0e6MYvichIYrwcBZs3XdAkE5fBpppAHLhANuJk4A/gFI7g5pqCzWG5zJHXr0ewT1/gsqtfliSy6UFJ0UKHI0IEYfdLYKQy7hUmVkDgHjf+ukpcCzwxEZbVsOJIsSbHVfCunJqhqWBkIDgPigcNgKCaQD0OIC/9n/w/7sIEsq1q4pUdRq6G0dvfzQpF4uJ6OmPUk5YVsmh0sUleUJtksHhOPpuRkkUDLhbhJVzAEDmWYCwPd/9HWoe4lFTzVOdFlWWo+qxFRj+3oux26NIxOIY8MYw8GMsKXf9Zgze4ViaDSQlli7hUGwFOJaBoyQ9RUgUXbwWQTQmIgFsfa1Z+CpXEExHgB4HKAFgeQ5rntsEznKfBAK3R9HVdgO9vWMUgMVlLDWEtG27H8Vgvx+9nmFVW0qLGWystaKjOwRCpNPN0DX5AwHgkdV2rNj8CGzOkgxjOtsG0HX2BgVgebUNnVemsOWZGmx8chmVHfOF4O33UzDG/SF4BwLJOaprnHhuzxoc/mcn/Y68EIFh6hqbheOzHgG6HDCdAuvWu/D07rVpnk9VrufSMM4c64WenJZBrfs7EAzQ3WDT6wcFT67GEznTEaBVB9Di52w7uKE72Lx1BfWoWms/2YfuC15dOS2jzp3sw5ULXojAcY6HYKQeMA2AFgdY2trB3fJSES0AZMWJ3FM7VmPDk9VGnJeU7f7Wi/ZTfdLfonjC3VL/Uq4TzQoAtiPvJ40nuWy1SbuAsh39t4fmNAFJS07PmHAoBs+3g5RLSDNyPjANgBYHWP/7ET2s/PWtpzV1lwHQk9MDQO7/19/PzRUA6XVA0ekzYIdH8Ps/PoZVtYtV9f/sve/Q33tPVy4XAGQyBcRz7ub63+YyJi8S1OIArq8flm86aOhv27NGFQRZaT05PWPIPOdP9YGkAgyWw6ZTQAsA0sefvwD+hwEq9vLffqXKA1983INezx3a/2f3FlU5tfXGfaHUOuBIY0t9bu/40xOaBkCvDiDzy7uBHsPLqbBt9xrU/mKpnsPT+uVCymjoy5PMEACZZwGyALkEIfcBjjIb6txbVA3z9gdw9JBHV045AQn5I02dpkI/bwD0UkDulwlRryCSdwS9aEldN1kAieKNxpZ69WpLI6ZMR0AuAJAI4LsugfX54HBaUdf4y6zDSB5/cex7WvMX2Xjsqd+AiqpSzVSQo4YKiRgQIb7R2FJ/xFD+5FMKawFADOe6r9JSmHIBRDxebcfjf9mcNowY3nl2AD2X0098eoQ4cjuIY4e6aegnLAAr35uaAGJGIyA6OAT/+Utphq8rSmBtURzkSsSy/iHYdq6D0nBixEStDcG1Viz5fBwWX4LuBr/ZuRq1m9JJkZwbCPER4ydWWeD/dQnsfRE4PFPgJ6fvFA0AMSMAEMOnLngQGxxKejzVcNntwQSDbtaK60HpMjPV8ESRpAobEVH29QSKB6VLEUKgS6pKEAnFcfd2UCI8IGl8akiZASIvAMRwBOOftOkaTq44PGEO16LSZUg2w5UpRYwp7QnRaEhtMTuDwBY7QsszH1FkOSUQ5NY4IULIdlQ2DQAxfuzD04jfHaU5ns3jskInJi3wJZicDFcCwQcT4H3SdU+8hEXUleVaWYWQFED4WR4rlUdl0wCQkJ/q8MDFJrDdHqM5nq0Rr3eFOUTLWdz9nQNyqBtl63zkXW1BmlKiKGZUiqYBCLzzCfX+LnsULlb9VUf2/p3nHYa8l4/B2aJo6VHpF2fKo7JpAEbflq7f60oz3/hSFTgclGLD+ydTP+aeMRyq/yM9GhUAUPwDZyEClDG2/5XWywyDjTMWe/NsIt0UaGo45AGYDfNM77zVIW8GjMi8qnw71E2BvFee5xP87AH4CQ3zeowBrKMnAAAAAElFTkSuQmCC' />
@@ -136,7 +241,8 @@ class Sidebar extends Component {
                   <span>Live Chat</span>
                 </ReactTooltip>
               </li>
-              <li>
+
+              <li id='convos' >
                 <Link to='/convos' data-for='broadcasts' data-tip>
                   <div style={{paddingRight: 20}}>
                     <img class='icon icons8-Advertising' width='30' height='30' src='data:image/png;base64,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' />
@@ -252,7 +358,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Dashboard</span>
                 </Link>
               </li>
-              <li>
+              <li id='growthtools'>
                 <Link to='/growthTools'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Growth Tools' style={{paddingRight: 20}}>
                     <img class='icon icons8-Line-Chart' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEiklEQVR4Xu1bOWzUWBj+3njGExGOBIVDYsMRQBwCgdiFDWI5tcVScEikSGhCkKiIRDF0FAsFXSIoQrXSBhrYIhSEIrsFhxCIcChixQqECBAgSFxKIg4pY49t9L+RZ+3MYXuOMPa8V3nsZ7////7vv+w3DBU+WIXrDwGAYECFIyBcoMIJIIJgRhfoPNx9CsBeMCwMBEMMDIHhbKyr7cREfdIA6GjvPs2AI4FQPF2JE7GutuPW02kAdLZ3jwKo+al5G6bVTQ8EDp8/fsL9v64DBoZiZ9oWOQFg0ITt7bsDobypxLWuXn4Y62qzGT0TA9IAuEfogWF989YUKH47VxAA5s1WVvjtnACgcBcA1jdvm+AC/jlXEAOCEA0FAF5dwA9Wn1o3PeWWlJW+fPxkE3tq3YxU5vLMAD8AoNfWQNm9k4sqX+5DaGTMJrY+swbKruT1qnMXvNUB460tfsDAtYwCAMEA4QIiBnhqhkQQ9EEWCN8dgPRqGFBVaIsXIbFhXdasELgsQMqHHz9BJCpxpdW4hsSKZVlBCBwA0QsXITMNB442cgDOdvRDMSTEW/ZlZEHwADjfg6hkoDX2M1f4j5O3YEQiiO9vqgwAIldvQHr9BnJVmCusjCeQWLMKibWrgw8AGxmD/M8VMEXhVqehrVyWVfmy7AVSEZyEX9rAredmMEVF5O8rCI2OItGwEInNG93cVl7NkBnBrZLnoq91XuRmP6RnL0CdoPrbrzDkJAOcRlkFQYrgRN9Dxzb9H8CqqxFvyv0qXhp8gcitfk57hZSfWeOkd+p6eQFwvgdMVe0A5IjgpIXV79VNjdCW2L5vOAJRNgBIVLzcHcgocLKa+zGN1vn6vXWRsgDA9F8SjAIYpTEewevn8WNihV5bC/WXRhu98/X7ogMQ/vc/SE+fJ4XOM3KT/6qbN0Kvn2djAVE8cvM2QqNjMGQZ+pzZkF4P82Mz3Xn1+6ICEH7wEASArfbOUXiYi1t9V6+eAnXH1qzBi6gu3bmP8PMhfrt1LWKJumOLo69nm1CwC0R7eiEnxu21d7gqZ+SmqB2+N8AtqM+ZlVTeRdryWue7QaVwACbU3uc67/DyU5s7G/qSBuj1P0B68JDnaBr0RlZ6+54feylYaH40w1pxjWWt80sOAFFT7u0D+/rVVntnWthKW7qeT8oyCyW3dX5JAbCmIPJh+k00JqtrK5cj9GoY0uAzhN594D7rtj11EppijvToSXKt+fU5X3Y4PYuu5+UCNuUdSk+55xKqNMXWnhJgStMeN/KVfI5nAOItTammw03dbWaJYtK2mKh4BoAKEuq43ChvCkoghAaTdQK5SLbevJiKuX2WZwC4Eh47LrfCfI95ngEIkvJ5BUGKAW6Klu9hzXzW9MwA8WHEBx9GvDBBMMDt5/GOw3+OMcZmxHft9PTKyYs1JnsudaTRy30wDOPl0TMHbRvAM+0Upc3Ev0+2kJO0nvNmaRKks737uGEYBxhjCyZJsJIuQ5ZnjNF2edtOcVpU/GWmpND74OGCAT4wUklFFAwoKbw+eLhggA+MVFIRvwHnc1RuhuptKgAAAABJRU5ErkJggg==' />
@@ -260,19 +366,21 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Growth Tools</span>
                 </Link>
               </li>
-              <li>
+              <li id='subscribers'>
                 <Link to='/subscribers'>
                   <img class='icon icons8-Business-Building' width='30' height='30' src='data:image/png;base64,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' />
                   <span className='left-menu-title'>Subscribers</span>
                 </Link>
               </li>
+
               <li>
                 <Link to='/live'>
                   <img class='icon icons8-Business-Building' width='30' height='30' src='data:image/png;base64,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' />
                   <span className='left-menu-title'>Live Chat</span>
                 </Link>
               </li>
-              <li>
+
+              <li id='convos'>
                 <Link to='/convos'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Broadcasts' style={{paddingRight: 20}}>
                     <img class='icon icons8-Advertising' width='30' height='30' src='data:image/png;base64,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' />
@@ -281,7 +389,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
 
-              <li>
+              <li id='autoposting'>
                 <Link to='/autoposting'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Autoposting' style={{paddingRight: 20}}>
                     <img class='icon icons8-Forward-Message' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAD30lEQVRoQ+1YXUxSYRh+zkCT0NQ0rXAJK0RKnajLrbjQLrpryn1ruVy3rvsuuy/va6vWvU7v2lpd0JZuiikJig1oUGn+poYp+LX30CkFDnAOB8SN9wrG9z3f+zzP+77fOXA45sEd8/xRIHDUDhYcyEsHHC6vHlzkMYBWAPocJ+kDMAWmemAxG+hz0ogroZejb63Fau61yVCnSbU5m7/PeQOh3TC7eedWtz3ZOXEEBl8N+b8tr1zQ1VbjanMjitXqbOYZh70bDmN8xo3g4jLOVVd9Gbhtq5dEYOTdh61xp0sbDkdQVKSG1dKEmtMVOSGxtLoOu8OJvb0w1GoVOppMS71d12olEXC4F9h26DfGpmfxY22D39tkNODKxaRCZEzw02c/nB4vj3OmshydLZeh1ZyApfFS0kkZ9yMRELIhQAKmqDilhdXSwoMqGSSW3TGN9Z/bPCwJRYIJkREBAiFbx6bd+LWzw5cU9UVdTbUiHLzBRTjcHr5kTpaUwNrehMqy0kPYGRMgNGqssWkXvi6t8OAG3Vm0mi/JbnDCm3ItwBv8zuOdr6lCZ4s5IZ4iBARJSLFJ1zyowbWaElxvi1cslTVrm1t4P+nEdmiHb9Q2cwMMOvE+VZQAJUcJkBsbm9GatZiNaKjXpcqb/33eH4TD5eE/l5dpedVjSyYWSHECwgGTLg88/iD/lcYsuSF2Z1DJkOrUTxTGeh3azMa0SGeNAJ0eWFrm3Uh2Z8TOdlJdyhDIKgGhwe0TM//ujAa9DpbGqLo0YeZ9UZdotlvbmyU3ftYJCHUw5w/wk4WC7gwKYbbTxDLV16VVMjnrgUTZUIPbJ5z8nUEhNtulMMmZA0JS1LCO2agTlsvS7grfYAD6gcNO5ZyAFHVj1070OFF1oxL6gf9j+dgRIFIagwamR3qoSlWZPcxloqacveSAEAKJjg6T/KdROUlksucgAcJRaVXY2wxb7ntsU2K4SR+nM0kmdu/KmzUsjq4i5A1Jg2VY32esW4xEHIFJ98I6B5RLO0V8dWQrgrmHPumJx0By+6zvnsf2PPakRA4MA+hRisDswAJCvui9kGkkIhFPwOXVMy4ypYQLiyPLCDyLPvMrEWkRoIP+/i/0hDG0chxkvwxnW33KNat/LT41Df97v5brAGNsgzF0pd3Ecg9KtE+MwP4+SzgaY9enSv7IHOif603o/CECjH1U7aKrz2eLvgWJxJGUUEoCaSafnw4w9qJ/3nY33VLOLwcahp5LST7vHEhX9YPr8sqBAgE5CiTbI3YPiE0hOedntYTkJCR1T4GAVMWUXl9wQGlFpeIVHJCqmNLr/wCxmeJArsjLJQAAAABJRU5ErkJggg==' />
@@ -289,7 +397,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Autoposting</span>
                 </Link>
               </li>
-              <li>
+              <li id='polls'>
                 <Link to='/poll'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Polls' style={{paddingRight: 20}}>
                     <img class='icon icons8-List-View' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAA0ElEQVRoQ+2azQ1AQBCFbQNuClGBDhSrAxUoxE0DxEHCJngjk91sfG545ue92XkXoSr8CoXXX9FAbgUfFRjmZc1d4J6/b+rbOmkghUIokILlpxwoELPTj9Pl0dC1l/v4vapgHOf4zl0BGriRBAViYnBi9fS+4NwPsVNdchgawAfEYWGNqmu0eCcWJ8INxhZyo/JjIBTAB8TRwQfwAXFUrDC2kJUxbzwK4APiTOED+IA4KlYYW8jKmDceBbwZtcb7rwJWpnLg+dUgB+vnnMUrsAFNFwBAH0J/4QAAAABJRU5ErkJggg==' />
@@ -297,13 +405,13 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Polls</span>
                 </Link>
               </li>
-              <li>
+              <li id='surveys'>
                 <Link to='/surveys'>
                   <img class='icon icons8-Survey' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAB50lEQVRYR2NkoBJw6zh2nvE/ox7IuP9MDAd3lVs6UcNoRmoY4tZ+/AQDA4PGv79/fUDmMTEzb/nPwHBhd6WlA6XmY3WgT/fJpb///osixfC/f/7a7qmxOQLS49JyxIaZhfkwKfpZmZmWbSk1j0bXg9WB7h3H/+eHmOM0f+KakwyBLmZw+Y37zjB8ZGJVOFZi9BDmQA5O9kM+9kZw89fvOcVAyMydFZYY7qGKA6/cfvLv/pMXX3/+/O0FciA7O+s2BRlxHl1VWdo70FMZ0w8enSdQQhDkqOt3nzLcf/ISHKqKMuIMmsrSKDEACsEd5RYYsbL97n+wGChWyApBbA4M6D/NYGmoySDAy0VUMvvw+RvDxau3GJZlG9HHgZcefWLo2HyH4d2XX0Q5UIiHjaHCV4VBT46PPg4kylVEKqJJFBNpN1HKRh1IVDDhUTQagqMhiC0EkOti9IIaVIvAALaagdQQpXoaxObAuOnnGF59Ilxoi/GxMSzKRK1N6OJAUkMNWT3VHUiJY7DpHXUgpSE6GoKDLgRHy0G0KCHYaRpyNQmlaQ5d/2gupjRER0NwNARJbbBSGmKjuXjQhSC1HYTLPLJHtwalA726Ti77++9fJL0cB7KHmYlp+bYyc4xhZ6oMotPSI4PegQB/a844XdCD1wAAAABJRU5ErkJggg==' />
                   <span className='left-menu-title'>Surveys</span>
                 </Link>
               </li>
-              <li>
+              <li id='workflows'>
                 <Link to='/workflows'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Workflows' style={{paddingRight: 20}}>
                     <img class='icon icons8-Workflow' width='30' height='30' src='data:image/png;base64,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' />
@@ -328,7 +436,7 @@ class Sidebar extends Component {
                 </li>
               */}
 
-              <li>
+              <li id='pages'>
                 <Link to='/pages'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Pages' style={{paddingRight: 20}}>
                     <img class='icon icons8-Facebook' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEm0lEQVR4Xu1bS2wbVRQ9M2OPna/jhsZKk37SpqpSBZJWpVBA7QaEBFLVDRtWMUsoaiBpF5UqQAgWtFFTEVggUXePqNjABglEJJBaCWFLleiHijiNaRKcJk4c27E9M9UdMsFJPJ9O7GTGnrexPfPe+J7zzr33/YZBlRemyvHDIcBRQJUz4LiAEQFc7g81iXmckSScYhj0GmmzVXUkCWGGwXesC1feGw7O6dmhq4DPzn4zyC2lPoUouvUeZqn7LJsTPLXnz11845KWXZoEyODTyYv0gLx/G7JtOyE0+iyFc60x3HwCfOwBXLOP5FtCTf1ZLRJUCZBlL3LTEAV3pvMAci0BSwNfa5xnPAp+IgqwXI5lhRY1d1AlYOh06EMAH1DPp7u6bQVeMbb2Vhjc/Dz9/GhgJEh41hVVAi69E/qDAl6qu8fyslfrHXKH2lsRUGAc/CJ46IkIGDodkqjBwgvHV9rVRX6HJDFI9R62zbWG30ZlWwdGgkU7W8sFZAKme46C9/LgOBbKwwpJseo1QRCRzWTRErm5MQKi+3tWenv3vYj83Y7XTCugEGzr+B2ZgIe7DqyQYvVrSqeVhAA7pgKHgGW3dRRgNgsUxgDHBTaJgdpkAp5UEnw2A286uepfs3wNRI6Tr6XqfVhoekrTKlvFAG96Ec2T43Dls4apnmrvRKamTrW+bQhomItj278xGQhfx6P3aCvaO/xo61g9+1zK5BF/uIjRH+4hPrmIiiCgcS4O/zL4rpf24uVXd+oq4PrXYcTGEvYnwL2Uxo7xuzLgYycP4siz23XBU4WKISAwcV8OdIeP78aLr+wxBL5iCFB6n/dw6Bt8Hh6vq7oIaJqZhO/RFJ451oYTr3Wqgo+NrV/bHP3+PuKTSXvHgMDEX6DU9/qb3djb1byOgJs/R3HjpzFNVdg6C7RG74LPptH3/nNo8HtXASXgRACVrMcLkf1v8FNY8i43Zlvai95T6ll6HKAY9+7HJ9aBuzZ0AwtzGcxub8O8zmhPSyK2JeDzC7/IuDY6F3EIsPJ0WMsFKkYBSqDT8tNiMUAhQKtdpqYeU+37rD0bVHq5HATkXG7803HQHgQU62XDw741FWN/J3D9alieBtM4wNJZQMvPzRKgjBEoPVKarDoCfvz2T9wOTxsaI2x5GiyHAoxOhUkZFUnAV5/8CloZerCvW3MYbCkCSp0FBIbFROfTumFkyxVAW2f8UkbTUDPjACMB0BIKMBKhtQhw5gIFu9O6ei9SYctdwFGABgNVMRlyFOAoQJ0BxwWWV2ucNFhkUdQCK0JXwwDTo7fubiY3r12yLpcCaM+B9h4AKTIw8lbRU+66R2UX6xoR39GxEZyqbcsdA5R9R1NHZemwtJCTxhiG8c0EdiHZ6C85CeUkgLbcaOtNkqQE52b2PPFhaUI79HaoDyxC9J0WIBPNAfmzVKUcBNBOs29m6v+jNSKCA18Gr6nZrPvCBJEgMdIwKaFUwDfjOdTzjMT0a4EnO3QJoErLr8z0A9IpCoybAcD8f0gRgKFXZoZL8sqMeUPs0dKQAuwBxZyVDgHmeKucVo4CKqcvzSF5DB/TeW5B71D9AAAAAElFTkSuQmCC' />
@@ -336,7 +444,7 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Pages</span>
                 </Link>
               </li>
-              <li>
+              <li id='userguide'>
                 <Link onClick={this.openUserGuide}>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='User Guide' style={{paddingRight: 20}}>
                     <img class='icon icons8-Help' width='30' height='30' src='data:image/png;base64,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' />

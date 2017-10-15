@@ -37,7 +37,7 @@ export function updateBroadcastsList (data) {
   console.log('updateBroadcastsList', data.payload)
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
-    data: data.payload
+    data: data.payload.reverse()
   }
 }
 
@@ -53,7 +53,7 @@ export function updatePollList (data) {
   console.log('updatePollList', data.payload)
   return {
     type: ActionTypes.LOAD_POLLS_LIST,
-    data: data.payload
+    data: data.payload.reverse()
   }
 }
 export function loadPollsList (id) {
@@ -84,7 +84,7 @@ export function updateSurveysList (data) {
   console.log('updateSurveysList', data.payload)
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
-    data: data.payload
+    data: data.payload.reverse()
   }
 }
 export function loadSurveysList (id) {

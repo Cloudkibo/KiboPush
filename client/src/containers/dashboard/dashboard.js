@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import Joyride from 'react-joyride'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadDashboardData } from '../../redux/actions/dashboard.actions'
@@ -24,9 +25,12 @@ class Dashboard extends React.Component {
     props.loadMyPagesList()
     props.loadSubscribersList()
     this.state = {
-      isShowingModal: false
+      isShowingModal: false,
+      steps: []
     }
     this.closeDialog = this.closeDialog.bind(this)
+    this.addSteps = this.addSteps.bind(this)
+    this.addTooltip = this.addTooltip.bind(this)
   }
 
   componentWillReceiveProps (nextprops) {
@@ -55,10 +59,73 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
+    this.addSteps([{
+      title: 'Pages',
+      text: 'This shows the number of pages currently connected',
+      selector: 'div#pages',
+      position: 'top-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Subscribers',
+      text: 'These are the total number of subscribers you have',
+      selector: 'div#subscribers',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Scheduled Broadcasts',
+      text: 'These are the current number of posts scheduled to be broadcasted',
+      selector: 'div#scheduled',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Survey',
+      text: 'The number of surveys you have created',
+      selector: 'div#surveys',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Polls',
+      text: 'The Polls you have made till now',
+      selector: 'div#polls',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Broadcasts',
+      text: 'Broadcasts you have made to your subscribers',
+      selector: 'div#broadcasts',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true}
+    ])
   }
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
+
+    if (!Array.isArray(steps)) {
+      steps = [steps]
+    }
+
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
   }
 
   render () {
@@ -71,6 +138,7 @@ class Dashboard extends React.Component {
     }
     return (
       <div className='container'>
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} showStepsProgress showSkipButton />
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {
@@ -84,7 +152,7 @@ class Dashboard extends React.Component {
         <div className='row'>
           <main
             className='col-xl-4 push-xl-4 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='subscribers' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
@@ -97,7 +165,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
 
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='polls' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
@@ -113,7 +181,7 @@ class Dashboard extends React.Component {
           </main>
           <aside
             className='col-xl-4 pull-xl-4 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='pages' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
@@ -126,7 +194,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
 
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='surveys' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
@@ -142,7 +210,7 @@ class Dashboard extends React.Component {
 
           </aside>
           <aside className='col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='scheduled' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
@@ -156,7 +224,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
 
-            <div className='ui-block' data-mh='friend-groups-item'>
+            <div id='broadcasts' className='ui-block' data-mh='friend-groups-item'>
               <div className='friend-item friend-groups'>
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>

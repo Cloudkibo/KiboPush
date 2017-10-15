@@ -42,16 +42,16 @@ class CreateConvo extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Other', value: 'Other'}
+        options: [{label: 'Male', value: 'male'},
+          {label: 'Female', value: 'female'},
+          {label: 'Other', value: 'other'}
         ]
       },
       Locale: {
         options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+          {label: 'af_ZA', value: 'af_ZA'},
+          {label: 'ar_AR', value: 'ar_AR'},
+          {label: 'pa_IN', value: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -281,11 +281,15 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    var isSegmentedValue = false
+    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmentedValue = true
+    }
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
       payload: this.state.broadcast,
-      isSegmented: true,
+      isSegmented: isSegmentedValue,
       segmentationPageIds: [this.state.pageValue],
       segmentationLocale: this.state.localeValue,
       segmentationGender: this.state.genderValue,
@@ -477,7 +481,7 @@ class CreateConvo extends React.Component {
                 </fieldset>
                 <div className='row'>
                   <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue == '')} onClick={this.testConvo}> Test<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Conversation </button>
                   <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
 
                 </div>
@@ -493,34 +497,34 @@ class CreateConvo extends React.Component {
                 </div>
               </StickyDiv>
               {
-                  this.state.isShowingModal &&
-                  <ModalContainer style={{width: '500px'}}
+                this.state.isShowingModal &&
+                <ModalContainer style={{width: '500px'}}
+                  onClose={this.closeDialog}>
+                  <ModalDialog style={{width: '500px'}}
                     onClose={this.closeDialog}>
-                    <ModalDialog style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <h3>Rename:</h3>
-                      <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
-                      <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                    </ModalDialog>
-                  </ModalContainer>
-                }
+                    <h3>Rename:</h3>
+                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
+                    <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                  </ModalDialog>
+                </ModalContainer>
+              }
 
               {
-                  this.state.showMessengerModal &&
-                  <ModalContainer style={{width: '500px'}}
+                this.state.showMessengerModal &&
+                <ModalContainer style={{width: '500px'}}
+                  onClose={() => { this.setState({showMessengerModal: false}) }}>
+                  <ModalDialog style={{width: '500px'}}
                     onClose={() => { this.setState({showMessengerModal: false}) }}>
-                    <ModalDialog style={{width: '500px'}}
-                      onClose={() => { this.setState({showMessengerModal: false}) }}>
-                      <h3>Connect to Messenger:</h3>
-                      <MessengerPlugin
-                        appId='1429073230510150'
-                        pageId={this.state.pageValue}
-                        passthroughParams={this.props.user._id}
-                        onClick={() => { this.setState({showMessengerModal: false}) }}
-                      />
-                    </ModalDialog>
-                  </ModalContainer>
-                }
+                    <h3>Connect to Messenger:</h3>
+                    <MessengerPlugin
+                      appId='1429073230510150'
+                      pageId={this.state.pageValue}
+                      passthroughParams={this.props.user._id}
+                      onClick={() => { this.setState({showMessengerModal: false}) }}
+                    />
+                  </ModalDialog>
+                </ModalContainer>
+              }
               <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
                 {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                 <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

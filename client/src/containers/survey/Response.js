@@ -67,7 +67,7 @@ class Response extends React.Component {
     this.setState({showPopover: false})
   }
 
-  componentDidMount () {
+  createChart () {
     console.log('i am called in Response.js')
     if (this.props.responses && this.props.question.type === 'multichoice') {
       var sorted = rank(this.props.responses, 'response')
@@ -128,6 +128,14 @@ class Response extends React.Component {
         })
       }
     }
+  }
+
+  componentDidMount () {
+    this.createChart()
+  }
+
+  componentDidUpdate () {
+    this.createChart()
   }
 
   render () {

@@ -9,6 +9,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
+import Select from 'react-select'
 import { createsurvey } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -22,23 +23,28 @@ class AddSurvey extends React.Component {
       alertMessage: '',
       alertType: '',
       timeout: 2000,
-      targeting: [],
-      criteria: {
-        Gender: {
-          options: ['Male', 'Female'],
-          isPicked: false
-        },
-        Locale: {
-          options: ['en_US', 'af_ZA', 'ar_AR', 'az_AZ', 'pa_IN'],
-          isPicked: false
-        }
-      },
       page: {
         options: []
       },
-      target: [],
-      segmentValue: '',
-      buttonLabel: 'Add Segment'
+      Gender: {
+        options: [{label: 'Male', value: 'male'},
+                  {label: 'Female', value: 'female'},
+                  {label: 'Other', value: 'other'}
+        ]
+      },
+      Locale: {
+        options: [{label: 'en_US', value: 'en_US'},
+                  {label: 'af_ZA', value: 'af_ZA'},
+                  {label: 'ar_AR', value: 'ar_AR'},
+                  {label: 'az_AZ', value: 'az_AZ'},
+                  {label: 'pa_IN', value: 'pa_IN'}
+        ]
+      },
+      stayOpen: false,
+      disabled: false,
+      pageValue: [],
+      genderValue: [],
+      localeValue: []
     }
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
@@ -47,8 +53,9 @@ class AddSurvey extends React.Component {
     // choiceCount: //no of options
     // options: [] array of choice values
     this.createSurvey = this.createSurvey.bind(this)
-    this.addNewTarget = this.addNewTarget.bind(this)
-    this.updateSegmentValue = this.updateSegmentValue.bind(this)
+    this.handlePageChange = this.handlePageChange.bind(this)
+    this.handleGenderChange = this.handleGenderChange.bind(this)
+    this.handleLocaleChange = this.handleLocaleChange.bind(this)
   }
 
   componentDidMount () {
@@ -63,6 +70,14 @@ class AddSurvey extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
+    document.body.appendChild(addScript)
+    let options = []
+    for (var i = 0; i < this.props.pages.length; i++) {
+      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+    }
+    this.setState({page: {options: options}})
   }
 
   componentWillReceiveProps (nextprops) {
@@ -75,14 +90,19 @@ class AddSurvey extends React.Component {
     }
   }
 
-  componentWillMount () {
-    // this.props.loadMyPagesList();
-    var temp = []
-    Object.keys(this.state.criteria).map((obj) => {
-      temp.push(<option value={obj}>{obj}</option>)
-    })
+  handlePageChange (value) {
+    var temp = value.split(',')
+    this.setState({ pageValue: temp })
+  }
 
-    this.setState({target: temp, segmentValue: Object.keys(this.state.criteria)[0]})
+  handleGenderChange (value) {
+    var temp = value.split(',')
+    this.setState({ genderValue: temp })
+  }
+
+  handleLocaleChange (value) {
+    var temp = value.split(',')
+    this.setState({ localeValue: temp })
   }
 
   createSurvey (e) {
@@ -113,6 +133,11 @@ class AddSurvey extends React.Component {
           break
         }
       }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
       if (flag === 0 && this.refs.title.value !== '' &&
         this.refs.description.value !== '') {
         var surveybody = {
@@ -121,7 +146,11 @@ class AddSurvey extends React.Component {
             description: this.refs.description.value, // description of survey
             image: '' // image url
           },
-          questions: this.state.surveyQuestions
+          questions: this.state.surveyQuestions,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue
         }
         this.props.createsurvey(surveybody)
         this.props.history.push({
@@ -350,33 +379,9 @@ class AddSurvey extends React.Component {
     }
     return uiItems || null
   }
-  updateSegmentValue (event) {
-    console.log('updateSegmentValue called', event.target.value)
-    var label = 'Add Segment'
-    if (this.state.criteria[event.target.value].isPicked === true) {
-      label = 'Remove Segment'
-    }
-    this.setState({segmentValue: event.target.value, buttonLabel: label})
-  }
 
-  addNewTarget () {
-    console.log('Add new target called', this.state.segmentValue)
-    var temp = this.state.criteria
-    temp[this.state.segmentValue].isPicked = !temp[this.state.segmentValue].isPicked
-    var label = 'Add Segment'
-    if (temp[this.state.segmentValue].isPicked === true) {
-      label = 'Remove Segment'
-    }
-    this.setState({criteria: temp, buttonLabel: label})
-  }
   render () {
-    // var alertOptions = {
-    //   offset: 14,
-    //   position: 'bottom right',
-    //   theme: 'dark',
-    //   transition: 'scale'
-    // }
-
+    const { disabled, stayOpen } = this.state
     return (
       <div>
         <Header />
@@ -433,13 +438,13 @@ class AddSurvey extends React.Component {
                      */}
 
                       <div className='col-sm-6 col-md-4'>
-                        <button className='btn btn-secondary btn-sm'
+                        <button className='btn btn-primary btn-sm'
                           onClick={this.addClick.bind(this)}> Add Questions
                       </button>
                       </div>
                       <div className='add-options-message'>
 
-                        <button className='btn btn-secondary'
+                        <button className='btn btn-primary'
                           onClick={this.createSurvey}> Create Survey
                       </button>
                         <Link
@@ -465,84 +470,42 @@ class AddSurvey extends React.Component {
             </div>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
               <h2 className='presentation-margin'>Targeting</h2>
-              <div className='ui-block' style={{padding: 15}}>
-                <div className='news-feed-form'>
-                  <p>Select the type of customer you want to send survey
-                      to</p>
-                  {
-                    <div className='row'>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <div style={{padding: 5}}>
-                          <select style={{padding: 5}}>
-                            <option selected='selected' value='en_US'>en_US</option>
-                            <option value='en_UK'>en_UK</option>
-                            <option value='en_IN'>en_IN</option>
-                          </select>
-
-                        </div>
-                      </div>
-                      <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                        <button className='btn btn-primary btn-sm'> Add Page
-                              </button>
-                      </div>
-                    </div>
-                    }
-                  <div className='row'>
-                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                      <div>
-                        <select onChange={this.updateSegmentValue} value={this.state.segmentValue} style={{padding: 10}}>
-                          {this.state.target}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                      <button className='btn btn-primary btn-sm'
-                        onClick={this.addNewTarget}> {this.state.buttonLabel}
-                      </button>
-                    </div>
-
-                  </div>
-
-                  <div>
-                    {this.state.targeting}
-
-                    {
-                      this.state.criteria.Gender.isPicked && <div className='row'>
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <div style={{padding: 5}}>
-                            <p>Gender is: </p>
-                          </div>
-                        </div>
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <select style={{padding: 5}}>
-                            <option selected='selected' value='Male'>Male</option>
-                            <option value='Female'>Female</option>
-                          </select>
-                        </div>
-                      </div>
-                    }
-
-                    {
-                      this.state.criteria.Locale.isPicked && <div className='row'>
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <div style={{padding: 5}}>
-                            <p>Locale is: </p>
-                          </div>
-                        </div>
-                        <div className='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-                          <select style={{padding: 5}}>
-                            <option selected='selected' value='en_US'>en_US</option>
-                            <option value='en_UK'>en_UK</option>
-                            <option value='en_IN'>en_IN</option>
-                          </select>
-                        </div>
-                      </div>
-                    }
-
-                  </div>
-
-                </div>
+              <p>Select the type of customer you want to send survey to</p>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handlePageChange}
+                  options={this.state.page.options}
+                  placeholder='Select page(s)'
+                  simpleValue
+                  value={this.state.pageValue}
+                />
+              </div>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handleGenderChange}
+                  options={this.state.Gender.options}
+                  placeholder='Select Gender'
+                  simpleValue
+                  value={this.state.genderValue}
+                />
+              </div>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handleLocaleChange}
+                  options={this.state.Locale.options}
+                  placeholder='Select Locale'
+                  simpleValue
+                  value={this.state.localeValue}
+                />
               </div>
             </div>
           </div>
@@ -557,7 +520,8 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    pages: (state.pagesInfo.pages)
   }
 }
 

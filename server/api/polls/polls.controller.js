@@ -32,14 +32,14 @@ exports.create = function (req, res) {
   }
   if (req.body.isSegmented) {
     pollPayload.isSegmented = true
-    pollPayload.segmentationPageIds = (req.body.pageIds)
-      ? req.body.pageIds
+    pollPayload.segmentationPageIds = (req.body.segmentationPageIds)
+      ? req.body.segmentationPageIds
       : null
-    pollPayload.segmentationGender = (req.body.gender)
-      ? req.body.gender
+    pollPayload.segmentationGender = (req.body.segmentationGender)
+      ? req.body.segmentationGender
       : null
-    pollPayload.segmentationLocale = (req.body.locale)
-      ? req.body.locale
+    pollPayload.segmentationLocale = (req.body.segmentationLocale)
+      ? req.body.segmentationLocale
       : null
   }
   const poll = new Polls(pollPayload)
@@ -155,7 +155,7 @@ exports.send = function (req, res) {
   logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
   let pagesFindCriteria = {userId: req.user._id, connected: true}
   if (req.body.isSegmented) {
-    if (req.body.segmentationPageIds) {
+    if (req.body.segmentationPageIds.length > 0) {
       pagesFindCriteria = _.merge(pagesFindCriteria, {
         pageId: {
           $in: req.body.segmentationPageIds
@@ -177,7 +177,7 @@ exports.send = function (req, res) {
       let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
 
       if (req.body.isSegmented) {
-        if (req.body.segmentationGender) {
+        if (req.body.segmentationGender.length > 0) {
           subscriberFindCriteria = _.merge(subscriberFindCriteria,
             {
               gender: {
@@ -185,7 +185,7 @@ exports.send = function (req, res) {
               }
             })
         }
-        if (req.body.segmentationLocale) {
+        if (req.body.segmentationLocale.length > 0) {
           subscriberFindCriteria = _.merge(subscriberFindCriteria, {
             locale: {
               $in: req.body.segmentationLocale
