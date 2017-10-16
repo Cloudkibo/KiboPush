@@ -17,14 +17,3 @@ exports.index = function (req, res) {
     res.status(200).json(subscribers)
   })
 }
-
-exports.create = function (req, res) {
-
-}
-
-exports.report = function (req, res) {
-
-}
-exports.send = function (req, res) {
-
-}

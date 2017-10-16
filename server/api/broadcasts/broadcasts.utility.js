@@ -20,17 +20,6 @@ function prepareSendAPIPayload (subscriberId, body, cb) {
       })
     }
     return payload
-  } else if (body.componentType === 'sms' && !body.buttons) {
-    payload = {
-      'recipient': JSON.stringify({
-        'phone_number': '+923323800399'
-      }),
-      'message': JSON.stringify({
-        'text': body.text,
-        'metadata': 'This is a meta data'
-      })
-    }
-    return payload
   } else if (body.componentType === 'text' && body.buttons) {
     payload = {
       'recipient': JSON.stringify({
