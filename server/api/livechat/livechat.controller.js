@@ -11,6 +11,6 @@ exports.geturlmeta = function (req, res) {
         .json({status: 'failed', description: 'Meta data not found'})
     }
     logger.serverLog(TAG, `Url Meta: ${meta}`)
-    res.status(200).json({payload: meta})
+    res.status(200).json({status: 'success', payload: meta})
   })
 }
