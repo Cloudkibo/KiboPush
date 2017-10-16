@@ -148,7 +148,7 @@ class Dashboard extends React.Component {
           </div>
           <br />
           <p>Subscribe to our messenger page for help and promotional messages:
-            <a className='btn' href='https://m.me/154223405162365' style={{marginTop: '12px', marginLeft: '7px', background: 'blue', color: 'white', borderColor: 'white'}} >
+            <a className='btn' href='https://www.messenger.com/t/kibopush' style={{marginTop: '12px', marginLeft: '7px', background: 'blue', color: 'white', borderColor: 'white'}} >
               <i className='fa fa-facebook fa-lg' /> Subscribe
             </a>
           </p>
