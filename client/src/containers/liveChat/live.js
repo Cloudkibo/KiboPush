@@ -71,7 +71,7 @@ class LiveChat extends React.Component {
             </div>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
 
-            <ChatBox />
+              <ChatBox />
 
             </div>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>

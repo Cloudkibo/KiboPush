@@ -51,6 +51,7 @@ class ChatBox extends React.Component {
 
   render () {
     return (
+
           <div className='ui-block popup-chat'>
                 <div className='ui-block-title'>
                   <span className='icon-status online' />
@@ -73,164 +74,161 @@ class ChatBox extends React.Component {
                   }
                     
                   </ul>
-                  <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
+      <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
 
-                <form>
+        <form>
 
-                  <div className='form-group label-floating is-empty'>
-                    <label className='control-label'>Press enter to post...</label>
-                    <textarea className='form-control' placeholder='' />
-                    <div className='add-options-message'>
+          <div className='form-group label-floating is-empty'>
+            <label className='control-label'>Press enter to post...</label>
+            <textarea className='form-control' placeholder='' />
+            <div className='add-options-message'>
 
-                      <div className='options-message smile-block'>
+              <div className='options-message smile-block'>
 
-                        <ul className='more-dropdown more-with-triangle triangle-bottom-right'>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat1.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat2.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat3.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat4.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat5.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat6.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat7.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat8.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat9.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat10.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat11.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat12.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat13.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat14.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat15.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat16.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat17.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat18.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat19.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat20.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat21.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat22.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat23.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat24.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat25.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat26.png' alt='icon' />
-                            </a>
-                          </li>
-                          <li>
-                            <a href='#'>
-                              <img src='img/icon-chat27.png' alt='icon' />
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <span className='material-input' /></div>
-
-                </form>
-
+                <ul className='more-dropdown more-with-triangle triangle-bottom-right'>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat1.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat2.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat3.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat4.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat5.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat6.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat7.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat8.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat9.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat10.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat11.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat12.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat13.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat14.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat15.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat16.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat17.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat18.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat19.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat20.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat21.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat22.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat23.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat24.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat25.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat26.png' alt='icon' />
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='img/icon-chat27.png' alt='icon' />
+                    </a>
+                  </li>
+                </ul>
               </div>
+            </div>
+            <span className='material-input' /></div>
 
-      
+        </form>
 
+      </div>
 
     )
   }

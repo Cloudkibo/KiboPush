@@ -30,7 +30,8 @@ module.exports = function (app) {
   app.use('/api/page_poll', require('./api/page_poll'))
   app.use('/api/page_survey', require('./api/page_survey'))
   app.use('/api/page_broadcast', require('./api/page_broadcast'))
-
+  app.use('/api/livechat', require('./api/livechat'))
+  app.use('/api/sessions', require('./api/sessions'))
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {
