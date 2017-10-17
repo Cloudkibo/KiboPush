@@ -56,10 +56,10 @@ class CustomerMatching extends React.Component {
       fileErrors: [{errorMsg: error.message}]
     })
   }
-
+ /* global FormData */
   handleSubmit () {
     var file = this.state.file
-    if (file && file != '') {
+    if (file && file !== '') {
       var fileData = new FormData()
       fileData.append('file', file[0])
       fileData.append('filename', file[0].name)
@@ -87,13 +87,13 @@ class CustomerMatching extends React.Component {
   validate () {
     var errors = false
     console.log('validate', this.state)
-    if (this.state.file == '') {
+    if (this.state.file === '') {
       this.setState({
         fileErrors: [{errorMsg: 'Upload a file'}]
       })
       errors = true
     }
-    if (this.state.textAreaValue == '' && this.state.textAreaValue.length < 1) {
+    if (this.state.textAreaValue === '' && this.state.textAreaValue.length < 1) {
       this.setState({
         messageErrors: [{errorMsg: 'Enter an invitation message'}]
       })

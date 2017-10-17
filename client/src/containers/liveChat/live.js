@@ -4,10 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
@@ -54,7 +50,7 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Sessions changeActiveSession={this.changeActiveSession} />
+              <Sessions changeActiveSession={this.changeActiveSession} />r
             </div>
             {
               this.state.activeSessionId === '' && this.props.sessions

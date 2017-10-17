@@ -7,6 +7,21 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchUserChats } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+const styles = {
+  iconclass: {
+    height: 24,
+    padding: '0 15px',
+    width: 24,
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  inputf: {
+    display: 'none'
+  }
+}
 
 class ChatBox extends React.Component {
   constructor (props, context) {
@@ -62,6 +77,113 @@ class ChatBox extends React.Component {
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to post...</label>
             <textarea className='form-control' placeholder='' />
+            <div>
+              <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                <i style={styles.iconclass} onClick={() => {
+                  this.refs.selectFile.click()
+                }}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '1em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-image-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='attachments'>
+                <i style={styles.iconclass} onClick={() => {
+                  this.refs.selectFile.click()
+                }}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-paperclip' />
+                </i>
+                <input ref='selectFile' type='file' onChange={this._onChange} style={styles.inputf} />
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center',
+                    color: '#787878'
+                  }} className='fa fa-smile-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='stickers'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-o' />
+                  <i style={{
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '5px',
+                    fontSize: '12px',
+                    bottom: -4
+                  }}
+                     className='center fa fa-smile-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='GIF'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-o' />
+                  <p style={{
+                    position: 'absolute',
+                    text: 'GIF',
+                    left: '0',
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '5px',
+                    fontSize: '8px',
+                    bottom: -5
+                  }}>GIF</p>
+                </i>
+              </div>
+              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    color: '#0099e6',
+                    position: 'absolute',
+                    right: '0',
+                    width: '100%',
+                    height: '2.5em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-thumbs-up' />
+                </i>
+              </div>
+            </div>
             <div className='add-options-message'>
               <div className='options-message smile-block'>
                 <ul className='more-dropdown more-with-triangle triangle-bottom-right'>

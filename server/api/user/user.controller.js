@@ -3,7 +3,6 @@
  */
 
 const Users = require('./Users.model')
-const _ = require('lodash')
 
 const logger = require('../../components/logger')
 
