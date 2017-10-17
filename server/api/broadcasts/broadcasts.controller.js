@@ -11,6 +11,8 @@ const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
+const Sessions = require('../sessions/sessions.model')
+const LiveChat = require('../livechat/livechat.model')
 let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
@@ -77,7 +79,8 @@ exports.getfbMessage = function (req, res) {
     if (req.body.object === 'page') {
       let payload = req.body.entry[0]
       if (payload.messaging[0].optin) {
-        Pages.update({pageId: payload.id, userId: payload.messaging[0].optin.ref},
+        Pages.update(
+          {pageId: payload.id, userId: payload.messaging[0].optin.ref},
           {adminSubscriberId: payload.messaging[0].sender.id},
           {multi: false}, (err, updated) => {
             if (err) {
@@ -99,9 +102,9 @@ exports.getfbMessage = function (req, res) {
     if (event.message &&
       (event.message.is_echo === false || !event.message.is_echo)) {
       const sender = event.sender.id
-      const page = event.recipient.id
+      const pageId = event.recipient.id
       // get accesstoken of page
-      Pages.findOne({pageId: page}).populate('userId').exec((err, page) => {
+      Pages.findOne({pageId: pageId}).populate('userId').exec((err, page) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -138,12 +141,15 @@ exports.getfbMessage = function (req, res) {
               if (err) logger.serverLog(TAG, err)
               if (subscriber === null) {
                 // subsriber not found, create subscriber
-                Subscribers.create(payload, (err2) => {
+                Subscribers.create(payload, (err2, subscriberCreated) => {
                   if (err2) {
                     logger.serverLog(TAG, err2)
                   }
                   logger.serverLog(TAG, 'new Subscriber added')
+                  createSession(page, subscriberCreated, event)
                 })
+              } else {
+                createSession(page, subscriber, event)
               }
             })
           } else {
@@ -157,7 +163,6 @@ exports.getfbMessage = function (req, res) {
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
     if (event.postback) {
       var resp = JSON.parse(event.postback.payload)
-      logger.serverLog(TAG, resp)
       logger.serverLog(TAG, ` payload ${resp.poll_id}`)
       if (resp.poll_id) {
         savepoll(event)
@@ -174,6 +179,44 @@ exports.getfbMessage = function (req, res) {
   }
 
   return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
+function createSession (page, subscriber, event) {
+  Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id}, (err, session) => {
+    if (err) logger.serverLog(TAG, err)
+    if (session === null) {
+      let newSession = new Sessions({
+        subscriber_id: subscriber._id,
+        page_id: page._id,
+        company_id: page.userId._id
+      })
+      newSession.save((err, sessionSaved) => {
+        if (err) logger.serverLog(TAG, err)
+        logger.serverLog(TAG, 'new session created')
+        saveLiveChat(page, subscriber, sessionSaved, event)
+      })
+    } else {
+      saveLiveChat(page, subscriber, session, event)
+    }
+  })
+}
+
+function saveLiveChat (page, subscriber, session, event) {
+  let newChat = new LiveChat({
+    sender_id: subscriber._id,
+    recipient_id: page.userId._id,
+    session_id: session._id,
+    company_id: page.userId._id,
+    status: 'unseen', // seen or unseen
+    payload: {
+      componentType: 'text',
+      text: event.message.text
+    }
+  })
+  newChat.save((err, chat) => {
+    if (err) logger.serverLog(TAG, err)
+    logger.serverLog(TAG, 'new chat message saved'
+  })
 }
 
 function updateseenstatus (req) {
