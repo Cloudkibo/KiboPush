@@ -28,6 +28,7 @@ class ChatBox extends React.Component {
     this.state = {
     }
     props.fetchUserChats(this.props.sessionid)
+    this.getProfileLink = this.getProfileLink.bind(this)
   }
 
   componentDidMount () {
@@ -44,6 +45,14 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  getProfileLink (sessionid) {
+    for (var i = 0; this.props.sessions.length; i++) {
+      if (this.props.sessions[i]._id === sessionid) {
+        return this.props.sessions[i].subscriber_id.profilePic
+      }
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
   }
@@ -58,10 +67,10 @@ class ChatBox extends React.Component {
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul className='notification-list chat-message chat-message-field'>
             {
-              this.props.userChat.chats.map((msg) => (
+              this.props.userChat.map((msg) => (
                 <li>
                   <div className='author-thumb'>
-                    <img src={this.props.userChat.subscriber_id.profilePic} alt='author' />
+                    <img src={this.getProfileLink(msg.session_id)} alt='author' />
                   </div>
                   <div className='notification-event'>
                     <span className='chat-message-item'>{msg.payload.text}</span>
@@ -334,7 +343,8 @@ class ChatBox extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    userChat: (state.liveChat.userChat)
+    userChat: (state.liveChat.userChat),
+    sessions: (state.liveChat.sessions)
   }
 }
 

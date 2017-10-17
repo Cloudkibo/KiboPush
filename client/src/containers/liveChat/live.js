@@ -21,7 +21,7 @@ class LiveChat extends React.Component {
     this.state = {
       activeSessionId: ''
     }
-    props.fetchSessions()
+    props.fetchSessions({ company_id: props.user._id })
     this.changeActiveSession = this.changeActiveSession
   }
 
@@ -84,7 +84,8 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sessions: (state.liveChat.sessions)
+    sessions: (state.liveChat.sessions),
+    user: (state.basicInfo.user)
   }
 }
 
