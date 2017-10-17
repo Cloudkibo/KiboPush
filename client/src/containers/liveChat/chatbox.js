@@ -104,7 +104,7 @@ class ChatBox extends React.Component {
         </div>
         <form>
           <div className='form-group label-floating is-empty'>
-            <label className='control-label'>Press enter to post...</label>
+            <label className='control-label'>Press enter to send message...</label>
             <textarea className='form-control' placeholder='' />
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
