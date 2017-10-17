@@ -29,11 +29,13 @@ export function surveysInfo (state = {}, action) {
       })
     case ActionTypes.SEND_SURVEY_SUCCESS:
       return Object.assign({}, state, {
+        successTime: new Date().getTime(),
         successMessage: 'Survey sent successfully.'
       })
 
     case ActionTypes.SEND_SURVEY_FAILURE:
       return Object.assign({}, state, {
+        errorTime: new Date().getTime(),
         errorMessage: 'Survey Sending Failed.'
       })
     case ActionTypes.SUBMIT_SURVEY:
