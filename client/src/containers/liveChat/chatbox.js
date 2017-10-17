@@ -4,24 +4,27 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
+//  import { Alert } from 'react-bs-notifier'
+// import Sidebar from '../../components/sidebar/sidebar'
+// import Responsive from '../../components/sidebar/responsive'
+// import Header from '../../components/header/header'
+// import HeaderResponsive from '../../components/header/headerResponsive'
+// import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import { handleDate } from '../../utility/utils'
-import ReactPaginate from 'react-paginate'
-
+const styles = {
+  iconclass: {
+    height: 24,
+    padding: '0 15px',
+    width: 24,
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  inputf: {
+    display: 'none'
+  }
+}
 class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -42,45 +45,145 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-
-
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
   }
 
   render () {
     return (
-
-          <div className='ui-block popup-chat'>
-                <div className='ui-block-title'>
-                  <span className='icon-status online' />
-                  <h6 className='title'>Mathilda Brinker</h6>
-                </div>
-                <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-                  <ul className='notification-list chat-message chat-message-field'>
-                  {
-                    this.props.chat[0].messages.map((msg) => {
-                      return <li>
-                              <div className='author-thumb'>
-                                <img src='img/avatar14-sm.jpg' alt='author' />
-                              </div>
-                              <div className='notification-event'>
-                                <span className='chat-message-item'>{msg.message}</span>
-                                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                              </div>
-                            </li>;
-                    })
-                  }
-                    
-                  </ul>
-      <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
-
+      <div className='ui-block popup-chat'>
+        <div className='ui-block-title'>
+          <span className='icon-status online' />
+          <h6 className='title'>Mathilda Brinker</h6>
+        </div>
+        <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
+          <ul className='notification-list chat-message chat-message-field'>
+            {
+              this.props.chat[0].messages.map((msg) => {
+                return <li>
+                  <div className='author-thumb'>
+                    <img src='img/avatar14-sm.jpg' alt='author' />
+                  </div>
+                  <div className='notification-event'>
+                    <span className='chat-message-item'>{msg.message}</span>
+                    <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                  </div>
+                </li>
+              })
+            }
+          </ul>
+          <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
         <form>
-
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to post...</label>
             <textarea className='form-control' placeholder='' />
+            <div>
+              <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                <i style={styles.iconclass} onClick={() => {
+                  this.refs.selectFile.click()
+                }}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '1em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-image-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='attachments'>
+                <i style={styles.iconclass} onClick={() => {
+                  this.refs.selectFile.click()
+                }}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-paperclip' />
+                </i>
+                <input ref='selectFile' type='file' onChange={this._onChange} style={styles.inputf} />
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center',
+                    color: '#787878'
+                  }} className='fa fa-smile-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='stickers'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-o' />
+                  <i style={{
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '5px',
+                    fontSize: '12px',
+                    bottom: -4
+                  }}
+                    className='center fa fa-smile-o' />
+                </i>
+              </div>
+              <div style={{display: 'inline-block'}} data-tip='GIF'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    position: 'absolute',
+                    left: '0',
+                    width: '100%',
+                    height: '2em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-file-o' />
+                  <p style={{
+                    position: 'absolute',
+                    text: 'GIF',
+                    left: '0',
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '5px',
+                    fontSize: '8px',
+                    bottom: -5
+                  }}>GIF</p>
+                </i>
+              </div>
+              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up'>
+                <i style={styles.iconclass}>
+                  <i style={{
+                    fontSize: '20px',
+                    color: '#0099e6',
+                    position: 'absolute',
+                    right: '0',
+                    width: '100%',
+                    height: '2.5em',
+                    margin: '5px',
+                    textAlign: 'center'
+                  }} className='fa fa-thumbs-up' />
+                </i>
+              </div>
+            </div>
             <div className='add-options-message'>
 
               <div className='options-message smile-block'>
@@ -233,12 +336,10 @@ class ChatBox extends React.Component {
     )
   }
 }
-
-
 function mapStateToProps (state) {
   console.log(state)
   return {
-    chat: (state.liveChat.chat),
+    chat: (state.liveChat.chat)
   }
 }
 
