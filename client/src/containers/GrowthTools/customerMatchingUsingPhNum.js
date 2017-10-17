@@ -19,7 +19,7 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled : false
+      disabled: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -30,16 +30,16 @@ class CustomerMatching extends React.Component {
     this.clickAlert = this.clickAlert.bind(this)
   }
   clickAlert (e) {
-      e.preventDefault()
-      this.setState({
-        file: '',
-        textAreaValue: '',
-        fileErrors: [],
-        messageErrors: [],
-        alertMessage: '',
-        type: '',
-        disabled : false
-      })
+    e.preventDefault()
+    this.setState({
+      file: '',
+      textAreaValue: '',
+      fileErrors: [],
+      messageErrors: [],
+      alertMessage: '',
+      type: '',
+      disabled: false
+    })
   }
 
   onFilesChange (files) {
@@ -56,10 +56,10 @@ class CustomerMatching extends React.Component {
       fileErrors: [{errorMsg: error.message}]
     })
   }
-
+ /* global FormData */
   handleSubmit () {
     var file = this.state.file
-    if (file && file != '') {
+    if (file && file !== '') {
       var fileData = new FormData()
       fileData.append('file', file[0])
       fileData.append('filename', file[0].name)
@@ -87,13 +87,13 @@ class CustomerMatching extends React.Component {
   validate () {
     var errors = false
     console.log('validate', this.state)
-    if (this.state.file == '') {
+    if (this.state.file === '') {
       this.setState({
         fileErrors: [{errorMsg: 'Upload a file'}]
       })
       errors = true
     }
-    if (this.state.textAreaValue == '' && this.state.textAreaValue.length < 1) {
+    if (this.state.textAreaValue === '' && this.state.textAreaValue.length < 1) {
       this.setState({
         messageErrors: [{errorMsg: 'Enter an invitation message'}]
       })
@@ -106,18 +106,18 @@ class CustomerMatching extends React.Component {
     console.log('componentWillReceiveProps is called', nextProps)
     var res = nextProps.uploadResponse.fileUploadResponse
     if (res.status === 'failed') {
-        this.setState({
-          alertMessage: (`${res.status} : ${res.description}`),
-          type: 'danger',
-          disabled: true
-        })
-      } else if (res.status === 'success') {
-        this.setState({
-          alertMessage: ('Your file has been uploaded successfully.'),
-          type: 'success',
-          disabled: true
-        })
-      } else {
+      this.setState({
+        alertMessage: (`${res.status} : ${res.description}`),
+        type: 'danger',
+        disabled: true
+      })
+    } else if (res.status === 'success') {
+      this.setState({
+        alertMessage: ('Your file has been uploaded successfully.'),
+        type: 'success',
+        disabled: true
+      })
+    } else {
       this.setState({
         alertMessage: '',
         type: '',
@@ -211,12 +211,11 @@ class CustomerMatching extends React.Component {
                         </div>
                         <div
                           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        { this.state.disabled ?
-                          <button onClick={this.handleSubmit}
+                          { this.state.disabled
+                          ? <button onClick={this.handleSubmit}
                             className='btn btn-primary' disabled >Submit
                           </button>
-                          :
-                          <button onClick={this.handleSubmit}
+                          : <button onClick={this.handleSubmit}
                             className='btn btn-primary' >Submit
                           </button>
                         }
@@ -224,14 +223,14 @@ class CustomerMatching extends React.Component {
                         {
                           this.state.alertMessage !== '' &&
                             <Alert type={this.state.type}>
-                              {this.state.alertMessage} <br/>
-                              <a href="#" className="alert-link" onClick= {this.clickAlert}>Click here to select another file</a>
+                              {this.state.alertMessage} <br />
+                              <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
                             </Alert>
                         }
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               </div>
             </main>
           </div>
