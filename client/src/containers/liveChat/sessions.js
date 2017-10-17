@@ -40,13 +40,15 @@ class Sessions extends React.Component {
         </div>
         <ul className='widget w-activity-feed notification-list'>
           {this.props.sessions.map((item) => (
-            <li key={item._id} onClick={() => this.props.changeActiveSession(item._id)}>
+            <li key={item._id} onClick={this.props.changeActiveSession(item._id)}>
               <div className='author-thumb'>
                 <img src={item.subscriber_id.profilePic} alt='author' />
               </div>
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
-                //<span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+                {/**
+                  <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+                **/}
               </div>
             </li>
           ))}

@@ -68,25 +68,43 @@ class ChatBox extends React.Component {
           <h6 className='title'>Mathilda Brinker</h6>
         </div>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-          <ul className='notification-list chat-message chat-message-field'>
+          <ul style={{overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
-                <li>
-                  <div className='author-thumb'>
-                    <img src={this.getProfileLink(msg.session_id)} alt='author' />
-                  </div>
-                  <div className='notification-event'>
-                    <span className='chat-message-item'>{msg.payload.text}</span>
-                    //<span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                  </div>
-                </li>
+                msg.sender_id === this.props.user._id
+                ? (
+                  <li>
+                    <div className='author-thumb-right'>
+                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                    </div>
+                    <div className='notification-event'>
+                      <span className='chat-message-item-right'>{msg.payload.text}</span>
+                      {/**
+                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                      **/}
+                    </div>
+                  </li>
+                )
+                : (
+                  <li>
+                    <div className='author-thumb-left'>
+                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                    </div>
+                    <div className='notification-event'>
+                      <span className='chat-message-item-left'>{msg.payload.text}</span>
+                      {/**
+                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                      **/}
+                    </div>
+                  </li>
+                )
               ))}
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
         <form>
           <div className='form-group label-floating is-empty'>
-            <label className='control-label'>Press enter to post...</label>
+            <label className='control-label'>Press enter to send message...</label>
             <textarea className='form-control' placeholder='' />
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
@@ -347,7 +365,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     userChat: (state.liveChat.userChat),
-    sessions: (state.liveChat.sessions)
+    sessions: (state.liveChat.sessions),
+    user: (state.basicInfo.user)
   }
 }
 
