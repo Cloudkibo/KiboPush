@@ -55,6 +55,9 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    if (nextProps.userChat) {
+      console.log('user chats updated')
+    }
   }
 
   render () {
@@ -67,7 +70,7 @@ class ChatBox extends React.Component {
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul className='notification-list chat-message chat-message-field'>
             {
-              this.props.userChat.map((msg) => (
+              this.props.userChat && this.props.userChat.map((msg) => (
                 <li>
                   <div className='author-thumb'>
                     <img src={this.getProfileLink(msg.session_id)} alt='author' />
