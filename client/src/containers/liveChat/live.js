@@ -39,6 +39,7 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (sessionid) {
+    console.log('active session updated')
     this.setState({activeSessionId: sessionid})
   }
 
@@ -61,7 +62,7 @@ class LiveChat extends React.Component {
               <Sessions changeActiveSession={this.changeActiveSession} />r
             </div>
             {
-              this.props.sessions !== undefined && (
+              this.props.sessions && (
                 this.state.activeSessionId === ''
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
                   <ChatBox sessionid={this.props.sessions[0]._id} />

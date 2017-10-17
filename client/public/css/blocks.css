@@ -1,6 +1,52 @@
 /*------------- #VARIABLES --------------*/
 /*------------- #BLOCKS --------------*/
 /*------------- #UI-BLOCK --------------*/
+.author-thumb-left {
+  height: 26px;
+  width: 26px;
+  display: inline-block;
+  position: relative;
+}
+
+.author-thumb-right {
+  float: right;
+  height: 26px;
+  width: 26px;
+  display: inline-block;
+  position: relative;
+}
+
+.author-thumb-left img {
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.author-thumb-right img {
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.chat-message-item-left {
+  float: left;
+  font-size: 12px;
+  padding: 13px;
+  background-color: #f0f4f9;
+  margin-top: 0;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.chat-message-item-right {
+  float: right;
+  font-size: 12px;
+  padding: 13px;
+  background-color: #ff6d4d;
+  color: #fff;
+  margin-top: 0;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
 .ui-block {
   background-color: #fff;
   border-radius: 5px;
@@ -2107,7 +2153,7 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
     z-index: -1;
     visibility: hidden; }
   .popup-chat .ui-block-title {
-    background-color: #7c5ac2;
+    background-color: #ff6d4d;
     padding: 17px; }
     .popup-chat .ui-block-title .title {
       color: #fff; }
