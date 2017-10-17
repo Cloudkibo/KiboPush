@@ -4,13 +4,8 @@
  */
 
 import React from 'react'
-//  import { Alert } from 'react-bs-notifier'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
-//  import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Sessions from './sessions'
@@ -20,8 +15,10 @@ class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      activeChat: {}
+      activeSessionId: ''
     }
+    props.fetchSessions()
+    this.changeActiveSession = this.changeActiveSession
   }
 
   componentDidMount () {
@@ -37,13 +34,12 @@ class LiveChat extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
-    this.setState({activeChat: this.props.chat[0]})
+
+  changeActiveSession (sessionid) {
+    this.setState({activeSessionId: sessionid})
   }
 
   render () {
-    console.log('Chat Received', this.props.chat)
     return (
       <div>
         <Header />
@@ -54,21 +50,29 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Sessions />
+              <Sessions changeActiveSession={this.changeActiveSession} />r
             </div>
-            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-
-              <ChatBox />
-
-            </div>
-            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Profile />
-            </div>
-
+            {
+              this.state.activeSessionId === '' && this.props.sessions
+              ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                <ChatBox sessionid={this.props.sessions[0]._id} />
+              </div>
+              : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                <ChatBox sessionid={this.state.activeSessionId} />
+              </div>
+            }
+            {
+              this.state.activeSessionId === '' && this.props.sessions
+              ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                <Profile sessionid={this.props.sessions[0]._id} />
+              </div>
+              : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                <Profile sessionid={this.state.activeSessionId} />
+              </div>
+            }
           </div>
         </div>
       </div>
-
     )
   }
 }
@@ -76,12 +80,13 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    chat: (state.liveChat.chat)
+    sessions: (state.liveChat.sessions)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    fetchSessions: fetchSessions
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
