@@ -4,24 +4,9 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
-import { handleDate } from '../../utility/utils'
-import ReactPaginate from 'react-paginate'
-import ChatBox from './chatbox'
+//  import ChatBox from './chatbox'
 
 class Profile extends React.Component {
   constructor (props, context) {
@@ -44,7 +29,6 @@ class Profile extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
   }
@@ -84,8 +68,8 @@ class Profile extends React.Component {
             <div className='swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal' id='swiper-unique-id-2'>
               <div className='swiper-wrapper' ><div className='swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next' data-swiper-slide-index='1' >
                 <p className='friend-about' data-swiper-parallax='-500' >
-                              Hi!, I’m Marina and I’m a Community Manager for “Gametube”. Gamer and full-time mother.
-                            </p>
+                  Hi!, I’m Marina and I’m a Community Manager for “Gametube”. Gamer and full-time mother.
+                </p>
               </div>
               </div>
             </div>
