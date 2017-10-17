@@ -57,22 +57,26 @@ class LiveChat extends React.Component {
               <Sessions changeActiveSession={this.changeActiveSession} />r
             </div>
             {
-              this.state.activeSessionId === '' && this.props.sessions
-              ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                <ChatBox sessionid={this.props.sessions[0]._id} />
-              </div>
-              : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                <ChatBox sessionid={this.state.activeSessionId} />
-              </div>
+              this.props.sessions && (
+                this.state.activeSessionId === ''
+                ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                  <ChatBox sessionid={this.props.sessions[0]._id} />
+                </div>
+                : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                  <ChatBox sessionid={this.state.activeSessionId} />
+                </div>
+              )
             }
             {
-              this.state.activeSessionId === '' && this.props.sessions
-              ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                <Profile sessionid={this.props.sessions[0]._id} />
-              </div>
-              : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                <Profile sessionid={this.state.activeSessionId} />
-              </div>
+              this.props.sessions && (
+                this.state.activeSessionId === ''
+                ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                  <Profile sessionid={this.props.sessions[0]._id} />
+                </div>
+                : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+                  <Profile sessionid={this.state.activeSessionId} />
+                </div>
+              )
             }
           </div>
         </div>
