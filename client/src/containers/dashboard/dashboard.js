@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
@@ -41,6 +42,10 @@ class Dashboard extends React.Component {
       nextprops.subscribers && nextprops.subscribers.length === 0 &&
       this.props.dashboard.subscribers === 0) {
       this.setState({isShowingModal: true})
+    }
+    if (nextprops.user) {
+      console.log('fetchSession in dashboard')
+      this.props.fetchSessions({ company_id: nextprops.user._id })
     }
   }
 
@@ -250,7 +255,8 @@ function mapStateToProps (state) {
   return {
     dashboard: (state.dashboardInfo.dashboard),
     pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    user: (state.basicInfo.user)
   }
 }
 
@@ -260,7 +266,8 @@ function mapDispatchToProps (dispatch) {
       loadDashboardData: loadDashboardData,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersList: loadSubscribersList,
-      createbroadcast: createbroadcast
+      createbroadcast: createbroadcast,
+      fetchSessions: fetchSessions
     },
     dispatch)
 }

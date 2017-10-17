@@ -28,6 +28,10 @@ class Sessions extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+  }
+
   render () {
     return (
       <div className='ui-block'>

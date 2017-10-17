@@ -21,7 +21,6 @@ class LiveChat extends React.Component {
     this.state = {
       activeSessionId: ''
     }
-    props.fetchSessions({ company_id: props.user._id })
     this.changeActiveSession = this.changeActiveSession
   }
 
@@ -43,6 +42,10 @@ class LiveChat extends React.Component {
     this.setState({activeSessionId: sessionid})
   }
 
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+  }
+
   render () {
     console.log('sessions: ', this.props.sessions)
     return (
@@ -58,7 +61,7 @@ class LiveChat extends React.Component {
               <Sessions changeActiveSession={this.changeActiveSession} />r
             </div>
             {
-              this.props.sessions && (
+              this.props.sessions !== undefined && (
                 this.state.activeSessionId === ''
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
                   <ChatBox sessionid={this.props.sessions[0]._id} />
