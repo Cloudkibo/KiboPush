@@ -69,7 +69,7 @@ exports.create = function (req, res) {
             'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
             page.accessToken
           },
-          function (err, res) {
+          (err, res) => {
             if (err) {
               return logger.serverLog(TAG,
                 `At send message live chat ${JSON.stringify(err)}`)
@@ -93,13 +93,13 @@ exports.create = function (req, res) {
 
 // Updates an existing message in the DB.
 exports.update = function (req, res) {
-  LiveChat.findOne({_id: req.body.id}, function (err, message) {
+  LiveChat.findOne({_id: req.body.id}, (err, message) => {
     if (err) {
       return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
     }
     message.urlmeta = req.body.urlmeta
-    message.save(function (err) {
+    message.save(err => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
@@ -115,7 +115,7 @@ exports.update = function (req, res) {
 exports.geturlmeta = function (req, res) {
   var url = req.body.url
   logger.serverLog(TAG, `Url: ${url}`)
-  og(url, function (err, meta) {
+  og(url, (err, meta) => {
     if (err) {
       return res.status(404)
         .json({status: 'failed', description: 'Meta data not found'})
