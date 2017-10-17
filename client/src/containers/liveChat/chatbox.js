@@ -7,7 +7,7 @@ import React from 'react'
 import { fetchUserChats } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+
 const styles = {
   iconclass: {
     height: 24,
@@ -142,7 +142,7 @@ class ChatBox extends React.Component {
                     fontSize: '12px',
                     bottom: -4
                   }}
-                     className='center fa fa-smile-o' />
+                    className='center fa fa-smile-o' />
                 </i>
               </div>
               <div style={{display: 'inline-block'}} data-tip='GIF'>
