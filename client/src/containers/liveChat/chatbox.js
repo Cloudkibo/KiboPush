@@ -26,15 +26,7 @@ class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      alertMessage: '',
-      type: '',
-      broadcastsData: [],
-      totalLength: 0
     }
-    props.loadBroadcastsList()
-    this.sendBroadcast = this.sendBroadcast.bind(this)
-    this.displayData = this.displayData.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentDidMount () {
@@ -51,115 +43,38 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  displayData (n, broadcasts) {
-    console.log(broadcasts)
-    let offset = n * 6
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 6) > broadcasts.length) {
-      limit = broadcasts.length
-    } else {
-      limit = offset + 6
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = broadcasts[i]
-      index++
-    }
-    this.setState({broadcastsData: data})
-  }
 
-  handlePageClick (data) {
-    this.displayData(data.selected, this.props.broadcasts)
-  }
-
-  gotoEdit (broadcast) {
-    this.props.history.push({
-      pathname: `/editbroadcast`,
-      state: broadcast._id
-    })
-  }
-
-  sendBroadcast (broadcast) {
-    if (this.props.subscribers.length === 0) {
-      this.setState({
-        alertMessage: 'You dont have any Subscribers',
-        type: 'danger'
-      })
-    } else {
-      this.props.sendbroadcast(broadcast)
-    }
-  }
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
-      this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
-    }
-    this.sendBroadcast = this.sendBroadcast.bind(this)
-    if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        type: 'success'
-      })
-    } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        type: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        type: ''
-      })
-    }
   }
 
   render () {
     return (
 
-      <div className='ui-block popup-chat'>
-        <div className='ui-block-title'>
-          <span className='icon-status online' />
-          <h6 className='title'>Mathilda Brinker</h6>
-        </div>
-        <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-          <ul className='notification-list chat-message chat-message-field'>
-            <li>
-              <div className='author-thumb'>
-                <img src='img/avatar14-sm.jpg' alt='author' />
-              </div>
-              <div className='notification-event'>
-                <span className='chat-message-item'>Hi James! Please remember to buy the food for tomorrow! I’m gonna be handling the gifts and Jake’s gonna get the drinks</span>
-                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>Yesterday at 8:10pm</time></span>
-              </div>
-            </li>
-
-            <li>
-              <div className='author-thumb'>
-                <img src='img/author-page.jpg' alt='author' />
-              </div>
-              <div className='notification-event'>
-                <span className='chat-message-item'>Don’t worry Mathilda!</span>
-
-                <span className='chat-message-item'>I already bought everything</span>
-                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>Yesterday at 8:29pm</time></span>
-              </div>
-            </li>
-
-            <li>
-              <div className='author-thumb'>
-                <img src='img/avatar14-sm.jpg' alt='author' />
-              </div>
-              <div className='notification-event'>
-                <span className='chat-message-item'>Hi James! Please remember to buy the food for tomorrow! I’m gonna be handling the gifts and Jake’s gonna get the drinks</span>
-                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>Yesterday at 8:10pm</time></span>
-              </div>
-            </li>
-          </ul>
-          <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
+          <div className='ui-block popup-chat'>
+                <div className='ui-block-title'>
+                  <span className='icon-status online' />
+                  <h6 className='title'>Mathilda Brinker</h6>
+                </div>
+                <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
+                  <ul className='notification-list chat-message chat-message-field'>
+                  {
+                    this.props.chat[0].messages.map((msg) => {
+                      return <li>
+                              <div className='author-thumb'>
+                                <img src='img/avatar14-sm.jpg' alt='author' />
+                              </div>
+                              <div className='notification-event'>
+                                <span className='chat-message-item'>{msg.message}</span>
+                                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                              </div>
+                            </li>;
+                    })
+                  }
+                    
+                  </ul>
+      <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
 
         <form>
 
@@ -319,23 +234,16 @@ class ChatBox extends React.Component {
   }
 }
 
+
 function mapStateToProps (state) {
   console.log(state)
   return {
-    broadcasts: (state.broadcastsInfo.broadcasts),
-    successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    chat: (state.liveChat.chat),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
