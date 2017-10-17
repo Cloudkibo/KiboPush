@@ -44,6 +44,7 @@ class LiveChat extends React.Component {
   }
 
   render () {
+    console.log('sessions: ', this.props.sessions)
     return (
       <div>
         <Header />
