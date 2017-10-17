@@ -51,14 +51,14 @@ exports.create = function (req, res) {
   }
   if (req.body.isSegmented) {
     surveyPayload.isSegmented = true
-    surveyPayload.segmentationPageIds = (req.body.pageIds)
-      ? req.body.pageIds
+    surveyPayload.segmentationPageIds = (req.body.segmentationPageIds)
+      ? req.body.segmentationPageIds
       : null
-    surveyPayload.segmentationGender = (req.body.gender)
-      ? req.body.gender
+    surveyPayload.segmentationGender = (req.body.segmentationGender)
+      ? req.body.segmentationGender
       : null
-    surveyPayload.segmentationLocale = (req.body.locale)
-      ? req.body.locale
+    surveyPayload.segmentationLocale = (req.body.segmentationLocale)
+      ? req.body.segmentationLocale
       : null
   }
   const survey = new Surveys(surveyPayload)

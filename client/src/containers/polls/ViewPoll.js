@@ -46,47 +46,37 @@ class ViewPoll extends React.Component {
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <h2 className='presentation-margin'>View Poll</h2>
             <div className='ui-block'>
-              <div className='news-feed-form'>
+              <div className='container'>
+                <div className='news-feed-form'>
 
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='home-1' role='tabpanel'
-                    aria-expanded='true'>
-                    <div className='form-group h5-floating is-empty'>
-                      <h5 className='control-h5'>Question: </h5>
-                      <div>{this.props.location.state.statement}</div>
-                    </div>
-                    <br />
-                    <div
-                      className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                      <fieldset className='input-group-vertical'>
-                        <div >
-                          <h5 >Response 1</h5>
-                          <div>{this.props.location.state.options[0]}</div>
-                        </div>
-                        <div >
-                          <h5 >Response 2</h5>
-                          <div>{this.props.location.state.options[1]}</div>
-                        </div>
-                        <div>
-                          <h5>Response 3</h5>
-                          <div>{this.props.location.state.options[2]}</div>
-                        </div>
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='home-1' role='tabpanel'
+                      aria-expanded='true'>
+                      <br />
 
-                      </fieldset>
-                    </div>
-                    <br />
+                      <div className='form-group'>
+                        <label>Q. {this.props.location.state.statement}</label>
+                        <ol className='table-bordered'>
+                          <div className='container'>
+                            <li>{this.props.location.state.options[0]}</li>
+                            <li>{this.props.location.state.options[1]}</li>
+                            <li>{this.props.location.state.options[2]}</li>
+                          </div>
+                        </ol>
+                      </div>
+                      <br />
 
-                    <div className='add-options-message'>
-                      <Link
-                        to='/poll'
-                        style={{float: 'right', margin: 2}}
-                        className='btn btn-sm btn-border-think btn-transparent c-grey'>
-                        Back
+                      <div className='add-options-message'>
+                        <Link
+                          to='/poll'
+                          style={{ float: 'right', margin: 2 }}
+                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                          Back
                       </Link>
+                      </div>
+
                     </div>
-
                   </div>
-
                 </div>
               </div>
             </div>
@@ -107,7 +97,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll},
+  return bindActionCreators({ loadPollsList: loadPollsList, addPoll: addPoll },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPoll)

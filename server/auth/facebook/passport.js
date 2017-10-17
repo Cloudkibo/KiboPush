@@ -143,6 +143,7 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
+      createMenuForPage(item)
       const options2 = {
         url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
         qs: {access_token: item.access_token},
@@ -202,6 +203,34 @@ function fetchPages (url, user) {
     })
     if (cursor.next) {
       fetchPages(cursor.next, user)
+    }
+  })
+}
+
+function createMenuForPage (page) {
+  var valueformenu = {
+    'persistent_menu': [
+      {
+        'locale': 'default',
+        'call_to_actions': [
+          {
+            'type': 'web_url',
+            'title': 'Powered by KiboPush',
+            'url': 'https://www.messenger.com/t/151990922046256',
+            'webview_height_ratio': 'full'
+          }
+        ]
+      }
+    ]
+  }
+  const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+
+  needle.request('post', requesturl, valueformenu, {json: true}, function (err, resp) {
+    if (!err) {
+      console.log(resp.body)
+    }
+    if (err) {
+      console.log('neddle error')
     }
   })
 }

@@ -22,14 +22,11 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import ChatBox from './chatbox'
-import Sessions from './sessions'
-import Profile from './profile'
 
-class LiveChat extends React.Component {
+class Sessions extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      activeChat: {},
     }
   }
 
@@ -47,41 +44,32 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
   }
 
-
-
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    this.setState({activeChat: this.props.chat[0]})
   }
 
   render () {
-    console.log("Chat Received",  this.props.chat)
     return (
-      <div>
-        <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-             <Sessions />
-            </div>
-            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+         <div className='ui-block'>
+                <div className='ui-block-title'>
+                  <h6 className='title'>Messages</h6>
+                </div>
 
-              <ChatBox />
-
-            </div>
-            <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Profile />
-            </div>
-
-          </div>
-        </div>
-      </div>
-
+                <ul className='widget w-activity-feed notification-list'>
+                {this.props.chat.map((singleChat) => {
+                    return <li>
+                    <div className='author-thumb'>
+                      <img src='img/avatar49-sm.jpg' alt='author' />
+                    </div>
+                    <div className='notification-event'>
+                      <a href='#' className='h6 notification-friend'>{ singleChat.userInfo.name }</a> { singleChat.messages[0].message} 
+                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+                    </div>
+                  </li>;
+                })}
+                  
+                </ul>
+              </div>
     )
   }
 }
@@ -97,4 +85,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
+export default connect(mapStateToProps, mapDispatchToProps)(Sessions)

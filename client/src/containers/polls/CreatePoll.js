@@ -22,9 +22,9 @@ class CreatePoll extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Other', value: 'Other'}
+        options: [{label: 'Male', value: 'male'},
+                  {label: 'Female', value: 'female'},
+                  {label: 'Other', value: 'other'}
         ]
       },
       Locale: {

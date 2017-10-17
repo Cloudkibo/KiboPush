@@ -60,26 +60,48 @@ class Dashboard extends React.Component {
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
     this.addSteps([{
-      title: 'Component',
-      text: 'You can add components to your conversation using these button',
-      selector: 'div#subscribers',
+      title: 'Pages',
+      text: 'This shows the number of pages currently connected',
+      selector: 'div#pages',
       position: 'top-left',
       type: 'hover',
       isFixed: true},
     {
-      title: 'Edit Title',
-      text: 'You can edit the title of your conversation by clicking the pencil icon',
+      title: 'Subscribers',
+      text: 'These are the total number of subscribers you have',
+      selector: 'div#subscribers',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Scheduled Broadcasts',
+      text: 'These are the current number of posts scheduled to be broadcasted',
+      selector: 'div#scheduled',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Survey',
+      text: 'The number of surveys you have created',
+      selector: 'div#surveys',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Polls',
+      text: 'The Polls you have made till now',
       selector: 'div#polls',
       position: 'bottom-left',
       type: 'hover',
       isFixed: true},
     {
-      title: 'Send Conversation',
-      text: 'You can send your conversation using these buttons',
-      selector: 'div#pages',
+      title: 'Broadcasts',
+      text: 'Broadcasts you have made to your subscribers',
+      selector: 'div#broadcasts',
       position: 'bottom-left',
       type: 'hover',
-      isFixed: true}])
+      isFixed: true}
+    ])
   }
 
   closeDialog () {
@@ -116,6 +138,7 @@ class Dashboard extends React.Component {
     }
     return (
       <div className='container'>
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} showStepsProgress showSkipButton />
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {

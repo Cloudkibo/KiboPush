@@ -27,9 +27,9 @@ class AddSurvey extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'Male'},
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Other', value: 'Other'}
+        options: [{label: 'Male', value: 'male'},
+                  {label: 'Female', value: 'female'},
+                  {label: 'Other', value: 'other'}
         ]
       },
       Locale: {
@@ -123,15 +123,45 @@ class AddSurvey extends React.Component {
           for (let k = 0; k <
           this.state.surveyQuestions[j].options.length; k++) {
             if (this.state.surveyQuestions[j].options[k] === '') {
+              let incompleteChoice = document.getElementById('choice' + j + k)
+              incompleteChoice.classList.add('has-error')
               flag = 1
               console.log('empty')
-              break
+            } else {
+              let completeChoice = document.getElementById('choice' + j + k)
+              completeChoice.classList.remove('has-error')
             }
           }
         }
-        if (flag === 1) {
-          break
+        // Checking if any Question statement is empty.
+        if (this.state.surveyQuestions[j].statement === '') {
+          let incompleteQuestion = document.getElementById('question' + j)
+          incompleteQuestion.classList.add('has-error')
+          flag = 1
+          console.log('empty')
+        } else {
+          let completeChoice = document.getElementById('question' + j)
+          completeChoice.classList.remove('has-error')
         }
+      }
+      // Checking if Description or Title is empty, and highlighting it
+
+      if (this.refs.description.value === '') {
+        flag = 1
+        let incompleteDesc = document.getElementById('desc')
+        incompleteDesc.classList.add('has-error')
+      } else {
+        let completeDesc = document.getElementById('desc')
+        completeDesc.classList.remove('has-error')
+      }
+
+      if (this.refs.title.value === '') {
+        flag = 1
+        let incompleteTitle = document.getElementById('titl')
+        incompleteTitle.classList.add('has-error')
+      } else {
+        let completeTitle = document.getElementById('titl')
+        completeTitle.classList.remove('has-error')
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
@@ -280,8 +310,8 @@ class AddSurvey extends React.Component {
     console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
-        <div className='input-group'>
-          <input type='text' placeholder={'Choice' + (j + 1)}
+        <div className='input-group' id={'choice' + qindex + j}>
+          <input type='text' placeholder={'Choice ' + (j + 1)}
             className='form-control input-sm'
             value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
@@ -306,7 +336,7 @@ class AddSurvey extends React.Component {
             <br />
             <div className='panel panel-default field-editor'>
               <div className='panel-heading clearfix'>
-                <strong className='panel-title'>Edit Question {i} </strong>
+                <strong className='panel-title'>Edit Question {(i + 1)} </strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
                   <a className='remove'
                     onClick={this.removeClick.bind(this, i)}>
@@ -315,7 +345,7 @@ class AddSurvey extends React.Component {
                 </div>
               </div>
               <div className='panel-body'>
-                <div className='form-group'>
+                <div className='form-group' id={'question' + i}>
                   <input className='form-control'
                     placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
@@ -332,7 +362,7 @@ class AddSurvey extends React.Component {
             <br />
             <div className='panel panel-default field-editor'>
               <div className='panel-heading clearfix'>
-                <strong className='panel-title'>Edit Question {i}</strong>
+                <strong className='panel-title'>Edit Question {i + 1}</strong>
                 <div role='toolbar' className='pull-right btn-toolbar'>
                   <a className='remove'
                     onClick={this.removeClick.bind(this, i)}>
@@ -341,7 +371,7 @@ class AddSurvey extends React.Component {
                 </div>
               </div>
               <div className='panel-body'>
-                <div className='form-group'>
+                <div className='form-group' id={'question' + i}>
                   <input className='form-control'
                     placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
@@ -404,7 +434,7 @@ class AddSurvey extends React.Component {
                       aria-expanded='true'>
 
                       <div className='col-xl-12'>
-                        <div className='form-group'>
+                        <div className='form-group' id='titl'>
                           <label className='control-label'>Title</label>
                           <input className='form-control'
                             placeholder='Enter form title here' ref='title' />
@@ -412,7 +442,7 @@ class AddSurvey extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
-                        <div className='form-group'>
+                        <div className='form-group' id='desc'>
                           <label className='control-label'>Description</label>
                           <textarea className='form-control'
                             placeholder='Enter form description here'
@@ -520,7 +550,8 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    pages: (state.pagesInfo.pages)
   }
 }
 
