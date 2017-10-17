@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function showChatSessions (sessions) {
+  console.log(sessions)
   return {
     type: ActionTypes.SHOW_CHAT_SESSIONS,
     sessions
@@ -17,6 +18,7 @@ export function fetchSessions () {
 }
 
 export function showUserChats (userChat) {
+  console.log(userChat)
   return {
     type: ActionTypes.SHOW_USER_CHAT,
     userChat
