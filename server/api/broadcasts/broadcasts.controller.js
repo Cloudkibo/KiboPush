@@ -215,7 +215,7 @@ function saveLiveChat (page, subscriber, session, event) {
   })
   newChat.save((err, chat) => {
     if (err) logger.serverLog(TAG, err)
-    logger.serverLog(TAG, 'new chat message saved'
+    logger.serverLog(TAG, 'new chat message saved')
   })
 }
 

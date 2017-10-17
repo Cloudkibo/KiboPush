@@ -29,7 +29,7 @@ class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      activeChat: {},
+      activeChat: {}
     }
   }
 
@@ -47,16 +47,13 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
   }
 
-
-
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.setState({activeChat: this.props.chat[0]})
   }
 
   render () {
-    console.log("Chat Received",  this.props.chat)
+    console.log('Chat Received', this.props.chat)
     return (
       <div>
         <Header />
@@ -67,7 +64,7 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-             <Sessions />
+              <Sessions />
             </div>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
 
@@ -89,7 +86,7 @@ class LiveChat extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    chat: (state.liveChat.chat),
+    chat: (state.liveChat.chat)
   }
 }
 

@@ -50,26 +50,26 @@ class Sessions extends React.Component {
 
   render () {
     return (
-         <div className='ui-block'>
-                <div className='ui-block-title'>
-                  <h6 className='title'>Messages</h6>
-                </div>
+      <div className='ui-block'>
+        <div className='ui-block-title'>
+          <h6 className='title'>Messages</h6>
+        </div>
 
-                <ul className='widget w-activity-feed notification-list'>
-                {this.props.chat.map((singleChat) => {
-                    return <li>
-                    <div className='author-thumb'>
-                      <img src='img/avatar49-sm.jpg' alt='author' />
-                    </div>
-                    <div className='notification-event'>
-                      <a href='#' className='h6 notification-friend'>{ singleChat.userInfo.name }</a> { singleChat.messages[0].message} 
-                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
-                    </div>
-                  </li>;
-                })}
-                  
-                </ul>
+        <ul className='widget w-activity-feed notification-list'>
+          {this.props.chat.map((singleChat) => {
+            return <li>
+              <div className='author-thumb'>
+                <img src='img/avatar49-sm.jpg' alt='author' />
               </div>
+              <div className='notification-event'>
+                <a href='#' className='h6 notification-friend'>{ singleChat.userInfo.name }</a> { singleChat.messages[0].message}
+                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+              </div>
+            </li>
+          })}
+
+        </ul>
+      </div>
     )
   }
 }
@@ -77,7 +77,7 @@ class Sessions extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    chat: (state.liveChat.chat),
+    chat: (state.liveChat.chat)
   }
 }
 

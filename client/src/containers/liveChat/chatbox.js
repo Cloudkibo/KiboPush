@@ -43,8 +43,6 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
   }
 
-
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
   }
@@ -52,29 +50,29 @@ class ChatBox extends React.Component {
   render () {
     return (
 
-          <div className='ui-block popup-chat'>
-                <div className='ui-block-title'>
-                  <span className='icon-status online' />
-                  <h6 className='title'>Mathilda Brinker</h6>
-                </div>
-                <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-                  <ul className='notification-list chat-message chat-message-field'>
-                  {
+      <div className='ui-block popup-chat'>
+        <div className='ui-block-title'>
+          <span className='icon-status online' />
+          <h6 className='title'>Mathilda Brinker</h6>
+        </div>
+        <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
+          <ul className='notification-list chat-message chat-message-field'>
+            {
                     this.props.chat[0].messages.map((msg) => {
                       return <li>
-                              <div className='author-thumb'>
-                                <img src='img/avatar14-sm.jpg' alt='author' />
-                              </div>
-                              <div className='notification-event'>
-                                <span className='chat-message-item'>{msg.message}</span>
-                                <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                              </div>
-                            </li>;
+                        <div className='author-thumb'>
+                          <img src='img/avatar14-sm.jpg' alt='author' />
+                        </div>
+                        <div className='notification-event'>
+                          <span className='chat-message-item'>{msg.message}</span>
+                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                        </div>
+                      </li>
                     })
                   }
-                    
-                  </ul>
-      <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
+
+          </ul>
+          <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div></div>
 
         <form>
 
@@ -234,11 +232,10 @@ class ChatBox extends React.Component {
   }
 }
 
-
 function mapStateToProps (state) {
   console.log(state)
   return {
-    chat: (state.liveChat.chat),
+    chat: (state.liveChat.chat)
   }
 }
 
