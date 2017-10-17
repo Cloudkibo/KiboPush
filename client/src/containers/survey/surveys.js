@@ -16,6 +16,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 
@@ -95,10 +96,18 @@ class Survey extends React.Component {
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
+      this.msg.show(nextProps.successMessage, {
+        time: 1500,
+        type: 'success'
+      })
     } else if (nextProps.errorMessage) {
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
+      })
+      this.msg.show(nextProps.errorMessage, {
+        time: 1500,
+        type: 'error'
       })
     } else {
       this.setState({
@@ -106,6 +115,18 @@ class Survey extends React.Component {
         alertType: ''
       })
     }
+    this.setState({
+      alertMessage: '',
+      alertType: ''
+    })
+  }
+
+  showAlert (message, type) {
+    console.log('in showAlert')
+    this.msg.show(message, {
+      time: 1500,
+      type: type
+    })
   }
 
   gotoResults (survey) {
@@ -117,12 +138,21 @@ class Survey extends React.Component {
 
   render () {
     console.log('render method survey')
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'light',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
@@ -149,7 +179,7 @@ class Survey extends React.Component {
                 this.props.subscribers && this.props.subscribers.length === 0
 
                   ? <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-sm' disabled> Create Survey
+                    <button className='btn btn-primary btn-sm' disabled> Create Survey
                     </button>
                   </Link>
                   : <Link to='addsurvey' className='pull-right'>
@@ -183,16 +213,16 @@ class Survey extends React.Component {
                               </button>
                                 { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
-                                  <button className='btn  btn-sm' disabled
+                                  <button className='btn btn-primary btn-sm' disabled
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
-                                  <button className='btn  btn-sm' disabled
+                                  <button className='btn btn-primary btn-sm' disabled
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.props.sendsurvey(
-                                          survey)}> Send
+                                        survey)}> Send
                               </button>
                                 </span>
                               : <span>
@@ -233,14 +263,7 @@ class Survey extends React.Component {
                     <p> No data to display </p>
                   </div>
                 }
-                  {
-                    this.state.alertMessage !== '' &&
-                    <center>
-                      <Alert type={this.state.alertType}>
-                        {this.state.alertMessage}
-                      </Alert>
-                    </center>
-                  }
+
                 </div>
               </div>
 
@@ -259,7 +282,9 @@ function mapStateToProps (state) {
     surveys: (state.surveysInfo.surveys),
     subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.surveysInfo.successMessage),
-    errorMessage: (state.surveysInfo.errorMessage)
+    errorMessage: (state.surveysInfo.errorMessage),
+    successTime: (state.surveysInfo.successTime),
+    errorTime: (state.surveysInfo.errorTime)
   }
 }
 
