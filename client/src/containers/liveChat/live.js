@@ -21,7 +21,7 @@ class LiveChat extends React.Component {
     this.state = {
       activeSessionId: ''
     }
-    this.changeActiveSession = this.changeActiveSession
+    this.changeActiveSession = this.changeActiveSession.bind(this)
   }
 
   componentDidMount () {
