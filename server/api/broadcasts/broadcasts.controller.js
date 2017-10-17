@@ -208,7 +208,7 @@ function saveLiveChat (page, subscriber, session, event) {
     session_id: session._id,
     company_id: page.userId._id,
     status: 'unseen', // seen or unseen
-    payload: {
+    payload: { // todo save the id of message here just like zarmeen do
       componentType: 'text',
       text: event.message.text
     }
