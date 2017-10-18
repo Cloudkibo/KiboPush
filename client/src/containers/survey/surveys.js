@@ -91,7 +91,8 @@ class Survey extends React.Component {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
     }
-    if (nextProps.successMessage) {
+    if (this.props.successTime !== nextProps.successTime) {
+      console.log('SuccessMessage: ', nextProps.successMessage)
       this.setState({
         alertMessage: nextProps.successMessage,
         alertType: 'success'
@@ -100,7 +101,8 @@ class Survey extends React.Component {
         time: 1500,
         type: 'success'
       })
-    } else if (nextProps.errorMessage) {
+    } else if (this.props.errorTime !== nextProps.errorMessage) {
+      console.log('ErrorMessage: ', nextProps.errorMessage)
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
@@ -213,13 +215,13 @@ class Survey extends React.Component {
                               </button>
                                 { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
-                                  <button className='btn btn-primary btn-sm' disabled
+                                  <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.gotoResults(survey)}>
                                 Report
                               </button>
 
-                                  <button className='btn btn-primary btn-sm' disabled
+                                  <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.props.sendsurvey(
                                         survey)}> Send

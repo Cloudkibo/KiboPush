@@ -186,7 +186,6 @@ class Sidebar extends Component {
   render () {
     return (
       <div className='fixed-sidebar'>
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} showStepsProgress showSkipButton />
         <div className='fixed-sidebar-left sidebar--small' id='sidebar-left'>
           <Link to='/dashboard' className='logo'>
             <img src='img/logo.png' alt='Olympus' />
