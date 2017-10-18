@@ -215,6 +215,13 @@ function saveLiveChat (page, subscriber, session, event) {
   })
   newChat.save((err, chat) => {
     if (err) logger.serverLog(TAG, err)
+    require('./../../config/socketio').sendChatToAgents({
+      room_id: page.userId._id,
+      payload: {
+        session_id: session._id,
+        chat_id: chat._id
+      }
+    })
     logger.serverLog(TAG, 'new chat message saved')
   })
 }

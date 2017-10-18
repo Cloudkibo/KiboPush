@@ -18,6 +18,7 @@ import {
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { joinRoom } from '../../utility/socketio'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -46,6 +47,7 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       this.props.fetchSessions({ company_id: nextprops.user._id })
+      joinRoom(nextprops.user._id)
     }
   }
 
