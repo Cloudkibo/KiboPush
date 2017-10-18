@@ -38,7 +38,7 @@ class Profile extends React.Component {
       <div className='ui-block'>
         <div className='friend-item'>
           <div className='friend-header-thumb'>
-            <img src='img/friend3.jpg' alt='friend' />
+            <img src='https://previews.123rf.com/images/kannaa123rf/kannaa123rf1401/kannaa123rf140100030/25351554-Abstract-colorful-geometric-background-Vector-illustration-for-retro-design-Pattern-of-shapes-Mosaic-Stock-Vector.jpg' alt='friend' />
           </div>
           <div className='friend-item-content'>
 
@@ -57,18 +57,18 @@ class Profile extends React.Component {
             </div>
             <div className='friend-avatar'>
               <div className='author-thumb'>
-                <img src='img/avatar3.jpg' alt='author' />
+                <img style={{maxWidth: 100}} src='https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg' alt='author' />
               </div>
               <div className='author-content'>
-                <a href='#' className='h5 author-name'>Nicholas Grissom</a>
-                <div className='country'>Los Angeles, CA</div>
+                <a href='#' className='h5 author-name'>Imran Shaukat</a>
+                <div className='country'>Karachi, Pakistan</div>
               </div>
             </div>
 
             <div className='swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal' id='swiper-unique-id-2'>
               <div className='swiper-wrapper' ><div className='swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next' data-swiper-slide-index='1' >
                 <p className='friend-about' data-swiper-parallax='-500' >
-                  Hi!, I’m Marina and I’m a Community Manager for “Gametube”. Gamer and full-time mother.
+                  
                 </p>
               </div>
               </div>
