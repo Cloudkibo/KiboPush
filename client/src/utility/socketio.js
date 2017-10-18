@@ -22,6 +22,7 @@ socket.on('disconnect', () => {
 
 socket.on('new_chat', (data) => {
   console.log('new chat received ' + data)
+
   store.dispatch(socketUpdate(data))
 })
 
