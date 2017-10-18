@@ -11,6 +11,15 @@ export function showChatSessions (sessions, status) {
 }
 
 
+export function socketUpdate (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.SOCKET_UPDATE,
+    data
+  }
+}
+
+
 export function fetchSessions (companyid) {
   console.log('Fetching Chat Sessions')
   console.log(companyid)

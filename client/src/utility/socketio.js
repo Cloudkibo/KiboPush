@@ -3,6 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
+import { socketUpdate } from './../redux/actions/livechat.actions'
 const socket = io('')
 let store
 
@@ -17,6 +18,10 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
   store.dispatch(setSocketStatus(false))
+})
+
+socket.on('getMessage', (data) => {
+  store.dispatch(socketUpdate(data))
 })
 
 export function log (tag, data) {
