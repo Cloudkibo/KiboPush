@@ -58,7 +58,7 @@ export function getSession (data) {
   }
 }
 
-export function uploadAttachment (fileData) {
+export function uploadAttachment (fileData, handleUpload) {
   console.log('In Live Action', fileData)
   return (dispatch) => {
     console.log('In dispatch', fileData)
@@ -72,6 +72,7 @@ export function uploadAttachment (fileData) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
+      handleUpload(res)
     })
   }
 }
