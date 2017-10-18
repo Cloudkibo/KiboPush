@@ -63,9 +63,9 @@ class Sessions extends React.Component {
               onHide={this.handleClose} >
               <div className='dropdown'>
                 <button className='btn dropdown-toggle' type='button' data-toggle='dropdown' stye={{backgroundColor: '#e7e7e7'}}>Sort By:</button>
-                <ul className='dropdown-menu'>
-                  <li><a href='#'>Newest to Oldest</a></li>
-                  <li><a href='#'>Oldest to Newest</a></li>
+                <ul className='dropdown-menu' style={{position: 'relative'}}>
+                  <li style={{ zIndex: '99', width: '100%' }}><a href='#'>Newest to Oldest</a></li>
+                  <li style={{ zIndex: '99', width: '100%' }}><a href='#'>Oldest to Newest</a></li>
                 </ul>
               </div>
               <div className='dropdown'>
