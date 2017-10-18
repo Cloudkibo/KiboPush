@@ -28,7 +28,9 @@ class ChatBox extends React.Component {
     this.state = {
       attachment: [],
       attachmentType: '',
-      componentType: ''
+      componentType: '',
+      uploaded: false,
+      uploadDescription: ''
     }
     props.fetchUserChats(this.props.sessionid)
     this.getProfileLink = this.getProfileLink.bind(this)
@@ -82,11 +84,18 @@ class ChatBox extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       fileData.append('componentType', this.state.componentType)
+      this.setState({uploadDescription: 'File is uploading ..'})
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
   }
-  handleUpload () {
-    console.log('handleUpload')
+  handleUpload (res) {
+    console.log('handleUpload', res)
+    if (res.status === 'failed') {
+      this.setState({uploaded: false, uploadDescription: res.description})
+    }
+    if (res.status === 'success') {
+      this.setState({ uploaded: true, uploadDescription: '' })
+    }
   }
 
   getProfileLink (sessionid) {
@@ -149,7 +158,8 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' value={this.state.attachmentType !== '' ? this.state.attachment.name : ''} />
+            <textarea className='form-control' placeholder='' value={this.state.uploaded ? this.state.attachment.name : ''} />
+            <div style={{color: 'red'}}><span>{this.state.uploadDescription}</span></div>
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass} onClick={() => {
