@@ -67,9 +67,7 @@ class Profile extends React.Component {
 
             <div className='swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal' id='swiper-unique-id-2'>
               <div className='swiper-wrapper' ><div className='swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next' data-swiper-slide-index='1' >
-                <p className='friend-about' data-swiper-parallax='-500' >
-                  
-                </p>
+                <p className='friend-about' data-swiper-parallax='-500' />
               </div>
               </div>
             </div>

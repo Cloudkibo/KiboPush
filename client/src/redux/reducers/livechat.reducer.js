@@ -1,6 +1,5 @@
 import * as ActionTypes from '../constants/constants'
 
-
 export function liveChat (state = [], action) {
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:

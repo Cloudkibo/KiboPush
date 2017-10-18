@@ -9,23 +9,30 @@
 'use strict'
 
 const logger = require('./../components/logger')
-// const TAG = 'config/socketio.js'
+const TAG = 'config/socketio.js'
+let globalSocket
 
 // When the user disconnects.. perform this
-function onDisconnect (io2, socket) {
+function onDisconnect (socket) {
 }
 
 // When the user connects.. perform this
-function onConnect (io2, socket) {
+function onConnect (socket) {
   socket.on('logClient', function (data) {
     logger.clientLog(data.tag, data.data)
   })
 
+  socket.on('join', (data) => {
+    logger.serverLog(TAG, `Joining room for ${JSON.stringify(data)}`)
+    socket.join(data._id)
+  })
+
   // Insert sockets below
-  // require('../api/inviteagenttoken/inviteagenttoken.socket').register(socket);
+  // require('../api/broadcasts/broadcasts.socket').register(socket)
 }
 
-module.exports = function (socketio) {
+exports.setup = function (socketio) {
+  globalSocket = socketio
   // socket.io (v1.x.x) is powered by debug.
   // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
   //
@@ -46,12 +53,17 @@ module.exports = function (socketio) {
 
     // Call onDisconnect.
     socket.on('disconnect', function () {
-      onDisconnect(socketio, socket)
+      onDisconnect(socket)
       // logger.serverLog(TAG, `SOCKET ${socket.id} DISCONNECTED AT ${new Date()}`)
     })
 
     // Call onConnect.
-    onConnect(socketio, socket)
+    onConnect(socket)
     // logger.serverLog(TAG, `SOCKET ${socket.id} CONNECTED at ${socket.connectedAt}`)
   })
+}
+
+exports.sendChatToAgents = function (data) {
+  logger.serverLog(TAG, `Sending new chat payload to client ${JSON.stringify(data)}`)
+  globalSocket.to(data.room_id).emit('new_chat', data.payload)
 }

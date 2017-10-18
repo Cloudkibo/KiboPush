@@ -40,7 +40,7 @@ module.exports = function (app, httpapp, config) {
   const socket = require('socket.io').listen(config.env === 'production' ? httpsServer
     : server)
 
-  require('./socketio')(socket)
+  require('./socketio').setup(socket)
 
   server.listen(config.port, config.ip, () => {
     logger.serverLog(TAG, `KiboPush server STARTED on ${

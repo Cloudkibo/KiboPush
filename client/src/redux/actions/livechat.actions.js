@@ -10,7 +10,6 @@ export function showChatSessions (sessions, status) {
   }
 }
 
-
 export function socketUpdate (data) {
   console.log(data)
   return {
@@ -18,7 +17,6 @@ export function socketUpdate (data) {
     data
   }
 }
-
 
 export function fetchSessions (companyid) {
   console.log('Fetching Chat Sessions')
@@ -45,11 +43,10 @@ export function fetchUserChats (sessionid) {
   }
 }
 
-
 export function getSession (data) {
   // here we will fetch list of subscribers from endpoint
   data = {
-    
+
   }
   console.log('Sending Chat to Server')
   return (dispatch) => {
