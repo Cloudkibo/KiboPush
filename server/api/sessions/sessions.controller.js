@@ -24,7 +24,7 @@ exports.index = function (req, res) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
           }
-          sessions = _.merge(sessions, { chats })
+          sessions[0] = _.merge(sessions[0], { chats })
           return res.status(200).json({
             status: 'success',
             payload: sessions

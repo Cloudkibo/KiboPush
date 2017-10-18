@@ -1,28 +1,38 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function updateChat (data) {
-  console.log('Get Chat From Server', data)
+export function showChatSessions (sessions, status) {
+  console.log(sessions)
+  console.log(status)
   return {
-    type: ActionTypes.UPDATE_CHAT,
-    data
+    type: ActionTypes.SHOW_CHAT_SESSIONS,
+    sessions
   }
 }
 
-export function updateSession (data) {
-  console.log('Get Sessions From Server', data)
-  return {
-    type: ActionTypes.UPDATE_SESSION,
-    data
-  }
-}
 
-export function sendChat (data) {
-  // here we will fetch list of subscribers from endpoint
-  console.log('Sending Chat to Server')
+export function fetchSessions (companyid) {
+  console.log('Fetching Chat Sessions')
+  console.log(companyid)
   return (dispatch) => {
-    callApi('dashboard/stats')
-      .then(res => dispatch(updateDashboard(res.payload)))
+    callApi('sessions', 'post', companyid)
+      .then(res => dispatch(showChatSessions(res.payload, res.status)))
+  }
+}
+
+export function showUserChats (userChat) {
+  console.log(userChat)
+  return {
+    type: ActionTypes.SHOW_USER_CHAT,
+    userChat
+  }
+}
+
+export function fetchUserChats (sessionid) {
+  console.log('Fetching User Chats')
+  return (dispatch) => {
+    callApi(`livechat/${sessionid}`)
+      .then(res => dispatch(showUserChats(res.payload)))
   }
 }
 
