@@ -20,7 +20,8 @@ socket.on('disconnect', () => {
   store.dispatch(setSocketStatus(false))
 })
 
-socket.on('getMessage', (data) => {
+socket.on('new_chat', (data) => {
+  console.log('new chat received ' + data)
   store.dispatch(socketUpdate(data))
 })
 
@@ -29,5 +30,11 @@ export function log (tag, data) {
   socket.emit('logClient', {
     tag,
     data
+  })
+}
+
+export function joinRoom (data) {
+  socket.emit('join', {
+    _id: data._id
   })
 }
