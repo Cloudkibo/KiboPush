@@ -1,5 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
+export const API_URL = '/api'
 
 export function showChatSessions (sessions, status) {
   console.log(sessions)
@@ -10,7 +12,6 @@ export function showChatSessions (sessions, status) {
   }
 }
 
-
 export function socketUpdate (data) {
   console.log(data)
   return {
@@ -18,7 +19,6 @@ export function socketUpdate (data) {
     data
   }
 }
-
 
 export function fetchSessions (companyid) {
   console.log('Fetching Chat Sessions')
@@ -45,16 +45,33 @@ export function fetchUserChats (sessionid) {
   }
 }
 
-
 export function getSession (data) {
   // here we will fetch list of subscribers from endpoint
   data = {
-    
+
   }
   console.log('Sending Chat to Server')
   return (dispatch) => {
     // callApi('sessions')
     //   .then(res => dispatch(updateDashboard(res.payload)))
-    dispatch(updateSession(data))
+  //  dispatch(updateSession(data))
+  }
+}
+
+export function uploadAttachment (fileData) {
+  console.log('In Live Action', fileData)
+  return (dispatch) => {
+    console.log('In dispatch', fileData)
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/broadcasts/upload`, {
+      method: 'post',
+      body: fileData,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('respone', res)
+    })
   }
 }

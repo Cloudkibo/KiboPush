@@ -1,6 +1,5 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
-import request from 'superagent'
 export const API_URL = '/api'
 
 export function sendresp (data) {
