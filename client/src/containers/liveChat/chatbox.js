@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { fetchUserChats } from '../../redux/actions/livechat.actions'
+import { fetchUserChats, uploadAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -26,9 +26,15 @@ class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      attachment: [],
+      attachmentType: '',
+      componentType: ''
     }
     props.fetchUserChats(this.props.sessionid)
     this.getProfileLink = this.getProfileLink.bind(this)
+    this.onFileChange = this.onFileChange.bind(this)
+    this.setComponentType = this.setComponentType.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
   }
 
   componentDidMount () {
@@ -43,6 +49,44 @@ class ChatBox extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  setComponentType (file) {
+    if (file.type.match('image.*')) {
+      this.setState({componentType: 'image'})
+    } else if (file.type.match('audio.*')) {
+      this.setState({componentType: 'audio'})
+    } else if (file.type.match('video.*')) {
+      this.setState({componentType: 'audio'})
+    } else if (file.type.match('application.*') || file.type.match('text.*')) {
+      this.setState({componentType: 'text'})
+    } else {
+      this.setState({componentType: 'Not allowed'})
+    }
+    console.log(this.state.componentType)
+  }
+
+  onFileChange (e) {
+    var files = e.target.files
+    var file = e.target.files[files.length - 1]
+    if (file) {
+      console.log('OnFileChange', file)
+      this.setState({
+        attachment: file,
+        attachmentType: file.type
+      })
+      this.setComponentType(file)
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('componentType', this.state.componentType)
+      this.props.uploadAttachment(fileData, this.handleUpload)
+    }
+  }
+  handleUpload () {
+    console.log('handleUpload')
   }
 
   getProfileLink (sessionid) {
@@ -105,7 +149,7 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' />
+            <textarea className='form-control' placeholder='' value={this.state.attachmentType !== '' ? this.state.attachment.name : ''} />
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass} onClick={() => {
@@ -136,7 +180,7 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                <input ref='selectFile' type='file' onChange={this._onChange} style={styles.inputf} />
+                <input type='file' accept='image/*,text/*,audio/*,video/*,application/*' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError} multiple='false' ref='selectFile' style={styles.inputf} />
               </div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass}>
@@ -372,7 +416,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchUserChats: fetchUserChats
+    fetchUserChats: (fetchUserChats),
+    uploadAttachment: (uploadAttachment)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
