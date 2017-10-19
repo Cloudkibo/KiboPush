@@ -54,7 +54,7 @@ class Sessions extends React.Component {
         <div className='ui-block-title'>
           <input type='text' placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-            <Link onClick={this.handleClick}> ... </Link>
+            <Link onClick={this.handleClick}> <i className="icon-ellipsis-vertical"></i> </Link>
             <Popover
               style={{width: '120px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
               placement='bottom'
