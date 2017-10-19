@@ -32,7 +32,8 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      textAreaValue: ''
     }
     props.fetchUserChats(this.props.sessionid)
     this.getProfileLink = this.getProfileLink.bind(this)
@@ -41,6 +42,9 @@ class ChatBox extends React.Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
+    this.onEnter = this.onEnter.bind(this)
+    this.resetFileComponent = this.resetFileComponent(this)
   }
 
   componentDidMount () {
@@ -62,19 +66,66 @@ class ChatBox extends React.Component {
       this.props.deletefile(this.state.uploadedId, this.handleRemove)
     }
   }
+  resetFileComponent () {
+    this.setState({
+      attachment: [],
+      attachmentType: '',
+      componentType: '',
+      uploaded: false,
+      uploadDescription: '',
+      uploadedId: '',
+      removeFileDescription: ''
+    })
+  }
+
+  handleTextChange (e) {
+    this.setState({
+      textAreaValue: e.target.value,
+      uploadDescription: '',
+      removeFileDescription: ''
+    })
+  }
+
+  onEnter (e) {
+    if (e.which === 13) {
+      e.preventDefault()
+      if (this.state.uploadedId !== '') {
+        var payload = {
+          componentType: this.state.componentType,
+          fileName: this.state.attachment.name,
+          fileurl: this.state.uploadedId,
+          id: this.state.uploadedId,
+          size: this.state.attachment.size,
+          type: this.state.attachmentType
+        }
+      } else if (this.state.textAreaValue !== '') {
+        payload = {
+          id: '0',
+          componentType: 'text',
+          text: 'hi'
+        }
+      } else {
+        return
+      }
+      var data = {
+        platform: 'facebook',
+        payload: payload,
+        isSegmented: false,
+        segmentationPageIds: [''],
+        segmentationLocale: [],
+        segmentationGender: [],
+        segmentationTimeZone: '',
+        title: 'Live Chat'
+
+      }
+    }
+    console.log(data)
+  }
 
   handleRemove (res) {
     console.log('handle remove', res)
     if (res.status === 'success') {
-      this.setState = {
-        attachment: [],
-        attachmentType: '',
-        componentType: '',
-        uploaded: false,
-        uploadDescription: '',
-        uploadedId: '',
-        removeFileDescription: ''
-      }
+      this.resetFileComponent()
     }
     if (res.status === 'failed') {
       this.setState({uploaded: true, removeFileDescription: res.description})
@@ -97,6 +148,13 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
+    this.setState({
+      uploadDescription: '',
+      removeFileDescription: ''
+    })
+    if (this.state.uploadedId !== '') {
+      this.removeAttachment()
+    }
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
@@ -118,7 +176,15 @@ class ChatBox extends React.Component {
   handleUpload (res) {
     console.log('handleUpload', res)
     if (res.status === 'failed') {
-      this.setState({uploaded: false, uploadDescription: res.description})
+      this.setState({
+        uploaded: false,
+        attachment: [],
+        uploadDescription: res.description,
+        attachmentType: '',
+        componentType: '',
+        uploadedId: '',
+        removeFileDescription: ''
+      })
     }
     if (res.status === 'success') {
       this.setState({ uploaded: true, uploadDescription: '', uploadedId: res.payload })
@@ -185,7 +251,7 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' />
+            <textarea className='form-control' placeholder='' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} />
             { this.state.uploaded ?
               <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
                 <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
