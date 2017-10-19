@@ -58,6 +58,8 @@ class ChatBox extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    console.log('componentDidMount called')
+    this.props.fetchUserChats(this.props.session._id)
   }
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
