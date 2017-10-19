@@ -58,6 +58,8 @@ class ChatBox extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    console.log('componentDidMount called')
+    this.props.fetchUserChats(this.props.session._id)
   }
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
@@ -206,7 +208,7 @@ class ChatBox extends React.Component {
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-          <ul style={{overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
+          <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
                 msg.sender_id === this.props.user._id
