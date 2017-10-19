@@ -7,6 +7,7 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let LiveChatSchema = new Schema({
+  format: {type: String, default: 'convos'}, // values: convos, facebook
   sender_id: String, // this is the subscriber id or page id
   recipient_id: String,
   session_id: {type: Schema.ObjectId, ref: 'sessions'},

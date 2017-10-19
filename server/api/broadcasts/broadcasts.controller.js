@@ -13,6 +13,8 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
+const utility = require('./broadcasts.utility')
+const og = require('open-graph')
 let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
@@ -182,39 +184,52 @@ exports.getfbMessage = function (req, res) {
 }
 
 function createSession (page, subscriber, event) {
-  Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id}, (err, session) => {
-    if (err) logger.serverLog(TAG, err)
-    if (session === null) {
-      let newSession = new Sessions({
-        subscriber_id: subscriber._id,
-        page_id: page._id,
-        company_id: page.userId._id
-      })
-      newSession.save((err, sessionSaved) => {
-        if (err) logger.serverLog(TAG, err)
-        logger.serverLog(TAG, 'new session created')
-        saveLiveChat(page, subscriber, sessionSaved, event)
-      })
-    } else {
-      saveLiveChat(page, subscriber, session, event)
-    }
-  })
+  Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
+    (err, session) => {
+      if (err) logger.serverLog(TAG, err)
+      if (session === null) {
+        let newSession = new Sessions({
+          subscriber_id: subscriber._id,
+          page_id: page._id,
+          company_id: page.userId._id
+        })
+        newSession.save((err, sessionSaved) => {
+          if (err) logger.serverLog(TAG, err)
+          logger.serverLog(TAG, 'new session created')
+          saveLiveChat(page, subscriber, sessionSaved, event)
+        })
+      } else {
+        saveLiveChat(page, subscriber, session, event)
+      }
+    })
 }
 
 function saveLiveChat (page, subscriber, session, event) {
-  let newChat = new LiveChat({
+  let chatPayload = {
+    format: 'facebook',
     sender_id: subscriber._id,
     recipient_id: page.userId._id,
     session_id: session._id,
     company_id: page.userId._id,
     status: 'unseen', // seen or unseen
-    payload: { // todo save the id of message here just like zarmeen do
-      componentType: 'text',
-      text: event.message.text
-    }
-  })
+    payload: event.message
+  }
+  let urlInText = utility.parseUrl(event.message.text)
+  if (urlInText !== null && urlInText !== '') {
+    og(urlInText, function (err, meta) {
+      if (err) return logger.serverLog(TAG, err)
+      chatPayload.url_meta = meta
+      saveChatInDb(page, session, chatPayload)
+    })
+  } else {
+    saveChatInDb(page, session, chatPayload)
+  }
+}
+
+function saveChatInDb (page, session, chatPayload) {
+  let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
-    if (err) logger.serverLog(TAG, err)
+    if (err) return logger.serverLog(TAG, err)
     require('./../../config/socketio').sendChatToAgents({
       room_id: page.userId._id,
       payload: {
@@ -243,6 +258,7 @@ function updateseenstatus (req) {
       })
     })
 }
+
 function savepoll (req) {
   // find subscriber from sender id
   logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)

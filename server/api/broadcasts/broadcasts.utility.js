@@ -129,5 +129,17 @@ function deleteFile (fileurl) {
   })
 }
 
+function parseUrl (text) {
+  // eslint-disable-next-line no-useless-escape
+  let urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  let onlyUrl = ''
+  if (text) {
+    let testUrl = text.match(urlRegex)
+    onlyUrl = testUrl && testUrl[0]
+  }
+  return onlyUrl
+}
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
+exports.parseUrl = parseUrl

@@ -186,8 +186,8 @@ class ChatBox extends React.Component {
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
             <textarea className='form-control' placeholder='' />
-            { this.state.uploaded ?
-              <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+            { this.state.uploaded
+              ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
                 <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
                   <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
                   <i className='fa fa-times fa-stack-1x fa-inverse' />
@@ -195,8 +195,7 @@ class ChatBox extends React.Component {
                 <div>{this.state.attachment.name}</div>
                 <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
               </div>
-              :
-              <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
+              : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
             }
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
