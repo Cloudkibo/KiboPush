@@ -28,12 +28,15 @@ exports.create = function (req, res) {
     `Inside Send chat, req body = ${JSON.stringify(req.body)}`)
 
   const chatMessage = new LiveChat({
-    sender_id: req.body.sender_id, // this is the subscriber id or page id
-    recipient_id: req.body.recipient_id, // this is the subscriber id or page id
+    sender_id: req.body.sender_id, // this is the page id
+    recipient_id: req.body.recipient_id, // this is the subscriber id
+    sender_fb_id: req.body.sender_id, // this is the (facebook) page id
+    recipient_fb_id: req.body.recipient_id, // this is the (facebook) subscriber id
     session_id: req.body.session_id,
     company_id: req.body.company_id, // this is admin id till we have companies
     payload: req.body.payload, // this where message content will go
-    url_meta: req.body.url_meta
+    url_meta: req.body.url_meta,
+    status: 'unseen' // seen or unseen
   })
 
   chatMessage.save((err, chatMessage) => {
