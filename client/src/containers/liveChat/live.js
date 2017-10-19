@@ -82,10 +82,10 @@ class LiveChat extends React.Component {
               this.props.sessions && (
                 this.state.activeSessionId === ''
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile sessionid={(this.props.sessions[0]) ? this.props.sessions[0]._id : 0} profile={(!this.state.currentProfile && this.props.sessions.length > 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  <Profile sessionid={(this.props.sessions[0]) ? this.props.sessions[0]._id : 0} profile={this.props.sessions[0].subscriber_id} />
                 </div>
                 : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile sessionid={this.state.activeSessionId} profile={(!this.state.currentProfile && this.props.sessions.length > 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  <Profile sessionid={this.state.activeSessionId} profile={this.state.currentProfile} />
                 </div>
               )
             }
