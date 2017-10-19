@@ -43,6 +43,7 @@ class ChatBox extends React.Component {
     this.handleRemove = this.handleRemove.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
+    this.scrollToBottom = this.scrollToBottom.bind(this)
     this.resetFileComponent = this.resetFileComponent(this)
   }
 
@@ -60,7 +61,13 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
     this.props.fetchUserChats(this.props.session._id)
+    this.scrollToBottom()
   }
+
+  scrollToBottom () {
+    this.messagesEnd.scrollIntoView({behavior: 'smooth'})
+  }
+
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
     if (this.state.uploadedId !== '') {
@@ -194,9 +201,14 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
+  }
+
+  componentDidUpdate (nextProps) {
+    this.scrollToBottom()
   }
 
   render () {
@@ -213,32 +225,34 @@ class ChatBox extends React.Component {
               this.props.userChat && this.props.userChat.map((msg) => (
                 msg.sender_id === this.props.user._id
                   ? (
-                  <li>
-                    <div className='author-thumb-right'>
-                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
-                    </div>
-                    <div className='notification-event'>
-                      <span className='chat-message-item-right'>{msg.payload.text}</span>
-                      {/**
-                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                       **/}
-                    </div>
-                  </li>
-                )
+                    <li>
+                      <div className='author-thumb-right'>
+                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
+                      </div>
+                      <div className='notification-event'>
+                        <span className='chat-message-item-right'>{msg.payload.text}</span>
+                        {/**
+                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                        **/}
+                      </div>
+                    </li>
+                  )
                   : (
-                  <li>
-                    <div className='author-thumb-left'>
-                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
-                    </div>
-                    <div className='notification-event'>
-                      <span className='chat-message-item-left'>{msg.payload.text}</span>
-                      {/**
-                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                       **/}
-                    </div>
-                  </li>
-                )
+                    <li>
+                      <div className='author-thumb-left'>
+                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
+                      </div>
+                      <div className='notification-event'>
+                        <span className='chat-message-item-left'>{msg.payload.text}</span>
+                        {/**
+                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                        **/}
+                      </div>
+                    </li>
+                  )
               ))}
+            <div style={{ float: 'left', clear: 'both' }}
+              ref={(el) => { this.messagesEnd = el }} />
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
