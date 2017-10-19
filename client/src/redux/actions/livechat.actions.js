@@ -77,9 +77,12 @@ export function uploadAttachment (fileData, handleUpload) {
   }
 }
 
-export function deletefile (data) {
+export function deletefile (data, handleRemove) {
   return (dispatch) => {
-    callApi('broadcasts/deletefile', 'post', data)
-      .then(res => console.log('delete file', res))
+    callApi(`broadcasts/delete/${data}`)
+      .then(res => {
+        console.log('delete file', res)
+        handleRemove(res)
+      })
   }
 }
