@@ -80,7 +80,7 @@ class Sessions extends React.Component {
         </div>
         <ul className='widget w-activity-feed notification-list'>
           {this.props.sessions.map((item) => (
-            <li key={item._id} onClick={() => this.props.changeActiveSession(item._id)}>
+            <li key={item._id} onClick={() => {this.props.changeActiveSession(item._id); this.props.updateProfile(item.subscriber_id)}}>
               <div className='author-thumb'>
                 <img src={item.subscriber_id.profilePic} alt='author' />
               </div>

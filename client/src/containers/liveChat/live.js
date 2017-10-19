@@ -19,9 +19,11 @@ class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      activeSessionId: ''
+      activeSessionId: '',
+      currentProfile: {},
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
+    this.updateProfile = this.updateProfile.bind(this)
   }
 
   componentDidMount () {
@@ -47,8 +49,13 @@ class LiveChat extends React.Component {
     console.log('componentWillReceiveProps is called')
   }
 
+  updateProfile(subscriber){
+      this.setState({currentProfile: subscriber})
+  }
+
   render () {
     console.log('sessions: ', this.props.sessions)
+    console.log('currentProfile: ', this.state.currentProfiles)
     return (
       <div>
         <Header />
@@ -59,7 +66,7 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Sessions changeActiveSession={this.changeActiveSession} />
+              <Sessions changeActiveSession={this.changeActiveSession} updateProfile={this.updateProfile} />
             </div>
             {
               this.props.sessions && (
