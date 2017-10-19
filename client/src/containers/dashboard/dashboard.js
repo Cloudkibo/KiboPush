@@ -21,7 +21,6 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
-
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -42,14 +41,14 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    // if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // this means connected pages in 0
-    //   browserHistory.push('/addPages')
-    // } else if (nextprops.pages && nextprops.pages.length > 0 &&
-    //   nextprops.subscribers && nextprops.subscribers.length === 0 &&
-    //   this.props.dashboard.subscribers === 0) {
-    this.setState({isShowingModal: true})
-    // }
+    if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+      browserHistory.push('/addPages')
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0 &&
+      this.props.dashboard.subscribers === 0) {
+      this.setState({isShowingModal: true})
+    }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       this.props.fetchSessions({ company_id: nextprops.user._id })
@@ -72,7 +71,8 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
-    if (this.props.user.dashboardTourSeen) {
+    console.log('Dashboard Tour Seen: ', this.props.user.dashboardTourSeen)
+    if (!this.props.user.dashboardTourSeen) {
       this.addSteps([{
         title: 'Pages',
         text: 'This shows the number of pages currently connected',
