@@ -1,6 +1,10 @@
 import * as ActionTypes from '../constants/constants'
 
-export function liveChat (state = [], action) {
+const initialState = {
+    sessions: [],
+}
+
+export function liveChat (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {
