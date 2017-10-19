@@ -226,7 +226,7 @@ class ChatBox extends React.Component {
                 : (
                   <li>
                     <div className='author-thumb-left'>
-                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                     </div>
                     <div className='notification-event'>
                       <span className='chat-message-item-left'>{msg.payload.text}</span>
