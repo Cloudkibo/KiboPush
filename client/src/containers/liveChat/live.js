@@ -20,7 +20,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       activeSessionId: '',
-      currentProfile: {},
+      currentProfile: {}
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
   }
@@ -39,8 +39,8 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  componentWillMount(){
-    console.log("Fetch Sessions")
+  componentWillMount () {
+    console.log('Fetch Sessions')
   }
 
   changeActiveSession (sessionid, subscriber) {
