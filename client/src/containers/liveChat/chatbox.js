@@ -35,8 +35,7 @@ class ChatBox extends React.Component {
       removeFileDescription: '',
       textAreaValue: ''
     }
-    props.fetchUserChats(this.props.sessionid)
-    this.getProfileLink = this.getProfileLink.bind(this)
+    props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -191,27 +190,20 @@ class ChatBox extends React.Component {
     }
   }
 
-  getProfileLink (sessionid) {
-    for (var i = 0; this.props.sessions.length; i++) {
-      if (this.props.sessions[i]._id === sessionid) {
-        return this.props.sessions[i].subscriber_id.profilePic
-      }
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.userChat) {
-      console.log('user chats updated')
+      console.log('user chats updated', nextProps.userChat)
     }
   }
 
   render () {
+    console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat'>
         <div className='ui-block-title'>
           <span className='icon-status online' />
-          <h6 className='title'>Mathilda Brinker</h6>
+          <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
@@ -221,7 +213,7 @@ class ChatBox extends React.Component {
                 ? (
                   <li>
                     <div className='author-thumb-right'>
-                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                     </div>
                     <div className='notification-event'>
                       <span className='chat-message-item-right'>{msg.payload.text}</span>
@@ -251,9 +243,15 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
+<<<<<<< HEAD
             <textarea className='form-control' placeholder='' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} />
             { this.state.uploaded ?
               <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+=======
+            <textarea className='form-control' placeholder='' />
+            { this.state.uploaded
+              ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+>>>>>>> 73d28cbf2c854ac4787e48077e5fc4024275fd00
                 <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
                   <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
                   <i className='fa fa-times fa-stack-1x fa-inverse' />
@@ -261,8 +259,7 @@ class ChatBox extends React.Component {
                 <div>{this.state.attachment.name}</div>
                 <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
               </div>
-              :
-              <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
+              : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
             }
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>

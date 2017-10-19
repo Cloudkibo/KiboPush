@@ -21,7 +21,6 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
-
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -30,7 +29,8 @@ class Dashboard extends React.Component {
     props.loadSubscribersList()
     this.state = {
       isShowingModal: false,
-      steps: []
+      steps: [],
+      dashboardTourSeen: false
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -42,6 +42,11 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
+    console.log('NextProps: ', nextprops.user.dashboardTourSeen)
+    this.setState({
+      dashboardTourSeen: nextprops.user.dashboardTourSeen
+    })
+
     // if (nextprops.pages && nextprops.pages.length === 0) {
     //   // this means connected pages in 0
     //   browserHistory.push('/addPages')
@@ -72,51 +77,49 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
-    if (this.props.user.dashboardTourSeen) {
-      this.addSteps([{
-        title: 'Pages',
-        text: 'This shows the number of pages currently connected',
-        selector: 'div#pages',
-        position: 'top-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Subscribers',
-        text: 'These are the total number of subscribers you have',
-        selector: 'div#subscribers',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Scheduled Broadcasts',
-        text: 'These are the current number of posts scheduled to be broadcasted',
-        selector: 'div#scheduled',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Survey',
-        text: 'The number of surveys you have created',
-        selector: 'div#surveys',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Polls',
-        text: 'The Polls you have made till now',
-        selector: 'div#polls',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Broadcasts',
-        text: 'Broadcasts you have made to your subscribers',
-        selector: 'div#broadcasts',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-      ])
-    }
+    this.addSteps([{
+      title: 'Pages',
+      text: 'This shows the number of pages currently connected',
+      selector: 'div#pages',
+      position: 'top-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Subscribers',
+      text: 'These are the total number of subscribers you have',
+      selector: 'div#subscribers',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Scheduled Broadcasts',
+      text: 'These are the current number of posts scheduled to be broadcasted',
+      selector: 'div#scheduled',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Survey',
+      text: 'The number of surveys you have created',
+      selector: 'div#surveys',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Polls',
+      text: 'The Polls you have made till now',
+      selector: 'div#polls',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Broadcasts',
+      text: 'Broadcasts you have made to your subscribers',
+      selector: 'div#broadcasts',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true}
+    ])
   }
 
   closeDialog () {
@@ -163,7 +166,10 @@ class Dashboard extends React.Component {
     }
     return (
       <div className='container'>
+        {
+        !this.state.dashboardTourSeen &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {

@@ -2200,7 +2200,7 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
       float: right; }
     .popup-chat .chat-message-field li:nth-child(2n) .notification-event {
       float: right;
-      padding-left: 0;
+      margin-right: 37px;
     }
   .popup-chat .add-options-message {
     position: absolute;

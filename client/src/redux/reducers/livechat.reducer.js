@@ -1,7 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-    sessions: [],
+  sessions: []
 }
 
 export function liveChat (state = initialState, action) {

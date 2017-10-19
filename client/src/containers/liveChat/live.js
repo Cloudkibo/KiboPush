@@ -19,8 +19,8 @@ class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      activeSessionId: '',
-      currentProfile: {},
+      activeSession: {},
+      currentProfile: {}
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
   }
@@ -39,13 +39,13 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  componentWillMount(){
-    console.log("Fetch Sessions")
+  componentWillMount () {
+    console.log('Fetch Sessions')
   }
 
-  changeActiveSession (sessionid, subscriber) {
+  changeActiveSession (session, subscriber) {
     console.log('active session updated')
-    this.setState({activeSessionId: sessionid, currentProfile: subscriber})
+    this.setState({activeSession: session, currentProfile: subscriber})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -69,23 +69,23 @@ class LiveChat extends React.Component {
             </div>
             {
               this.props.sessions && (
-                this.state.activeSessionId === ''
+                this.state.activeSession === {}
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <ChatBox sessionid={(this.props.sessions[0]) ? this.props.sessions[0]._id : 0} />
+                  <ChatBox session={(this.props.sessions[0]) ? this.props.sessions[0] : {}} />
                 </div>
                 : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <ChatBox sessionid={this.state.activeSessionId} />
+                  <ChatBox session={this.state.activeSession} />
                 </div>
               )
             }
             {
               this.props.sessions && (
-                this.state.activeSessionId === ''
+                this.state.activeSession === {}
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile sessionid={(this.props.sessions[0]) ? this.props.sessions[0]._id : 0} profile={123} />
+                  <Profile session={(this.props.sessions[0]) ? this.props.sessions[0] : {}} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
                 </div>
                 : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile sessionid={this.state.activeSessionId} profile={this.state.currentProfile} />
+                  <Profile session={this.state.activeSession} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
                 </div>
               )
             }
