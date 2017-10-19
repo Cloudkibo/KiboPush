@@ -23,7 +23,6 @@ class LiveChat extends React.Component {
       currentProfile: {},
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
-    this.updateProfile = this.updateProfile.bind(this)
   }
 
   componentDidMount () {
@@ -40,17 +39,17 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  changeActiveSession (sessionid) {
+  componentWillMount(){
+    console.log("Fetch Sessions")
+  }
+
+  changeActiveSession (sessionid, subscriber) {
     console.log('active session updated')
-    this.setState({activeSessionId: sessionid})
+    this.setState({activeSessionId: sessionid, currentProfile: subscriber})
   }
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-  }
-
-  updateProfile(subscriber){
-      this.setState({currentProfile: subscriber})
   }
 
   render () {
@@ -66,7 +65,7 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-              <Sessions changeActiveSession={this.changeActiveSession} updateProfile={this.updateProfile} />
+              <Sessions changeActiveSession={this.changeActiveSession} />
             </div>
             {
               this.props.sessions && (
