@@ -68,10 +68,10 @@ class LiveChat extends React.Component {
               <Sessions changeActiveSession={this.changeActiveSession} />
             </div>
             {
-              this.props.sessions && (
+              this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === {}
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <ChatBox session={(this.props.sessions[0]) ? this.props.sessions[0] : {}} />
+                  <ChatBox session={this.props.sessions[0]} />
                 </div>
                 : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
                   <ChatBox session={this.state.activeSession} />
@@ -79,10 +79,10 @@ class LiveChat extends React.Component {
               )
             }
             {
-              this.props.sessions && (
+              this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === {}
                 ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile session={(this.props.sessions[0]) ? this.props.sessions[0] : {}} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
                 </div>
                 : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
                   <Profile session={this.state.activeSession} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
