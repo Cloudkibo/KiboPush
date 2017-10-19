@@ -35,7 +35,6 @@ class ChatBox extends React.Component {
       removeFileDescription: ''
     }
     props.fetchUserChats(this.props.session._id)
-    this.getProfileLink = this.getProfileLink.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -125,14 +124,6 @@ class ChatBox extends React.Component {
     }
   }
 
-  getProfileLink (sessionid) {
-    for (var i = 0; this.props.sessions.length; i++) {
-      if (this.props.sessions[i]._id === sessionid) {
-        return this.props.sessions[i].subscriber_id.profilePic
-      }
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.userChat) {
@@ -156,7 +147,7 @@ class ChatBox extends React.Component {
                 ? (
                   <li>
                     <div className='author-thumb-right'>
-                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                     </div>
                     <div className='notification-event'>
                       <span className='chat-message-item-right'>{msg.payload.text}</span>
