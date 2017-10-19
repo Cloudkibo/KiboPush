@@ -9,7 +9,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { fetchSessions } from '../../redux/actions/livechat.actions'
+import { fetchSessions, fetchUserChats } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Sessions from './sessions'
@@ -45,6 +45,7 @@ class LiveChat extends React.Component {
 
   changeActiveSession (session, subscriber) {
     console.log('active session updated')
+    this.props.fetchUserChats(session._id)
     this.setState({activeSession: session, currentProfile: subscriber})
   }
 
@@ -71,22 +72,22 @@ class LiveChat extends React.Component {
               this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === ''
                   ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <ChatBox session={this.props.sessions[0]} />
-                </div>
+                    <ChatBox session={this.props.sessions[0]} />
+                  </div>
                   : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <ChatBox session={this.state.activeSession} />
-                </div>
+                    <ChatBox session={this.state.activeSession} />
+                  </div>
               )
             }
             {
               this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === ''
                   ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
-                </div>
+                    <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  </div>
                   : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Profile session={this.state.activeSession} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
-                </div>
+                    <Profile session={this.state.activeSession} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  </div>
               )
             }
           </div>
@@ -106,7 +107,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSessions: fetchSessions
+    fetchSessions: fetchSessions,
+    fetchUserChats: fetchUserChats
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
