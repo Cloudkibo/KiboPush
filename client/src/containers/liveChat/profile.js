@@ -34,7 +34,7 @@ class Profile extends React.Component {
   }
 
   render () {
-    console.log("Profile", this.props.profile)
+    console.log('Profile', this.props.profile)
     return (
       <div className='ui-block'>
         <div className='friend-item'>
