@@ -268,7 +268,7 @@ exports.delete = function (req, res) {
     } else {
       logger.serverLog(TAG, 'file deleted')
       return res.status(200)
-        .json({status: 'failed', payload: 'File deleted successfully'})
+        .json({status: 'success', payload: 'File deleted successfully'})
     }
   })
 }

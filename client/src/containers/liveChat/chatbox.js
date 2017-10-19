@@ -32,15 +32,18 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      textAreaValue: ''
     }
-    props.fetchUserChats(this.props.sessionid)
-    this.getProfileLink = this.getProfileLink.bind(this)
+    props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
+    this.onEnter = this.onEnter.bind(this)
+    this.resetFileComponent = this.resetFileComponent(this)
   }
 
   componentDidMount () {
@@ -62,19 +65,66 @@ class ChatBox extends React.Component {
       this.props.deletefile(this.state.uploadedId, this.handleRemove)
     }
   }
+  resetFileComponent () {
+    this.setState({
+      attachment: [],
+      attachmentType: '',
+      componentType: '',
+      uploaded: false,
+      uploadDescription: '',
+      uploadedId: '',
+      removeFileDescription: ''
+    })
+  }
+
+  handleTextChange (e) {
+    this.setState({
+      textAreaValue: e.target.value,
+      uploadDescription: '',
+      removeFileDescription: ''
+    })
+  }
+
+  onEnter (e) {
+    if (e.which === 13) {
+      e.preventDefault()
+      if (this.state.uploadedId !== '') {
+        var payload = {
+          componentType: this.state.componentType,
+          fileName: this.state.attachment.name,
+          fileurl: this.state.uploadedId,
+          id: this.state.uploadedId,
+          size: this.state.attachment.size,
+          type: this.state.attachmentType
+        }
+      } else if (this.state.textAreaValue !== '') {
+        payload = {
+          id: '0',
+          componentType: 'text',
+          text: 'hi'
+        }
+      } else {
+        return
+      }
+      var data = {
+        platform: 'facebook',
+        payload: payload,
+        isSegmented: false,
+        segmentationPageIds: [''],
+        segmentationLocale: [],
+        segmentationGender: [],
+        segmentationTimeZone: '',
+        title: 'Live Chat'
+
+      }
+    }
+    console.log(data)
+  }
 
   handleRemove (res) {
     console.log('handle remove', res)
     if (res.status === 'success') {
-      this.setState = {
-        attachment: [],
-        attachmentType: '',
-        componentType: '',
-        uploaded: false,
-        uploadDescription: '',
-        uploadedId: '',
-        removeFileDescription: ''
-      }
+      this.resetFileComponent()
     }
     if (res.status === 'failed') {
       this.setState({uploaded: true, removeFileDescription: res.description})
@@ -97,6 +147,13 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
+    this.setState({
+      uploadDescription: '',
+      removeFileDescription: ''
+    })
+    if (this.state.uploadedId !== '') {
+      this.removeAttachment()
+    }
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
@@ -118,63 +175,64 @@ class ChatBox extends React.Component {
   handleUpload (res) {
     console.log('handleUpload', res)
     if (res.status === 'failed') {
-      this.setState({uploaded: false, uploadDescription: res.description})
+      this.setState({
+        uploaded: false,
+        attachment: [],
+        uploadDescription: res.description,
+        attachmentType: '',
+        componentType: '',
+        uploadedId: '',
+        removeFileDescription: ''
+      })
     }
     if (res.status === 'success') {
       this.setState({ uploaded: true, uploadDescription: '', uploadedId: res.payload })
     }
   }
 
-  getProfileLink (sessionid) {
-    for (var i = 0; this.props.sessions.length; i++) {
-      if (this.props.sessions[i]._id === sessionid) {
-        return this.props.sessions[i].subscriber_id.profilePic
-      }
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.userChat) {
-      console.log('user chats updated')
+      console.log('user chats updated', nextProps.userChat)
     }
   }
 
   render () {
+    console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat'>
         <div className='ui-block-title'>
           <span className='icon-status online' />
-          <h6 className='title'>Mathilda Brinker</h6>
+          <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
                 msg.sender_id === this.props.user._id
-                ? (
+                  ? (
                   <li>
                     <div className='author-thumb-right'>
-                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                     </div>
                     <div className='notification-event'>
                       <span className='chat-message-item-right'>{msg.payload.text}</span>
                       {/**
-                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                      **/}
+                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                       **/}
                     </div>
                   </li>
                 )
-                : (
+                  : (
                   <li>
                     <div className='author-thumb-left'>
-                      <img style={{width: '34px', height: '34px'}} src={this.getProfileLink(msg.session_id)} alt='author' />
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                     </div>
                     <div className='notification-event'>
                       <span className='chat-message-item-left'>{msg.payload.text}</span>
                       {/**
-                        <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                      **/}
+                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                       **/}
                     </div>
                   </li>
                 )
@@ -185,9 +243,9 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' />
-            { this.state.uploaded
-              ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+            <textarea className='form-control' placeholder='' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} />
+            { this.state.uploaded ?
+              <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
                 <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
                   <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
                   <i className='fa fa-times fa-stack-1x fa-inverse' />
@@ -263,7 +321,7 @@ class ChatBox extends React.Component {
                     fontSize: '12px',
                     bottom: -4
                   }}
-                    className='center fa fa-smile-o' />
+                     className='center fa fa-smile-o' />
                 </i>
               </div>
               <div style={{display: 'inline-block'}} data-tip='GIF'>
