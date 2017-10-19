@@ -43,8 +43,7 @@ class ChatBox extends React.Component {
     this.handleRemove = this.handleRemove.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
-    //this.scrollToBottom = this.scrollToBottom.bind(this)
-    this.resetFileComponent = this.resetFileComponent(this)
+    this.resetFileComponent = this.resetFileComponent.bind(this)
   }
 
   componentDidMount () {
@@ -180,6 +179,7 @@ class ChatBox extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       fileData.append('componentType', this.state.componentType)
+      this.setState({uploadDescription: 'File is uploading..'})
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
   }
