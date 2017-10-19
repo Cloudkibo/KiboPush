@@ -53,8 +53,8 @@ class Sessions extends React.Component {
       <div className='ui-block'>
         <div className='ui-block-title'>
           <input type='text' placeholder='Search Customers...' className='form-control' />
-          <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-  <Link onClick={this.handleClick}> <img src="https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png" style={{width: 25, height: 25}} /> </Link>
+          <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center'>
+  <Link onClick={this.handleClick}> <img src="https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png" style={{maxHeight: 20}} /> </Link>
             <Popover
               style={{width: '120px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
               placement='bottom'
