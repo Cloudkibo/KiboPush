@@ -58,7 +58,7 @@ class Profile extends React.Component {
             </div>
             <div className='friend-avatar'>
               <div className='author-thumb'>
-                <img style={{maxWidth: 100}} src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'} alt='author' />
+                <img style={{maxWidth: 100, maxHeight: 100}} src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'} alt='author' />
               </div>
               <div className='author-content'>
                 <a href='#' className='h5 author-name'>{this.props.profile.firstName + this.props.profile.lastName}</a>
