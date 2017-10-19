@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { fetchUserChats, uploadAttachment } from '../../redux/actions/livechat.actions'
+import { fetchUserChats, uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -30,13 +30,15 @@ class ChatBox extends React.Component {
       attachmentType: '',
       componentType: '',
       uploaded: false,
-      uploadDescription: ''
+      uploadDescription: '',
+      uploadedId: ''
     }
     props.fetchUserChats(this.props.sessionid)
     this.getProfileLink = this.getProfileLink.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
+    this.removeAttachment = this.removeAttachment.bind(this)
   }
 
   componentDidMount () {
@@ -51,6 +53,13 @@ class ChatBox extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+  removeAttachment () {
+    console.log('remove', this.state.uploadedId)
+    this.setState({uploaded: false})
+    if (this.state.uploadedId !== '') {
+      this.props.deletefile(this.state.uploadedId)
+    }
   }
 
   setComponentType (file) {
@@ -94,7 +103,7 @@ class ChatBox extends React.Component {
       this.setState({uploaded: false, uploadDescription: res.description})
     }
     if (res.status === 'success') {
-      this.setState({ uploaded: true, uploadDescription: '' })
+      this.setState({ uploaded: true, uploadDescription: '', uploadedId: res.payload })
     }
   }
 
@@ -158,8 +167,18 @@ class ChatBox extends React.Component {
         <form>
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' value={this.state.uploaded ? this.state.attachment.name : ''} />
-            <div style={{color: 'red'}}><span>{this.state.uploadDescription}</span></div>
+            <textarea className='form-control' placeholder='' />
+            { this.state.uploaded ?
+              <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+                <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
+                  <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
+                  <i className='fa fa-times fa-stack-1x fa-inverse' />
+                </span>
+                <div>{this.state.attachment.name}</div>
+              </div>
+              :
+              <div style={{wordWrap: 'break-word', color: 'red'}}>{this.state.uploadDescription}</div>
+            }
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass} onClick={() => {
@@ -427,7 +446,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchUserChats: (fetchUserChats),
-    uploadAttachment: (uploadAttachment)
+    uploadAttachment: (uploadAttachment),
+    deletefile: (deletefile)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
