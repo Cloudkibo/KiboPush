@@ -64,11 +64,11 @@ class ChatBox extends React.Component {
     //this.scrollToBottom()
   }
 
-  {/**
+  /**
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'smooth'})
   }
-  **/}
+  **/
 
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
