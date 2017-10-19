@@ -43,7 +43,7 @@ class ChatBox extends React.Component {
     this.handleRemove = this.handleRemove.bind(this)
     this.handleTextChange = this.handleTextChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
-    this.scrollToBottom = this.scrollToBottom.bind(this)
+    //this.scrollToBottom = this.scrollToBottom.bind(this)
     this.resetFileComponent = this.resetFileComponent(this)
   }
 
@@ -61,12 +61,14 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
     this.props.fetchUserChats(this.props.session._id)
-    this.scrollToBottom()
+    //this.scrollToBottom()
   }
 
+  {/**
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'smooth'})
   }
+  **/}
 
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
@@ -201,14 +203,14 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    this.scrollToBottom()
+    //this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
   }
 
   componentDidUpdate (nextProps) {
-    this.scrollToBottom()
+    //this.scrollToBottom()
   }
 
   render () {
@@ -251,8 +253,10 @@ class ChatBox extends React.Component {
                     </li>
                   )
               ))}
+            {/**
             <div style={{ float: 'left', clear: 'both' }}
               ref={(el) => { this.messagesEnd = el }} />
+              **/}
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
