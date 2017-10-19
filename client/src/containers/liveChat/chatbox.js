@@ -31,7 +31,8 @@ class ChatBox extends React.Component {
       componentType: '',
       uploaded: false,
       uploadDescription: '',
-      uploadedId: ''
+      uploadedId: '',
+      removeFileDescription: ''
     }
     props.fetchUserChats(this.props.sessionid)
     this.getProfileLink = this.getProfileLink.bind(this)
@@ -39,6 +40,7 @@ class ChatBox extends React.Component {
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
   }
 
   componentDidMount () {
@@ -56,9 +58,26 @@ class ChatBox extends React.Component {
   }
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
-    this.setState({uploaded: false})
     if (this.state.uploadedId !== '') {
-      this.props.deletefile(this.state.uploadedId)
+      this.props.deletefile(this.state.uploadedId, this.handleRemove)
+    }
+  }
+
+  handleRemove (res) {
+    console.log('handle remove', res)
+    if (res.status === 'success') {
+      this.setState = {
+        attachment: [],
+        attachmentType: '',
+        componentType: '',
+        uploaded: false,
+        uploadDescription: '',
+        uploadedId: '',
+        removeFileDescription: ''
+      }
+    }
+    if (res.status === 'failed') {
+      this.setState({uploaded: true, removeFileDescription: res.description})
     }
   }
 
@@ -93,7 +112,6 @@ class ChatBox extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       fileData.append('componentType', this.state.componentType)
-      this.setState({uploadDescription: 'File is uploading ..'})
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
   }
@@ -175,9 +193,10 @@ class ChatBox extends React.Component {
                   <i className='fa fa-times fa-stack-1x fa-inverse' />
                 </span>
                 <div>{this.state.attachment.name}</div>
+                <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
               </div>
               :
-              <div style={{wordWrap: 'break-word', color: 'red'}}>{this.state.uploadDescription}</div>
+              <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
             }
             <div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
@@ -209,7 +228,7 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                <input type='file' accept='image/*,text/*,audio/*,video/*,application/*' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError} multiple='false' ref='selectFile' style={styles.inputf} />
+                <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError} multiple='false' ref='selectFile' style={styles.inputf} />
               </div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass}>
