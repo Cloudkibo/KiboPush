@@ -28,10 +28,10 @@ exports.create = function (req, res) {
     `Inside Send chat, req body = ${JSON.stringify(req.body)}`)
 
   const chatMessage = new LiveChat({
-    sender_id: req.body.sender_id, // this is the page id
-    recipient_id: req.body.recipient_id, // this is the subscriber id
-    sender_fb_id: req.body.sender_id, // this is the (facebook) page id
-    recipient_fb_id: req.body.recipient_id, // this is the (facebook) subscriber id
+    sender_id: req.body.sender_id, // this is the page id: _id of Pageid
+    recipient_id: req.body.recipient_id, // this is the subscriber id: _id of subscriberId
+    sender_fb_id: req.body.sender_id, // this is the (facebook) :page id of pageId
+    recipient_fb_id: req.body.recipient_id, // this is the (facebook) subscriber id : pageid of subscriber id
     session_id: req.body.session_id,
     company_id: req.body.company_id, // this is admin id till we have companies
     payload: req.body.payload, // this where message content will go
