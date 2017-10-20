@@ -63,17 +63,10 @@ class Sessions extends React.Component {
   }
 
   logChange(val) {
-    console.log("Selected: " + JSON.stringify(val));
-    var temp = [],
-    if(val.value === "new"){
-
-    }
-    if(val.value === "old"){
-      
-    }
+    console.log("Selected: " + JSON.stringify(val))
   }
   pageChange(val) {
-    console.log("Selected: " + JSON.stringify(val));
+    console.log("Selected: " + JSON.stringify(val))
   }
 
   render () {
