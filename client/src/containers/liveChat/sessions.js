@@ -8,12 +8,17 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
+import Select from 'react-select';
+
 class Sessions extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      openPopover: false
-    }
+      openPopover: false,
+      logOptions: [
+                  { value: 'new', label: 'Newest to oldest' },
+                  { value: 'old', label: 'Oldest to newest' }],
+    },
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -48,6 +53,10 @@ class Sessions extends React.Component {
     this.setState({openPopover: false})
   }
 
+  logChange(val) {
+    console.log("Selected: " + JSON.stringify(val));
+  }
+
   render () {
     return (
       <div className='ui-block'>
@@ -61,13 +70,11 @@ class Sessions extends React.Component {
               target={this.target}
               show={this.state.openPopover}
               onHide={this.handleClose} >
-              <div className='dropdown'>
-                <button className='btn dropdown-toggle' type='button' data-toggle='dropdown' stye={{backgroundColor: '#e7e7e7'}}>Sort By:</button>
-                <ul className='dropdown-menu' style={{position: 'relative'}}>
-                  <li style={{ zIndex: '99', width: '100%' }}><a href='#'>Newest to Oldest</a></li>
-                  <li style={{ zIndex: '99', width: '100%' }}><a href='#'>Oldest to Newest</a></li>
-                </ul>
-              </div>
+              <Select
+                name="form-field-name"
+                options={this.state.logOptions}
+                onChange={this.logChange}
+              />
               <div className='dropdown'>
                 <button className='btn dropdown-toggle' type='button' data-toggle='dropdown' stye={{backgroundColor: '#e7e7e7'}}>Pages:</button>
                 <ul className='dropdown-menu'>
