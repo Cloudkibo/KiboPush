@@ -101,7 +101,7 @@ class ChatBox extends React.Component {
         var payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedId,
+          fileurl: this.state.fileurl,
           id: this.state.uploadedId,
           size: this.state.attachment.size,
           type: this.state.attachmentType
