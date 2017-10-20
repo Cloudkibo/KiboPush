@@ -161,7 +161,7 @@ class ChatBox extends React.Component {
     } else if (file.type.match('video.*')) {
       this.setState({componentType: 'audio'})
     } else if (file.type.match('application.*') || file.type.match('text.*')) {
-      this.setState({componentType: 'text'})
+      this.setState({componentType: 'file'})
     } else {
       this.setState({componentType: 'Not allowed'})
     }
