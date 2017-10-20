@@ -76,6 +76,7 @@ class Sessions extends React.Component {
   }
 
   render () {
+    console.log("Logvalue", this.state.logValue)
     console.log('Sessions', this.props.sessions)
     return (
       <div className='ui-block'>
