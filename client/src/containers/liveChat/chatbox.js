@@ -155,10 +155,6 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
-    if (this.state.uploadedId !== '') {
-      this.setState({uploadDescription: 'Remove uploaded file to add another'})
-      return
-    }
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
@@ -300,8 +296,13 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
-                  multiple='false' ref='selectFile' style={styles.inputf} />
+                { this.state.uploadedId !== '' ?
+                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                    multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                  :
+                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                    multiple='false' ref='selectFile' style={styles.inputf} />
+                }
               </div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass}>
