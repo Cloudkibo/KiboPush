@@ -91,7 +91,7 @@ class Sessions extends React.Component {
                 name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
-                value={this.state.logValue}
+                val={this.state.logValue}
               />
               <Select
                 name='form-field-name'
