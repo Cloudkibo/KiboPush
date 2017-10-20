@@ -29,32 +29,26 @@ class Dashboard extends React.Component {
     props.loadSubscribersList()
     this.state = {
       isShowingModal: false,
-      steps: [],
-      dashboardTourSeen: false
+      steps: []
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
-    this.tourfinished = this.tourFinished.bind(this)
+    this.tourFinished = this.tourFinished.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('NextProps: ', nextprops.user.dashboardTourSeen)
-    this.setState({
-      dashboardTourSeen: nextprops.user.dashboardTourSeen
-    })
-
-    // if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // this means connected pages in 0
-    //   browserHistory.push('/addPages')
-    // } else if (nextprops.pages && nextprops.pages.length > 0 &&
-    //   nextprops.subscribers && nextprops.subscribers.length === 0 &&
-    //   this.props.dashboard.subscribers === 0) {
-    this.setState({isShowingModal: true})
-    // }
+    if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+      browserHistory.push('/addPages')
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0 &&
+      this.props.dashboard.subscribers === 0) {
+      this.setState({isShowingModal: true})
+    }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       this.props.fetchSessions({ company_id: nextprops.user._id })
@@ -129,8 +123,9 @@ class Dashboard extends React.Component {
   tourFinished (data) {
     console.log('Next Tour Step')
     if (data.type === 'finished') {
+      console.log('this: ', this)
       console.log('Tour Finished')
-      tourCompleted({
+      this.props.tourCompleted({
         'dashboardTourSeen': true
       })
     }
@@ -167,7 +162,7 @@ class Dashboard extends React.Component {
     return (
       <div className='container'>
         {
-        !this.state.dashboardTourSeen &&
+        !this.props.tour &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }
         <br /><br /><br /><br /><br /><br />
@@ -282,7 +277,8 @@ function mapStateToProps (state) {
     dashboard: (state.dashboardInfo.dashboard),
     pages: (state.pagesInfo.pages),
     subscribers: (state.subscribersInfo.subscribers),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    tour: (state.dashboardInfo.tour)
   }
 }
 
@@ -294,7 +290,8 @@ function mapDispatchToProps (dispatch) {
       loadSubscribersList: loadSubscribersList,
       createbroadcast: createbroadcast,
       fetchSessions: fetchSessions,
-      getuserdetails: getuserdetails
+      getuserdetails: getuserdetails,
+      tourCompleted: tourCompleted
     },
     dispatch)
 }

@@ -11,14 +11,13 @@ export function updateDashboard (data) {
 export function tourCompleted (tour) {
   console.log('Tour Completed')
   return (dispatch) => {
-    callApi(`/users/updateChecks`, 'post', tour).then(res => dispatch(updateTour(res.payload)))
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateTour()))
   }
 }
-export function updateTour (data) {
+export function updateTour () {
   console.log('In updateTour')
   return {
-    type: ActionTypes.DASHBOARD_TOUR_COMPLETED,
-    data: data.reverse()
+    type: ActionTypes.DASHBOARD_TOUR_COMPLETED
   }
 }
 
