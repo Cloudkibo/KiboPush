@@ -40,6 +40,9 @@ class Sessions extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    if(nextProps.pages){
+      console.log("Got some pages", nextProps.pages)
+    }
   }
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
@@ -68,7 +71,7 @@ class Sessions extends React.Component {
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center'>
   <Link onClick={this.handleClick}> <img src="https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png" style={{maxHeight: 20}} /> </Link>
             <Popover
-              style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
+              style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 5}}
               placement='bottom'
               target={this.target}
               show={this.state.openPopover}
@@ -109,7 +112,8 @@ class Sessions extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sessions: (state.liveChat.sessions)
+    sessions: (state.liveChat.sessions),
+    pages: (state.pagesInfo.pages),
   }
 }
 
