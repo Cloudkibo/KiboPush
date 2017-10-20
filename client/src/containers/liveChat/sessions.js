@@ -64,13 +64,20 @@ class Sessions extends React.Component {
 
   logChange(val) {
     console.log("Selected: " + JSON.stringify(val));
+    var temp = [],
+    if(val.value === "new"){
+
+    }
+    if(val.value === "old"){
+      
+    }
   }
   pageChange(val) {
     console.log("Selected: " + JSON.stringify(val));
   }
 
   render () {
-    console.log("Pages", this.props.pages)
+    console.log("Sessions", this.props.sessions)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
