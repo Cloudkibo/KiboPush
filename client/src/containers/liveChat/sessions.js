@@ -64,6 +64,7 @@ class Sessions extends React.Component {
   }
 
   render () {
+    console.log("Pages", this.props.pages)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
