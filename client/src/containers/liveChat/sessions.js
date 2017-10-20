@@ -18,6 +18,7 @@ class Sessions extends React.Component {
       logOptions: [
                   { value: 'new', label: 'Newest to oldest' },
                   { value: 'old', label: 'Oldest to newest' }],
+      pageOptions: [],
     },
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -42,6 +43,11 @@ class Sessions extends React.Component {
     console.log('componentWillReceiveProps is called')
     if(nextProps.pages){
       console.log("Got some pages", nextProps.pages)
+      var myPages = [];
+      nextProps.pages.map((page) => {
+          myPages.push({value: page.pageId, label: page.pageName})
+      })
+      this.setState({pageOptions: myPages})
     }
   }
   handleClick (e) {
@@ -84,7 +90,7 @@ class Sessions extends React.Component {
               />
               <Select
                 name="form-field-name"
-                options={this.state.logOptions}
+                options={this.state.pageOptions}
                 onChange={this.pageChange}
               />
             </Popover>
