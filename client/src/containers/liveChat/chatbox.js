@@ -202,14 +202,14 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    //this.scrollToBottom()
+    // this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
   }
 
   componentDidUpdate (nextProps) {
-    //this.scrollToBottom()
+    // this.scrollToBottom()
   }
 
   render () {
@@ -263,8 +263,8 @@ class ChatBox extends React.Component {
           <div className='form-group label-floating is-empty'>
             <label className='control-label'>Press enter to send message...</label>
             <textarea className='form-control' placeholder='' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} />
-            { this.state.uploaded ?
-              <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+            { this.state.uploaded
+              ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
                 <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
                   <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
                   <i className='fa fa-times fa-stack-1x fa-inverse' />
@@ -304,11 +304,10 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                { this.state.uploadedId !== '' ?
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                { this.state.uploadedId !== ''
+                  ? <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} disabled />
-                  :
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                  : <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} />
                 }
               </div>
@@ -346,7 +345,7 @@ class ChatBox extends React.Component {
                     fontSize: '12px',
                     bottom: -4
                   }}
-                     className='center fa fa-smile-o' />
+                    className='center fa fa-smile-o' />
                 </i>
               </div>
               <div style={{display: 'inline-block'}} data-tip='GIF'>

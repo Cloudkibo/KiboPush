@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
-import Select from 'react-select';
+import Select from 'react-select'
 
 class Sessions extends React.Component {
   constructor (props, context) {
@@ -18,7 +18,7 @@ class Sessions extends React.Component {
       logOptions: [
                   { value: 'new', label: 'Newest to oldest' },
                   { value: 'old', label: 'Oldest to newest' }],
-      pageOptions: [],
+      pageOptions: []
     },
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -41,11 +41,11 @@ class Sessions extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    if(nextProps.pages){
-      console.log("Got some pages", nextProps.pages)
-      var myPages = [];
+    if (nextProps.pages) {
+      console.log('Got some pages', nextProps.pages)
+      var myPages = []
       nextProps.pages.map((page) => {
-          myPages.push({value: page.pageId, label: page.pageName})
+        myPages.push({value: page.pageId, label: page.pageName})
       })
       this.setState({pageOptions: myPages})
     }
@@ -62,21 +62,21 @@ class Sessions extends React.Component {
     this.setState({openPopover: false})
   }
 
-  logChange(val) {
-    console.log("Selected: " + JSON.stringify(val))
+  logChange (val) {
+    console.log('Selected: ' + JSON.stringify(val))
   }
-  pageChange(val) {
-    console.log("Selected: " + JSON.stringify(val))
+  pageChange (val) {
+    console.log('Selected: ' + JSON.stringify(val))
   }
 
   render () {
-    console.log("Sessions", this.props.sessions)
+    console.log('Sessions', this.props.sessions)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
           <input type='text' placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
-  <Link onClick={this.handleClick}> <img src="https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png" style={{maxHeight: 20}} /> </Link>
+            <Link onClick={this.handleClick}> <img src='https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png' style={{maxHeight: 20}} /> </Link>
             <Popover
               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
               placement='bottom'
@@ -84,12 +84,12 @@ class Sessions extends React.Component {
               show={this.state.openPopover}
               onHide={this.handleClose} >
               <Select
-                name="form-field-name"
+                name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
               />
               <Select
-                name="form-field-name"
+                name='form-field-name'
                 options={this.state.pageOptions}
                 onChange={this.pageChange}
               />
@@ -120,7 +120,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sessions: (state.liveChat.sessions),
-    pages: (state.pagesInfo.pages),
+    pages: (state.pagesInfo.pages)
   }
 }
 
