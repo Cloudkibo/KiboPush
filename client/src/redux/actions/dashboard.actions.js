@@ -11,7 +11,7 @@ export function updateDashboard (data) {
 export function tourCompleted (tour) {
   console.log('Tour Completed')
   return (dispatch) => {
-    callApi(`/users/updateChecks`, 'post', tour).then(res => dispatch(updateTour()))
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateTour()))
   }
 }
 export function updateTour () {
