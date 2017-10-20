@@ -143,6 +143,7 @@ class ChatBox extends React.Component {
     if (res.status === 'failed') {
       this.setState({uploaded: true, removeFileDescription: res.description})
     }
+    console.log(this.state)
   }
 
   setComponentType (file) {
@@ -161,6 +162,7 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
+    this.resetFileComponent()
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
