@@ -222,7 +222,7 @@ class ChatBox extends React.Component {
   render () {
     console.log('current session', this.props.session)
     return (
-      <div className='ui-block popup-chat' style={{zIndex: 1}}>
+      <div className='ui-block popup-chat' style={{zIndex: 0}}>
         <div className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
