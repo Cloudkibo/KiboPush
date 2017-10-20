@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { fetchUserChats, uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
+import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -101,32 +101,25 @@ class ChatBox extends React.Component {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
           fileurl: this.state.uploadedId,
-          id: this.state.uploadedId,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
-      } else if (this.state.textAreaValue !== '') {
-        payload = {
-          id: '0',
-          componentType: 'text',
-          text: 'hi'
-        }
-      } else {
-        return
       }
+      var session = this.props.session
       var data = {
-        platform: 'facebook',
-        payload: payload,
-        isSegmented: false,
-        segmentationPageIds: [''],
-        segmentationLocale: [],
-        segmentationGender: [],
-        segmentationTimeZone: '',
-        title: 'Live Chat'
-
+        sender_id: session.page_id._id, // this is the page id: _id of Pageid
+        recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+        sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+        recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+        session_id: session._id,
+        company_id: session.company_id, // this is admin id till we have companies
+        payload: payload, // this where message content will go
+        url_meta: '',
+        status: 'unseen' // seen or unseen
       }
     }
     console.log(data)
+    this.props.sendAttachment(data)
   }
 
   handleRemove (res) {
@@ -540,7 +533,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
-    deletefile: (deletefile)
+    deletefile: (deletefile),
+    sendAttachment: (sendAttachment)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
