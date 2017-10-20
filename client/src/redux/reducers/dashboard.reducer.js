@@ -5,6 +5,7 @@ const initialState = {
     pages: 0,
     subscribers: 0,
     scheduledBroadcast: 0,
+    tour: false,
     recentBroadcasts: [],
     username: '',
     activityChart: {
@@ -24,6 +25,7 @@ export function dashboardInfo (state = initialState, action) {
       })
 
     case ActionTypes.DASHBOARD_TOUR_COMPLETED:
+      console.log('In tourcompleted reducer')
       return Object.assign({}, state, {
         tour: true
       })
