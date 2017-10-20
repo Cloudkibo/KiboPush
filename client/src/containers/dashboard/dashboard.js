@@ -41,19 +41,14 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('NextProps: ', nextprops)
-    this.setState({
-      tour: nextprops.user.dashboardTourSeen
-    })
-
-    // if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // this means connected pages in 0
-    //   browserHistory.push('/addPages')
-    // } else if (nextprops.pages && nextprops.pages.length > 0 &&
-    //   nextprops.subscribers && nextprops.subscribers.length === 0 &&
-    //   this.props.dashboard.subscribers === 0) {
-    this.setState({isShowingModal: true})
-    // }
+    if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+      browserHistory.push('/addPages')
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0 &&
+      this.props.dashboard.subscribers === 0) {
+      this.setState({isShowingModal: true})
+    }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       this.props.fetchSessions({ company_id: nextprops.user._id })

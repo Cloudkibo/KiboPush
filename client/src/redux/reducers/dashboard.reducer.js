@@ -25,7 +25,6 @@ export function dashboardInfo (state = initialState, action) {
       })
 
     case ActionTypes.DASHBOARD_TOUR_COMPLETED:
-      console.log('In tourcompleted reducer')
       return Object.assign({}, state, {
         tour: true
       })
