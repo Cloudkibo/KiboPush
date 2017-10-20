@@ -94,6 +94,7 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
+    console.log(e)
     if (e.which === 13) {
       e.preventDefault()
       if (this.state.uploadedId !== '') {
