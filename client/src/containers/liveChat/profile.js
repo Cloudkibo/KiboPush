@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Image from 'react-image-resizer'
 //  import ChatBox from './chatbox'
 
 class Profile extends React.Component {
@@ -58,7 +59,11 @@ class Profile extends React.Component {
             </div>
             <div className='friend-avatar'>
               <div className='author-thumb'>
-                <img style={{width: 100 + '%', height: 100, overflow: 'hidden'}} src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'} alt='author' />
+                   <Image
+                      src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'}
+                      height={ 100 }
+                      width={ 100 }
+                    />
               </div>
               <div className='author-content'>
                 <a href='#' className='h5 author-name'>{this.props.profile.firstName + this.props.profile.lastName}</a>

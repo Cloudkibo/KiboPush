@@ -25,6 +25,8 @@ class Sessions extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.logChange = this.logChange.bind(this)
+    this.pageChange = this.pageChange.bind(this)
   }
 
   componentDidMount () {
@@ -91,7 +93,7 @@ class Sessions extends React.Component {
                 name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
-                val={this.state.logValue}
+                value={this.state.logValue}
               />
               <Select
                 name='form-field-name'

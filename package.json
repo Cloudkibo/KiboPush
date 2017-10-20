@@ -82,6 +82,7 @@
     "react-grid-layout": "^0.15.2",
     "react-icons": "^2.2.3",
     "react-icons-kit": "^1.0.7",
+    "react-image-resizer": "^1.2.0",
     "react-joyride": "^1.10.1",
     "react-js-pagination": "^2.2.0",
     "react-messenger-plugin": "^1.0.3",
