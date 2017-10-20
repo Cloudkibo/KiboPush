@@ -94,6 +94,7 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
+    console.log(e)
     if (e.which === 13) {
       e.preventDefault()
       if (this.state.uploadedId !== '') {
@@ -120,6 +121,18 @@ class ChatBox extends React.Component {
     }
     console.log(data)
     this.props.sendAttachment(data)
+  }
+
+  sendThumbsUp () {
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'image',
+      fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+    }
+    this.setState(payload)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   handleRemove (res) {
@@ -357,7 +370,7 @@ class ChatBox extends React.Component {
                   }}>GIF</p>
                 </i>
               </div>
-              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up'>
+              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up' onClick={this.sendThumbsUp.bind(this)}>
                 <i style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
