@@ -8,18 +8,6 @@ export function updateDashboard (data) {
     data
   }
 }
-export function tourCompleted (tour) {
-  console.log('Tour Completed')
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateTour()))
-  }
-}
-export function updateTour () {
-  console.log('In updateTour')
-  return {
-    type: ActionTypes.DASHBOARD_TOUR_COMPLETED
-  }
-}
 
 export function loadDashboardData () {
   // here we will fetch list of subscribers from endpoint

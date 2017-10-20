@@ -24,11 +24,6 @@ export function dashboardInfo (state = initialState, action) {
         dashboard: action.data
       })
 
-    case ActionTypes.DASHBOARD_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        tour: true
-      })
-
     default:
       return state
   }
