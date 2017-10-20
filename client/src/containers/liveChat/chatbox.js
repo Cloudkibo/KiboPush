@@ -44,6 +44,7 @@ class ChatBox extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
     this.resetFileComponent = this.resetFileComponent.bind(this)
+    this.handleSendAttachment = this.handleSendAttachment.bind(this)
   }
 
   componentDidMount () {
@@ -120,7 +121,7 @@ class ChatBox extends React.Component {
       }
     }
     console.log(data)
-    this.props.sendAttachment(data)
+    this.props.sendAttachment(data, this.handleSendAttachment)
   }
 
   sendThumbsUp () {
@@ -133,6 +134,12 @@ class ChatBox extends React.Component {
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
+  }
+
+  handleSendAttachment (res) {
+    if (res.status === 'success') {
+      this.resetFileComponent()
+    }
   }
 
   handleRemove (res) {
@@ -305,10 +312,10 @@ class ChatBox extends React.Component {
                   }} className='fa fa-paperclip' />
                 </i>
                 { this.state.uploadedId !== '' ?
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} disabled />
                   :
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError}
+                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} />
                 }
               </div>
