@@ -60,7 +60,7 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
     this.props.fetchUserChats(this.props.session._id)
-    //this.scrollToBottom()
+    // this.scrollToBottom()
   }
 
   /**
@@ -89,9 +89,7 @@ class ChatBox extends React.Component {
 
   handleTextChange (e) {
     this.setState({
-      textAreaValue: e.target.value,
-      uploadDescription: '',
-      removeFileDescription: ''
+      textAreaValue: e.target.value
     })
   }
 
@@ -157,17 +155,16 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
-    this.setState({
-      uploadDescription: '',
-      removeFileDescription: ''
-    })
-    if (this.state.uploadedId !== '') {
-      this.removeAttachment()
-    }
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
       console.log('OnFileChange', file)
+      if (this.state.uploadedId !== '') {
+        this.removeAttachment()
+        if (this.state.removeFileDescription !== '') {
+          return
+        }
+      }
       this.setState({
         attachment: file,
         attachmentType: file.type
@@ -197,7 +194,7 @@ class ChatBox extends React.Component {
       })
     }
     if (res.status === 'success') {
-      this.setState({ uploaded: true, uploadDescription: '', uploadedId: res.payload })
+      this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
     }
   }
 
