@@ -56,6 +56,9 @@ class Sessions extends React.Component {
   logChange(val) {
     console.log("Selected: " + JSON.stringify(val));
   }
+  pageChange(val) {
+    console.log("Selected: " + JSON.stringify(val));
+  }
 
   render () {
     return (
@@ -65,7 +68,7 @@ class Sessions extends React.Component {
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center'>
   <Link onClick={this.handleClick}> <img src="https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png" style={{maxHeight: 20}} /> </Link>
             <Popover
-              style={{width: '120px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
+              style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
               placement='bottom'
               target={this.target}
               show={this.state.openPopover}
@@ -75,13 +78,11 @@ class Sessions extends React.Component {
                 options={this.state.logOptions}
                 onChange={this.logChange}
               />
-              <div className='dropdown'>
-                <button className='btn dropdown-toggle' type='button' data-toggle='dropdown' stye={{backgroundColor: '#e7e7e7'}}>Pages:</button>
-                <ul className='dropdown-menu'>
-                  <li><a href='#'>Page 1</a></li>
-                  <li><a href='#'>Page 2</a></li>
-                </ul>
-              </div>
+              <Select
+                name="form-field-name"
+                options={this.state.logOptions}
+                onChange={this.pageChange}
+              />
             </Popover>
           </div>
         </div>
