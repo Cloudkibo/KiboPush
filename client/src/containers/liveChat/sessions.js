@@ -18,7 +18,9 @@ class Sessions extends React.Component {
       logOptions: [
                   { value: 'new', label: 'Newest to oldest' },
                   { value: 'old', label: 'Oldest to newest' }],
-      pageOptions: []
+      pageOptions: [],
+      logValue: '',
+      pageValue: '',
     },
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -64,9 +66,11 @@ class Sessions extends React.Component {
 
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
+    this.setState({logValue: val.label})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
+    this.setState({pageValue: val.label})
   }
 
   render () {
@@ -87,11 +91,13 @@ class Sessions extends React.Component {
                 name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
+                value={this.state.logValue}
               />
               <Select
                 name='form-field-name'
                 options={this.state.pageOptions}
                 onChange={this.pageChange}
+                value={this.state.pageValue}
               />
             </Popover>
           </div>
