@@ -87,11 +87,12 @@ export function deletefile (data, handleRemove) {
   }
 }
 
-export function sendAttachment (data) {
+export function sendAttachment (data, handleSendAttachment) {
   console.log('Sending attachment on Live Chat', data)
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('Send Attachment Response', res)
+      handleSendAttachment(res)
     })
   }
 }
