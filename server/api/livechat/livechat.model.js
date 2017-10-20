@@ -10,6 +10,8 @@ let LiveChatSchema = new Schema({
   format: {type: String, default: 'convos'}, // values: convos, facebook
   sender_id: String, // this is the subscriber id or page id
   recipient_id: String,
+  sender_fb_id: String, // this is facebook subscriber id or page id
+  recipient_fb_id: String, // this is facebook subscriber id or page id
   session_id: {type: Schema.ObjectId, ref: 'sessions'},
   company_id: String, // this is admin id till we have companies
   status: String, // seen or unseen

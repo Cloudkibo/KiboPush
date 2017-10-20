@@ -77,23 +77,11 @@ exports.getfbMessage = function (req, res) {
 
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
 
-  if (req.body.object) {
-    if (req.body.object === 'page') {
-      let payload = req.body.entry[0]
-      if (payload.messaging[0].optin) {
-        Pages.update(
-          {pageId: payload.id, userId: payload.messaging[0].optin.ref},
-          {adminSubscriberId: payload.messaging[0].sender.id},
-          {multi: false}, (err, updated) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
-            logger.serverLog(TAG,
-              `The subscriber id of admin is added to the page ${JSON.stringify(
-                updated)}`)
-          })
-        return
-      }
+  if (req.body.object && req.body.object === 'page') {
+    let payload = req.body.entry[0]
+    if (payload.messaging[0].optin) {
+      addAdminAsSubscriber(payload)
+      return
     }
   }
 
@@ -164,7 +152,7 @@ exports.getfbMessage = function (req, res) {
 
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
     if (event.postback) {
-      var resp = JSON.parse(event.postback.payload)
+      let resp = JSON.parse(event.postback.payload)
       logger.serverLog(TAG, ` payload ${resp.poll_id}`)
       if (resp.poll_id) {
         savepoll(event)
@@ -209,6 +197,8 @@ function saveLiveChat (page, subscriber, session, event) {
     format: 'facebook',
     sender_id: subscriber._id,
     recipient_id: page.userId._id,
+    sender_fb_id: subscriber.senderId,
+    recipient_fb_id: page.pageId,
     session_id: session._id,
     company_id: page.userId._id,
     status: 'unseen', // seen or unseen
@@ -241,21 +231,43 @@ function saveChatInDb (page, session, chatPayload) {
   })
 }
 
-function updateseenstatus (req) {
-  logger.serverLog(TAG, `Inside updateseenstatus ${JSON.stringify(req)}`)
-  BroadcastPage.find({pageId: req.recipient.id, subscriberId: req.sender.id},
-    (err, pagebroadcasts) => {
+function addAdminAsSubscriber (payload) {
+  Pages.update(
+    {pageId: payload.id, userId: payload.messaging[0].optin.ref},
+    {adminSubscriberId: payload.messaging[0].sender.id},
+    {multi: false}, (err, updated) => {
       if (err) {
-        logger.serverLog(TAG, `Inside updateseenstatus Error ${err}`)
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      pagebroadcasts.forEach(pagebroadcast => {
-        pagebroadcast.seen = true
-        pagebroadcast.save((err2) => {
-          if (err2) {
-            logger.serverLog(TAG, `Inside updateseenstatus Error ${err2}`)
-          }
-        })
-      })
+      logger.serverLog(TAG,
+        `The subscriber id of admin is added to the page ${JSON.stringify(
+          updated)}`)
+    })
+}
+
+function updateseenstatus (req) {
+  logger.serverLog(TAG, `Inside update seen status ${JSON.stringify(req)}`)
+  BroadcastPage.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {seen: true},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `Broadcast seen updated : ${JSON.stringify(
+          updated)}`)
+    })
+  LiveChat.update(
+    {sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id},
+    {status: 'seen'},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `LiveChat seen updated : ${JSON.stringify(
+          updated)}`)
     })
 }
 
