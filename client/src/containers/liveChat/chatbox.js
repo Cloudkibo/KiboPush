@@ -80,6 +80,7 @@ class ChatBox extends React.Component {
     }
   }
   resetFileComponent () {
+    console.log('resettingFileComponent')
     this.setState({
       attachment: [],
       attachmentType: '',
@@ -173,10 +174,11 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
-    this.resetFileComponent()
+    console.log('onFileChange')
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
+      this.resetFileComponent()
       console.log('OnFileChange', file)
       this.setState({
         attachment: file,
