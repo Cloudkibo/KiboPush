@@ -5,6 +5,7 @@ const initialState = {
     pages: 0,
     subscribers: 0,
     scheduledBroadcast: 0,
+    tour: false,
     recentBroadcasts: [],
     username: '',
     activityChart: {
@@ -21,11 +22,6 @@ export function dashboardInfo (state = initialState, action) {
     case ActionTypes.UPDATE_DASHBOARD:
       return Object.assign({}, state, {
         dashboard: action.data
-      })
-
-    case ActionTypes.DASHBOARD_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        tour: true
       })
 
     default:

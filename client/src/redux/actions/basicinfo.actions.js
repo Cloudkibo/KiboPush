@@ -35,3 +35,20 @@ export function setSocketStatus (data) {
     data
   }
 }
+
+export function dashboardTourCompleted (tour) {
+  console.log('Tour Completed')
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateDashboardTour()))
+  }
+}
+export function updateDashboardTour () {
+  console.log('In updateTour')
+  return {
+    type: ActionTypes.DASHBOARD_TOUR_COMPLETED
+  }
+}
+
+export function getTourStatus () {
+
+}

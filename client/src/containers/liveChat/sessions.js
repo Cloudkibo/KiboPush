@@ -9,19 +9,26 @@ import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
 import Select from 'react-select'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class Sessions extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadMyPagesList()
     this.state = {
       openPopover: false,
       logOptions: [
-                  { value: 'new', label: 'Newest to oldest' },
-                  { value: 'old', label: 'Oldest to newest' }]
+        { value: 'new', label: 'Newest to oldest' },
+        { value: 'old', label: 'Oldest to newest' }],
+      pageOptions: [],
+      logValue: '',
+      pageValue: '',
     },
-    this.handleClick = this.handleClick.bind(this)
+      this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.logChange = this.logChange.bind(this)
+    this.pageChange = this.pageChange.bind(this)
   }
 
   componentDidMount () {
@@ -42,6 +49,11 @@ class Sessions extends React.Component {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
       console.log('Got some pages', nextProps.pages)
+      var myPages = []
+      nextProps.pages.map((page) => {
+        myPages.push({value: page.pageId, label: page.pageName})
+      })
+      this.setState({pageOptions: myPages})
     }
   }
   handleClick (e) {
@@ -58,19 +70,22 @@ class Sessions extends React.Component {
 
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
+    this.setState({logValue: val.value})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
+    this.setState({pageValue: val.value})
   }
 
   render () {
-    console.log('Pages', this.props.pages)
+    console.log("Logvalue", this.state.logValue)
+    console.log('Sessions', this.props.sessions)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
           <input type='text' placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
-            <Link onClick={this.handleClick}> <img src='https://openclipart.org/image/2400px/svg_to_png/241758/Menu-Circles.png' style={{maxHeight: 20}} /> </Link>
+            <Link onClick={this.handleClick} style={{padding: 10+'px'}}> <i className="icon-ellipsis-vertical"></i> </Link>
             <Popover
               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
               placement='bottom'
@@ -81,11 +96,16 @@ class Sessions extends React.Component {
                 name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
+                placeholder='Sort Sessions'
+                value={this.state.logValue}
               />
+              <br />
               <Select
-                name='form-field-name'
-                options={this.state.logOptions}
+                name='pageSelect'
+                options={this.state.pageOptions}
                 onChange={this.pageChange}
+                placeholder='Select Page'
+                value={this.state.pageValue}
               />
             </Popover>
           </div>
@@ -99,8 +119,8 @@ class Sessions extends React.Component {
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
                 {/**
-                  <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
-                **/}
+                 <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+                 **/}
               </div>
             </li>
           ))}
@@ -120,6 +140,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    loadMyPagesList: loadMyPagesList,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sessions)

@@ -3,7 +3,13 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   browserName: '',
   browserVersion: '',
-  socketStatus: false
+  socketStatus: false,
+  getStartedSeen: false,
+  dashboardTourSeen: false,
+  workFlowsTourSeen: false,
+  surveyTourSeen: false,
+  convoTourSeen: false,
+  pollTourSeen: false
 }
 
 export function basicInfo (state = initialState, action) {
@@ -26,6 +32,10 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.SET_SOCKET_STATUS:
       return Object.assign({}, state, {
         socketStatus: action.data
+      })
+    case ActionTypes.DASHBOARD_TOUR_COMPLETED:
+      return Object.assign({}, state, {
+        dashboardTourSeen: true
       })
     default:
       return state

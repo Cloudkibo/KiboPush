@@ -4,9 +4,10 @@
  */
 
 import React from 'react'
-import { fetchUserChats, uploadAttachment, deletefile } from '../../redux/actions/livechat.actions'
+import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import ReactPlayer from 'react-player'
 
 const styles = {
   iconclass: {
@@ -44,6 +45,9 @@ class ChatBox extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
     this.resetFileComponent = this.resetFileComponent.bind(this)
+    this.handleSendAttachment = this.handleSendAttachment.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
+    this.onTestURLAudio = this.onTestURLAudio.bind(this)
   }
 
   componentDidMount () {
@@ -89,46 +93,57 @@ class ChatBox extends React.Component {
 
   handleTextChange (e) {
     this.setState({
-      textAreaValue: e.target.value,
-      uploadDescription: '',
-      removeFileDescription: ''
+      textAreaValue: e.target.value
     })
   }
 
   onEnter (e) {
+    console.log(e)
     if (e.which === 13) {
       e.preventDefault()
+      console.log(this.state)
       if (this.state.uploadedId !== '') {
         var payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedId,
-          id: this.state.uploadedId,
+          fileurl: this.state.fileurl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
-      } else if (this.state.textAreaValue !== '') {
-        payload = {
-          id: '0',
-          componentType: 'text',
-          text: 'hi'
-        }
-      } else {
-        return
       }
+      var session = this.props.session
       var data = {
-        platform: 'facebook',
-        payload: payload,
-        isSegmented: false,
-        segmentationPageIds: [''],
-        segmentationLocale: [],
-        segmentationGender: [],
-        segmentationTimeZone: '',
-        title: 'Live Chat'
-
+        sender_id: session.page_id._id, // this is the page id: _id of Pageid
+        recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+        sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+        recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+        session_id: session._id,
+        company_id: session.company_id, // this is admin id till we have companies
+        payload: payload, // this where message content will go
+        url_meta: '',
+        status: 'unseen' // seen or unseen
       }
     }
     console.log(data)
+    this.props.sendAttachment(data, this.handleSendAttachment)
+  }
+
+  sendThumbsUp () {
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'image',
+      fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+    }
+    this.setState(payload)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
+  }
+
+  handleSendAttachment (res) {
+    if (res.status === 'success') {
+      this.resetFileComponent()
+    }
   }
 
   handleRemove (res) {
@@ -139,6 +154,7 @@ class ChatBox extends React.Component {
     if (res.status === 'failed') {
       this.setState({uploaded: true, removeFileDescription: res.description})
     }
+    console.log(this.state)
   }
 
   setComponentType (file) {
@@ -149,7 +165,7 @@ class ChatBox extends React.Component {
     } else if (file.type.match('video.*')) {
       this.setState({componentType: 'audio'})
     } else if (file.type.match('application.*') || file.type.match('text.*')) {
-      this.setState({componentType: 'text'})
+      this.setState({componentType: 'file'})
     } else {
       this.setState({componentType: 'Not allowed'})
     }
@@ -157,13 +173,7 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
-    this.setState({
-      uploadDescription: '',
-      removeFileDescription: ''
-    })
-    if (this.state.uploadedId !== '') {
-      this.removeAttachment()
-    }
+    this.resetFileComponent()
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
@@ -197,7 +207,25 @@ class ChatBox extends React.Component {
       })
     }
     if (res.status === 'success') {
-      this.setState({ uploaded: true, uploadDescription: '', uploadedId: res.payload })
+      this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
+    }
+  }
+
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
+      alert('Video File Format not supported. Please download.')
+    }
+  }
+
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+      alert('Audio File Format not supported. Please download.')
     }
   }
 
@@ -216,7 +244,7 @@ class ChatBox extends React.Component {
   render () {
     console.log('current session', this.props.session)
     return (
-      <div className='ui-block popup-chat'>
+      <div className='ui-block popup-chat' style={{zIndex: 0}}>
         <div className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
@@ -231,12 +259,57 @@ class ChatBox extends React.Component {
                       <div className='author-thumb-right'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
-                      <div className='notification-event'>
-                        <span className='chat-message-item-right'>{msg.payload.text}</span>
-                        {/**
-                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                        **/}
-                      </div>
+                      {
+                        msg.payload.attachments
+                        ? (msg.payload.attachments[0].type === 'video'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'audio'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{width: '32px', height: '32px'}}
+                              />
+                            </div>
+                          </div>
+                        )
+                        : <div className='notification-event'>
+                          <span className='chat-message-item-right'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
+                      }
                     </li>
                   )
                   : (
@@ -244,12 +317,57 @@ class ChatBox extends React.Component {
                       <div className='author-thumb-left'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
-                      <div className='notification-event'>
-                        <span className='chat-message-item-left'>{msg.payload.text}</span>
-                        {/**
-                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                        **/}
-                      </div>
+                      {
+                        msg.payload.attachments
+                        ? (msg.payload.attachments[0].type === 'video'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'audio'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{width: '32px', height: '32px'}}
+                              />
+                            </div>
+                          </div>
+                        )
+                        : <div className='notification-event'>
+                          <span className='chat-message-item-left'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
+                      }
                     </li>
                   )
               ))}
@@ -305,7 +423,12 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onClick={this.onFileChange} onChange={this.onFileChange} onError={this.onFilesError} multiple='false' ref='selectFile' style={styles.inputf} />
+                { this.state.uploadedId !== ''
+                  ? <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                    multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                  : <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                    multiple='false' ref='selectFile' style={styles.inputf} />
+                }
               </div>
               <div style={{display: 'inline-block'}} data-tip='emoticons'>
                 <i style={styles.iconclass}>
@@ -367,7 +490,7 @@ class ChatBox extends React.Component {
                   }}>GIF</p>
                 </i>
               </div>
-              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up'>
+              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up' onClick={this.sendThumbsUp.bind(this)}>
                 <i style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
@@ -543,7 +666,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
-    deletefile: (deletefile)
+    deletefile: (deletefile),
+    sendAttachment: (sendAttachment)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

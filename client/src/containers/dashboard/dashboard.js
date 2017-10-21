@@ -7,7 +7,7 @@ import React from 'react'
 import Joyride from 'react-joyride'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadDashboardData, tourCompleted } from '../../redux/actions/dashboard.actions'
+import { loadDashboardData} from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -19,7 +19,7 @@ import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, dashboardTourCompleted, getTourStatus} from '../../redux/actions/basicinfo.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -27,34 +27,28 @@ class Dashboard extends React.Component {
     props.loadDashboardData()
     props.loadMyPagesList()
     props.loadSubscribersList()
+    props.getuserdetails()
     this.state = {
       isShowingModal: false,
-      steps: [],
-      dashboardTourSeen: false
+      steps: []
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
-    this.tourfinished = this.tourFinished.bind(this)
-  }
-  componentWillMount () {
-    this.props.getuserdetails()
+    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('NextProps: ', nextprops.user.dashboardTourSeen)
-    this.setState({
-      dashboardTourSeen: nextprops.user.dashboardTourSeen
-    })
-
-    // if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // this means connected pages in 0
-    //   browserHistory.push('/addPages')
-    // } else if (nextprops.pages && nextprops.pages.length > 0 &&
-    //   nextprops.subscribers && nextprops.subscribers.length === 0 &&
-    //   this.props.dashboard.subscribers === 0) {
-    this.setState({isShowingModal: true})
-    // }
+    console.log('NextProps :', nextprops)
+    console.log('seens :', nextprops.user.dashboardTourSeen)
+    if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+      browserHistory.push('/addPages')
+    } else if (nextprops.pages && nextprops.pages.length > 0 &&
+      nextprops.subscribers && nextprops.subscribers.length === 0 &&
+      this.props.dashboard.subscribers === 0) {
+      this.setState({isShowingModal: true})
+    }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       this.props.fetchSessions({ company_id: nextprops.user._id })
@@ -129,8 +123,9 @@ class Dashboard extends React.Component {
   tourFinished (data) {
     console.log('Next Tour Step')
     if (data.type === 'finished') {
+      console.log('this: ', this)
       console.log('Tour Finished')
-      tourCompleted({
+      this.props.dashboardTourCompleted({
         'dashboardTourSeen': true
       })
     }
@@ -167,7 +162,7 @@ class Dashboard extends React.Component {
     return (
       <div className='container'>
         {
-        !this.state.dashboardTourSeen &&
+        !(this.props.user && this.props.user.dashboardTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }
         <br /><br /><br /><br /><br /><br />
@@ -277,7 +272,7 @@ class Dashboard extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+ // console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
     pages: (state.pagesInfo.pages),
@@ -294,7 +289,9 @@ function mapDispatchToProps (dispatch) {
       loadSubscribersList: loadSubscribersList,
       createbroadcast: createbroadcast,
       fetchSessions: fetchSessions,
-      getuserdetails: getuserdetails
+      getuserdetails: getuserdetails,
+      dashboardTourCompleted: dashboardTourCompleted,
+      getTourStatus: getTourStatus
     },
     dispatch)
 }
