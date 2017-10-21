@@ -5,6 +5,13 @@
   "main": "app.js",
   "scripts": {
     "start": "cross-env DEBUG=kibopush:* NODE_ENV=development nodemon server/app.js",
+    "start:sojharo": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-sojharo.ngrok.io nodemon server/app.js",
+    "start:dayem": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-dayem.ngrok.io nodemon server/app.js",
+    "start:imran": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-imran.ngrok.io nodemon server/app.js",
+    "start:anisha": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-anisha.ngrok.io nodemon server/app.js",
+    "start:sania": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-sania.ngrok.io nodemon server/app.js",
+    "start:ahsan": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-ahsan.ngrok.io nodemon server/app.js",
+    "start:baqar": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-baqar.ngrok.io nodemon server/app.js",
     "start:prod": "cross-env NODE_ENV=production node server/app.js",
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",

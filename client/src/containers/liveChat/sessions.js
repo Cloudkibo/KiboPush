@@ -18,13 +18,13 @@ class Sessions extends React.Component {
     this.state = {
       openPopover: false,
       logOptions: [
-                  { value: 'new', label: 'Newest to oldest' },
-                  { value: 'old', label: 'Oldest to newest' }],
+        { value: 'new', label: 'Newest to oldest' },
+        { value: 'old', label: 'Oldest to newest' }],
       pageOptions: [],
       logValue: '',
       pageValue: '',
     },
-    this.handleClick = this.handleClick.bind(this)
+      this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.logChange = this.logChange.bind(this)
@@ -124,8 +124,8 @@ class Sessions extends React.Component {
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
                 {/**
-                  <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
-                **/}
+                 <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
+                 **/}
               </div>
             </li>
           ))}
