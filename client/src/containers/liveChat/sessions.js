@@ -95,8 +95,11 @@ class Sessions extends React.Component {
                 options={this.state.logOptions}
                 onChange={this.logChange}
                 placeholder='Sort Sessions'
-                value={this.state.logValue}
+                value={"New to low"}
+                multi={false}
+                simpleValue
               />
+              <br />
               <Select
                 name='pageSelect'
                 options={this.state.pageOptions}
