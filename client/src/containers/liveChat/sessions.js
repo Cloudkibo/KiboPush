@@ -22,7 +22,7 @@ class Sessions extends React.Component {
         { value: 'new', label: 'Newest to oldest' },
         { value: 'old', label: 'Oldest to newest' }],
       pageOptions: [],
-      logValue: '',
+      logValue: 'old',
       pageValue: '',
       list: [],
     },
@@ -78,7 +78,7 @@ class Sessions extends React.Component {
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
     this.setState({logValue: val.value})
-    if(val.value == "new"){
+    if(val.value == "old"){
       console.log("Sorting using new");
       var temp = this.props.sessions.sort(function(a, b) {
         return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0);
