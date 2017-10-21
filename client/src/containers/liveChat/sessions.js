@@ -85,7 +85,7 @@ class Sessions extends React.Component {
         <div className='ui-block-title'>
           <input type='text' placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
-            <Link onClick={this.handleClick} style={{padding: 10+'px'}}> <i class="icon-ellipsis-vertical"></i> </Link>
+            <Link onClick={this.handleClick} style={{padding: 10+'px'}}> <i className="icon-ellipsis-vertical"></i> </Link>
             <Popover
               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
               placement='bottom'
