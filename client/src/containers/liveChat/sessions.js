@@ -10,6 +10,7 @@ import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+var _ = require('lodash/core')
 
 class Sessions extends React.Component {
   constructor (props, context) {
@@ -85,6 +86,16 @@ class Sessions extends React.Component {
 
   handleSearch(event){
     console.log("Search", event.target.value)
+
+    var search= event.target.value;
+    var results=_.filter(this.props.sessions,function(item){
+      var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
+      if(name.indexOf(search)>-1){
+        return item;
+      }
+    });
+    console.log(results);
+    this.setState({list: results})
   }
 
   render () {
