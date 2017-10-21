@@ -98,6 +98,7 @@ class ChatBox extends React.Component {
     console.log(e)
     if (e.which === 13) {
       e.preventDefault()
+      console.log(this.state)
       if (this.state.uploadedId !== '') {
         var payload = {
           componentType: this.state.componentType,
