@@ -68,11 +68,11 @@ class Sessions extends React.Component {
 
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    this.setState({logValue: val.label})
+    this.setState({logValue: val.value})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    this.setState({pageValue: val.label})
+    this.setState({pageValue: val.value})
   }
 
   render () {
@@ -95,15 +95,14 @@ class Sessions extends React.Component {
                 options={this.state.logOptions}
                 onChange={this.logChange}
                 placeholder='Sort Sessions'
-                value={"New to low"}
-                multi={false}
-                simpleValue
+                value={this.state.logValue}
               />
               <br />
               <Select
                 name='pageSelect'
                 options={this.state.pageOptions}
                 onChange={this.pageChange}
+                placeholder='Select Page'
                 value={this.state.pageValue}
               />
             </Popover>
