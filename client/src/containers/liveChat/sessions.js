@@ -23,6 +23,7 @@ class Sessions extends React.Component {
       pageOptions: [],
       logValue: '',
       pageValue: '',
+      list: [],
     },
       this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -56,6 +57,10 @@ class Sessions extends React.Component {
       })
       this.setState({pageOptions: myPages})
     }
+
+    if(nextProps.sessions){
+      this.setState({list: nextProps.sessions})
+    }
   }
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
@@ -79,12 +84,12 @@ class Sessions extends React.Component {
   }
 
   handleSearch(event){
-    console.log("Search", event)
+    console.log("Search", event.target.value)
   }
 
   render () {
     console.log("Logvalue", this.state.logValue)
-    console.log('Sessions', this.props.sessions)
+    console.log('Sessions', this.state.list)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
@@ -116,7 +121,7 @@ class Sessions extends React.Component {
           </div>
         </div>
         <ul className='widget w-activity-feed notification-list'>
-          {this.props.sessions.map((item) => (
+          {this.state.list.map((item) => (
             <li key={item._id} onClick={() => { this.props.changeActiveSession(item, item.subscriber_id) }}>
               <div className='author-thumb'>
                 <img src={item.subscriber_id.profilePic} alt='author' />
