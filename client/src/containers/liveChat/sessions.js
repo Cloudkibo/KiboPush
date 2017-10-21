@@ -87,7 +87,7 @@ class Sessions extends React.Component {
         return (a.request_time > b.request_time) ? -1 : ((a.date < b.date) ? 1 : 0);
     });
     }
-    cosole.log("Sorted Array", temo)    
+    console.log("Sorted Array", temo)    
     this.setState({list: temp})
   }
   pageChange (val) {
