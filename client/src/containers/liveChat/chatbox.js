@@ -7,6 +7,7 @@ import React from 'react'
 import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import ReactPlayer from 'react-player'
 
 const styles = {
   iconclass: {
@@ -45,6 +46,8 @@ class ChatBox extends React.Component {
     this.onEnter = this.onEnter.bind(this)
     this.resetFileComponent = this.resetFileComponent.bind(this)
     this.handleSendAttachment = this.handleSendAttachment.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
+    this.onTestURLAudio = this.onTestURLAudio.bind(this)
   }
 
   componentDidMount () {
@@ -208,6 +211,24 @@ class ChatBox extends React.Component {
     }
   }
 
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
+      alert('Video File Format not supported. Please download.')
+    }
+  }
+
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+      alert('Audio File Format not supported. Please download.')
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     // this.scrollToBottom()
@@ -238,12 +259,57 @@ class ChatBox extends React.Component {
                       <div className='author-thumb-right'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
-                      <div className='notification-event'>
-                        <span className='chat-message-item-right'>{msg.payload.text}</span>
-                        {/**
-                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                        **/}
-                      </div>
+                      {
+                        msg.payload.attachments
+                        ? (msg.payload.attachments[0].type === 'video'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'audio'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{width: '32px', height: '32px'}}
+                              />
+                            </div>
+                          </div>
+                        )
+                        : <div className='notification-event'>
+                          <span className='chat-message-item-right'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
+                      }
                     </li>
                   )
                   : (
@@ -251,12 +317,57 @@ class ChatBox extends React.Component {
                       <div className='author-thumb-left'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
-                      <div className='notification-event'>
-                        <span className='chat-message-item-left'>{msg.payload.text}</span>
-                        {/**
-                          <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                        **/}
-                      </div>
+                      {
+                        msg.payload.attachments
+                        ? (msg.payload.attachments[0].type === 'video'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'audio'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.attachments[0].type === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{width: '32px', height: '32px'}}
+                              />
+                            </div>
+                          </div>
+                        )
+                        : <div className='notification-event'>
+                          <span className='chat-message-item-left'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
+                      }
                     </li>
                   )
               ))}

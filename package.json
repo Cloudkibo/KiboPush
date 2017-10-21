@@ -88,6 +88,7 @@
     "react-messenger-plugin": "^1.0.3",
     "react-modal-dialog": "^4.0.7",
     "react-paginate": "^4.4.3",
+    "react-player": "^0.25.2",
     "react-redux": "^4.1.2",
     "react-router": "^2.6.0",
     "react-router-dom": "^4.2.2",
