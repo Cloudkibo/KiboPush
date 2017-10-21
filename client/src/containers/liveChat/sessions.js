@@ -78,6 +78,11 @@ class Sessions extends React.Component {
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
     this.setState({logValue: val.value})
+
+    var temp = this.props.sessions.sort(function(a, b) {
+        return (a.request_time < b.request_time) ? -1 : ((a.date > b.date) ? 1 : 0);
+    });
+    this.setState({list: temp})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
