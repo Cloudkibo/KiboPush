@@ -39,9 +39,9 @@ const all = {
   },
 
   facebook: {
-    clientID: process.env.FACEBOOK_ID || '456637644436523',
-    clientSecret: process.env.FACEBOOK_SECRET || 'f46495b908b408bc8e4f5b259b18e952',
-    callbackURL: `${process.env.DOMAIN || 'https://app.kibopush.com'}/auth/facebook/callback`
+    clientID: process.env.FACEBOOK_ID || '159385484629940',
+    clientSecret: process.env.FACEBOOK_SECRET || '67527aa04570a034b6ff67335d95e91c',
+    callbackURL: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}/auth/facebook/callback`
   },
 
   pubsubhubbub: {
