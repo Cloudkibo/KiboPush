@@ -1,6 +1,25 @@
 /*------------- #VARIABLES --------------*/
 /*------------- #BLOCKS --------------*/
 /*------------- #UI-BLOCK --------------*/
+.facebook-chat-left {
+  float: left;
+  padding: 13px;
+  background-color: #f0f4f9;
+  margin-top: 0;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.facebook-chat-right {
+  float: right;
+  padding: 13px;
+  background-color: #ff6d4d;
+  color: #fff;
+  margin-top: 0;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
 .author-thumb-left {
   height: 26px;
   width: 26px;
