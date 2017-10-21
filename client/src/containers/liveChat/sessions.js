@@ -79,12 +79,14 @@ class Sessions extends React.Component {
     console.log('Selected: ' + JSON.stringify(val))
     this.setState({logValue: val.value})
     if(val.value == "new"){
+      console.log("Sorting using new");
       var temp = this.props.sessions.sort(function(a, b) {
-        return (a.request_time < b.request_time) ? -1 : ((a.date > b.date) ? 1 : 0);
+        return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0);
     });
     }else{
+      console.log("Sorting using old");
       var temp = this.props.sessions.sort(function(a, b) {
-        return (a.request_time > b.request_time) ? -1 : ((a.date < b.date) ? 1 : 0);
+        return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0);
     });
     }
     console.log("Sorted Array", temp)    
