@@ -9,10 +9,12 @@ import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
 import Select from 'react-select'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class Sessions extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadMyPagesList()
     this.state = {
       openPopover: false,
       logOptions: [
@@ -138,6 +140,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    loadMyPagesList: loadMyPagesList,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sessions)
