@@ -8,6 +8,8 @@ import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '..
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
+import { Picker } from 'emoji-mart'
+import Popover from 'react-simple-popover'
 
 const styles = {
   iconclass: {
@@ -34,7 +36,8 @@ class ChatBox extends React.Component {
       uploadDescription: '',
       uploadedId: '',
       removeFileDescription: '',
-      textAreaValue: ''
+      textAreaValue: '',
+      showEmojiPicker: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -48,6 +51,9 @@ class ChatBox extends React.Component {
     this.handleSendAttachment = this.handleSendAttachment.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.showEmojiPicker = this.showEmojiPicker.bind(this)
+    this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
+    this.setEmoji = this.setEmoji.bind(this)
   }
 
   componentDidMount () {
@@ -63,7 +69,6 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
-    this.props.fetchUserChats(this.props.session._id)
     // this.scrollToBottom()
   }
 
@@ -79,7 +84,17 @@ class ChatBox extends React.Component {
       this.props.deletefile(this.state.uploadedId, this.handleRemove)
     }
   }
+
+  showEmojiPicker () {
+    this.setState({showEmojiPicker: true})
+  }
+
+  closeEmojiPicker () {
+    this.setState({showEmojiPicker: false})
+  }
+
   resetFileComponent () {
+    console.log('resettingFileComponent')
     this.setState({
       attachment: [],
       attachmentType: '',
@@ -173,10 +188,11 @@ class ChatBox extends React.Component {
   }
 
   onFileChange (e) {
-    this.resetFileComponent()
+    console.log('onFileChange')
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
+      this.resetFileComponent()
       console.log('OnFileChange', file)
       this.setState({
         attachment: file,
@@ -237,6 +253,14 @@ class ChatBox extends React.Component {
     }
   }
 
+  setEmoji (emoji) {
+    console.log('selected emoji', emoji)
+    this.setState({
+      textAreaValue: this.state.textAreaValue + emoji.native,
+      showEmojiPicker: false
+    })
+  }
+
   componentDidUpdate (nextProps) {
     // this.scrollToBottom()
   }
@@ -249,6 +273,27 @@ class ChatBox extends React.Component {
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
+        <Popover
+          style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          placement='top'
+          target={this.target}
+          show={this.state.showEmojiPicker}
+          onHide={this.closeEmojiPicker}
+        >
+          <div>
+            <Picker
+              style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+              emojiSize={24}
+              perLine={7}
+              skin={1}
+              set='facebook'
+              custom={[]}
+              autoFocus={false}
+              showPreview={false}
+              onClick={(emoji, event) => this.setEmoji(emoji)}
+            />
+          </div>
+        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
@@ -430,8 +475,8 @@ class ChatBox extends React.Component {
                     multiple='false' ref='selectFile' style={styles.inputf} />
                 }
               </div>
-              <div style={{display: 'inline-block'}} data-tip='emoticons'>
-                <i style={styles.iconclass}>
+              <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
