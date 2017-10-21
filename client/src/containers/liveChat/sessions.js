@@ -29,6 +29,7 @@ class Sessions extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.logChange = this.logChange.bind(this)
     this.pageChange = this.pageChange.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
   }
 
   componentDidMount () {
@@ -77,13 +78,17 @@ class Sessions extends React.Component {
     this.setState({pageValue: val.value})
   }
 
+  handleSearch(event){
+    console.log("Search", event)
+  }
+
   render () {
     console.log("Logvalue", this.state.logValue)
     console.log('Sessions', this.props.sessions)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
-          <input type='text' placeholder='Search Customers...' className='form-control' />
+          <input type='text' onChange={this.handleSearch} placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
             <Link onClick={this.handleClick} style={{padding: 10+'px'}}> <i className="icon-ellipsis-vertical"></i> </Link>
             <Popover
