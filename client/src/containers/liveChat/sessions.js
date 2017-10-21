@@ -94,7 +94,15 @@ class Sessions extends React.Component {
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    this.setState({pageValue: val.value})
+    var search= val.value;
+    console.log("Page Value", search)
+    var results=_.filter(this.props.sessions,function(item){
+      if(item.page_id.pageId === search){
+        return item;
+      }
+    });
+    console.log("Page Filter", results);
+    this.setState({list: results, pageValue: val.value})
   }
 
   handleSearch(event){
