@@ -311,11 +311,10 @@ class ChatBox extends React.Component {
                     textAlign: 'center'
                   }} className='fa fa-paperclip' />
                 </i>
-                { this.state.uploadedId !== '' ?
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                { this.state.uploadedId !== ''
+                  ? <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} disabled />
-                  :
-                  <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                  : <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
                     multiple='false' ref='selectFile' style={styles.inputf} />
                 }
               </div>
