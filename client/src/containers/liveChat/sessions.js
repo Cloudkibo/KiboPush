@@ -94,10 +94,11 @@ class Sessions extends React.Component {
                 name='form-field-name'
                 options={this.state.logOptions}
                 onChange={this.logChange}
+                placeholder='Sort Sessions'
                 value={this.state.logValue}
               />
               <Select
-                name='form-field-name'
+                name='pageSelect'
                 options={this.state.pageOptions}
                 onChange={this.pageChange}
                 value={this.state.pageValue}
