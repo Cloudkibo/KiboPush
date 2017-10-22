@@ -515,7 +515,7 @@ class ChatBox extends React.Component {
                   }} className='fa fa-smile-o' />
                 </i>
               </div>
-              <div ref={(c) => { this.sticker = c }} style={{display: 'inline-block'}} data-tip='stickers'>
+              <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
                 <i style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
