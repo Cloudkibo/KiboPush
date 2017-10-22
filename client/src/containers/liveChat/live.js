@@ -65,9 +65,18 @@ class LiveChat extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
+           {
+              this.props.sessions && this.props.sessions.length === 0 &&
+          <div className='col-xl-12 col-lg-12 col-md-4 col-sm-12 col-xs-12'>
+              <h3>Right now you dont have any chat sessions</h3>
+          </div>
+           }
+           {
+              this.props.sessions && this.props.sessions.length > 0 &&
             <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
               <Sessions changeActiveSession={this.changeActiveSession} />
             </div>
+           }
             {
               this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === ''
