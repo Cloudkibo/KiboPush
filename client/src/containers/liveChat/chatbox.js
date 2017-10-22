@@ -342,10 +342,7 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.attachments[0].payload.url}
-                                style={{width: '32px', height: '32px'}}
-                              />
+                              <h6 style={{color: '#fff'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                             </div>
                           </div>
                         )
@@ -400,10 +397,7 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
-                              <img
-                                src={msg.payload.attachments[0].payload.url}
-                                style={{width: '32px', height: '32px'}}
-                              />
+                              <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                             </div>
                           </div>
                         )

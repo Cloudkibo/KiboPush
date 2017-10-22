@@ -12,6 +12,7 @@
 
 .facebook-chat-right {
   float: right;
+  margin-right: -35px;
   padding: 13px;
   background-color: #ff6d4d;
   color: #fff;
@@ -57,6 +58,7 @@
 
 .chat-message-item-right {
   float: right;
+  margin-right: -35px;
   font-size: 12px;
   padding: 13px;
   background-color: #ff6d4d;
