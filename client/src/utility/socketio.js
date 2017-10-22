@@ -7,6 +7,8 @@ import { socketUpdate } from './../redux/actions/livechat.actions'
 const socket = io('')
 let store
 
+var joined = false
+
 export function initiateSocket (storeObj) {
   store = storeObj
   socket.connect()
@@ -35,7 +37,11 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
+  if(joined){
+    return
+  }
   socket.emit('join', {
     _id: data
   })
+  joined = true
 }
