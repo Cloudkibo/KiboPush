@@ -113,10 +113,10 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
-    console.log(e)
+    console.log('event in onEnter' + e)
     if (e.which === 13) {
       e.preventDefault()
-      console.log(this.state)
+      console.log('state in onEnter: ', this.state)
       if (this.state.uploadedId !== '') {
         var payload = {
           componentType: this.state.componentType,
@@ -150,6 +150,7 @@ class ChatBox extends React.Component {
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
     this.setState(payload)
+    console.log('state inside sendThumbsUp: ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
