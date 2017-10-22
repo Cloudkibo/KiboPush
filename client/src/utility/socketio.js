@@ -19,11 +19,12 @@ socket.on('connect', () => {
 })
 
 socket.on('disconnect', () => {
+  joined = false
   store.dispatch(setSocketStatus(false))
 })
 
 socket.on('new_chat', (data) => {
-  console.log('new chat received ' + data)
+  console.log('new chat received ', data)
 
   store.dispatch(socketUpdate(data))
 })
