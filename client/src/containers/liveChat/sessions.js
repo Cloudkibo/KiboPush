@@ -77,7 +77,10 @@ class Sessions extends React.Component {
 
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    this.setState({logValue: val.value})
+    if(val === null){
+      this.setState({list: this.props.sessions, logValue: val})
+      return
+    }
     if(val.value == "old"){
       console.log("Sorting using new");
       var temp = this.props.sessions.sort(function(a, b) {
@@ -94,12 +97,12 @@ class Sessions extends React.Component {
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    var search= val.value;
-    console.log("Page Value", search)
-    if(search === null){
-      this.setState({list: this.props.sessions, pageValue: val.value})
+    if(val === null){
+      this.setState({list: this.props.sessions, pageValue: val})
       return
     }
+    var search= val.value;
+    console.log("Page Value", search)
     var results=_.filter(this.props.sessions,function(item){
       if(item.page_id.pageId === search){
         return item;
