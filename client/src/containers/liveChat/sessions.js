@@ -93,7 +93,7 @@ class Sessions extends React.Component {
     });
     }
     console.log("Sorted Array", temp)    
-    this.setState({list: temp})
+    this.setState({list: temp, logValue: val.value})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
