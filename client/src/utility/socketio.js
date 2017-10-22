@@ -36,6 +36,6 @@ export function log (tag, data) {
 
 export function joinRoom (data) {
   socket.emit('join', {
-    _id: data._id
+    _id: data
   })
 }
