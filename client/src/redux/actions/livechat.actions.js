@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
+import store from '../store/store';
 
 export function showChatSessions (sessions, status) {
   console.log(sessions)
@@ -13,11 +14,12 @@ export function showChatSessions (sessions, status) {
 }
 
 export function socketUpdate (data) {
-  console.log(data)
-  return {
-    type: ActionTypes.SOCKET_UPDATE,
-    data
-  }
+  console.log(data.session_id)
+  console.log("Store",  store.getState())
+  // return {
+  //   type: ActionTypes.SOCKET_UPDATE,
+  //   data
+  // }
 }
 
 export function fetchSessions (companyid) {
