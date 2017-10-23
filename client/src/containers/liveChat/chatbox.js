@@ -367,7 +367,7 @@ class ChatBox extends React.Component {
                           : msg.payload.componentType === 'file'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <a href={msg.upload.fileurl} download >{msg.upload.fileName}</a>
+                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
                             </div>
                           </div>
                           : msg.payload.componentType === 'image'
