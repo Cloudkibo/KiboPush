@@ -4,13 +4,20 @@
  */
 
 import React from 'react'
-import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
+import {
+  fetchUserChats,
+  uploadAttachment,
+  deletefile,
+  sendAttachment,
+  sendChatMessage
+} from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
+import { isEmoji } from './utilities'
 
 const styles = {
   iconclass: {
@@ -105,6 +112,18 @@ class ChatBox extends React.Component {
 
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'image',
+      fileurl: sticker.image.hdpi
+    }
+    this.setState(payload, () => {
+      console.log('state inside sendSticker: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
+    
   }
 
   resetFileComponent () {
@@ -131,30 +150,53 @@ class ChatBox extends React.Component {
     if (e.which === 13) {
       e.preventDefault()
       console.log('state in onEnter: ', this.state)
+      var payload = {}
+      var session = this.props.session
+      var data = {}
       if (this.state.uploadedId !== '') {
-        var payload = {
+        payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
           fileurl: this.state.uploadedId,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
-      }
-      var session = this.props.session
-      var data = {
-        sender_id: session.page_id._id, // this is the page id: _id of Pageid
-        recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
-        sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-        recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
-        session_id: session._id,
-        company_id: session.company_id, // this is admin id till we have companies
-        payload: payload, // this where message content will go
-        url_meta: '',
-        status: 'unseen' // seen or unseen
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: '',
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendAttachment(data, this.handleSendAttachment)
+      } else if (this.state.textAreaValue !== '') {
+        payload = {
+          componentType: 'text',
+          text: this.state.textAreaValue
+        }
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: '',
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.setState({textAreaValue: ''})
+        data.format = 'convos'
+        this.props.userChat.push(data)
       }
     }
-    console.log(data)
-    this.props.sendAttachment(data, this.handleSendAttachment)
   }
 
   sendThumbsUp () {
@@ -163,11 +205,13 @@ class ChatBox extends React.Component {
       componentType: 'image',
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
-    this.setState(payload)
-    console.log('state inside sendThumbsUp: ', this.state)
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+    this.setState(payload, () => {
+      console.log('state inside sendThumbsUp: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
+   
   }
 
   handleSendAttachment (res) {
@@ -335,8 +379,7 @@ class ChatBox extends React.Component {
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
                       {
-                        msg.payload.componentType
-                        ? (msg.payload.componentType === 'video'
+                        msg.payload.componentType && (msg.payload.componentType === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
@@ -375,18 +418,20 @@ class ChatBox extends React.Component {
                               />
                             </div>
                           </div>
+                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                          ? <div className='notification-event'>
+                            <span className='emojis-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
+                          </div>
                           : <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <h6 style={{color: '#fff'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileurl.split('?')[0].split('/')[msg.payload.fileurl.split('?')[0].split('/').length - 1]}</strong></h6>
-                            </div>
+                            <span className='chat-message-item-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
                           </div>
                         )
-                        : <div className='notification-event'>
-                          <span className='chat-message-item-right'>{msg.payload.text}</span>
-                          {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
-                        </div>
                       }
                     </li>
                   )
@@ -438,6 +483,13 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                         )
+                        : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                        ? <div className='notification-event'>
+                          <span className='emojis-left'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
@@ -761,7 +813,8 @@ function mapDispatchToProps (dispatch) {
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
     deletefile: (deletefile),
-    sendAttachment: (sendAttachment)
+    sendAttachment: (sendAttachment),
+    sendChatMessage: (sendChatMessage)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { addMenuItem } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-var _ = require('lodash/core')
 //  das
-class SelectPage extends React.Component {
+class Menu extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadMyPagesList()
@@ -19,6 +19,7 @@ class SelectPage extends React.Component {
       itemlist: []
     }
     this.pageChange = this.pageChange.bind(this)
+    this.saveItem = this.saveItem.bind(this)
   }
 
   componentDidMount () {
@@ -51,22 +52,17 @@ class SelectPage extends React.Component {
       this.setState({pageValue: val})
       return
     }
-    var search = val.value
-    console.log('Page Value', search)
-    var results = _.filter(function (item) {
-      if (item.page_id.pageId === search) {
-        return item
-      }
-    })
-    console.log('Page Filter', results)
+    console.log('Page Value', val)
     this.setState({pageValue: val.value})
   }
   saveItem (event) {
-    var search = event.target.value
-    this.setState({itemlist: event.target.value})
-    console.log(itemlist)
+    console.log('event.target.', event.target.value)
+    var temp = []
+    temp.push(event.target.value)
+    this.setState({itemlist: temp})
+    console.log('this.state.itemlist', this.state.itemlist)
+    this.props.addMenuItem(event.target.value)
   }
-  handle
   render () {
     return (
       <div>
@@ -76,7 +72,6 @@ class SelectPage extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br />
-
           <div className='ui-block'>
             <div className='ui-block-title'>
               <h5>Select a page to setup its Main Menu</h5>
@@ -88,14 +83,22 @@ class SelectPage extends React.Component {
                 onChange={this.pageChange}
                 placeholder='Select Page'
                 value={this.state.pageValue}
-          />
+                />
             </div>
             <br />
-            <h4 style={{paddingLeft: '20px'}}>Edit Menu</h4>
-            <ul className='widget w-activity-feed notification-list'><br />
-              <li><input type='text' placeholder='+ Menu Item' onChange={this.saveItem} className='form-control' /></li>
-              <li><input type='text' placeholder='+ Menu Item' value='Powered by KiboPush' className='form-control' /></li>
-
+            <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
+            <ul style={{paddingLeft: '20px', width: '30%'}}>
+              <li>
+                <form className='form-inline'>
+                  <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} /></div>
+                  <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+              </li>
+              <li>
+                <form className='form-inline'>
+                  <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} /></div>
+                  <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+              </li>
+              <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
             </ul>
           </div>
         </div>
@@ -108,12 +111,13 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages)
+    //  items: (state.menuInfo.menuitems)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList, addMenuItem: addMenuItem
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SelectPage)
+export default connect(mapStateToProps, mapDispatchToProps)(Menu)
