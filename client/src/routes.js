@@ -6,6 +6,7 @@ import Home from './containers/home'
 import Login from './containers/login/login'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
+import MainMenu from './containers/menu/selectPage'
 import GrowthTools from './containers/GrowthTools/growthTools'
 import CustomerMatching from './containers/GrowthTools/customerMatchingUsingPhNum'
 import Stats from './containers/stats/stats'
@@ -109,6 +110,8 @@ const routes = (
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/live' component={LiveChat} onEnter={requireAuth} />
+    <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
+
   </Route>
 
 )

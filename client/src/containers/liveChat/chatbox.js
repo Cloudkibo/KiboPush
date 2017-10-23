@@ -38,8 +38,7 @@ class ChatBox extends React.Component {
       uploadedId: '',
       removeFileDescription: '',
       textAreaValue: '',
-      showEmojiPicker: false,
-      showStickers: false
+      showEmojiPicker: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -74,14 +73,12 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
-  /**
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'smooth'})
   }
-  **/
 
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
@@ -98,16 +95,17 @@ class ChatBox extends React.Component {
     this.setState({showEmojiPicker: false})
   }
 
-  sendSticker (sticker) {
-    console.log('sending sticker', sticker)
-  }
-
-  showStickers () {
+  showStickers() {
     this.setState({showStickers: true})
   }
 
-  hideStickers () {
+  hideStickers() {
     this.setState({showStickers: false})
+  }
+
+
+  sendSticker(sticker) {
+    console.log('sending sticker', sticker)
   }
 
   resetFileComponent () {
@@ -138,7 +136,7 @@ class ChatBox extends React.Component {
         var payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.fileurl,
+          fileurl: this.state.uploadedId,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
@@ -166,12 +164,11 @@ class ChatBox extends React.Component {
       componentType: 'image',
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
-    this.setState(payload, () => {
-      console.log('state inside sendThumbsUp: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    this.setState(payload)
+    console.log('state inside sendThumbsUp: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   handleSendAttachment (res) {
@@ -243,6 +240,7 @@ class ChatBox extends React.Component {
     }
     if (res.status === 'success') {
       this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
+      this.props.fetchUserChats(this.props.session._id)
     }
   }
 
@@ -266,7 +264,7 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    // this.scrollToBottom()
+    this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
@@ -281,14 +279,14 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
   render () {
     console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        <div className='ui-block-title'>
+        <div style={{marginTop: '28px'}} className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
@@ -326,55 +324,61 @@ class ChatBox extends React.Component {
             userId={'imran.shoukat@khi.iba.edu.pk'}
             sendSticker={this.sendSticker}
           />
-        </Popover>
+          </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
-                msg.sender_id === this.props.user._id
+                msg.format === 'convos'
                   ? (
                     <li>
                       <div className='author-thumb-right'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
                       {
-                        msg.payload.attachments
-                        ? (msg.payload.attachments[0].type === 'video'
+                        msg.payload.componentType
+                        ? (msg.payload.componentType === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
-                                url={msg.payload.attachments[0].payload.url}
+                                url={msg.payload.fileurl}
                                 controls
                                 width='100%'
                                 height='140'
-                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                                onPlay={this.onTestURLVideo(msg.payload.fileurl)}
                               />
                             </div>
                           </div>
-                          : msg.payload.attachments[0].type === 'audio'
+                          : msg.payload.componentType === 'audio'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
-                                url={msg.payload.attachments[0].payload.url}
+                                url={msg.payload.fileurl}
                                 controls
                                 width='100%'
                                 height='140'
-                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                                onPlay={this.onTestURLAudio(msg.payload.fileurl)}
                               />
                             </div>
                           </div>
-                          : msg.payload.attachments[0].type === 'image'
+                          : msg.payload.componentType === 'file'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'image'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
-                                src={msg.payload.attachments[0].payload.url}
+                                src={msg.payload.fileurl}
                                 style={{maxWidth: '150px', maxHeight: '85px'}}
                               />
                             </div>
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <h6 style={{color: '#fff'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              <h6 style={{color: '#fff'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileurl.split('?')[0].split('/')[msg.payload.fileurl.split('?')[0].split('/').length - 1]}</strong></h6>
                             </div>
                           </div>
                         )
@@ -429,7 +433,9 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
-                              <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              <a href={msg.payload.attachments[0].payload.url} target="_blank">
+                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              </a>    
                             </div>
                           </div>
                         )
@@ -443,10 +449,8 @@ class ChatBox extends React.Component {
                     </li>
                   )
               ))}
-            {/**
-            <div style={{ float: 'left', clear: 'both' }}
+            <div style={{float: 'left', clear: 'both'}}
               ref={(el) => { this.messagesEnd = el }} />
-              **/}
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
@@ -482,24 +486,42 @@ class ChatBox extends React.Component {
                 </i>
               </div>
               <div style={{display: 'inline-block'}} data-tip='attachments'>
-                <i style={styles.iconclass} onClick={() => {
-                  this.refs.selectFile.click()
-                }}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '2em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-paperclip' />
-                </i>
                 { this.state.uploadedId !== ''
-                  ? <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                    multiple='false' ref='selectFile' style={styles.inputf} disabled />
-                  : <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                    multiple='false' ref='selectFile' style={styles.inputf} />
+                  ? <div>
+                    <i style={styles.iconclass} onClick={() => {
+                      this.refs.selectFile.click()
+                    }}>
+                      <i style={{
+                        fontSize: '20px',
+                        position: 'absolute',
+                        left: '0',
+                        width: '100%',
+                        height: '2em',
+                        margin: '5px',
+                        textAlign: 'center',
+                        color: 'lightgrey'
+                      }} className='fa fa-paperclip' />
+                    </i>
+                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                      multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                  </div>
+                  : <div>
+                    <i style={styles.iconclass} onClick={() => {
+                      this.refs.selectFile.click()
+                    }}>
+                      <i style={{
+                        fontSize: '20px',
+                        position: 'absolute',
+                        left: '0',
+                        width: '100%',
+                        height: '2em',
+                        margin: '5px',
+                        textAlign: 'center'
+                      }} className='fa fa-paperclip' />
+                    </i>
+                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                      multiple='false' ref='selectFile' style={styles.inputf} />
+                  </div>
                 }
               </div>
               <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
@@ -516,8 +538,9 @@ class ChatBox extends React.Component {
                   }} className='fa fa-smile-o' />
                 </i>
               </div>
+
               <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                <i style={styles.iconclass}>
+                <i onClick={this.showStickers} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
