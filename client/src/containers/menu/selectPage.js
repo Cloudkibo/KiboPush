@@ -8,7 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 var _ = require('lodash/core')
-
+//  das
 class SelectPage extends React.Component {
   constructor (props, context) {
     super(props, context)
