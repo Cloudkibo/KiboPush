@@ -57,6 +57,9 @@ class LiveChat extends React.Component {
     if (nextProps.sessions) {
       this.setState({loading: false})
     }
+    if (nextProps.socketSession) {
+      console.log("New Message Received at following session id", nextProps.socketSession)
+    }
   }
 
   render () {
@@ -119,7 +122,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sessions: (state.liveChat.sessions),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    socketSession: (state.liveChat.socketSession)
   }
 }
 

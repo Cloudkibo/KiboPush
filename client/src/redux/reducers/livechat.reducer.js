@@ -1,7 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  sessions: []
+  sessions: [],
+  socketSession: '',
 }
 
 export function liveChat (state = initialState, action) {
@@ -14,6 +15,11 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.SHOW_USER_CHAT:
       return Object.assign({}, state, {
         userChat: action.userChat
+      })
+    
+    case ActionTypes.SOCKET_UPDATE:
+      return Object.assign({}, state, {
+        socketSession: action.data.session_id
       })
 
     default:

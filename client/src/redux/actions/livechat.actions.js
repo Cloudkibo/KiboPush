@@ -15,11 +15,10 @@ export function showChatSessions (sessions, status) {
 
 export function socketUpdate (data) {
   console.log(data.session_id)
-  console.log("Store",  store.getState())
-  // return {
-  //   type: ActionTypes.SOCKET_UPDATE,
-  //   data
-  // }
+  return {
+    type: ActionTypes.SOCKET_UPDATE,
+    data
+  }
 }
 
 export function fetchSessions (companyid) {
