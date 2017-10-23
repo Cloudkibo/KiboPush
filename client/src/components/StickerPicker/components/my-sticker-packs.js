@@ -1,27 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import IconAdd from './icons/icon-add';
+import React from 'react'
+import PropTypes from 'prop-types'
+import IconAdd from './icons/icon-add'
 
-function MyStickerPacks({ stickerPacks, shop, toggleShop, showPack, colors }) {
+function MyStickerPacks ({ stickerPacks, shop, toggleShop, showPack, colors }) {
   const style = {
     stickers: {
       minWidth: `${stickerPacks.length * 48}px`
     }
-  };
+  }
 
   return (
-    <section className="my-packs">
-      <section className="pack-list">
-        <div className="stickers-tab">
-          <div className="stickers" >
+    <section className='my-packs'>
+      <section className='pack-list'>
+        <div className='stickers-tab'>
+          <div className='stickers' >
             {
               stickerPacks.length > 0
               ? stickerPacks.map(stickerPack => (
-                <img  style={{width: '50px', height: '50px', cursor: 'pointer'}}
-                  className="sticker"
+                <img style={{width: '50px', height: '50px', cursor: 'pointer'}}
+                  className='sticker'
                   onClick={() => showPack(stickerPack.pack_name)}
                   src={stickerPack.main_icon.mdpi}
-                  alt="sticker"
+                  alt='sticker'
                 />
 
               ))
@@ -32,7 +32,7 @@ function MyStickerPacks({ stickerPacks, shop, toggleShop, showPack, colors }) {
 
       </section>
     </section>
-  );
+  )
 }
 
 MyStickerPacks.propTypes = {
@@ -51,6 +51,6 @@ MyStickerPacks.propTypes = {
   colors: PropTypes.shape({
     primary: PropTypes.string.isRequired
   }).isRequired
-};
+}
 
-export default MyStickerPacks;
+export default MyStickerPacks

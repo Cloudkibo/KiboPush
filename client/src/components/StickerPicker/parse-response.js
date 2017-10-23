@@ -1,35 +1,35 @@
 /* eslint no-console: ["error", { allow: ["error"] }] */
-function parseResponse(response) {
-  let text;
+function parseResponse (response) {
+  let text
 
   if (response && response.content && (typeof response.content === 'string')) {
-    text = response.content;
+    text = response.content
   }
 
   if (response && response.text && (typeof response.text === 'string')) {
-    text = response.text;
+    text = response.text
   }
 
   if (!text) {
-    console.error('Did not supply any matching response format. Response is:', text);
-    return null;
+    console.error('Did not supply any matching response format. Response is:', text)
+    return null
   }
 
   try {
-    const parsedResponse = JSON.parse(text);
+    const parsedResponse = JSON.parse(text)
 
     if (
-      parsedResponse
-      && parsedResponse.data
-      && (parsedResponse.data instanceof Object === true)
+      parsedResponse &&
+      parsedResponse.data &&
+      (parsedResponse.data instanceof Object === true)
     ) {
-      return parsedResponse.data;
+      return parsedResponse.data
     }
   } catch (err) {
-    console.error('Error while parsing JSON', err);
+    console.error('Error while parsing JSON', err)
   }
 
-  return null;
+  return null
 }
 
-export default parseResponse;
+export default parseResponse

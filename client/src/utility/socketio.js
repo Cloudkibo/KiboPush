@@ -38,7 +38,7 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
-  if(joined){
+  if (joined) {
     return
   }
   socket.emit('join', {

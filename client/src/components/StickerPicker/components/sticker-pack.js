@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-function StickerPack({ pack, sendSticker }) {
+function StickerPack ({ pack, sendSticker }) {
   return (
-    <section className="sticker-pack">
-      <section className="stickers">
+    <section className='sticker-pack'>
+      <section className='stickers'>
         {pack.stickers.map(sticker => (
-          <img  style={{width: '64px', height: '64px'}}
-            className="sticker"
+          <img style={{width: '64px', height: '64px'}}
+            className='sticker'
             onClick={() => sendSticker(sticker)}
             src={sticker.image.mdpi}
-            alt="sticker"
+            alt='sticker'
           />
         ))}
       </section>
     </section>
-  );
+  )
 }
 
 StickerPack.propTypes = {
@@ -34,6 +34,6 @@ StickerPack.propTypes = {
     ).isRequired
   }).isRequired,
   sendSticker: PropTypes.func.isRequired
-};
+}
 
-export default StickerPack;
+export default StickerPack

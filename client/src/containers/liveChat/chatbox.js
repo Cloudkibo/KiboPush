@@ -98,15 +98,15 @@ class ChatBox extends React.Component {
     this.setState({showEmojiPicker: false})
   }
 
-  sendSticker(sticker) {
+  sendSticker (sticker) {
     console.log('sending sticker', sticker)
   }
 
-  showStickers() {
+  showStickers () {
     this.setState({showStickers: true})
   }
 
-  hideStickers() {
+  hideStickers () {
     this.setState({showStickers: false})
   }
 

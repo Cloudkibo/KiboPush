@@ -24,7 +24,7 @@ class Sessions extends React.Component {
       pageOptions: [],
       logValue: 'old',
       pageValue: '',
-      list: [],
+      list: []
     },
       this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -59,7 +59,7 @@ class Sessions extends React.Component {
       this.setState({pageOptions: myPages})
     }
 
-    if(nextProps.sessions){
+    if (nextProps.sessions) {
       this.setState({list: nextProps.sessions})
     }
   }
@@ -77,64 +77,64 @@ class Sessions extends React.Component {
 
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    if(val === null){
+    if (val === null) {
       this.setState({list: this.props.sessions, logValue: val})
       return
     }
-    if(val.value == "old"){
-      console.log("Sorting using new");
-      var temp = this.props.sessions.sort(function(a, b) {
-        return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0);
-    });
-    }else{
-      console.log("Sorting using old");
-      var temp = this.props.sessions.sort(function(a, b) {
-        return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0);
-    });
+    if (val.value == 'old') {
+      console.log('Sorting using new')
+      var temp = this.props.sessions.sort(function (a, b) {
+        return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
+      })
+    } else {
+      console.log('Sorting using old')
+      var temp = this.props.sessions.sort(function (a, b) {
+        return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
+      })
     }
-    console.log("Sorted Array", temp)    
+    console.log('Sorted Array', temp)
     this.setState({list: temp, logValue: val.value})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-    if(val === null){
+    if (val === null) {
       this.setState({list: this.props.sessions, pageValue: val})
       return
     }
-    var search= val.value;
-    console.log("Page Value", search)
-    var results=_.filter(this.props.sessions,function(item){
-      if(item.page_id.pageId === search){
-        return item;
+    var search = val.value
+    console.log('Page Value', search)
+    var results = _.filter(this.props.sessions, function (item) {
+      if (item.page_id.pageId === search) {
+        return item
       }
-    });
-    console.log("Page Filter", results);
+    })
+    console.log('Page Filter', results)
     this.setState({list: results, pageValue: val.value})
   }
 
-  handleSearch(event){
-    console.log("Search", event.target.value)
+  handleSearch (event) {
+    console.log('Search', event.target.value)
 
-    var search= event.target.value;
-    var results=_.filter(this.props.sessions,function(item){
+    var search = event.target.value
+    var results = _.filter(this.props.sessions, function (item) {
       var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
-      if(name.indexOf(search)>-1){
-        return item;
+      if (name.indexOf(search) > -1) {
+        return item
       }
-    });
-    console.log(results);
+    })
+    console.log(results)
     this.setState({list: results})
   }
 
   render () {
-    console.log("Logvalue", this.state.logValue)
+    console.log('Logvalue', this.state.logValue)
     console.log('Sessions', this.state.list)
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
           <input type='text' onChange={this.handleSearch} placeholder='Search Customers...' className='form-control' />
           <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
-            <Link onClick={this.handleClick} style={{padding: 10+'px'}}> <i className="icon-ellipsis-vertical"></i> </Link>
+            <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='icon-ellipsis-vertical' /> </Link>
             <Popover
               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
               placement='bottom'
@@ -189,7 +189,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList,
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sessions)
