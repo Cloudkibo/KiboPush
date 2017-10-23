@@ -406,7 +406,7 @@ class ChatBox extends React.Component {
                           </div>
                           : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                           ? <div className='notification-event'>
-                            <span style={{fontSize: '20px'}} className='chat-message-item-right'>{msg.payload.text}</span>
+                            <span className='emojis-right'>{msg.payload.text}</span>
                             {/**
                               <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
                             **/}
@@ -469,6 +469,13 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                         )
+                        : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                        ? <div className='notification-event'>
+                          <span className='emojis-left'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
