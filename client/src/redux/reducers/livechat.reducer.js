@@ -14,7 +14,8 @@ export function liveChat (state = initialState, action) {
 
     case ActionTypes.SHOW_USER_CHAT:
       return Object.assign({}, state, {
-        userChat: action.userChat
+        userChat: action.userChat,
+        socketSession: ''
       })
     
     case ActionTypes.SOCKET_UPDATE:
