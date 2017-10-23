@@ -243,6 +243,7 @@ class ChatBox extends React.Component {
     }
     if (res.status === 'success') {
       this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
+      this.props.fetchUserChats(this.props.session._id)
     }
   }
 
