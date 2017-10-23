@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -74,8 +73,7 @@ class ChatBox extends React.Component {
   }
 
   scrollToBottom () {
-    var target = ReactDOM.findDOMNode(this.messagesEnd)
-    target.scrollIntoView({behavior: 'smooth'})
+    this.messagesEnd.scrollIntoView({behavior: 'smooth'})
   }
 
   removeAttachment () {
@@ -270,7 +268,7 @@ class ChatBox extends React.Component {
     console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        <div style={{marginTop: '28px'}} className='ui-block-title'>
+        <div className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
