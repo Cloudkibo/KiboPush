@@ -10,7 +10,8 @@ export function liveChat (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {
-        sessions: action.sessions
+        sessions: action.sessions,
+        socketSession: ''
       })
 
     case ActionTypes.SHOW_USER_CHAT:
