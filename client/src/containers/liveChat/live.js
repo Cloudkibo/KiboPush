@@ -62,6 +62,20 @@ class LiveChat extends React.Component {
       if(this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession){
           this.props.fetchUserChats(nextProps.socketSession)
       }
+      else if(nextProps.socketSession !== ''){
+        var isPresent = false
+        this.props.sessions.map((sess) => {
+          if(sess._id === nextProps.socketSession){
+            isPresent = true
+          }
+        })
+
+        if(isPresent){
+          console.log("Session exists ignoring the message")
+        }else{
+          console.log("New Session Detected, initiating session fetch")
+        }
+      }
     }
   }
 
