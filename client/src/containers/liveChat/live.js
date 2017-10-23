@@ -22,8 +22,9 @@ class LiveChat extends React.Component {
     this.state = {
       activeSession: '',
       currentProfile: {},
-      loading: false
+      loading: true
     }
+    props.fetchSessions({ company_id: this.props.user._id })
     this.changeActiveSession = this.changeActiveSession.bind(this)
   }
 
@@ -53,10 +54,6 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    if (nextProps.user) {
-      this.props.fetchSessions({ company_id: nextProps.user._id })
-      this.setState({loading: true})
-    }
     if (nextProps.sessions) {
       this.setState({loading: false})
     }
