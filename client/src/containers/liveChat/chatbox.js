@@ -225,6 +225,7 @@ class ChatBox extends React.Component {
     }
     if (res.status === 'success') {
       this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
+      this.props.fetchUserChats(this.props.session._id)
     }
   }
 
@@ -333,14 +334,7 @@ class ChatBox extends React.Component {
                           : msg.payload.componentType === 'file'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <ReactPlayer
-                                url={msg.payload.fileurl}
-                                controls
-                                width='100%'
-                                height='140'
-                                onPlay={this.onTestURLAudio(msg.payload.fileurl)}
-                              />
-                              <span>msg.upload.fileName</span>
+                              <a href={msg.upload.fileurl} download >{msg.upload.fileName}</a>
                             </div>
                           </div>
                           : msg.payload.componentType === 'image'
