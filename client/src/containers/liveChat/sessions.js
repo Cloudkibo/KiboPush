@@ -25,8 +25,8 @@ class Sessions extends React.Component {
       logValue: 'old',
       pageValue: '',
       list: []
-    },
-      this.handleClick = this.handleClick.bind(this)
+    }
+    this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.logChange = this.logChange.bind(this)
