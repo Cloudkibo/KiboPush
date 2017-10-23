@@ -482,24 +482,42 @@ class ChatBox extends React.Component {
                 </i>
               </div>
               <div style={{display: 'inline-block'}} data-tip='attachments'>
-                <i style={styles.iconclass} onClick={() => {
-                  this.refs.selectFile.click()
-                }}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '2em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-paperclip' />
-                </i>
                 { this.state.uploadedId !== ''
-                  ? <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                    multiple='false' ref='selectFile' style={styles.inputf} disabled />
-                  : <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                    multiple='false' ref='selectFile' style={styles.inputf} />
+                  ? <div>
+                    <i style={styles.iconclass} onClick={() => {
+                      this.refs.selectFile.click()
+                    }}>
+                      <i style={{
+                        fontSize: '20px',
+                        position: 'absolute',
+                        left: '0',
+                        width: '100%',
+                        height: '2em',
+                        margin: '5px',
+                        textAlign: 'center',
+                        color: 'lightgrey'
+                      }} className='fa fa-paperclip' />
+                    </i>
+                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                      multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                  </div>
+                  : <div>
+                    <i style={styles.iconclass} onClick={() => {
+                      this.refs.selectFile.click()
+                    }}>
+                      <i style={{
+                        fontSize: '20px',
+                        position: 'absolute',
+                        left: '0',
+                        width: '100%',
+                        height: '2em',
+                        margin: '5px',
+                        textAlign: 'center'
+                      }} className='fa fa-paperclip' />
+                    </i>
+                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                      multiple='false' ref='selectFile' style={styles.inputf} />
+                  </div>
                 }
               </div>
               <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
