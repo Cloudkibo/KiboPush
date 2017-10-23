@@ -17,6 +17,7 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
+import { isEmoji } from './utilities'
 
 const styles = {
   iconclass: {
@@ -170,7 +171,7 @@ class ChatBox extends React.Component {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
           recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
           sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-          recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
           session_id: session._id,
           company_id: session.company_id, // this is admin id till we have companies
           payload: payload, // this where message content will go
@@ -179,6 +180,9 @@ class ChatBox extends React.Component {
         }
         console.log(data)
         this.props.sendChatMessage(data)
+        this.setState({textAreaValue: ''})
+        data.format = 'convos'
+        this.props.userChat.push(data)
       }
     }
   }
@@ -400,7 +404,7 @@ class ChatBox extends React.Component {
                               />
                             </div>
                           </div>
-                          : msg.payload.text.split(' ').length === 0
+                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                           ? <div className='notification-event'>
                             <span style={{fontSize: '20px'}} className='chat-message-item-right'>{msg.payload.text}</span>
                             {/**
