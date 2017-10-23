@@ -122,8 +122,7 @@ class ChatBox extends React.Component {
       let enterEvent = new Event('keypress')
       enterEvent.which = 13
       this.onEnter(enterEvent)
-    })
-    
+    }) 
   }
 
   resetFileComponent () {
@@ -157,7 +156,7 @@ class ChatBox extends React.Component {
         payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedId,
+          fileurl: this.state.fileurl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
