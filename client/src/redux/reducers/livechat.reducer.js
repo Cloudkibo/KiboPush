@@ -3,6 +3,7 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   sessions: [],
   socketSession: '',
+  userChat: [],
 }
 
 export function liveChat (state = initialState, action) {
