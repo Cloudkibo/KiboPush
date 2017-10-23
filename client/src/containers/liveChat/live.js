@@ -54,7 +54,7 @@ class LiveChat extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.user) {
-      this.props.fetchSessions({ company_id: nextprops.user._id })
+      this.props.fetchSessions({ company_id: nextProps.user._id })
       this.setState({loading: true})
     }
     if (nextProps.sessions) {
