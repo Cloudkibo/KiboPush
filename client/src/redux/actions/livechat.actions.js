@@ -96,3 +96,12 @@ export function sendAttachment (data, handleSendAttachment) {
     })
   }
 }
+
+export function sendChatMessage (data) {
+  console.log('Sending chat message on Live Chat', data)
+  return (dispatch) => {
+    callApi('livechat/', 'post', data).then(res => {
+      console.log('Send Attachment Response', res)
+    })
+  }
+}
