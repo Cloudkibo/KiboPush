@@ -4,13 +4,13 @@
  */
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
-import StickerMenu from '../../components/StickerPicker/stickers'
 
 const styles = {
   iconclass: {
@@ -38,8 +38,7 @@ class ChatBox extends React.Component {
       uploadedId: '',
       removeFileDescription: '',
       textAreaValue: '',
-      showEmojiPicker: false,
-      showStickers: false
+      showEmojiPicker: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -56,9 +55,6 @@ class ChatBox extends React.Component {
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
-    this.showStickers = this.showStickers.bind(this)
-    this.hideStickers = this.hideStickers.bind(this)
-    this.sendSticker = this.sendSticker.bind(this)
   }
 
   componentDidMount () {
@@ -74,14 +70,13 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
-  /**
   scrollToBottom () {
-    this.messagesEnd.scrollIntoView({behavior: 'smooth'})
+    var target = ReactDOM.findDOMNode(this.messagesEnd)
+    target.scrollIntoView({behavior: 'smooth'})
   }
-  **/
 
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
@@ -96,18 +91,6 @@ class ChatBox extends React.Component {
 
   closeEmojiPicker () {
     this.setState({showEmojiPicker: false})
-  }
-
-  sendSticker (sticker) {
-    console.log('sending sticker', sticker)
-  }
-
-  showStickers () {
-    this.setState({showStickers: true})
-  }
-
-  hideStickers () {
-    this.setState({showStickers: false})
   }
 
   resetFileComponent () {
@@ -166,12 +149,11 @@ class ChatBox extends React.Component {
       componentType: 'image',
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
-    this.setState(payload, () => {
-      console.log('state inside sendThumbsUp: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    this.setState(payload)
+    console.log('state inside sendThumbsUp: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   handleSendAttachment (res) {
@@ -266,7 +248,6 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    // this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
@@ -288,7 +269,7 @@ class ChatBox extends React.Component {
     console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        <div className='ui-block-title'>
+        <div style={{marginTop: '28px'}} className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
@@ -313,25 +294,11 @@ class ChatBox extends React.Component {
             />
           </div>
         </Popover>
-
-        <Popover
-          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
-          placement='top'
-          target={this.stickers}
-          show={this.state.showStickers}
-          onHide={this.hideStickers}
-        >
-          <StickerMenu
-            apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
-            userId={'imran.shoukat@khi.iba.edu.pk'}
-            sendSticker={this.sendSticker}
-          />
-        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
-                msg.sender_id === this.props.user._id
+                msg.format === 'convos'
                   ? (
                     <li>
                       <div className='author-thumb-right'>
@@ -443,10 +410,8 @@ class ChatBox extends React.Component {
                     </li>
                   )
               ))}
-            {/**
-            <div style={{ float: 'left', clear: 'both' }}
+            <div style={{float: 'left'}}
               ref={(el) => { this.messagesEnd = el }} />
-              **/}
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
@@ -516,7 +481,7 @@ class ChatBox extends React.Component {
                   }} className='fa fa-smile-o' />
                 </i>
               </div>
-              <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
+              <div style={{display: 'inline-block'}} data-tip='stickers'>
                 <i style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',

@@ -14,13 +14,15 @@ import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Sessions from './sessions'
 import Profile from './profile'
+import Halogen from 'halogen'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       activeSession: '',
-      currentProfile: {}
+      currentProfile: {},
+      loading: false
     }
     this.changeActiveSession = this.changeActiveSession.bind(this)
   }
@@ -51,6 +53,13 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    if (nextProps.user) {
+      this.props.fetchSessions({ company_id: nextprops.user._id })
+      this.setState({loading: true})
+    }
+    if (nextProps.sessions) {
+      this.setState({loading: false})
+    }
   }
 
   render () {
@@ -66,17 +75,20 @@ class LiveChat extends React.Component {
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
             {
-              this.props.sessions && this.props.sessions.length === 0 &&
-              <div className='col-xl-12 col-lg-12 col-md-4 col-sm-12 col-xs-12'>
+              this.state.loading
+              ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                className='align-center'>
+                <center><Halogen.RingLoader color='#FF5E3A' /></center>
+              </div>
+              : (this.props.sessions && this.props.sessions.length === 0
+              ? <div className='col-xl-12 col-lg-12 col-md-4 col-sm-12 col-xs-12'>
                 <h3>Right now you dont have any chat sessions</h3>
               </div>
-           }
-            {
-              this.props.sessions && this.props.sessions.length > 0 &&
-              <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
+              : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
                 <Sessions changeActiveSession={this.changeActiveSession} />
               </div>
-           }
+              )
+            }
             {
               this.props.sessions && this.props.sessions.length > 0 && (
                 this.state.activeSession === ''
