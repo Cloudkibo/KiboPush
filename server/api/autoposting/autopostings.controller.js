@@ -5,6 +5,8 @@
 const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
 const TAG = 'api/autoposting/autopostings.controller.js'
+const TwitterUtility = require('./../../config/twitter')
+const _ = require('lodash')
 
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
@@ -60,18 +62,41 @@ exports.create = function (req, res) {
             ? req.body.segmentationLocale
             : null
         }
-        const autoPosting = new AutoPosting(autoPostingPayload)
-        autoPosting.save((err, createdRecord) => {
-          if (err) {
-            res.status(500).json({
-              status: 'Failed',
-              error: err,
-              description: 'Failed to insert record'
+        if (req.body.subscriptionType === 'twitter') {
+          let url = req.body.subscriptionUrl
+          let urlAfterDot = url.substring(url.indexOf('.') + 1)
+          let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          TwitterUtility.findUser(screenName, (err, data) => {
+            if (err) {
+              logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
+              return res.status(403).json({
+                status: 'Failed',
+                description: err
+              })
+            }
+            logger.serverLog(TAG, `Twitter user found ${data.screen_name}`)
+            autoPostingPayload.accountUniqueName = data.screen_name
+            let payload = {
+              id: data.id,
+              name: data.name,
+              screen_name: data.screen_name,
+              profile_image_url: data.profile_image_url_https
+            }
+            autoPostingPayload.payload = payload
+            const autoPosting = new AutoPosting(autoPostingPayload)
+            autoPosting.save((err, createdRecord) => {
+              if (err) {
+                res.status(500).json({
+                  status: 'Failed',
+                  error: err,
+                  description: 'Failed to insert record'
+                })
+              } else {
+                res.status(201).json({status: 'success', payload: createdRecord})
+              }
             })
-          } else {
-            res.status(201).json({status: 'success', payload: createdRecord})
-          }
-        })
+          })
+        }
       }
     })
 }
@@ -129,6 +154,7 @@ exports.destroy = function (req, res) {
   })
 }
 
+// todo for new twitter activity api version
 exports.twitterwebhook = function (req, res) {
   logger.serverLog(TAG, 'Twitter Webhook Called')
   logger.serverLog(TAG, JSON.stringify(req.body))
@@ -153,4 +179,10 @@ exports.twitterverify = function (req, res) {
 
   hmac.write(req.params.crc_token)
   hmac.end()
+}
+
+exports.pubsubhook = function (req, res) {
+  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
+  logger.serverLog(TAG, JSON.stringify(req.params))
+  return res.status(200).json({status: 'success', description: 'got the data.'})
 }
