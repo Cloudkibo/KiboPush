@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
+import StickerMenu from '../../components/StickerPicker/stickers'
 
 const styles = {
   iconclass: {
@@ -54,6 +55,9 @@ class ChatBox extends React.Component {
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
+    this.showStickers = this.showStickers.bind(this)
+    this.hideStickers = this.hideStickers.bind(this)
+    this.sendSticker = this.sendSticker.bind(this)
   }
 
   componentDidMount () {
@@ -89,6 +93,19 @@ class ChatBox extends React.Component {
 
   closeEmojiPicker () {
     this.setState({showEmojiPicker: false})
+  }
+
+  showStickers() {
+    this.setState({showStickers: true})
+  }
+
+  hideStickers() {
+    this.setState({showStickers: false})
+  }
+
+
+  sendSticker(sticker) {
+    console.log('sending sticker', sticker)
   }
 
   resetFileComponent () {
@@ -294,6 +311,20 @@ class ChatBox extends React.Component {
             />
           </div>
         </Popover>
+
+        <Popover
+          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          placement='top'
+          target={this.stickers}
+          show={this.state.showStickers}
+          onHide={this.hideStickers}
+        >
+          <StickerMenu
+            apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+            userId={'imran.shoukat@khi.iba.edu.pk'}
+            sendSticker={this.sendSticker}
+          />
+          </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
