@@ -59,7 +59,7 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession) {
       console.log("New Message Received at following session id", nextProps.socketSession)
-      if(this.state.userChat.length > 0 && nextProps.socketSession !== '' && this.state.userChat[0].session_id === nextProps.socketSession){
+      if(this.state.userChat && this.state.userChat.length > 0 && nextProps.socketSession !== '' && this.state.userChat[0].session_id === nextProps.socketSession){
           this.props.fetchUserChats(nextProps.socketSession)
       }
     }
