@@ -27,11 +27,26 @@ exports.create = function (req, res) {
   logger.serverLog(TAG,
     `Inside Send chat, req body = ${JSON.stringify(req.body)}`)
 
+  let parametersMissing = false
+
+  if (req.body.session_id === 'undefined') parametersMissing = true
+  if (req.body.recipient_id === 'undefined') parametersMissing = true
+  if (req.body.sender_fb_id === 'undefined') parametersMissing = true
+  if (req.body.recipient_fb_id === 'undefined') parametersMissing = true
+  if (req.body.session_id === 'undefined') parametersMissing = true
+  if (req.body.company_id === 'undefined') parametersMissing = true
+  if (req.body.payload === 'undefined') parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(200)
+    .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
   const chatMessage = new LiveChat({
     sender_id: req.body.sender_id, // this is the page id: _id of Pageid
     recipient_id: req.body.recipient_id, // this is the subscriber id: _id of subscriberId
-    sender_fb_id: req.body.sender_id, // this is the (facebook) :page id of pageId
-    recipient_fb_id: req.body.recipient_id, // this is the (facebook) subscriber id : pageid of subscriber id
+    sender_fb_id: req.body.sender_fb_id, // this is the (facebook) :page id of pageId
+    recipient_fb_id: req.body.recipient_fb_id, // this is the (facebook) subscriber id : pageid of subscriber id
     session_id: req.body.session_id,
     company_id: req.body.company_id, // this is admin id till we have companies
     payload: req.body.payload, // this where message content will go
