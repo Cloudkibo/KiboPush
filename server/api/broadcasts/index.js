@@ -14,6 +14,7 @@ router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
 router.post('/pubsub/webhook', controller.pubsubhook)
+router.get('/pubsub/webhook', controller.pubsubhook)
 
 router.post('/sendConversation', auth.isAuthenticated(), multipartyMiddleware, controller2.sendConversation)
 router.post('/upload', auth.isAuthenticated(), multipartyMiddleware, controller2.upload)
