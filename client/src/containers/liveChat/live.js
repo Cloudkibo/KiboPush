@@ -9,7 +9,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { fetchSessions, fetchUserChats } from '../../redux/actions/livechat.actions'
+import { fetchSessions, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Sessions from './sessions'
@@ -72,6 +72,7 @@ class LiveChat extends React.Component {
 
         if(isPresent){
           console.log("Session exists ignoring the message")
+          this.props.resetSocket()
         }else{
           console.log("New Session Detected, initiating session fetch")
         }
@@ -148,7 +149,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchSessions: fetchSessions,
-    fetchUserChats: fetchUserChats
+    fetchUserChats: fetchUserChats,
+    resetSocket: resetSocket,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

@@ -23,6 +23,11 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         socketSession: action.data.session_id
       })
+    
+    case ActionTypes.RESET_SOCKET:
+      return Object.assign({}, state, {
+        socketSession: ''
+      })
 
     default:
       return state

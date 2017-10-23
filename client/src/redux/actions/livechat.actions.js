@@ -38,6 +38,12 @@ export function showUserChats (userChat) {
   }
 }
 
+export function resetSocket () {
+  return {
+    type: ActionTypes.RESET_SOCKET,
+  }
+}
+
 export function fetchUserChats (sessionid) {
   console.log('Fetching User Chats')
   return (dispatch) => {
