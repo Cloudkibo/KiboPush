@@ -61,46 +61,45 @@ class SelectPage extends React.Component {
     console.log('Page Filter', results)
     this.setState({pageValue: val.value})
   }
-  saveItem(event){
-      var search = event.target.value
-      this.setState({itemlist: event.target.value})
-      console.log(itemlist)
-
+  saveItem (event) {
+    var search = event.target.value
+    this.setState({itemlist: event.target.value})
+    console.log(itemlist)
   }
   handle
   render () {
     return (
       <div>
-      <Header />
-      <HeaderResponsive />
-      <Sidebar />
-      <Responsive />
-      <div className='container'>
-        <br /><br /><br /><br />
+        <Header />
+        <HeaderResponsive />
+        <Sidebar />
+        <Responsive />
+        <div className='container'>
+          <br /><br /><br /><br />
 
-      <div className='ui-block'>
-        <div className='ui-block-title'>
-          <h5>Select a page to setup its Main Menu</h5>
-        </div>
-        <div className='ui-block-title'>
-          <Select
-            name='pageSelect'
-            options={this.state.pageOptions}
-            onChange={this.pageChange}
-            placeholder='Select Page'
-            value={this.state.pageValue}
+          <div className='ui-block'>
+            <div className='ui-block-title'>
+              <h5>Select a page to setup its Main Menu</h5>
+            </div>
+            <div className='ui-block-title'>
+              <Select
+                name='pageSelect'
+                options={this.state.pageOptions}
+                onChange={this.pageChange}
+                placeholder='Select Page'
+                value={this.state.pageValue}
           />
-        </div>
-        <br />
-          <h4 style={{paddingLeft: '20px'}}>Edit Menu</h4>
-          <ul className='widget w-activity-feed notification-list'><br />
-            <li><input type='text' placeholder='+ Menu Item' onChange={this.saveItem} className='form-control' /></li>
-            <li><input type='text' placeholder='+ Menu Item' value='Powered by KiboPush' className='form-control' /></li>
+            </div>
+            <br />
+            <h4 style={{paddingLeft: '20px'}}>Edit Menu</h4>
+            <ul className='widget w-activity-feed notification-list'><br />
+              <li><input type='text' placeholder='+ Menu Item' onChange={this.saveItem} className='form-control' /></li>
+              <li><input type='text' placeholder='+ Menu Item' value='Powered by KiboPush' className='form-control' /></li>
 
-          </ul>
+            </ul>
+          </div>
         </div>
-        </div>
-</div>
+      </div>
 
     )
   }

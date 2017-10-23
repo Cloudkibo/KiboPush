@@ -95,16 +95,15 @@ class ChatBox extends React.Component {
     this.setState({showEmojiPicker: false})
   }
 
-  showStickers() {
+  showStickers () {
     this.setState({showStickers: true})
   }
 
-  hideStickers() {
+  hideStickers () {
     this.setState({showStickers: false})
   }
 
-
-  sendSticker(sticker) {
+  sendSticker (sticker) {
     console.log('sending sticker', sticker)
   }
 
@@ -324,7 +323,7 @@ class ChatBox extends React.Component {
             userId={'imran.shoukat@khi.iba.edu.pk'}
             sendSticker={this.sendSticker}
           />
-          </Popover>
+        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
@@ -433,9 +432,9 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
-                              <a href={msg.payload.attachments[0].payload.url} target="_blank">
+                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
                                 <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                              </a>    
+                              </a>
                             </div>
                           </div>
                         )
