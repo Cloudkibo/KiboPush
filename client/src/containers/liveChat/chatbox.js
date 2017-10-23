@@ -247,6 +247,7 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
@@ -261,7 +262,7 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
   render () {
