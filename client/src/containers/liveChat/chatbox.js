@@ -401,7 +401,9 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
-                              <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              <a href={msg.payload.attachments[0].payload.url} target="_blank">
+                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              </a>    
                             </div>
                           </div>
                         )
@@ -415,7 +417,7 @@ class ChatBox extends React.Component {
                     </li>
                   )
               ))}
-            <div style={{float: 'left'}}
+            <div style={{float: 'left', clear: 'both'}}
               ref={(el) => { this.messagesEnd = el }} />
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
