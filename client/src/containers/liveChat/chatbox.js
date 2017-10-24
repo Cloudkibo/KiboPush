@@ -137,7 +137,7 @@ class ChatBox extends React.Component {
     if (isUrl !== '') {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
-        this.setState({prevURL: isURL})
+        this.setState({prevURL: isUrl})
       }
     } else {
       this.setState({
@@ -667,7 +667,7 @@ class ChatBox extends React.Component {
                JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                <div style={{clear: 'both', display: 'block'}}>
                  <div className='wrapperforURL'>
-                   <table style={{maxWidth: '318px', maxHeight: '150px'}}>
+                   <table style={{maxWidth: '318px'}}>
                      {
                        this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                        ? <tbody>
@@ -683,10 +683,10 @@ class ChatBox extends React.Component {
                            <td>
                              <div>
                                <a href={this.state.urlmeta.url} target='_blank'>
-                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
+                                 <span className='urlTitle'>{this.state.urlmeta.title}</span>
                                </a>
                                <br />
-                               <p>{this.state.urlmeta.description}</p>
+                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description}</p>
                              </div>
                            </td>
                          </tr>
