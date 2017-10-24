@@ -16,10 +16,19 @@ class Menu extends React.Component {
     this.state = {
       pageOptions: [],
       pageValue: '',
-      itemlist: []
+      itemName: '',
+      itemselected: '',
+      list: [],
+      menudivs: {
+        backgroundColor: '#f2f2f2',
+        text: 'Menu Item'
+      }
+
     }
     this.pageChange = this.pageChange.bind(this)
     this.saveItem = this.saveItem.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.onSelectItem = this.onSelectItem.bind(this)
   }
 
   componentDidMount () {
@@ -53,15 +62,27 @@ class Menu extends React.Component {
       return
     }
     console.log('Page Value', val)
+    console.log('Page Value', val)
     this.setState({pageValue: val.value})
+  }
+  handleClick (event) {
+    console.log('in handleClick')
+    return (<li>
+      <form className='form-inline'>
+        <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} onClick={this.handleClick} /></div>
+        <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+    </li>)
   }
   saveItem (event) {
     console.log('event.target.', event.target.value)
-    var temp = []
-    temp.push(event.target.value)
-    this.setState({itemlist: temp})
-    console.log('this.state.itemlist', this.state.itemlist)
-    this.props.addMenuItem(event.target.value)
+    this.setState({itemName: event.target.value})
+    console.log('this.state.itemName', this.state.itemName)
+    this.props.addMenuItem({pageId: this.state.pageValue, menuItem: this.state.itemName, menuItemType: 'weblink'})
+  }
+  onSelectItem () {
+    //  this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
+    this.setState({list: this.state.list.push(this.state.menudivs)})
+    console.log('list legth', this.state.list.length)
   }
   render () {
     return (
@@ -90,14 +111,17 @@ class Menu extends React.Component {
             <ul style={{paddingLeft: '20px', width: '30%'}}>
               <li>
                 <form className='form-inline'>
-                  <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} /></div>
+                  <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
                   <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
               </li>
-              <li>
-                <form className='form-inline'>
-                  <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} /></div>
-                  <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
-              </li>
+              { this.state.list.length > 0 && this.state.list.map((i) => (
+                <li>
+                  <form className='form-inline'>
+                    <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
+                    <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+                </li>
+                ))
+              }
               <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
             </ul>
           </div>
