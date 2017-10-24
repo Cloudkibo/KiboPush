@@ -683,7 +683,7 @@ class ChatBox extends React.Component {
                            <td>
                              <div>
                                <a href={this.state.urlmeta.url} target='_blank'>
-                                 <span className='urlTitle'>{this.state.urlmeta.title}</span>
+                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
                                <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description}</p>
