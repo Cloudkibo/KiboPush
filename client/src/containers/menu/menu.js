@@ -9,8 +9,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
-
-var abc = 0
+//  import RadioGroup from 'react-radio'
 class Menu extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -81,10 +80,41 @@ class Menu extends React.Component {
   onSelectItem () {
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
-    abc = abc + 1
     this.setState({openPopover: !this.state.openPopover})
   }
   render () {
+    let popup = <Popover
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '250px'}}
+      placement='right'
+      target={this.target}
+      show={this.state.openPopover}
+      onHide={this.handleClose} >
+      <div className='ui-block-title'>
+        <p><b>When Pressed:</b></p>
+      </div>
+      <form>
+        <div className='checkbox'>
+          <label>
+            <input type='checkbox' value='option1' />
+            Open submenu
+          </label>
+        </div>
+        <div className='checkbox'>
+          <label>
+            <input type='checkbox' value='option2' />
+            Reply with a message
+          </label>
+        </div>
+        <div className='checkbox'>
+          <label>
+            <input type='checkbox' value='option2' />
+            Open website
+          </label>
+        </div>
+      </form>
+      <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
+      <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+    </Popover>
     return (
       <div>
         <Header />
@@ -114,21 +144,17 @@ class Menu extends React.Component {
                   <form className='form-inline'>
                     <div className='form-group'><input type='text' placeholder={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor, width: '350px'}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
                   </form>
-                  <Popover
-                    style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
-                    placement='right'
-                    target={this.target}
-                    show={this.state.openPopover}
-                    onHide={this.handleClose} >
-                    <div className='form-group'><button className='btn btn-primary btn-sm' onClick={this.handleClick}>Save</button></div>
-                  </Popover>
+                  {popup}
                 </div>
               </li>
               { this.state.itemselected !== '' &&
                 <li>
-                  <form className='form-inline'>
-                    <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value='' className='form-control' onChange={this.saveItem} onClick={() => this.onSelectItem()} style={{width: '350px'}} /></div>
-                  </form>
+                  <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
+                    <form className='form-inline'>
+                      <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value='' className='form-control' onChange={this.saveItem} onClick={() => this.onSelectItem()} style={{width: '350px'}} /></div>
+                    </form>
+                    {popup}
+                  </div>
                 </li>
               }
               <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
