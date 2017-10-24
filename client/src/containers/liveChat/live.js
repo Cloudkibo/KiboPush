@@ -58,23 +58,22 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
     }
     if (nextProps.socketSession) {
-      console.log("New Message Received at following session id", nextProps.socketSession)
-      if(this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession){
-          this.props.fetchUserChats(nextProps.socketSession)
-      }
-      else if(nextProps.socketSession !== ''){
+      console.log('New Message Received at following session id', nextProps.socketSession)
+      if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
+        this.props.fetchUserChats(nextProps.socketSession)
+      } else if (nextProps.socketSession !== '') {
         var isPresent = false
         this.props.sessions.map((sess) => {
-          if(sess._id === nextProps.socketSession){
+          if (sess._id === nextProps.socketSession) {
             isPresent = true
           }
         })
 
-        if(isPresent){
-          console.log("Session exists ignoring the message")
+        if (isPresent) {
+          console.log('Session exists ignoring the message')
           this.props.resetSocket()
-        }else{
-          console.log("New Session Detected, initiating session fetch")
+        } else {
+          console.log('New Session Detected, initiating session fetch')
           this.props.fetchSessions({ company_id: this.props.user._id })
         }
       }
@@ -143,7 +142,7 @@ function mapStateToProps (state) {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
-    userChat: (state.liveChat.userChat),
+    userChat: (state.liveChat.userChat)
   }
 }
 
@@ -151,7 +150,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket,
+    resetSocket: resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

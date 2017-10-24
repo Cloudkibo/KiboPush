@@ -2,7 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
-import store from '../store/store';
+import store from '../store/store'
 
 export function showChatSessions (sessions, status) {
   console.log(sessions)
@@ -40,7 +40,7 @@ export function showUserChats (userChat) {
 
 export function resetSocket () {
   return {
-    type: ActionTypes.RESET_SOCKET,
+    type: ActionTypes.RESET_SOCKET
   }
 }
 

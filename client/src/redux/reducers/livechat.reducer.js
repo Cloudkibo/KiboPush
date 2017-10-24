@@ -3,7 +3,7 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   sessions: [],
   socketSession: '',
-  userChat: [],
+  userChat: []
 }
 
 export function liveChat (state = initialState, action) {
@@ -19,12 +19,12 @@ export function liveChat (state = initialState, action) {
         userChat: action.userChat,
         socketSession: ''
       })
-    
+
     case ActionTypes.SOCKET_UPDATE:
       return Object.assign({}, state, {
         socketSession: action.data.session_id
       })
-    
+
     case ActionTypes.RESET_SOCKET:
       return Object.assign({}, state, {
         socketSession: ''

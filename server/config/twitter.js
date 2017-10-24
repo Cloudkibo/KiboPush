@@ -25,7 +25,7 @@ let twitterClient = new Twit({
 let stream
 
 function connect () {
-  AutoPosting.find({subscriptionType: 'twitter'}, (err, autoposting) => {
+  AutoPosting.find({subscriptionType: 'twitter', isActive: true}, (err, autoposting) => {
     if (err) {
       return logger.serverLog(TAG, 'Internal Server Error on connect')
     }

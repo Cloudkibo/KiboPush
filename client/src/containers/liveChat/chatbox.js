@@ -122,7 +122,7 @@ class ChatBox extends React.Component {
       let enterEvent = new Event('keypress')
       enterEvent.which = 13
       this.onEnter(enterEvent)
-    }) 
+    })
   }
 
   resetFileComponent () {
@@ -210,7 +210,6 @@ class ChatBox extends React.Component {
       enterEvent.which = 13
       this.onEnter(enterEvent)
     })
-   
   }
 
   handleSendAttachment (res) {

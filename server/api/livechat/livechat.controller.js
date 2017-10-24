@@ -6,6 +6,7 @@ const og = require('open-graph')
 let request = require('request')
 let LiveChat = require('./livechat.model')
 let Pages = require('./../pages/Pages.model')
+let Sessions = require('./../sessions/sessions.model')
 let Subscribers = require('./../subscribers/Subscribers.model')
 let utility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
@@ -40,7 +41,7 @@ exports.create = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-    .json({status: 'failed', description: 'Parameters are missing'})
+      .json({status: 'failed', description: 'Parameters are missing'})
   }
 
   const chatMessage = new LiveChat({
@@ -61,51 +62,53 @@ exports.create = function (req, res) {
         .json({status: 'failed', description: 'Broadcasts not created'})
     }
 
-    Pages.findOne({_id: req.body.page_id}, (err, page) => {
-      if (err) {
-        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        return res.status(404)
-          .json({status: 'failed', description: 'Pages not found'})
-      }
-      logger.serverLog(TAG, `Page got ${page.pageName}`)
-
-      Subscribers.findOne({_id: req.body.recipient_id}, (err, subscriber) => {
+    Sessions.findOne({_id: req.body.session_id})
+      .populate('page_id')
+      .exec((err, session) => {
         if (err) {
-          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(404)
+            .json({status: 'failed', description: 'Pages not found'})
         }
+        logger.serverLog(TAG, `Page got ${session.page_id.pageName}`)
 
-        logger.serverLog(TAG,
-          `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
-        let messageData = utility.prepareSendAPIPayload(
-          subscriber.senderId,
-          req.body.payload)
+        Subscribers.findOne({_id: req.body.recipient_id}, (err, subscriber) => {
+          if (err) {
+            return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          }
 
-        request(
-          {
-            'method': 'POST',
-            'json': true,
-            'formData': messageData,
-            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-            page.accessToken
-          },
-          (err, res) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At send message live chat ${JSON.stringify(err)}`)
-            } else {
-              if (res.statusCode !== 200) {
-                logger.serverLog(TAG,
-                  `At send message live chat response ${JSON.stringify(
-                    res.body.error)}`)
+          logger.serverLog(TAG,
+            `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
+          let messageData = utility.prepareSendAPIPayload(
+            subscriber.senderId,
+            req.body.payload)
+
+          request(
+            {
+              'method': 'POST',
+              'json': true,
+              'formData': messageData,
+              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+              session.page_id.accessToken
+            },
+            (err, res) => {
+              if (err) {
+                return logger.serverLog(TAG,
+                  `At send message live chat ${JSON.stringify(err)}`)
               } else {
-                logger.serverLog(TAG,
-                  `At send message live chat response ${JSON.stringify(
-                    res.body.message_id)}`)
+                if (res.statusCode !== 200) {
+                  logger.serverLog(TAG,
+                    `At send message live chat response ${JSON.stringify(
+                      res.body.error)}`)
+                } else {
+                  logger.serverLog(TAG,
+                    `At send message live chat response ${JSON.stringify(
+                      res.body.message_id)}`)
+                }
               }
-            }
-          })
+            })
+        })
       })
-    })
     return res.status(200).json({status: 'success', payload: chatMessage})
   })
 }
