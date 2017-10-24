@@ -176,7 +176,7 @@ class ChatBox extends React.Component {
     if (isUrl !== null) {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
-        this.setState({prevURL: isURL})
+        this.setState({prevURL: isUrl})
       }
     } else {
       this.setState({
