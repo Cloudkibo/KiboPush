@@ -12,3 +12,15 @@ export function isEmoji (str) {
     return false
   }
 }
+
+export function getmetaurl (text) {
+  /* eslint-disable */
+  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  /* eslint-enable */
+  var onlyUrl = ''
+  if (text) {
+    var testUrl = text.match(urlRegex)
+    onlyUrl = testUrl && testUrl[0]
+  }
+  return onlyUrl
+}

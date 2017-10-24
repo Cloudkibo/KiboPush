@@ -9,7 +9,8 @@ import {
   uploadAttachment,
   deletefile,
   sendAttachment,
-  sendChatMessage
+  sendChatMessage,
+  fetchUrlMeta
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -17,7 +18,9 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
-import { isEmoji } from './utilities'
+import { isEmoji, getmetaurl } from './utilities'
+import Halogen from 'halogen'
+import GiphyPicker from 'react-giphy-picker'
 
 const styles = {
   iconclass: {
@@ -45,7 +48,10 @@ class ChatBox extends React.Component {
       uploadedId: '',
       removeFileDescription: '',
       textAreaValue: '',
-      showEmojiPicker: false
+      showEmojiPicker: false,
+      urlmeta: {},
+      prevURL: '',
+      showGif: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -65,6 +71,9 @@ class ChatBox extends React.Component {
     this.showStickers = this.showStickers.bind(this)
     this.hideStickers = this.hideStickers.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
+    this.showGif = this.showGif.bind(this)
+    this.closeGif = this.closeGif.bind(this)
+    this.sendGif = this.sendGif.bind(this)
   }
 
   componentDidMount () {
@@ -110,6 +119,14 @@ class ChatBox extends React.Component {
     this.setState({showStickers: false})
   }
 
+  showGif () {
+    this.setState({showGifPicker: true})
+  }
+
+  closeGif () {
+    this.setState({showGifPicker: false})
+  }
+
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
     let payload = {
@@ -125,6 +142,21 @@ class ChatBox extends React.Component {
     })
   }
 
+  sendGif (gif) {
+    console.log('sending Gif', gif)
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'gif',
+      fileurl: gif.downsized.url
+    }
+    this.setState(payload, () => {
+      console.log('state inside sendGif: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
+  }
+
   resetFileComponent () {
     console.log('resettingFileComponent')
     this.setState({
@@ -134,11 +166,24 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      showGifPicker: false
     })
   }
 
   handleTextChange (e) {
+    var isUrl = getmetaurl(e.target.value)
+    if (isUrl !== null) {
+      if (isUrl !== this.state.prevURL) {
+        this.props.fetchUrlMeta(isUrl)
+        this.setState({prevURL: isUrl})
+      }
+    } else {
+      this.setState({
+        urlmeta: {},
+        prevURL: ''
+      })
+    }
     this.setState({
       textAreaValue: e.target.value
     })
@@ -306,6 +351,9 @@ class ChatBox extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.scrollToBottom()
+    if ((nextProps.urlMeta && !this.props.urlMeta) || (nextProps.urlMeta !== this.props.urlMeta)) {
+      this.setState({urlmeta: nextProps.urlMeta})
+    }
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
@@ -366,18 +414,29 @@ class ChatBox extends React.Component {
             sendSticker={this.sendSticker}
           />
         </Popover>
+        <Popover
+          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          placement='top'
+          target={this.gifs}
+          show={this.state.showGifPicker}
+          onHide={this.closeGif}
+        >
+          <div>
+            <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
                 msg.format === 'convos'
                   ? (
-                    <li>
-                      <div className='author-thumb-right'>
-                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
-                      </div>
-                      {
-                        msg.payload.componentType && (msg.payload.componentType === 'video'
+                  <li>
+                    <div className='author-thumb-right'>
+                      <img style={{width: '34px', height: '34px'}} src={this.props.user.profilePic} alt='author' />
+                    </div>
+                    {
+                      msg.payload.componentType && (msg.payload.componentType === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
@@ -390,56 +449,65 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.componentType === 'audio'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <ReactPlayer
-                                url={msg.payload.fileurl}
-                                controls
-                                width='100%'
-                                height='140'
-                                onPlay={this.onTestURLAudio(msg.payload.fileurl)}
-                              />
+                            ? <div className='notification-event'>
+                              <div className='facebook-chat-right'>
+                                <ReactPlayer
+                                  url={msg.payload.fileurl}
+                                  controls
+                                  width='100%'
+                                  height='140'
+                                  onPlay={this.onTestURLAudio(msg.payload.fileurl)}
+                                />
+                              </div>
                             </div>
-                          </div>
-                          : msg.payload.componentType === 'file'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'image'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.fileurl}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                          ? <div className='notification-event'>
-                            <span className='emojis-right'>{msg.payload.text}</span>
-                            {/**
-                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
-                          </div>
-                          : <div className='notification-event'>
-                            <span className='chat-message-item-right'>{msg.payload.text}</span>
-                            {/**
-                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
-                          </div>
-                        )
-                      }
-                    </li>
-                  )
+                            : msg.payload.componentType === 'file'
+                              ? <div className='notification-event'>
+                                <div className='facebook-chat-right'>
+                                  <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
+                                </div>
+                              </div>
+                              : msg.payload.componentType === 'image'
+                                ? <div className='notification-event'>
+                                  <div className='facebook-chat-right'>
+                                    <img
+                                      src={msg.payload.fileurl}
+                                      style={{maxWidth: '150px', maxHeight: '85px'}}
+                                    />
+                                  </div>
+                                </div>
+                                : msg.payload.componentType === 'gif'
+                                  ? <div className='notification-event'>
+                                    <div className='facebook-chat-right'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                  </div>
+                                  : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                    ? <div className='notification-event'>
+                                      <span className='emojis-right'>{msg.payload.text}</span>
+                                      {/**
+                                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                                       **/}
+                                    </div>
+                                    : <div className='notification-event'>
+                                      <span className='chat-message-item-right'>{msg.payload.text}</span>
+                                      {/**
+                                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                                       **/}
+                                    </div>
+                      )
+                    }
+                  </li>
+                )
                   : (
-                    <li>
-                      <div className='author-thumb-left'>
-                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
-                      </div>
-                      {
-                        msg.payload.attachments
+                  <li>
+                    <div className='author-thumb-left'>
+                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
+                    </div>
+                    {
+                      msg.payload.attachments
                         ? (msg.payload.attachments[0].type === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-left'>
@@ -453,53 +521,53 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.attachments[0].type === 'audio'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <ReactPlayer
-                                url={msg.payload.attachments[0].payload.url}
-                                controls
-                                width='100%'
-                                height='140'
-                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
-                              />
+                            ? <div className='notification-event'>
+                              <div className='facebook-chat-left'>
+                                <ReactPlayer
+                                  url={msg.payload.attachments[0].payload.url}
+                                  controls
+                                  width='100%'
+                                  height='140'
+                                  onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                                />
+                              </div>
                             </div>
-                          </div>
-                          : msg.payload.attachments[0].type === 'image'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <img
-                                src={msg.payload.attachments[0].payload.url}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                              </a>
-                            </div>
-                          </div>
-                        )
+                            : msg.payload.attachments[0].type === 'image'
+                              ? <div className='notification-event'>
+                                <div className='facebook-chat-left'>
+                                  <img
+                                    src={msg.payload.attachments[0].payload.url}
+                                    style={{maxWidth: '150px', maxHeight: '85px'}}
+                                  />
+                                </div>
+                              </div>
+                              : <div className='notification-event'>
+                                <div className='facebook-chat-left'>
+                                  <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                    <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                  </a>
+                                </div>
+                              </div>
+                      )
                         : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                         ? <div className='notification-event'>
                           <span className='emojis-left'>{msg.payload.text}</span>
                           {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                           <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                           **/}
                         </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                           <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                           **/}
                         </div>
-                      }
-                    </li>
-                  )
+                    }
+                  </li>
+                )
               ))}
             <div style={{float: 'left', clear: 'both'}}
-              ref={(el) => { this.messagesEnd = el }} />
+                 ref={(el) => { this.messagesEnd = el }} />
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
@@ -552,7 +620,7 @@ class ChatBox extends React.Component {
                       }} className='fa fa-paperclip' />
                     </i>
                     <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                      multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                           multiple='false' ref='selectFile' style={styles.inputf} disabled />
                   </div>
                   : <div>
                     <i style={styles.iconclass} onClick={() => {
@@ -569,7 +637,7 @@ class ChatBox extends React.Component {
                       }} className='fa fa-paperclip' />
                     </i>
                     <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                      multiple='false' ref='selectFile' style={styles.inputf} />
+                           multiple='false' ref='selectFile' style={styles.inputf} />
                   </div>
                 }
               </div>
@@ -608,11 +676,11 @@ class ChatBox extends React.Component {
                     fontSize: '12px',
                     bottom: -4
                   }}
-                    className='center fa fa-smile-o' />
+                     className='center fa fa-smile-o' />
                 </i>
               </div>
-              <div style={{display: 'inline-block'}} data-tip='GIF'>
-                <i style={styles.iconclass}>
+              <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                <i onClick={this.showGif} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
@@ -649,148 +717,72 @@ class ChatBox extends React.Component {
                 </i>
               </div>
             </div>
-            <div className='add-options-message'>
-              <div className='options-message smile-block'>
-                <ul className='more-dropdown more-with-triangle triangle-bottom-right'>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat1.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat2.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat3.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat4.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat5.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat6.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat7.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat8.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat9.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat10.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat11.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat12.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat13.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat14.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat15.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat16.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat17.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat18.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat19.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat20.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat21.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat22.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat23.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat24.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat25.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat26.png' alt='icon' />
-                    </a>
-                  </li>
-                  <li>
-                    <a href='#'>
-                      <img src='img/icon-chat27.png' alt='icon' />
-                    </a>
-                  </li>
-                </ul>
+            {
+              this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
+              <div className='align-center'>
+                <center><Halogen.RingLoader color='#FF5E3A' /></center>
               </div>
-            </div>
-            <span className='material-input' /></div>
+            }
+            {
+              JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
+              <div style={{clear: 'both', display: 'block'}}>
+                <div className='wrapperforURL'>
+                  <table style={{maxWidth: '318px'}}>
+                    {
+                      this.state.urlmeta.type && this.state.urlmeta.type === 'video'
+                        ? <tbody>
+                      <tr>
+                        <td colspan='2'>
+                          <ReactPlayer
+                            url={this.state.urlmeta.url}
+                            controls
+                            width='100%'
+                            height='242'
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div>
+                            <a href={this.state.urlmeta.url} target='_blank'>
+                              <span className='urlTitle'>{this.state.urlmeta.title}</span>
+                            </a>
+                            <br />
+                            <span>{this.state.urlmeta.description}</span>
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                        : <tbody>
+                      <tr>
+                        <td>
+                          <div style={{width: 72, height: 72}}>
+                            {
+                              this.state.urlmeta.image &&
+                              <img src={this.state.urlmeta.image.url} style={{width: 72, height: 72}} />
+                            }
+                          </div>
+                        </td>
+                        <td>
+                          <div>
+                            <a href={this.state.urlmeta.url} target='_blank'>
+                              <span className='urltitle'>{this.state.urlmeta.title}</span>
+                            </a>
+                            <br />
+                            {
+                              this.state.urlmeta.description &&
+                              <span>{this.state.urlmeta.description}</span>
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                    }
+                  </table>
+                </div>
+              </div>
+            }
+          </div>
         </form>
       </div>
     )
@@ -802,6 +794,9 @@ function mapStateToProps (state) {
   return {
     userChat: (state.liveChat.userChat),
     sessions: (state.liveChat.sessions),
+    urlValue: (state.liveChat.urlValue),
+    loadingUrl: (state.liveChat.loadingUrl),
+    urlMeta: (state.liveChat.urlMeta),
     user: (state.basicInfo.user)
   }
 }
@@ -812,7 +807,8 @@ function mapDispatchToProps (dispatch) {
     uploadAttachment: (uploadAttachment),
     deletefile: (deletefile),
     sendAttachment: (sendAttachment),
-    sendChatMessage: (sendChatMessage)
+    sendChatMessage: (sendChatMessage),
+    fetchUrlMeta: (fetchUrlMeta)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

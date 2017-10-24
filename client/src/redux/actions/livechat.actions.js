@@ -112,3 +112,32 @@ export function sendChatMessage (data) {
     })
   }
 }
+
+export function loadingUrlMeta (url) {
+  return {
+    type: ActionTypes.LOADING_URL_META,
+    urlValue: url,
+    loadingUrl: true
+  }
+}
+
+export function urlMetaReceived (meta) {
+  return {
+    type: ActionTypes.GET_URL_META,
+    urlMeta: meta,
+    loadingUrl: false
+  }
+}
+
+export function fetchUrlMeta (url) {
+  console.log('Fetching url meta', url)
+  return (dispatch) => {
+    dispatch(loadingUrlMeta(url))
+    callApi('livechat/geturlmeta', 'post', {url: url}).then(res => {
+      console.log('Fetch Url Meta Response', res)
+      if (res.status === 'success') {
+        dispatch(urlMetaReceived(res.payload))
+      }
+    })
+  }
+}
