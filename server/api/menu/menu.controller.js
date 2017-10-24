@@ -37,11 +37,7 @@ exports.createWebLink = function (req, res) {
     userId: req.user._id,
     menuId: uniqueId, // same as pageId for parent menu
     menuItemType: req.body.menuItemType,
-<<<<<<< HEAD
-    menuWebLink: req.body.menuWebLink // only when type is 'weblink'
-=======
-    menuWebLink: req.body.menuWebLink // url, only when type is 'weblink'
->>>>>>> 7062d0f0c245b35856b1664725fb90382c23b98e
+    menuWebLink: req.body.menuWebLink //url, only when type is 'weblink'
   })
 
   // save model to MongoDB

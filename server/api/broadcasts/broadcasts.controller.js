@@ -208,14 +208,14 @@ function saveLiveChat (page, subscriber, session, event) {
     og(urlInText, function (err, meta) {
       if (err) return logger.serverLog(TAG, err)
       chatPayload.url_meta = meta
-      saveChatInDb(page, session, chatPayload)
+      saveChatInDb(page, session, chatPayload, subscriber)
     })
   } else {
-    saveChatInDb(page, session, chatPayload)
+    saveChatInDb(page, session, chatPayload, subscriber)
   }
 }
 
-function saveChatInDb (page, session, chatPayload) {
+function saveChatInDb (page, session, chatPayload, subscriber) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
@@ -223,7 +223,9 @@ function saveChatInDb (page, session, chatPayload) {
       room_id: page.userId._id,
       payload: {
         session_id: session._id,
-        chat_id: chat._id
+        chat_id: chat._id,
+        text: chatPayload.payload.text,
+        name: subscriber.firstName + ' ' + subscriber.lastName
       }
     })
     logger.serverLog(TAG, 'new chat message saved')
