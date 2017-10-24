@@ -29,8 +29,6 @@ exports.createWebLink = function (req, res) {
     (today.getMonth() + 1) + '' + today.getDate()
   uniqueId += '' + today.getHours() + '' + today.getMinutes() + '' +
     today.getSeconds()
-  let fext = req.files.file.name.split('.')
-  uniqueId += '.' + fext[fext.length - 1]
   const menu = new Menu({
     title: req.body.title,
     pageId: req.body.pageId,
@@ -48,6 +46,7 @@ exports.createWebLink = function (req, res) {
         error: err,
         description: 'Failed to insert record'
       })
+      logger.serverLog(TAG, JSON.stringify(err))
     } else {
       res.status(201).json({status: 'Success', payload: workflow})
     }

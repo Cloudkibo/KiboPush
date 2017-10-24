@@ -8,7 +8,9 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-//  das
+import Popover from 'react-simple-popover'
+
+var abc = 0
 class Menu extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -18,17 +20,16 @@ class Menu extends React.Component {
       pageValue: '',
       itemName: '',
       itemselected: '',
-      list: [],
-      menudivs: {
-        backgroundColor: '#f2f2f2',
-        text: 'Menu Item'
-      }
+      backgroundColor: '#ffffff',
+      text: '+Add Menu Item',
+      openPopover: false
 
     }
     this.pageChange = this.pageChange.bind(this)
     this.saveItem = this.saveItem.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
   componentDidMount () {
@@ -50,7 +51,7 @@ class Menu extends React.Component {
       console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
-        myPages.push({value: page.pageId, label: page.pageName})
+        myPages.push({value: page._id, label: page.pageName})
       })
       this.setState({pageOptions: myPages})
     }
@@ -66,23 +67,22 @@ class Menu extends React.Component {
     this.setState({pageValue: val.value})
   }
   handleClick (event) {
-    console.log('in handleClick')
-    return (<li>
-      <form className='form-inline'>
-        <div className='form-group'><input type='text' placeholder='+ Menu Item' className='form-control' onChange={this.saveItem} onClick={this.handleClick} /></div>
-        <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
-    </li>)
+    this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: 'weblink', title: this.state.itemName})
+  }
+  handleClose (e) {
+    this.setState({openPopover: false})
   }
   saveItem (event) {
     console.log('event.target.', event.target.value)
     this.setState({itemName: event.target.value})
     console.log('this.state.itemName', this.state.itemName)
-    this.props.addMenuItem({pageId: this.state.pageValue, menuItem: this.state.itemName, menuItemType: 'weblink'})
+    //  this.props.addMenuItem({pageId: this.state.pageValue, menuItem: this.state.itemName, menuItemType: 'weblink'})
   }
   onSelectItem () {
-    //  this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
-    this.setState({list: this.state.list.push(this.state.menudivs)})
-    console.log('list legth', this.state.list.length)
+    this.setState({openPopover: !this.state.openPopover})
+    this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
+    abc = abc + 1
+    this.setState({openPopover: !this.state.openPopover})
   }
   render () {
     return (
@@ -110,19 +110,29 @@ class Menu extends React.Component {
             <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
             <ul style={{paddingLeft: '20px', width: '30%'}}>
               <li>
-                <form className='form-inline'>
-                  <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
-                  <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+                <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
+                  <form className='form-inline'>
+                    <div className='form-group'><input type='text' placeholder={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor, width: '350px'}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
+                  </form>
+                  <Popover
+                    style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+                    placement='right'
+                    target={this.target}
+                    show={this.state.openPopover}
+                    onHide={this.handleClose} >
+                    <div className='form-group'><button className='btn btn-primary btn-sm' onClick={this.handleClick}>Save</button></div>
+                  </Popover>
+                </div>
               </li>
-              { this.state.list.length > 0 && this.state.list.map((i) => (
+              { this.state.itemselected !== '' &&
                 <li>
                   <form className='form-inline'>
-                    <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
-                    <div className='form-group'><button className='btn btn-primary btn-sm' style={{marginLeft: '30px', marginTop: '10px'}}>Save</button></div></form>
+                    <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value='' className='form-control' onChange={this.saveItem} onClick={() => this.onSelectItem()} style={{width: '350px'}} /></div>
+                  </form>
                 </li>
-                ))
               }
-              <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
+              <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
+              <p><b>Note: </b>Only three menu items can be added.</p>
             </ul>
           </div>
         </div>
