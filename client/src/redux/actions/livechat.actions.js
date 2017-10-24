@@ -133,7 +133,7 @@ export function fetchUrlMeta (url) {
   console.log('Fetching url meta', url)
   return (dispatch) => {
     dispatch(loadingUrlMeta(url))
-    callApi('livechat/', 'post', {url: url}).then(res => {
+    callApi('livechat/geturlmeta', 'post', {url: url}).then(res => {
       console.log('Fetch Url Meta Response', res)
       if (res.status === 'success') {
         dispatch(urlMetaReceived(res.payload))
