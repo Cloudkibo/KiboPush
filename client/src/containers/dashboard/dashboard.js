@@ -7,7 +7,7 @@ import React from 'react'
 import Joyride from 'react-joyride'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadDashboardData} from '../../redux/actions/dashboard.actions'
+import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -19,7 +19,7 @@ import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
-import { getuserdetails, dashboardTourCompleted, getTourStatus} from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -51,7 +51,6 @@ class Dashboard extends React.Component {
     }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
-      this.props.fetchSessions({ company_id: nextprops.user._id })
       joinRoom(nextprops.user._id)
     }
   }
@@ -168,7 +167,7 @@ class Dashboard extends React.Component {
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {
-          this.state.isShowingModal &&
+          this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
           <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
             <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
               <GettingStarted pages={this.props.pages} />
@@ -291,7 +290,7 @@ function mapDispatchToProps (dispatch) {
       fetchSessions: fetchSessions,
       getuserdetails: getuserdetails,
       dashboardTourCompleted: dashboardTourCompleted,
-      getTourStatus: getTourStatus
+      getStartedCompleted: getStartedCompleted
     },
     dispatch)
 }

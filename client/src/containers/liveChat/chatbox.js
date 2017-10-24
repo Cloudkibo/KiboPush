@@ -4,13 +4,20 @@
  */
 
 import React from 'react'
-import { fetchUserChats, uploadAttachment, deletefile, sendAttachment } from '../../redux/actions/livechat.actions'
+import {
+  fetchUserChats,
+  uploadAttachment,
+  deletefile,
+  sendAttachment,
+  sendChatMessage
+} from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
+import { isEmoji } from './utilities'
 
 const styles = {
   iconclass: {
@@ -38,8 +45,7 @@ class ChatBox extends React.Component {
       uploadedId: '',
       removeFileDescription: '',
       textAreaValue: '',
-      showEmojiPicker: false,
-      showStickers: false
+      showEmojiPicker: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -74,14 +80,12 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
-  /**
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'smooth'})
   }
-  **/
 
   removeAttachment () {
     console.log('remove', this.state.uploadedId)
@@ -98,16 +102,27 @@ class ChatBox extends React.Component {
     this.setState({showEmojiPicker: false})
   }
 
-  sendSticker (sticker) {
-    console.log('sending sticker', sticker)
-  }
-
   showStickers () {
     this.setState({showStickers: true})
   }
 
   hideStickers () {
     this.setState({showStickers: false})
+  }
+
+  sendSticker (sticker) {
+    console.log('sending sticker', sticker)
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'image',
+      fileurl: sticker.image.hdpi
+    }
+    this.setState(payload, () => {
+      console.log('state inside sendSticker: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    }) 
   }
 
   resetFileComponent () {
@@ -134,30 +149,53 @@ class ChatBox extends React.Component {
     if (e.which === 13) {
       e.preventDefault()
       console.log('state in onEnter: ', this.state)
+      var payload = {}
+      var session = this.props.session
+      var data = {}
       if (this.state.uploadedId !== '') {
-        var payload = {
+        payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedId,
+          fileurl: this.state.fileurl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
-      }
-      var session = this.props.session
-      var data = {
-        sender_id: session.page_id._id, // this is the page id: _id of Pageid
-        recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
-        sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-        recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
-        session_id: session._id,
-        company_id: session.company_id, // this is admin id till we have companies
-        payload: payload, // this where message content will go
-        url_meta: '',
-        status: 'unseen' // seen or unseen
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: '',
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendAttachment(data, this.handleSendAttachment)
+      } else if (this.state.textAreaValue !== '') {
+        payload = {
+          componentType: 'text',
+          text: this.state.textAreaValue
+        }
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: '',
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.setState({textAreaValue: ''})
+        data.format = 'convos'
+        this.props.userChat.push(data)
       }
     }
-    console.log(data)
-    this.props.sendAttachment(data, this.handleSendAttachment)
   }
 
   sendThumbsUp () {
@@ -172,6 +210,7 @@ class ChatBox extends React.Component {
       enterEvent.which = 13
       this.onEnter(enterEvent)
     })
+   
   }
 
   handleSendAttachment (res) {
@@ -267,7 +306,7 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    // this.scrollToBottom()
+    this.scrollToBottom()
     if (nextProps.userChat) {
       console.log('user chats updated', nextProps.userChat)
     }
@@ -282,14 +321,14 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
   render () {
     console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        <div className='ui-block-title'>
+        <div style={{marginTop: '28px'}} className='ui-block-title'>
           <span className='icon-status online' />
           <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
         </div>
@@ -332,15 +371,14 @@ class ChatBox extends React.Component {
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
-                msg.sender_id === this.props.user._id
+                msg.format === 'convos'
                   ? (
                     <li>
                       <div className='author-thumb-right'>
                         <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
                       {
-                        msg.payload.componentType
-                        ? (msg.payload.componentType === 'video'
+                        msg.payload.componentType && (msg.payload.componentType === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
@@ -379,18 +417,20 @@ class ChatBox extends React.Component {
                               />
                             </div>
                           </div>
+                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                          ? <div className='notification-event'>
+                            <span className='emojis-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
+                          </div>
                           : <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <h6 style={{color: '#fff'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileurl.split('?')[0].split('/')[msg.payload.fileurl.split('?')[0].split('/').length - 1]}</strong></h6>
-                            </div>
+                            <span className='chat-message-item-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
                           </div>
                         )
-                        : <div className='notification-event'>
-                          <span className='chat-message-item-right'>{msg.payload.text}</span>
-                          {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
-                        </div>
                       }
                     </li>
                   )
@@ -436,10 +476,19 @@ class ChatBox extends React.Component {
                           </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
-                              <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              </a>
                             </div>
                           </div>
                         )
+                        : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                        ? <div className='notification-event'>
+                          <span className='emojis-left'>{msg.payload.text}</span>
+                          {/**
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
+                        </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
@@ -450,10 +499,8 @@ class ChatBox extends React.Component {
                     </li>
                   )
               ))}
-            {/**
-            <div style={{ float: 'left', clear: 'both' }}
+            <div style={{float: 'left', clear: 'both'}}
               ref={(el) => { this.messagesEnd = el }} />
-              **/}
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
@@ -541,8 +588,9 @@ class ChatBox extends React.Component {
                   }} className='fa fa-smile-o' />
                 </i>
               </div>
+
               <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                <i style={styles.iconclass}>
+                <i onClick={this.showStickers} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
@@ -764,7 +812,8 @@ function mapDispatchToProps (dispatch) {
     fetchUserChats: (fetchUserChats),
     uploadAttachment: (uploadAttachment),
     deletefile: (deletefile),
-    sendAttachment: (sendAttachment)
+    sendAttachment: (sendAttachment),
+    sendChatMessage: (sendChatMessage)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

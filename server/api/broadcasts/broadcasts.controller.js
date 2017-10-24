@@ -65,12 +65,6 @@ exports.verifyhook = function (req, res) {
   }
 }
 
-exports.pubsubhook = function (req, res) {
-  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
-  logger.serverLog(TAG, JSON.stringify(req.body))
-  return res.status(200).json({status: 'success', description: 'got the data.'})
-}
-
 // webhook for facebook
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}
@@ -86,6 +80,7 @@ exports.getfbMessage = function (req, res) {
   }
 
   const messagingEvents = req.body.entry[0].messaging
+  logger.serverLog(TAG, 'something received from facebook')
 
   for (let i = 0; i < messagingEvents.length; i++) {
     const event = req.body.entry[0].messaging[i]
@@ -100,6 +95,10 @@ exports.getfbMessage = function (req, res) {
         }
         // fetch subsriber info from Graph API
         // fetch customer details
+        logger.serverLog(TAG, `page got ${page.pageName}`)
+        if (page === null) {
+          return
+        }
         const options = {
           url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
           qs: {access_token: page.accessToken},

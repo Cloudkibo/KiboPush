@@ -45,14 +45,15 @@ const all = {
   },
 
   pubsubhubbub: {
-    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/broadcasts/pubsub/webhook`
+    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/autoposting/pubsub/webhook`
   },
 
   twitter: {
-    consumerKey: process.env.TWITTER_CONSUMER_KEY || '7aIqEjxEBPqzBOqWTiF7uosVl',
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET || 'zxbH46wrUyUoJk9cG9s3OqV0B5xAAjM9puAtrLSwnf9L7Utx9h',
-    token: process.env.TWITTER_TOKEN || '2616186000-sxO4PtLZVrOqG0QtrtWzrUx9BzdG0KyFY2SOmhR',
-    tokenSecret: process.env.TWITTER_TOKEN_SECRET || 'N5K1Myf8wsKSWKpAK5amLpBK81ips0z8KUKvS7tsxhIqD'
+    consumer_key: process.env.TWITTER_CONSUMER_KEY || 'SPyt40d2i8IfIFoYtW5LtYnG8',
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET || 'L00OE6SIGOMjI0ZDe5n3ncnFdaxHaAco6wzkR2jdzLXJnXYoID',
+    consumer_token: process.env.TWITTER_TOKEN || '2616186000-dAaH7yuQsBGNcbvnCiHweB8rFm54pF2YOC0hOtP',
+    consumer_token_secret: process.env.TWITTER_TOKEN_SECRET || '6hWNxP6qwjPEjEfLwT8uK9JpPVFzwA3BxBeCSU7J6rylT',
+    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/autoposting/twitter`
   }
 }
 

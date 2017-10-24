@@ -4,12 +4,13 @@ const initialState = {
   browserName: '',
   browserVersion: '',
   socketStatus: false,
-  getStartedSeen: false,
-  dashboardTourSeen: false,
-  workFlowsTourSeen: false,
-  surveyTourSeen: false,
-  convoTourSeen: false,
-  pollTourSeen: false
+  getStartedSeen: true,
+  dashboardTourSeen: true,
+  workFlowsTourSeen: true,
+  surveyTourSeen: true,
+  convoTourSeen: true,
+  pollTourSeen: true,
+  getStartedSeen: true
 }
 
 export function basicInfo (state = initialState, action) {
@@ -36,6 +37,26 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.DASHBOARD_TOUR_COMPLETED:
       return Object.assign({}, state, {
         dashboardTourSeen: true
+      })
+    case ActionTypes.WORKFLOWS_TOUR_COMPLETED:
+      return Object.assign({}, state, {
+        workFlowsTourSeen: true
+      })
+    case ActionTypes.SURVEY_TOUR_COMPLETED:
+      return Object.assign({}, state, {
+        surveyTourSeen: true
+      })
+    case ActionTypes.CONVO_TOUR_COMPLETED:
+      return Object.assign({}, state, {
+        convoTourSeen: true
+      })
+    case ActionTypes.POLL_TOUR_COMPLETED:
+      return Object.assign({}, state, {
+        pollTourSeen: true
+      })
+    case ActionTypes.GET_STARTED_COMPLETED:
+      return Object.assign({}, state, {
+        getStartedSeen: true
       })
     default:
       return state

@@ -8,6 +8,7 @@ let LiveChat = require('./livechat.model')
 let Pages = require('./../pages/Pages.model')
 let Subscribers = require('./../subscribers/Subscribers.model')
 let utility = require('./../broadcasts/broadcasts.utility')
+const _ = require('lodash')
 
 // Get list of Facebook Chat Messages
 exports.index = function (req, res) {
@@ -29,16 +30,16 @@ exports.create = function (req, res) {
 
   let parametersMissing = false
 
-  if (req.body.session_id === 'undefined') parametersMissing = true
-  if (req.body.recipient_id === 'undefined') parametersMissing = true
-  if (req.body.sender_fb_id === 'undefined') parametersMissing = true
-  if (req.body.recipient_fb_id === 'undefined') parametersMissing = true
-  if (req.body.session_id === 'undefined') parametersMissing = true
-  if (req.body.company_id === 'undefined') parametersMissing = true
-  if (req.body.payload === 'undefined') parametersMissing = true
+  if (!_.has(req.body, 'sender_id')) parametersMissing = true
+  if (!_.has(req.body, 'recipient_id')) parametersMissing = true
+  if (!_.has(req.body, 'sender_fb_id')) parametersMissing = true
+  if (!_.has(req.body, 'recipient_fb_id')) parametersMissing = true
+  if (!_.has(req.body, 'session_id')) parametersMissing = true
+  if (!_.has(req.body, 'company_id')) parametersMissing = true
+  if (!_.has(req.body, 'payload')) parametersMissing = true
 
   if (parametersMissing) {
-    return res.status(200)
+    return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing'})
   }
 
