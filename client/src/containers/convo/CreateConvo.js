@@ -30,6 +30,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
+import { getuserdetails, convoTourCompleted} from '../../redux/actions/basicinfo.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -64,6 +65,7 @@ class CreateConvo extends React.Component {
       steps: [],
       showMessengerModal: false
     }
+    props.getuserdetails()
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -81,6 +83,7 @@ class CreateConvo extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
+    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentWillMount () {
@@ -352,6 +355,15 @@ class CreateConvo extends React.Component {
     this.refs.joyride.addTooltip(data)
   }
 
+  tourFinished (data) {
+    console.log('Next Tour Step')
+    if (data.type === 'finished') {
+      this.props.convoTourCompleted({
+        'convoTourSeen': true
+      })
+    }
+  }
+
   render () {
     console.log('Pages ', this.props.pages)
 
@@ -366,7 +378,10 @@ class CreateConvo extends React.Component {
 
     return (
       <div>
-        <Joyride ref='joyride' run steps={this.state.steps} debug={false} type={'continuous'} showStepsProgress showSkipButton />
+        {
+        !(this.props.user && this.props.user.convoTourSeen) &&
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -560,7 +575,9 @@ function mapDispatchToProps (dispatch) {
       updatefileuploadStatus: updatefileuploadStatus,
       removePage: removePage,
       addPages: addPages,
-      sendBroadcast: sendBroadcast
+      sendBroadcast: sendBroadcast,
+      getuserdetails: getuserdetails,
+      convoTourCompleted: convoTourCompleted
 
     },
     dispatch)
