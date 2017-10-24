@@ -37,18 +37,67 @@ export function setSocketStatus (data) {
 }
 
 export function dashboardTourCompleted (tour) {
-  console.log('Tour Completed')
   return (dispatch) => {
     callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateDashboardTour()))
   }
 }
 export function updateDashboardTour () {
-  console.log('In updateTour')
   return {
     type: ActionTypes.DASHBOARD_TOUR_COMPLETED
   }
 }
 
-export function getTourStatus () {
+export function workflowsTourCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateWorkflowsTour()))
+  }
+}
+export function updateWorkflowsTour () {
+  return {
+    type: ActionTypes.WORKFLOWS_TOUR_COMPLETED
+  }
+}
 
+export function surveyTourCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateSurveyTour()))
+  }
+}
+export function updateSurveyTour () {
+  return {
+    type: ActionTypes.SURVEY_TOUR_COMPLETED
+  }
+}
+
+export function convoTourCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateConvoTour()))
+  }
+}
+export function updateConvoTour () {
+  return {
+    type: ActionTypes.CONVO_TOUR_COMPLETED
+  }
+}
+
+export function pollTourCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updatePollTour()))
+  }
+}
+export function updatePollTour () {
+  return {
+    type: ActionTypes.POLL_TOUR_COMPLETED
+  }
+}
+
+export function getStartedCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
+  }
+}
+export function updateGetStarted () {
+  return {
+    type: ActionTypes.POLL_TOUR_COMPLETED
+  }
 }
