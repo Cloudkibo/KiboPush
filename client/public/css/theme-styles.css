@@ -1359,3 +1359,9 @@ p {
     word-wrap: break-word;
     margin-top: 5%;
   }
+
+  .bzojac {
+    width : auto !important;
+    height : 350px !important;
+    margin-top: 0rem !important;
+  }

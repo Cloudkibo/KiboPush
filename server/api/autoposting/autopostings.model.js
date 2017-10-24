@@ -13,6 +13,8 @@ let autoPostingSchema = new Schema({
   subscriptionUrl: String,
 // TODO make it enum, possible values: facebook, youtube, twitter etc
   subscriptionType: String,
+  accountUniqueName: String,
+  payload: Schema.Types.Mixed,
   isActive: { type: Boolean, default: true },
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],

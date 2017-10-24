@@ -39,7 +39,7 @@ exports.create = function (req, res) {
   if (!_.has(req.body, 'payload')) parametersMissing = true
 
   if (parametersMissing) {
-    return res.status(200)
+    return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing'})
   }
 

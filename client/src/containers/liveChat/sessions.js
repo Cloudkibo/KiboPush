@@ -94,6 +94,7 @@ class Sessions extends React.Component {
     }
     console.log('Sorted Array', temp)
     this.setState({list: temp, logValue: val.value})
+    this.setState({pageValue: null})
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
@@ -110,6 +111,7 @@ class Sessions extends React.Component {
     })
     console.log('Page Filter', results)
     this.setState({list: results, pageValue: val.value})
+    this.setState({logValue: null})
   }
 
   handleSearch (event) {
@@ -118,12 +120,13 @@ class Sessions extends React.Component {
     var search = event.target.value
     var results = _.filter(this.props.sessions, function (item) {
       var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
-      if (name.indexOf(search) > -1) {
+      if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
         return item
       }
     })
     console.log(results)
     this.setState({list: results})
+    this.setState({logValue: null, pageValue: null})
   }
 
   render () {

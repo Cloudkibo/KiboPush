@@ -9,6 +9,7 @@ let Schema = mongoose.Schema
 let menuSchema = new Schema({
   pageId: {type: Schema.ObjectId, ref: 'pages'},
   userId: {type: Schema.ObjectId, ref: 'users'},
+  title: String,
   menuId: String, // same as pageId for parent menu
   menuItemType: {
     type: String,
