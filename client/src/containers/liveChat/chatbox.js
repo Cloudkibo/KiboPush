@@ -17,6 +17,7 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
+import GiphyPicker from 'react-giphy-picker'
 import { isEmoji } from './utilities'
 
 const styles = {
@@ -45,7 +46,8 @@ class ChatBox extends React.Component {
       uploadedId: '',
       removeFileDescription: '',
       textAreaValue: '',
-      showEmojiPicker: false
+      showEmojiPicker: false,
+      showGif: false
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -65,6 +67,9 @@ class ChatBox extends React.Component {
     this.showStickers = this.showStickers.bind(this)
     this.hideStickers = this.hideStickers.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
+    this.showGif = this.showGif.bind(this)
+    this.closeGif = this.closeGif.bind(this)
+    this.sendGif = this.sendGif.bind(this)
   }
 
   componentDidMount () {
@@ -110,6 +115,14 @@ class ChatBox extends React.Component {
     this.setState({showStickers: false})
   }
 
+  showGif () {
+    this.setState({showGifPicker: true})
+  }
+
+  closeGif () {
+    this.setState({showGifPicker: false})
+  }
+
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
     let payload = {
@@ -122,7 +135,22 @@ class ChatBox extends React.Component {
       let enterEvent = new Event('keypress')
       enterEvent.which = 13
       this.onEnter(enterEvent)
-    }) 
+    })
+  }
+
+  sendGif (gif) {
+    console.log('sending Gif', gif)
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'gif',
+      fileurl: gif.downsized.url
+    }
+    this.setState(payload, () => {
+      console.log('state inside sendGif: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
   }
 
   resetFileComponent () {
@@ -134,7 +162,8 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      showGifPicker: false
     })
   }
 
@@ -210,7 +239,6 @@ class ChatBox extends React.Component {
       enterEvent.which = 13
       this.onEnter(enterEvent)
     })
-   
   }
 
   handleSendAttachment (res) {
@@ -367,6 +395,17 @@ class ChatBox extends React.Component {
             sendSticker={this.sendSticker}
           />
         </Popover>
+        <Popover
+          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          placement='top'
+          target={this.gifs}
+          show={this.state.showGifPicker}
+          onHide={this.closeGif}
+        >
+          <div>
+            <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
@@ -405,10 +444,19 @@ class ChatBox extends React.Component {
                           : msg.payload.componentType === 'file'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
+                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
                             </div>
                           </div>
                           : msg.payload.componentType === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.fileurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'gif'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
@@ -612,8 +660,8 @@ class ChatBox extends React.Component {
                     className='center fa fa-smile-o' />
                 </i>
               </div>
-              <div style={{display: 'inline-block'}} data-tip='GIF'>
-                <i style={styles.iconclass}>
+              <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                <i onClick={this.showGif} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
