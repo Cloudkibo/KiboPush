@@ -9,5 +9,6 @@ const controller = require('./menu.controller')
 const auth = require('../../auth/auth.service')
 
 router.get('/', auth.isAuthenticated(), controller.index)
+router.post('/createWebLink', auth.isAuthenticated(), controller.createWebLink)
 
 module.exports = router

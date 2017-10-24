@@ -21,7 +21,7 @@ exports.index = function (req, res) {
   })
 }
 
-exports.addWebLinkMenuItem = function (req, res) {
+exports.createWebLink = function (req, res) {
   // todo save it with facebook by calling api
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
@@ -32,11 +32,12 @@ exports.addWebLinkMenuItem = function (req, res) {
   let fext = req.files.file.name.split('.')
   uniqueId += '.' + fext[fext.length - 1]
   const menu = new Menu({
+    title: req.body.title,
     pageId: req.body.pageId,
-    userId: req.body.userId,
+    userId: req.user._id,
     menuId: uniqueId, // same as pageId for parent menu
     menuItemType: req.body.menuItemType,
-    menuWebLink: req.body.menuWebLink, // only when type is 'weblink'
+    menuWebLink: req.body.menuWebLink // url, only when type is 'weblink'
   })
 
   // save model to MongoDB
