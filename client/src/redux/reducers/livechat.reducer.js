@@ -30,6 +30,18 @@ export function liveChat (state = initialState, action) {
         socketSession: ''
       })
 
+    case ActionTypes.LOADING_URL_META:
+      return Object.assign({}, state, {
+        urlValue: action.urlValue,
+        loadingUrl: action.loadingUrl
+      })
+
+    case ActionTypes.GET_URL_META:
+      return Object.assign({}, state, {
+        urlMeta: action.urlMeta,
+        loadingUrl: action.loadingUrl
+      })
+
     default:
       return state
   }
