@@ -6,7 +6,6 @@ const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
 const TAG = 'api/autoposting/autopostings.controller.js'
 const TwitterUtility = require('./../../config/twitter')
-const _ = require('lodash')
 
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
@@ -33,7 +32,7 @@ exports.create = function (req, res) {
     (error, gotData) => {
       if (error) {
         res.status(500).json({
-          status: 'Failed',
+          status: 'failed',
           error: error,
           description: 'Internal Server Error'
         })
@@ -92,7 +91,9 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
-                res.status(201).json({status: 'success', payload: createdRecord})
+                TwitterUtility.restart()
+                res.status(201)
+                  .json({status: 'success', payload: createdRecord})
               }
             })
           })
@@ -102,7 +103,6 @@ exports.create = function (req, res) {
 }
 
 exports.edit = function (req, res) {
-  // todo see individual subscriptions here, disable/enable them
   logger.serverLog(TAG,
     `This is body in edit autoposting ${JSON.stringify(req.body)}`)
   AutoPosting.findById(req.body._id, (err, autoposting) => {
@@ -132,7 +132,6 @@ exports.edit = function (req, res) {
 }
 
 exports.destroy = function (req, res) {
-  // todo see individual subscriptions here.. disable them
   logger.serverLog(TAG,
     `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   AutoPosting.findById(req.params.id, (err, autoposting) => {
@@ -149,6 +148,7 @@ exports.destroy = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'AutoPosting update failed'})
       }
+      TwitterUtility.restart()
       return res.status(204).end()
     })
   })
