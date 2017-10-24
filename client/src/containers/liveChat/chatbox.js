@@ -667,7 +667,7 @@ class ChatBox extends React.Component {
                JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
                <div style={{clear: 'both', display: 'block'}}>
                  <div className='wrapperforURL'>
-                   <table style={{maxWidth: '318px'}}>
+                   <table style={{maxWidth: '318px', maxHeight: '150px'}}>
                      {
                        this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                        ? <tbody>
@@ -676,17 +676,17 @@ class ChatBox extends React.Component {
                              <ReactPlayer
                                url={this.state.urlmeta.url}
                                controls
-                               width='50%'
-                               height='100'
+                               width='100%'
+                               height='150'
                              />
                            </td>
                            <td>
                              <div>
                                <a href={this.state.urlmeta.url} target='_blank'>
-                                 <span className='urlTitle'>{this.state.urlmeta.title}</span>
+                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
-                               <span>{this.state.urlmeta.description}</span>
+                               <p>{this.state.urlmeta.description}</p>
                              </div>
                            </td>
                          </tr>
