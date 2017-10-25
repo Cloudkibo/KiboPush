@@ -10,7 +10,7 @@ export function createMenuItem (data) {
 export function addMenuItem (data) {
   console.log('in addMenuItem', data)
   return (dispatch) => {
-    callApi('menu/addWebLinkMenuItem', 'post', data)
+    callApi('menu/createWebLink', 'post', data)
       .then(res => dispatch(createMenuItem(res.payload)))
   }
 }
