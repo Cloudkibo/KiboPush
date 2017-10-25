@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import Joyride from 'react-joyride'
 import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
@@ -13,6 +14,8 @@ import Select from 'react-select'
 import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
+
 class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -44,13 +47,17 @@ class CreatePoll extends React.Component {
       statement: '',
       option1: '',
       option2: '',
-      option3: ''
+      option3: '',
+      steps: []
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
+    this.addSteps = this.addSteps.bind(this)
+    this.addTooltip = this.addTooltip.bind(this)
+    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentDidMount () {
@@ -73,6 +80,28 @@ class CreatePoll extends React.Component {
       options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
     }
     this.setState({page: {options: options}})
+    this.addSteps([{
+      title: 'Question',
+      text: 'You can write a question here that you need to get feedback on',
+      selector: 'div#question',
+      position: 'top-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Response',
+      text: 'Give your subscribers list of possible responses to choose from',
+      selector: 'div#responses',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true},
+    {
+      title: 'Targetting',
+      text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
+      selector: 'div#target',
+      position: 'bottom-left',
+      type: 'hover',
+      isFixed: true}
+    ])
   }
 
   handlePageChange (value) {
@@ -149,10 +178,46 @@ class CreatePoll extends React.Component {
     }
   }
 
+  tourFinished (data) {
+    console.log('Next Tour Step')
+    if (data.type === 'finished') {
+      console.log('this: ', this)
+      console.log('Tour Finished')
+      console.log(this.props)
+      this.props.pollTourCompleted({
+        'pollTourSeen': true
+      })
+    }
+  }
+
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
+
+    if (!Array.isArray(steps)) {
+      steps = [steps]
+    }
+
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
+  }
+
   render () {
     const { disabled, stayOpen } = this.state
     return (
       <div>
+        {
+          !(this.props.user && this.props.user.pollTourSeen) &&
+          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -172,7 +237,7 @@ class CreatePoll extends React.Component {
                   <div className='tab-content'>
                     <div className='tab-pane active' id='home-1' role='tabpanel'
                       aria-expanded='true'>
-                      <div className='form-group label-floating is-empty'>
+                      <div id='question' className='form-group label-floating is-empty'>
                         <label className='control-label'>Ask something...</label>
                         <textarea className='form-control'
                           value={this.state.statement}
@@ -183,7 +248,7 @@ class CreatePoll extends React.Component {
                         className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                         <label className='control-label'> Add 3 responses</label>
                         <fieldset className='input-group-vertical'>
-                          <div className='form-group'>
+                          <div id='responses' className='form-group'>
                             <label className='sr-only'>Response1</label>
                             <input type='text' className='form-control'
                               value={this.state.option1}
@@ -234,7 +299,7 @@ class CreatePoll extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
               <h2 className='presentation-margin'>Targeting</h2>
               <p>Select the type of customer you want to send poll to</p>
               <div className='form-group'>
@@ -287,12 +352,18 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     polls: (state.pollsInfo.polls),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
+
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPollsList: loadPollsList, addPoll: addPoll},
+  return bindActionCreators({
+    loadPollsList: loadPollsList,
+    addPoll: addPoll,
+    pollTourCompleted: pollTourCompleted
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePoll)

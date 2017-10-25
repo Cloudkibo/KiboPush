@@ -20,7 +20,6 @@ import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import { isEmoji, getmetaurl } from './utilities'
 import Halogen from 'halogen'
-import GiphyPicker from 'react-giphy-picker'
 
 const styles = {
   iconclass: {
@@ -50,8 +49,7 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       urlmeta: {},
-      prevURL: '',
-      showGif: false
+      prevURL: ''
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -71,9 +69,6 @@ class ChatBox extends React.Component {
     this.showStickers = this.showStickers.bind(this)
     this.hideStickers = this.hideStickers.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
-    this.showGif = this.showGif.bind(this)
-    this.closeGif = this.closeGif.bind(this)
-    this.sendGif = this.sendGif.bind(this)
   }
 
   componentDidMount () {
@@ -119,42 +114,8 @@ class ChatBox extends React.Component {
     this.setState({showStickers: false})
   }
 
-  showGif () {
-    this.setState({showGifPicker: true})
-  }
-
-  closeGif () {
-    this.setState({showGifPicker: false})
-  }
-
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
-    let payload = {
-      uploadedId: new Date().getTime(),
-      componentType: 'image',
-      fileurl: sticker.image.hdpi
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendSticker: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
-  }
-
-  sendGif (gif) {
-    console.log('sending Gif', gif)
-    let payload = {
-      uploadedId: new Date().getTime(),
-      componentType: 'gif',
-      fileurl: gif.downsized.url
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendGif: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
   }
 
   resetFileComponent () {
@@ -166,13 +127,13 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: '',
-      showGifPicker: false
+      removeFileDescription: ''
     })
   }
 
   handleTextChange (e) {
     var isUrl = getmetaurl(e.target.value)
+    console.log('isUrl', isUrl)
     if (isUrl !== null) {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
@@ -201,7 +162,7 @@ class ChatBox extends React.Component {
         payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.fileurl,
+          fileurl: this.state.uploadedId,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
@@ -249,12 +210,11 @@ class ChatBox extends React.Component {
       componentType: 'image',
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
-    this.setState(payload, () => {
-      console.log('state inside sendThumbsUp: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    this.setState(payload)
+    console.log('state inside sendThumbsUp: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   handleSendAttachment (res) {
@@ -414,29 +374,18 @@ class ChatBox extends React.Component {
             sendSticker={this.sendSticker}
           />
         </Popover>
-        <Popover
-          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
-          placement='top'
-          target={this.gifs}
-          show={this.state.showGifPicker}
-          onHide={this.closeGif}
-        >
-          <div>
-            <GiphyPicker onSelected={this.sendGif} />
-          </div>
-        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
               this.props.userChat && this.props.userChat.map((msg) => (
                 msg.format === 'convos'
                   ? (
-                  <li>
-                    <div className='author-thumb-right'>
-                      <img style={{width: '34px', height: '34px'}} src={this.props.user.profilePic} alt='author' />
-                    </div>
-                    {
-                      msg.payload.componentType && (msg.payload.componentType === 'video'
+                    <li>
+                      <div className='author-thumb-right'>
+                        <img style={{width: '34px', height: '34px'}} src={this.props.user.profilePic} alt='author' />
+                      </div>
+                      {
+                        msg.payload.componentType && (msg.payload.componentType === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
@@ -449,65 +398,56 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.componentType === 'audio'
-                            ? <div className='notification-event'>
-                              <div className='facebook-chat-right'>
-                                <ReactPlayer
-                                  url={msg.payload.fileurl}
-                                  controls
-                                  width='100%'
-                                  height='140'
-                                  onPlay={this.onTestURLAudio(msg.payload.fileurl)}
-                                />
-                              </div>
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <ReactPlayer
+                                url={msg.payload.fileurl}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.fileurl)}
+                              />
                             </div>
-                            : msg.payload.componentType === 'file'
-                              ? <div className='notification-event'>
-                                <div className='facebook-chat-right'>
-                                  <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
-                                </div>
-                              </div>
-                              : msg.payload.componentType === 'image'
-                                ? <div className='notification-event'>
-                                  <div className='facebook-chat-right'>
-                                    <img
-                                      src={msg.payload.fileurl}
-                                      style={{maxWidth: '150px', maxHeight: '85px'}}
-                                    />
-                                  </div>
-                                </div>
-                                : msg.payload.componentType === 'gif'
-                                  ? <div className='notification-event'>
-                                    <div className='facebook-chat-right'>
-                                      <img
-                                        src={msg.payload.fileurl}
-                                        style={{maxWidth: '150px', maxHeight: '85px'}}
-                                      />
-                                    </div>
-                                  </div>
-                                  : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                                    ? <div className='notification-event'>
-                                      <span className='emojis-right'>{msg.payload.text}</span>
-                                      {/**
-                                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                                       **/}
-                                    </div>
-                                    : <div className='notification-event'>
-                                      <span className='chat-message-item-right'>{msg.payload.text}</span>
-                                      {/**
-                                       <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                                       **/}
-                                    </div>
-                      )
-                    }
-                  </li>
-                )
+                          </div>
+                          : msg.payload.componentType === 'file'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.fileurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                          ? <div className='notification-event'>
+                            <span className='emojis-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
+                          </div>
+                          : <div className='notification-event'>
+                            <span className='chat-message-item-right'>{msg.payload.text}</span>
+                            {/**
+                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                            **/}
+                          </div>
+                        )
+                      }
+                    </li>
+                  )
                   : (
-                  <li>
-                    <div className='author-thumb-left'>
-                      <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
-                    </div>
-                    {
-                      msg.payload.attachments
+                    <li>
+                      <div className='author-thumb-left'>
+                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
+                      </div>
+                      {
+                        msg.payload.attachments
                         ? (msg.payload.attachments[0].type === 'video'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-left'>
@@ -521,53 +461,53 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.attachments[0].type === 'audio'
-                            ? <div className='notification-event'>
-                              <div className='facebook-chat-left'>
-                                <ReactPlayer
-                                  url={msg.payload.attachments[0].payload.url}
-                                  controls
-                                  width='100%'
-                                  height='140'
-                                  onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
-                                />
-                              </div>
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <ReactPlayer
+                                url={msg.payload.attachments[0].payload.url}
+                                controls
+                                width='100%'
+                                height='140'
+                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                              />
                             </div>
-                            : msg.payload.attachments[0].type === 'image'
-                              ? <div className='notification-event'>
-                                <div className='facebook-chat-left'>
-                                  <img
-                                    src={msg.payload.attachments[0].payload.url}
-                                    style={{maxWidth: '150px', maxHeight: '85px'}}
-                                  />
-                                </div>
-                              </div>
-                              : <div className='notification-event'>
-                                <div className='facebook-chat-left'>
-                                  <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                    <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                                  </a>
-                                </div>
-                              </div>
-                      )
+                          </div>
+                          : msg.payload.attachments[0].type === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <img
+                                src={msg.payload.attachments[0].payload.url}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                              </a>
+                            </div>
+                          </div>
+                        )
                         : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                         ? <div className='notification-event'>
                           <span className='emojis-left'>{msg.payload.text}</span>
                           {/**
-                           <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                           **/}
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
                         </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
-                           <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                           **/}
+                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
+                          **/}
                         </div>
-                    }
-                  </li>
-                )
+                      }
+                    </li>
+                  )
               ))}
             <div style={{float: 'left', clear: 'both'}}
-                 ref={(el) => { this.messagesEnd = el }} />
+              ref={(el) => { this.messagesEnd = el }} />
           </ul>
           <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
         </div>
@@ -620,7 +560,7 @@ class ChatBox extends React.Component {
                       }} className='fa fa-paperclip' />
                     </i>
                     <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                           multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                      multiple='false' ref='selectFile' style={styles.inputf} disabled />
                   </div>
                   : <div>
                     <i style={styles.iconclass} onClick={() => {
@@ -637,7 +577,7 @@ class ChatBox extends React.Component {
                       }} className='fa fa-paperclip' />
                     </i>
                     <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                           multiple='false' ref='selectFile' style={styles.inputf} />
+                      multiple='false' ref='selectFile' style={styles.inputf} />
                   </div>
                 }
               </div>
@@ -676,11 +616,11 @@ class ChatBox extends React.Component {
                     fontSize: '12px',
                     bottom: -4
                   }}
-                     className='center fa fa-smile-o' />
+                    className='center fa fa-smile-o' />
                 </i>
               </div>
-              <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
-                <i onClick={this.showGif} style={styles.iconclass}>
+              <div style={{display: 'inline-block'}} data-tip='GIF'>
+                <i style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
@@ -724,63 +664,61 @@ class ChatBox extends React.Component {
               </div>
             }
             {
-              JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
-              <div style={{clear: 'both', display: 'block'}}>
-                <div className='wrapperforURL'>
-                  <table style={{maxWidth: '318px'}}>
-                    {
-                      this.state.urlmeta.type && this.state.urlmeta.type === 'video'
-                        ? <tbody>
-                      <tr>
-                        <td colspan='2'>
-                          <ReactPlayer
-                            url={this.state.urlmeta.url}
-                            controls
-                            width='100%'
-                            height='242'
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div>
-                            <a href={this.state.urlmeta.url} target='_blank'>
-                              <span className='urlTitle'>{this.state.urlmeta.title}</span>
-                            </a>
-                            <br />
-                            <span>{this.state.urlmeta.description}</span>
-                          </div>
-                        </td>
-                      </tr>
-                      </tbody>
-                        : <tbody>
-                      <tr>
-                        <td>
-                          <div style={{width: 72, height: 72}}>
-                            {
-                              this.state.urlmeta.image &&
-                              <img src={this.state.urlmeta.image.url} style={{width: 72, height: 72}} />
-                            }
-                          </div>
-                        </td>
-                        <td>
-                          <div>
-                            <a href={this.state.urlmeta.url} target='_blank'>
-                              <span className='urltitle'>{this.state.urlmeta.title}</span>
-                            </a>
-                            <br />
-                            {
-                              this.state.urlmeta.description &&
-                              <span>{this.state.urlmeta.description}</span>
-                            }
-                          </div>
-                        </td>
-                      </tr>
+               JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
+               <div style={{clear: 'both', display: 'block'}}>
+                 <div className='wrapperforURL'>
+                   <table style={{maxWidth: '318px'}}>
+                     {
+                       this.state.urlmeta.type && this.state.urlmeta.type === 'video'
+                       ? <tbody>
+                         <tr>
+                           <td style={{width: '30%'}} colspan='2'>
+                             <ReactPlayer
+                               url={this.state.urlmeta.url}
+                               controls
+                               width='100%'
+                               height='150'
+                             />
+                           </td>
+                           <td style={{width: '70%'}}>
+                             <div>
+                               <a href={this.state.urlmeta.url} target='_blank'>
+                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
+                               </a>
+                               <br />
+                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description}</p>
+                             </div>
+                           </td>
+                         </tr>
+                       </tbody>
+                      : <tbody>
+                        <tr>
+                          <td>
+                            <div style={{width: 72, height: 72}}>
+                              {
+                                this.state.urlmeta.image &&
+                                  <img src={this.state.urlmeta.image.url} style={{width: 72, height: 72}} />
+                              }
+                            </div>
+                          </td>
+                          <td>
+                            <div>
+                              <a href={this.state.urlmeta.url} target='_blank'>
+                                <span className='urltitle'>{this.state.urlmeta.title}</span>
+                              </a>
+                              <br />
+                              {
+                                this.state.urlmeta.description &&
+                                  <span>{this.state.urlmeta.description}</span>
+                              }
+                            </div>
+                          </td>
+                        </tr>
                       </tbody>
                     }
-                  </table>
-                </div>
-              </div>
+                   </table>
+                 </div>
+               </div>
             }
           </div>
         </form>
