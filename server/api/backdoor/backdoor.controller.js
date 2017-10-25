@@ -210,10 +210,11 @@ exports.toppages = function (req, res) {
       let sorted = sortBy(pagesPayload, 'subscribers')
       logger.serverLog(TAG, `sorted ${JSON.stringify(sorted)}`)
       let top10 = _.takeRight(sorted, 10)
+      top10 = top10.reverse()
       logger.serverLog(TAG, `top10 ${JSON.stringify(top10)}`)
       res.status(200).json({
         status: 'success',
-        payload: pagesPayload
+        payload: top10
       })
     })
   })
