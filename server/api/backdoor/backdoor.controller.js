@@ -240,14 +240,63 @@ exports.datacount = function (req, res) {
           description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
         })
       }
-      let datacounts = {
-        UsersCount: gotUsersCount,
-        SubscribersCount: gotSubscribersCount
-      }
-      logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
-      res.status(200).json({
-        status: 'success',
-        payload: datacounts
+      Pages.aggregate(
+        [
+          { $match: {connected: true} },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err2, gotPagesCount) => {
+        if (err2) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages count ${JSON.stringify(err2)}`
+          })
+        }
+        Broadcasts.aggregate(
+          [
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err2, gotBroadcastsCount) => {
+          if (err2) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+            })
+          }
+          Polls.aggregate(
+            [
+              { $group: { _id: null, count: { $sum: 1 } } }
+            ], (err2, gotPollsCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting polls count ${JSON.stringify(err2)}`
+              })
+            }
+            Surveys.aggregate(
+              [
+                { $group: { _id: null, count: { $sum: 1 } } }
+              ], (err2, gotSurveysCount) => {
+              if (err2) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting surveys count ${JSON.stringify(err2)}`
+                })
+              }
+              let datacounts = {
+                UsersCount: gotUsersCount,
+                SubscribersCount: gotSubscribersCount,
+                PagesCount: gotPagesCount,
+                BroadcastsCount: gotBroadcastsCount,
+                PollsCount: gotPollsCount,
+                SurveysCount: gotSurveysCount
+              }
+              logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+              res.status(200).json({
+                status: 'success',
+                payload: datacounts
+              })
+            })
+          })
+        })
       })
     })
   })
