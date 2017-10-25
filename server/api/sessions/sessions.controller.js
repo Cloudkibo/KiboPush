@@ -24,7 +24,9 @@ exports.index = function (req, res) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
           }
-          sessions[0] = _.merge(sessions[0], {chats})
+
+          sessions[0].set('chats', JSON.parse(JSON.stringify(chats)),
+            {strict: false})
 
           LiveChat.aggregate([
             {$match: {status: 'unseen'}},
@@ -34,18 +36,17 @@ exports.index = function (req, res) {
               return res.status(500)
                 .json({status: 'failed', description: 'Internal Server Error'})
             }
-            logger.serverLog(TAG, gotUnreadCount)
 
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
-                if (sessions[j]._id === gotUnreadCount[i]._id) {
-                  sessions[j] = _.merge(sessions[j],
-                    {unreadCount: gotUnreadCount[i].count})
+                logger.serverLog(TAG, 'sessions id and count id being matched')
+                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                  sessions[j].set('unreadCount',
+                    gotUnreadCount[i].count,
+                    {strict: false})
                 }
               }
             }
-
-            logger.serverLog(TAG, sessions)
 
             return res.status(200).json({
               status: 'success',
@@ -79,7 +80,8 @@ exports.show = function (req, res) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
           }
-          session = _.merge(session, {chats})
+          session.set('chats', JSON.parse(JSON.stringify(chats)),
+            {strict: false})
           return res.status(200).json({
             status: 'success',
             payload: session
