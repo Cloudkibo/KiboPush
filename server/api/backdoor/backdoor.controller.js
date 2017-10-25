@@ -219,3 +219,36 @@ exports.toppages = function (req, res) {
     })
   })
 }
+exports.datacount = function (req, res) {
+  Users.aggregate(
+    [
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, gotUsersCount) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting Users count ${JSON.stringify(err)}`
+      })
+    }
+    Subscribers.aggregate(
+      [
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err2, gotSubscribersCount) => {
+      if (err2) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+        })
+      }
+      let datacounts = {
+        UsersCount: gotUsersCount,
+        SubscribersCount: gotSubscribersCount
+      }
+      logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+      res.status(200).json({
+        status: 'success',
+        payload: datacounts
+      })
+    })
+  })
+}

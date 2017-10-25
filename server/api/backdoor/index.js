@@ -18,4 +18,5 @@ router.get('/allbroadcasts/:userid', auth.isAuthorizedSuperUser(), controller.al
 router.get('/allpolls/:userid', auth.isAuthorizedSuperUser(), controller.allpolls)
 router.get('/allsurveys/:userid', auth.isAuthorizedSuperUser(), controller.allsurveys)
 router.get('/toppages', auth.isAuthorizedSuperUser(), controller.toppages)
+router.get('/datacount', auth.isAuthorizedSuperUser(), controller.datacount)
 module.exports = router
