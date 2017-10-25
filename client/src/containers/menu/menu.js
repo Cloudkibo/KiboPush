@@ -10,6 +10,9 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 //  import RadioGroup from 'react-radio'
+//  import Checkbox from 'react-checkbox'
+//  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
+
 class Menu extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -18,6 +21,7 @@ class Menu extends React.Component {
       pageOptions: [],
       pageValue: '',
       itemName: '',
+      itemType: '',
       itemselected: '',
       backgroundColor: '#ffffff',
       text: '+Add Menu Item',
@@ -29,6 +33,7 @@ class Menu extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleCheckbox = this.handleClose.bind(this)
   }
 
   componentDidMount () {
@@ -55,6 +60,11 @@ class Menu extends React.Component {
       this.setState({pageOptions: myPages})
     }
   }
+  handleCheckbox (event) {
+    console.log('checkbox Selected: ', event.target.value)
+    this.setState({itemType: event.target.value})
+    console.log('item type', this.state.itemType)
+  }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
     if (val === null) {
@@ -66,7 +76,7 @@ class Menu extends React.Component {
     this.setState({pageValue: val.value})
   }
   handleClick (event) {
-    this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: 'weblink', title: this.state.itemName})
+    this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
   }
   handleClose (e) {
     this.setState({openPopover: false})
@@ -95,7 +105,7 @@ class Menu extends React.Component {
       <form>
         <div className='checkbox'>
           <label>
-            <input type='checkbox' value='option1' />
+            <input type='checkbox' value='option1' onClick={this.handleCheckbox} />
             Open submenu
           </label>
         </div>
