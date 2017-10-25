@@ -5,7 +5,6 @@ const TAG = 'api/livechat/livechat.controller.js'
 const og = require('open-graph')
 let request = require('request')
 let LiveChat = require('./livechat.model')
-let Pages = require('./../pages/Pages.model')
 let Sessions = require('./../sessions/sessions.model')
 let Subscribers = require('./../subscribers/Subscribers.model')
 let utility = require('./../broadcasts/broadcasts.utility')
