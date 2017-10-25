@@ -70,3 +70,21 @@ exports.show = function (req, res) {
     }
   })
 }
+
+// get fb session
+exports.markread = function (req, res) {
+  logger.serverLog(TAG,
+    `Inside mark read, req body = ${JSON.stringify(req.params)}`)
+  LiveChat.update(
+    {session_id: req.params.id},
+    {status: 'seen'},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `The session read status marked read ${JSON.stringify(
+          updated)}`)
+      res.status(200).json({status: 'success', payload: updated})
+    })
+}

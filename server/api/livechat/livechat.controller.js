@@ -81,7 +81,7 @@ exports.create = function (req, res) {
             `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
           let messageData = utility.prepareSendAPIPayload(
             subscriber.senderId,
-            req.body.payload)
+            req.body.payload, true)
 
           request(
             {
