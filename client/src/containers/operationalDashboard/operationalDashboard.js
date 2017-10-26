@@ -75,24 +75,10 @@ class OperationalDashboard extends React.Component {
     this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }
-  displayObjects (n, users) {
-    console.log('one', users)
-    let offset = n * 4
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 4) > users.length) {
-      limit = users.length
-    } else {
-      limit = offset + 4
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = users[i]
-      index++
-    }
-    console.log('data[index]', data)
-    this.setState({objectsData: data})
-    console.log('in displayData', this.state.objectsData)
+  displayObjects (n, object) {
+    this.setState({objectsData: object})
+    console.log('in displayData of diplayObjects', this.state.objectsData)
+    console.log('in displayData of diplayObjects', this.state.objectsData.BroadcastsCount)
   }
   displayPages (n, users) {
     console.log('one', users)
@@ -126,7 +112,6 @@ class OperationalDashboard extends React.Component {
     if (nextProps.dataobjects) {
       console.log('data objects Updated', nextProps.dataobjects)
       this.displayObjects(0, nextProps.dataobjects)
-      this.setState({ objectsLength: nextProps.dataobjects.length })
     }
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
@@ -135,7 +120,8 @@ class OperationalDashboard extends React.Component {
     }
   }
   handleClickEvent (data) {
-    this.displayPages(data.selected, this.props.pagesData)
+    console.log(data.name)
+    this.displayData(data.selected, this.props.pagesData)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
@@ -169,7 +155,7 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          <DataObjectsCount objectsData={this.state.objectsData} length={this.state.objectsLength} displayObjects={this.displayObjects} />
+          <DataObjectsCount objectsData={this.state.objectsData} displayObjects={this.displayObjects} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
             <main
