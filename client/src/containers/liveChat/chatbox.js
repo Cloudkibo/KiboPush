@@ -501,6 +501,7 @@ class ChatBox extends React.Component {
                                               url={msg.url_meta.url}
                                               controls
                                               width='100%'
+                                              height='100px'
                                             />
                                           </td>
                                           <td style={{width: '70%'}}>
@@ -509,7 +510,7 @@ class ChatBox extends React.Component {
                                                 <p className='urlTitle'>{msg.url_meta.title}</p>
                                               </a>
                                               <br />
-                                              <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                              <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                             </div>
                                           </td>
                                         </tr>
