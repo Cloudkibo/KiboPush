@@ -48,7 +48,8 @@ class ChatBox extends React.Component {
       removeFileDescription: '',
       textAreaValue: '',
       showEmojiPicker: false,
-      showGif: false
+      showGif: false,
+      gifUrl : ''
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
@@ -141,8 +142,9 @@ class ChatBox extends React.Component {
 
   sendGif (gif) {
     console.log('sending Gif', gif)
-    console.log('state inside sendGif: ', this.state)
     this.state.componentType = 'gif'
+    this.state.gifUrl = gif.downsized.url
+    console.log('state inside sendGif: ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
@@ -224,7 +226,7 @@ class ChatBox extends React.Component {
         payload = {
           uploadedId: new Date().getTime(),
           componentType: 'gif',
-          fileurl: gif.downsized.url
+          fileurl: this.state.gifUrl
         }
         data = {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
