@@ -53,6 +53,7 @@ class ChatBox extends React.Component {
       prevURL: ''
     }
     props.fetchUserChats(this.props.session._id)
+    props.markRead(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -335,7 +336,6 @@ class ChatBox extends React.Component {
 
   render () {
     console.log('current session', this.props.session)
-    this.props.markRead(this.props.session._id)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
         <div style={{marginTop: '28px'}} className='ui-block-title'>
