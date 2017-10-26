@@ -6,6 +6,7 @@ const initialState = {
   pages: [],
   polls: [],
   dataobjects: [],
+  toppages: [],
   currentUser: null
 }
 
@@ -25,6 +26,17 @@ export function dataObjectsInfo (state = initialState, action) {
     case ActionTypes.LOAD_DATA_OBJECTS_LIST:
       return Object.assign({}, state, {
         dataobjects: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function topPagesInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_TOP_PAGES_LIST:
+      return Object.assign({}, state, {
+        toppages: action.data
       })
 
     default:

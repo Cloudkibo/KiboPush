@@ -18,16 +18,37 @@ class dataObjectsCount extends React.Component {
                     <tr>
                       <th>Data Item</th>
                       <th>Total Count</th>
-                      <th />
                     </tr>
                   </thead>
                   <tbody>
-                    {
-                      <tr>
-                        <td>Users</td>
-                        <td>{this.props.objectsData.UsersCount}</td>
-                      </tr>
-                    }
+                    <tr>
+                      <td>Users</td>
+                      <td>{this.props.objectsData.UsersCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Users</td>
+                      <td>{this.props.objectsData.UsersCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Subscribers</td>
+                      <td>{this.props.objectsData.SubscribersCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Pages</td>
+                      <td>{this.props.objectsData.PagesCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Broadcasts</td>
+                      <td>{this.props.objectsData.BroadcastsCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Surveys</td>
+                      <td>{this.props.objectsData.SurveysCount}</td>
+                    </tr>
+                    <tr>
+                      <td>Polls</td>
+                      <td>{this.props.objectsData.PollsCount}</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

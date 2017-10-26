@@ -8,11 +8,13 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
+import Top10pages from './top10pages'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
   loadUsersList,
   loadDataObjectsCount,
+  loadTopPages,
   saveUserInformation
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -24,14 +26,19 @@ class OperationalDashboard extends React.Component {
     super(props, context)
     props.loadUsersList()
     props.loadDataObjectsCount()
+    props.loadTopPages()
     this.state = {
       usersData: [],
       objectsData: [],
+      pagesData: [],
       totalLength: 0,
-      objectsLength: 0
+      objectsLength: 0,
+      pagesLength: 0
     }
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
+    this.displayPages = this.displayPages.bind(this)
+    this.handleClickEvent = this.handleClickEvent.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
   }
@@ -87,6 +94,25 @@ class OperationalDashboard extends React.Component {
     this.setState({objectsData: data})
     console.log('in displayData', this.state.objectsData)
   }
+  displayPages (n, users) {
+    console.log('one', users)
+    let offset = n * 4
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 4) > users.length) {
+      limit = users.length
+    } else {
+      limit = offset + 4
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = users[i]
+      index++
+    }
+    console.log('data[index]', data)
+    this.setState({pagesData: data})
+    console.log('in displayData', this.state.pagesData)
+  }
   handlePageClick (data) {
     this.displayData(data.selected, this.props.users)
   }
@@ -102,6 +128,14 @@ class OperationalDashboard extends React.Component {
       this.displayObjects(0, nextProps.dataobjects)
       this.setState({ objectsLength: nextProps.dataobjects.length })
     }
+    if (nextProps.toppages) {
+      console.log('top pages Updated', nextProps.toppages)
+      this.displayPages(0, nextProps.toppages)
+      this.setState({ pagesLength: nextProps.toppages.length })
+    }
+  }
+  handleClickEvent (data) {
+    this.displayPages(data.selected, this.props.pagesData)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
@@ -136,6 +170,7 @@ class OperationalDashboard extends React.Component {
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <DataObjectsCount objectsData={this.state.objectsData} length={this.state.objectsLength} displayObjects={this.displayObjects} />
+          <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
@@ -144,7 +179,7 @@ class OperationalDashboard extends React.Component {
                   { this.state.usersData && this.state.usersData.length > 0
                   ? <div className='table-responsive'>
                     <div>
-                      <label> Search </label>
+                      <label> Users </label>
                       <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
                     </div>
                     <table className='table table-striped'>
@@ -212,7 +247,8 @@ function mapStateToProps (state) {
   return {
     users: (state.UsersInfo.users),
     currentUser: (state.getCurrentUser.currentUser),
-    dataobjects: (state.dataObjectsInfo.dataobjects)
+    dataobjects: (state.dataObjectsInfo.dataobjects),
+    toppages: (state.topPagesInfo.toppages)
 
   //  usersData: state.usersData
   }
@@ -221,6 +257,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadUsersList: loadUsersList,
     loadDataObjectsCount: loadDataObjectsCount,
+    loadTopPages: loadTopPages,
     saveUserInformation: saveUserInformation},
     dispatch)
 }
