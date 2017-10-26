@@ -30,7 +30,20 @@ export function loadDataObjectsCount () {
     callApi('backdoor/datacount').then(res => dispatch(updateDataObjectsCount(res)))
   }
 }
+export function updateTopPages (data) {
+  console.log('Data Fetched From top pages', data)
+  return {
+    type: ActionTypes.LOAD_TOP_PAGES_LIST,
+    data: data.payload
+  }
+}
 
+export function loadTopPages () {
+  console.log('loadTopPagesCount called')
+  return (dispatch) => {
+    callApi('backdoor/toppages').then(res => dispatch(updateTopPages(res)))
+  }
+}
 export function updatePagesList (data) {
   console.log('Users Created Pages', data)
   return {
