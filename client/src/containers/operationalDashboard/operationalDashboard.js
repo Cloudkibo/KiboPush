@@ -76,12 +76,18 @@ class OperationalDashboard extends React.Component {
     console.log('in displayData', this.state.usersData)
   }
   displayObjects (n, users) {
+    console.log('users', users)
     var temp = []
     temp.push(users)
-    this.setState({objectsData: temp})
-    console.log('in displayData of diplayObjects', this.state.objectsData)
-    console.log('in displayData of diplayObjects', this.state.objectsData[0].BroadcastsCount)
-    console.log('in displayData of diplayObjects', this.state.objectsData[0].BroadcastsCount.count)
+    console.log('temp', temp)
+    this.setState({objectsData: temp}, () => {
+      console.log('inside', this.state.objectsData)
+    }
+    )
+    this.setState({objectsLength: 1})
+    // console.log('in displayData of diplayObjects1', this.state.objectsData)
+    // console.log('in displayData of diplayObjects2', this.state.objectsData[0].PagesCount)
+  //  console.log('in displayData of diplayObjects3', this.state.objectsData[0].PagesCount.count)
   }
   displayPages (n, users) {
     console.log('one', users)
@@ -112,7 +118,7 @@ class OperationalDashboard extends React.Component {
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
     }
-    if (nextProps.dataobjects) {
+    if (nextProps.dataobjects !== null) {
       console.log('data objects Updated', nextProps.dataobjects)
       this.displayObjects(0, nextProps.dataobjects)
     }
@@ -158,7 +164,7 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          <DataObjectsCount objectsData={this.state.objectsData} displayObjects={this.displayObjects} />
+          <DataObjectsCount objectsData={this.state.objectsData} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
             <main
