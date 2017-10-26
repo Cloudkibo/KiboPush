@@ -50,7 +50,8 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       urlmeta: {},
-      prevURL: ''
+      prevURL: '',
+      displayUrlMeta: false
     }
     props.fetchUserChats(this.props.session._id)
     props.markRead(this.props.session._id, this.props.sessions)
@@ -139,12 +140,16 @@ class ChatBox extends React.Component {
     if (isUrl !== null && isUrl !== '') {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
-        this.setState({prevURL: isUrl})
+        this.setState({
+          prevURL: isUrl,
+          displayUrlMeta: true
+        })
       }
     } else {
       this.setState({
         urlmeta: {},
-        prevURL: ''
+        prevURL: '',
+        displayUrlMeta: false
       })
     }
     this.setState({
@@ -154,6 +159,7 @@ class ChatBox extends React.Component {
 
   onEnter (e) {
     console.log('event in onEnter' + e)
+    var isUrl = getmetaurl(this.state.textAreaValue)
     if (e.which === 13) {
       e.preventDefault()
       console.log('state in onEnter: ', this.state)
@@ -181,6 +187,27 @@ class ChatBox extends React.Component {
         }
         console.log(data)
         this.props.sendAttachment(data, this.handleSendAttachment)
+      } else if (isUrl !== null && isUrl !== '') {
+        payload = {
+          componentType: 'text',
+          text: this.state.textAreaValue
+        }
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: this.state.urlmeta,
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.setState({textAreaValue: ''})
+        data.format = 'convos'
+        this.props.userChat.push(data)
       } else if (this.state.textAreaValue !== '') {
         payload = {
           componentType: 'text',
@@ -338,10 +365,17 @@ class ChatBox extends React.Component {
     console.log('current session', this.props.session)
     return (
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        <div style={{marginTop: '28px'}} className='ui-block-title'>
-          <span className='icon-status online' />
-          <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
-        </div>
+        {
+          this.state.displayUrlMeta
+          ? <div className='ui-block-title'>
+            <span className='icon-status online' />
+            <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
+          </div>
+          : <div style={{marginTop: '28px'}} className='ui-block-title'>
+            <span className='icon-status online' />
+            <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
+          </div>
+        }
         <Popover
           style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -425,6 +459,65 @@ class ChatBox extends React.Component {
                                 src={msg.payload.fileurl}
                                 style={{maxWidth: '150px', maxHeight: '85px'}}
                               />
+                            </div>
+                          </div>
+                          : msg.url_meta !== ''
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <div style={{clear: 'both', display: 'block'}}>
+                                <div className='wrapperforURL'>
+                                  <table style={{maxWidth: '175px'}}>
+                                    {
+                                      msg.url_meta.type && msg.url_meta.type === 'video'
+                                      ? <tbody>
+                                        <tr>
+                                          <td style={{width: '30%'}} colspan='2'>
+                                            <ReactPlayer
+                                              url={msg.url_meta.url}
+                                              controls
+                                              width='100%'
+                                              height='100px'
+                                            />
+                                          </td>
+                                          <td style={{width: '70%'}}>
+                                            <div>
+                                              <a href={msg.url_meta.url} target='_blank'>
+                                                <p className='urlTitle'>{msg.url_meta.title}</p>
+                                              </a>
+                                              <br />
+                                              <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      : <tbody>
+                                        <tr>
+                                          <td>
+                                            <div style={{width: 45, height: 45}}>
+                                              {
+                                                msg.url_meta.image &&
+                                                <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                              }
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div>
+                                              <a href={msg.url_meta.url} target='_blank'>
+                                                <p className='urlTitle'>{msg.url_meta.title}</p>
+                                              </a>
+                                              <br />
+                                              {
+                                                msg.url_meta.description &&
+                                                <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                              }
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    }
+                                  </table>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
@@ -528,12 +621,12 @@ class ChatBox extends React.Component {
                                           <td>
                                             <div>
                                               <a href={msg.url_meta.url} target='_blank'>
-                                                <span className='urltitle'>{msg.url_meta.title}</span>
+                                                <p className='urlTitle'>{msg.url_meta.title}</p>
                                               </a>
                                               <br />
                                               {
                                                 msg.url_meta.description &&
-                                                <span>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</span>
+                                                <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                               }
                                             </div>
                                           </td>
@@ -742,6 +835,7 @@ class ChatBox extends React.Component {
                                url={this.state.urlmeta.url}
                                controls
                                width='100%'
+                               height='100px'
                              />
                            </td>
                            <td style={{width: '70%'}}>
@@ -750,7 +844,7 @@ class ChatBox extends React.Component {
                                  <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
-                               <p>{this.state.urlmeta.description}</p>
+                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                              </div>
                            </td>
                          </tr>
@@ -758,22 +852,22 @@ class ChatBox extends React.Component {
                       : <tbody>
                         <tr>
                           <td>
-                            <div style={{width: 72, height: 72}}>
+                            <div style={{width: 45, height: 45}}>
                               {
                                 this.state.urlmeta.image &&
-                                  <img src={this.state.urlmeta.image.url} style={{width: 72, height: 72}} />
+                                  <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
                               }
                             </div>
                           </td>
                           <td>
                             <div>
                               <a href={this.state.urlmeta.url} target='_blank'>
-                                <span className='urltitle'>{this.state.urlmeta.title}</span>
+                                <p className='urlTitle'>{this.state.urlmeta.title}</p>
                               </a>
                               <br />
                               {
                                 this.state.urlmeta.description &&
-                                  <span>{this.state.urlmeta.description}</span>
+                                  <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                               }
                             </div>
                           </td>
