@@ -510,7 +510,7 @@ class ChatBox extends React.Component {
                                 url={msg.payload.attachments[0].payload.url}
                                 controls
                                 width='100%'
-                                height='140'
+                                height='auto'
                                 onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
                               />
                             </div>
