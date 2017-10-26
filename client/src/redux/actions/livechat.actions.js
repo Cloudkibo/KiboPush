@@ -66,6 +66,12 @@ export function resetSocket () {
   }
 }
 
+export function resetUnreadSession () {
+  return {
+    type: ActionTypes.RESET_UNREAD_SESSION
+  }
+}
+
 export function fetchUserChats (sessionid) {
   console.log('Fetching User Chats')
   return (dispatch) => {

@@ -10,6 +10,7 @@ import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { resetUnreadSession } from '../../redux/actions/livechat.actions'
 import NotificationBadge, {Effect} from 'react-notification-badge'
 var _ = require('lodash/core')
 
@@ -62,6 +63,15 @@ class Sessions extends React.Component {
 
     if (nextProps.sessions) {
       this.setState({list: nextProps.sessions})
+    }
+
+    if (nextProps.unreadSession) {
+      for (var i = 0; i < this.state.list; i++) {
+        if (this.state.list[i]._id === nextProps.unreadSession) {
+          this.state.list[i].unreadCount = this.state.list[i].unreadCount ? this.state.list[i].unreadCount + 1 : 1
+        }
+      }
+      this.props.resetUnreadSession()
     }
   }
 
@@ -194,13 +204,15 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sessions: (state.liveChat.sessions),
+    unreadSession: (state.liveChat.unreadSession),
     pages: (state.pagesInfo.pages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    resetUnreadSession: resetUnreadSession
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sessions)

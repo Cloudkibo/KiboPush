@@ -29,12 +29,18 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.SOCKET_UPDATE:
       return Object.assign({}, state, {
         socketSession: action.data.session_id,
+        unreadSession: action.data.session_id,
         socketData: action.data
       })
 
     case ActionTypes.RESET_SOCKET:
       return Object.assign({}, state, {
         socketSession: ''
+      })
+
+    case ActionTypes.RESET_UNREAD_SESSION:
+      return Object.assign({}, state, {
+        unreadSession: ''
       })
 
     case ActionTypes.LOADING_URL_META:
