@@ -62,10 +62,13 @@ class LiveChat extends React.Component {
     if (nextProps.sessions) {
       this.setState({loading: false})
     }
+
+    if (nextProps.socketSession  !== this.props.socketSession && nextProps.socketSession !== ''){
+        this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
+    }
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
       console.log('New Message data', nextProps.socketData)
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
@@ -94,6 +97,7 @@ class LiveChat extends React.Component {
   onNotificationClick(){
      window.focus();
      console.log("Notificaation was clicked")
+     this.setState({ignore: true})
   }
 
   render () {
@@ -110,11 +114,12 @@ class LiveChat extends React.Component {
           ignore={this.state.ignore}
           title={'New Message'}
           onShow={this.handleNotificationOnShow.bind(this)}
-           onClick={this.onNotificationClick.bind(this)}
+          onClick={this.onNotificationClick.bind(this)}
           options={{
             body: this.state.body,
             lang: 'en',
-            dir: 'ltr'
+            dir: 'ltr',
+            icon: 'icons/text.png',
           }}
         />
 
