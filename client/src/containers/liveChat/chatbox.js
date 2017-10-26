@@ -330,6 +330,7 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     this.scrollToBottom()
+    this.props.markRead(this.props.session._id)
   }
 
   render () {

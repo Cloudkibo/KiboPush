@@ -13,6 +13,14 @@ export function showChatSessions (sessions, status) {
   }
 }
 
+export function updateChatSessions (session) {
+  console.log(session)
+  return {
+    type: ActionTypes.UPDATE_CHAT_SESSIONS,
+    session
+  }
+}
+
 export function socketUpdate (data) {
   console.log(data.session_id)
   return {
@@ -27,6 +35,14 @@ export function fetchSessions (companyid) {
   return (dispatch) => {
     callApi('sessions', 'post', companyid)
       .then(res => dispatch(showChatSessions(res.payload, res.status)))
+  }
+}
+
+export function fetchSingleSession (sessionid) {
+  console.log('Fetching single Chat Session', sessionid)
+  return (dispatch) => {
+    callApi(`sessions/${sessionid}`)
+      .then(res => dispatch(updateChatSessions(res.payload)))
   }
 }
 
@@ -147,6 +163,9 @@ export function markRead (sessionid) {
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
+      if (res.status === 'success') {
+        dispatch(fetchSingleSession(sessionid))
+      }
     })
   }
 }
