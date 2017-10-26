@@ -78,7 +78,7 @@ class LiveChat extends React.Component {
 
         if (isPresent) {
           console.log('Session exists ignoring the message')
-          if (nextProps.socketSession !== this.state.session._id) {
+          if (nextProps.socketSession !== this.state.activeSession._id) {
             console.log('updating unread count')
             this.props.fetchSingleSession(nextProps.socketSession, this.props.sessions)
           }
