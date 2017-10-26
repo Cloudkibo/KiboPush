@@ -1366,5 +1366,6 @@ p {
     margin-top: 0rem !important;
   }
  audio {
-   width: 150px !important
+   width: 150px !important;
+   height: 30px !important;
  }

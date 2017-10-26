@@ -186,9 +186,11 @@ class ChatBox extends React.Component {
         payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedUrl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
+        }
+        if (componentType !== 'gif') {
+          payload.fileurl = this.state.uploadedUrl
         }
         data = {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
@@ -438,7 +440,7 @@ class ChatBox extends React.Component {
                                 url={msg.payload.fileurl}
                                 controls
                                 width='100%'
-                                height='140'
+                                height='auto'
                                 onPlay={this.onTestURLAudio(msg.payload.fileurl)}
                               />
                             </div>
