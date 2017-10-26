@@ -21,6 +21,20 @@ exports.index = function (req, res) {
   })
 }
 
+exports.indexByPage = function (req, res) {
+  Menu.find({userId: req.user._id, pageId: req.body.pageId}, (err, menus) => {
+    if (err) {
+      logger.serverLog(TAG, `Internal Server Error on fetch ${err}`)
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    return res.status(200).json({
+      status: 'success',
+      payload: menus
+    })
+  })
+}
+
 exports.createWebLink = function (req, res) {
   // todo save it with facebook by calling api
   var today = new Date()
@@ -35,6 +49,39 @@ exports.createWebLink = function (req, res) {
     userId: req.user._id,
     menuId: uniqueId, // same as pageId for parent menu
     menuItemType: req.body.menuItemType,
+    menuWebLink: req.body.menuWebLink // url, only when type is 'weblink'
+  })
+
+  // save model to MongoDB
+  menu.save((err, workflow) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        error: err,
+        description: 'Failed to insert record'
+      })
+      logger.serverLog(TAG, JSON.stringify(err))
+    } else {
+      res.status(201).json({status: 'Success', payload: workflow})
+    }
+  })
+}
+
+exports.createNestedMenu = function (req, res) {
+  // todo save it with facebook by calling api
+  var today = new Date()
+  var uid = crypto.randomBytes(5).toString('hex')
+  var uniqueId = 'f' + uid + '' + today.getFullYear() + '' +
+    (today.getMonth() + 1) + '' + today.getDate()
+  uniqueId += '' + today.getHours() + '' + today.getMinutes() + '' +
+    today.getSeconds()
+  const menu = new Menu({
+    title: req.body.title,
+    pageId: req.body.pageId,
+    userId: req.user._id,
+    menuId: uniqueId, // same as pageId for parent menu
+    menuItemType: req.body.menuItemType,
+    parentMenuId: req.body.parentMenuId,
     menuWebLink: req.body.menuWebLink // url, only when type is 'weblink'
   })
 

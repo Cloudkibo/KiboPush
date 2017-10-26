@@ -17,7 +17,6 @@ let menuSchema = new Schema({
     default: 'weblink'
   },
   menuWebLink: String, // only when type is 'weblink'
-  childSubMenuId: String, // only when type is 'submenu'
   parentMenuId: String, // only when it is submenu of parent menu
   payload: Schema.Types.Mixed, // only when type is 'reply'
   replyTriggerMessage: String // only when type is reply, used to trigger reply

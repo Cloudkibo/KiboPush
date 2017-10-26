@@ -80,7 +80,7 @@ exports.getfbMessage = function (req, res) {
   }
 
   const messagingEvents = req.body.entry[0].messaging
-  logger.serverLog(TAG, 'something received from facebook')
+  logger.serverLog(TAG, `something received from facebook ${req.body.field}`)
 
   for (let i = 0; i < messagingEvents.length; i++) {
     const event = req.body.entry[0].messaging[i]

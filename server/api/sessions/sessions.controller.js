@@ -80,6 +80,7 @@ exports.show = function (req, res) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
           }
+          // todo limit this
           session.set('chats', JSON.parse(JSON.stringify(chats)),
             {strict: false})
           return res.status(200).json({
