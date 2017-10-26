@@ -171,7 +171,7 @@ class Sessions extends React.Component {
               </div>
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
-                <div style={{width: '15px', height: '15px', display: 'inline-block', margin: '10px'}} >
+                <div style={{width: '15px', height: '15px', display: 'inline-block', marginLeft: '10px'}} >
                   <NotificationBadge count={item.unreadCount} className='abc' effect={Effect.SCALE} />
                 </div>
                 {/**
