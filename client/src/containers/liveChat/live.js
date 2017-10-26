@@ -15,6 +15,7 @@ import ChatBox from './chatbox'
 import Sessions from './sessions'
 import Profile from './profile'
 import Halogen from 'halogen'
+import Notification  from 'react-web-notification';
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -59,12 +60,13 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
+      console.log("New Message data", nextProps.socketData)
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
         var isPresent = false
         this.props.sessions.map((sess) => {
-          if (sess._id === nextProps.socketSession) {
+          if(sess._id === nextProps.socketSession){
             isPresent = true
           }
         })
@@ -89,6 +91,17 @@ class LiveChat extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
+
+        <Notification
+          ignore={true}
+          title={"New Message Received"}
+          options={{
+              body: 'This is the notification testing',
+              lang: 'en',
+              dir: 'ltr',
+            }}
+        />
+
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
@@ -142,7 +155,8 @@ function mapStateToProps (state) {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
-    userChat: (state.liveChat.userChat)
+    userChat: (state.liveChat.userChat),
+    socketData: (state.liveChat.socketData),
   }
 }
 
