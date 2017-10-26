@@ -205,7 +205,7 @@ class ChatBox extends React.Component {
         }
         console.log(data)
         this.props.sendChatMessage(data)
-        this.setState({textAreaValue: '', urlmeta: {})
+        this.setState({textAreaValue: '', urlmeta: {}})
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.textAreaValue !== '') {
