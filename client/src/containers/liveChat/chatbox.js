@@ -136,7 +136,7 @@ class ChatBox extends React.Component {
   handleTextChange (e) {
     var isUrl = getmetaurl(e.target.value)
     console.log('isUrl', isUrl)
-    if (isUrl !== '') {
+    if (isUrl !== null) {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
         this.setState({prevURL: isUrl})
