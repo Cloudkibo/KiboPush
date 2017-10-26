@@ -80,8 +80,8 @@ class OperationalDashboard extends React.Component {
     temp.push(users)
     this.setState({objectsData: temp})
     console.log('in displayData of diplayObjects', this.state.objectsData)
-    console.log('in displayData of diplayObjects', this.state.objectsData.BroadcastsCount)
     console.log('in displayData of diplayObjects', this.state.objectsData[0].BroadcastsCount)
+    console.log('in displayData of diplayObjects', this.state.objectsData[0].BroadcastsCount.count)
   }
   displayPages (n, users) {
     console.log('one', users)
@@ -123,7 +123,8 @@ class OperationalDashboard extends React.Component {
     }
   }
   handleClickEvent (data) {
-    this.displayPages(data.selected, this.props.pagesData)
+    console.log('handle click event', data)
+    this.displayPages(data.selected, this.props.toppages)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
