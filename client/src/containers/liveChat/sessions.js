@@ -66,9 +66,13 @@ class Sessions extends React.Component {
     }
 
     if (nextProps.unreadSession) {
-      for (var i = 0; i < this.state.list; i++) {
-        if (this.state.list[i]._id === nextProps.unreadSession) {
-          this.state.list[i].unreadCount = this.state.list[i].unreadCount ? this.state.list[i].unreadCount + 1 : 1
+      var temp = this.state.list
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i]._id === nextProps.unreadSession) {
+          temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
+          this.setState({list: temp}, () => {
+            console.log(this.state.list)
+          }
         }
       }
       this.props.resetUnreadSession()
