@@ -29,7 +29,7 @@ class OperationalDashboard extends React.Component {
     props.loadTopPages()
     this.state = {
       usersData: [],
-      objectsData: [],
+      objectsData: {},
       pagesData: [],
       totalLength: 0,
       objectsLength: 0,
