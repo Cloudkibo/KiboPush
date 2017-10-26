@@ -106,6 +106,7 @@ class LiveChat extends React.Component {
               body: this.state.body,
               lang: 'en',
               dir: 'ltr',
+              icon: 'icons/text.png'
             }}
         />
 
