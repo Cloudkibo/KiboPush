@@ -196,12 +196,12 @@ class ChatBox extends React.Component {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
           recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
           sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-          recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
           session_id: session._id,
           company_id: session.company_id, // this is admin id till we have companies
           payload: payload, // this where message content will go
           url_meta: '',
-          status: 'unseen' // seen or unseen
+          status: 'unseen' // seen or unsee
         }
         console.log(data)
         this.props.sendAttachment(data, this.handleSendAttachment)
