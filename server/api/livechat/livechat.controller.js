@@ -5,7 +5,6 @@ const TAG = 'api/livechat/livechat.controller.js'
 const og = require('open-graph')
 let request = require('request')
 let LiveChat = require('./livechat.model')
-let Pages = require('./../pages/Pages.model')
 let Sessions = require('./../sessions/sessions.model')
 let Subscribers = require('./../subscribers/Subscribers.model')
 let utility = require('./../broadcasts/broadcasts.utility')
@@ -81,7 +80,7 @@ exports.create = function (req, res) {
             `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
           let messageData = utility.prepareSendAPIPayload(
             subscriber.senderId,
-            req.body.payload)
+            req.body.payload, true)
 
           request(
             {

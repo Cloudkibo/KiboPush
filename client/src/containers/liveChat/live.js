@@ -15,6 +15,7 @@ import ChatBox from './chatbox'
 import Sessions from './sessions'
 import Profile from './profile'
 import Halogen from 'halogen'
+import Notification from 'react-web-notification'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -22,7 +23,8 @@ class LiveChat extends React.Component {
     this.state = {
       activeSession: '',
       currentProfile: {},
-      loading: true
+      loading: true,
+      ignore: true
     }
     props.fetchSessions({ company_id: this.props.user._id })
     this.changeActiveSession = this.changeActiveSession.bind(this)
@@ -36,6 +38,9 @@ class LiveChat extends React.Component {
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
@@ -59,6 +64,8 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
+      console.log('New Message data', nextProps.socketData)
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
@@ -80,6 +87,10 @@ class LiveChat extends React.Component {
     }
   }
 
+  handleNotificationOnShow () {
+    this.setState({ignore: true})
+  }
+
   render () {
     console.log('sessions: ', this.props.sessions)
     console.log('currentProfile: ', this.state.currentProfile)
@@ -89,6 +100,18 @@ class LiveChat extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
+
+        <Notification
+          ignore={this.state.ignore}
+          title={'New Message'}
+          onShow={this.handleNotificationOnShow.bind(this)}
+          options={{
+            body: this.state.body,
+            lang: 'en',
+            dir: 'ltr'
+          }}
+        />
+
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
@@ -142,7 +165,8 @@ function mapStateToProps (state) {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
-    userChat: (state.liveChat.userChat)
+    userChat: (state.liveChat.userChat),
+    socketData: (state.liveChat.socketData)
   }
 }
 

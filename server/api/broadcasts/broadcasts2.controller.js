@@ -47,7 +47,7 @@ exports.sendConversation = function (req, res) {
         req.body.payload.forEach(payloadItem => {
           let messageData = utility.prepareSendAPIPayload(
             page.adminSubscriberId,
-            payloadItem)
+            payloadItem, false)
 
           logger.serverLog(TAG,
             `Payload for Messenger Send API for test: ${JSON.stringify(
@@ -101,7 +101,8 @@ exports.sendConversation = function (req, res) {
       }
     }
 
-    logger.serverLog(TAG, `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
+    logger.serverLog(TAG,
+      `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
 
     Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
@@ -133,7 +134,9 @@ exports.sendConversation = function (req, res) {
           }
         }
 
-        logger.serverLog(TAG, `Subscribers Criteria for segmentation ${JSON.stringify(subscriberFindCriteria)}`)
+        logger.serverLog(TAG,
+          `Subscribers Criteria for segmentation ${JSON.stringify(
+            subscriberFindCriteria)}`)
 
         Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
           if (err) {
@@ -238,7 +241,13 @@ exports.upload = function (req, res) {
       }
       logger.serverLog(TAG,
         `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
-      return res.status(201).json({status: 'success', payload: serverPath})
+      return res.status(201).json({
+        status: 'success',
+        payload: {
+          id: serverPath,
+          url: `https://app.kibopush.com/api/broadcasts/download/${serverPath}`
+        }
+      })
     }
   )
 }
