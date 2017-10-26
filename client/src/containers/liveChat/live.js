@@ -62,6 +62,8 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
+    this.setState({ignore: true})
+    
     if (nextProps.sessions) {
       this.setState({loading: false})
     }
@@ -119,7 +121,7 @@ class LiveChat extends React.Component {
         <Responsive />
 
         <Notification
-          ignore={this.props.socketSession === ''}
+          ignore={this.state.ignore}
           title={'New Message'}
           onShow={this.handleNotificationOnShow.bind(this)}
           onClick={this.onNotificationClick.bind(this)}
