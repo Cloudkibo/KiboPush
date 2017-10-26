@@ -18,39 +18,29 @@ exports.index = function (req, res) {
           .json({status: 'failed', description: 'Internal Server Error'})
       }
       if (sessions.length > 0) {
-        LiveChat.find({session_id: sessions[0]._id}, (err, chats) => {
-          if (err) {
+        LiveChat.aggregate([
+          {$match: {status: 'unseen', format: 'facebook'}},
+          {$group: {_id: '$session_id', count: {$sum: 1}}}
+        ], (err2, gotUnreadCount) => {
+          if (err2) {
             return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
+            .json({status: 'failed', description: 'Internal Server Error'})
           }
 
-          sessions[0].set('chats', JSON.parse(JSON.stringify(chats)),
-            {strict: false})
-
-          LiveChat.aggregate([
-            {$match: {status: 'unseen'}},
-            {$group: {_id: '$session_id', count: {$sum: 1}}}
-          ], (err2, gotUnreadCount) => {
-            if (err2) {
-              return res.status(500)
-                .json({status: 'failed', description: 'Internal Server Error'})
-            }
-
-            for (let i = 0; i < gotUnreadCount.length; i++) {
-              for (let j = 0; j < sessions.length; j++) {
-                logger.serverLog(TAG, 'sessions id and count id being matched')
-                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                  sessions[j].set('unreadCount',
-                    gotUnreadCount[i].count,
-                    {strict: false})
-                }
+          for (let i = 0; i < gotUnreadCount.length; i++) {
+            for (let j = 0; j < sessions.length; j++) {
+              logger.serverLog(TAG, 'sessions id and count id being matched')
+              if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                sessions[j].set('unreadCount',
+                  gotUnreadCount[i].count,
+                  {strict: false})
               }
             }
+          }
 
-            return res.status(200).json({
-              status: 'success',
-              payload: sessions
-            })
+          return res.status(200).json({
+            status: 'success',
+            payload: sessions
           })
         })
       } else {

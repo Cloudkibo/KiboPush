@@ -17,9 +17,8 @@ let menuSchema = new Schema({
     default: 'weblink'
   },
   menuWebLink: String, // only when type is 'weblink'
-  parentMenuId: String, // only when it is submenu of parent menu
-  payload: Schema.Types.Mixed, // only when type is 'reply'
-  replyTriggerMessage: String // only when type is reply, used to trigger reply
+  parentMenuId: String, // only when it is submenu of parent menu, null for top level
+  payload: Schema.Types.Mixed // only when type is 'reply'
 })
 
 module.exports = mongoose.model('menu', menuSchema)
