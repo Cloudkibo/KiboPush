@@ -9,7 +9,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
-import { fetchSessions, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
+import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Sessions from './sessions'
@@ -184,7 +184,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket
+    resetSocket: resetSocket,
+    fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
