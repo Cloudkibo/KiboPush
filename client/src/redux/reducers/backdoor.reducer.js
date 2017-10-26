@@ -5,6 +5,7 @@ const initialState = {
   broadcasts: [],
   pages: [],
   polls: [],
+  dataobjects: [],
   currentUser: null
 }
 
@@ -19,7 +20,17 @@ export function UsersInfo (state = initialState, action) {
       return state
   }
 }
+export function dataObjectsInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_DATA_OBJECTS_LIST:
+      return Object.assign({}, state, {
+        dataobjects: action.data
+      })
 
+    default:
+      return state
+  }
+}
 export function PagesInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:
