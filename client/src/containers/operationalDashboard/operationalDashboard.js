@@ -30,6 +30,7 @@ class OperationalDashboard extends React.Component {
     this.state = {
       usersData: [],
       objectsData: [],
+      objects: {},
       pagesData: [],
       totalLength: 0,
       objectsLength: 0,
@@ -80,11 +81,15 @@ class OperationalDashboard extends React.Component {
     var temp = []
     temp.push(users)
     console.log('temp', temp)
-    this.setState({objectsData: temp}, () => {
-      console.log('inside', this.state.objectsData)
-    }
-    )
+    this.setState({objects: users})
+    console.log('new object', this.state.objects)
     this.setState({objectsLength: 1})
+
+    // this.setState({objectsData: temp}, () => {
+    //   console.log('inside', this.state.objectsData)
+    // }
+    // )
+    // this.setState({objectsLength: 1})
     // console.log('in displayData of diplayObjects1', this.state.objectsData)
     // console.log('in displayData of diplayObjects2', this.state.objectsData[0].PagesCount)
   //  console.log('in displayData of diplayObjects3', this.state.objectsData[0].PagesCount.count)
@@ -164,7 +169,7 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          <DataObjectsCount objectsData={this.state.objectsData} length={this.state.objectsLength} />
+          <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
             <main
