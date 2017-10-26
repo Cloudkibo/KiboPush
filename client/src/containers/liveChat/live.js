@@ -91,6 +91,11 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
   }
 
+  onNotificationClick(){
+     window.focus();
+     console.log("Notificaation was clicked")
+  }
+
   render () {
     console.log('sessions: ', this.props.sessions)
     console.log('currentProfile: ', this.state.currentProfile)
@@ -105,6 +110,7 @@ class LiveChat extends React.Component {
           ignore={this.state.ignore}
           title={'New Message'}
           onShow={this.handleNotificationOnShow.bind(this)}
+           onClick={this.onNotificationClick.bind(this)}
           options={{
             body: this.state.body,
             lang: 'en',
