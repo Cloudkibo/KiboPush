@@ -141,11 +141,14 @@ class ChatBox extends React.Component {
 
   sendGif (gif) {
     console.log('sending Gif', gif)
-    console.log('state inside sendGif: ', this.state)
     this.state.componentType = 'gif'
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+    let gifUrl = gif.downsized.url
+    this.setState(gifUrl, () => {
+      console.log('state inside sendGif: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
   }
 
   resetFileComponent () {
@@ -224,7 +227,7 @@ class ChatBox extends React.Component {
         payload = {
           uploadedId: new Date().getTime(),
           componentType: 'gif',
-          fileurl: gif.downsized.url
+          fileurl: gifUrl
         }
         data = {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
