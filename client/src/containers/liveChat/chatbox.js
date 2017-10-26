@@ -341,7 +341,7 @@ class ChatBox extends React.Component {
     console.log('componentWillReceiveProps is called')
     this.scrollToBottom()
     if ((nextProps.urlMeta && !this.props.urlMeta) || (nextProps.urlMeta !== this.props.urlMeta)) {
-      if (nextProps.urlMeta === '{}') {
+      if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
       }
       this.setState({urlmeta: nextProps.urlMeta})
