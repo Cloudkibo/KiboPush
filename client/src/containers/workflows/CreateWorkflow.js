@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -16,10 +17,12 @@ import {
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import { getuserdetails, workflowsTourCompleted } from '../../redux/actions/basicinfo.actions'
 
 class CreateWorkflow extends React.Component {
   constructor (props) {
     super(props)
+    props.getuserdetails()
     this.gotoWorkflow = this.gotoWorkflow.bind(this)
     this.changeCondition = this.changeCondition.bind(this)
     this.changeKeywords = this.changeKeywords.bind(this)
@@ -29,8 +32,12 @@ class CreateWorkflow extends React.Component {
       condition: 'message_is',
       keywords: [],
       reply: '',
-      isActive: 'Yes'
+      isActive: 'Yes',
+      steps: []
     }
+    this.addSteps = this.addSteps.bind(this)
+    this.addTooltip = this.addTooltip.bind(this)
+    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentDidMount () {
@@ -45,6 +52,37 @@ class CreateWorkflow extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+
+    this.addSteps([
+      {
+        title: 'Workflows',
+        text: `Workflows allow you to automatically respond to messages to your page, which meet a certain criteria`,
+        selector: 'div#workflow',
+        position: 'top-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Keywords',
+        text: `Keywords are the specific strings, on which you want a particular action to take place `,
+        selector: 'div#keywords',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Rules',
+        text: 'Rules are applied on the message recieved together with the given keyword, to trigger the auto-reply',
+        selector: 'div#rules',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Reply',
+        text: 'Here you can write the automated message that get sent if above conditions are met',
+        selector: 'div#reply',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true}
+    ])
   }
 
   gotoWorkflow () {
@@ -90,6 +128,37 @@ class CreateWorkflow extends React.Component {
     this.setState({isActive: event.target.value})
   }
 
+  tourFinished (data) {
+    console.log('Next Tour Step')
+    if (data.type === 'finished') {
+      console.log('this: ', this)
+      console.log('Tour Finished')
+      this.props.workflowTourCompleted({
+        'workFlowsTourSeen': true
+      })
+    }
+  }
+
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
+
+    if (!Array.isArray(steps)) {
+      steps = [steps]
+    }
+
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -100,6 +169,9 @@ class CreateWorkflow extends React.Component {
     }
     return (
       <div>
+      !(this.props.user && this.props.user.workFlowsTourSeen) &&
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -110,12 +182,14 @@ class CreateWorkflow extends React.Component {
           <br />
           <br />
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Create Workflow</h2>
+            <div id='workflow'>
+              <h2 className='presentation-margin'>Create Workflow</h2>
+            </div>
             <div className='ui-block'>
               <div className='ui-block-content'>
                 <label>Rule</label>
 
-                <div className='form-group form-inline'>
+                <div id='rules' className='form-group form-inline'>
 
                   <select className='input-lg' onChange={this.changeCondition}
                     value={this.state.condition}>
@@ -124,7 +198,7 @@ class CreateWorkflow extends React.Component {
                     <option value='message_begins'>Message Begins with</option>
                   </select>
                 </div>
-                <div>
+                <div id='keywords'>
                   <label>Keywords (Separated by comma)</label>
                   <input type='text' className='form-control input-lg'
                     onChange={this.changeKeywords}
@@ -132,7 +206,7 @@ class CreateWorkflow extends React.Component {
                     id='keywords'
                     placeholder='Enter keywords separated by comma' />
                 </div>
-                <div className='form-group'>
+                <div className='form-group' id='reply'>
                   <label htmlFor='exampleInputReply'>Reply</label>
                   <textarea className='form-control' onChange={this.changeReply}
                     value={this.state.reply} rows='5'
@@ -147,7 +221,7 @@ class CreateWorkflow extends React.Component {
                   </select>
                 </div>
 
-                <button onClick={this.gotoWorkflow} className='btn btn-primary'>
+                <button onClick={this.gotoWorkflow} className='btn btn-primary' id='create'>
                   Create
                 </button>
                 <Link to='workflows' className='btn btn-primary'>
@@ -168,12 +242,17 @@ class CreateWorkflow extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    workflows: (state.workflowsInfo.workflows)
+    workflows: (state.workflowsInfo.workflows),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow}, dispatch)
+    {loadWorkFlowList: loadWorkFlowList,
+      addWorkFlow: addWorkFlow,
+      getuserdetails: getuserdetails,
+      workflowsTourCompleted: workflowsTourCompleted
+    }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWorkflow)
