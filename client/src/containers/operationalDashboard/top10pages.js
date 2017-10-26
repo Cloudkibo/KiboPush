@@ -17,7 +17,6 @@ class top10pages extends React.Component {
                 <table className='table table-striped'>
                   <thead>
                     <tr>
-                      <th>Page Pic</th>
                       <th>Page Name</th>
                       <th>Number of Subscribers</th>
                     </tr>
@@ -26,7 +25,6 @@ class top10pages extends React.Component {
                     {
                   this.props.pagesData.map((page, i) => (
                     <tr>
-                      <td>{page.pagePic}</td>
                       <td>{page.pageName}</td>
                       <td>{page.subscribers}</td>
                     </tr>
@@ -41,7 +39,7 @@ class top10pages extends React.Component {
                   pageCount={Math.ceil(this.props.length / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
-                  onPageChange={(data) => { this.props.handleClickEvent(data) }}
+                  onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
                   containerClassName={'pagination'}
                   subContainerClassName={'pages pagination'}
                   activeClassName={'active'} />
