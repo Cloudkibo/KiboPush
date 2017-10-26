@@ -136,7 +136,7 @@ class ChatBox extends React.Component {
   handleTextChange (e) {
     var isUrl = getmetaurl(e.target.value)
     console.log('isUrl', isUrl)
-    if (isUrl !== null) {
+    if (isUrl !== null && isUrl !== '') {
       if (isUrl !== this.state.prevURL) {
         this.props.fetchUrlMeta(isUrl)
         this.setState({prevURL: isUrl})
@@ -662,6 +662,7 @@ class ChatBox extends React.Component {
                 </i>
               </div>
             </div>
+            <div />
             {
               this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
               <div className='align-center'>
@@ -677,7 +678,7 @@ class ChatBox extends React.Component {
                        this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                        ? <tbody>
                          <tr>
-                           <td colspan='2'>
+                           <td style={{width: '30%'}} colspan='2'>
                              <ReactPlayer
                                url={this.state.urlmeta.url}
                                controls
@@ -685,13 +686,13 @@ class ChatBox extends React.Component {
                                height='100'
                              />
                            </td>
-                           <td>
+                           <td style={{width: '70%'}}>
                              <div>
                                <a href={this.state.urlmeta.url} target='_blank'>
-                                 <span className='urlTitle'>{this.state.urlmeta.title}</span>
+                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
-                               <span>{this.state.urlmeta.description}</span>
+                               <p>{this.state.urlmeta.description}</p>
                              </div>
                            </td>
                          </tr>
