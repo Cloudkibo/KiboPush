@@ -678,10 +678,11 @@ class ChatBox extends React.Component {
                        this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                        ? <tbody>
                          <tr>
-                           <td style={{width: '30%'}} colspan='2'>
+                           <td style={{width: '30%', textAlign: 'center'}} colspan='2'>
                              <ReactPlayer
                                url={this.state.urlmeta.url}
                                controls
+                               style={{margin: 'auto'}}
                                width='50%'
                                height='100'
                              />
@@ -692,7 +693,7 @@ class ChatBox extends React.Component {
                                  <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
-                               <p>{this.state.urlmeta.description}</p>
+                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description}</p>
                              </div>
                            </td>
                          </tr>
