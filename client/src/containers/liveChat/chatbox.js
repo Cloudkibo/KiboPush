@@ -518,10 +518,10 @@ class ChatBox extends React.Component {
                                       : <tbody>
                                         <tr>
                                           <td>
-                                            <div style={{width: 72, height: 72}}>
+                                            <div style={{width: 45, height: 45}}>
                                               {
                                                 msg.url_meta.image &&
-                                                <img src={msg.url_meta.image.url} style={{width: 72, height: 72}} />
+                                                <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
                                               }
                                             </div>
                                           </td>
