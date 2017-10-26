@@ -119,12 +119,12 @@ class LiveChat extends React.Component {
         <Responsive />
 
         <Notification
-          ignore={this.state.ignore}
+          ignore={this.props.socketSession !== ''}
           title={'New Message'}
           onShow={this.handleNotificationOnShow.bind(this)}
           onClick={this.onNotificationClick.bind(this)}
           options={{
-            body: this.state.body,
+            body: 'You got a new message from ' + this.props.socketData.name + " : " + this.props.socketData.text,
             lang: 'en',
             dir: 'ltr',
             icon: 'icons/text.png',
