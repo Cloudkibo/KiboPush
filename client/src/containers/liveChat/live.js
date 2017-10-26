@@ -67,7 +67,7 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + " : " + nextProps.socketData.text})
     }
 
     if (nextProps.socketSession) {
