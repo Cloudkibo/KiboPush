@@ -15,6 +15,17 @@ export function liveChat (state = initialState, action) {
         socketSession: ''
       })
 
+    case ActionTypes.UPDATE_CHAT_SESSIONS:
+      var temp = state.sessions
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i]._id === action.session._id) {
+          temp[i] = action.session
+        }
+      }
+      return Object.assign({}, state, {
+        sessions: temp
+      })
+
     case ActionTypes.SHOW_USER_CHAT:
       return Object.assign({}, state, {
         userChat: action.userChat,

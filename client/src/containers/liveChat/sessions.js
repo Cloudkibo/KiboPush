@@ -64,6 +64,13 @@ class Sessions extends React.Component {
       this.setState({list: nextProps.sessions})
     }
   }
+
+  componentDidUpdate (nextProps) {
+    if (nextProps.sessions) {
+      this.setState({list: nextProps.sessions})
+    }
+  }
+
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
   }
