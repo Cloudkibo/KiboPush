@@ -66,9 +66,8 @@ class Sessions extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    if (nextProps.sessions) {
-      this.setState({list: nextProps.sessions})
-    }
+    console.log('next props', nextProps)
+     this.setState({list: nextProps.sessions})
   }
 
   handleClick (e) {
