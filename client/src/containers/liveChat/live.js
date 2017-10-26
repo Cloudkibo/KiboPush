@@ -40,6 +40,9 @@ class LiveChat extends React.Component {
     addScript.setAttribute('src', '../../../js/material.min.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
