@@ -45,6 +45,9 @@ class LiveChat extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    if(!this.state.ignore){
+      this.setState({ignore: true})
+    }
   }
 
   componentWillMount () {
@@ -63,12 +66,10 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
     }
 
-    if (nextProps.socketSession  !== this.props.socketSession && nextProps.socketSession !== ''){
-        this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
-    }
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
       console.log('New Message data', nextProps.socketData)
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
