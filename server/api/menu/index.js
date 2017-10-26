@@ -12,5 +12,7 @@ router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/indexByPage', auth.isAuthenticated(), controller.indexByPage)
 router.post('/createWebLink', auth.isAuthenticated(), controller.createWebLink)
 router.post('/createNestedMenu', auth.isAuthenticated(), controller.createNestedMenu)
+router.post('/createReplyMenu', auth.isAuthenticated(), controller.createReplyMenu)
+router.delete('/:id', auth.isAuthenticated(), controller.destroy)
 
 module.exports = router

@@ -95,10 +95,10 @@ exports.getfbMessage = function (req, res) {
         }
         // fetch subsriber info from Graph API
         // fetch customer details
-        logger.serverLog(TAG, `page got ${page.pageName}`)
         if (page === null) {
           return
         }
+        logger.serverLog(TAG, `page got ${page.pageName}`)
         const options = {
           url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
           qs: {access_token: page.accessToken},
@@ -151,8 +151,8 @@ exports.getfbMessage = function (req, res) {
 
     // if event.post, the response will be of survey or poll. writing a logic to save response of poll
     if (event.postback) {
+      logger.serverLog(TAG, JSON.stringify(event.postback))
       let resp = JSON.parse(event.postback.payload)
-      logger.serverLog(TAG, ` payload ${resp.poll_id}`)
       if (resp.poll_id) {
         savepoll(event)
       } else if (resp.survey_id) {
