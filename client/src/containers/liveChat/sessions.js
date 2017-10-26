@@ -10,6 +10,7 @@ import Popover from 'react-simple-popover'
 import { Link } from 'react-router'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import NotificationBadge, {Effect} from 'react-notification-badge'
 var _ = require('lodash/core')
 
 class Sessions extends React.Component {
@@ -81,7 +82,7 @@ class Sessions extends React.Component {
       this.setState({list: this.props.sessions, logValue: val})
       return
     }
-    if (val.value == 'old') {
+    if (val.value === 'old') {
       console.log('Sorting using new')
       var temp = this.props.sessions.sort(function (a, b) {
         return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
@@ -170,6 +171,7 @@ class Sessions extends React.Component {
               </div>
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
+                <NotificationBadge count={item.unreadCount} className='abc' effect={Effect.ROTATE_X} />
                 {/**
                  <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
                  **/}
