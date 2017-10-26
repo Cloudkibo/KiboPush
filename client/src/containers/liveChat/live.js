@@ -23,7 +23,8 @@ class LiveChat extends React.Component {
     this.state = {
       activeSession: '',
       currentProfile: {},
-      loading: true
+      loading: true,
+      ignore: true,
     }
     props.fetchSessions({ company_id: this.props.user._id })
     this.changeActiveSession = this.changeActiveSession.bind(this)
@@ -61,6 +62,7 @@ class LiveChat extends React.Component {
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
       console.log("New Message data", nextProps.socketData)
+      this.setState({ignore: false, body: "You got a new message from " + nextProps.socketData.name})
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
@@ -93,10 +95,10 @@ class LiveChat extends React.Component {
         <Responsive />
 
         <Notification
-          ignore={false}
-          title={"New Message Received"}
+          ignore={this.state.ignore}
+          title={"New Message"}
           options={{
-              body: 'This is the notification testing',
+              body: this.state.body,
               lang: 'en',
               dir: 'ltr',
             }}
