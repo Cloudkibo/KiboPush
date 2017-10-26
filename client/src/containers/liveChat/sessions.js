@@ -72,7 +72,7 @@ class Sessions extends React.Component {
           temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
           this.setState({list: temp}, () => {
             console.log(this.state.list)
-          }
+          })
         }
       }
       this.props.resetUnreadSession()
