@@ -141,17 +141,11 @@ class ChatBox extends React.Component {
 
   sendGif (gif) {
     console.log('sending Gif', gif)
-    let payload = {
-      uploadedId: new Date().getTime(),
-      componentType: 'gif',
-      fileurl: gif.downsized.url
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendGif: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    console.log('state inside sendGif: ', this.state)
+    this.state.componentType = 'gif'
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   resetFileComponent () {
@@ -187,10 +181,8 @@ class ChatBox extends React.Component {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
           size: this.state.attachment.size,
-          type: this.state.attachmentType
-        }
-        if (this.state.componentType !== 'gif') {
-          payload.fileurl = this.state.uploadedUrl
+          type: this.state.attachmentType,
+          fileurl: this.state.uploadedUrl
         }
         data = {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
@@ -226,6 +218,28 @@ class ChatBox extends React.Component {
         console.log(data)
         this.props.sendChatMessage(data)
         this.setState({textAreaValue: ''})
+        data.format = 'convos'
+        this.props.userChat.push(data)
+      } else if (this.state.componentType === 'gif') {
+        payload = {
+          uploadedId: new Date().getTime(),
+          componentType: 'gif',
+          fileurl: gif.downsized.url
+        }
+        data = {
+          sender_id: session.page_id._id, // this is the page id: _id of Pageid
+          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+          session_id: session._id,
+          company_id: session.company_id, // this is admin id till we have companies
+          payload: payload, // this where message content will go
+          url_meta: '',
+          status: 'unseen' // seen or unseen
+        }
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.closeGif()
         data.format = 'convos'
         this.props.userChat.push(data)
       }
