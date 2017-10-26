@@ -175,9 +175,6 @@ export function markRead (sessionid, sessions) {
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
-      if (res.status === 'success') {
-        dispatch(fetchSingleSession(sessionid, sessions))
-      }
     })
   }
 }
