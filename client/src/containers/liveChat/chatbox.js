@@ -189,7 +189,7 @@ class ChatBox extends React.Component {
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
-        if (componentType !== 'gif') {
+        if (this.state.componentType !== 'gif') {
           payload.fileurl = this.state.uploadedUrl
         }
         data = {
