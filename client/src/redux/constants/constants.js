@@ -5,6 +5,7 @@ export const LOAD_BROWSER_VERSION = 'LOAD_BROWSER_VERSION'
 export const SET_SOCKET_STATUS = 'SET_SOCKET_STATUS'
 export const PAGE_CONNECT_WARNING = 'PAGE_CONNECT_WARNING'
 // constants for pages info list object
+export const LOAD_DATA_OBJECTS_LIST = 'LOAD_DATA_OBJECTS_LIST'
 export const ADD_MENU_ITEM = 'ADD_MENU_ITEM'
 export const LOAD_POLLS_LIST = 'LOAD_POLLS_LIST'
 export const LOAD_PAGES_LIST = 'LOAD_PAGES_LIST'

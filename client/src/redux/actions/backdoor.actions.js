@@ -16,6 +16,20 @@ export function loadUsersList () {
     callApi('backdoor/alluser').then(res => dispatch(updateUsersList(res)))
   }
 }
+export function updateDataObjectsCount (data) {
+  console.log('Data Fetched From data objects', data)
+  return {
+    type: ActionTypes.LOAD_DATA_OBJECTS_LIST,
+    data: data.payload
+  }
+}
+
+export function loadDataObjectsCount () {
+  console.log('loadDataObjectsCount called')
+  return (dispatch) => {
+    callApi('backdoor/datacount').then(res => dispatch(updateDataObjectsCount(res)))
+  }
+}
 
 export function updatePagesList (data) {
   console.log('Users Created Pages', data)
