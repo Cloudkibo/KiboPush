@@ -205,7 +205,7 @@ class ChatBox extends React.Component {
         }
         console.log(data)
         this.props.sendChatMessage(data)
-        this.setState({textAreaValue: ''})
+        this.setState({textAreaValue: '', urlmeta: {})
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.textAreaValue !== '') {
@@ -485,7 +485,7 @@ class ChatBox extends React.Component {
                                                 <p className='urlTitle'>{msg.url_meta.title}</p>
                                               </a>
                                               <br />
-                                              <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                              <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                             </div>
                                           </td>
                                         </tr>
@@ -508,7 +508,7 @@ class ChatBox extends React.Component {
                                               <br />
                                               {
                                                 msg.url_meta.description &&
-                                                <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                               }
                                             </div>
                                           </td>
