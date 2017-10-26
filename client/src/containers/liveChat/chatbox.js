@@ -626,7 +626,7 @@ class ChatBox extends React.Component {
                                               <br />
                                               {
                                                 msg.url_meta.description &&
-                                                <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                               }
                                             </div>
                                           </td>
