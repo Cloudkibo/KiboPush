@@ -1,7 +1,6 @@
 /**
  * Created by sojharo on 16/10/2017.
  */
-let _ = require('lodash')
 const Sessions = require('./sessions.model')
 const LiveChat = require('./../livechat/livechat.model')
 const logger = require('../../components/logger')

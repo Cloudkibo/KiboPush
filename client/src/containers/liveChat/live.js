@@ -15,7 +15,7 @@ import ChatBox from './chatbox'
 import Sessions from './sessions'
 import Profile from './profile'
 import Halogen from 'halogen'
-import Notification  from 'react-web-notification';
+import Notification from 'react-web-notification'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -24,7 +24,7 @@ class LiveChat extends React.Component {
       activeSession: '',
       currentProfile: {},
       loading: true,
-      ignore: true,
+      ignore: true
     }
     props.fetchSessions({ company_id: this.props.user._id })
     this.changeActiveSession = this.changeActiveSession.bind(this)
@@ -64,14 +64,14 @@ class LiveChat extends React.Component {
     }
     if (nextProps.socketSession) {
       console.log('New Message Received at following session id', nextProps.socketSession)
-      console.log("New Message data", nextProps.socketData)
-      this.setState({ignore: false, body: "You got a new message from " + nextProps.socketData.name})
+      console.log('New Message data', nextProps.socketData)
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name})
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
         var isPresent = false
         this.props.sessions.map((sess) => {
-          if(sess._id === nextProps.socketSession){
+          if (sess._id === nextProps.socketSession) {
             isPresent = true
           }
         })
@@ -87,7 +87,7 @@ class LiveChat extends React.Component {
     }
   }
 
-  handleNotificationOnShow(){
+  handleNotificationOnShow () {
     this.setState({ignore: true})
   }
 
@@ -103,13 +103,13 @@ class LiveChat extends React.Component {
 
         <Notification
           ignore={this.state.ignore}
-          title={"New Message"}
+          title={'New Message'}
           onShow={this.handleNotificationOnShow.bind(this)}
           options={{
-              body: this.state.body,
-              lang: 'en',
-              dir: 'ltr',
-            }}
+            body: this.state.body,
+            lang: 'en',
+            dir: 'ltr'
+          }}
         />
 
         <div className='container'>
@@ -166,7 +166,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
-    socketData: (state.liveChat.socketData),
+    socketData: (state.liveChat.socketData)
   }
 }
 
