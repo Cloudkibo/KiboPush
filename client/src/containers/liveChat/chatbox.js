@@ -44,6 +44,7 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
+      uploadedUrl: '',
       removeFileDescription: '',
       textAreaValue: '',
       showEmojiPicker: false,
@@ -185,7 +186,7 @@ class ChatBox extends React.Component {
         payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.fileurl,
+          fileurl: this.state.uploadedUrl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
@@ -311,8 +312,7 @@ class ChatBox extends React.Component {
       })
     }
     if (res.status === 'success') {
-      this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
-      this.props.fetchUserChats(this.props.session._id)
+      this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
   }
 
