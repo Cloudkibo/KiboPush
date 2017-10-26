@@ -509,7 +509,7 @@ class ChatBox extends React.Component {
                                                 <p className='urlTitle'>{msg.url_meta.title}</p>
                                               </a>
                                               <br />
-                                              <p>{msg.url_meta.description}</p>
+                                              <p>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
                                             </div>
                                           </td>
                                         </tr>
@@ -532,7 +532,7 @@ class ChatBox extends React.Component {
                                               <br />
                                               {
                                                 msg.url_meta.description &&
-                                                <span>{msg.url_meta.description}</span>
+                                                <span>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</span>
                                               }
                                             </div>
                                           </td>
