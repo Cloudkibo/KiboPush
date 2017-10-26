@@ -121,7 +121,7 @@ class OperationalDashboard extends React.Component {
   }
   handleClickEvent (data) {
     console.log(data.name)
-    this.displayData(data.selected, this.props.pagesData)
+    this.displayData(data.selected, this.props.toppages)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
