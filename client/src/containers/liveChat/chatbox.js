@@ -486,6 +486,64 @@ class ChatBox extends React.Component {
                               </a>
                             </div>
                           </div>
+                          : msg.url_meta
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-left'>
+                              <div style={{clear: 'both', display: 'block'}}>
+                                <div className='wrapperforURL'>
+                                  <table style={{maxWidth: '175px'}}>
+                                    {
+                                      msg.url_meta.type && msg.url_meta.type === 'video'
+                                      ? <tbody>
+                                        <tr>
+                                          <td style={{width: '30%'}} colspan='2'>
+                                            <ReactPlayer
+                                              url={msg.url_meta.url}
+                                              controls
+                                              width='100%'
+                                            />
+                                          </td>
+                                          <td style={{width: '70%'}}>
+                                            <div>
+                                              <a href={msg.url_meta.url} target='_blank'>
+                                                <p className='urlTitle'>{msg.url_meta.title}</p>
+                                              </a>
+                                              <br />
+                                              <p>{msg.url_meta.description}</p>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                      : <tbody>
+                                        <tr>
+                                          <td>
+                                            <div style={{width: 72, height: 72}}>
+                                              {
+                                                msg.url_meta.image &&
+                                                <img src={msg.url_meta.image.url} style={{width: 72, height: 72}} />
+                                              }
+                                            </div>
+                                          </td>
+                                          <td>
+                                            <div>
+                                              <a href={msg.url_meta.url} target='_blank'>
+                                                <span className='urltitle'>{msg.url_meta.title}</span>
+                                              </a>
+                                              <br />
+                                              {
+                                                msg.url_meta.description &&
+                                                <span>{msg.url_meta.description}</span>
+                                              }
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    }
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           : <div className='notification-event'>
                             <div className='facebook-chat-left'>
                               <a href={msg.payload.attachments[0].payload.url} target='_blank'>
@@ -678,13 +736,11 @@ class ChatBox extends React.Component {
                        this.state.urlmeta.type && this.state.urlmeta.type === 'video'
                        ? <tbody>
                          <tr>
-                           <td style={{width: '30%', textAlign: 'center'}} colspan='2'>
+                           <td style={{width: '30%'}} colspan='2'>
                              <ReactPlayer
                                url={this.state.urlmeta.url}
                                controls
-                               style={{margin: 'auto'}}
-                               width='50%'
-                               height='100'
+                               width='100%'
                              />
                            </td>
                            <td style={{width: '70%'}}>
@@ -693,7 +749,7 @@ class ChatBox extends React.Component {
                                  <p className='urlTitle'>{this.state.urlmeta.title}</p>
                                </a>
                                <br />
-                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description}</p>
+                               <p>{this.state.urlmeta.description}</p>
                              </div>
                            </td>
                          </tr>
