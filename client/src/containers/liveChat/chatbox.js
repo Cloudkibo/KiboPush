@@ -53,7 +53,7 @@ class ChatBox extends React.Component {
       prevURL: ''
     }
     props.fetchUserChats(this.props.session._id)
-    props.markRead(this.props.session._id)
+    props.markRead(this.props.session._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -331,7 +331,7 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     this.scrollToBottom()
-    this.props.markRead(this.props.session._id)
+    this.props.markRead(this.props.session._id, this.props.sessions)
   }
 
   render () {
