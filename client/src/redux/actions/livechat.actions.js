@@ -141,3 +141,12 @@ export function fetchUrlMeta (url) {
     })
   }
 }
+
+export function markRead (sessionid) {
+  console.log('Mark unread messages as read', sessionid)
+  return (dispatch) => {
+    callApi(`sessions/markedread/${sessionid}`).then(res => {
+      console.log('Mark as read Response', res)
+    })
+  }
+}
