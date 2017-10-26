@@ -29,7 +29,7 @@ class OperationalDashboard extends React.Component {
     props.loadTopPages()
     this.state = {
       usersData: [],
-      objectsData: {},
+      objectsData: [],
       pagesData: [],
       totalLength: 0,
       objectsLength: 0,
@@ -75,10 +75,13 @@ class OperationalDashboard extends React.Component {
     this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }
-  displayObjects (n, object) {
-    this.setState({objectsData: object})
+  displayObjects (n, users) {
+    var temp = []
+    temp.push(users)
+    this.setState({objectsData: temp})
     console.log('in displayData of diplayObjects', this.state.objectsData)
     console.log('in displayData of diplayObjects', this.state.objectsData.BroadcastsCount)
+    console.log('in displayData of diplayObjects', this.state.objectsData[0].BroadcastsCount)
   }
   displayPages (n, users) {
     console.log('one', users)
@@ -120,8 +123,7 @@ class OperationalDashboard extends React.Component {
     }
   }
   handleClickEvent (data) {
-    console.log(data.name)
-    this.displayData(data.selected, this.props.toppages)
+    this.displayPages(data.selected, this.props.pagesData)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
