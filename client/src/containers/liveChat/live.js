@@ -93,7 +93,7 @@ class LiveChat extends React.Component {
         <Responsive />
 
         <Notification
-          ignore={true}
+          ignore={false}
           title={"New Message Received"}
           options={{
               body: 'This is the notification testing',
