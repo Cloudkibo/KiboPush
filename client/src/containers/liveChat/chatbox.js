@@ -19,6 +19,7 @@ import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
+import GiphyPicker from 'react-gif-picker'
 import { isEmoji, getmetaurl } from './utilities'
 import Halogen from 'halogen'
 
@@ -46,9 +47,12 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
+      uploadedUrl: '',
       removeFileDescription: '',
       textAreaValue: '',
       showEmojiPicker: false,
+      showGif: false,
+      gifUrl : '',
       urlmeta: {},
       prevURL: '',
       displayUrlMeta: false
@@ -72,6 +76,9 @@ class ChatBox extends React.Component {
     this.showStickers = this.showStickers.bind(this)
     this.hideStickers = this.hideStickers.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
+    this.showGif = this.showGif.bind(this)
+    this.closeGif = this.closeGif.bind(this)
+    this.sendGif = this.sendGif.bind(this)
   }
 
   componentDidMount () {
@@ -116,9 +123,38 @@ class ChatBox extends React.Component {
   hideStickers () {
     this.setState({showStickers: false})
   }
+  
+  showGif () {
+    this.setState({showGifPicker: true})
+  }
 
-  sendSticker (sticker) {
+  closeGif () {
+    this.setState({showGifPicker: false})
+  }
+
+  sendSticker (sticker) {  
     console.log('sending sticker', sticker)
+    let payload = {
+      uploadedId: new Date().getTime(),
+      componentType: 'image',
+      fileurl: sticker.image.hdpi
+    }
+    this.setState(payload, () => {
+      console.log('state inside sendSticker: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
+    })
+  }
+ 
+  sendGif (gif) {
+    console.log('sending Gif', gif)
+    this.state.componentType = 'gif'
+    this.state.gifUrl = gif.downsized.url
+    console.log('state inside sendGif: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   resetFileComponent () {
@@ -130,7 +166,8 @@ class ChatBox extends React.Component {
       uploaded: false,
       uploadDescription: '',
       uploadedId: '',
-      removeFileDescription: ''
+      removeFileDescription: '',
+      showGifPicker: false
     })
   }
 
@@ -170,7 +207,7 @@ class ChatBox extends React.Component {
         payload = {
           componentType: this.state.componentType,
           fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedId,
+          fileurl: this.state.uploadedUrl,
           size: this.state.attachment.size,
           type: this.state.attachmentType
         }
@@ -178,7 +215,7 @@ class ChatBox extends React.Component {
           sender_id: session.page_id._id, // this is the page id: _id of Pageid
           recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
           sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-          recipient_fb_id: session.subscriber_id.pageId, // this is the (facebook) subscriber id : pageid of subscriber id
+          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
           session_id: session._id,
           company_id: session.company_id, // this is admin id till we have companies
           payload: payload, // this where message content will go
@@ -187,6 +224,8 @@ class ChatBox extends React.Component {
         }
         console.log(data)
         this.props.sendAttachment(data, this.handleSendAttachment)
+        data.format = 'convos'
+        this.props.userChat.push(data)
       } else if (isUrl !== null && isUrl !== '') {
         payload = {
           componentType: 'text',
@@ -229,6 +268,28 @@ class ChatBox extends React.Component {
         this.setState({textAreaValue: ''})
         data.format = 'convos'
         this.props.userChat.push(data)
+        } else if (this.state.componentType === 'gif') {
+          payload = {
+            uploadedId: new Date().getTime(),
+            componentType: 'gif',
+            fileurl: this.state.gifUrl
+          }
+          data = {
+            sender_id: session.page_id._id, // this is the page id: _id of Pageid
+            recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+            sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+            recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+            session_id: session._id,
+            company_id: session.company_id, // this is admin id till we have companies
+            payload: payload, // this where message content will go
+            url_meta: '',
+            status: 'unseen' // seen or unseen
+          }
+          console.log(data)
+          this.props.sendChatMessage(data)
+          this.closeGif()
+          data.format = 'convos'
+          this.props.userChat.push(data)
       }
     }
   }
@@ -239,11 +300,12 @@ class ChatBox extends React.Component {
       componentType: 'image',
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
-    this.setState(payload)
+    this.setState(payload, () => {
     console.log('state inside sendThumbsUp: ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
+    })
   }
 
   handleSendAttachment (res) {
@@ -314,8 +376,7 @@ class ChatBox extends React.Component {
       })
     }
     if (res.status === 'success') {
-      this.setState({ uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload })
-      this.props.fetchUserChats(this.props.session._id)
+      this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
   }
 
@@ -414,6 +475,17 @@ class ChatBox extends React.Component {
             sendSticker={this.sendSticker}
           />
         </Popover>
+        <Popover
+          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          placement='top'
+          target={this.gifs}
+          show={this.state.showGifPicker}
+          onHide={this.closeGif}
+        >
+          <div>
+            <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
         <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
           <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
             {
@@ -444,7 +516,7 @@ class ChatBox extends React.Component {
                                 url={msg.payload.fileurl}
                                 controls
                                 width='100%'
-                                height='140'
+                                height='auto'
                                 onPlay={this.onTestURLAudio(msg.payload.fileurl)}
                               />
                             </div>
@@ -452,10 +524,19 @@ class ChatBox extends React.Component {
                           : msg.payload.componentType === 'file'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <a href={msg.payload.fileurl} download >{msg.payload.fileName}</a>
+                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
                             </div>
                           </div>
                           : msg.payload.componentType === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.fileurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'gif'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
@@ -543,7 +624,7 @@ class ChatBox extends React.Component {
                   : (
                     <li>
                       <div className='author-thumb-left'>
-                        <img style={{width: '34px', height: '34px'}} src={this.props.user.profilePic} alt='author' />
+                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
                       </div>
                       {
                         msg.payload.attachments
@@ -566,7 +647,7 @@ class ChatBox extends React.Component {
                                 url={msg.payload.attachments[0].payload.url}
                                 controls
                                 width='100%'
-                                height='140'
+                                height='auto'
                                 onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
                               />
                             </div>
@@ -779,8 +860,8 @@ class ChatBox extends React.Component {
                     className='center fa fa-smile-o' />
                 </i>
               </div>
-              <div style={{display: 'inline-block'}} data-tip='GIF'>
-                <i style={styles.iconclass}>
+              <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                <i onClick={this.showGif} style={styles.iconclass}>
                   <i style={{
                     fontSize: '20px',
                     position: 'absolute',
