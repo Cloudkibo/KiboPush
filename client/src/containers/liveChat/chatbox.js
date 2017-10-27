@@ -139,7 +139,7 @@ class ChatBox extends React.Component {
     let payload = {
       uploadedId: new Date().getTime(),
       componentType: 'image',
-      fileurl: sticker.image.hdpi
+      uploadedUrl: sticker.image.hdpi
     }
     this.setState(payload, () => {
       console.log('state inside sendSticker: ', this.state)
@@ -301,7 +301,7 @@ class ChatBox extends React.Component {
     let payload = {
       uploadedId: new Date().getTime(),
       componentType: 'image',
-      fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+      uploadedUrl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
     this.setState(payload, () => {
       console.log('state inside sendThumbsUp: ', this.state)
