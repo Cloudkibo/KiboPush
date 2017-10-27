@@ -168,7 +168,9 @@ class CreateWorkflow extends React.Component {
       transition: 'scale'
     }
     return (
+
       <div>
+        {
       !(this.props.user && this.props.user.workFlowsTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }

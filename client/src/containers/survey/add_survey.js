@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -11,12 +12,14 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { createsurvey } from '../../redux/actions/surveys.actions'
+import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.getuserdetails()
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
@@ -44,7 +47,8 @@ class AddSurvey extends React.Component {
       disabled: false,
       pageValue: [],
       genderValue: [],
-      localeValue: []
+      localeValue: [],
+      steps: []
     }
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
@@ -56,6 +60,9 @@ class AddSurvey extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
+    this.addSteps = this.addSteps.bind(this)
+    this.addTooltip = this.addTooltip.bind(this)
+    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentDidMount () {
@@ -78,6 +85,36 @@ class AddSurvey extends React.Component {
       options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
     }
     this.setState({page: {options: options}})
+    this.addSteps([
+      {
+        title: 'Surveys',
+        text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
+        selector: 'div#survey',
+        position: 'top-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Title and Description',
+        text: `Give your survey a title and description for easy identification`,
+        selector: 'div#identity',
+        position: 'right',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Add Questions',
+        text: 'Add questions, and create a set of responses for your subscriber to reply with',
+        selector: 'div#questions',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Targetting',
+        text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
+        selector: 'div#target',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true}
+    ])
   }
 
   componentWillReceiveProps (nextprops) {
@@ -327,6 +364,37 @@ class AddSurvey extends React.Component {
     return choiceItems || null
   }
 
+  tourFinished (data) {
+    console.log('Next Tour Step')
+    if (data.type === 'finished') {
+      console.log('this: ', this)
+      console.log('Tour Finished')
+      this.props.surveyTourCompleted({
+        'surveyTourSeen': true
+      })
+    }
+  }
+
+  addSteps (steps) {
+    // let joyride = this.refs.joyride
+
+    if (!Array.isArray(steps)) {
+      steps = [steps]
+    }
+
+    if (!steps.length) {
+      return false
+    }
+    var temp = this.state.steps
+    this.setState({
+      steps: temp.concat(steps)
+    })
+  }
+
+  addTooltip (data) {
+    this.refs.joyride.addTooltip(data)
+  }
+
   createUI () {
     let uiItems = []
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
@@ -414,6 +482,10 @@ class AddSurvey extends React.Component {
     const { disabled, stayOpen } = this.state
     return (
       <div>
+        {
+      !(this.props.user && this.props.user.surveyTourSeen) &&
+        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <Header />
         <HeaderResponsive />
         <Sidebar />
@@ -425,28 +497,31 @@ class AddSurvey extends React.Component {
           <br />
           <div className='row'>
             <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-              <h2 className='presentation-margin'>Create Survey Form</h2>
+              <div id='survey'>
+                <h2 className='presentation-margin'>Create Survey Form</h2>
+              </div>
               <div className='ui-block'>
                 <div className='news-feed-form'>
 
                   <div className='tab-content'>
                     <div className='tab-pane active' id='home-1' role='tabpanel'
                       aria-expanded='true'>
-
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='titl'>
-                          <label className='control-label'>Title</label>
-                          <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
+                      <div id='identity'>
+                        <div className='col-xl-12'>
+                          <div className='form-group' id='titl'>
+                            <label className='control-label'>Title</label>
+                            <input className='form-control'
+                              placeholder='Enter form title here' ref='title' />
+                          </div>
                         </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'>Description</label>
-                          <textarea className='form-control'
-                            placeholder='Enter form description here'
-                            rows='3' ref='description' />
+                        <br />
+                        <div className='col-xl-12'>
+                          <div className='form-group' id='desc'>
+                            <label className='control-label'>Description</label>
+                            <textarea className='form-control'
+                              placeholder='Enter form description here'
+                              rows='3' ref='description' />
+                          </div>
                         </div>
                       </div>
                       <br />
@@ -468,7 +543,7 @@ class AddSurvey extends React.Component {
                      */}
 
                       <div className='col-sm-6 col-md-4'>
-                        <button className='btn btn-primary btn-sm'
+                        <button id='questions' className='btn btn-primary btn-sm'
                           onClick={this.addClick.bind(this)}> Add Questions
                       </button>
                       </div>
@@ -498,7 +573,7 @@ class AddSurvey extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
               <h2 className='presentation-margin'>Targeting</h2>
               <p>Select the type of customer you want to send survey to</p>
               <div className='form-group'>
@@ -551,11 +626,16 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     surveys: (state.surveysInfo.surveys),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({createsurvey: createsurvey}, dispatch)
+  return bindActionCreators({
+    createsurvey: createsurvey,
+    getuserdetails: getuserdetails,
+    surveyTourCompleted: surveyTourCompleted
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
