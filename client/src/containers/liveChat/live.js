@@ -125,7 +125,7 @@ class LiveChat extends React.Component {
             body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
             lang: 'en',
             dir: 'ltr',
-            image: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
+            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
           }}
         />
 
