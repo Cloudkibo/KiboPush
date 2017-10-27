@@ -414,7 +414,7 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     this.scrollToBottom()
-    if (nextProps.userChat[0].session_id === this.props.session._id && nextProps.userChat.length > this.props.userChat.length) {
+    if (nextProps.userChat[0].session_id === this.props.session._id) {
       this.props.markRead(this.props.session._id, this.props.sessions)
     }
     if (nextProps.userChat[0].session_id !== this.props.session._id) {
