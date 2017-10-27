@@ -175,13 +175,11 @@ class ChatBox extends React.Component {
     var isUrl = getmetaurl(e.target.value)
     console.log('isUrl', isUrl)
     if (isUrl !== null && isUrl !== '') {
-      if (isUrl !== this.state.prevURL) {
-        this.props.fetchUrlMeta(isUrl)
-        this.setState({
-          prevURL: isUrl,
-          displayUrlMeta: true
-        })
-      }
+      this.props.fetchUrlMeta(isUrl)
+      this.setState({
+        prevURL: isUrl,
+        displayUrlMeta: true
+      })
     } else {
       this.setState({
         urlmeta: {},
@@ -401,7 +399,7 @@ class ChatBox extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.scrollToBottom()
-    if ((nextProps.urlMeta && !this.props.urlMeta) || (nextProps.urlMeta !== this.props.urlMeta)) {
+    if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
       }
