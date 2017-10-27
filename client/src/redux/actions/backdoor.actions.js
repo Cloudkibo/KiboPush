@@ -17,7 +17,7 @@ export function loadUsersList () {
   }
 }
 export function updateDataObjectsCount (data) {
-  console.log('Data Fetched From data objects', data)
+  console.log('Data Fetched From data objects', JSON.stringify(data.payload))
   return {
     type: ActionTypes.LOAD_DATA_OBJECTS_LIST,
     data: data.payload
