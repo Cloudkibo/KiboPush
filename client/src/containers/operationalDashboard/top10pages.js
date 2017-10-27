@@ -36,7 +36,7 @@ class top10pages extends React.Component {
                   nextLabel={'next'}
                   breakLabel={<a>...</a>}
                   breakClassName={'break-me'}
-                  pageCount={Math.ceil(this.props.length / 2)}
+                  pageCount={Math.ceil(this.props.length / 4)}
                   marginPagesDisplayed={1}
                   pageRangeDisplayed={3}
                   onPageChange={(data) => {
