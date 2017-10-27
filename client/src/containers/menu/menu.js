@@ -78,6 +78,10 @@ class Menu extends React.Component {
     this.setState({pageValue: val.value})
   }
   handleClick (event) {
+    this.props.history.push({
+      pathname: `/CreateMessage`,
+      state: {pageId: this.state.pageValue, menuItemType: 'weblink', title: this.state.itemName}
+    })
     this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
   }
   handleClose (e) {

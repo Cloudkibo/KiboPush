@@ -19,6 +19,7 @@ import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { SendMessage } from '../../redux/actions/menu.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -44,6 +45,7 @@ class CreateMessage extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
   }
 
   componentDidMount () {
@@ -183,6 +185,23 @@ class CreateMessage extends React.Component {
     this.setState({ list: temp, message: temp2 })
   }
 
+  sendMessage () {
+    if (this.state.message.length === 0) {
+      return
+    }
+    console.log(this.state.message)
+    var data = {
+      platform: 'facebook',
+      menuItemType: this.props.location.state.menuItemType,
+      pageId: this.props.location.state.pageId,
+      title: this.props.location.state.title,
+      payload: this.state.message
+    }
+    console.log('Data sent: ', data)
+    this.props.SendMessage(data, this.msg)
+    this.setState({message: [], list: []})
+  }
+
   render () {
     console.log('Pages ', this.props.pages)
 
@@ -210,7 +229,7 @@ class CreateMessage extends React.Component {
             <div className='col-lg-3 col-md-3 col-sm-3 col-xs-3' style={{ padding: '55px' }}>
               <button style={{ float: 'left' }} className='btn btn-primary btn-md'> New Message</button>
               <button style={{ float: 'left' }} className='btn btn-primary btn-md' disabled={(this.state.pageValue === '')}> Test Message</button>
-              <button style={{ float: 'left' }} id='send' className='btn btn-primary btn-md'>Send Message </button>
+              <button style={{ float: 'left' }} id='send' onClick={this.sendMessage} className='btn btn-primary btn-md'>Send Message </button>
             </div>
 
             <div className='col-lg-9 col-md-9 col-sm-9 col-xs-9'>
@@ -341,6 +360,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      SendMessage: SendMessage
     },
         dispatch)
 }
