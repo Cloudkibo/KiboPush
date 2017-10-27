@@ -302,7 +302,6 @@ class ChatBox extends React.Component {
         data = this.setMessageData(session, payload)
         console.log(data)
         this.props.sendChatMessage(data)
-        this.closeGif()
         data.format = 'convos'
         this.props.userChat.push(data)
       }
