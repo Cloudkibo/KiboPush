@@ -13,6 +13,20 @@ export function showChatSessions (sessions, status) {
   }
 }
 
+export function updateChatSessions (session, sessions) {
+  console.log(session)
+  var temp = sessions
+  for (var i = 0; i < temp.length; i++) {
+    if (temp[i]._id === session._id) {
+      temp[i] = session
+    }
+  }
+  return {
+    type: ActionTypes.UPDATE_CHAT_SESSIONS,
+    sessions
+  }
+}
+
 export function socketUpdate (data) {
   console.log(data.session_id)
   return {
@@ -27,6 +41,14 @@ export function fetchSessions (companyid) {
   return (dispatch) => {
     callApi('sessions', 'post', companyid)
       .then(res => dispatch(showChatSessions(res.payload, res.status)))
+  }
+}
+
+export function fetchSingleSession (sessionid, sessions) {
+  console.log('Fetching single Chat Session', sessionid)
+  return (dispatch) => {
+    callApi(`sessions/${sessionid}`)
+      .then(res => dispatch(updateChatSessions(res.payload, sessions)))
   }
 }
 
@@ -137,6 +159,18 @@ export function fetchUrlMeta (url) {
       console.log('Fetch Url Meta Response', res)
       if (res.status === 'success') {
         dispatch(urlMetaReceived(res.payload))
+      }
+    })
+  }
+}
+
+export function markRead (sessionid, sessions) {
+  console.log('Mark unread messages as read', sessionid)
+  return (dispatch) => {
+    callApi(`sessions/markread/${sessionid}`).then(res => {
+      console.log('Mark as read Response', res)
+      if (res.status === 'success') {
+        dispatch(fetchSingleSession(sessionid, sessions))
       }
     })
   }
