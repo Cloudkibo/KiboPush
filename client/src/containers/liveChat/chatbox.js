@@ -136,16 +136,12 @@ class ChatBox extends React.Component {
 
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
-    let payload = {
-      componentType: 'sticker',
-      stickerUrl: sticker.image.hdpi
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendSticker: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    this.state.componentType = 'sticker'
+    this.state.stickerUrl = sticker.image.hdpi
+    console.log('state inside sendSticker: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   sendGif (gif) {
@@ -225,7 +221,7 @@ class ChatBox extends React.Component {
       }
     } else if (component === 'sticker') {
       payload = {
-        componentType: thihs.state.componentType,
+        componentType: this.state.componentType,
         fileurl: this.state.stickerUrl
       }
     }
@@ -303,6 +299,7 @@ class ChatBox extends React.Component {
         data = this.setMessageData(session, payload)
         console.log(data)
         this.props.sendChatMessage(data)
+        this.hideStickers()
         data.format = 'convos'
         this.props.userChat.push(data)
       }
@@ -552,6 +549,15 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.componentType === 'gif'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.fileurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'sticker'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
