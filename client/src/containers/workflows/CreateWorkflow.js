@@ -133,7 +133,7 @@ class CreateWorkflow extends React.Component {
     if (data.type === 'finished') {
       console.log('this: ', this)
       console.log('Tour Finished')
-      this.props.workflowTourCompleted({
+      this.props.workflowsTourCompleted({
         'workFlowsTourSeen': true
       })
     }
