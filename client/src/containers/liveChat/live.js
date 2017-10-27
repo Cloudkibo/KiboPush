@@ -45,7 +45,7 @@ class LiveChat extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if(!this.state.ignore){
+    if (!this.state.ignore) {
       this.setState({ignore: true})
     }
   }
@@ -63,13 +63,13 @@ class LiveChat extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.setState({ignore: true})
-    
+
     if (nextProps.sessions) {
       this.setState({loading: false})
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + " : " + nextProps.socketData.text})
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
     }
 
     if (nextProps.socketSession && nextProps.socketSession !== '') {
@@ -100,10 +100,10 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
   }
 
-  onNotificationClick(){
-     window.focus();
-     console.log("Notificaation was clicked")
-     this.setState({ignore: true})
+  onNotificationClick () {
+    window.focus()
+    console.log('Notificaation was clicked')
+    this.setState({ignore: true})
   }
 
   render () {
@@ -122,10 +122,10 @@ class LiveChat extends React.Component {
           onShow={this.handleNotificationOnShow.bind(this)}
           onClick={this.onNotificationClick.bind(this)}
           options={{
-            body: 'You got a new message from ' + this.props.socketData.name + " : " + this.props.socketData.text,
+            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
             lang: 'en',
             dir: 'ltr',
-            icon: 'icons/text.png',
+            icon: 'icons/text.png'
           }}
         />
 
