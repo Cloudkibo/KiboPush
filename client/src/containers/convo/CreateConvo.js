@@ -30,7 +30,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted} from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, convoTourCompleted } from '../../redux/actions/basicinfo.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
