@@ -49,7 +49,7 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       showGif: false,
-      gifUrl : ''
+      gifUrl: ''
     }
     props.fetchUserChats(this.props.session._id)
     this.onFileChange = this.onFileChange.bind(this)
