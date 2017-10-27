@@ -137,9 +137,8 @@ class ChatBox extends React.Component {
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
     let payload = {
-      uploadedId: new Date().getTime(),
-      componentType: 'image',
-      uploadedUrl: sticker.image.hdpi
+      componentType: 'sticker',
+      stickerUrl: sticker.image.hdpi
     }
     this.setState(payload, () => {
       console.log('state inside sendSticker: ', this.state)
