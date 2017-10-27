@@ -37,6 +37,7 @@ export function uploadImage (file, data, handleUpload) {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('res', res)
       data.fileurl = res.payload
       handleUpload(data)
     })

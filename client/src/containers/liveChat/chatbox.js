@@ -136,16 +136,12 @@ class ChatBox extends React.Component {
 
   sendSticker (sticker) {
     console.log('sending sticker', sticker)
-    let payload = {
-      componentType: 'sticker',
-      stickerUrl: sticker.image.hdpi
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendSticker: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
+    this.state.componentType = 'sticker'
+    this.state.stickerUrl = sticker.image.hdpi
+    console.log('state inside sendSticker: ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
   }
 
   sendGif (gif) {
@@ -215,12 +211,18 @@ class ChatBox extends React.Component {
         fileName: this.state.attachment.name,
         size: this.state.attachment.size,
         type: this.state.attachmentType,
-        fileurl: this.state.uploadedUrl
+        fileurl: this.state.uploadedId,
+        uploadedurl: this.state.uploadedUrl
       }
     } else if (component === 'gif') {
       payload = {
         componentType: this.state.componentType,
         fileurl: this.state.gifUrl
+      }
+    } else if (component === 'sticker') {
+      payload = {
+        componentType: this.state.componentType,
+        fileurl: this.state.stickerUrl
       }
     }
     return payload
@@ -290,6 +292,14 @@ class ChatBox extends React.Component {
         console.log(data)
         this.props.sendChatMessage(data)
         this.closeGif()
+        data.format = 'convos'
+        this.props.userChat.push(data)
+      } else if (this.state.componentType === 'sticker') {
+        payload = this.setDataPayload('sticker')
+        data = this.setMessageData(session, payload)
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.hideStickers()
         data.format = 'convos'
         this.props.userChat.push(data)
       }
@@ -503,11 +513,11 @@ class ChatBox extends React.Component {
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
-                                url={msg.payload.fileurl}
+                                url={msg.payload.uploadedurl}
                                 controls
                                 width='100%'
                                 height='140'
-                                onPlay={this.onTestURLVideo(msg.payload.fileurl)}
+                                onPlay={this.onTestURLVideo(msg.payload.uploadedurl)}
                               />
                             </div>
                           </div>
@@ -515,21 +525,30 @@ class ChatBox extends React.Component {
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <ReactPlayer
-                                url={msg.payload.fileurl}
+                                url={msg.payload.uploadedurl}
                                 controls
                                 width='100%'
                                 height='auto'
-                                onPlay={this.onTestURLAudio(msg.payload.fileurl)}
+                                onPlay={this.onTestURLAudio(msg.payload.uploadedurl)}
                               />
                             </div>
                           </div>
                           : msg.payload.componentType === 'file'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
-                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
+                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.uploadedurl} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
                             </div>
                           </div>
                           : msg.payload.componentType === 'image'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.uploadedurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'gif'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
@@ -538,7 +557,7 @@ class ChatBox extends React.Component {
                               />
                             </div>
                           </div>
-                          : msg.payload.componentType === 'gif'
+                          : msg.payload.componentType === 'sticker'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img

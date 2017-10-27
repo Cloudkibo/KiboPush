@@ -53,6 +53,21 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
       'filedata': fileReaderStream
     }
     if (!isForLiveChat) deleteFile(body.fileurl)
+  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+      body.componentType) > -1) {
+    payload = {
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'image',
+          'payload': {
+            'url': body.fileurl
+          }
+        }
+      })
+    }
   } else if (body.componentType === 'card') {
     payload = {
       'recipient': JSON.stringify({
