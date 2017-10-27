@@ -66,6 +66,12 @@ export function resetSocket () {
   }
 }
 
+export function resetUnreadSession () {
+  return {
+    type: ActionTypes.RESET_UNREAD_SESSION
+  }
+}
+
 export function fetchUserChats (sessionid) {
   console.log('Fetching User Chats')
   return (dispatch) => {
@@ -169,9 +175,6 @@ export function markRead (sessionid, sessions) {
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
-      if (res.status === 'success') {
-        dispatch(fetchSingleSession(sessionid, sessions))
-      }
     })
   }
 }

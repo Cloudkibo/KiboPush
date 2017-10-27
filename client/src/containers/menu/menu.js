@@ -9,6 +9,8 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
+
+import { Link } from 'react-router'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
 //  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
@@ -134,6 +136,11 @@ class Menu extends React.Component {
         <div className='container'>
           <br /><br /><br /><br />
           <div className='ui-block'>
+            <Link to='createMessage' className='pull-right'>
+              <button className='btn btn-sm btn-primary'>
+              SEND MESSAGE
+              </button>
+            </Link>
             <div className='ui-block-title'>
               <h5>Select a page to setup its Main Menu</h5>
             </div>
