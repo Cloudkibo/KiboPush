@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
 class dataObjectsCount extends React.Component {
   constructor (props, context) {
     super(props, context)
