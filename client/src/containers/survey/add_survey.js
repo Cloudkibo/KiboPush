@@ -103,7 +103,7 @@ class AddSurvey extends React.Component {
       {
         title: 'Add Questions',
         text: 'Add questions, and create a set of responses for your subscriber to reply with',
-        selector: 'div#questions',
+        selector: 'button#questions',
         position: 'bottom-left',
         type: 'hover',
         isFixed: true},
