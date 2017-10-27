@@ -543,7 +543,7 @@ class ChatBox extends React.Component {
                               />
                             </div>
                           </div>
-                          : msg.url_meta !== ''
+                          : msg.url_meta !== '' && msg.url_meta !== '{}'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <div style={{clear: 'both', display: 'block'}}>
