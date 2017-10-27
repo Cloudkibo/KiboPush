@@ -225,7 +225,7 @@ class ChatBox extends React.Component {
       }
     } else if (component === 'sticker') {
       payload = {
-        componentType: thihs.state.componentType,
+        componentType: this.state.componentType,
         fileurl: this.state.stickerUrl
       }
     }
