@@ -222,6 +222,11 @@ class ChatBox extends React.Component {
         componentType: this.state.componentType,
         fileurl: this.state.gifUrl
       }
+    } else if (component === 'sticker') {
+      payload = {
+        componentType: thihs.state.componentType,
+        fileurl: this.state.stickerUrl
+      }
     }
     return payload
   }
@@ -286,6 +291,14 @@ class ChatBox extends React.Component {
         this.props.userChat.push(data)
       } else if (this.state.componentType === 'gif') {
         payload = this.setDataPayload('gif')
+        data = this.setMessageData(session, payload)
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.closeGif()
+        data.format = 'convos'
+        this.props.userChat.push(data)
+      } else if (this.state.componentType === 'sticker') {
+        payload = this.setDataPayload('sticker')
         data = this.setMessageData(session, payload)
         console.log(data)
         this.props.sendChatMessage(data)
