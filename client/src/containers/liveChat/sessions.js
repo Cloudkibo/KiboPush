@@ -34,6 +34,7 @@ class Sessions extends React.Component {
     this.logChange = this.logChange.bind(this)
     this.pageChange = this.pageChange.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
+    this.changeSession = this.changeSession.bind(this)
   }
 
   componentDidMount () {
@@ -145,6 +146,17 @@ class Sessions extends React.Component {
     this.setState({logValue: null, pageValue: null})
   }
 
+  changeSession (item) {
+    var temp = this.state.list
+    for (var i = 0; i < temp.length; i++) {
+      if (temp[i]._id === item._id && temp[i].unreadCount) {
+        temp[i].unreadCount = 0
+        this.setState({list: temp})
+      }
+    }
+    this.props.changeActiveSession(item, item.subscriber_id)
+  }
+
   render () {
     console.log('Logvalue', this.state.logValue)
     console.log('Sessions', this.state.list)
@@ -180,17 +192,14 @@ class Sessions extends React.Component {
         </div>
         <ul className='widget w-activity-feed notification-list'>
           {this.state.list.map((item) => (
-            <li key={item._id} onClick={() => { this.props.changeActiveSession(item, item.subscriber_id) }}>
+            <li key={item._id} onClick={() => { this.changeSession(item) }}>
               <div className='author-thumb'>
                 <img src={item.subscriber_id.profilePic} alt='author' />
               </div>
               <div className='notification-event'>
                 <a className='h6 notification-friend'>{item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName}</a>
                 <div style={{width: '15px', height: '15px', display: 'inline-block', marginLeft: '20px'}} >
-                  {
-                    this.props.activeSession._id !== item._id &&
-                    <NotificationBadge count={item.unreadCount > 99 ? '99+' : item.unreadCount} className='abc' effect={Effect.SCALE} />
-                  }
+                  <NotificationBadge count={item.unreadCount > 99 ? '99+' : item.unreadCount} className='abc' effect={Effect.SCALE} />
                 </div>
                 {/**
                  <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>2 mins ago</time></span>
