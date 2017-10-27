@@ -52,7 +52,7 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       showGif: false,
-      gifUrl : '',
+      gifUrl: '',
       urlmeta: {},
       prevURL: '',
       displayUrlMeta: false
@@ -79,6 +79,8 @@ class ChatBox extends React.Component {
     this.showGif = this.showGif.bind(this)
     this.closeGif = this.closeGif.bind(this)
     this.sendGif = this.sendGif.bind(this)
+    this.setDataPayload = this.setDataPayload.bind(this)
+    this.setMessageData = this.setMessageData.bind(this)
   }
 
   componentDidMount () {
@@ -123,7 +125,7 @@ class ChatBox extends React.Component {
   hideStickers () {
     this.setState({showStickers: false})
   }
-  
+
   showGif () {
     this.setState({showGifPicker: true})
   }
@@ -132,7 +134,7 @@ class ChatBox extends React.Component {
     this.setState({showGifPicker: false})
   }
 
-  sendSticker (sticker) {  
+  sendSticker (sticker) {
     console.log('sending sticker', sticker)
     let payload = {
       uploadedId: new Date().getTime(),
@@ -146,7 +148,7 @@ class ChatBox extends React.Component {
       this.onEnter(enterEvent)
     })
   }
- 
+
   sendGif (gif) {
     console.log('sending Gif', gif)
     this.state.componentType = 'gif'
@@ -191,6 +193,39 @@ class ChatBox extends React.Component {
       textAreaValue: e.target.value
     })
   }
+  setMessageData (session, payload) {
+    var data = ''
+    data = {
+      sender_id: session.page_id._id, // this is the page id: _id of Pageid
+      recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
+      sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
+      recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+      session_id: session._id,
+      company_id: session.company_id, // this is admin id till we have companies
+      payload: payload, // this where message content will go
+      url_meta: '',
+      status: 'unseen' // seen or unseen
+    }
+    return data
+  }
+  setDataPayload (component) {
+    var payload = ''
+    if (component === 'attachment') {
+      payload = {
+        componentType: this.state.componentType,
+        fileName: this.state.attachment.name,
+        size: this.state.attachment.size,
+        type: this.state.attachmentType,
+        fileurl: this.state.uploadedUrl
+      }
+    } else if (component === 'gif') {
+      payload = {
+        componentType: this.state.componentType,
+        fileurl: this.state.gifUrl
+      }
+    }
+    return payload
+  }
 
   onEnter (e) {
     console.log('event in onEnter' + e)
@@ -201,25 +236,9 @@ class ChatBox extends React.Component {
       var payload = {}
       var session = this.props.session
       var data = {}
-      if (this.state.uploadedId !== '') {
-        payload = {
-          componentType: this.state.componentType,
-          fileName: this.state.attachment.name,
-          fileurl: this.state.uploadedUrl,
-          size: this.state.attachment.size,
-          type: this.state.attachmentType
-        }
-        data = {
-          sender_id: session.page_id._id, // this is the page id: _id of Pageid
-          recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
-          sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-          recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-          session_id: session._id,
-          company_id: session.company_id, // this is admin id till we have companies
-          payload: payload, // this where message content will go
-          url_meta: '',
-          status: 'unseen' // seen or unseen
-        }
+      if (this.state.uploadedId !== '' && this.state.attachment) {
+        payload = this.setDataPayload('attachment')
+        data = this.setMessageData(session, payload)
         console.log(data)
         this.props.sendAttachment(data, this.handleSendAttachment)
         data.format = 'convos'
@@ -266,28 +285,14 @@ class ChatBox extends React.Component {
         this.setState({textAreaValue: ''})
         data.format = 'convos'
         this.props.userChat.push(data)
-        } else if (this.state.componentType === 'gif') {
-          payload = {
-            uploadedId: new Date().getTime(),
-            componentType: 'gif',
-            fileurl: this.state.gifUrl
-          }
-          data = {
-            sender_id: session.page_id._id, // this is the page id: _id of Pageid
-            recipient_id: session.subscriber_id._id, // this is the subscriber id: _id of subscriberId
-            sender_fb_id: session.page_id.pageId, // this is the (facebook) :page id of pageId
-            recipient_fb_id: session.subscriber_id.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-            session_id: session._id,
-            company_id: session.company_id, // this is admin id till we have companies
-            payload: payload, // this where message content will go
-            url_meta: '',
-            status: 'unseen' // seen or unseen
-          }
-          console.log(data)
-          this.props.sendChatMessage(data)
-          this.closeGif()
-          data.format = 'convos'
-          this.props.userChat.push(data)
+      } else if (this.state.componentType === 'gif') {
+        payload = this.setDataPayload('gif')
+        data = this.setMessageData(session, payload)
+        console.log(data)
+        this.props.sendChatMessage(data)
+        this.closeGif()
+        data.format = 'convos'
+        this.props.userChat.push(data)
       }
     }
   }
@@ -299,10 +304,10 @@ class ChatBox extends React.Component {
       fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
     }
     this.setState(payload, () => {
-    console.log('state inside sendThumbsUp: ', this.state)
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+      console.log('state inside sendThumbsUp: ', this.state)
+      let enterEvent = new Event('keypress')
+      enterEvent.which = 13
+      this.onEnter(enterEvent)
     })
   }
 
