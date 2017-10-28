@@ -95,6 +95,7 @@ class Menu extends React.Component {
     })
     this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
   }
+
   handleClose (e) {
     this.setState({openPopover: false, popoverHeight: '300px', optionSelected: ''})
   }
@@ -143,7 +144,9 @@ class Menu extends React.Component {
       {this.state.optionSelected === this.option2 &&
       <div className='container'>
         <div className='row'>
-          <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn btn-block'> + Create New Message </button>
+          <Link to='CreateMessage' className='pull-right'>
+            <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={() => this.goToCreateMessage()} className='btn btn-block'> + Create New Message </button>
+          </Link>
         </div>
       </div>
       }
@@ -168,11 +171,6 @@ class Menu extends React.Component {
         <div className='container'>
           <br /><br /><br /><br />
           <div className='ui-block'>
-            <Link to='createMessage' className='pull-right'>
-              <button className='btn btn-sm btn-primary'>
-              SEND MESSAGE
-              </button>
-            </Link>
             <div className='ui-block-title'>
               <h5>Select a page to setup its Main Menu</h5>
             </div>
