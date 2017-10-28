@@ -143,11 +143,12 @@ class Menu extends React.Component {
       </form>
       {this.state.optionSelected === this.option2 &&
       <div className='container'>
-        <div className='row'>
-          <Link to='CreateMessage' className='pull-right'>
+
+        <Link to='CreateMessage'>
+          <div className='row'>
             <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={() => this.goToCreateMessage()} className='btn btn-block'> + Create New Message </button>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
       }
       {this.state.optionSelected === this.option3 &&
