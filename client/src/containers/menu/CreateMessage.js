@@ -233,7 +233,7 @@ class CreateMessage extends React.Component {
               <button style={{ float: 'left' }} className='btn btn-primary btn-md' disabled={(this.state.pageValue === '')}> Test Message</button>
               <button style={{ float: 'left' }} id='send' onClick={this.sendMessage} className='btn btn-primary btn-md'>Send Message </button>
               <Link to='menu'>
-                <button style={{ float: 'left' }} onClick={() => this.goBack()} className='btn btn-primary btn-md'>Back</button>
+                <button style={{ float: 'left' }} className='btn btn-primary btn-md'>Back</button>
               </Link>
             </div>
 

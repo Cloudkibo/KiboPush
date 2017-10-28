@@ -146,7 +146,7 @@ class Menu extends React.Component {
 
         <Link to='CreateMessage'>
           <div className='row'>
-            <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={() => this.goToCreateMessage()} className='btn btn-block'> + Create New Message </button>
+            <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'> + Create New Message </button>
           </div>
         </Link>
       </div>
