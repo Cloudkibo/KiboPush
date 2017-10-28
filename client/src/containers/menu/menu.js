@@ -27,9 +27,13 @@ class Menu extends React.Component {
       itemselected: '',
       backgroundColor: '#ffffff',
       text: '+Add Menu Item',
-      openPopover: false
-
+      openPopover: false,
+      optionSelected: '',
+      popoverHeight: '300px'
     }
+    this.option1 = 'Add submenu'
+    this.option2 = 'Reply with a message'
+    this.option3 = 'Open website'
     this.pageChange = this.pageChange.bind(this)
     this.saveItem = this.saveItem.bind(this)
     this.handleClick = this.handleClick.bind(this)
@@ -62,10 +66,17 @@ class Menu extends React.Component {
       this.setState({pageOptions: myPages})
     }
   }
-  handleCheckbox (event) {
-    console.log('checkbox Selected: ', event.target.value)
-    this.setState({itemType: event.target.value})
-    console.log('item type', this.state.itemType)
+  handleOption (option) {
+    console.log('option Selected: ', option)
+    let popoverHeight = '300px'
+    if (option === this.option2) {
+      popoverHeight = '335px'
+    } else if (option === this.option3) {
+      popoverHeight = '365px'
+    }
+    this.setState({optionSelected: option, popoverHeight: popoverHeight})
+    // this.setState({itemType: event.target.value})
+    // console.log('item type', this.state.itemType)
   }
   pageChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
@@ -85,7 +96,7 @@ class Menu extends React.Component {
     this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
   }
   handleClose (e) {
-    this.setState({openPopover: false})
+    this.setState({openPopover: false, popoverHeight: '300px', optionSelected: ''})
   }
   saveItem (event) {
     console.log('event.target.', event.target.value)
@@ -95,41 +106,58 @@ class Menu extends React.Component {
   }
   onSelectItem () {
     this.setState({openPopover: !this.state.openPopover})
-    this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
-    this.setState({openPopover: !this.state.openPopover})
+    // this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
+    // this.setState({openPopover: !this.state.openPopover})
   }
   render () {
     let popup = <Popover
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '250px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: this.state.popoverHeight}}
       placement='right'
       target={this.target}
       show={this.state.openPopover}
       onHide={this.handleClose} >
-      <div className='ui-block-title'>
-        <p><b>When Pressed:</b></p>
+      <div className='ui-block-title' style={{marginBottom: '20px'}} >
+        <h4>Edit Menu Item</h4>
       </div>
-      <form>
-        <div className='checkbox'>
-          <label>
-            <input type='checkbox' value='option1' onClick={this.handleCheckbox} />
-            Open submenu
+      <form style={{marginBottom: '20px'}}>
+        <h5>When Pressed:</h5>
+        <div>
+          <label className='radio-inline'>
+            <input type='radio' checked={this.state.optionSelected === this.option1} name='menuOption' value='option1' onChange={() => this.handleOption(this.option1)} />
+            {this.option1}
           </label>
         </div>
-        <div className='checkbox'>
-          <label>
-            <input type='checkbox' value='option2' />
-            Reply with a message
+        <div>
+          <label className='radio-inline'>
+            <input type='radio' checked={this.state.optionSelected === this.option2} name='menuOption' value='option2' onChange={() => this.handleOption(this.option2)} />
+            {this.option2}
           </label>
         </div>
-        <div className='checkbox'>
-          <label>
-            <input type='checkbox' value='option2' />
-            Open website
+        <div>
+          <label className='radio-inline'>
+            <input type='radio' checked={this.state.optionSelected === this.option3} name='menuOption' value='option3' onChange={() => this.handleOption(this.option3)} />
+            {this.option3}
           </label>
         </div>
       </form>
+      {this.state.optionSelected === this.option2 &&
+      <div className='container'>
+        <div className='row'>
+          <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn btn-block'> + Create New Message </button>
+        </div>
+      </div>
+      }
+      {this.state.optionSelected === this.option3 &&
+      <div className='container'>
+        <div className='row'>
+          <label><b>Website URL to open</b></label>
+          <input style={{marginBottom: '20px'}} type='url' className='form-control' />
+        </div>
+      </div>
+      }
       <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
       <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+
     </Popover>
     return (
       <div>
