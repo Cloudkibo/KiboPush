@@ -92,7 +92,7 @@ class BroadcastsInfo extends React.Component {
                 <table className='table table-striped'>
                   <thead>
                     <tr>
-                      <th>Platform</th>
+                      <th>Title</th>
                       <th>Type</th>
                       <th>Text</th>
                       <th>Created At</th>
@@ -103,9 +103,9 @@ class BroadcastsInfo extends React.Component {
                     {
                     this.state.broadcastsData.map((broadcast, i) => (
                       <tr>
-                        <td>{broadcast.platform}</td>
-                        <td>{broadcast.type}</td>
-                        <td>{broadcast.text}</td>
+                        <td>{broadcast.title ? broadcast.title : ''}</td>
+                        <td>{broadcast.payload[0].componentType}</td>
+                        <td>{broadcast.payload[0].componentType === 'text' ? broadcast.payload[0].text : ''}</td>
                         <td>{handleDate(broadcast.datetime)}</td>
                       </tr>
                     ))
