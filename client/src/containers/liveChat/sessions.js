@@ -66,6 +66,18 @@ class Sessions extends React.Component {
       this.setState({list: nextProps.sessions})
     }
 
+    if (nextProps.userChat.length > this.props.userChat.length) {
+      var sess = this.state.list
+      for (var j = 0; j < sess.length; j++) {
+        if (sess[j]._id === nextProps.userChat[0].session_id) {
+          sess[j].unreadCount = 0
+          this.setState({list: sess}, () => {
+            console.log(this.state.list)
+          })
+        }
+      }
+    }
+
     if (nextProps.unreadSession) {
       var temp = this.state.list
       for (var i = 0; i < temp.length; i++) {
@@ -220,6 +232,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sessions: (state.liveChat.sessions),
+    userChat: (state.liveChat.userChat),
     unreadSession: (state.liveChat.unreadSession),
     pages: (state.pagesInfo.pages)
   }
