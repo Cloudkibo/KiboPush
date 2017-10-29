@@ -35,7 +35,7 @@ class Sidebar extends Component {
       loading: true,
       ignore: true
     }
-    props.fetchSessions({ company_id: this.props.user._id })
+    // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
