@@ -27,7 +27,11 @@ class Menu extends React.Component {
       itemselected: '',
       backgroundColor: '#ffffff',
       text: '+Add Menu Item',
-      openPopover: false
+      openPopover: false,
+      itemMenus: [{
+      label: 'First Menu',
+      submenu: [],
+    }],
 
     }
     this.pageChange = this.pageChange.bind(this)
@@ -65,6 +69,8 @@ class Menu extends React.Component {
   handleCheckbox (event) {
     console.log('checkbox Selected: ', event.target.value)
     this.setState({itemType: event.target.value})
+    var temp = this.state.itemMenus
+    temp[0]
     console.log('item type', this.state.itemType)
   }
   pageChange (val) {
@@ -93,16 +99,33 @@ class Menu extends React.Component {
     console.log('this.state.itemName', this.state.itemName)
     //  this.props.addMenuItem({pageId: this.state.pageValue, menuItem: this.state.itemName, menuItemType: 'weblink'})
   }
-  onSelectItem () {
+  onSelectItem (e) {
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
     this.setState({openPopover: !this.state.openPopover})
   }
+  addItem(){
+    var temp  = this.state.itemMenus
+
+    if(temp.length >= 3){
+      return;
+    }
+
+    temp.push({
+      label: 'Menu Name',
+      submenu: [],
+    })
+
+    this.setState({itemMenus: temp})
+  }
   render () {
+
+    console.log("this dot target", this.refs['0-item'])
+
     let popup = <Popover
       style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '250px'}}
       placement='right'
-      target={this.target}
+      target={this.refs[this.target]}
       show={this.state.openPopover}
       onHide={this.handleClose} >
       <div className='ui-block-title'>
@@ -160,25 +183,51 @@ class Menu extends React.Component {
             <br />
             <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
             <ul style={{paddingLeft: '20px', width: '30%'}}>
-              <li>
-                <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-                  <form className='form-inline'>
-                    <div className='form-group'><input type='text' placeholder={this.state.text} className='form-control' style={{backgroundColor: this.state.backgroundColor, width: '350px'}} onChange={this.saveItem} onClick={() => this.onSelectItem()} /></div>
-                  </form>
-                  {popup}
-                </div>
-              </li>
-              { this.state.itemselected !== '' &&
-                <li>
-                  <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-                    <form className='form-inline'>
-                      <div className='form-group'><input type='text' placeholder='+ Add Menu Item' value='' className='form-control' onChange={this.saveItem} onClick={() => this.onSelectItem()} style={{width: '350px'}} /></div>
-                    </form>
-                    {popup}
-                  </div>
-                </li>
+              {
+                
+                this.state.itemMenus.map((itm, index) => {
+                if(this.state.itemMenus[index + 1] || index === 2){
+                  return  <li>
+                          <div ref={index + "-item"} style={{paddingTop: '5px'}} className='align-center'>
+                            <form className='form-inline'>
+                              <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} className='form-control' onChange={this.saveItem}  onClick={() => { this.target=index + "-item"; this.onSelectItem(index);}}  style={{width: '350px'}} /></div>
+                            </form>
+                            {popup}
+                          </div>
+                          <li style={{marginLeft: 50}}>
+                               <div ref={index + "-sub-item"} style={{paddingTop: '5px'}} className='align-center' >
+                                <form className='form-inline'>
+                                  <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} onClick={() => { this.target=index + "-sub-item"; this.onSelectItem(index);}} className='form-control' onChange={this.saveItem}  style={{width: '350px'}} /></div>
+                                </form>
+                                {popup}
+                              </div>
+                          </li>
+                        </li>
+                }else{
+                  return  <li>
+                          <div ref={index + "-item"}  style={{paddingTop: '5px'}}  className='align-center'>
+                            <form className='form-inline'>
+                              <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} className='form-control' onChange={this.saveItem} onClick={() => { this.target=index + "-item"; this.onSelectItem(index)}}  style={{width: '350px'}} /> <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className="fa fa-plus" aria-hidden="true"></i></div></div>
+                            </form>
+                            {popup}
+                          </div>
+                          <li style={{marginLeft: 50}}>
+                              <div ref={index + "-sub-item"} style={{paddingTop: '5px'}} className='align-center' >
+                                <form className='form-inline'>
+                                  <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} className='form-control' onClick={() => { this.target=index + "-sub-item"; this.onSelectItem(index);}} onChange={this.saveItem}  style={{width: '350px'}} /></div>
+                                </form>
+                                {popup}
+                              </div>
+                          </li>
+                        </li>
+                }
+                
+
+                })
               }
-              <li><input type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
+                
+
+              <li><input style={{margin: 10}} type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
             </ul>
           </div>

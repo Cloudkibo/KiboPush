@@ -115,20 +115,6 @@ class LiveChat extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-
-        <Notification
-          ignore={this.state.ignore}
-          title={'New Message'}
-          onShow={this.handleNotificationOnShow.bind(this)}
-          onClick={this.onNotificationClick.bind(this)}
-          options={{
-            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
-            lang: 'en',
-            dir: 'ltr',
-            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
-          }}
-        />
-
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
