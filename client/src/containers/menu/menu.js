@@ -202,7 +202,7 @@ class Menu extends React.Component {
                     return (<li>
                       <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
-                          <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
+                          <div className='form-group'><input type='text' placeholder={itm.label}  className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
                         </form>
                         {popup}
                       </div>
@@ -210,7 +210,7 @@ class Menu extends React.Component {
                         return <li style={{marginLeft: 50}}>
                           <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
-                              <div className='form-group'><input type='text' placeholder='Menu Item' value={sub.label} onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} className='form-control' onChange={this.saveItem} style={{width: '350px'}} /></div>
+                              <div className='form-group'><input type='text' placeholder={sub.label}  onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} className='form-control' onChange={this.saveItem} style={{width: '350px'}} /></div>
                             </form>
                             {popup}
                           </div>
@@ -218,7 +218,7 @@ class Menu extends React.Component {
                               return <li style={{marginLeft: 50}}>
                                 <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                   <form className='form-inline'>
-                                    <div className='form-group'><input type='text' placeholder='Menu Item' value={nested.label} className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                                    <div className='form-group'><input type='text' placeholder={nested.label}  className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
                                   </form>
                                   {popup}
                                 </div>
@@ -232,7 +232,7 @@ class Menu extends React.Component {
                     return <li>
                       <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
-                          <div className='form-group'><input type='text' placeholder='Menu Item' value={itm.label} className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /> <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div></div>
+                          <div className='form-group'><input type='text' placeholder={itm.label}  className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /> <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div></div>
                         </form>
                         {popup}
                       </div>
@@ -241,7 +241,7 @@ class Menu extends React.Component {
                         return <li style={{marginLeft: 50}}>
                           <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
-                              <div className='form-group'><input type='text' placeholder='Menu Item' value={sub.label} className='form-control' onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                              <div className='form-group'><input type='text' placeholder={sub.label}  className='form-control' onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
                             </form>
                             {popup}
                           </div>
@@ -249,7 +249,7 @@ class Menu extends React.Component {
                               return <li style={{marginLeft: 50}}>
                                 <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                   <form className='form-inline'>
-                                    <div className='form-group'><input type='text' placeholder='Menu Item' value={nested.label} className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                                    <div className='form-group'><input type='text' placeholder={nested.label} className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
                                   </form>
                                   {popup}
                                 </div>
