@@ -155,6 +155,15 @@ class ChatBox extends React.Component {
     this.onEnter(enterEvent)
   }
 
+  sendThumbsUp () {
+    console.log('sending thumbs up')
+    this.state.componentType = 'thumbsUp'
+    console.log('state inside thumbsUp ', this.state)
+    let enterEvent = new Event('keypress')
+    enterEvent.which = 13
+    this.onEnter(enterEvent)
+  }
+
   resetFileComponent () {
     console.log('resettingFileComponent')
     this.setState({
@@ -230,6 +239,11 @@ class ChatBox extends React.Component {
         componentType: 'text',
         text: this.state.textAreaValue
       }
+    } else if (component === 'thumbsUp') {
+      payload = {
+        componentType: 'thumbsUp',
+        fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+      }
     }
     return payload
   }
@@ -282,22 +296,15 @@ class ChatBox extends React.Component {
         this.hideStickers()
         data.format = 'convos'
         this.props.userChat.push(data)
+      } else if (this.state.componentType === 'thumbsUp') {
+        payload = this.setDataPayload('thumbsUp')
+        data = this.setMessageData(session, payload)
+        console.log(data)
+        this.props.sendChatMessage(data)
+        data.format = 'convos'
+        this.props.userChat.push(data)
       }
     }
-  }
-
-  sendThumbsUp () {
-    let payload = {
-      uploadedId: new Date().getTime(),
-      componentType: 'image',
-      uploadedUrl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
-    }
-    this.setState(payload, () => {
-      console.log('state inside sendThumbsUp: ', this.state)
-      let enterEvent = new Event('keypress')
-      enterEvent.which = 13
-      this.onEnter(enterEvent)
-    })
   }
 
   handleSendAttachment (res) {
@@ -543,6 +550,15 @@ class ChatBox extends React.Component {
                             </div>
                           </div>
                           : msg.payload.componentType === 'sticker'
+                          ? <div className='notification-event'>
+                            <div className='facebook-chat-right'>
+                              <img
+                                src={msg.payload.fileurl}
+                                style={{maxWidth: '150px', maxHeight: '85px'}}
+                              />
+                            </div>
+                          </div>
+                          : msg.payload.componentType === 'thumbsUp'
                           ? <div className='notification-event'>
                             <div className='facebook-chat-right'>
                               <img
