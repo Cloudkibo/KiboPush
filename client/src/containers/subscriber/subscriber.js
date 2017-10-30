@@ -97,19 +97,19 @@ class Subscriber extends React.Component {
           <div className='row'>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+              <h3>Subscribers</h3>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  <h3>Subscribers</h3>
                   <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
 
+
+                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  ? <div className='table-responsive'>
                     <div>
                       <label> Search </label>
                       <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
                     </div>
-
-                  { this.state.subscribersData && this.state.subscribersData.length > 0
-                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
