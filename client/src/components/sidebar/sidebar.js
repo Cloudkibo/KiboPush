@@ -21,14 +21,21 @@ import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autopostin
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
+import Notification from 'react-web-notification'
+import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       isShowingModal: false,
-      steps: []
+      steps: [],
+      activeSession: '',
+      currentProfile: {},
+      loading: true,
+      ignore: true
     }
+    // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
@@ -116,6 +123,10 @@ class Sidebar extends Component {
         isFixed: true}
 
     ])
+
+    if (!this.state.ignore) {
+      this.setState({ignore: true})
+    }
   }
   openUserGuide () {
     this.setState({isShowingModal: true})
@@ -183,6 +194,53 @@ class Sidebar extends Component {
       }
     }
   }
+
+    componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called')
+    this.setState({ignore: true})
+
+    if (nextProps.sessions) {
+      this.setState({loading: false})
+    }
+
+    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
+      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
+    }
+
+    if (nextProps.socketSession && nextProps.socketSession !== '') {
+      console.log('New Message Received at following session id', nextProps.socketSession)
+      console.log('New Message data', nextProps.socketData)
+      if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
+        this.props.fetchUserChats(nextProps.socketSession)
+      } else if (nextProps.socketSession !== '') {
+        var isPresent = false
+        this.props.sessions.map((sess) => {
+          if (sess._id === nextProps.socketSession) {
+            isPresent = true
+          }
+        })
+
+        if (isPresent) {
+          console.log('Session exists ignoring the message')
+          this.props.resetSocket()
+        } else {
+          console.log('New Session Detected, initiating session fetch')
+          this.props.fetchSessions({ company_id: this.props.user._id })
+        }
+      }
+    }
+  }
+
+    handleNotificationOnShow () {
+    this.setState({ignore: true})
+  }
+
+  onNotificationClick () {
+    window.focus()
+    console.log('Notificaation was clicked')
+    this.setState({ignore: true})
+  }
+
   render () {
     return (
       <div className='fixed-sidebar'>
@@ -190,6 +248,19 @@ class Sidebar extends Component {
           <Link to='/dashboard' className='logo'>
             <img src='img/logo.png' alt='Olympus' />
           </Link>
+         
+           <Notification
+          ignore={this.state.ignore}
+          title={'New Message'}
+          onShow={this.handleNotificationOnShow.bind(this)}
+          onClick={this.onNotificationClick.bind(this)}
+          options={{
+            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
+            lang: 'en',
+            dir: 'ltr',
+            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
+          }}
+        />
 
           <div className='mCustomScrollbar' data-mcs-theme='dark'>
             <ul className='left-menu'>
@@ -485,13 +556,21 @@ class Sidebar extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    user: (state.basicInfo.user)
+    sessions: (state.liveChat.sessions),
+    user: (state.basicInfo.user),
+    socketSession: (state.liveChat.socketSession),
+    userChat: (state.liveChat.userChat),
+    socketData: (state.liveChat.socketData)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+     fetchSessions: fetchSessions,
+    fetchUserChats: fetchUserChats,
+    resetSocket: resetSocket,
+    fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

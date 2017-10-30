@@ -225,7 +225,8 @@ function saveChatInDb (page, session, chatPayload, subscriber) {
         session_id: session._id,
         chat_id: chat._id,
         text: chatPayload.payload.text,
-        name: subscriber.firstName + ' ' + subscriber.lastName
+        name: subscriber.firstName + ' ' + subscriber.lastName,
+        subscriber: subscriber
       }
     })
     logger.serverLog(TAG, 'new chat message saved')
