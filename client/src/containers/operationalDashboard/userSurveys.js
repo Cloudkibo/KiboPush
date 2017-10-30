@@ -73,10 +73,9 @@ class SurveysInfo extends React.Component {
         filtered.push(this.props.surveys[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.displayData(0, filtered)
-      this.setState({ totalLength: filtered.length })
-    }
+
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
   render () {
     return (
@@ -85,43 +84,49 @@ class SurveysInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Surveys</h4><br />
-              { this.state.SurveyData && this.state.SurveyData.length > 0
+              { this.props.surveys && this.props.surveys.length > 0
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
                   <input type='text' placeholder='Search Survey' className='form-control' onChange={this.searchSurveys} />
                 </div>
-                <table className='table table-striped'>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Descripton</th>
-                      <th>Created at</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                    this.state.SurveyData.map((survey, i) => (
-                      <tr>
-                        <td>{survey.title}</td>
-                        <td>{survey.description}</td>
-                        <td>{handleDate(survey.datetime)}</td>
-                      </tr>
-                    ))
-                  }
-                  </tbody>
-                </table>
-                <ReactPaginate previousLabel={'previous'}
-                  nextLabel={'next'}
-                  breakLabel={<a>...</a>}
-                  breakClassName={'break-me'}
-                  pageCount={Math.ceil(this.state.totalLength / 4)}
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={3}
-                  onPageChange={this.handlePageClick}
-                  containerClassName={'pagination'}
-                  subContainerClassName={'pages pagination'}
-                  activeClassName={'active'} />
+                {
+                  this.state.SurveyData && this.state.SurveyData.length > 0
+                  ? <div>
+                    <table className='table table-striped'>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Descripton</th>
+                          <th>Created at</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.SurveyData.map((survey, i) => (
+                            <tr>
+                              <td>{survey.title}</td>
+                              <td>{survey.description}</td>
+                              <td>{handleDate(survey.datetime)}</td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
+                  </div>
+                  : <p> No search results found. </p>
+                }
               </div>
               : <div className='table-responsive'>
                 <p> No data to display </p>
