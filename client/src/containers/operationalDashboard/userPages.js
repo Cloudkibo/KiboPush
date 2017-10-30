@@ -15,20 +15,21 @@ class PagesInfo extends React.Component {
                   <label> Search </label>
                   <input type='text' placeholder='Search Pages' className='form-control' onChange={(event) => { this.props.search(event, 'pages') }} />
                 </div>
-                (
+                {
                   this.props.pages && this.props.length > 0
-                 ? <table className='table table-striped'>
-                   <thead>
-                     <tr>
-                       <th>Pages</th>
-                       <th>Number of Likes</th>
-                       <th>Number of Subscribers</th>
-                       <th>Connected</th>
-                       <th />
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {
+                 ? <div>
+                   <table className='table table-striped'>
+                     <thead>
+                       <tr>
+                         <th>Pages</th>
+                         <th>Number of Likes</th>
+                         <th>Number of Subscribers</th>
+                         <th>Connected</th>
+                         <th />
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {
                        this.props.pages.map((page, i) => (
                          <tr>
                            <td>{page.pageName}</td>
@@ -42,22 +43,23 @@ class PagesInfo extends React.Component {
                            </td>
                          </tr>
                        ))
-                     }
-                   </tbody>
-                 </table>
-                <ReactPaginate previousLabel={'previous'}
-                  nextLabel={'next'}
-                  breakLabel={<a>...</a>}
-                  breakClassName={'break-me'}
-                  pageCount={Math.ceil(this.props.length / 4)}
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={3}
-                  onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
-                  containerClassName={'pagination'}
-                  subContainerClassName={'pages pagination'}
-                  activeClassName={'active'} />
+                      }
+                     </tbody>
+                   </table>
+                   <ReactPaginate previousLabel={'previous'}
+                     nextLabel={'next'}
+                     breakLabel={<a>...</a>}
+                     breakClassName={'break-me'}
+                     pageCount={Math.ceil(this.props.length / 4)}
+                     marginPagesDisplayed={1}
+                     pageRangeDisplayed={3}
+                     onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
+                     containerClassName={'pagination'}
+                     subContainerClassName={'pages pagination'}
+                     activeClassName={'active'} />
+                 </div>
                 : <p> No search results found. </p>
-              )
+              }
               </div>
               : <div className='table-responsive'>
                 <p> No data to display </p>
