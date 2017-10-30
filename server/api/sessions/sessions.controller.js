@@ -29,7 +29,6 @@ exports.index = function (req, res) {
 
           for (let i = 0; i < gotUnreadCount.length; i++) {
             for (let j = 0; j < sessions.length; j++) {
-              logger.serverLog(TAG, 'sessions id and count id being matched')
               if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
                 sessions[j].set('unreadCount',
                   gotUnreadCount[i].count,
