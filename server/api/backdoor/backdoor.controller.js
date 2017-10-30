@@ -13,6 +13,8 @@ const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
+const csvdata = require('csvdata')
+const path = require('path')
 let _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -298,6 +300,43 @@ exports.datacount = function (req, res) {
           })
         })
       })
+    })
+  })
+}
+exports.uploadFile = function (req, res) {
+  Users.find({}, (err, users) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting users ${JSON.stringify(err)}`
+      })
+    }
+    logger.serverLog(TAG, `Total users ${users.length}`)
+    let usersPayload = []
+    for (let i = 0; i < users.length; i++) {
+      usersPayload.push({
+        Name: users[i].name,
+        Gender: users[i].gender,
+        Email: users[i].email,
+        Locale: users[i].locale,
+        Timezone: users[i].timezone
+      })
+    }
+    let dir = path.resolve(__dirname, './my-file.csv')
+    csvdata.write(dir, usersPayload, {header: 'Name,Gender,Email,Locale,Timezone'})
+    logger.serverLog(TAG, 'created file')
+    //  res.send({status: 'dir', payload: dir})
+    // try {
+    //   res.sendfile(dir)
+    // } catch (err) {
+    //   logger.serverLog(TAG,
+    //     `Inside Download file, err = ${JSON.stringify(err)}`)
+    //   res.status(201)
+    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    // }
+    res.status(200).json({
+      status: 'success',
+      payload: dir
     })
   })
 }

@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+export const API_URL = '/api'
 
 export function updateUsersList (data) {
   console.log('Data Fetched From Users', data)
@@ -127,4 +128,40 @@ export function saveUserInformation (user) {
     type: ActionTypes.SAVE_USER_INFORMATION,
     data: user
   }
+}
+export function fileStatus (data) {
+  console.log('fileStatus1', data)
+}
+export function downloadFile () {
+  console.log('downloadFile called')
+  return (dispatch) => {
+    callApi(`backdoor/uploadFile`)
+        .then(res => dispatch(fileStatus(res)))
+  }
+
+  // return (dispatch) => {
+  //   fetch(`${API_URL}/backdoor/uploadFile`, {
+  //       credentials: 'same-origin',
+  //       method: 'post',
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: JSON.stringify(data)
+  //     }).then(function (response) {
+  //       return response.blob()
+  //     }).then(function (blob) {
+  //       FileSaver.saveAs(blob, 'nameFile.zip')
+  //     })
+  // }
+  // return (dispatch) => {
+  //   // eslint-disable-next-line no-undef
+  //   fetch(`${API_URL}/backdoor/uploadFile`, {
+  //     credentials: 'same-origin',
+  //     method: 'get',
+  //     headers: {'Content-Type': 'application/json'}
+  //     //  body: JSON.stringify(data)
+  //   }).then(function (response) {
+  //     return response.blob()
+  //   }).then(function (blob) {
+  //     FileSaver.saveAs(blob, 'nameFile.csv')
+  //   })
+  // }
 }
