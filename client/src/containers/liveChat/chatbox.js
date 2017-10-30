@@ -423,10 +423,10 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     this.scrollToBottom()
-    if (nextProps.userChat[0].session_id === this.props.session._id) {
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
       this.props.markRead(this.props.session._id, this.props.sessions)
     }
-    if (nextProps.userChat[0].session_id !== this.props.session._id) {
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.session._id) {
       this.setState({textAreaValue: ''})
     }
   }
