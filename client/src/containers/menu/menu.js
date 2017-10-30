@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -43,6 +43,7 @@ class Menu extends React.Component {
     this.onSelectItem = this.onSelectItem.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
+    props.fetchMenu()
   }
 
   componentDidMount () {
@@ -281,7 +282,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList, addMenuItem: addMenuItem
+    loadMyPagesList: loadMyPagesList, 
+    addMenuItem: addMenuItem,
+    fetchMenu: fetchMenu
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
