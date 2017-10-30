@@ -377,7 +377,7 @@ class ChatBox extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      alert('Video File Format not supported. Please download.')
+      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -386,7 +386,7 @@ class ChatBox extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      alert('Audio File Format not supported. Please download.')
+      console.log('Audio File Format not supported. Please download.')
     }
   }
 
