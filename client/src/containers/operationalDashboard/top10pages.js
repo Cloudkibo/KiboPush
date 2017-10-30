@@ -17,6 +17,7 @@ class top10pages extends React.Component {
                 <table className='table table-striped'>
                   <thead>
                     <tr>
+                      <th>Page Pic</th>
                       <th>Page Name</th>
                       <th>Number of Subscribers</th>
                     </tr>
@@ -25,6 +26,10 @@ class top10pages extends React.Component {
                     {
                   this.props.pagesData.map((page, i) => (
                     <tr>
+                      <td><img alt='pic'
+                        src={(page.pagePic) ? page.pagePic : ''}
+                        className='img-circle' width='60' height='60' />
+                      </td>
                       <td>{page.pageName}</td>
                       <td>{page.subscribers}</td>
                     </tr>
