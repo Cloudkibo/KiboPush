@@ -118,6 +118,7 @@ class Convo extends React.Component {
   }
 
   render () {
+    console.log("Broadcasts", this.state.broadcastsData)
     return (
       <div>
         <Header />
@@ -150,7 +151,7 @@ class Convo extends React.Component {
                 <br />
 
                 <div className='birthday-item inline-items badges'>
-                  <h3>Conversations</h3>
+                  <h3>Broadcasts</h3>
                   {
                     this.props.subscribers && this.props.subscribers.length === 0
 
