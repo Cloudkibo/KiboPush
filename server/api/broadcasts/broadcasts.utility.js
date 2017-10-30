@@ -39,7 +39,7 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-    let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl)
+    let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
     payload = {
       'recipient': JSON.stringify({
         'id': subscriberId
@@ -135,7 +135,7 @@ function deleteFile (fileurl) {
   logger.serverLog(TAG,
     `Inside deletefile file Broadcast, fileurl = ${fileurl}`)
   // unlink file
-  fs.unlink(fileurl, function (err) {
+  fs.unlink(fileurl.id, function (err) {
     if (err) {
       logger.serverLog(TAG, err)
     } else {
