@@ -195,7 +195,7 @@ class Sidebar extends Component {
     }
   }
 
-    componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.setState({ignore: true})
 
@@ -231,7 +231,7 @@ class Sidebar extends Component {
     }
   }
 
-    handleNotificationOnShow () {
+  handleNotificationOnShow () {
     this.setState({ignore: true})
   }
 
@@ -248,18 +248,18 @@ class Sidebar extends Component {
           <Link to='/dashboard' className='logo'>
             <img src='img/logo.png' alt='Olympus' />
           </Link>
-         
-           <Notification
-          ignore={this.state.ignore}
-          title={'New Message'}
-          onShow={this.handleNotificationOnShow.bind(this)}
-          onClick={this.onNotificationClick.bind(this)}
-          options={{
-            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
-            lang: 'en',
-            dir: 'ltr',
-            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
-          }}
+
+          <Notification
+            ignore={this.state.ignore}
+            title={'New Message'}
+            onShow={this.handleNotificationOnShow.bind(this)}
+            onClick={this.onNotificationClick.bind(this)}
+            options={{
+              body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
+              lang: 'en',
+              dir: 'ltr',
+              icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
+            }}
         />
 
           <div className='mCustomScrollbar' data-mcs-theme='dark'>
@@ -567,7 +567,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
-     fetchSessions: fetchSessions,
+    fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,
     fetchSingleSession: fetchSingleSession

@@ -83,8 +83,7 @@ class Subscriber extends React.Component {
   }
 
   render () {
-
-    console.log("Subscriber Data", this.state.subscribersData)
+    console.log('Subscriber Data', this.state.subscribersData)
 
     return (
       <div>
@@ -102,7 +101,6 @@ class Subscriber extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
-
 
                   { this.state.subscribersData && this.state.subscribersData.length > 0
                   ? <div className='table-responsive'>
