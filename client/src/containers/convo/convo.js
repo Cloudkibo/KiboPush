@@ -171,7 +171,6 @@ class Convo extends React.Component {
                       <table className='table table-striped'>
                         <thead>
                           <tr>
-                            <th>Platform</th>
                             <th>Title</th>
                             <th>Created At</th>
                             <th>Sent</th>
@@ -182,7 +181,6 @@ class Convo extends React.Component {
                           {
                             this.state.broadcastsData.map((broadcast, i) => (
                               <tr>
-                                <td>{broadcast.platform}</td>
                                 <td>{broadcast.title}</td>
                                 <td>{handleDate(broadcast.datetime)}</td>
                                 <td>{broadcast.sent}</td>
