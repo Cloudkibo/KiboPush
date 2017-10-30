@@ -123,7 +123,7 @@ class ChatBox extends React.Component {
   hideStickers () {
     this.setState({showStickers: false})
   }
-  
+
   showGif () {
     this.setState({showGifPicker: true})
   }
@@ -132,7 +132,7 @@ class ChatBox extends React.Component {
     this.setState({showGifPicker: false})
   }
 
-  sendSticker (sticker) {  
+  sendSticker (sticker) {
     console.log('sending sticker', sticker)
     let payload = {
       uploadedId: new Date().getTime(),
@@ -146,7 +146,7 @@ class ChatBox extends React.Component {
       this.onEnter(enterEvent)
     })
   }
- 
+
   sendGif (gif) {
     console.log('sending Gif', gif)
     this.state.componentType = 'gif'

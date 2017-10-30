@@ -15,7 +15,8 @@ import {
   loadUsersList,
   loadDataObjectsCount,
   loadTopPages,
-  saveUserInformation
+  saveUserInformation,
+  downloadFile
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -42,6 +43,7 @@ class OperationalDashboard extends React.Component {
     this.handleClickEvent = this.handleClickEvent.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
+    this.getFile = this.getFile.bind(this)
   }
 
   componentDidMount () {
@@ -160,6 +162,9 @@ class OperationalDashboard extends React.Component {
       this.setState({ totalLength: filtered.length })
     }
   }
+  getFile () {
+    this.props.downloadFile()
+  }
   render () {
     return (
       <div>
@@ -169,6 +174,10 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
+          <div className='back-button'>
+            <button className='btn btn-primary btn-sm' style={{float: 'right'}} onClick={() => this.getFile()}>Download File
+            </button>
+          </div>
           <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
@@ -258,7 +267,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadUsersList: loadUsersList,
     loadDataObjectsCount: loadDataObjectsCount,
     loadTopPages: loadTopPages,
-    saveUserInformation: saveUserInformation},
+    saveUserInformation: saveUserInformation,
+    downloadFile: downloadFile },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
