@@ -1,10 +1,5 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import auth from '../../utility/auth.service'
-import FileSaver from 'file-saver'
-import FileDownload from 'react-file-download'
-import Axios from 'axios'
-import Blob from 'blob'
 export const API_URL = '/api'
 
 export function updateUsersList (data) {
