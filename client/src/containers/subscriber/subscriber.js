@@ -83,6 +83,9 @@ class Subscriber extends React.Component {
   }
 
   render () {
+
+    console.log("Subscriber Data", this.state.subscribersData)
+
     return (
       <div>
         <Header />
@@ -100,19 +103,20 @@ class Subscriber extends React.Component {
                   <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
 
-                  { this.state.subscribersData && this.state.subscribersData.length > 0
-                  ? <div className='table-responsive'>
                     <div>
                       <label> Search </label>
                       <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
                     </div>
+
+                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  ? <div className='table-responsive'>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
                           <th>Profile Picture</th>
+                          <th>Page Name</th>
                           <th>Firstname</th>
                           <th>Lastname</th>
-                          <th>Email</th>
                           <th>Locale</th>
                           <th>Gender</th>
                         </tr>
@@ -124,9 +128,9 @@ class Subscriber extends React.Component {
                             <td><img alt='pic'
                               src={(subscriber.profilePic) ? subscriber.profilePic : ''}
                               className='img-circle' width='60' height='60' /></td>
+                            <td>{subscriber.email}</td>
                             <td>{subscriber.firstName}</td>
                             <td>{subscriber.lastName}</td>
-                            <td>{subscriber.email}</td>
                             <td>{subscriber.locale}</td>
                             <td>{subscriber.gender}</td>
                           </tr>
