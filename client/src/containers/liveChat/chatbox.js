@@ -156,7 +156,7 @@ class ChatBox extends React.Component {
   }
 
   sendThumbsUp () {
-    console.log('sending thumbs up')
+    console.log('Sending thumbs up')
     this.state.componentType = 'thumbsUp'
     console.log('state inside thumbsUp ', this.state)
     let enterEvent = new Event('keypress')
