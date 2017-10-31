@@ -20,6 +20,8 @@ import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { SendMessage } from '../../redux/actions/menu.actions'
+import { Link } from 'react-router'
+
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -230,6 +232,9 @@ class CreateMessage extends React.Component {
               <button style={{ float: 'left' }} className='btn btn-primary btn-md'> New Message</button>
               <button style={{ float: 'left' }} className='btn btn-primary btn-md' disabled={(this.state.pageValue === '')}> Test Message</button>
               <button style={{ float: 'left' }} id='send' onClick={this.sendMessage} className='btn btn-primary btn-md'>Send Message </button>
+              <Link to='menu'>
+                <button style={{ float: 'left' }} className='btn btn-primary btn-md'>Back</button>
+              </Link>
             </div>
 
             <div className='col-lg-9 col-md-9 col-sm-9 col-xs-9'>
