@@ -222,7 +222,7 @@ exports.toppages = function (req, res) {
   })
 }
 exports.datacount = function (req, res) {
-  logger.serverLog(TAG, 'req.params.userid', req.params.userid)
+  logger.serverLog(TAG, `req.params.userid ${JSON.stringify(req.params.userid)}`)
   if (req.params.userid === '0') {
     Users.aggregate(
       [

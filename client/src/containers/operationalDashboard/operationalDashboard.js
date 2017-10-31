@@ -180,7 +180,7 @@ class OperationalDashboard extends React.Component {
       loadDataObjectsCount(val.value)
     } else if (val.value === 30) {
     //  this.setState({ selectedValue: val.value })
-      loadDataObjectsCount(this.state.val.value)
+      loadDataObjectsCount(val.value)
     }
   }
   render () {
@@ -199,10 +199,8 @@ class OperationalDashboard extends React.Component {
             placeholder='Filter by last:'
             value={this.state.selectedValue}
           />
-          <div className='back-button'>
-            <button className='btn btn-primary btn-sm' style={{float: 'right'}} onClick={() => this.getFile()}>Download File
-            </button>
-          </div>
+          <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
+          </button>
           <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
