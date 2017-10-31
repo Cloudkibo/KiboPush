@@ -304,7 +304,7 @@ exports.datacount = function (req, res) {
         })
       })
     })
-  } else if (req.params.userid === 10) {
+  } else if (req.params.userid === '10') {
     Users.aggregate(
       [
         { $match: {'createdAt': {
