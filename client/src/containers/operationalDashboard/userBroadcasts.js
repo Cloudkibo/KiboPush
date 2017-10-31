@@ -67,14 +67,12 @@ class BroadcastsInfo extends React.Component {
   searchBroadcast (event) {
     var filtered = []
     for (let i = 0; i < this.props.broadcasts.length; i++) {
-      if (this.props.broadcasts[i].text.toLowerCase().includes(event.target.value.toLowerCase())) {
+      if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.broadcasts[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.displayData(0, filtered)
-      this.setState({ totalLength: filtered.length })
-    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
   render () {
     return (
@@ -83,46 +81,52 @@ class BroadcastsInfo extends React.Component {
           <div className='ui-block'>
             <div className='birthday-item inline-items badges'>
               <h4>Broadcasts</h4><br />
-              { this.state.broadcastsData && this.state.broadcastsData.length > 0
+              { this.props.broadcasts && this.props.broadcasts.length > 0
               ? <div className='table-responsive'>
                 <div>
                   <label> Search </label>
                   <input type='text' placeholder='Search Broadcasts' className='form-control' onChange={this.searchBroadcast} />
                 </div>
-                <table className='table table-striped'>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Type</th>
-                      <th>Text</th>
-                      <th>Created At</th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                    this.state.broadcastsData.map((broadcast, i) => (
-                      <tr>
-                        <td>{broadcast.title ? broadcast.title : ''}</td>
-                        <td>{broadcast.payload && broadcast.payload.length > 0 ? broadcast.payload[0].componentType : broadcast.payload ? broadcast.payload.componentType : broadcast.type}</td>
-                        <td>{broadcast.payload && broadcast.payload.length > 0 && broadcast.payload[0].componentType === 'text' ? broadcast.payload[0].text : broadcast.text ? broadcast.text : ''}</td>
-                        <td>{handleDate(broadcast.datetime)}</td>
-                      </tr>
-                    ))
-                  }
-                  </tbody>
-                </table>
-                <ReactPaginate previousLabel={'previous'}
-                  nextLabel={'next'}
-                  breakLabel={<a>...</a>}
-                  breakClassName={'break-me'}
-                  pageCount={Math.ceil(this.state.totalLength / 4)}
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={3}
-                  onPageChange={this.handlePageClick}
-                  containerClassName={'pagination'}
-                  subContainerClassName={'pages pagination'}
-                  activeClassName={'active'} />
+                {
+                  this.state.broadcastsData && this.state.broadcastsData.length > 0
+                  ? <div>
+                    <table className='table table-striped'>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Type</th>
+                          <th>Text</th>
+                          <th>Created At</th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.broadcastsData.map((broadcast, i) => (
+                            <tr>
+                              <td>{broadcast.title ? broadcast.title : ''}</td>
+                              <td>{broadcast.payload && broadcast.payload.length > 0 ? broadcast.payload[0].componentType : broadcast.payload ? broadcast.payload.componentType : broadcast.type}</td>
+                              <td>{broadcast.payload && broadcast.payload.length > 0 && broadcast.payload[0].componentType === 'text' ? broadcast.payload[0].text : broadcast.text ? broadcast.text : ''}</td>
+                              <td>{handleDate(broadcast.datetime)}</td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
+                  </div>
+                  : <p> No search results found. </p>
+                }
               </div>
               : <div className='table-responsive'>
                 <p> No data to display </p>
