@@ -66,10 +66,14 @@ class BroadcastsInfo extends React.Component {
   }
   searchBroadcast (event) {
     var filtered = []
-    for (let i = 0; i < this.props.broadcasts.length; i++) {
-      if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.broadcasts[i])
+    if (event.target.value !== '') {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
+        if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.broadcasts[i])
+        }
       }
+    } else {
+      filtered = this.props.broadcasts
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
