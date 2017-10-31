@@ -50,6 +50,7 @@ class OperationalDashboard extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
     this.getFile = this.getFile.bind(this)
+    this.logChange = this.logChange.bind(this)
   }
 
   componentDidMount () {
@@ -176,11 +177,11 @@ class OperationalDashboard extends React.Component {
 
     if (val.value === 10) {
       console.log('Selected:', val.value)
-      //this.setState({selectedValue: val.value})
-      loadDataObjectsCount(val.value)
+      this.setState({selectedValue: val.value})
+      this.props.loadDataObjectsCount(val.value)
     } else if (val.value === 30) {
-    //  this.setState({ selectedValue: val.value })
-      loadDataObjectsCount(val.value)
+      this.setState({ selectedValue: val.value })
+      this.props.loadDataObjectsCount(val.value)
     }
   }
   render () {
