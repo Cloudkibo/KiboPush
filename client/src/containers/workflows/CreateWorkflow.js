@@ -188,6 +188,7 @@ class CreateWorkflow extends React.Component {
               <h2 className='presentation-margin'>Create Workflow</h2>
             </div>
             <div className='ui-block'>
+              <div className='news-feed-form'>
               <div className='ui-block-content'>
                 <label>Rule</label>
 
@@ -232,6 +233,7 @@ class CreateWorkflow extends React.Component {
                 >
                   Cancel
                 </Link>
+              </div>
               </div>
             </div>
           </div>
