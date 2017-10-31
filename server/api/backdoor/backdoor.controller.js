@@ -15,6 +15,7 @@ const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
 const path = require('path')
+const fs = require('fs')
 let _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -527,5 +528,6 @@ exports.uploadFile = function (req, res) {
       status: 'success',
       payload: dir
     })
+    fs.unlinkSync(dir)
   })
 }
