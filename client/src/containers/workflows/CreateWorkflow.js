@@ -201,6 +201,7 @@ class CreateWorkflow extends React.Component {
                     <option value='message_begins'>Message Begins with</option>
                   </select>
                 </div>
+                <br />
                 <div id='keywords'>
                   <label>Keywords (Separated by comma)</label>
                   <input type='text' className='form-control input-lg'
@@ -209,12 +210,14 @@ class CreateWorkflow extends React.Component {
                     id='keywords'
                     placeholder='Enter keywords separated by comma' />
                 </div>
+                <br />
                 <div className='form-group' id='reply'>
                   <label htmlFor='exampleInputReply'>Reply</label>
                   <textarea className='form-control' onChange={this.changeReply}
                     value={this.state.reply} rows='5'
                     id='exampleInputReply' />
                 </div>
+                <br />
                 <div className='form-group'>
                   <label htmlFor='isActive'>Is Active</label>
                   <select onChange={this.changeActive}
@@ -223,18 +226,17 @@ class CreateWorkflow extends React.Component {
                     <option value='No'>No</option>
                   </select>
                 </div>
-                <div className='add-options-message'>
-                  <button onClick={this.gotoWorkflow} className='btn btn-primary btn-sm' id='create'>
-                    Create
-                  </button>
-                  <Link
-                    to='workflows'
-                    style={{float: 'right', margin: 2}}
-                    className='btn btn-sm btn-border-think btn-transparent c-grey'
-                  >
-                    Cancel
-                  </Link>
-                </div>
+                <br />
+                <button style={{float: 'right', margin: 2}} onClick={this.gotoWorkflow} className='btn btn-primary btn-sm' id='create'>
+ -                  Create
+ -                </button>
+ -                <Link
+ -                  to='workflows'
+ -                  style={{float: 'right', margin: 2}}
+ -                  className='btn btn-sm btn-border-think btn-transparent c-grey'
+ -                >
+ -                  Cancel
+ -                </Link>
               </div>
               </div>
             </div>
