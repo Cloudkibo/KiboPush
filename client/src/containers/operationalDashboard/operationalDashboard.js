@@ -9,6 +9,8 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
+import Select from 'react-select'
+
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
@@ -25,9 +27,6 @@ import { handleDate } from '../../utility/utils'
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadUsersList()
-    props.loadDataObjectsCount()
-    props.loadTopPages()
     this.state = {
       usersData: [],
       objectsData: [],
@@ -35,8 +34,15 @@ class OperationalDashboard extends React.Component {
       pagesData: [],
       totalLength: 0,
       objectsLength: 0,
-      pagesLength: 0
+      pagesLength: 0,
+      options: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }],
+      selectedValue: 0
     }
+    props.loadUsersList()
+    props.loadDataObjectsCount(0)
+    props.loadTopPages()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.displayPages = this.displayPages.bind(this)
@@ -165,6 +171,18 @@ class OperationalDashboard extends React.Component {
   getFile () {
     this.props.downloadFile()
   }
+  logChange (val) {
+    console.log('Selected: ' + JSON.stringify(val))
+
+    if (val.value === 10) {
+      console.log('Selected:', val.value)
+      //this.setState({selectedValue: val.value})
+      loadDataObjectsCount(val.value)
+    } else if (val.value === 30) {
+    //  this.setState({ selectedValue: val.value })
+      loadDataObjectsCount(this.state.val.value)
+    }
+  }
   render () {
     return (
       <div>
@@ -174,6 +192,13 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
+          <Select
+            name='form-field-name'
+            options={this.state.options}
+            onChange={this.logChange}
+            placeholder='Filter by last:'
+            value={this.state.selectedValue}
+          />
           <div className='back-button'>
             <button className='btn btn-primary btn-sm' style={{float: 'right'}} onClick={() => this.getFile()}>Download File
             </button>
