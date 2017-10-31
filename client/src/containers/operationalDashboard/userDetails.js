@@ -85,6 +85,7 @@ class UserDetails extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    window.scrollTo(0, 0)
   }
 
   render () {
