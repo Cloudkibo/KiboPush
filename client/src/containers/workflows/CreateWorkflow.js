@@ -222,14 +222,18 @@ class CreateWorkflow extends React.Component {
                     <option value='No'>No</option>
                   </select>
                 </div>
-
-                <button onClick={this.gotoWorkflow} className='btn btn-primary' id='create'>
-                  Create
-                </button>
-                <Link to='workflows' className='btn btn-primary'>
-                  Back
-                </Link>
-
+                <div className='add-options-message'>
+                  <button onClick={this.gotoWorkflow} className='btn btn-primary btn-sm' id='create'>
+                    Create
+                  </button>
+                  <Link
+                    to='workflows'
+                    style={{float: 'right', margin: 2}}
+                    className='btn btn-sm btn-border-think btn-transparent c-grey'
+                  >
+                    Cancel
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
