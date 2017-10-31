@@ -228,15 +228,15 @@ class CreateWorkflow extends React.Component {
                 </div>
                 <br />
                 <button style={{float: 'right', margin: 2}} onClick={this.gotoWorkflow} className='btn btn-primary btn-sm' id='create'>
- -                  Create
- -                </button>
- -                <Link
- -                  to='workflows'
- -                  style={{float: 'right', margin: 2}}
- -                  className='btn btn-sm btn-border-think btn-transparent c-grey'
- -                >
- -                  Cancel
- -                </Link>
+                   Create
+                 </button>
+                 <Link
+                   to='workflows'
+                   style={{float: 'right', margin: 2}}
+                   className='btn btn-sm btn-border-think btn-transparent c-grey'
+                 >
+                   Cancel
+                 </Link>
               </div>
               </div>
             </div>
