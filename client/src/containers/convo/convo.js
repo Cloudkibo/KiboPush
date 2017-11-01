@@ -183,7 +183,7 @@ class Convo extends React.Component {
                             this.state.broadcastsData.map((broadcast, i) => (
                               <tr>
                                 <td>{broadcast.title}</td>
-                                <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</td>
+                                <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
                                 <td>{handleDate(broadcast.datetime)}</td>
                                 <td>{broadcast.sent}</td>
                                 <td>{broadcast.seen}</td>
