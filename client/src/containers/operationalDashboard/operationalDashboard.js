@@ -172,8 +172,10 @@ class OperationalDashboard extends React.Component {
   }
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
-
-    if (val.value === 10) {
+    if (!val) {
+      this.setState({selectedValue: null})
+      this.props.loadDataObjectsCount(0)
+    } else if (val.value === 10) {
       console.log('Selected:', val.value)
       this.setState({selectedValue: val.value})
       this.props.loadDataObjectsCount(val.value)
@@ -197,6 +199,7 @@ class OperationalDashboard extends React.Component {
             onChange={this.logChange}
             placeholder='Filter by last:'
             value={this.state.selectedValue}
+            clearValueText='Filter by:'
           />
           <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
           </button>

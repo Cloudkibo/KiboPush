@@ -515,19 +515,20 @@ exports.uploadFile = function (req, res) {
     let dir = path.resolve(__dirname, './my-file.csv')
     csvdata.write(dir, usersPayload, {header: 'Name,Gender,Email,Locale,Timezone'})
     logger.serverLog(TAG, 'created file')
-    //  res.send({status: 'dir', payload: dir})
-    // try {
-    //   res.sendfile(dir)
-    // } catch (err) {
-    //   logger.serverLog(TAG,
-    //     `Inside Download file, err = ${JSON.stringify(err)}`)
-    //   res.status(201)
-    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
-    // }
-    res.status(200).json({
-      status: 'success',
-      payload: dir
-    })
-    fs.unlinkSync(dir)
+    try {
+      res.sendfile(dir)
+    } catch (err) {
+      logger.serverLog(TAG,
+        `Inside Download file, err = ${JSON.stringify(err)}`)
+      res.status(201)
+        .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    }
+    // fs.unlinkSync(dir)
+
+    // res.status(200).json({
+    //   status: 'success',
+    //   payload: dir
+    // })
+    //  fs.unlinkSync(dir)
   })
 }

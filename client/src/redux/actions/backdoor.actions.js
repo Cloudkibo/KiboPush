@@ -139,7 +139,10 @@ export function downloadFile () {
   console.log('downloadFile called')
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
-        .then(res => dispatch(fileStatus(res)))
+        .then(res => {
+          dispatch(fileStatus(res))
+          console.log('res', res)
+        })
   }
 
   // return (dispatch) => {
