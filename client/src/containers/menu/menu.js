@@ -78,6 +78,13 @@ class Menu extends React.Component {
   handleOption (option) {
     console.log('option selected: ', option)
     this.setState({optionSelected: option})
+    if (option === 'Add submenu') {
+      this.setState({itemType: 'submenu'})
+    } else if (option === 'Reply with a message') {
+      this.setState({itemType: 'reply'})
+    } else if (option === 'Open website') {
+      this.setState({itemType: 'weblink'})
+    }
   }
 
   addSubmenu () {
@@ -117,7 +124,7 @@ class Menu extends React.Component {
     console.log('Handle Click Was Called')
     this.props.history.push({
       pathname: `/CreateMessage`,
-      state: {pageId: this.state.pageValue, menuItemType: 'weblink', title: this.state.itemName}
+      state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
     })
     this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
   }
