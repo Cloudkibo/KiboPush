@@ -5,7 +5,8 @@
 const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
 const TAG = 'api/autoposting/autopostings.controller.js'
-const TwitterUtility = require('./../../config/twitter')
+const TwitterUtility = require('../../config/integrations/twitter')
+const Page = require('./../pages/Pages.model')
 
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
@@ -97,6 +98,59 @@ exports.create = function (req, res) {
               }
             })
           })
+        } else if (req.body.subscriptionType === 'facebook') {
+          let url = req.body.subscriptionUrl
+          let urlAfterDot = url.substring(url.indexOf('.') + 1)
+          let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          logger.serverLog(TAG, `the parse got as ${screenName}`)
+          Page.findOne({userId: req.user._id, $or: [{pageId: screenName}, {pageUserName: screenName}]}, (err, pageInfo) => {
+            if (err) {
+              logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
+              return res.status(403).json({
+                status: 'Failed',
+                description: err
+              })
+            }
+            if (!pageInfo) {
+              return res.status(404).json({
+                status: 'Failed',
+                description: 'Cannot add this page or page not found'
+              })
+            }
+            let autoPostingPayload = {
+              userId: req.user._id,
+              subscriptionUrl: req.body.subscriptionUrl,
+              subscriptionType: req.body.subscriptionType,
+              accountTitle: req.body.accountTitle,
+              accountUniqueName: pageInfo.pageId
+            }
+            if (req.body.isSegmented) {
+              autoPostingPayload.isSegmented = true
+              autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                ? req.body.pageIds
+                : null
+              autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                ? req.body.segmentationGender
+                : null
+              autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                ? req.body.segmentationLocale
+                : null
+            }
+            const autoPosting = new AutoPosting(autoPostingPayload)
+            autoPosting.save((err, createdRecord) => {
+              if (err) {
+                res.status(500).json({
+                  status: 'Failed',
+                  error: err,
+                  description: 'Failed to insert record'
+                })
+              } else {
+                logger.serverLog(TAG, `FB Page added ${JSON.stringify(createdRecord)}`)
+                res.status(201)
+                .json({status: 'success', payload: createdRecord})
+              }
+            })
+          })
         }
       }
     })
@@ -184,5 +238,11 @@ exports.twitterverify = function (req, res) {
 exports.pubsubhook = function (req, res) {
   logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
   logger.serverLog(TAG, JSON.stringify(req.params))
+  return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
+exports.pubsubhookPost = function (req, res) {
+  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Post Called')
+  logger.serverLog(TAG, JSON.stringify(req.body))
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }

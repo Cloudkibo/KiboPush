@@ -3,12 +3,12 @@
  */
 
 const pubSubHubbub = require('pubsubhubbub')
-const config = require('./environment/index')
+const config = require('../environment/index')
 
-const logger = require('./../components/logger')
-const TAG = 'config/pubsubhubbub.js'
+const logger = require('../../components/logger')
+const TAG = 'config/integrations/pubsubhubbub.js'
 
-const topic = 'https://www.youtube.com/xml/feeds/videos.xml?channel_id=UCcQnaQ0sHD9A0GXKcXBVE-Q'
+const topic = 'https://www.youtube.com/feeds/videos.xml?channel_id=UCWMz6QX04xYwqYoQVEtxneQ'
 const hub = 'http://pubsubhubbub.appspot.com/'
 
 let pubsub

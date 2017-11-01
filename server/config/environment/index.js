@@ -45,7 +45,8 @@ const all = {
   },
 
   pubsubhubbub: {
-    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/autoposting/pubsub/webhook`
+    port: process.env.PORT || 3000,
+    callbackUrl: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}/api/autoposting/pubsub/webhook`
   },
 
   twitter: {

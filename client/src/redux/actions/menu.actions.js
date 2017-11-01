@@ -40,14 +40,13 @@ export function SendMessage (message) {
   }
 }
 
-
 export function fetchMenu (setMenu) {
-  console.log("Fetching Menu")
+  console.log('Fetching Menu')
   return (dispatch) => {
     callApi('menu').then(res => {
       if (res.status === 'success') {
         // dispatch(sendMessageSuccess())
-        console.log("Menu Fetched", res)
+        console.log('Menu Fetched', res)
       } else {
         // dispatch(sendMessageFailure())
         console.log('Error Fetching Menu', res)

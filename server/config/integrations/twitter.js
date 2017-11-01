@@ -2,16 +2,16 @@
  * Created by sojharo on 23/10/2017.
  */
 
-const config = require('./environment/index')
+const config = require('../environment/index')
 let Twit = require('twit')
-let AutoPosting = require('./../api/autoposting/autopostings.model')
-let Pages = require('./../api/pages/Pages.model')
-let Subscribers = require('./../api/subscribers/Subscribers.model')
+let AutoPosting = require('../../api/autoposting/autopostings.model')
+let Pages = require('../../api/pages/Pages.model')
+let Subscribers = require('../../api/subscribers/Subscribers.model')
 let request = require('request')
 let _ = require('lodash')
 
-const logger = require('./../components/logger')
-const TAG = 'config/twitter.js'
+const logger = require('../../components/logger')
+const TAG = 'config/integrations/twitter.js'
 
 // test twitter ids : [2616186000, 1430793200]
 
