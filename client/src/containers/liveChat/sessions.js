@@ -26,6 +26,7 @@ class Sessions extends React.Component {
       pageOptions: [],
       logValue: 'old',
       pageValue: '',
+      searchValue: '',
       list: []
     }
     this.handleClick = this.handleClick.bind(this)
@@ -35,6 +36,7 @@ class Sessions extends React.Component {
     this.pageChange = this.pageChange.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
     this.changeSession = this.changeSession.bind(this)
+    this.filterSession = this.filterSession.bind(this)
   }
 
   componentDidMount () {
@@ -104,58 +106,73 @@ class Sessions extends React.Component {
     this.setState({openPopover: false})
   }
 
+  filterSession () {
+    var temp = this.props.sessions
+
+    if (this.state.pageValue !== null) {
+      var search = this.state.pageValue
+      console.log('Page Value', search)
+      temp = _.filter(temp, function (item) {
+        if (item.page_id.pageId === search) {
+          return item
+        }
+      })
+      console.log('Array After Page Filter', temp)
+    }
+
+    if (this.state.searchValue !== '') {
+      var search = this.state.searchValue
+      temp = _.filter(temp, function (item) {
+        var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
+        if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
+          return item
+        }
+      })
+      console.log('Array After Search', temp)
+    }
+
+    if (this.state.logValue !== null) {
+      if (this.state.logValue === 'old') {
+        console.log('Sorting using new')
+        temp = temp.sort(function (a, b) {
+          return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
+        })
+      } else {
+        console.log('Sorting using old')
+        temp = temp.sort(function (a, b) {
+          return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
+        })
+      }
+      console.log('Array After Sorting', temp)
+    }
+
+    this.setState({list: temp})
+  }
+
   logChange (val) {
-    console.log('Selected: ' + JSON.stringify(val))
+    console.log('(In Log Change) Val', val)
     if (val === null) {
-      this.setState({list: this.props.sessions, logValue: val})
-      return
-    }
-    if (val.value === 'old') {
-      console.log('Sorting using new')
-      var temp = this.props.sessions.sort(function (a, b) {
-        return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
-      })
+      this.setState({logValue: val})
     } else {
-      console.log('Sorting using old')
-      var temp = this.props.sessions.sort(function (a, b) {
-        return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
-      })
+      this.setState({logValue: val.value})
     }
-    console.log('Sorted Array', temp)
-    this.setState({list: temp, logValue: val.value})
-    this.setState({pageValue: null})
+    this.filterSession()
   }
   pageChange (val) {
-    console.log('Selected: ' + JSON.stringify(val))
+    console.log('(In Page Change) Val', val)
     if (val === null) {
-      this.setState({list: this.props.sessions, pageValue: val})
-      return
+      this.setState({pageValue: val})
+    } else {
+      this.setState({pageValue: val.value})
     }
-    var search = val.value
-    console.log('Page Value', search)
-    var results = _.filter(this.props.sessions, function (item) {
-      if (item.page_id.pageId === search) {
-        return item
-      }
-    })
-    console.log('Page Filter', results)
-    this.setState({list: results, pageValue: val.value})
-    this.setState({logValue: null})
+    this.filterSession()
   }
 
   handleSearch (event) {
-    console.log('Search', event.target.value)
-
-    var search = event.target.value
-    var results = _.filter(this.props.sessions, function (item) {
-      var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
-      if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
-        return item
-      }
-    })
-    console.log(results)
-    this.setState({list: results})
-    this.setState({logValue: null, pageValue: null})
+    console.log('(In Handle Search) Search', event.target.value)
+    this.setState({searchValue: event.target.value})
+    this.filterSession()
+    // this.setState({logValue: null, pageValue: null})
   }
 
   changeSession (item) {
