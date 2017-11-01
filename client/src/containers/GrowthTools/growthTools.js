@@ -49,8 +49,9 @@ class GrowthTools extends React.Component {
               <div className='card'>
                 <img className='img-card' src='img/customer_matching.jpg' alt='Card image cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6 card-body'>
-                  <h4>Customer Matching Using Phone Numbers</h4>
-                  <p>Upload your csv file containing your customers phone numbers to invite them for a chat on Messenger</p>
+                  <h4 className='card-title'>Customer Matching Using Phone Numbers</h4>
+                  <hr />
+                  <p className='card-text'>Upload your csv file containing your customers phone numbers to invite them for a chat on Messenger</p>
                   <Link to={`/customerMatchingUsingPhNum`} className='btn btn-primary'>
                     Open
                   </Link>
@@ -62,8 +63,9 @@ class GrowthTools extends React.Component {
               <div className='card'>
                 <img className='img-card' src='img/facebook-messenger.png' alt='Card image cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6 card-body'>
-                  <h4>Subscribe to Messenger</h4>
-                  <p>Send messages and broadcasts to your followers by inviting them to your messenger</p>
+                  <h4 className='card-title'>Subscribe to Messenger</h4>
+                  <hr />
+                  <p className='card-text'>Send messages and broadcasts to your followers by inviting them to your messenger</p>
                   <Link to={`/subscribeToMessenger`} className='btn btn-primary'>
                     Open
                   </Link>
