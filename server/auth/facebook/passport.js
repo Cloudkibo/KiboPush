@@ -208,7 +208,7 @@ function fetchPages (url, user) {
 }
 
 function createMenuForPage (page) {
-  var valueformenu = {
+  var valueForMenu = {
     'persistent_menu': [
       {
         'locale': 'default',
@@ -225,7 +225,7 @@ function createMenuForPage (page) {
   }
   const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
 
-  needle.request('post', requesturl, valueformenu, {json: true}, function (err, resp) {
+  needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
     if (!err) {
       console.log(resp.body)
     }

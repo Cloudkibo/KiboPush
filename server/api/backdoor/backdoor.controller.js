@@ -15,7 +15,6 @@ const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
 const path = require('path')
-const fs = require('fs')
 let _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -213,7 +212,6 @@ exports.toppages = function (req, res) {
         }
       }
       let sorted = sortBy(pagesPayload, 'subscribers')
-      logger.serverLog(TAG, `sorted ${JSON.stringify(sorted)}`)
       let top10 = _.takeRight(sorted, 10)
       top10 = top10.reverse()
       logger.serverLog(TAG, `top10 ${JSON.stringify(top10)}`)

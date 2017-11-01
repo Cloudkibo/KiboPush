@@ -4,6 +4,7 @@ const PollResponse = require('./pollresponse.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
+const PollPage = require('../page_poll/page_poll.model')
 let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'
@@ -18,7 +19,24 @@ exports.index = function (req, res) {
         description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({status: 'success', payload: polls})
+    PollPage.find({userId: req.user._id}, (err, pollpages) => {
+      if (err) {
+        return res.status(404)
+        .json({status: 'failed', description: 'Polls not found'})
+      }
+      PollResponse.aggregate([
+        {$group: {_id: '$pollId', count: {$sum: 1}}}
+      ], (err2, responsesCount) => {
+        if (err2) {
+          return res.status(404)
+          .json({status: 'failed', description: 'Polls not found'})
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {polls, pollpages, responsesCount}
+        })
+      })
+    })
   })
 }
 
@@ -27,7 +45,6 @@ exports.create = function (req, res) {
     platform: 'facebook',
     statement: req.body.statement,
     options: req.body.options,
-    sent: 0,
     userId: req.user._id
   }
   if (req.body.isSegmented) {
@@ -108,21 +125,6 @@ exports.send = function (req, res) {
    Expected request body
    { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
    */
-
-  Polls.findById(req.body._id, (err, poll) => {
-    if (err) {
-      return logger.serverLog(TAG, `Send Error on Polls ${JSON.stringify(err)}`)
-    }
-    poll.sent = poll.sent + 1
-    poll.save((err2) => {
-      if (err2) {
-        logger.serverLog(TAG, `Save Error on Polls send ${JSON.stringify(err)}`)
-      }
-      logger.serverLog(TAG, `Sent value updated for poll ${poll.sent}`)
-      return res.status(200).json({status: 'success', payload: poll})
-    })
-  })
-
   const messageData = {
     attachment: {
       type: 'template',
@@ -227,17 +229,32 @@ exports.send = function (req, res) {
                 needle.post(
                   `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                   data, (err, resp) => {
-                    logger.serverLog(TAG,
-                      `Sending poll to subscriber response ${JSON.stringify(
-                        resp.body)}`)
                     if (err) {
                       logger.serverLog(TAG, err)
                       logger.serverLog(TAG,
                         `Error occured at subscriber :${JSON.stringify(
                           subscribers[j])}`)
                     }
+                    logger.serverLog(TAG,
+                      `Sending poll to subscriber response ${JSON.stringify(
+                        resp.body)}`)
+                    let pollBroadcast = new PollPage({
+                      pageId: pages[z].pageId,
+                      userId: req.user._id,
+                      subscriberId: subscribers[j].senderId,
+                      pollId: req.body._id,
+                      seen: false
+                    })
 
-                    // return res.status(200).json({ status: 'success', payload: resp.body });
+                    pollBroadcast.save((err2) => {
+                      if (err2) {
+                        logger.serverLog(TAG, {
+                          status: 'failed',
+                          description: 'PollBroadcast create failed',
+                          err2
+                        })
+                      }
+                    })
                   })
               }
             })

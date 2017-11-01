@@ -172,9 +172,9 @@ exports.getfbMessage = function (req, res) {
       }
     } else if (payload.changes) {
       const changeEvents = payload.changes
-      logger.serverLog(TAG,
-        `in changes condition for facebook post ${JSON.stringify(
-          changeEvents)}`)
+      // logger.serverLog(TAG,
+      //   `in changes condition for facebook post ${JSON.stringify(
+      //     changeEvents)}`)
       for (let i = 0; i < changeEvents.length; i++) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {

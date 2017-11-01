@@ -7,6 +7,7 @@ const logger = require('../../components/logger')
 const Surveys = require('./surveys.model')
 const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
+const SurveyPage = require('../page_survey/page_survey.model')
 const TAG = 'api/surveys/surveys.controller.js'
 let _ = require('lodash')
 
@@ -23,8 +24,16 @@ exports.index = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, surveys)
-    res.status(200).json({status: 'success', payload: surveys})
+    SurveyPage.find({userId: req.user._id}, (err, surveypages) => {
+      if (err) {
+        return res.status(404)
+        .json({status: 'failed', description: 'Surveys not found'})
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: {surveys, surveypages}
+      })
+    })
   })
 }
 
@@ -383,6 +392,23 @@ exports.send = function (req, res) {
                         logger.serverLog(TAG,
                           `Sending survey to subscriber response ${JSON.stringify(
                             resp.body)}`)
+                        let surveyPage = new SurveyPage({
+                          pageId: pages[z].pageId,
+                          userId: req.user._id,
+                          subscriberId: subscribers[j].senderId,
+                          surveyId: req.body._id,
+                          seen: false
+                        })
+
+                        surveyPage.save((err2) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'PollBroadcast create failed',
+                              err2
+                            })
+                          }
+                        })
                       })
                   }
                 })
