@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Image from 'react-image-resizer'
+// import Image from 'react-image-resizer'
 //  import ChatBox from './chatbox'
 
 class Profile extends React.Component {

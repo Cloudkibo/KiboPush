@@ -15,7 +15,7 @@ import ChatBox from './chatbox'
 import Sessions from './sessions'
 import Profile from './profile'
 import Halogen from 'halogen'
-import Notification from 'react-web-notification'
+// import Notification from 'react-web-notification'
 
 class LiveChat extends React.Component {
   constructor (props, context) {
