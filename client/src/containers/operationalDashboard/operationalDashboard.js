@@ -164,10 +164,8 @@ class OperationalDashboard extends React.Component {
         filtered.push(this.props.users[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.displayData(0, filtered)
-      this.setState({ totalLength: filtered.length })
-    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
   getFile () {
     this.props.downloadFile()
@@ -209,55 +207,61 @@ class OperationalDashboard extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  { this.state.usersData && this.state.usersData.length > 0
+                  { this.props.users && this.props.users.length > 0
                   ? <div className='table-responsive'>
                     <div>
                       <label> Users </label>
                       <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
                     </div>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Profile Pic</th>
-                          <th>Users</th>
-                          <th>Email</th>
-                          <th>Gender</th>
-                          <th>Created At</th>
-                          <th />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.state.usersData.map((user, i) => (
-                          <tr>
-                            <td><img alt='pic'
-                              src={(user.profilePic) ? user.profilePic : ''}
-                              className='img-circle' width='60' height='60' /></td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.gender}</td>
-                            <td>{handleDate(user.createdAt)}</td>
-                            <td>
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                    {
+                      this.state.usersData && this.state.usersData.length > 0
+                      ? <div>
+                        <table className='table table-striped'>
+                          <thead>
+                            <tr>
+                              <th>Profile Pic</th>
+                              <th>Users</th>
+                              <th>Email</th>
+                              <th>Gender</th>
+                              <th>Created At</th>
+                              <th />
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              this.state.usersData.map((user, i) => (
+                                <tr>
+                                  <td><img alt='pic'
+                                    src={(user.profilePic) ? user.profilePic : ''}
+                                    className='img-circle' width='60' height='60' /></td>
+                                  <td>{user.name}</td>
+                                  <td>{user.email}</td>
+                                  <td>{user.gender}</td>
+                                  <td>{handleDate(user.createdAt)}</td>
+                                  <td>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
+                      : <p> No search results found. </p>
+                    }
                   </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>

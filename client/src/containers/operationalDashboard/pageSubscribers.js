@@ -66,10 +66,8 @@ class PageSubscribers extends React.Component {
         filtered.push(this.props.pageSubscribers[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.displayData(0, filtered)
-      this.setState({ totalLength: this.state.pageSubscribersData.length })
-    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: this.state.pageSubscribersData.length })
   }
 
   backToUserDetails () {
@@ -111,46 +109,52 @@ class PageSubscribers extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>{ this.state.pageName }</h3><br />
                   <h4>Subscribers List</h4>
-                  { this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
+                  { this.props.pageSubscribers && this.props.pageSubscribers.length > 0
                   ? <div className='table-responsive'>
                     <div>
                       <label> Search </label>
                       <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscribers} />
                     </div>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Subscriber</th>
-                          <th>Email</th>
-                          <th>Gender</th>
-                          <th>Locale</th>
-                          <th />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.state.pageSubscribersData.map((subscriber, i) => (
-                          <tr>
-                            <td>{subscriber.firstName}{' '}{subscriber.lastName}</td>
-                            <td>{subscriber.email}</td>
-                            <td>{subscriber.gender}</td>
-                            <td>{subscriber.locale}</td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                    {
+                      this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
+                      ? <div>
+                        <table className='table table-striped'>
+                          <thead>
+                            <tr>
+                              <th>Subscriber</th>
+                              <th>Email</th>
+                              <th>Gender</th>
+                              <th>Locale</th>
+                              <th />
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              this.state.pageSubscribersData.map((subscriber, i) => (
+                                <tr>
+                                  <td>{subscriber.firstName}{' '}{subscriber.lastName}</td>
+                                  <td>{subscriber.email}</td>
+                                  <td>{subscriber.gender}</td>
+                                  <td>{subscriber.locale}</td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
+                      : <p> No search results found. </p>
+                    }
                   </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
