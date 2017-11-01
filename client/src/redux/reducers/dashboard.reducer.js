@@ -13,10 +13,20 @@ const initialState = {
       messages: 0,
       surveys: 0
     }
-  }
-
+  },
+  sentseendata: []
 }
+export function sentSeenInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_SENT_VS_SEEN:
+      return Object.assign({}, state, {
+        sentseendata: action.data
+      })
 
+    default:
+      return state
+  }
+}
 export function dashboardInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_DASHBOARD:
