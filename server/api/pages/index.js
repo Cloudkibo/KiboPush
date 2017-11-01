@@ -12,6 +12,7 @@ const auth = require('../../auth/auth.service')
 const controller = require('./pages.controller')
 
 router.get('/', auth.isAuthenticated(), controller.index) // this id will be userid
+router.get('/allpages', auth.isAuthenticated(), controller.allpages)
 router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 router.post('/enable', auth.isAuthenticated(), controller.enable)
 router.post('/disable', auth.isAuthenticated(), controller.disable)

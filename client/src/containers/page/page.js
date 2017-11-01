@@ -35,6 +35,7 @@ class Page extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchPages = this.searchPages.bind(this)
   }
 
   componentWillMount () {
@@ -126,6 +127,20 @@ class Page extends React.Component {
 
     })
   }
+  searchPages (event) {
+    var filtered = []
+    if (event.target.value !== '') {
+      for (let i = 0; i < this.props.pages.length; i++) {
+        if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.pages[i])
+        }
+      }
+    } else {
+      filtered = this.props.pages
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
 
   render () {
     return (
@@ -148,7 +163,7 @@ class Page extends React.Component {
                     Your connected pages have zero subscribers. Unless you don't
                     have any subscriber, you will not be able to broadcast
                     message, polls and surveys.
-                    Lets invite subscribers first. Don't worry, we will guide
+                    Lets invite subscribers first. Dont worry, we will guide
                     you on how you can invite subscribers.
                     Click on 'Invite Subscribers' button on right side of the
                     page title.
@@ -181,12 +196,21 @@ class Page extends React.Component {
                   }
                   { this.props.pages && this.props.pages.length
                   ? <div className='table-responsive'>
+                    <div>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Pages' className='form-control' onChange={this.searchPages} />
+                    </div>
+                    {
+                      this.state.pagesData && this.state.pagesData.length > 0
+                    ? <div>
+
                     <table className='table table-striped'>
                       <thead>
                         <tr>
                           <th>Page Pic</th>
                           <th>Page Name</th>
                           <th>Likes</th>
+                          <th>Subscribers</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -201,6 +225,7 @@ class Page extends React.Component {
                                 className='img-rounded' width='60' height='60' /></td>
                               <td>{page.pageName}</td>
                               <td>{page.likes}</td>
+                              <td>{page.subscribers}</td>
                               <td>
                                 <button onClick={() => this.showDialog(page)}
                                   className='btn btn-primary btn-sm'
@@ -235,6 +260,10 @@ class Page extends React.Component {
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'} />
                   </div>
+                    : <p> No search results found. </p>
+
+                }
+              </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
                   </div>
