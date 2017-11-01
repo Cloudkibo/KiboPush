@@ -5,6 +5,7 @@
 
 import React from 'react'
 import Joyride from 'react-joyride'
+import StackedBar from './StackedBar'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
@@ -31,7 +32,8 @@ class Dashboard extends React.Component {
     props.sentVsSeen()
     this.state = {
       isShowingModal: false,
-      steps: []
+      steps: [],
+      sentseendata1: []
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -53,6 +55,14 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       joinRoom(nextprops.user._id)
+    }
+    if (nextprops.sentseendata) {
+      console.log('sentseendata', nextprops.sentseendata)
+      var temp = []
+      temp.push(nextprops.sentseendata)
+      console.log('temp', temp)
+      this.setState({sentseendata1: nextprops.sentseendata})
+      console.log('sentseendata1', this.state.sentseendata1)
     }
   }
 
@@ -265,6 +275,7 @@ class Dashboard extends React.Component {
 
           </aside>
         </div>
+        <StackedBar sentseendata={this.state.sentseendata1} />
       </div>
 
     )
