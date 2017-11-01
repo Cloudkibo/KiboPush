@@ -8,6 +8,8 @@ const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
+const PollPage = require('../page_poll/page_poll.model')
+const SurveyPage = require('../page_survey/page_survey.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
@@ -389,6 +391,28 @@ function updateseenstatus (req) {
       }
       logger.serverLog(TAG,
         `Broadcast seen updated : ${JSON.stringify(
+          updated)}`)
+    })
+  PollPage.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {seen: true},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `Poll seen updated : ${JSON.stringify(
+          updated)}`)
+    })
+  SurveyPage.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {seen: true},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `Survey seen updated : ${JSON.stringify(
           updated)}`)
     })
   LiveChat.update(
