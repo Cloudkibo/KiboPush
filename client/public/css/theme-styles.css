@@ -1369,3 +1369,17 @@ p {
    width: 150px !important;
    height: 30px !important;
  }
+
+ .card {
+   flex-direction: row !important;
+   min-height: 200px;
+   margin-top: 10px;
+   height: 200px
+ }
+
+ .img-card {
+    width: 50%;
+}
+.card-body {
+  padding: 13px;
+}
