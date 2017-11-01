@@ -25,7 +25,7 @@ class Sessions extends React.Component {
         { value: 'old', label: 'Oldest to newest' }],
       pageOptions: [],
       logValue: 'old',
-      pageValue: '',
+      pageValue: null,
       searchValue: '',
       list: []
     }
