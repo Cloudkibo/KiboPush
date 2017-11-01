@@ -53,6 +53,7 @@ class Sessions extends React.Component {
     document.body.appendChild(addScript)
   }
 
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
@@ -187,8 +188,7 @@ class Sessions extends React.Component {
   }
 
   render () {
-    console.log('Logvalue', this.state.logValue)
-    console.log('Sessions', this.state.list)
+    this.filterSession()
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
