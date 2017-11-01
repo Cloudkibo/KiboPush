@@ -1383,7 +1383,8 @@ p {
     padding: 10px;
 }
 .card-body {
-  padding: 13px;
+  padding: 5px;
+  height: 168px;  
 }
 .card-text {
   font-size: 0.8rem;
