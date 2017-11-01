@@ -156,13 +156,13 @@ class Convo extends React.Component {
                     this.props.subscribers && this.props.subscribers.length === 0
 
                       ? <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-sm btn-primary'> Send
-                        Conversation
+                        <button className='btn btn-sm btn-primary'> New
+                        Broadcast
                       </button>
                       </Link>
                       : <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-primary btn-sm'> Send
-                        Conversation
+                        <button className='btn btn-primary btn-sm'> New
+                        Broadcast
                       </button>
                       </Link>
                   }
@@ -172,6 +172,7 @@ class Convo extends React.Component {
                         <thead>
                           <tr>
                             <th>Title</th>
+                            <th>Type</th>
                             <th>Created At</th>
                             <th>Sent</th>
                             <th>Seen</th>
@@ -182,6 +183,7 @@ class Convo extends React.Component {
                             this.state.broadcastsData.map((broadcast, i) => (
                               <tr>
                                 <td>{broadcast.title}</td>
+                                <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</td>
                                 <td>{handleDate(broadcast.datetime)}</td>
                                 <td>{broadcast.sent}</td>
                                 <td>{broadcast.seen}</td>

@@ -53,14 +53,13 @@ class Sessions extends React.Component {
     document.body.appendChild(addScript)
   }
 
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
       console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
-        if(page.connected){
+        if (page.connected) {
           myPages.push({value: page.pageId, label: page.pageName})
         }
       })
