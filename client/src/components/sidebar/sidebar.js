@@ -4,20 +4,20 @@
  */
 
 import React, {Component} from 'react'
-import Joyride from 'react-joyride'
+// import Joyride from 'react-joyride'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
-import Icon from 'react-icons-kit'
+// import Icon from 'react-icons-kit'
 import {ModalContainer, ModalDialog} from 'react-modal-dialog'
 import UserGuide from '../../containers/userGuide/userGuide'
-import { question } from 'react-icons-kit/icomoon'   // userGuide
-import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
-import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
-import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
-import { facebook } from 'react-icons-kit/fa/facebook'  // pages
-import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
-import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
-import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
+// import { question } from 'react-icons-kit/icomoon'   // userGuide
+// import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
+// import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
+// import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
+// import { facebook } from 'react-icons-kit/fa/facebook'  // pages
+// import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
+// import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
+// import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
