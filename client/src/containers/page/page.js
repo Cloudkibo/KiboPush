@@ -204,19 +204,19 @@ class Page extends React.Component {
                       this.state.pagesData && this.state.pagesData.length > 0
                     ? <div>
 
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Page Pic</th>
-                          <th>Page Name</th>
-                          <th>Likes</th>
-                          <th>Subscribers</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
+                      <table className='table table-striped'>
+                        <thead>
+                          <tr>
+                            <th>Page Pic</th>
+                            <th>Page Name</th>
+                            <th>Likes</th>
+                            <th>Subscribers</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
 
-                        {
+                          {
                         this.state.pagesData.map((page, i) => (
                           (page.connected &&
                             <tr>
@@ -246,24 +246,24 @@ class Page extends React.Component {
                         ))
                       }
 
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
-                  </div>
+                        </tbody>
+                      </table>
+                      <ReactPaginate previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 5)}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'} />
+                    </div>
                     : <p> No search results found. </p>
 
                 }
-              </div>
+                  </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
                   </div>
