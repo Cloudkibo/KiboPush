@@ -24,11 +24,11 @@ class Sessions extends React.Component {
         { value: 'new', label: 'Newest to oldest' },
         { value: 'old', label: 'Oldest to newest' }],
       pageOptions: [],
-      logValue: 'old',
-      pageValue: null,
-      searchValue: '',
       list: []
     }
+    this.searchValue = ''
+    this.logValue = 'old'
+    this.pageValue = null
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -110,8 +110,8 @@ class Sessions extends React.Component {
   filterSession () {
     var temp = this.props.sessions
 
-    if (this.state.pageValue !== null) {
-      var search = this.state.pageValue
+    if (this.pageValue !== null) {
+      var search = this.pageValue
       console.log('Page Value', search)
       temp = _.filter(temp, function (item) {
         if (item.page_id.pageId === search) {
@@ -121,8 +121,8 @@ class Sessions extends React.Component {
       console.log('Array After Page Filter', temp)
     }
 
-    if (this.state.searchValue !== '') {
-      var search = this.state.searchValue
+    if (this.searchValue !== '') {
+      var search = this.searchValue
       temp = _.filter(temp, function (item) {
         var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
         if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
@@ -132,8 +132,8 @@ class Sessions extends React.Component {
       console.log('Array After Search', temp)
     }
 
-    if (this.state.logValue !== null) {
-      if (this.state.logValue === 'old') {
+    if (this.logValue !== null) {
+      if (this.logValue === 'old') {
         console.log('Sorting using new')
         temp = temp.sort(function (a, b) {
           return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
@@ -153,25 +153,26 @@ class Sessions extends React.Component {
   logChange (val) {
     console.log('(In Log Change) Val', val)
     if (val === null) {
-      this.setState({logValue: val})
+      this.logValue = val
     } else {
-      this.setState({logValue: val.value})
+      this.logValue = val.value
     }
     this.filterSession()
   }
   pageChange (val) {
     console.log('(In Page Change) Val', val)
     if (val === null) {
-      this.setState({pageValue: val})
+      this.pageValue = val
     } else {
-      this.setState({pageValue: val.value})
+      this.pageValue = val.value
     }
     this.filterSession()
   }
 
   handleSearch (event) {
     console.log('(In Handle Search) Search', event.target.value)
-    this.setState({searchValue: event.target.value})
+    // this.setState({searchValue: event.target.value})
+    this.searchValue = event.target.value
     this.filterSession()
     // this.setState({logValue: null, pageValue: null})
   }
@@ -188,7 +189,6 @@ class Sessions extends React.Component {
   }
 
   render () {
-    this.filterSession()
     return (
       <div className='ui-block'>
         <div className='ui-block-title'>
