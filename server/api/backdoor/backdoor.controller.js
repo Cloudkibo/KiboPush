@@ -44,7 +44,7 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
+    logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
     Subscribers.aggregate([{
       $match: {
         userId: mongoose.Types.ObjectId(req.params.userid)
@@ -75,6 +75,7 @@ exports.allpages = function (req, res) {
           subscribers: 0
         })
       }
+      logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
@@ -85,6 +86,7 @@ exports.allpages = function (req, res) {
           }
         }
       }
+      logger.serverLog(TAG, `Total pages in after double loop ${pagesPayload.length}`)
       res.status(200).json({
         status: 'success',
         payload: pagesPayload

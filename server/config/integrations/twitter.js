@@ -25,121 +25,136 @@ let twitterClient = new Twit({
 let stream
 
 function connect () {
-  AutoPosting.find({subscriptionType: 'twitter', isActive: true}, (err, autoposting) => {
-    if (err) {
-      return logger.serverLog(TAG, 'Internal Server Error on connect')
-    }
-    let arrUsers = []
-    for (let i = 0; i < autoposting.length; i++) {
-      arrUsers.push(autoposting[i].payload.id)
-    }
-    logger.serverLog(TAG, `Twitter Ids to listen: ${arrUsers}`)
-    stream = twitterClient.stream('statuses/filter',
-      {follow: arrUsers})
+  AutoPosting.find({subscriptionType: 'twitter', isActive: true},
+    (err, autoposting) => {
+      if (err) {
+        return logger.serverLog(TAG, 'Internal Server Error on connect')
+      }
+      if (autoposting) {
+        let arrUsers = []
+        for (let i = 0; i < autoposting.length; i++) {
+          arrUsers.push(autoposting[i].payload.id)
+        }
+        logger.serverLog(TAG, `Twitter Ids to listen: ${arrUsers}`)
+        stream = twitterClient.stream('statuses/filter',
+          {follow: arrUsers})
 
-    stream.on('tweet', tweet => {
-      logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
-      AutoPosting.find({accountUniqueName: tweet.user.screen_name})
-        .populate('userId')
-        .exec((err, autopostings) => {
-          if (err) {
-            return logger.serverLog(TAG, 'Internal Server Error on connect')
-          }
-          logger.serverLog(TAG, `Autoposting records got for tweet : ${autopostings.length}`)
-          autopostings.forEach(postingItem => {
-            let pagesFindCriteria = {
-              userId: postingItem.userId._id,
-              connected: true
-            }
-
-            if (postingItem.isSegmented) {
-              if (postingItem.segmentationPageIds) {
-                pagesFindCriteria = _.merge(pagesFindCriteria, {
-                  pageId: {
-                    $in: postingItem.segmentationPageIds
-                  }
-                })
-              }
-            }
-            Pages.find(pagesFindCriteria, (err, pages) => {
+        stream.on('tweet', tweet => {
+          logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
+          AutoPosting.find({accountUniqueName: tweet.user.screen_name})
+            .populate('userId')
+            .exec((err, autopostings) => {
               if (err) {
-                logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                return logger.serverLog(TAG, 'Internal Server Error on connect')
               }
-              logger.serverLog(TAG, `Pages records got for tweet : ${pages.length}`)
-              pages.forEach(page => {
-                logger.serverLog(TAG, `Page in the loop for tweet ${page.pageName}`)
-
-                let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
+              logger.serverLog(TAG,
+                `Autoposting records got for tweet : ${autopostings.length}`)
+              autopostings.forEach(postingItem => {
+                let pagesFindCriteria = {
+                  userId: postingItem.userId._id,
+                  connected: true
+                }
 
                 if (postingItem.isSegmented) {
-                  if (postingItem.segmentationGender.length > 0) {
-                    subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                      {
-                        gender: {
-                          $in: postingItem.segmentationGender
-                        }
-                      })
-                  }
-                  if (postingItem.segmentationLocale.length > 0) {
-                    subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                      locale: {
-                        $in: postingItem.segmentationLocale
+                  if (postingItem.segmentationPageIds) {
+                    pagesFindCriteria = _.merge(pagesFindCriteria, {
+                      pageId: {
+                        $in: postingItem.segmentationPageIds
                       }
                     })
                   }
                 }
-
-                logger.serverLog(TAG, `Subscribers Criteria for segmentation ${JSON.stringify(subscriberFindCriteria)}`)
-                Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+                Pages.find(pagesFindCriteria, (err, pages) => {
                   if (err) {
-                    return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                    logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
-
                   logger.serverLog(TAG,
-                    `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+                    `Pages records got for tweet : ${pages.length}`)
+                  pages.forEach(page => {
+                    logger.serverLog(TAG,
+                      `Page in the loop for tweet ${page.pageName}`)
 
-                  subscribers.forEach(subscriber => {
-                    let messageData = {
-                      'recipient': JSON.stringify({
-                        'id': subscriber.senderId
-                      }),
-                      'message': JSON.stringify({
-                        'text': tweet.text,
-                        'metadata': 'This is a meta data for tweet'
-                      })
+                    let subscriberFindCriteria = {
+                      pageId: page._id,
+                      isSubscribed: true
                     }
-                    request(
-                      {
-                        'method': 'POST',
-                        'json': true,
-                        'formData': messageData,
-                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                        page.accessToken
-                      },
-                      function (err, res) {
+
+                    if (postingItem.isSegmented) {
+                      if (postingItem.segmentationGender.length > 0) {
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                          {
+                            gender: {
+                              $in: postingItem.segmentationGender
+                            }
+                          })
+                      }
+                      if (postingItem.segmentationLocale.length > 0) {
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                          {
+                            locale: {
+                              $in: postingItem.segmentationLocale
+                            }
+                          })
+                      }
+                    }
+
+                    logger.serverLog(TAG,
+                      `Subscribers Criteria for segmentation ${JSON.stringify(
+                        subscriberFindCriteria)}`)
+                    Subscribers.find(subscriberFindCriteria,
+                      (err, subscribers) => {
                         if (err) {
                           return logger.serverLog(TAG,
-                            `At send tweet broadcast ${JSON.stringify(err)}`)
-                        } else {
-                          if (res.statusCode !== 200) {
-                            logger.serverLog(TAG,
-                              `At send tweet broadcast response ${JSON.stringify(
-                                res.body.error)}`)
-                          } else {
-                            logger.serverLog(TAG,
-                              `At send tweet broadcast response ${JSON.stringify(
-                                res.body.message_id)}`)
-                          }
+                            `Error ${JSON.stringify(err)}`)
                         }
+
+                        logger.serverLog(TAG,
+                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+                        subscribers.forEach(subscriber => {
+                          let messageData = {
+                            'recipient': JSON.stringify({
+                              'id': subscriber.senderId
+                            }),
+                            'message': JSON.stringify({
+                              'text': tweet.text,
+                              'metadata': 'This is a meta data for tweet'
+                            })
+                          }
+                          request(
+                            {
+                              'method': 'POST',
+                              'json': true,
+                              'formData': messageData,
+                              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                              page.accessToken
+                            },
+                            function (err, res) {
+                              if (err) {
+                                return logger.serverLog(TAG,
+                                  `At send tweet broadcast ${JSON.stringify(
+                                    err)}`)
+                              } else {
+                                if (res.statusCode !== 200) {
+                                  logger.serverLog(TAG,
+                                    `At send tweet broadcast response ${JSON.stringify(
+                                      res.body.error)}`)
+                                } else {
+                                  logger.serverLog(TAG,
+                                    `At send tweet broadcast response ${JSON.stringify(
+                                      res.body.message_id)}`)
+                                }
+                              }
+                            })
+                        })
                       })
                   })
                 })
               })
             })
-          })
         })
+      }
     })
-  })
 }
 
 function restart () {
