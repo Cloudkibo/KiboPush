@@ -206,7 +206,7 @@ class Sessions extends React.Component {
                 options={this.state.logOptions}
                 onChange={this.logChange}
                 placeholder='Sort Sessions'
-                value={this.state.logValue}
+                value={this.logValue}
               />
               <br />
               <Select
@@ -214,7 +214,7 @@ class Sessions extends React.Component {
                 options={this.state.pageOptions}
                 onChange={this.pageChange}
                 placeholder='Select Page'
-                value={this.state.pageValue}
+                value={this.pageValue}
               />
             </Popover>
           </div>
