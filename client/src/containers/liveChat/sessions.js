@@ -60,7 +60,9 @@ class Sessions extends React.Component {
       console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
-        myPages.push({value: page.pageId, label: page.pageName})
+        if(page.connected){
+          myPages.push({value: page.pageId, label: page.pageName})
+        }
       })
       this.setState({pageOptions: myPages})
     }
