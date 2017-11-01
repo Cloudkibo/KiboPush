@@ -20,6 +20,7 @@ class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
+    props.getuserdetails()
     this.state = {
       page: {
         options: []

@@ -8,6 +8,7 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
+const pageBroadcast = require('../page_broadcast/page_broadcast.model')
 const TAG = 'api/pages/pages.controller.js'
 
 exports.index = function (req, res) {
@@ -22,7 +23,40 @@ exports.index = function (req, res) {
     res.status(200).json(data)
   })
 }
-
+exports.sentVsSeen = function (req, res) {
+  pageBroadcast.aggregate(
+    [
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, broadcastSentCount) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting broadcastSentCount count ${JSON.stringify(err)}`
+      })
+    }
+    pageBroadcast.aggregate(
+      [
+        { $match: {seen: true} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastSeenCount) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting broadcastSeenCount count ${JSON.stringify(err)}`
+        })
+      }
+      let datacounts = {
+        broadcastSentCount: broadcastSentCount,
+        broadcastSeenCount: broadcastSeenCount
+      }
+      logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+      res.status(200).json({
+        status: 'success',
+        payload: datacounts
+      })
+    })
+  })
+}
 exports.enable = function (req, res) {
 
 }

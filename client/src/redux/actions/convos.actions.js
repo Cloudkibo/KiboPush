@@ -1,4 +1,4 @@
-import * as ActionTypes from '../constants/constants'
+// import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 

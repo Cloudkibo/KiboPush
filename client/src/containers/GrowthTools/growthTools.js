@@ -4,7 +4,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
-import Popover from 'react-simple-popover'
+// import Popover from 'react-simple-popover'
 
 class GrowthTools extends React.Component {
   constructor (props, context) {
