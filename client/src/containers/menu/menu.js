@@ -172,31 +172,11 @@ class Menu extends React.Component {
       </div>
       <form style={{marginBottom: '20px'}}>
         <h5>When Pressed:</h5>
-        <div>
-          <label className='radio-inline'>
-            <input type='radio' checked={this.state.optionSelected === this.option1} name='menuOption' value='option1' onChange={() => this.handleOption(this.option1)} />
-            {this.option1}
-          </label>
-        </div>
-        <div>
-          <label className='radio-inline'>
-            <input type='radio' checked={this.state.optionSelected === this.option2} name='menuOption' value='option2' onChange={() => this.handleOption(this.option2)} />
-            {this.option2}
-          </label>
-        </div>
-        <div>
-          <label className='radio-inline'>
-            <input type='radio' checked={this.state.optionSelected === this.option3} name='menuOption' value='option3' onChange={() => this.handleOption(this.option3)} />
-            {this.option3}
-          </label>
-        </div>
       </form>
-      {this.state.optionSelected === this.option1 &&
       <div className='container'>
         <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}>Add Submenu</button>
       </div>
-    }
-      {this.state.optionSelected === this.option2 &&
+
       <div className='container'>
 
         <Link to='CreateMessage'>
@@ -205,15 +185,14 @@ class Menu extends React.Component {
           </div>
         </Link>
       </div>
-    }
-      {this.state.optionSelected === this.option3 &&
+
       <div className='container'>
         <div className='row'>
           <label><b>Website URL to open</b></label>
           <input style={{marginBottom: '20px'}} type='url' className='form-control' />
         </div>
       </div>
-    }
+    
       <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
       <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
 
