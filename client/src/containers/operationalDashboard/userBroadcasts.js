@@ -11,8 +11,7 @@ class BroadcastsInfo extends React.Component {
     props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
-      totalLength: 0,
-      filterValue: '-1'
+      totalLength: 0
     }
     //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
@@ -83,17 +82,16 @@ class BroadcastsInfo extends React.Component {
 
   onFilter (e) {
     console.log(e.target.value)
-    this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '-1') {
-      for (let i = 0; i < this.state.broadcastsData.length; i++) {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
         if (e.target.value === 'miscellaneous') {
-          if (this.state.broadcastsData[i].payload.length > 1) {
-            filtered.push(this.state.broadcastsData[i])
+          if (this.props.broadcasts[i].payload.length > 1) {
+            filtered.push(this.props.broadcasts[i])
           }
         } else {
-          if (this.state.broadcastsData[i].payload.length === 1 && this.state.broadcastsData[i].payload[0].componentType === e.target.value) {
-            filtered.push(this.state.broadcastsData[i])
+          if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
+            filtered.push(this.props.broadcasts[i])
           }
         }
       }
@@ -121,8 +119,7 @@ class BroadcastsInfo extends React.Component {
                     </div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-4'>
                       <label> Filter </label>
-                      <select className='form-control' value={this.state.filterValue} onChange={this.onFilter} >
-                        <option value='-1' disabled >Filter by type...</option>
+                      <select className='input-sm' onChange={this.onFilter} >
                         <option value='text'>text</option>
                         <option value='image'>image</option>
                         <option value='card'>card</option>
