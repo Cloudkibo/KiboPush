@@ -9,7 +9,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
-
+import { transformData } from './utility'
 import { Link } from 'react-router'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
@@ -211,6 +211,7 @@ class Menu extends React.Component {
               SEND MESSAGE
               </button>
             </Link>
+            
             <div className='ui-block-title'>
               <h5>Select a page to setup its Main Menu</h5>
             </div>
@@ -295,6 +296,9 @@ class Menu extends React.Component {
               <li><input style={{margin: 10}} type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
             </ul>
+            <button className='btn btn-sm btn-primary pull-right'>
+              Save Menu
+            </button>
           </div>
         </div>
       </div>
