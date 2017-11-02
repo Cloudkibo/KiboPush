@@ -2,9 +2,26 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function updatePollsList (data) {
+  console.log('updatePollsList')
+  console.log(data)
+  let polls = data.polls
+  let pagepolls = data.pollpages
+  let responsesCount = data.responsesCount
+
+  for (let j = 0; j < polls.length; j++) {
+    let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
+    polls[j].sent = pagepoll.length// total sent
+    let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+    polls[j].seen = pagepollTapped.length // total tapped
+    let pagepollresponse = responsesCount.filter((c) => c.pollId === polls[j]._id)
+    polls[j].responses = pagepollresponse.length
+    console.log('updated polls')
+    console.log(polls[j])
+  }
+  var newPoll = polls.reverse()
   return {
     type: ActionTypes.FETCH_POLLS_LIST,
-    data: data.reverse()
+    data: newPoll
   }
 }
 
