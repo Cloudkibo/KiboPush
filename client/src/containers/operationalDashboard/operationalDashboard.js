@@ -193,6 +193,8 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
+          <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
+          </button>
           <Select
             name='form-field-name'
             options={this.state.options}
@@ -201,8 +203,6 @@ class OperationalDashboard extends React.Component {
             value={this.state.selectedValue}
             clearValueText='Filter by:'
           />
-          <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
-          </button>
           <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
