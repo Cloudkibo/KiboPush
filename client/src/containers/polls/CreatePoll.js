@@ -363,7 +363,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPollsList: loadPollsList,
     addPoll: addPoll,
-    pollTourCompleted: pollTourCompleted
+    pollTourCompleted: pollTourCompleted,
+    getuserdetails: getuserdetails
   },
     dispatch)
 }

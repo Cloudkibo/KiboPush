@@ -25,12 +25,19 @@ class StackedBar extends React.Component {
     document.body.appendChild(addScript)
   }
   render () {
-    const data = [ {name: 'Broadcasts', sent: 868, seen: 967},
-              //  {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count},
-              {name: 'Polls', sent: 868, seen: 967},
-              {name: 'Surveys', sent: 1397, seen: 1098}]
+    var data = []
+    console('going to check conition')
+    if (this.props.sentseendata.broadcastSentCount.length > 0 && this.props.sentseendata.pollSentCount.length > 0 && this.props.sentseendata.surveySentCount.length > 0 && this.props.sentseendata.broadcastSeenCount.length > 0 && this.props.sentseendata.pollSeenCount.length > 0 && this.props.sentseendata.surveySeenCount.length > 0) {
+      console.log('props.sentseendata.broadcastSentCount[0].count', this.props.sentseendata.broadcastSentCount[0].count)
+      data = [ // {name: 'Broadcasts', sent: 868, seen: 967},
+              {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count},
+              {name: 'Polls', sent: this.props.sentseendata.pollSentCount[0].count, seen: this.props.sentseendata.pollSeenCount[0].count},
+              {name: 'Surveys', sent: this.props.sentseendata.surveySentCount[0].count, seen: this.props.sentseendata.surveySeenCount[0].count}]
+    }
+    console('checked condition')
+
     return (
-      <div className='row' style={{marginTop: '50px', marginLeft: '100px'}}>
+      <div className='row'>
         <ComposedChart layout='vertical' width={600} height={400} data={data}
           margin={{top: 20, right: 20, bottom: 20, left: 20}} style={{marginTop: '50px', marginLeft: '100px'}}>
           <XAxis type='number' />
