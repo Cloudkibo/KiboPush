@@ -9,7 +9,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
-import { transformData } from './utility'
+import transformData from './utility'
 import { Link } from 'react-router'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
@@ -29,7 +29,7 @@ class Menu extends React.Component {
       text: '+Add Menu Item',
       openPopover: false,
       itemMenus: [{
-        label: 'First Menu',
+        title: 'First Menu',
         submenu: []
       }],
       indexClicked: '',
@@ -43,11 +43,10 @@ class Menu extends React.Component {
 
     this.target = ''
     this.pageChange = this.pageChange.bind(this)
-    this.saveItem = this.saveItem.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
     this.handleClose = this.handleClose.bind(this)
-    // this.handleCheckbox = this.handleCheckbox.bind(this)
+    this.changeLabel = this.changeLabel.bind(this)
     props.fetchMenu()
   }
 
@@ -70,7 +69,9 @@ class Menu extends React.Component {
       console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
-        myPages.push({value: page._id, label: page.pageName})
+        if (page.connected) {
+          myPages.push({value: page._id, label: page.pageName})
+        }
       })
       this.setState({pageOptions: myPages})
     }
@@ -95,7 +96,7 @@ class Menu extends React.Component {
         return
       }
       temp[this.state.indexClicked].submenu.push({
-        label: 'Sub Menu',
+        title: 'Sub Menu',
         submenu: []
       })
     }
@@ -104,7 +105,7 @@ class Menu extends React.Component {
         return
       }
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
-        label: 'Nested Menu'
+        title: 'Nested Menu'
       })
     }
     this.setState({itemMenus: temp})
@@ -132,12 +133,6 @@ class Menu extends React.Component {
     console.log('handleClose', e)
     this.setState({openPopover: false})
   }
-  saveItem (event) {
-    console.log('event.target.', event.target.value)
-    this.setState({itemName: event.target.value})
-    console.log('this.state.itemName', this.state.itemName)
-    //  this.props.addMenuItem({pageId: this.state.pageValue, menuItem: this.state.itemName, menuItemType: 'weblink'})
-  }
   onSelectItem (index) {
     this.setState({indexClicked: index})
     this.setState({openPopover: !this.state.openPopover})
@@ -146,20 +141,38 @@ class Menu extends React.Component {
   }
   addItem () {
     var temp = this.state.itemMenus
-
     if (temp.length >= 3) {
       return
     }
-
     temp.push({
-      label: 'Menu Name',
+      title: 'Menu Name',
       submenu: []
     })
-
     this.setState({itemMenus: temp})
   }
+
+  changeLabel (event, type, indexObject) {
+    var temp = this.state.itemMenus
+    console.log('Type is: ', type)
+    switch (type) {
+      case 'item':
+        temp[indexObject.itemIndex].title = event.target.value
+        break
+      case 'submenu':
+        console.log('SubMenu CHanged')
+        temp[indexObject.itemIndex].submenu[indexObject.subIndex].title = event.target.value
+        break
+      case 'nested':
+        temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu[indexObject.nestedIndex].title = event.target.value
+        break
+      default:
+        break
+    }
+    this.setState({itemMenus: temp})
+  }
+
   render () {
-    console.log('this.target', this.target)
+    console.log('This transform data', transformData(this.state.itemMenus))
 
     let popup = <Popover
       style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
@@ -211,7 +224,7 @@ class Menu extends React.Component {
               SEND MESSAGE
               </button>
             </Link>
-            
+
             <div className='ui-block-title'>
               <h5>Select a page to setup its Main Menu</h5>
             </div>
@@ -229,11 +242,14 @@ class Menu extends React.Component {
             <ul style={{paddingLeft: '20px', width: '30%'}}>
               {
                 this.state.itemMenus.map((itm, index) => {
+                  // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
                     return (<li>
                       <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
-                          <div className='form-group'><input type='text' placeholder={itm.label} className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
+                          <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                            placeholder={itm.title} className='form-control'
+                            onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
                         </form>
                         {popup}
                       </div>
@@ -241,7 +257,9 @@ class Menu extends React.Component {
                         return <div style={{marginLeft: 50}}>
                           <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
-                              <div className='form-group'><input type='text' placeholder={sub.label} onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} className='form-control' onChange={this.saveItem} style={{width: '350px'}} /></div>
+                              <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
+                                onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
+                                className='form-control' style={{width: '350px'}} /></div>
                             </form>
                             {popup}
                           </div>
@@ -250,7 +268,8 @@ class Menu extends React.Component {
                             return <div style={{marginLeft: 50}}>
                               <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
-                                  <div className='form-group'><input type='text' placeholder={nested.label} className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                                  <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control'
+                                    onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
                                 </form>
                                 {popup}
                               </div>
@@ -264,7 +283,11 @@ class Menu extends React.Component {
                     return <li>
                       <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
-                          <div className='form-group'><input type='text' placeholder={itm.label} className='form-control' onChange={this.saveItem} onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /> <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div></div>
+                          <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                            placeholder={itm.title} className='form-control'
+                            onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} />
+                            <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div>
+                          </div>
                         </form>
                         {popup}
                       </div>
@@ -273,7 +296,10 @@ class Menu extends React.Component {
                         return <div style={{marginLeft: 50}}>
                           <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
-                              <div className='form-group'><input type='text' placeholder={sub.label} className='form-control' onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                              <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
+                                placeholder={sub.title} className='form-control'
+                                onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
+                                style={{width: '350px'}} /></div>
                             </form>
                             {popup}
                           </div>
@@ -281,7 +307,8 @@ class Menu extends React.Component {
                             return <div style={{marginLeft: 50}}>
                               <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
-                                  <div className='form-group'><input type='text' placeholder={nested.label} className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} onChange={this.saveItem} style={{width: '350px'}} /></div>
+                                  <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
+                                    className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
                                 </form>
                                 {popup}
                               </div>
@@ -295,10 +322,10 @@ class Menu extends React.Component {
               }
               <li><input style={{margin: 10}} type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
+              <button className='btn btn-sm btn-primary pull-right'>
+                Save Menu
+              </button>
             </ul>
-            <button className='btn btn-sm btn-primary pull-right'>
-              Save Menu
-            </button>
           </div>
         </div>
       </div>
