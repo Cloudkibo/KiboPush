@@ -131,7 +131,8 @@ class Page extends React.Component {
     var filtered = []
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
+        if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.pages[i].connected) {
+          console.log('filtered', filtered)
           filtered.push(this.props.pages[i])
         }
       }
