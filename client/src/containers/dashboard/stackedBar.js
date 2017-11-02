@@ -25,7 +25,8 @@ class StackedBar extends React.Component {
     document.body.appendChild(addScript)
   }
   render () {
-    const data = [{name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count},
+    const data = [ {name: 'Broadcasts', sent: 868, seen: 967},
+              //  {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count},
               {name: 'Polls', sent: 868, seen: 967},
               {name: 'Surveys', sent: 1397, seen: 1098}]
     return (
