@@ -18,6 +18,7 @@ class BroadcastsInfo extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
+    this.onFilter = this.onFilter.bind(this)
   }
   componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail')
@@ -78,6 +79,11 @@ class BroadcastsInfo extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+
+  onFilter (e) {
+    console.log(e.target.value)
+  }
+
   render () {
     return (
       <div className='row'>
@@ -87,10 +93,28 @@ class BroadcastsInfo extends React.Component {
               <h4>Broadcasts</h4><br />
               { this.props.broadcasts && this.props.broadcasts.length > 0
               ? <div className='table-responsive'>
-                <div>
-                  <label> Search </label>
-                  <input type='text' placeholder='Search Broadcasts' className='form-control' onChange={this.searchBroadcast} />
-                </div>
+                <form>
+                  <div className='form-row'>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                      <label> Filter </label>
+                      <select className='form-control' onChange={this.onFilter} >
+                        <option value='' disabled selected>Filter by type...</option>
+                        <option value='text'>text</option>
+                        <option value='image'>image</option>
+                        <option value='card'>card</option>
+                        <option value='gallery'>gallery</option>
+                        <option value='audio'>audio</option>
+                        <option value='video'>video</option>
+                        <option value='file'>file</option>
+                        <option value='miscellaneous'>miscellaneous</option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
                 {
                   this.state.broadcastsData && this.state.broadcastsData.length > 0
                   ? <div>
@@ -99,7 +123,6 @@ class BroadcastsInfo extends React.Component {
                         <tr>
                           <th>Title</th>
                           <th>Type</th>
-                          <th>Text</th>
                           <th>Created At</th>
                           <th />
                         </tr>
@@ -108,9 +131,8 @@ class BroadcastsInfo extends React.Component {
                         {
                           this.state.broadcastsData.map((broadcast, i) => (
                             <tr>
-                              <td>{broadcast.title ? broadcast.title : ''}</td>
-                              <td>{broadcast.payload && broadcast.payload.length > 0 ? broadcast.payload[0].componentType : broadcast.payload ? broadcast.payload.componentType : broadcast.type}</td>
-                              <td>{broadcast.payload && broadcast.payload.length > 0 && broadcast.payload[0].componentType === 'text' ? broadcast.payload[0].text : broadcast.text ? broadcast.text : ''}</td>
+                              <td>{broadcast.title}</td>
+                              <td>{broadcast.payload.length > 1 ? 'miscellaneous' : broadcast.payload[0].componentType}</td>
                               <td>{handleDate(broadcast.datetime)}</td>
                             </tr>
                           ))
