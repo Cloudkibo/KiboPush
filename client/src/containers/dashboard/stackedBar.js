@@ -30,7 +30,7 @@ class StackedBar extends React.Component {
               {name: 'Polls', sent: 868, seen: 967},
               {name: 'Surveys', sent: 1397, seen: 1098}]
     return (
-      <div className='row'>
+      <div className='row' style={{marginTop: '50px', marginLeft: '100px'}}>
         <ComposedChart layout='vertical' width={600} height={400} data={data}
           margin={{top: 20, right: 20, bottom: 20, left: 20}}>
           <XAxis type='number' />
