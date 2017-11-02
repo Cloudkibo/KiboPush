@@ -155,79 +155,85 @@ class Workflows extends React.Component {
                       Workflow
                     </button>
                   </Link>
-                  <form>
-                    <div className='form-row'>
-                      <div style={{display: 'inline-block'}} className='form-group col-md-6'>
-                        <label> Condition </label>
-                        <select className='input-sm' onChange={this.onFilter} >
-                          <option value='' disabled>Filter by Condition...</option>
-                          <option value='message_is'>message_is</option>
-                          <option value='message_contains'>message_contains</option>
-                          <option value='message_begins'>message_begins</option>
-                        </select>
-                      </div>
-                      <div style={{display: 'inline-block'}} className='form-group col-md-6'>
-                        <label> Active </label>
-                        <select className='input-sm' onChange={this.onFilter} >
-                          <option value='' disabled>Filter by Status...</option>
-                          <option value='true'>yes</option>
-                          <option value='false'>no</option>
-                        </select>
-                      </div>
-                    </div>
-                  </form>
                   {
-                    this.state.workflowsData && this.state.workflowsData.length > 0
+                    this.props.workflows && this.props.workflows.length > 0
                     ? <div className='table-responsive'>
-                      <table className='table table-striped'>
-                        <thead>
-                          <tr>
-                            <th>Condition</th>
-                            <th>Key Words</th>
-                            <th>Message</th>
-                            <th>Active</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {
-                            this.state.workflowsData.map((workflow, i) => (
+                      <form>
+                        <div className='form-row'>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                            <label> Condition </label>
+                            <select className='input-sm' value={this.state.filterByCondition} onChange={this.filterByCondition} >
+                              <option value='' disabled>Filter by Condition...</option>
+                              <option value='message_is'>message_is</option>
+                              <option value='message_contains'>message_contains</option>
+                              <option value='message_begins'>message_begins</option>
+                            </select>
+                          </div>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                            <label> Active </label>
+                            <select className='input-sm' value={this.state.filterByStatus} onChange={this.filterByStatus} >
+                              <option value='' disabled>Filter by Status...</option>
+                              <option value='true'>yes</option>
+                              <option value='false'>no</option>
+                            </select>
+                          </div>
+                        </div>
+                      </form>
+                      {
+                        this.state.workflowsData && this.state.workflowsData.length > 0
+                        ? <div>
+                          <table className='table table-striped'>
+                            <thead>
                               <tr>
-                                <td>{workflow.condition}</td>
-                                <td>{workflow.keywords.join(',')}</td>
-                                <td>{workflow.reply}</td>
-                                <td>{workflow.isActive ? 'Yes' : 'No'}</td>
-                                <td>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoEdit(workflow)}>Edit
-                                  </button>
-                                  {
-                                    workflow.isActive === true
-                                    ? <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
-                                    </button>
-                                    : <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}} onClick={() => this.enableWorkflow(workflow)}>Enable
-                                    </button>
-                                  }
-                                </td>
+                                <th>Condition</th>
+                                <th>Key Words</th>
+                                <th>Message</th>
+                                <th>Active</th>
+                                <th>Actions</th>
                               </tr>
-                            ))
-                          }
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 4)}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                            </thead>
+                            <tbody>
+                              {
+                                this.state.workflowsData.map((workflow, i) => (
+                                  <tr>
+                                    <td>{workflow.condition}</td>
+                                    <td>{workflow.keywords.join(',')}</td>
+                                    <td>{workflow.reply}</td>
+                                    <td>{workflow.isActive ? 'Yes' : 'No'}</td>
+                                    <td>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.gotoEdit(workflow)}>Edit
+                                      </button>
+                                      {
+                                        workflow.isActive === true
+                                        ? <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
+                                        </button>
+                                        : <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}} onClick={() => this.enableWorkflow(workflow)}>Enable
+                                        </button>
+                                      }
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
+                          <ReactPaginate previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 4)}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                        : <p> No search results found. </p>
+                      }
                     </div>
                     : <div className='table-responsive'>
                       <p> No data to display </p>
