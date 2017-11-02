@@ -35,6 +35,7 @@ class Dashboard extends React.Component {
       steps: [],
       sentseendata1: []
     }
+    console.log('anishachhatwani')
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)

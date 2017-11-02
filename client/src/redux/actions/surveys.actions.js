@@ -20,6 +20,7 @@ export function showSurveys (data) {
     //   }
     // }
     console.log('updated surveys')
+    console.log('updated surveys')
     console.log(surveys[j])
   }
   var newSurvey = surveys.reverse()
