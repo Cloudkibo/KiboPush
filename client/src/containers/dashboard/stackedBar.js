@@ -26,7 +26,7 @@ class StackedBar extends React.Component {
   }
   render () {
     var data = []
-    if (this.props.sentseendata.broadcastSentCount && this.props.sentseendata.pollSentCount && this.props.sentseendata.surveySentCount && this.props.sentseendata.broadcastSeenCount && this.props.sentseendata.pollSeenCount && this.props.sentseendata.surveySeenCount) {
+    if (this.props.sentseendata.broadcastSentCount.length > 0 && this.props.sentseendata.pollSentCount.length > 0 && this.props.sentseendata.surveySentCount.length > 0 && this.props.sentseendata.broadcastSeenCount.length > 0 && this.props.sentseendata.pollSeenCount.length > 0 && this.props.sentseendata.surveySeenCount.length > 0) {
       console.log('props.sentseendata.broadcastSentCount[0].count', this.props.sentseendata.broadcastSentCount[0].count)
       data = [ // {name: 'Broadcasts', sent: 868, seen: 967},
               {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count},
