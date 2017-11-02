@@ -9,7 +9,7 @@ const logger = require('../../components/logger')
 const TAG = 'config/integrations/pubsubhubbub.js'
 
 const topic = 'https://www.youtube.com/feeds/videos.xml?channel_id=UCWMz6QX04xYwqYoQVEtxneQ'
-const hub = 'http://pubsubhubbub.appspot.com/'
+const hub = 'https://pubsubhubbub.appspot.com/'
 
 let pubsub
 
@@ -47,12 +47,14 @@ module.exports = function () {
   })
 
   pubsub.on('listen', () => {
-    logger.serverLog(TAG, `Server listening on port ${pubsub.port}`)
-    pubsub.subscribe(topic, hub, err => {
+    logger.serverLog(TAG, `Server listening on port ${pubsub.port} and callback URL ${config.pubsubhubbub.callbackUrl}`)
+    pubsub.subscribe(topic, hub, config.pubsubhubbub.callbackUrl, (err, topic) => {
       if (err) {
         logger.serverLog(TAG, 'Error in subscribing to pubsubhubbub')
         logger.serverLog(TAG, JSON.stringify(err))
       }
+      logger.serverLog(TAG, `Callback of subscribe in pubhub ${JSON.stringify(
+        (topic))}`)
     })
   })
 }

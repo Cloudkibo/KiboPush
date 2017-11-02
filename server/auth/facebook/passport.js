@@ -227,10 +227,12 @@ function createMenuForPage (page) {
 
   needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
     if (!err) {
-      console.log(resp.body)
+      logger.serverLog(TAG,
+        `Menu added to page ${page.pageName}`)
     }
     if (err) {
-      console.log('neddle error')
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
     }
   })
 }

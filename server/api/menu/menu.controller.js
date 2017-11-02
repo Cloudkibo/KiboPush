@@ -3,8 +3,10 @@
  */
 const logger = require('../../components/logger')
 const TAG = 'api/menu/menu.controller.js'
+const Pages = require('../../api/pages/Pages.model')
 let Menu = require('./menu.model')
-const crypto = require('crypto')
+const needle = require('needle')
+const _ = require('lodash')
 
 // Get list of menu items
 exports.index = function (req, res) {
@@ -12,7 +14,7 @@ exports.index = function (req, res) {
     if (err) {
       logger.serverLog(TAG, `Internal Server Error on fetch ${err}`)
       return res.status(500)
-      .json({status: 'failed', description: 'Internal Server Error'})
+        .json({status: 'failed', description: 'Internal Server Error'})
     }
     return res.status(200).json({
       status: 'success',
@@ -26,7 +28,7 @@ exports.indexByPage = function (req, res) {
     if (err) {
       logger.serverLog(TAG, `Internal Server Error on fetch ${err}`)
       return res.status(500)
-      .json({status: 'failed', description: 'Internal Server Error'})
+        .json({status: 'failed', description: 'Internal Server Error'})
     }
     return res.status(200).json({
       status: 'success',
@@ -35,124 +37,62 @@ exports.indexByPage = function (req, res) {
   })
 }
 
-exports.createWebLink = function (req, res) {
-  // todo save it with facebook by calling api
-  var today = new Date()
-  var uid = crypto.randomBytes(5).toString('hex')
-  var uniqueId = 'f' + uid + '' + today.getFullYear() + '' +
-    (today.getMonth() + 1) + '' + today.getDate()
-  uniqueId += '' + today.getHours() + '' + today.getMinutes() + '' +
-    today.getSeconds()
-  const menu = new Menu({
-    title: req.body.title,
-    pageId: req.body.pageId,
-    userId: req.user._id,
-    menuId: uniqueId, // same as pageId for parent menu
-    menuItemType: req.body.menuItemType,
-    parentMenuId: req.body.parentMenuId, // null for top level, menu id of parent id
-    menuWebLink: req.body.menuWebLink // url, only when type is 'weblink'
-  })
+exports.create = function (req, res) {
+  let parametersMissing = false
 
-  // save model to MongoDB
-  menu.save((err, workflow) => {
+  if (!_.has(req.body, 'pageId')) parametersMissing = true
+  if (!_.has(req.body, 'userId')) parametersMissing = true
+  if (!_.has(req.body, 'payload')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Pages.findOne({pageId: req.body.pageId, userId: req.body.userId}, (err, page) => {
     if (err) {
-      res.status(500).json({
-        status: 'Failed',
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+      return res.status(500).json({
+        status: 'failed',
         error: err,
-        description: 'Failed to insert record'
+        description: 'Failed to find page. Internal Server Error'
       })
-      logger.serverLog(TAG, JSON.stringify(err))
-    } else {
-      res.status(201).json({status: 'Success', payload: workflow})
     }
-  })
-}
-
-exports.createNestedMenu = function (req, res) {
-  // todo save it with facebook by calling api
-  var today = new Date()
-  var uid = crypto.randomBytes(5).toString('hex')
-  var uniqueId = 'f' + uid + '' + today.getFullYear() + '' +
-    (today.getMonth() + 1) + '' + today.getDate()
-  uniqueId += '' + today.getHours() + '' + today.getMinutes() + '' +
-    today.getSeconds()
-  const menu = new Menu({
-    title: req.body.title,
-    pageId: req.body.pageId,
-    userId: req.user._id,
-    menuId: uniqueId, // same as pageId for parent menu
-    menuItemType: req.body.menuItemType,
-    parentMenuId: req.body.parentMenuId
-  })
-
-  // save model to MongoDB
-  menu.save((err, workflow) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        error: err,
-        description: 'Failed to insert record'
+    if (!page) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'Page not found'
       })
-      logger.serverLog(TAG, JSON.stringify(err))
-    } else {
-      res.status(201).json({status: 'Success', payload: workflow})
     }
-  })
-}
+    const menu = new Menu(req.body)
 
-exports.createReplyMenu = function (req, res) {
-  // todo save it with facebook by calling api
-  var today = new Date()
-  var uid = crypto.randomBytes(5).toString('hex')
-  var uniqueId = 'f' + uid + '' + today.getFullYear() + '' +
-    (today.getMonth() + 1) + '' + today.getDate()
-  uniqueId += '' + today.getHours() + '' + today.getMinutes() + '' +
-    today.getSeconds()
-  const menu = new Menu({
-    title: req.body.title,
-    pageId: req.body.pageId,
-    userId: req.user._id,
-    menuId: uniqueId, // same as pageId for parent menu
-    menuItemType: req.body.menuItemType,
-    parentMenuId: req.body.parentMenuId,
-    payload: req.body.payload, // only when type is 'reply'
-    replyTriggerMessage: req.body.replyTriggerMessage // only when type is reply, used to trigger reply
-  })
+    // save model to MongoDB
+    menu.save((err, workflow) => {
+      if (err) {
+        res.status(500).json({
+          status: 'failed',
+          error: err,
+          description: 'Failed to insert record'
+        })
+        logger.serverLog(TAG, JSON.stringify(err))
+      } else {
+        const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
 
-  // save model to MongoDB
-  menu.save((err, workflow) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        error: err,
-        description: 'Failed to insert record'
-      })
-      logger.serverLog(TAG, JSON.stringify(err))
-    } else {
-      res.status(201).json({status: 'Success', payload: workflow})
-    }
-  })
-}
+        needle.request('post', requestUrl, req.body.payload, {json: true},
+          (err, resp) => {
+            if (!err) {
+              logger.serverLog(TAG,
+                `Menu added to page ${page.pageName}`)
+            }
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
 
-exports.destroy = function (req, res) {
-  // todo save it with facebook by calling api
-  logger.serverLog(TAG,
-    `This is body in delete menu ${JSON.stringify(req.params)}`)
-  Menu.findById(req.params.id, (err, menu) => {
-    if (err) {
-      return res.status(500)
-      .json({status: 'failed', description: 'Internal Server Error'})
-    }
-    if (!menu) {
-      return res.status(404)
-      .json({status: 'failed', description: 'Record not found'})
-    }
-    menu.remove((err2) => {
-      if (err2) {
-        return res.status(500)
-        .json({status: 'failed', description: 'Menu delete failed'})
+        res.status(201).json({status: 'Success', payload: workflow})
       }
-      return res.status(204).end()
     })
   })
 }
