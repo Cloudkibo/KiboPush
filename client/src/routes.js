@@ -6,6 +6,7 @@ import Home from './containers/home'
 import Login from './containers/login/login'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
+import StackedBar from './containers/dashboard/stackedBar'
 import MainMenu from './containers/menu/menu'
 import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
@@ -113,6 +114,8 @@ const routes = (
     <Route path='/live' component={LiveChat} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />
+    <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
+
   </Route>
 
 )
