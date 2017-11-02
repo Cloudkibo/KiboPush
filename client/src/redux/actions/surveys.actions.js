@@ -3,9 +3,29 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function showSurveys (data) {
+  console.log('updateSurveysList')
+  console.log(data)
+  let surveys = data.surveys
+  let pagesurveys = data.surveypages
+  let responsesCount = data.responsesCount
+
+  for (let j = 0; j < surveys.length; j++) {
+    let pagesurvey = pagesurveys.filter((c) => c.surveyId === surveys[j]._id)
+    surveys[j].sent = pagesurvey.length// total sent
+    let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+    surveys[j].seen = pagesurveyTapped.length // total tapped
+    for (let i = 0; i < responsesCount.length; i++) {
+      if (responsesCount[i].surveyId === surveys[j]._id) {
+        surveys[j].responses = responsesCount[i].count
+      }
+    }
+    console.log('updated surveys')
+    console.log(surveys[j])
+  }
+  var newSurvey = surveys.reverse()
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
-    data: data.reverse()
+    data: newSurvey
   }
 }
 
