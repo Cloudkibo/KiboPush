@@ -13,8 +13,11 @@ export function updatePollsList (data) {
     polls[j].sent = pagepoll.length// total sent
     let pagepollTapped = pagepoll.filter((c) => c.seen === true)
     polls[j].seen = pagepollTapped.length // total tapped
-    let pagepollresponse = responsesCount.filter((c) => c.pollId === polls[j]._id)
-    polls[j].responses = pagepollresponse.length
+    for (let i = 0; i < responsesCount.length; i++) {
+      if (responsesCount[i].pollId === polls[j]._id) {
+        polls[j].responses = responsesCount[i].count
+      }
+    }
     console.log('updated polls')
     console.log(polls[j])
   }
