@@ -171,6 +171,8 @@ class Poll extends React.Component {
                           <th>Statment</th>
                           <th>Created At</th>
                           <th>Sent</th>
+                          <th>Seen</th>
+                          <th>Responses</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -182,6 +184,8 @@ class Poll extends React.Component {
                             <td>{poll.statement}</td>
                             <td>{handleDate(poll.datetime)}</td>
                             <td>{poll.sent}</td>
+                            <td>{poll.seen}</td>
+                            <td>{poll.responses}</td>
                             <td>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}

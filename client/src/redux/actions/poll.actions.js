@@ -14,7 +14,7 @@ export function updatePollsList (data) {
     let pagepollTapped = pagepoll.filter((c) => c.seen === true)
     polls[j].seen = pagepollTapped.length // total tapped
     for (let i = 0; i < responsesCount.length; i++) {
-      if (responsesCount[i].pollId === polls[j]._id) {
+      if (responsesCount[i]._id === polls[j]._id) {
         polls[j].responses = responsesCount[i].count
       }
     }
