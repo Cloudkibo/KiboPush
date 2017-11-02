@@ -93,24 +93,28 @@ class BroadcastsInfo extends React.Component {
               <h4>Broadcasts</h4><br />
               { this.props.broadcasts && this.props.broadcasts.length > 0
               ? <div className='table-responsive'>
-                <div style={{display: 'inline-block'}}>
-                  <label> Search: </label>
-                  <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
-                </div>
-                <div style={{display: 'inline-block'}}>
-                  <label> Filter: </label>
-                  <select className='form-control' onChange={this.onFilter} >
-                    <option value='' disabled>Filter by type...</option>
-                    <option value='text'>text</option>
-                    <option value='image'>image</option>
-                    <option value='card'>card</option>
-                    <option value='gallery'>gallery</option>
-                    <option value='audio'>audio</option>
-                    <option value='video'>video</option>
-                    <option value='file'>file</option>
-                    <option value='miscellaneous'>miscellaneous</option>
-                  </select>
-                </div>
+                <form>
+                  <div className='form-row'>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                      <label> Filter </label>
+                      <select className='form-control' onChange={this.onFilter} >
+                        <option value='' disabled selected>Filter by type...</option>
+                        <option value='text'>text</option>
+                        <option value='image'>image</option>
+                        <option value='card'>card</option>
+                        <option value='gallery'>gallery</option>
+                        <option value='audio'>audio</option>
+                        <option value='video'>video</option>
+                        <option value='file'>file</option>
+                        <option value='miscellaneous'>miscellaneous</option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
                 {
                   this.state.broadcastsData && this.state.broadcastsData.length > 0
                   ? <div>
