@@ -192,7 +192,7 @@ class Menu extends React.Component {
           <input style={{marginBottom: '20px'}} type='url' className='form-control' />
         </div>
       </div>
-    
+
       <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
       <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
 
