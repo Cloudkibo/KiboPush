@@ -14,7 +14,7 @@ const initialState = {
       surveys: 0
     }
   },
-  sentseendata: []
+  sentseendata: {}
 }
 export function sentSeenInfo (state = initialState, action) {
   switch (action.type) {
