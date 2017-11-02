@@ -5,7 +5,7 @@
 
 import React from 'react'
 import Joyride from 'react-joyride'
-import StackedBar from './StackedBar'
+import StackedBar from './stackedBar'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
