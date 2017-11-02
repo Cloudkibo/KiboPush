@@ -23,12 +23,16 @@ class Workflows extends React.Component {
     super(props, context)
     this.state = {
       workflowsData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterByCondition: '',
+      filterByStatus: ''
     }
     this.disableWorkflow = this.disableWorkflow.bind(this)
     this.enableWorkflow = this.enableWorkflow.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.handleFilterByCondition = this.handleFilterByCondition.bind(this)
+    this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
   }
 
   componentWillMount () {
@@ -94,6 +98,42 @@ class Workflows extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  handleFilterByCondition (e) {
+    var filtered = []
+    this.setState({filterByCondition: e.target.value})
+    if (this.state.filterByStatus !== '') {
+      for (var i = 0; i < this.props.workflows.length; i++) {
+        if (this.props.workflows[i].isActive === this.state.filterByStatus && this.props.workflows[i].condition === e.target.value) {
+          filtered.push(this.props.workflows[i])
+        }
+      }
+    } else {
+      for (var j = 0; j < this.props.workflows.length; j++) {
+        if (this.props.workflows[j].condition === e.target.value) {
+          filtered.push(this.props.workflows[j])
+        }
+      }
+    }
+  }
+
+  handleFilterByStatus (e) {
+    var filtered = []
+    this.setState({filterByStatus: e.target.value})
+    if (this.state.filterByCondition !== '') {
+      for (var i = 0; i < this.props.workflows.length; i++) {
+        if (this.props.workflows[i].isActive === e.target.value && this.props.workflows[i].condition === this.state.filterByCondition) {
+          filtered.push(this.props.workflows[i])
+        }
+      }
+    } else {
+      for (var j = 0; j < this.props.workflows.length; j++) {
+        if (this.props.workflows[j].condition === e.target.value) {
+          filtered.push(this.props.workflows[j])
+        }
+      }
+    }
+  }
+
   render () {
     console.log('Workflows', this.props.workflows)
     return (
@@ -115,6 +155,27 @@ class Workflows extends React.Component {
                       Workflow
                     </button>
                   </Link>
+                  <form>
+                    <div className='form-row'>
+                      <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                        <label> Condition </label>
+                        <select className='input-sm' onChange={this.onFilter} >
+                          <option value='' disabled>Filter by Condition...</option>
+                          <option value='message_is'>message_is</option>
+                          <option value='message_contains'>message_contains</option>
+                          <option value='message_begins'>message_begins</option>
+                        </select>
+                      </div>
+                      <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                        <label> Active </label>
+                        <select className='input-sm' onChange={this.onFilter} >
+                          <option value='' disabled>Filter by Status...</option>
+                          <option value='true'>yes</option>
+                          <option value='false'>no</option>
+                        </select>
+                      </div>
+                    </div>
+                  </form>
                   {
                     this.state.workflowsData && this.state.workflowsData.length > 0
                     ? <div className='table-responsive'>
