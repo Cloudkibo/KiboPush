@@ -162,7 +162,7 @@ class Workflows extends React.Component {
                         <div className='form-row'>
                           <div style={{display: 'inline-block'}} className='form-group col-md-6'>
                             <label> Condition </label>
-                            <select className='input-sm' value={this.state.filterByCondition} onChange={this.filterByCondition} >
+                            <select className='input-sm' value={this.state.filterByCondition} onChange={this.handleFilterByCondition} >
                               <option value='' disabled>Filter by Condition...</option>
                               <option value='message_is'>message_is</option>
                               <option value='message_contains'>message_contains</option>
@@ -171,7 +171,7 @@ class Workflows extends React.Component {
                           </div>
                           <div style={{display: 'inline-block'}} className='form-group col-md-6'>
                             <label> Active </label>
-                            <select className='input-sm' value={this.state.filterByStatus} onChange={this.filterByStatus} >
+                            <select className='input-sm' value={this.state.filterByStatus} onChange={this.handleFilterByStatus} >
                               <option value='' disabled>Filter by Status...</option>
                               <option value='true'>yes</option>
                               <option value='false'>no</option>
