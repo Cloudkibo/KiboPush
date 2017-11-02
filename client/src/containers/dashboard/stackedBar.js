@@ -32,7 +32,7 @@ class StackedBar extends React.Component {
     return (
       <div className='row' style={{marginTop: '50px', marginLeft: '100px'}}>
         <ComposedChart layout='vertical' width={600} height={400} data={data}
-          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+          margin={{top: 20, right: 20, bottom: 20, left: 20}} style={{marginTop: '50px', marginLeft: '100px'}}>
           <XAxis type='number' />
           <YAxis dataKey='name' type='category' />
           <Tooltip />
