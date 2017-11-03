@@ -21,6 +21,7 @@ import ReactPaginate from 'react-paginate'
 class Workflows extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadWorkFlowList()
     this.state = {
       workflowsData: [],
       totalLength: 0,
@@ -33,13 +34,6 @@ class Workflows extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleFilterByCondition = this.handleFilterByCondition.bind(this)
     this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
-  }
-
-  componentWillMount () {
-    if (!this.props.workflows) {
-      //  alert('calling workflows')
-      this.props.loadWorkFlowList()
-    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -102,15 +96,27 @@ class Workflows extends React.Component {
     var filtered = []
     this.setState({filterByCondition: e.target.value})
     if (this.state.filterByStatus !== '') {
-      for (var i = 0; i < this.props.workflows.length; i++) {
-        if (this.props.workflows[i].isActive === this.state.filterByStatus && this.props.workflows[i].condition === e.target.value) {
-          filtered.push(this.props.workflows[i])
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.workflows.length; k++) {
+          if (this.props.workflows[k].isActive === this.state.filterByStatus) {
+            filtered.push(this.props.workflows[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.workflows.length; i++) {
+          if (this.props.workflows[i].isActive === this.state.filterByStatus && this.props.workflows[i].condition === e.target.value) {
+            filtered.push(this.props.workflows[i])
+          }
         }
       }
     } else {
-      for (var j = 0; j < this.props.workflows.length; j++) {
-        if (this.props.workflows[j].condition === e.target.value) {
-          filtered.push(this.props.workflows[j])
+      if (e.target.value === '') {
+        filtered = this.props.workflows
+      } else {
+        for (var j = 0; j < this.props.workflows.length; j++) {
+          if (this.props.workflows[j].condition === e.target.value) {
+            filtered.push(this.props.workflows[j])
+          }
         }
       }
     }
@@ -121,16 +127,30 @@ class Workflows extends React.Component {
   handleFilterByStatus (e) {
     var filtered = []
     this.setState({filterByStatus: e.target.value})
+    console.log(this.props.workflows[0].isActive)
+    console.log(e.target.value)
     if (this.state.filterByCondition !== '') {
-      for (var i = 0; i < this.props.workflows.length; i++) {
-        if (this.props.workflows[i].isActive === e.target.value && this.props.workflows[i].condition === this.state.filterByCondition) {
-          filtered.push(this.props.workflows[i])
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.workflows.length; k++) {
+          if (this.props.workflows[k].condition === this.state.filterByCondition) {
+            filtered.push(this.props.workflows[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.workflows.length; i++) {
+          if (this.props.workflows[i].isActive === e.target.value && this.props.workflows[i].condition === this.state.filterByCondition) {
+            filtered.push(this.props.workflows[i])
+          }
         }
       }
     } else {
-      for (var j = 0; j < this.props.workflows.length; j++) {
-        if (this.props.workflows[j].isActive === e.target.value) {
-          filtered.push(this.props.workflows[j])
+      if (e.target.value === '') {
+        filtered = this.props.workflows
+      } else {
+        for (var j = 0; j < this.props.workflows.length; j++) {
+          if (this.props.workflows[j].isActive === e.target.value) {
+            filtered.push(this.props.workflows[j])
+          }
         }
       }
     }
@@ -171,6 +191,7 @@ class Workflows extends React.Component {
                               <option value='message_is'>message_is</option>
                               <option value='message_contains'>message_contains</option>
                               <option value='message_begins'>message_begins</option>
+                              <option value=''>all</option>
                             </select>
                           </div>
                           <div style={{display: 'inline-block'}} className='form-group col-md-6'>
@@ -179,6 +200,7 @@ class Workflows extends React.Component {
                               <option value='' disabled>Filter by Status...</option>
                               <option value='true'>yes</option>
                               <option value='false'>no</option>
+                              <option value=''>all</option>
                             </select>
                           </div>
                         </div>
