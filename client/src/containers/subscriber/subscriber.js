@@ -19,11 +19,15 @@ class Subscriber extends React.Component {
     props.loadSubscribersList()
     this.state = {
       subscribersData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterByGender: '',
+      filterByLocale: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
+    this.handleFilterByGender = this.handleFilterByGender.bind(this)
+    this.handleFilterByLocale = this.handleFilterByLocale.bind(this)
   }
 
   componentDidMount () {
@@ -82,6 +86,46 @@ class Subscriber extends React.Component {
     }
   }
 
+  handleFilterByGender (e) {
+    var filtered = []
+    this.setState({filterByGender: e.target.value})
+    if (this.state.filterByLocale !== '') {
+      for (var i = 0; i < this.props.subscribers.length; i++) {
+        if (this.props.subscribers[i].locale === this.state.filterByLocale && this.props.subscribers[i].gender === e.target.value) {
+          filtered.push(this.props.subscribers[i])
+        }
+      }
+    } else {
+      for (var j = 0; j < this.props.subscribers.length; j++) {
+        if (this.props.subscribers[j].gender === e.target.value) {
+          filtered.push(this.props.subscribers[j])
+        }
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
+  handleFilterByLocale (e) {
+    var filtered = []
+    this.setState({filterByLocale: e.target.value})
+    if (this.state.filterByGender !== '') {
+      for (var i = 0; i < this.props.subscribers.length; i++) {
+        if (this.props.subscribers[i].locale === e.target.value && this.props.subscribers[i].gender === this.state.filterByGender) {
+          filtered.push(this.props.subscribers[i])
+        }
+      }
+    } else {
+      for (var j = 0; j < this.props.subscribers.length; j++) {
+        if (this.props.subscribers[j].locale === e.target.value) {
+          filtered.push(this.props.subscribers[j])
+        }
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
   render () {
     console.log('Subscriber Data', this.state.subscribersData)
 
@@ -104,10 +148,34 @@ class Subscriber extends React.Component {
 
                   { this.state.subscribersData && this.state.subscribersData.length > 0
                   ? <div className='table-responsive'>
-                    <div>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
-                    </div>
+                    <form>
+                      <div className='form-row'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Search </label>
+                          <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Gender </label>
+                          <select className='input-sm' value={this.state.filterByGender} onChange={this.handleFilterByGender} >
+                            <option value='' disabled>Filter by Gender...</option>
+                            <option value='male'>male</option>
+                            <option value='female'>female</option>
+                            <option value='other'>other</option>
+                          </select>
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Locale </label>
+                          <select className='input-sm' value={this.state.filterByLocale} onChange={this.handleFilterByLocale} >
+                            <option value='' disabled>Filter by Locale...</option>
+                            {
+                              this.props.locales.map((locale, i) => (
+                                <option value={locale}>{locale}</option>
+                              ))
+                            }
+                          </select>
+                        </div>
+                      </div>
+                    </form>
                     <table className='table table-striped'>
                       <thead>
                         <tr>
@@ -168,7 +236,8 @@ class Subscriber extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    locales: (state.subscribersInfo.locales)
   }
 }
 

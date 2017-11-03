@@ -11,7 +11,8 @@ class BroadcastsInfo extends React.Component {
     props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterValue: ''
     }
     //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
@@ -82,6 +83,7 @@ class BroadcastsInfo extends React.Component {
 
   onFilter (e) {
     console.log(e.target.value)
+    this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '-1') {
       for (let i = 0; i < this.props.broadcasts.length; i++) {
@@ -119,7 +121,8 @@ class BroadcastsInfo extends React.Component {
                     </div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-4'>
                       <label> Filter </label>
-                      <select className='input-sm' onChange={this.onFilter} >
+                      <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                        <option value='' disabled>Filter by type...</option>
                         <option value='text'>text</option>
                         <option value='image'>image</option>
                         <option value='card'>card</option>
