@@ -29,12 +29,15 @@ class Convo extends React.Component {
       alertMessage: '',
       type: '',
       broadcastsData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterValue: ''
     }
     props.loadBroadcastsList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.searchBroadcast = this.searchBroadcast.bind(this)
+    this.onFilter = this.onFilter.bind(this)
   }
 
   componentDidMount () {
@@ -116,6 +119,43 @@ class Convo extends React.Component {
       })
     }
   }
+  searchBroadcast (event) {
+    var filtered = []
+    if (event.target.value !== '') {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
+        if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.broadcasts[i])
+        }
+      }
+    } else {
+      filtered = this.props.broadcasts
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
+  onFilter (e) {
+    console.log(e.target.value)
+    this.setState({filterValue: e.target.value})
+    var filtered = []
+    if (e.target.value !== '') {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
+        if (e.target.value === 'miscellaneous') {
+          if (this.props.broadcasts[i].payload.length > 1) {
+            filtered.push(this.props.broadcasts[i])
+          }
+        } else {
+          if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
+            filtered.push(this.props.broadcasts[i])
+          }
+        }
+      }
+    } else {
+      filtered = this.props.broadcasts
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
 
   render () {
     console.log('Broadcasts', this.state.broadcastsData)
@@ -166,49 +206,77 @@ class Convo extends React.Component {
                       </button>
                       </Link>
                   }
-                  { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                  { this.props.broadcasts && this.props.broadcasts.length > 0
                     ? <div className='table-responsive'>
-                      <table className='table table-striped'>
-                        <thead>
-                          <tr>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Created At</th>
-                            <th>Sent</th>
-                            <th>Seen</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {
-                            this.state.broadcastsData.map((broadcast, i) => (
+                      <form>
+                      <div className='form-row'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                          <label> Search </label>
+                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Filter </label>
+                          <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                            <option value='' disabled>Filter by type...</option>
+                            <option value='text'>text</option>
+                            <option value='image'>image</option>
+                            <option value='card'>card</option>
+                            <option value='gallery'>gallery</option>
+                            <option value='audio'>audio</option>
+                            <option value='video'>video</option>
+                            <option value='file'>file</option>
+                            <option value='miscellaneous'>miscellaneous</option>
+                            <option value=''>all</option>
+                          </select>
+                        </div>
+                      </div>
+                    </form>
+                    { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                        ? <div>
+                          <table className='table table-striped'>
+                            <thead>
                               <tr>
-                                <td>{broadcast.title}</td>
-                                <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
-                                <td>{handleDate(broadcast.datetime)}</td>
-                                <td>{broadcast.sent}</td>
-                                <td>{broadcast.seen}</td>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Created At</th>
+                                <th>Sent</th>
+                                <th>Seen</th>
                               </tr>
-                            ))
-                          }
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 4)}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
-                    </div>
+                            </thead>
+                            <tbody>
+                              {
+                                this.state.broadcastsData.map((broadcast, i) => (
+                                  <tr>
+                                    <td>{broadcast.title}</td>
+                                    <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
+                                    <td>{handleDate(broadcast.datetime)}</td>
+                                    <td>{broadcast.sent}</td>
+                                    <td>{broadcast.seen}</td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
+                          <ReactPaginate previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 4)}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                        : <p> No search results found. </p>
+                      }
+                  </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
                   </div>
-                }
-                  {
+                    }
+                      {
                     this.state.alertMessage !== '' &&
                     <center>
                       <Alert type={this.state.type}>
@@ -218,9 +286,7 @@ class Convo extends React.Component {
                   }
                 </div>
               </div>
-
             </main>
-
           </div>
         </div>
       </div>
