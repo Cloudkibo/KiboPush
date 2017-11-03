@@ -276,9 +276,16 @@ class Dashboard extends React.Component {
 
           </aside>
         </div>
-        <StackedBar sentseendata={this.state.sentseendata1} />
+        <div className='row'>
+          <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <div className='ui-block'>
+              <div className='birthday-item inline-items badges'>
+                <StackedBar sentseendata={this.state.sentseendata1} />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-
     )
   }
 }
