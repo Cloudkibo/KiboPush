@@ -3,20 +3,34 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
+import Popover from 'react-simple-popover'
+import CopyLink from './copyLink'
 import { Link } from 'react-router'
-// import Popover from 'react-simple-popover'
 
 class GrowthTools extends React.Component {
   constructor (props, context) {
     super(props, context)
-
     this.state = {
       toolsData: [],
-      totalLength: 0
+      totalLength: 0,
+      copyPopover: false
     }
+    this.showCopyPopover = this.showCopyPopover.bind(this)
+    this.closeCopyPopover = this.closeCopyPopover.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  showCopyPopover () {
+    this.setState({
+      copyPopover: true
+    })
+  }
+
+  closeCopyPopover () {
+    this.setState({
+      copyPopover: false
+    })
+  }
+  componentWillReceiveProps (nextprops) {
     console.log('componentWillReceiveProps is called')
   }
 
@@ -89,14 +103,23 @@ class GrowthTools extends React.Component {
                     <hr />
                     <p className='card-text'>Copy facebook page link to send to your friends</p>
                   </div>
-                  <button className='btn btn-primary'>
-                    Open
+                  <button ref={(c) => { this.copyLink = c }} onClick={this.showCopyPopover} className='btn btn-primary' data-tip='copyLink'>
+                    Copy Link
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <Popover
+          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, border: '1px solid #7ed321' }}
+          placement='top'
+          target={this.copyLink}
+          show={this.state.copyPopover}
+          onHide={this.closeCopyPopover}
+        >
+          <CopyLink />
+        </Popover>
       </div>
     )
   }

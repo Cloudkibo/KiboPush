@@ -1384,8 +1384,11 @@ p {
 }
 .card-body {
   padding: 5px;
-  height: 168px;  
+  height: 168px;
 }
 .card-text {
   font-size: 0.8rem;
+}
+.news-feed-form{
+  padding: 20px
 }
