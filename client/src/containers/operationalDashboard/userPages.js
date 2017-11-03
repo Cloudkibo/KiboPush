@@ -1,7 +1,20 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { savePageInformation } from '../../redux/actions/backdoor.actions'
+
 class PagesInfo extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    console.log('constructor page info')
+    this.onPageClick = this.onPageClick.bind(this)
+  }
+  onPageClick (e, page) {
+    console.log('Page Click', page)
+    this.props.savePageInformation(page)
+  }
   render () {
     return (
       <div className='row'>
@@ -37,7 +50,7 @@ class PagesInfo extends React.Component {
                            <td>{page.subscribers}</td>
                            <td>{page.connected ? 'true' : 'false'}</td>
                            <td>
-                             <Link to={`/pageSubscribers/${page._id}/${page.pageName}`} className='btn btn-primary btn-sm'>
+                             <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
                                See Subscribers
                              </Link>
                            </td>
@@ -73,4 +86,9 @@ class PagesInfo extends React.Component {
   }
 }
 
-export default PagesInfo
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    savePageInformation: savePageInformation
+  }, dispatch)
+}
+export default connect(null, mapDispatchToProps)(PagesInfo)
