@@ -198,8 +198,8 @@ class Workflows extends React.Component {
                             <label> Active </label>
                             <select className='input-sm' value={this.state.filterByStatus} onChange={this.handleFilterByStatus} >
                               <option value='' disabled>Filter by Status...</option>
-                              <option value='true'>yes</option>
-                              <option value='false'>no</option>
+                              <option value>yes</option>
+                              <option value={false}>no</option>
                               <option value=''>all</option>
                             </select>
                           </div>
