@@ -172,7 +172,7 @@ class Poll extends React.Component {
                           <th>Created At</th>
                           <th>Sent</th>
                           <th>Seen</th>
-                          <th>Responses</th>
+                          <th>Responded</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
