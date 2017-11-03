@@ -24,7 +24,7 @@ exports.index = function (req, res) {
 }
 exports.allpages = function (req, res) {
   logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
-  Pages.find({userId: req.user._id}, (err, pages) => {
+  Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
