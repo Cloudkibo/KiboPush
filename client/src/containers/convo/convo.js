@@ -209,29 +209,29 @@ class Convo extends React.Component {
                   { this.props.broadcasts && this.props.broadcasts.length > 0
                     ? <div className='table-responsive'>
                       <form>
-                      <div className='form-row'>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                          <label> Search </label>
-                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                        <div className='form-row'>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                            <label> Search </label>
+                            <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                          </div>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                            <label> Filter </label>
+                            <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                              <option value='' disabled>Filter by type...</option>
+                              <option value='text'>text</option>
+                              <option value='image'>image</option>
+                              <option value='card'>card</option>
+                              <option value='gallery'>gallery</option>
+                              <option value='audio'>audio</option>
+                              <option value='video'>video</option>
+                              <option value='file'>file</option>
+                              <option value='miscellaneous'>miscellaneous</option>
+                              <option value=''>all</option>
+                            </select>
+                          </div>
                         </div>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                          <label> Filter </label>
-                          <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
-                            <option value='' disabled>Filter by type...</option>
-                            <option value='text'>text</option>
-                            <option value='image'>image</option>
-                            <option value='card'>card</option>
-                            <option value='gallery'>gallery</option>
-                            <option value='audio'>audio</option>
-                            <option value='video'>video</option>
-                            <option value='file'>file</option>
-                            <option value='miscellaneous'>miscellaneous</option>
-                            <option value=''>all</option>
-                          </select>
-                        </div>
-                      </div>
-                    </form>
-                    { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                      </form>
+                      { this.state.broadcastsData && this.state.broadcastsData.length > 0
                         ? <div>
                           <table className='table table-striped'>
                             <thead>
@@ -271,18 +271,18 @@ class Convo extends React.Component {
                         </div>
                         : <p> No search results found. </p>
                       }
-                  </div>
+                    </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
                   </div>
                     }
-                      {
-                    this.state.alertMessage !== '' &&
-                    <center>
-                      <Alert type={this.state.type}>
-                        {this.state.alertMessage}
-                      </Alert>
-                    </center>
+                  {
+                this.state.alertMessage !== '' &&
+                <center>
+                  <Alert type={this.state.type}>
+                    {this.state.alertMessage}
+                  </Alert>
+                </center>
                   }
                 </div>
               </div>
