@@ -167,7 +167,7 @@ exports.allsurveys = function (req, res) {
 
 exports.toppages = function (req, res) {
   logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
-  Pages.find({}, (err, pages) => {
+  Pages.find({connected: true}, (err, pages) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
