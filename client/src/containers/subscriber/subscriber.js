@@ -209,9 +209,8 @@ class Subscriber extends React.Component {
                           <thead>
                             <tr>
                               <th>Profile Picture</th>
-                              <th>Page Name</th>
-                              <th>Firstname</th>
-                              <th>Lastname</th>
+                              <th>Name</th>
+                              <th>Page</th>
                               <th>Locale</th>
                               <th>Gender</th>
                             </tr>
@@ -226,9 +225,8 @@ class Subscriber extends React.Component {
                                       className='img-circle' width='60' height='60'
                                     />
                                   </td>
-                                  <td>{subscriber.email}</td>
-                                  <td>{subscriber.firstName}</td>
-                                  <td>{subscriber.lastName}</td>
+                                  <td>{subscriber.firstName} {subscriber.lastName}</td>
+                                  <td>{subscriber.pageId.pageName}</td>
                                   <td>{subscriber.locale}</td>
                                   <td>{subscriber.gender}</td>
                                 </tr>
