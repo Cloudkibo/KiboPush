@@ -71,15 +71,22 @@ class StackedBar extends React.Component {
 
     return (
       <div className='row'>
-        <ComposedChart layout='vertical' width={600} height={400} data={data}
-          margin={{top: 20, right: 20, bottom: 20, left: 20}} style={{marginTop: '50px', marginLeft: '100px'}}>
-          <XAxis type='number' />
-          <YAxis dataKey='name' type='category' width={100} />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey='seen' stackId='a' fill='#413ea0' />
-          <Bar dataKey='sent' stackId='a' fill='#82ca9d' />
-        </ComposedChart>
+        <main
+          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+          <div className='ui-block'>
+            <div className='birthday-item inline-items badges'>
+              <ComposedChart layout='vertical' width={600} height={400} data={data}
+                margin={{top: 20, right: 20, bottom: 20, left: 20}} style={{marginTop: '50px', marginLeft: '100px'}}>
+                <XAxis type='number' />
+                <YAxis dataKey='name' type='category' width={100} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey='seen' stackId='a' fill='#413ea0' />
+                <Bar dataKey='sent' stackId='a' fill='#82ca9d' />
+              </ComposedChart>
+            </div>
+          </div>
+        </main>
       </div>
     )
   }
