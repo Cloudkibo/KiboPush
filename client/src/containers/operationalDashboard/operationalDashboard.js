@@ -9,6 +9,8 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
+import Select from 'react-select'
+
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
@@ -25,9 +27,6 @@ import { handleDate } from '../../utility/utils'
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadUsersList()
-    props.loadDataObjectsCount()
-    props.loadTopPages()
     this.state = {
       usersData: [],
       objectsData: [],
@@ -35,8 +34,15 @@ class OperationalDashboard extends React.Component {
       pagesData: [],
       totalLength: 0,
       objectsLength: 0,
-      pagesLength: 0
+      pagesLength: 0,
+      options: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }],
+      selectedValue: 0
     }
+    props.loadUsersList()
+    props.loadDataObjectsCount(0)
+    props.loadTopPages()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.displayPages = this.displayPages.bind(this)
@@ -44,6 +50,7 @@ class OperationalDashboard extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
     this.getFile = this.getFile.bind(this)
+    this.logChange = this.logChange.bind(this)
   }
 
   componentDidMount () {
@@ -157,13 +164,25 @@ class OperationalDashboard extends React.Component {
         filtered.push(this.props.users[i])
       }
     }
-    if (filtered && filtered.length > 0) {
-      this.displayData(0, filtered)
-      this.setState({ totalLength: filtered.length })
-    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
   getFile () {
     this.props.downloadFile()
+  }
+  logChange (val) {
+    console.log('Selected: ' + JSON.stringify(val))
+    if (!val) {
+      this.setState({selectedValue: null})
+      this.props.loadDataObjectsCount(0)
+    } else if (val.value === 10) {
+      console.log('Selected:', val.value)
+      this.setState({selectedValue: val.value})
+      this.props.loadDataObjectsCount(val.value)
+    } else if (val.value === 30) {
+      this.setState({ selectedValue: val.value })
+      this.props.loadDataObjectsCount(val.value)
+    }
   }
   render () {
     return (
@@ -174,10 +193,16 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          <div className='back-button'>
-            <button className='btn btn-primary btn-sm' style={{float: 'right'}} onClick={() => this.getFile()}>Download File
-            </button>
-          </div>
+          <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
+          </button>
+          <Select
+            name='form-field-name'
+            options={this.state.options}
+            onChange={this.logChange}
+            placeholder='Filter by last:'
+            value={this.state.selectedValue}
+            clearValueText='Filter by:'
+          />
           <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
           <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
           <div className='row'>
@@ -185,55 +210,61 @@ class OperationalDashboard extends React.Component {
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  { this.state.usersData && this.state.usersData.length > 0
+                  { this.props.users && this.props.users.length > 0
                   ? <div className='table-responsive'>
                     <div>
                       <label> Users </label>
                       <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
                     </div>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Profile Pic</th>
-                          <th>Users</th>
-                          <th>Email</th>
-                          <th>Gender</th>
-                          <th>Created At</th>
-                          <th />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.state.usersData.map((user, i) => (
-                          <tr>
-                            <td><img alt='pic'
-                              src={(user.profilePic) ? user.profilePic : ''}
-                              className='img-circle' width='60' height='60' /></td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.gender}</td>
-                            <td>{handleDate(user.createdAt)}</td>
-                            <td>
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                    {
+                      this.state.usersData && this.state.usersData.length > 0
+                      ? <div>
+                        <table className='table table-striped'>
+                          <thead>
+                            <tr>
+                              <th>Profile Pic</th>
+                              <th>Users</th>
+                              <th>Email</th>
+                              <th>Gender</th>
+                              <th>Created At</th>
+                              <th />
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              this.state.usersData.map((user, i) => (
+                                <tr>
+                                  <td><img alt='pic'
+                                    src={(user.profilePic) ? user.profilePic : ''}
+                                    className='img-circle' width='60' height='60' /></td>
+                                  <td>{user.name}</td>
+                                  <td>{user.email}</td>
+                                  <td>{user.gender}</td>
+                                  <td>{handleDate(user.createdAt)}</td>
+                                  <td>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
+                      : <p> No search results found. </p>
+                    }
                   </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>

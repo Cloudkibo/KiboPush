@@ -45,7 +45,8 @@ const all = {
   },
 
   pubsubhubbub: {
-    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/autoposting/pubsub/webhook`
+    secret: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4',
+    callbackUrl: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}:1337`
   },
 
   twitter: {

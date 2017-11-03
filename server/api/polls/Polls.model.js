@@ -10,7 +10,6 @@ const pollSchema = new Schema({
   statement: String,
   options: [String],
   userId: { type: Schema.ObjectId, ref: 'users' },
-  sent: Number,
   datetime: { type: Date, default: Date.now },
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],

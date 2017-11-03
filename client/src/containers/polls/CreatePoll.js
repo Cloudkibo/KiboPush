@@ -20,6 +20,7 @@ class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
+    props.getuserdetails()
     this.state = {
       page: {
         options: []
@@ -362,7 +363,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPollsList: loadPollsList,
     addPoll: addPoll,
-    pollTourCompleted: pollTourCompleted
+    pollTourCompleted: pollTourCompleted,
+    getuserdetails: getuserdetails
   },
     dispatch)
 }

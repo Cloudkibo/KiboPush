@@ -87,6 +87,10 @@ class UserDetails extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  componentDidUpdate () {
+    window.scrollTo(0, 0)
+  }
+
   render () {
     return (
       <div>

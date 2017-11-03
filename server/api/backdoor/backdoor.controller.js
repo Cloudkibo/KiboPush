@@ -43,7 +43,7 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
+    logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
     Subscribers.aggregate([{
       $match: {
         userId: mongoose.Types.ObjectId(req.params.userid)
@@ -74,6 +74,7 @@ exports.allpages = function (req, res) {
           subscribers: 0
         })
       }
+      logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
@@ -84,6 +85,7 @@ exports.allpages = function (req, res) {
           }
         }
       }
+      logger.serverLog(TAG, `Total pages in after double loop ${pagesPayload.length}`)
       res.status(200).json({
         status: 'success',
         payload: pagesPayload
@@ -210,7 +212,6 @@ exports.toppages = function (req, res) {
         }
       }
       let sorted = sortBy(pagesPayload, 'subscribers')
-      logger.serverLog(TAG, `sorted ${JSON.stringify(sorted)}`)
       let top10 = _.takeRight(sorted, 10)
       top10 = top10.reverse()
       logger.serverLog(TAG, `top10 ${JSON.stringify(top10)}`)
@@ -222,86 +223,275 @@ exports.toppages = function (req, res) {
   })
 }
 exports.datacount = function (req, res) {
-  Users.aggregate(
-    [
-      { $group: { _id: null, count: { $sum: 1 } } }
-    ], (err, gotUsersCount) => {
-    if (err) {
-      return res.status(404).json({
-        status: 'failed',
-        description: `Error in getting Users count ${JSON.stringify(err)}`
-      })
-    }
-    Subscribers.aggregate(
+  logger.serverLog(TAG, `req.params.userid ${JSON.stringify(req.params.userid)}`)
+  if (req.params.userid === '0') {
+    Users.aggregate(
       [
         { $group: { _id: null, count: { $sum: 1 } } }
-      ], (err2, gotSubscribersCount) => {
-      if (err2) {
+      ], (err, gotUsersCount) => {
+      if (err) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+          description: `Error in getting Users count ${JSON.stringify(err)}`
         })
       }
-      Pages.aggregate(
+      Subscribers.aggregate(
         [
-          { $match: {connected: true} },
           { $group: { _id: null, count: { $sum: 1 } } }
-        ], (err2, gotPagesCount) => {
+        ], (err2, gotSubscribersCount) => {
         if (err2) {
           return res.status(404).json({
             status: 'failed',
-            description: `Error in getting pages count ${JSON.stringify(err2)}`
+            description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
           })
         }
-        Broadcasts.aggregate(
+        Pages.aggregate(
           [
+            { $match: {connected: true} },
             { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err2, gotBroadcastsCount) => {
+          ], (err2, gotPagesCount) => {
           if (err2) {
             return res.status(404).json({
               status: 'failed',
-              description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+              description: `Error in getting pages count ${JSON.stringify(err2)}`
             })
           }
-          Polls.aggregate(
+          Broadcasts.aggregate(
             [
               { $group: { _id: null, count: { $sum: 1 } } }
-            ], (err2, gotPollsCount) => {
+            ], (err2, gotBroadcastsCount) => {
             if (err2) {
               return res.status(404).json({
                 status: 'failed',
-                description: `Error in getting polls count ${JSON.stringify(err2)}`
+                description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
               })
             }
-            Surveys.aggregate(
+            Polls.aggregate(
               [
                 { $group: { _id: null, count: { $sum: 1 } } }
-              ], (err2, gotSurveysCount) => {
+              ], (err2, gotPollsCount) => {
               if (err2) {
                 return res.status(404).json({
                   status: 'failed',
-                  description: `Error in getting surveys count ${JSON.stringify(err2)}`
+                  description: `Error in getting polls count ${JSON.stringify(err2)}`
                 })
               }
-              let datacounts = {
-                UsersCount: gotUsersCount,
-                SubscribersCount: gotSubscribersCount,
-                PagesCount: gotPagesCount,
-                BroadcastsCount: gotBroadcastsCount,
-                PollsCount: gotPollsCount,
-                SurveysCount: gotSurveysCount
-              }
-              logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
-              res.status(200).json({
-                status: 'success',
-                payload: datacounts
+              Surveys.aggregate(
+                [
+                  { $group: { _id: null, count: { $sum: 1 } } }
+                ], (err2, gotSurveysCount) => {
+                if (err2) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err2)}`
+                  })
+                }
+                let datacounts = {
+                  UsersCount: gotUsersCount,
+                  SubscribersCount: gotSubscribersCount,
+                  PagesCount: gotPagesCount,
+                  BroadcastsCount: gotBroadcastsCount,
+                  PollsCount: gotPollsCount,
+                  SurveysCount: gotSurveysCount
+                }
+                logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+                res.status(200).json({
+                  status: 'success',
+                  payload: datacounts
+                })
               })
             })
           })
         })
       })
     })
-  })
+  } else if (req.params.userid === '10') {
+    Users.aggregate(
+      [
+        { $match: {'createdAt': {
+          $gte: new Date((new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
+        }} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, gotUsersCount) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting Users count ${JSON.stringify(err)}`
+        })
+      }
+      Subscribers.aggregate(
+        [
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err2, gotSubscribersCount) => {
+        if (err2) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+          })
+        }
+        Pages.aggregate(
+          [
+            { $match: {connected: true} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err2, gotPagesCount) => {
+          if (err2) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting pages count ${JSON.stringify(err2)}`
+            })
+          }
+          Broadcasts.aggregate(
+            [
+              { $match: {'datetime': {
+                $gte: new Date((new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
+              }} },
+              { $group: { _id: null, count: { $sum: 1 } } }
+            ], (err2, gotBroadcastsCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+              })
+            }
+            Polls.aggregate(
+              [
+                { $match: {'datetime': {
+                  $gte: new Date((new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
+                }} },
+                { $group: { _id: null, count: { $sum: 1 } } }
+              ], (err2, gotPollsCount) => {
+              if (err2) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting polls count ${JSON.stringify(err2)}`
+                })
+              }
+              Surveys.aggregate(
+                [
+                  { $match: {'datetime': {
+                    $gte: new Date((new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
+                  }} },
+                  { $group: { _id: null, count: { $sum: 1 } } }
+                ], (err2, gotSurveysCount) => {
+                if (err2) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err2)}`
+                  })
+                }
+                let datacounts = {
+                  UsersCount: gotUsersCount,
+                  SubscribersCount: gotSubscribersCount,
+                  PagesCount: gotPagesCount,
+                  BroadcastsCount: gotBroadcastsCount,
+                  PollsCount: gotPollsCount,
+                  SurveysCount: gotSurveysCount
+                }
+                logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+                res.status(200).json({
+                  status: 'success',
+                  payload: datacounts
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  } else if (req.params.userid === '30') {
+    Users.aggregate(
+      [
+        { $match: {'createdAt': {
+          $gte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+        }} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, gotUsersCount) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting Users count ${JSON.stringify(err)}`
+        })
+      }
+      Subscribers.aggregate(
+        [
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err2, gotSubscribersCount) => {
+        if (err2) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+          })
+        }
+        Pages.aggregate(
+          [
+            { $match: {connected: true} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err2, gotPagesCount) => {
+          if (err2) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting pages count ${JSON.stringify(err2)}`
+            })
+          }
+          Broadcasts.aggregate(
+            [
+              { $match: {'datetime': {
+                $gte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+              }} },
+              { $group: { _id: null, count: { $sum: 1 } } }
+            ], (err2, gotBroadcastsCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+              })
+            }
+            Polls.aggregate(
+              [
+                { $match: {'datetime': {
+                  $gte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+                }} },
+                { $group: { _id: null, count: { $sum: 1 } } }
+              ], (err2, gotPollsCount) => {
+              if (err2) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting polls count ${JSON.stringify(err2)}`
+                })
+              }
+              Surveys.aggregate(
+                [
+                  { $match: {'datetime': {
+                    $gte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+                  }} },
+                  { $group: { _id: null, count: { $sum: 1 } } }
+                ], (err2, gotSurveysCount) => {
+                if (err2) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err2)}`
+                  })
+                }
+                let datacounts = {
+                  UsersCount: gotUsersCount,
+                  SubscribersCount: gotSubscribersCount,
+                  PagesCount: gotPagesCount,
+                  BroadcastsCount: gotBroadcastsCount,
+                  PollsCount: gotPollsCount,
+                  SurveysCount: gotSurveysCount
+                }
+                logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+                res.status(200).json({
+                  status: 'success',
+                  payload: datacounts
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  }
 }
 exports.uploadFile = function (req, res) {
   Users.find({}, (err, users) => {
@@ -325,18 +515,20 @@ exports.uploadFile = function (req, res) {
     let dir = path.resolve(__dirname, './my-file.csv')
     csvdata.write(dir, usersPayload, {header: 'Name,Gender,Email,Locale,Timezone'})
     logger.serverLog(TAG, 'created file')
-    //  res.send({status: 'dir', payload: dir})
-    // try {
-    //   res.sendfile(dir)
-    // } catch (err) {
-    //   logger.serverLog(TAG,
-    //     `Inside Download file, err = ${JSON.stringify(err)}`)
-    //   res.status(201)
-    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
-    // }
-    res.status(200).json({
-      status: 'success',
-      payload: dir
-    })
+    try {
+      res.sendfile(dir)
+    } catch (err) {
+      logger.serverLog(TAG,
+        `Inside Download file, err = ${JSON.stringify(err)}`)
+      res.status(201)
+        .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    }
+    // fs.unlinkSync(dir)
+
+    // res.status(200).json({
+    //   status: 'success',
+    //   payload: dir
+    // })
+    //  fs.unlinkSync(dir)
   })
 }

@@ -11,6 +11,7 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./dashboard.controller')
 
+router.get('/sentVsSeen', auth.isAuthenticated(), controller.sentVsSeen)
 // todo this is also coded very badly
 router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 // todo remove this, this is not being used, discuss

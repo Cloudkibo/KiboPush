@@ -8,6 +8,9 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
+const pageBroadcast = require('../page_broadcast/page_broadcast.model')
+const pageSurvey = require('../page_survey/page_survey.model')
+const pagePoll = require('../page_poll/page_poll.model')
 const TAG = 'api/pages/pages.controller.js'
 
 exports.index = function (req, res) {
@@ -22,7 +25,93 @@ exports.index = function (req, res) {
     res.status(200).json(data)
   })
 }
-
+exports.sentVsSeen = function (req, res) {
+  pageBroadcast.aggregate(
+    [
+      { $match: {userId: req.user._id} },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, broadcastSentCount) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting broadcastSentCount count ${JSON.stringify(err)}`
+      })
+    }
+    pageBroadcast.aggregate(
+      [
+        { $match: {seen: true, userId: req.user._id} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastSeenCount) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting broadcastSeenCount count ${JSON.stringify(err)}`
+        })
+      }
+      pageSurvey.aggregate(
+        [
+          { $match: {userId: req.user._id} },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, surveySentCount) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveySentCount count ${JSON.stringify(err)}`
+          })
+        }
+        pageSurvey.aggregate(
+          [
+            { $match: {seen: true, userId: req.user._id} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, surveySeenCount) => {
+          if (err) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting surveytSeenCount count ${JSON.stringify(err)}`
+            })
+          }
+          pagePoll.aggregate(
+            [
+              { $match: {userId: req.user._id} },
+              { $group: { _id: null, count: { $sum: 1 } } }
+            ], (err, pollSentCount) => {
+            if (err) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pollSentCount count ${JSON.stringify(err)}`
+              })
+            }
+            pagePoll.aggregate(
+              [
+                { $match: {seen: true, userId: req.user._id} },
+                { $group: { _id: null, count: { $sum: 1 } } }
+              ], (err, pollSeenCount) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pollSeenCount count ${JSON.stringify(err)}`
+                })
+              }
+              let datacounts = {
+                broadcastSentCount: broadcastSentCount,
+                broadcastSeenCount: broadcastSeenCount,
+                surveySentCount: surveySentCount,
+                surveySeenCount: surveySeenCount,
+                pollSentCount: pollSentCount,
+                pollSeenCount: pollSeenCount
+              }
+              logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+              res.status(200).json({
+                status: 'success',
+                payload: datacounts
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+}
 exports.enable = function (req, res) {
 
 }

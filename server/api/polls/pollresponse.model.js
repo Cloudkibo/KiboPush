@@ -1,6 +1,3 @@
-// WE are referring Messages as Broadcasts, broadcasts and messages will be same thing
-// Zarmeen
-
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 

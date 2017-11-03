@@ -8,9 +8,12 @@ const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
+const PollPage = require('../page_poll/page_poll.model')
+const SurveyPage = require('../page_survey/page_survey.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
+const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
 const utility = require('./broadcasts.utility')
@@ -18,6 +21,7 @@ const og = require('open-graph')
 let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
+const request = require('request')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
@@ -71,99 +75,228 @@ exports.getfbMessage = function (req, res) {
 
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
 
+  logger.serverLog(TAG,
+    `something received from facebook ${JSON.stringify(req.body)}`)
   if (req.body.object && req.body.object === 'page') {
     let payload = req.body.entry[0]
-    if (payload.messaging[0].optin) {
-      addAdminAsSubscriber(payload)
-      return
-    }
-  }
-
-  const messagingEvents = req.body.entry[0].messaging
-  logger.serverLog(TAG, `something received from facebook ${req.body}`)
-
-  for (let i = 0; i < messagingEvents.length; i++) {
-    const event = req.body.entry[0].messaging[i]
-    if (event.message &&
-      (event.message.is_echo === false || !event.message.is_echo)) {
-      const sender = event.sender.id
-      const pageId = event.recipient.id
-      // get accesstoken of page
-      Pages.findOne({pageId: pageId}).populate('userId').exec((err, page) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-        // fetch subsriber info from Graph API
-        // fetch customer details
-        if (page === null) {
-          return
-        }
-        logger.serverLog(TAG, `page got ${page.pageName}`)
-        const options = {
-          url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
-          qs: {access_token: page.accessToken},
-          method: 'GET'
-
-        }
-
-        needle.get(options.url, options, (error, response) => {
-          const subsriber = response.body
-
-          if (!error) {
-            const payload = {
-              firstName: subsriber.first_name,
-              lastName: subsriber.last_name,
-              locale: subsriber.locale,
-              gender: subsriber.gender,
-              userId: page.userId,
-              provider: 'facebook',
-              timezone: subsriber.timezone,
-              profilePic: subsriber.profile_pic,
-              pageScopedId: '',
-              email: '',
-              senderId: sender,
-              pageId: page._id,
-              isSubscribed: true
-            }
-
-            Subscribers.findOne({senderId: sender}, (err, subscriber) => {
-              if (err) logger.serverLog(TAG, err)
-              if (subscriber === null) {
-                // subsriber not found, create subscriber
-                Subscribers.create(payload, (err2, subscriberCreated) => {
-                  if (err2) {
-                    logger.serverLog(TAG, err2)
-                  }
-                  logger.serverLog(TAG, 'new Subscriber added')
-                  createSession(page, subscriberCreated, event)
-                })
-              } else {
-                createSession(page, subscriber, event)
-              }
-            })
-          } else {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
-          }
-        })
-        sendautomatedmsg(event, page)
-      })
-    }
-
-    // if event.post, the response will be of survey or poll. writing a logic to save response of poll
-    if (event.postback) {
-      logger.serverLog(TAG, JSON.stringify(event.postback))
-      let resp = JSON.parse(event.postback.payload)
-      if (resp.poll_id) {
-        savepoll(event)
-      } else if (resp.survey_id) {
-        savesurvey(event)
-      } else {
+    if (payload.messaging) {
+      if (payload.messaging[0].optin) {
+        addAdminAsSubscriber(payload)
+        return
       }
-    }
+      const messagingEvents = payload.messaging
 
-    // if this is a read receipt
-    if (event.read) {
-      updateseenstatus(event)
+      for (let i = 0; i < messagingEvents.length; i++) {
+        const event = req.body.entry[0].messaging[i]
+        if (event.message &&
+          (event.message.is_echo === false || !event.message.is_echo)) {
+          const sender = event.sender.id
+          const pageId = event.recipient.id
+          // get accesstoken of page
+          Pages.findOne({pageId: pageId})
+            .populate('userId')
+            .exec((err, page) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+              // fetch subsriber info from Graph API
+              // fetch customer details
+              if (page === null) {
+                return
+              }
+              logger.serverLog(TAG, `page got ${page.pageName}`)
+              const options = {
+                url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
+                qs: {access_token: page.accessToken},
+                method: 'GET'
+
+              }
+
+              needle.get(options.url, options, (error, response) => {
+                const subsriber = response.body
+
+                if (!error) {
+                  const payload = {
+                    firstName: subsriber.first_name,
+                    lastName: subsriber.last_name,
+                    locale: subsriber.locale,
+                    gender: subsriber.gender,
+                    userId: page.userId,
+                    provider: 'facebook',
+                    timezone: subsriber.timezone,
+                    profilePic: subsriber.profile_pic,
+                    pageScopedId: '',
+                    email: '',
+                    senderId: sender,
+                    pageId: page._id,
+                    isSubscribed: true
+                  }
+
+                  Subscribers.findOne({senderId: sender}, (err, subscriber) => {
+                    if (err) logger.serverLog(TAG, err)
+                    if (subscriber === null) {
+                      // subsriber not found, create subscriber
+                      Subscribers.create(payload, (err2, subscriberCreated) => {
+                        if (err2) {
+                          logger.serverLog(TAG, err2)
+                        }
+                        logger.serverLog(TAG, 'new Subscriber added')
+                        createSession(page, subscriberCreated, event)
+                      })
+                    } else {
+                      createSession(page, subscriber, event)
+                    }
+                  })
+                } else {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                }
+              })
+              sendautomatedmsg(event, page)
+            })
+        }
+
+        // if event.post, the response will be of survey or poll. writing a logic to save response of poll
+        if (event.postback) {
+          logger.serverLog(TAG, JSON.stringify(event.postback))
+          let resp = JSON.parse(event.postback.payload)
+          if (resp.poll_id) {
+            savepoll(event)
+          } else if (resp.survey_id) {
+            savesurvey(event)
+          } else {
+          }
+        }
+
+        // if this is a read receipt
+        if (event.read) {
+          updateseenstatus(event)
+        }
+      }
+    } else if (payload.changes) {
+      const changeEvents = payload.changes
+      // logger.serverLog(TAG,
+      //   `in changes condition for facebook post ${JSON.stringify(
+      //     changeEvents)}`)
+      for (let i = 0; i < changeEvents.length; i++) {
+        const event = changeEvents[i]
+        if (event.field && event.field === 'feed') {
+          if (event.value.verb === 'add' && event.value.item === 'status') {
+            AutoPosting.find({accountUniqueName: event.value.sender_id})
+              .populate('userId')
+              .exec((err, autopostings) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    'Internal Server Error on connect')
+                }
+                logger.serverLog(TAG,
+                  `Autoposting records got for fb : ${autopostings.length}`)
+                autopostings.forEach(postingItem => {
+                  let pagesFindCriteria = {
+                    userId: postingItem.userId._id,
+                    connected: true
+                  }
+
+                  if (postingItem.isSegmented) {
+                    if (postingItem.segmentationPageIds) {
+                      pagesFindCriteria = _.merge(pagesFindCriteria, {
+                        pageId: {
+                          $in: postingItem.segmentationPageIds
+                        }
+                      })
+                    }
+                  }
+                  Pages.find(pagesFindCriteria, (err, pages) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG,
+                      `Pages records got for fb : ${pages.length}`)
+                    pages.forEach(page => {
+                      logger.serverLog(TAG,
+                        `Page in the loop for fb ${page.pageName}`)
+
+                      let subscriberFindCriteria = {
+                        pageId: page._id,
+                        isSubscribed: true
+                      }
+
+                      if (postingItem.isSegmented) {
+                        if (postingItem.segmentationGender.length > 0) {
+                          subscriberFindCriteria = _.merge(
+                            subscriberFindCriteria,
+                            {
+                              gender: {
+                                $in: postingItem.segmentationGender
+                              }
+                            })
+                        }
+                        if (postingItem.segmentationLocale.length > 0) {
+                          subscriberFindCriteria = _.merge(
+                            subscriberFindCriteria, {
+                              locale: {
+                                $in: postingItem.segmentationLocale
+                              }
+                            })
+                        }
+                      }
+
+                      logger.serverLog(TAG,
+                        `Subscribers Criteria for segmentation ${JSON.stringify(
+                          subscriberFindCriteria)}`)
+                      Subscribers.find(subscriberFindCriteria,
+                        (err, subscribers) => {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `Error ${JSON.stringify(err)}`)
+                          }
+
+                          logger.serverLog(TAG,
+                            `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+                          subscribers.forEach(subscriber => {
+                            let messageData = {
+                              'recipient': JSON.stringify({
+                                'id': subscriber.senderId
+                              }),
+                              'message': JSON.stringify({
+                                'text': event.value.message,
+                                'metadata': 'This is a meta data for tweet'
+                              })
+                            }
+                            request(
+                              {
+                                'method': 'POST',
+                                'json': true,
+                                'formData': messageData,
+                                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                                page.accessToken
+                              },
+                              function (err, res) {
+                                if (err) {
+                                  return logger.serverLog(TAG,
+                                    `At send fb post broadcast ${JSON.stringify(
+                                      err)}`)
+                                } else {
+                                  if (res.statusCode !== 200) {
+                                    logger.serverLog(TAG,
+                                      `At send fb post broadcast response ${JSON.stringify(
+                                        res.body.error)}`)
+                                  } else {
+                                    logger.serverLog(TAG,
+                                      `At send fb post broadcast response ${JSON.stringify(
+                                        res.body.message_id)}`)
+                                  }
+                                }
+                              })
+                          })
+                        })
+                    })
+                  })
+                })
+              })
+          }
+        }
+      }
     }
   }
 
@@ -258,6 +391,28 @@ function updateseenstatus (req) {
       }
       logger.serverLog(TAG,
         `Broadcast seen updated : ${JSON.stringify(
+          updated)}`)
+    })
+  PollPage.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {seen: true},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `Poll seen updated : ${JSON.stringify(
+          updated)}`)
+    })
+  SurveyPage.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {seen: true},
+    {multi: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `Survey seen updated : ${JSON.stringify(
           updated)}`)
     })
   LiveChat.update(

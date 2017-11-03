@@ -11,6 +11,14 @@ export function updatePagesList (data) {
     data
   }
 }
+export function loadMyPagesList () {
+  console.log('loadPagesList called')
+
+  // var userid = ''// this will be the _id of user object
+  return (dispatch) => {
+    callApi(`pages/allpages`).then(res => dispatch(updatePagesList(res.payload)))
+  }
+}
 
 export function updateOtherPages (data) {
   console.log('Other Pages', data)
@@ -50,15 +58,6 @@ export function addPages () {
       dispatch(updateOtherPages(res.payload))
       console.log('Response From Add Pages', res.payload)
     })
-  }
-}
-
-export function loadMyPagesList () {
-  console.log('loadPagesList called')
-
-  // var userid = ''// this will be the _id of user object
-  return (dispatch) => {
-    callApi(`pages`).then(res => dispatch(updatePagesList(res.payload)))
   }
 }
 

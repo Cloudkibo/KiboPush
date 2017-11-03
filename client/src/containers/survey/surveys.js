@@ -197,6 +197,8 @@ class Survey extends React.Component {
                           <th>Title</th>
                           <th>Description</th>
                           <th>Created At</th>
+                          <th>Sent</th>
+                          <th>Seen</th>
                           <th>Actions</th>
 
                         </tr>
@@ -208,6 +210,8 @@ class Survey extends React.Component {
                               <td>{survey.title}</td>
                               <td>{survey.description}</td>
                               <td>{handleDate(survey.datetime)}</td>
+                              <td>{survey.sent}</td>
+                              <td>{survey.seen}</td>
                               <td>
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}

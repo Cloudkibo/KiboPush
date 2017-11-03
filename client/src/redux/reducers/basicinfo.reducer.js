@@ -9,8 +9,7 @@ const initialState = {
   workFlowsTourSeen: true,
   surveyTourSeen: true,
   convoTourSeen: true,
-  pollTourSeen: true,
-  getStartedSeen: true
+  pollTourSeen: true
 }
 
 export function basicInfo (state = initialState, action) {

@@ -25,10 +25,13 @@ export function updateDataObjectsCount (data) {
   }
 }
 
-export function loadDataObjectsCount () {
-  console.log('loadDataObjectsCount called')
+export function loadDataObjectsCount (id) {
+  console.log('loadDataObjectsCount called', id)
   return (dispatch) => {
-    callApi('backdoor/datacount').then(res => dispatch(updateDataObjectsCount(res)))
+    callApi(`backdoor/datacount/${id}`).then(res => {
+      console.log('res', res)
+      dispatch(updateDataObjectsCount(res))
+    })
   }
 }
 export function updateTopPages (data) {
@@ -136,7 +139,10 @@ export function downloadFile () {
   console.log('downloadFile called')
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
-        .then(res => dispatch(fileStatus(res)))
+        .then(res => {
+          dispatch(fileStatus(res))
+          console.log('res', res)
+        })
   }
 
   // return (dispatch) => {

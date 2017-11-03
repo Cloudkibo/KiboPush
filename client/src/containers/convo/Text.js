@@ -8,6 +8,22 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
+import { Picker } from 'emoji-mart'
+import Popover from 'react-simple-popover'
+
+const styles = {
+  iconclass: {
+    height: 24,
+    padding: '0 15px',
+    width: 24,
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  inputf: {
+    display: 'none'
+  }
+}
 
 class Text extends React.Component {
   constructor (props, context) {
@@ -18,8 +34,11 @@ class Text extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.state = {
       button: [],
-      text: ''
+      text: '',
+      showEmojiPicker: false
     }
+    this.showEmojiPicker = this.showEmojiPicker.bind(this)
+    this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
   }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -33,6 +52,22 @@ class Text extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+  }
+
+  showEmojiPicker () {
+    this.setState({showEmojiPicker: true})
+  }
+
+  closeEmojiPicker () {
+    this.setState({showEmojiPicker: false})
+  }
+
+  setEmoji (emoji) {
+    console.log('selected emoji', emoji)
+    this.setState({
+      text: this.state.text + emoji.native
+
+    })
   }
 
   handleChange (event) {
@@ -73,7 +108,43 @@ class Text extends React.Component {
           </span>
         </div>
         <div style={{marginBottom: '-7px'}}>
-          <textarea className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25, width: 100 + '%'}} placeholder='Enter your text...' />
+          <textarea value={this.state.text} className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25, width: 100 + '%'}} placeholder='Enter your text...' />
+          <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+            <i onClick={this.showEmojiPicker} style={styles.iconclass}>
+              <i style={{
+                fontSize: '20px',
+                position: 'absolute',
+                left: '0',
+                width: '100%',
+                height: '2em',
+                margin: '5px',
+                textAlign: 'center',
+                color: '#787878'
+              }} className='fa fa-smile-o' />
+            </i>
+          </div>
+
+          <Popover
+            style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+            placement='bottom'
+            target={this.target}
+            show={this.state.showEmojiPicker}
+            onHide={this.closeEmojiPicker}
+        >
+            <div>
+              <Picker
+                style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                emojiSize={24}
+                perLine={7}
+                skin={1}
+                set='facebook'
+                custom={[]}
+                autoFocus={false}
+                showPreview={false}
+                onClick={(emoji, event) => this.setEmoji(emoji)}
+            />
+            </div>
+          </Popover>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />

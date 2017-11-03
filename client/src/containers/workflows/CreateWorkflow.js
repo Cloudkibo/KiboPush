@@ -188,48 +188,56 @@ class CreateWorkflow extends React.Component {
               <h2 className='presentation-margin'>Create Workflow</h2>
             </div>
             <div className='ui-block'>
-              <div className='ui-block-content'>
-                <label>Rule</label>
+              <div className='news-feed-form'>
+                <div className='ui-block-content'>
+                  <label>Rule</label>
 
-                <div id='rules' className='form-group form-inline'>
+                  <div id='rules' className='form-group form-inline'>
 
-                  <select className='input-lg' onChange={this.changeCondition}
-                    value={this.state.condition}>
-                    <option value='message_is'>Message is</option>
-                    <option value='message_contains'>Message Contains</option>
-                    <option value='message_begins'>Message Begins with</option>
-                  </select>
+                    <select className='input-lg' onChange={this.changeCondition}
+                      value={this.state.condition}>
+                      <option value='message_is'>Message is</option>
+                      <option value='message_contains'>Message Contains</option>
+                      <option value='message_begins'>Message Begins with</option>
+                    </select>
+                  </div>
+                  <br />
+                  <div id='keywords'>
+                    <label>Keywords (Separated by comma)</label>
+                    <input type='text' className='form-control input-lg'
+                      onChange={this.changeKeywords}
+                      value={this.state.keywords} style={{width: 100 + '%'}}
+                      id='keywords'
+                      placeholder='Enter keywords separated by comma' />
+                  </div>
+                  <br />
+                  <div className='form-group' id='reply'>
+                    <label htmlFor='exampleInputReply'>Reply</label>
+                    <textarea className='form-control' onChange={this.changeReply}
+                      value={this.state.reply} rows='5'
+                      id='exampleInputReply' />
+                  </div>
+                  <br />
+                  <div className='form-group'>
+                    <label htmlFor='isActive'>Is Active</label>
+                    <select onChange={this.changeActive}
+                      value={this.state.isActive} id='isActive'>
+                      <option value='Yes'>Yes</option>
+                      <option value='No'>No</option>
+                    </select>
+                  </div>
+                  <br />
+                  <button style={{float: 'right', margin: 2}} onClick={this.gotoWorkflow} className='btn btn-primary btn-sm' id='create'>
+                   Create
+                 </button>
+                  <Link
+                    to='workflows'
+                    style={{float: 'right', margin: 2}}
+                    className='btn btn-sm btn-border-think btn-transparent c-grey'
+                 >
+                   Cancel
+                 </Link>
                 </div>
-                <div id='keywords'>
-                  <label>Keywords (Separated by comma)</label>
-                  <input type='text' className='form-control input-lg'
-                    onChange={this.changeKeywords}
-                    value={this.state.keywords} style={{width: 100 + '%'}}
-                    id='keywords'
-                    placeholder='Enter keywords separated by comma' />
-                </div>
-                <div className='form-group' id='reply'>
-                  <label htmlFor='exampleInputReply'>Reply</label>
-                  <textarea className='form-control' onChange={this.changeReply}
-                    value={this.state.reply} rows='5'
-                    id='exampleInputReply' />
-                </div>
-                <div className='form-group'>
-                  <label htmlFor='isActive'>Is Active</label>
-                  <select onChange={this.changeActive}
-                    value={this.state.isActive} id='isActive'>
-                    <option value='Yes'>Yes</option>
-                    <option value='No'>No</option>
-                  </select>
-                </div>
-
-                <button onClick={this.gotoWorkflow} className='btn btn-primary' id='create'>
-                  Create
-                </button>
-                <Link to='workflows' className='btn btn-primary'>
-                  Back
-                </Link>
-
               </div>
             </div>
           </div>

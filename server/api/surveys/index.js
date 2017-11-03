@@ -12,8 +12,7 @@ router.post('/create', auth.isAuthenticated(), controller.create)
 router.post('/edit', auth.isAuthenticated(), controller.edit)
 router.post('/send', auth.isAuthenticated(), controller.send)
 router.post('/submitresponse', controller.submitresponse)
-
-router.get('/:id', auth.isAuthenticated(), controller.show) // show survey and responses of the survey
 router.get('/showquestions/:id', auth.isAuthenticated(), controller.showQuestions)
+router.get('/:id', auth.isAuthenticated(), controller.show) // show survey and responses of the survey
 
 module.exports = router

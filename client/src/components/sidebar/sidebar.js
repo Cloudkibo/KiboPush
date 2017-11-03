@@ -4,20 +4,20 @@
  */
 
 import React, {Component} from 'react'
-import Joyride from 'react-joyride'
+// import Joyride from 'react-joyride'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
-import Icon from 'react-icons-kit'
+// import Icon from 'react-icons-kit'
 import {ModalContainer, ModalDialog} from 'react-modal-dialog'
 import UserGuide from '../../containers/userGuide/userGuide'
-import { question } from 'react-icons-kit/icomoon'   // userGuide
-import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
-import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
-import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
-import { facebook } from 'react-icons-kit/fa/facebook'  // pages
-import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
-import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
-import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
+// import { question } from 'react-icons-kit/icomoon'   // userGuide
+// import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
+// import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
+// import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
+// import { facebook } from 'react-icons-kit/fa/facebook'  // pages
+// import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
+// import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
+// import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -320,7 +320,7 @@ class Sidebar extends Component {
                   </div>
                 </Link>
                 <ReactTooltip place='right' type='dark' effect='float' id='broadcasts'>
-                  <span>Conversations</span>
+                  <span>Broadcasts</span>
                 </ReactTooltip>
               </li>
               <li>
@@ -465,7 +465,7 @@ class Sidebar extends Component {
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Broadcasts' style={{paddingRight: 20}}>
                     <img className='icon icons8-Advertising' width='30' height='30' src='data:image/png;base64,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' />
                   </div>
-                  <span className='left-menu-title'>Conversations</span>
+                  <span className='left-menu-title'>Broadcasts</span>
                 </Link>
               </li>
 

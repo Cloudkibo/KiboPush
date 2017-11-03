@@ -5,9 +5,10 @@
 
 import React from 'react'
 import Joyride from 'react-joyride'
+import StackedBar from './stackedBar'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadDashboardData } from '../../redux/actions/dashboard.actions'
+import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
@@ -28,10 +29,13 @@ class Dashboard extends React.Component {
     props.loadMyPagesList()
     props.loadSubscribersList()
     props.getuserdetails()
+    props.sentVsSeen()
     this.state = {
       isShowingModal: false,
-      steps: []
+      steps: [],
+      sentseendata1: []
     }
+    console.log('anishachhatwani')
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
@@ -52,6 +56,14 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       joinRoom(nextprops.user._id)
+    }
+    if (nextprops.sentseendata) {
+      console.log('sentseendata', nextprops.sentseendata)
+      var temp = []
+      temp.push(nextprops.sentseendata)
+      console.log('temp', temp)
+      this.setState({sentseendata1: nextprops.sentseendata})
+      console.log('sentseendata1', this.state.sentseendata1)
     }
   }
 
@@ -264,6 +276,7 @@ class Dashboard extends React.Component {
 
           </aside>
         </div>
+        <StackedBar sentseendata={this.state.sentseendata1} />
       </div>
 
     )
@@ -274,6 +287,7 @@ function mapStateToProps (state) {
  // console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
+    sentseendata: (state.sentSeenInfo.sentseendata),
     pages: (state.pagesInfo.pages),
     subscribers: (state.subscribersInfo.subscribers),
     user: (state.basicInfo.user)
@@ -290,7 +304,8 @@ function mapDispatchToProps (dispatch) {
       fetchSessions: fetchSessions,
       getuserdetails: getuserdetails,
       dashboardTourCompleted: dashboardTourCompleted,
-      getStartedCompleted: getStartedCompleted
+      getStartedCompleted: getStartedCompleted,
+      sentVsSeen: sentVsSeen
     },
     dispatch)
 }
