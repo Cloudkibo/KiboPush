@@ -112,7 +112,7 @@ class SubscribeToMessenger extends React.Component {
             ? <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{top: '100px'}}>
               <h2 className='presentation-margin'>Subscribe to Messenger</h2>
               <div className='ui-block'>
-                <div className='news-feed-form'>
+                <div className='news-feed-form' style={{padding: '20px'}}>
                   { this.props.pages &&
                     <div className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6'>
                       <label>Choose Page</label>
