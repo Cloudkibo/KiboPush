@@ -94,17 +94,18 @@ class Workflows extends React.Component {
 
   handleFilterByCondition (e) {
     var filtered = []
+    var active = this.state.filterByStatus === 'yes' ? true : false
     this.setState({filterByCondition: e.target.value})
     if (this.state.filterByStatus !== '') {
       if (e.target.value === '') {
         for (var k = 0; k < this.props.workflows.length; k++) {
-          if (this.props.workflows[k].isActive === this.state.filterByStatus) {
+          if (this.props.workflows[k].isActive === active) {
             filtered.push(this.props.workflows[k])
           }
         }
       } else {
         for (var i = 0; i < this.props.workflows.length; i++) {
-          if (this.props.workflows[i].isActive === this.state.filterByStatus && this.props.workflows[i].condition === e.target.value) {
+          if (this.props.workflows[i].isActive === active && this.props.workflows[i].condition === e.target.value) {
             filtered.push(this.props.workflows[i])
           }
         }
@@ -126,9 +127,8 @@ class Workflows extends React.Component {
 
   handleFilterByStatus (e) {
     var filtered = []
+    var active = e.target.value === 'yes' ? true : false
     this.setState({filterByStatus: e.target.value})
-    console.log(this.props.workflows[0].isActive)
-    console.log(e.target.value)
     if (this.state.filterByCondition !== '') {
       if (e.target.value === '') {
         for (var k = 0; k < this.props.workflows.length; k++) {
@@ -138,7 +138,7 @@ class Workflows extends React.Component {
         }
       } else {
         for (var i = 0; i < this.props.workflows.length; i++) {
-          if (this.props.workflows[i].isActive === e.target.value && this.props.workflows[i].condition === this.state.filterByCondition) {
+          if (this.props.workflows[i].isActive === active && this.props.workflows[i].condition === this.state.filterByCondition) {
             filtered.push(this.props.workflows[i])
           }
         }
@@ -148,7 +148,7 @@ class Workflows extends React.Component {
         filtered = this.props.workflows
       } else {
         for (var j = 0; j < this.props.workflows.length; j++) {
-          if (this.props.workflows[j].isActive === e.target.value) {
+          if (this.props.workflows[j].isActive === active) {
             filtered.push(this.props.workflows[j])
           }
         }
@@ -198,8 +198,8 @@ class Workflows extends React.Component {
                             <label> Active </label>
                             <select className='input-sm' value={this.state.filterByStatus} onChange={this.handleFilterByStatus} >
                               <option value='' disabled>Filter by Status...</option>
-                              <option value>yes</option>
-                              <option value={false}>no</option>
+                              <option value='yes'>yes</option>
+                              <option value='no'>no</option>
                               <option value=''>all</option>
                             </select>
                           </div>
