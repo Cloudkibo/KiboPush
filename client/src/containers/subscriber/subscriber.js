@@ -90,15 +90,27 @@ class Subscriber extends React.Component {
     var filtered = []
     this.setState({filterByGender: e.target.value})
     if (this.state.filterByLocale !== '') {
-      for (var i = 0; i < this.props.subscribers.length; i++) {
-        if (this.props.subscribers[i].locale === this.state.filterByLocale && this.props.subscribers[i].gender === e.target.value) {
-          filtered.push(this.props.subscribers[i])
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.subscribers.length; k++) {
+          if (this.props.subscribers[k].locale === this.state.filterByLocale) {
+            filtered.push(this.props.subscribers[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.subscribers.length; i++) {
+          if (this.props.subscribers[i].gender === e.target.value && this.props.subscribers[i].locale === this.state.filterByLocale) {
+            filtered.push(this.props.subscribers[i])
+          }
         }
       }
     } else {
-      for (var j = 0; j < this.props.subscribers.length; j++) {
-        if (this.props.subscribers[j].gender === e.target.value) {
-          filtered.push(this.props.subscribers[j])
+      if (e.target.value === '') {
+        filtered = this.props.subscribers
+      } else {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].gender === e.target.value) {
+            filtered.push(this.props.subscribers[j])
+          }
         }
       }
     }
@@ -110,15 +122,27 @@ class Subscriber extends React.Component {
     var filtered = []
     this.setState({filterByLocale: e.target.value})
     if (this.state.filterByGender !== '') {
-      for (var i = 0; i < this.props.subscribers.length; i++) {
-        if (this.props.subscribers[i].locale === e.target.value && this.props.subscribers[i].gender === this.state.filterByGender) {
-          filtered.push(this.props.subscribers[i])
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.subscribers.length; k++) {
+          if (this.props.subscribers[k].gender === this.state.filterByGender) {
+            filtered.push(this.props.subscribers[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.subscribers.length; i++) {
+          if (this.props.subscribers[i].locale === e.target.value && this.props.subscribers[i].gender === this.state.filterByGender) {
+            filtered.push(this.props.subscribers[i])
+          }
         }
       }
     } else {
-      for (var j = 0; j < this.props.subscribers.length; j++) {
-        if (this.props.subscribers[j].locale === e.target.value) {
-          filtered.push(this.props.subscribers[j])
+      if (e.target.value === '') {
+        filtered = this.props.subscribers
+      } else {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].locale === e.target.value) {
+            filtered.push(this.props.subscribers[j])
+          }
         }
       }
     }
@@ -161,6 +185,7 @@ class Subscriber extends React.Component {
                             <option value='male'>male</option>
                             <option value='female'>female</option>
                             <option value='other'>other</option>
+                            <option value=''>all</option>
                           </select>
                         </div>
                         <div style={{display: 'inline-block'}} className='form-group col-md-4'>
@@ -172,6 +197,7 @@ class Subscriber extends React.Component {
                                 <option value={locale}>{locale}</option>
                               ))
                             }
+                            <option value=''>all</option>
                           </select>
                         </div>
                       </div>

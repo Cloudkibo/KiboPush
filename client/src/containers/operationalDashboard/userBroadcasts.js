@@ -85,7 +85,7 @@ class BroadcastsInfo extends React.Component {
     console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value !== '-1') {
+    if (e.target.value !== '') {
       for (let i = 0; i < this.props.broadcasts.length; i++) {
         if (e.target.value === 'miscellaneous') {
           if (this.props.broadcasts[i].payload.length > 1) {
@@ -98,7 +98,7 @@ class BroadcastsInfo extends React.Component {
         }
       }
     } else {
-      filtered = this.state.broadcastsData
+      filtered = this.props.broadcasts
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
@@ -131,6 +131,7 @@ class BroadcastsInfo extends React.Component {
                         <option value='video'>video</option>
                         <option value='file'>file</option>
                         <option value='miscellaneous'>miscellaneous</option>
+                        <option value=''>all</option>
                       </select>
                     </div>
                   </div>
