@@ -170,7 +170,7 @@ class Subscriber extends React.Component {
                   <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
                     style={{float: 'right'}}>Invite Subscribers</Link>
 
-                  { this.state.subscribersData && this.state.subscribersData.length > 0
+                  { this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='table-responsive'>
                     <form>
                       <div className='form-row'>
@@ -202,45 +202,54 @@ class Subscriber extends React.Component {
                         </div>
                       </div>
                     </form>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Profile Picture</th>
-                          <th>Page Name</th>
-                          <th>Firstname</th>
-                          <th>Lastname</th>
-                          <th>Locale</th>
-                          <th>Gender</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.state.subscribersData.map((subscriber, i) => (
-                          <tr>
-                            <td><img alt='pic'
-                              src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                              className='img-circle' width='60' height='60' /></td>
-                            <td>{subscriber.email}</td>
-                            <td>{subscriber.firstName}</td>
-                            <td>{subscriber.lastName}</td>
-                            <td>{subscriber.locale}</td>
-                            <td>{subscriber.gender}</td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                    {
+                      this.state.subscribersData && this.state.subscribersData.length > 0
+                      ? <div>
+                        <table className='table table-striped'>
+                          <thead>
+                            <tr>
+                              <th>Profile Picture</th>
+                              <th>Page Name</th>
+                              <th>Firstname</th>
+                              <th>Lastname</th>
+                              <th>Locale</th>
+                              <th>Gender</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                              this.state.subscribersData.map((subscriber, i) => (
+                                <tr>
+                                  <td>
+                                    <img alt='pic'
+                                      src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                      className='img-circle' width='60' height='60'
+                                    />
+                                  </td>
+                                  <td>{subscriber.email}</td>
+                                  <td>{subscriber.firstName}</td>
+                                  <td>{subscriber.lastName}</td>
+                                  <td>{subscriber.locale}</td>
+                                  <td>{subscriber.gender}</td>
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 4)}
+                          marginPagesDisplayed={1}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
+                      : <p> No search results found. </p>
+                    }
                   </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
