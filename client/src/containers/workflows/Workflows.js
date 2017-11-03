@@ -114,6 +114,8 @@ class Workflows extends React.Component {
         }
       }
     }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   handleFilterByStatus (e) {
@@ -127,11 +129,13 @@ class Workflows extends React.Component {
       }
     } else {
       for (var j = 0; j < this.props.workflows.length; j++) {
-        if (this.props.workflows[j].condition === e.target.value) {
+        if (this.props.workflows[j].isActive === e.target.value) {
           filtered.push(this.props.workflows[j])
         }
       }
     }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   render () {
