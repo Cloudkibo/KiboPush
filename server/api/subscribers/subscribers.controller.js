@@ -7,7 +7,7 @@ const Subscribers = require('./Subscribers.model')
 const TAG = 'api/subscribers/subscribers.controller.js'
 
 exports.index = function (req, res) {
-  Subscribers.find({ userId: req.user._id }, (err, subscribers) => {
+  Subscribers.find({ userId: req.user._id }).populate('pageId').exec((err, subscribers) => {
     if (err) {
       logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
       return res.status(404)

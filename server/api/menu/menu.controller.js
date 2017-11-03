@@ -68,7 +68,7 @@ exports.create = function (req, res) {
     const menu = new Menu(req.body)
 
     // save model to MongoDB
-    menu.save((err, workflow) => {
+    menu.save((err, savedMenu) => {
       if (err) {
         res.status(500).json({
           status: 'failed',
@@ -91,7 +91,7 @@ exports.create = function (req, res) {
             }
           })
 
-        res.status(201).json({status: 'Success', payload: workflow})
+        res.status(201).json({status: 'Success', payload: savedMenu})
       }
     })
   })
