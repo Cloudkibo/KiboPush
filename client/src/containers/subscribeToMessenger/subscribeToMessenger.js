@@ -118,9 +118,11 @@ class SubscribeToMessenger extends React.Component {
                       <label>Choose Page</label>
                       <div className='form-group form-inline'>
                         <select className='input-sm' onChange={this.onChangeValue}>
-
                           { this.props.pages.map((page, i) => (
-                            <option value={page.pageId}>{page.pageName}</option>
+                            (
+                              page.connected &&
+                              <option value={page.pageId}>{page.pageName}</option>
+                            )
                             ))
                           }
                         </select>
