@@ -131,6 +131,10 @@ class Menu extends React.Component {
   }
   handleClose (e) {
     console.log('handleClose', e)
+    if (e.target.id === 'popover' ||
+        document.getElementById('popover').contains(document.getElementById(e.target.id))) {
+      return
+    }
     this.setState({openPopover: false})
   }
   onSelectItem (index) {
@@ -175,40 +179,43 @@ class Menu extends React.Component {
     console.log('This transform data', transformData(this.state.itemMenus))
 
     let popup = <Popover
+      id='popup'
       style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
       placement='right'
       target={this.refs[this.target]}
       show={this.state.openPopover}
       onHide={this.handleClose} >
-      <div className='ui-block-title' style={{marginBottom: '20px'}} >
-        <h4>Edit Menu Item</h4>
-      </div>
-      <form style={{marginBottom: '20px'}}>
-        <h5>When Pressed:</h5>
-      </form>
-      <div className='container'>
-        <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}>Add Submenu</button>
-      </div>
-
-      <div className='container'>
-
-        <Link to='CreateMessage'>
-          <div className='row'>
-            <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'> + Create New Message </button>
-          </div>
-        </Link>
-      </div>
-
-      <div className='container'>
-        <div className='row'>
-          <label><b>Website URL to open</b></label>
-          <input style={{marginBottom: '20px'}} type='url' className='form-control' />
+      <div id='popover'>
+        <div id='popover-title' className='ui-block-title' style={{marginBottom: '20px'}} >
+          <h4 id='popover-heading1' >Edit Menu Item</h4>
         </div>
+        <form id='popover-form' style={{marginBottom: '20px'}}>
+          <h5 id='popover-heading2' >When Pressed:</h5>
+        </form>
+        <div id='popover-option1' className='container'>
+          <div className='row'>
+            <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
+          </div>
+        </div>
+
+        <div id='popover-option2' className='container'>
+          <Link to='CreateMessage'>
+            <div className='row'>
+              <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create New Message</button>
+            </div>
+          </Link>
+        </div>
+
+        <div id='popover-option3' className='container'>
+          <div id='popover-option3-row' className='row'>
+            <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
+            <input id='popover-website-input' style={{marginBottom: '20px'}} type='url' className='form-control' />
+          </div>
+        </div>
+
+        <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
+        <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
       </div>
-
-      <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
-      <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
-
     </Popover>
     return (
       <div>
