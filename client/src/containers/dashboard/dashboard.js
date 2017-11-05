@@ -25,16 +25,19 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+
     props.loadSubscribersList()
     props.loadDashboardData()
     props.loadMyPagesList()
     props.getuserdetails()
     props.sentVsSeen()
+
     this.state = {
       isShowingModal: false,
       steps: [],
       sentseendata1: []
     }
+
     console.log('anishachhatwani')
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -49,9 +52,11 @@ class Dashboard extends React.Component {
       // this means connected pages in 0
       browserHistory.push('/addPages')
     } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+      // this means more than 0 subscribers
       console.log('More than 0 subscribers')
       this.setState({isShowingModal: false})
     } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      // this means 0 subscribers
       console.log('0 subscribers')
       this.setState({isShowingModal: true})
     }
