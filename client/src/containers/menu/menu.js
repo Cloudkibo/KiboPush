@@ -47,6 +47,7 @@ class Menu extends React.Component {
     this.onSelectItem = this.onSelectItem.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.changeLabel = this.changeLabel.bind(this)
+    this.removeItem = this.removeItem.bind(this)
     props.fetchMenu()
   }
 
@@ -171,6 +172,33 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
+  removeItem(type, indexObject){
+    console.log("Remove Item", type)
+    var temp = this.state.itemMenus
+    switch (type) {
+      case 'item':
+        if(temp.length <= 1)  return 
+        temp = temp.filter(function(x, i) {
+          return i !== indexObject.itemIndex
+        });
+        break;
+      case 'submenu':        
+        temp[indexObject.itemIndex].submenu = temp[indexObject.itemIndex].submenu.filter(function(x, i) {
+          return i !== indexObject.subIndex
+        });
+        break;
+      case 'nested':        
+        temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu = temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu.filter(function(x, i) {
+          return i !== indexObject.nestedIndex
+        });
+        break;
+      default:
+        break;
+    }
+
+    this.setState({itemMenus: temp})
+  }
+
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
 
@@ -249,7 +277,9 @@ class Menu extends React.Component {
                         <form className='form-inline'>
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
-                            onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
+                            onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} />
+                            <div onClick={() => this.removeItem('item',{itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                            </div>
                         </form>
                         {popup}
                       </div>
@@ -259,7 +289,9 @@ class Menu extends React.Component {
                             <form className='form-inline'>
                               <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
                                 onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
-                                className='form-control' style={{width: '350px'}} /></div>
+                                className='form-control' style={{width: '350px'}} />
+                                <div onClick={() => this.removeItem('submenu',{itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                </div>
                             </form>
                             {popup}
                           </div>
@@ -269,7 +301,9 @@ class Menu extends React.Component {
                               <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control'
-                                    onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
+                                    onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                     <div onClick={() => this.removeItem('nested',{itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                    </div>
                                 </form>
                                 {popup}
                               </div>
@@ -287,6 +321,7 @@ class Menu extends React.Component {
                             placeholder={itm.title} className='form-control'
                             onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} />
                             <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div>
+                            <div onClick={() => this.removeItem('item',{itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
                           </div>
                         </form>
                         {popup}
@@ -299,7 +334,9 @@ class Menu extends React.Component {
                               <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
                                 placeholder={sub.title} className='form-control'
                                 onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
-                                style={{width: '350px'}} /></div>
+                                style={{width: '350px'}} />
+                                <div onClick={() => this.removeItem('submenu',{itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                </div>
                             </form>
                             {popup}
                           </div>
@@ -308,7 +345,9 @@ class Menu extends React.Component {
                               <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
-                                    className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} /></div>
+                                    className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                    <div onClick={() => this.removeItem('nested',{itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                    </div>
                                 </form>
                                 {popup}
                               </div>
