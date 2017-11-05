@@ -25,9 +25,9 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadSubscribersList()
     props.loadDashboardData()
     props.loadMyPagesList()
-    props.loadSubscribersList()
     props.getuserdetails()
     props.sentVsSeen()
     this.state = {
@@ -48,7 +48,7 @@ class Dashboard extends React.Component {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    } else if (nextprops.subscribers && nextprops.subscribers[0]) {
+    } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
       console.log('More than 0 subscribers')
       this.setState({isShowingModal: false})
     } else if (nextprops.subscribers && nextprops.subscribers.length === 0) {
