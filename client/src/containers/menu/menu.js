@@ -11,6 +11,7 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import transformData from './utility'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
 //  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
@@ -94,6 +95,7 @@ class Menu extends React.Component {
     console.log('Target', this.target)
     if (this.target === this.state.indexClicked + '-item') {
       if (temp[this.state.indexClicked].submenu.length >= 5) {
+        this.msg.error('Sorry you can add more than 5 submenus')
         return
       }
       temp[this.state.indexClicked].submenu.push({
@@ -103,6 +105,7 @@ class Menu extends React.Component {
     }
     if (this.target === this.subIndex + '-sub-item') {
       if (temp[this.state.indexClicked].submenu[this.subIndex].submenu.length >= 5) {
+        this.msg.error('Sorry you can add more than 5 nested menus')
         return
       }
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
@@ -176,28 +179,28 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
-  removeItem(type, indexObject){
-    console.log("Remove Item", type)
+  removeItem (type, indexObject) {
+    console.log('Remove Item', type)
     var temp = this.state.itemMenus
     switch (type) {
       case 'item':
-        if(temp.length <= 1)  return 
-        temp = temp.filter(function(x, i) {
+        if (temp.length <= 1) return
+        temp = temp.filter(function (x, i) {
           return i !== indexObject.itemIndex
-        });
-        break;
-      case 'submenu':        
-        temp[indexObject.itemIndex].submenu = temp[indexObject.itemIndex].submenu.filter(function(x, i) {
+        })
+        break
+      case 'submenu':
+        temp[indexObject.itemIndex].submenu = temp[indexObject.itemIndex].submenu.filter(function (x, i) {
           return i !== indexObject.subIndex
-        });
-        break;
-      case 'nested':        
-        temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu = temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu.filter(function(x, i) {
+        })
+        break
+      case 'nested':
+        temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu = temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu.filter(function (x, i) {
           return i !== indexObject.nestedIndex
-        });
-        break;
+        })
+        break
       default:
-        break;
+        break
     }
 
     this.setState({itemMenus: temp})
@@ -205,6 +208,15 @@ class Menu extends React.Component {
 
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
+    console.log('Target Value: ', this.target, this.target.includes('nested'))
+
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
 
     let popup = <Popover
       id='popup'
@@ -220,11 +232,13 @@ class Menu extends React.Component {
         <form id='popover-form' style={{marginBottom: '20px'}}>
           <h5 id='popover-heading2' >When Pressed:</h5>
         </form>
-        <div id='popover-option1' className='container'>
-          <div className='row'>
-            <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
-          </div>
-        </div>
+        {
+          (!this.target.includes('nested')) ? <div id='popover-option1' className='container'>
+            <div className='row'>
+              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
+            </div>
+          </div> : ''
+        }
 
         <div id='popover-option2' className='container'>
           <Link to='CreateMessage'>
@@ -251,6 +265,7 @@ class Menu extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='container'>
           <br /><br /><br /><br />
           <div className='ui-block'>
@@ -285,8 +300,8 @@ class Menu extends React.Component {
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
                             onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} />
-                            <div onClick={() => this.removeItem('item',{itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
-                            </div>
+                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                          </div>
                         </form>
                         {popup}
                       </div>
@@ -297,8 +312,8 @@ class Menu extends React.Component {
                               <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
                                 onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
                                 className='form-control' style={{width: '350px'}} />
-                                <div onClick={() => this.removeItem('submenu',{itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
-                                </div>
+                                <div onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                              </div>
                             </form>
                             {popup}
                           </div>
@@ -309,8 +324,8 @@ class Menu extends React.Component {
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control'
                                     onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
-                                     <div onClick={() => this.removeItem('nested',{itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
-                                    </div>
+                                    <div onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                  </div>
                                 </form>
                                 {popup}
                               </div>
@@ -328,7 +343,7 @@ class Menu extends React.Component {
                             placeholder={itm.title} className='form-control'
                             onClick={() => { this.target = index + '-item'; this.onSelectItem(index) }} style={{width: '350px'}} />
                             <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div>
-                            <div onClick={() => this.removeItem('item',{itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
                           </div>
                         </form>
                         {popup}
@@ -342,8 +357,8 @@ class Menu extends React.Component {
                                 placeholder={sub.title} className='form-control'
                                 onClick={() => { this.target = subindex + '-sub-item'; this.subIndex = subindex; this.onSelectItem(index) }}
                                 style={{width: '350px'}} />
-                                <div onClick={() => this.removeItem('submenu',{itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
-                                </div>
+                                <div onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                              </div>
                             </form>
                             {popup}
                           </div>
@@ -353,8 +368,8 @@ class Menu extends React.Component {
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
                                     className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
-                                    <div onClick={() => this.removeItem('nested',{itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
-                                    </div>
+                                    <div onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                  </div>
                                 </form>
                                 {popup}
                               </div>
