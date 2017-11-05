@@ -127,11 +127,12 @@ class Menu extends React.Component {
   }
   handleClick (event) {
     console.log('Handle Click Was Called')
-    this.props.history.push({
-      pathname: `/CreateMessage`,
-      state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
-    })
-    this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
+    // this.props.history.push({
+    //   pathname: `/CreateMessage`,
+    //   state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
+    // })
+    // this.props.addMenuItem({pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName})
+    this.setState({openPopover: false})
   }
   handleClose (e) {
     console.log('handleClose', e)
@@ -206,6 +207,10 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
+  setUrl(event){
+    console.log("In setUrl ", event.target.value , this.target)
+  }
+
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
     console.log('Target Value: ', this.target, this.target.includes('nested'))
@@ -251,7 +256,7 @@ class Menu extends React.Component {
         <div id='popover-option3' className='container'>
           <div id='popover-option3-row' className='row'>
             <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-            <input id='popover-website-input' style={{marginBottom: '20px'}} type='url' className='form-control' />
+            <input id='popover-website-input' style={{marginBottom: '20px'}} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
           </div>
         </div>
 
