@@ -327,7 +327,7 @@ class Menu extends React.Component {
                   }
                 })
               }
-              <li><input style={{margin: 10}} type='text' readOnly value='Powered by KiboPush' className='form-control' style={{width: '350px'}} /></li>
+              <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
               <button className='btn btn-sm btn-primary pull-right'>
                 Save Menu

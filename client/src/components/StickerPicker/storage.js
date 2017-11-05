@@ -1,3 +1,4 @@
+/* global localStorage */
 class Storage {
   constructor (userId) {
     Object.assign(this, { userId })
