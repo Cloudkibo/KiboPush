@@ -94,7 +94,7 @@ class Workflows extends React.Component {
 
   handleFilterByCondition (e) {
     var filtered = []
-    var active = this.state.filterByStatus === 'yes' ? true : false
+    var active = this.state.filterByStatus === 'yes'
     this.setState({filterByCondition: e.target.value})
     if (this.state.filterByStatus !== '') {
       if (e.target.value === '') {
@@ -127,7 +127,7 @@ class Workflows extends React.Component {
 
   handleFilterByStatus (e) {
     var filtered = []
-    var active = e.target.value === 'yes' ? true : false
+    var active = e.target.value === 'yes'
     this.setState({filterByStatus: e.target.value})
     if (this.state.filterByCondition !== '') {
       if (e.target.value === '') {
