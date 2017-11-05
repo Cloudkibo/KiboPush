@@ -21,21 +21,19 @@ import ReactPaginate from 'react-paginate'
 class Workflows extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadWorkFlowList()
     this.state = {
       workflowsData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterByCondition: '',
+      filterByStatus: ''
     }
     this.disableWorkflow = this.disableWorkflow.bind(this)
     this.enableWorkflow = this.enableWorkflow.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-  }
-
-  componentWillMount () {
-    if (!this.props.workflows) {
-      //  alert('calling workflows')
-      this.props.loadWorkFlowList()
-    }
+    this.handleFilterByCondition = this.handleFilterByCondition.bind(this)
+    this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -94,6 +92,72 @@ class Workflows extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  handleFilterByCondition (e) {
+    var filtered = []
+    var active = this.state.filterByStatus === 'yes'
+    this.setState({filterByCondition: e.target.value})
+    if (this.state.filterByStatus !== '') {
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.workflows.length; k++) {
+          if (this.props.workflows[k].isActive === active) {
+            filtered.push(this.props.workflows[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.workflows.length; i++) {
+          if (this.props.workflows[i].isActive === active && this.props.workflows[i].condition === e.target.value) {
+            filtered.push(this.props.workflows[i])
+          }
+        }
+      }
+    } else {
+      if (e.target.value === '') {
+        filtered = this.props.workflows
+      } else {
+        for (var j = 0; j < this.props.workflows.length; j++) {
+          if (this.props.workflows[j].condition === e.target.value) {
+            filtered.push(this.props.workflows[j])
+          }
+        }
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
+  handleFilterByStatus (e) {
+    var filtered = []
+    var active = e.target.value === 'yes'
+    this.setState({filterByStatus: e.target.value})
+    if (this.state.filterByCondition !== '') {
+      if (e.target.value === '') {
+        for (var k = 0; k < this.props.workflows.length; k++) {
+          if (this.props.workflows[k].condition === this.state.filterByCondition) {
+            filtered.push(this.props.workflows[k])
+          }
+        }
+      } else {
+        for (var i = 0; i < this.props.workflows.length; i++) {
+          if (this.props.workflows[i].isActive === active && this.props.workflows[i].condition === this.state.filterByCondition) {
+            filtered.push(this.props.workflows[i])
+          }
+        }
+      }
+    } else {
+      if (e.target.value === '') {
+        filtered = this.props.workflows
+      } else {
+        for (var j = 0; j < this.props.workflows.length; j++) {
+          if (this.props.workflows[j].isActive === active) {
+            filtered.push(this.props.workflows[j])
+          }
+        }
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
   render () {
     console.log('Workflows', this.props.workflows)
     return (
@@ -116,57 +180,86 @@ class Workflows extends React.Component {
                     </button>
                   </Link>
                   {
-                    this.state.workflowsData && this.state.workflowsData.length > 0
+                    this.props.workflows && this.props.workflows.length > 0
                     ? <div className='table-responsive'>
-                      <table className='table table-striped'>
-                        <thead>
-                          <tr>
-                            <th>Condition</th>
-                            <th>Key Words</th>
-                            <th>Message</th>
-                            <th>Active</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {
-                            this.state.workflowsData.map((workflow, i) => (
+                      <form>
+                        <div className='form-row'>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                            <label> Condition </label>
+                            <select className='input-sm' value={this.state.filterByCondition} onChange={this.handleFilterByCondition} >
+                              <option value='' disabled>Filter by Condition...</option>
+                              <option value='message_is'>message_is</option>
+                              <option value='message_contains'>message_contains</option>
+                              <option value='message_begins'>message_begins</option>
+                              <option value=''>all</option>
+                            </select>
+                          </div>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-6'>
+                            <label> Active </label>
+                            <select className='input-sm' value={this.state.filterByStatus} onChange={this.handleFilterByStatus} >
+                              <option value='' disabled>Filter by Status...</option>
+                              <option value='yes'>yes</option>
+                              <option value='no'>no</option>
+                              <option value=''>all</option>
+                            </select>
+                          </div>
+                        </div>
+                      </form>
+                      {
+                        this.state.workflowsData && this.state.workflowsData.length > 0
+                        ? <div>
+                          <table className='table table-striped'>
+                            <thead>
                               <tr>
-                                <td>{workflow.condition}</td>
-                                <td>{workflow.keywords.join(',')}</td>
-                                <td>{workflow.reply}</td>
-                                <td>{workflow.isActive ? 'Yes' : 'No'}</td>
-                                <td>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoEdit(workflow)}>Edit
-                                  </button>
-                                  {
-                                    workflow.isActive === true
-                                    ? <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
-                                    </button>
-                                    : <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}} onClick={() => this.enableWorkflow(workflow)}>Enable
-                                    </button>
-                                  }
-                                </td>
+                                <th>Condition</th>
+                                <th>Key Words</th>
+                                <th>Message</th>
+                                <th>Active</th>
+                                <th>Actions</th>
                               </tr>
-                            ))
-                          }
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 4)}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                            </thead>
+                            <tbody>
+                              {
+                                this.state.workflowsData.map((workflow, i) => (
+                                  <tr>
+                                    <td>{workflow.condition}</td>
+                                    <td>{workflow.keywords.join(',')}</td>
+                                    <td>{workflow.reply}</td>
+                                    <td>{workflow.isActive ? 'Yes' : 'No'}</td>
+                                    <td>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.gotoEdit(workflow)}>Edit
+                                      </button>
+                                      {
+                                        workflow.isActive === true
+                                        ? <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}} onClick={() => this.disableWorkflow(workflow)}>Disable
+                                        </button>
+                                        : <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}} onClick={() => this.enableWorkflow(workflow)}>Enable
+                                        </button>
+                                      }
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
+                          <ReactPaginate previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 4)}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                        : <p> No search results found. </p>
+                      }
                     </div>
                     : <div className='table-responsive'>
                       <p> No data to display </p>

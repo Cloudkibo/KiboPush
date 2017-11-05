@@ -25,16 +25,19 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+
+    props.loadSubscribersList()
     props.loadDashboardData()
     props.loadMyPagesList()
-    props.loadSubscribersList()
     props.getuserdetails()
     props.sentVsSeen()
+
     this.state = {
       isShowingModal: false,
       steps: [],
       sentseendata1: []
     }
+
     console.log('anishachhatwani')
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -48,9 +51,13 @@ class Dashboard extends React.Component {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    } else if (nextprops.pages && nextprops.pages.length > 0 &&
-      nextprops.subscribers && nextprops.subscribers.length === 0 &&
-      this.props.dashboard.subscribers === 0) {
+    } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+      // this means more than 0 subscribers
+      console.log('More than 0 subscribers')
+      this.setState({isShowingModal: false})
+    } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      // this means 0 subscribers
+      console.log('0 subscribers')
       this.setState({isShowingModal: true})
     }
     if (nextprops.user) {
@@ -276,9 +283,16 @@ class Dashboard extends React.Component {
 
           </aside>
         </div>
-        <StackedBar sentseendata={this.state.sentseendata1} />
+        <div className='row'>
+          <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+            <div className='ui-block'>
+              <div className='birthday-item inline-items badges'>
+                <StackedBar sentseendata={this.state.sentseendata1} />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-
     )
   }
 }

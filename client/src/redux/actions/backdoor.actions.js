@@ -132,6 +132,12 @@ export function saveUserInformation (user) {
     data: user
   }
 }
+export function savePageInformation (page) {
+  return {
+    type: ActionTypes.SAVE_PAGE_INFORMATION,
+    data: page
+  }
+}
 export function fileStatus (data) {
   console.log('fileStatus1', data)
 }

@@ -7,7 +7,8 @@ const initialState = {
   polls: [],
   dataobjects: [],
   toppages: [],
-  currentUser: null
+  currentUser: null,
+  currentPage: null
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -107,6 +108,18 @@ export function getCurrentUser (state = initialState, action) {
       console.log('getCurrentUser', action.data)
       return Object.assign({}, state, {
         currentUser: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function getCurrentPage (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.SAVE_PAGE_INFORMATION:
+      console.log('getCurrentPage', action.data)
+      return Object.assign({}, state, {
+        currentPage: action.data
       })
 
     default:

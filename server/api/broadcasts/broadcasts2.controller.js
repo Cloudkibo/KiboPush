@@ -11,7 +11,8 @@ const Pages = require('../pages/Pages.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 // const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
-// const Workflows = require('../workflows/Workflows.model')
+const LiveChat = require('../livechat/livechat.model')
+const Session = require('../sessions/sessions.model')
 let _ = require('lodash')
 // const needle = require('needle')
 const path = require('path')
@@ -150,6 +151,35 @@ exports.sendConversation = function (req, res) {
             subscribers.forEach(subscriber => {
               logger.serverLog(TAG,
                 `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
+
+              Session.findOne({subscriber_id: subscriber._id, page_id: page.pageId, company_id: req.user._id}, (err, session) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At get session ${JSON.stringify(err)}`)
+                }
+                if (!session) {
+                  return logger.serverLog(TAG,
+                    `No chat session was found for broadcast`)
+                }
+                const chatMessage = new LiveChat({
+                  sender_id: page._id, // this is the page id: _id of Pageid
+                  recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                  sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                  recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                  session_id: req.body.session_id,
+                  company_id: req.user._id, // this is admin id till we have companies
+                  payload: req.body.payload, // this where message content will go
+                  status: 'unseen' // seen or unseen
+                })
+                chatMessage.save((err, chatMessageSaved) => {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At get session ${JSON.stringify(err)}`)
+                  }
+                  logger.serverLog(TAG, 'Chat message saved for broadcast sent')
+                })
+              })
+
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
                 payloadItem)

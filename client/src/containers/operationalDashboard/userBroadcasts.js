@@ -11,7 +11,8 @@ class BroadcastsInfo extends React.Component {
     props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterValue: ''
     }
     //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
@@ -82,6 +83,25 @@ class BroadcastsInfo extends React.Component {
 
   onFilter (e) {
     console.log(e.target.value)
+    this.setState({filterValue: e.target.value})
+    var filtered = []
+    if (e.target.value !== '') {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
+        if (e.target.value === 'miscellaneous') {
+          if (this.props.broadcasts[i].payload.length > 1) {
+            filtered.push(this.props.broadcasts[i])
+          }
+        } else {
+          if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
+            filtered.push(this.props.broadcasts[i])
+          }
+        }
+      }
+    } else {
+      filtered = this.props.broadcasts
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -101,8 +121,8 @@ class BroadcastsInfo extends React.Component {
                     </div>
                     <div style={{display: 'inline-block'}} className='form-group col-md-4'>
                       <label> Filter </label>
-                      <select className='form-control' onChange={this.onFilter} >
-                        <option value='' disabled selected>Filter by type...</option>
+                      <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                        <option value='' disabled>Filter by type...</option>
                         <option value='text'>text</option>
                         <option value='image'>image</option>
                         <option value='card'>card</option>
@@ -111,6 +131,7 @@ class BroadcastsInfo extends React.Component {
                         <option value='video'>video</option>
                         <option value='file'>file</option>
                         <option value='miscellaneous'>miscellaneous</option>
+                        <option value=''>all</option>
                       </select>
                     </div>
                   </div>

@@ -8,7 +8,8 @@ export function subscribersInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
-        subscribers: action.data
+        subscribers: action.data,
+        locales: action.locale
       })
 
     default:

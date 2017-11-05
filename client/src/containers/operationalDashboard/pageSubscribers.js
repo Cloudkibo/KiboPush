@@ -12,9 +12,12 @@ class PageSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
     // const pageId = this.props.params.pageId
-    const pageName = this.props.params.pageName
-    const id = this.props.params.id
-    props.loadPageSubscribersList(id)
+    let pageName = ''
+    if (this.props.currentPage) {
+      pageName = this.props.currentPage.pageName
+      const id = this.props.currentPage._id
+      this.props.loadPageSubscribersList(id)
+    }
     this.state = {
       pageName: pageName,
       pageSubscribersData: [],
@@ -179,7 +182,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
     pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
-    currentUser: (state.getCurrentUser.currentUser)
+    currentUser: (state.getCurrentUser.currentUser),
+    currentPage: (state.getCurrentPage.currentPage)
   }
 }
 
