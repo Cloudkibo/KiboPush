@@ -51,7 +51,7 @@ class Dashboard extends React.Component {
     } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
       console.log('More than 0 subscribers')
       this.setState({isShowingModal: false})
-    } else if (nextprops.subscribers && nextprops.subscribers.length === 0) {
+    } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
       console.log('0 subscribers')
       this.setState({isShowingModal: true})
     }
