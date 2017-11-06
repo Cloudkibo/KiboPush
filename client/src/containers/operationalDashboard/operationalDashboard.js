@@ -131,6 +131,7 @@ class OperationalDashboard extends React.Component {
       console.log('Users Updated', nextProps.users)
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
+      console.log('users length', this.state.totalLength)
     }
     if (nextProps.dataobjects !== null) {
       console.log('data objects Updated', nextProps.dataobjects)

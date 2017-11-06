@@ -17,8 +17,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.UsersCount && this.props.objectsData.UsersCount.length > 0 &&
-                    <p><b>{this.props.objectsData.UsersCount[0].count}</b></p>
+                    this.props.objectsData.UsersCount && this.props.objectsData.UsersCount.length > 0
+                    ? <p><b>{this.props.objectsData.UsersCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Users</b></p>
                   </div>
@@ -30,8 +31,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.SubscribersCount && this.props.objectsData.SubscribersCount.length > 0 &&
-                    <p><b>{this.props.objectsData.SubscribersCount[0].count}</b></p>
+                    this.props.objectsData.SubscribersCount && this.props.objectsData.SubscribersCount.length > 0
+                    ? <p><b>{this.props.objectsData.SubscribersCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Subscribers</b></p>
                   </div>
@@ -46,8 +48,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.PagesCount && this.props.objectsData.PagesCount.length > 0 &&
-                    <p><b>{this.props.objectsData.PagesCount[0].count}</b></p>
+                    this.props.objectsData.PagesCount && this.props.objectsData.PagesCount.length > 0
+                    ? <p><b>{this.props.objectsData.PagesCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Pages</b></p>
                   </div>
@@ -59,8 +62,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.SurveysCount && this.props.objectsData.SurveysCount.length > 0 &&
-                    <p><b>{this.props.objectsData.SurveysCount[0].count}</b></p>
+                    this.props.objectsData.SurveysCount && this.props.objectsData.SurveysCount.length > 0
+                    ? <p><b>{this.props.objectsData.SurveysCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Surveys</b></p>
                   </div>
@@ -74,8 +78,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.PollsCount && this.props.objectsData.PollsCount.length > 0 &&
-                    <p><b>{this.props.objectsData.PollsCount[0].count}</b></p>
+                    this.props.objectsData.PollsCount && this.props.objectsData.PollsCount.length > 0
+                    ? <p><b>{this.props.objectsData.PollsCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Polls</b></p>
                   </div>
@@ -88,8 +93,9 @@ class dataObjectsCount extends React.Component {
                 <div className='friend-item-content'>
                   <div className='friend-avatar'>
                     {
-                    this.props.objectsData.BroadcastsCount && this.props.objectsData.BroadcastsCount.length > 0 &&
-                    <p><b>{this.props.objectsData.BroadcastsCount[0].count}</b></p>
+                    this.props.objectsData.BroadcastsCount && this.props.objectsData.BroadcastsCount.length > 0
+                    ? <p><b>{this.props.objectsData.BroadcastsCount[0].count}</b></p>
+                    : <p><b>0</b></p>
                     }
                     <p><b>Broadcasts</b></p>
                   </div>

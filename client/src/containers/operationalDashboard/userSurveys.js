@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadSurveysList } from '../../redux/actions/backdoor.actions'
+import { loadSurveysList, saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import { Link } from 'react-router'
 
 class SurveysInfo extends React.Component {
   constructor (props, context) {
@@ -17,6 +18,7 @@ class SurveysInfo extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSurveys = this.searchSurveys.bind(this)
+    this.onSurveyClick = this.onSurveyClick.bind(this)
   }
 
   componentDidMount () {
@@ -77,6 +79,10 @@ class SurveysInfo extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+  onSurveyClick (e, survey) {
+    console.log('Survey Click', survey)
+    this.props.saveSurveyInformation(survey)
+  }
   render () {
     return (
       <div className='row'>
@@ -108,6 +114,11 @@ class SurveysInfo extends React.Component {
                               <td>{survey.title}</td>
                               <td>{survey.description}</td>
                               <td>{handleDate(survey.datetime)}</td>
+                              <td>
+                                <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm'>
+                                  View Survey
+                                </Link>
+                              </td>
                             </tr>
                           ))
                         }
@@ -149,6 +160,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList}, dispatch)
+    {loadSurveysList: loadSurveysList, saveSurveyInformation}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SurveysInfo)
