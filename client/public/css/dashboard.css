@@ -119,3 +119,26 @@
 .dashboard-panel-grey > a {
   color: #999999;
 }
+
+.op-dash-o-hidden {
+  overflow: hidden !important;
+}
+
+.op-dash-card-body-icon {
+  position: absolute;
+  z-index: 0;
+  top: -25px;
+  right: -25px;
+  font-size: 5rem;
+  -webkit-transform: rotate(15deg);
+  -ms-transform: rotate(15deg);
+  transform: rotate(15deg);
+}
+
+.op-dash-bg-purple {
+  background-color: #9361ea;
+}
+
+.op-dash-bg-grey {
+  background-color: #999999;
+}
