@@ -4,6 +4,7 @@ export const API_URL = '/api'
 
 export function updateUsersList (data) {
   console.log('Data Fetched From Users', data)
+  console.log('Data Fetched From Users', data.payload.length)
   return {
     type: ActionTypes.LOAD_USERS_LIST,
     data: data.payload
@@ -125,7 +126,24 @@ export function loadSurveysList (id) {
       .then(res => dispatch(updateSurveysList(res)))
   }
 }
-
+export function updateSurveyDetails (data) {
+  console.log('updateSurveysDetails', data.payload.survey)
+  console.log('updateSurveysDetails', data.payload.questions)
+  console.log('updateSurveysDetails', data.payload.responses)
+  return {
+    type: ActionTypes.LOAD_SURVEY_DETAILS,
+    survey: data.payload.survey,
+    questions: data.payload.questions,
+    responses: data.payload.responses
+  }
+}
+export function loadSurveyDetails (id) {
+  console.log('loadSurveyDetails called: ', id)
+  return (dispatch) => {
+    callApi(`backdoor/surveyDetails/${id}`)
+      .then(res => dispatch(updateSurveyDetails(res)))
+  }
+}
 export function saveUserInformation (user) {
   return {
     type: ActionTypes.SAVE_USER_INFORMATION,
@@ -136,6 +154,12 @@ export function savePageInformation (page) {
   return {
     type: ActionTypes.SAVE_PAGE_INFORMATION,
     data: page
+  }
+}
+export function saveSurveyInformation (survey) {
+  return {
+    type: ActionTypes.SAVE_SURVEY_INFORMATION,
+    data: survey
   }
 }
 export function fileStatus (data) {
