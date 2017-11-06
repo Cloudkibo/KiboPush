@@ -197,7 +197,7 @@ class Dashboard extends React.Component {
         <div className='ui-block'>
           <div className='ui-block-content'>
             <div className='row'>
-              <div id='pages' className='col-lg-4 col-md-6'>
+              <div id='pages' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-primary'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
@@ -219,7 +219,7 @@ class Dashboard extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div id='subscribers' className='col-lg-4 col-md-6'>
+              <div id='subscribers' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-green'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
@@ -228,7 +228,7 @@ class Dashboard extends React.Component {
                       </div>
                       <div className='dashboard-col-xs-8 text-right'>
                         <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
-                        <div>subscribers!</div>
+                        <div>Subscribers!</div>
                       </div>
                     </div>
                   </div>
@@ -241,7 +241,7 @@ class Dashboard extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div id='newMessages' className='col-lg-4 col-md-6'>
+              <div id='newMessages' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-yellow'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
@@ -265,7 +265,7 @@ class Dashboard extends React.Component {
               </div>
             </div>
             <div className='row'>
-              <div id='broadcasts' className='col-lg-4 col-md-6'>
+              <div id='broadcasts' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-purple'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
@@ -287,7 +287,7 @@ class Dashboard extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div id='polls' className='col-lg-4 col-md-6'>
+              <div id='polls' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-red'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
@@ -309,7 +309,7 @@ class Dashboard extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div id='surveys' className='col-lg-4 col-md-6'>
+              <div id='surveys' className='col-lg-4 col-md-12'>
                 <div className='dashboard-panel dashboard-panel-grey'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
