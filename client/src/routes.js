@@ -118,7 +118,6 @@ const routes = (
     <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
     <Route path='/surveyDetails' component={SurveyDetails} onEnter={requireAuth} />
 
-
   </Route>
 
 )

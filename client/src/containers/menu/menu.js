@@ -207,8 +207,8 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
-  setUrl(event){
-    console.log("In setUrl ", event.target.value , this.target)
+  setUrl (event) {
+    console.log('In setUrl ', event.target.value, this.target)
   }
 
   render () {
