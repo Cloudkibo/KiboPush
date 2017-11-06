@@ -132,7 +132,7 @@ function prepareBroadCastPayload (req) {
   return broadcastPayload
 }
 
-/*function deleteFile (fileurl) {
+/* function deleteFile (fileurl) {
   logger.serverLog(TAG,
     `Inside deletefile file Broadcast, fileurl = ${fileurl}`)
   // unlink file
@@ -143,7 +143,7 @@ function prepareBroadCastPayload (req) {
       logger.serverLog(TAG, 'file deleted')
     }
   })
-}*/
+} */
 
 function parseUrl (text) {
   // eslint-disable-next-line no-useless-escape
