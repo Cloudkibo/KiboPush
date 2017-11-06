@@ -122,11 +122,20 @@ class SurveyDetails extends React.Component {
                               >
                                 <strong>Q. {c.statement}</strong>
                               </li>
-                              {this.props.responses &&
-                              <Response responses={this.props.responses.filter(
+                              {this.props.responses && this.props.responses.length > 0
+                              ? <Response responses={this.props.responses.filter(
                                 (d) => d.questionId._id === c._id)}
                                 question={c} />
-                              }
+                              : <ul>
+                                {c.options.map((c) => (
+                                  <li style={{marginLeft: '30px'}}
+                                    key={c}
+                                  >{c}
+                                  </li>
+                                    ))}
+
+                              </ul>
+                            }
                             </div>
                           ))
                         }

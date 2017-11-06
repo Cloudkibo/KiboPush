@@ -252,17 +252,6 @@ class OperationalDashboard extends React.Component {
                             }
                           </tbody>
                         </table>
-                        <ReactPaginate previousLabel={'previous'}
-                          nextLabel={'next'}
-                          breakLabel={<a>...</a>}
-                          breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={this.handlePageClick}
-                          containerClassName={'pagination'}
-                          subContainerClassName={'pages pagination'}
-                          activeClassName={'active'} />
                       </div>
                       : <p> No search results found. </p>
                     }
