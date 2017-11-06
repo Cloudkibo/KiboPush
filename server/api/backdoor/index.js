@@ -20,5 +20,7 @@ router.get('/allsurveys/:userid', auth.isAuthorizedSuperUser(), controller.allsu
 router.get('/toppages', auth.isAuthorizedSuperUser(), controller.toppages)
 router.get('/datacount/:userid', auth.isAuthorizedSuperUser(), controller.datacount)
 router.get('/uploadFile', auth.isAuthorizedSuperUser(), controller.uploadFile)
+router.get('/polls/:pollid', auth.isAuthorizedSuperUser(), controller.poll)
+router.get('/surveyDetails/:surveyid', auth.isAuthorizedSuperUser(), controller.surveyDetails)
 
 module.exports = router

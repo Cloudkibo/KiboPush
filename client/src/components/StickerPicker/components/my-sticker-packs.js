@@ -1,14 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import IconAdd from './icons/icon-add'
 
 function MyStickerPacks ({ stickerPacks, shop, toggleShop, showPack, colors }) {
-  const style = {
-    stickers: {
-      minWidth: `${stickerPacks.length * 48}px`
-    }
-  }
-
   return (
     <section className='my-packs'>
       <section className='pack-list'>

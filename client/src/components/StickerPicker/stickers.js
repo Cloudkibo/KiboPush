@@ -119,7 +119,7 @@ class StickerMenu extends Component {
   }
 
   render () {
-    const { sendSticker, toggleButton, colors } = this.props
+    const { sendSticker, colors } = this.props
     const { stickerPacks, pack, shop } = this.state
 
     const mergedColors = Object.assign(defaultColors, colors)

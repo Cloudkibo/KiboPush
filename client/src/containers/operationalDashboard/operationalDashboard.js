@@ -68,20 +68,24 @@ class OperationalDashboard extends React.Component {
   }
   displayData (n, users) {
     console.log('one', users)
-    let offset = n * 4
     let data = []
-    let limit
-    let index = 0
-    if ((offset + 4) > users.length) {
-      limit = users.length
-    } else {
-      limit = offset + 4
+    // let offset = n * 4
+    // let data = []
+    // let limit
+    // let index = 0
+    // // if ((offset + 4) > users.length) {
+    //   limit = users.length
+    // } else {
+    //   limit = offset + 4
+    // }
+    // for (var i = offset; i < limit; i++) {
+    //   data[index] = users[i]
+    //   index++
+    // }
+    for (var i = 0; i < users.length; i++) {
+      data.push(users[i])
+      console.log('data', data[i])
     }
-    for (var i = offset; i < limit; i++) {
-      data[index] = users[i]
-      index++
-    }
-    console.log('data[index]', data)
     this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }

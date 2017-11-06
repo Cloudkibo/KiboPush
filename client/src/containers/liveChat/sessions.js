@@ -112,7 +112,7 @@ class Sessions extends React.Component {
     var temp = this.props.sessions
 
     if (this.pageValue !== null) {
-      var search = this.pageValue
+      let search = this.pageValue
       console.log('Page Value', search)
       temp = _.filter(temp, function (item) {
         if (item.page_id.pageId === search) {
@@ -123,7 +123,7 @@ class Sessions extends React.Component {
     }
 
     if (this.searchValue !== '') {
-      var search = this.searchValue
+      let search = this.searchValue
       temp = _.filter(temp, function (item) {
         var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
         if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
@@ -194,7 +194,7 @@ class Sessions extends React.Component {
       <div className='ui-block'>
         <div className='ui-block-title'>
           <input type='text' onChange={this.handleSearch} placeholder='Search Customers...' className='form-control' />
-          <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px'}} className='align-center' style={{zIndex: 6}}>
+          <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px', paddingLeft: '10px', zIndex: 6}} className='align-center'>
             <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='icon-ellipsis-vertical' /> </Link>
             <Popover
               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}

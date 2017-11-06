@@ -152,7 +152,7 @@ exports.sendConversation = function (req, res) {
               logger.serverLog(TAG,
                 `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
 
-              Session.findOne({subscriber_id: subscriber._id, page_id: page.pageId, company_id: req.user._id}, (err, session) => {
+              Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                 if (err) {
                   return logger.serverLog(TAG,
                     `At get session ${JSON.stringify(err)}`)
@@ -166,9 +166,9 @@ exports.sendConversation = function (req, res) {
                   recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
                   sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
                   recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                  session_id: req.body.session_id,
+                  session_id: session._id,
                   company_id: req.user._id, // this is admin id till we have companies
-                  payload: req.body.payload, // this where message content will go
+                  payload: payloadItem, // this where message content will go
                   status: 'unseen' // seen or unseen
                 })
                 chatMessage.save((err, chatMessageSaved) => {
