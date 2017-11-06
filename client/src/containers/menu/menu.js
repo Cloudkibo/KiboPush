@@ -247,7 +247,7 @@ class Menu extends React.Component {
       id='popup'
       style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
       placement='right'
-      target={this.refs[this.target]}
+      target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
       onHide={this.handleClose} >
       <div id='popover'>
@@ -320,7 +320,7 @@ class Menu extends React.Component {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
                     return (<li>
-                      <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
+                      <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
@@ -332,7 +332,7 @@ class Menu extends React.Component {
                       </div>
                       {itm.submenu.map((sub, subindex) => {
                         return <div style={{marginLeft: 50}}>
-                          <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
+                          <div ref={'submenu-' + index + "-" + subindex} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
                               <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
                                 onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + "-" + subindex;  this.subIndex = subindex; this.onSelectItem(index) }}
@@ -345,7 +345,7 @@ class Menu extends React.Component {
 
                           { sub.submenu.map((nested, nestedindex) => {
                             return <div style={{marginLeft: 50}}>
-                              <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
+                              <div ref={'nested-' + index + "-" + subindex + "-" + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control'
                                     onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + "-" + subindex + "-" + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
@@ -362,7 +362,7 @@ class Menu extends React.Component {
                     </li>)
                   } else {
                     return <li>
-                      <div ref={index + '-item'} style={{paddingTop: '5px'}} className='align-center'>
+                      <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
@@ -376,7 +376,7 @@ class Menu extends React.Component {
 
                       { itm.submenu.map((sub, subindex) => {
                         return <div style={{marginLeft: 50}}>
-                          <div ref={subindex + '-sub-item'} style={{paddingTop: '5px'}} className='align-center' >
+                          <div ref={'submenu-' + index + "-" + subindex} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='form-inline'>
                               <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
                                 placeholder={sub.title} className='form-control'
@@ -389,7 +389,7 @@ class Menu extends React.Component {
                           </div>
                           { sub.submenu.map((nested, nestedindex) => {
                             return <div style={{marginLeft: 50}}>
-                              <div ref={nestedindex + '-nested-item'} style={{paddingTop: '5px'}} className='align-center' >
+                              <div ref={'nested-' + index + "-" + subindex + "-" + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
                                 <form className='form-inline'>
                                   <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
                                     className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + "-" + subindex + "-" + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
