@@ -46,7 +46,7 @@ const all = {
 
   pubsubhubbub: {
     secret: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4',
-    callbackUrl: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}:1337/pubsubhubbub`
+    callbackUrl: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}/pubsubhubbub`
   },
 
   twitter: {
