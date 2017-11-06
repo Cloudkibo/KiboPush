@@ -55,7 +55,7 @@ class GrowthTools extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-        <div className='container'>
+        <div id='growthTools' className='container'>
           <br /><br /><br /><br /><br /><br />
           <h3>Growth Tools</h3>
           <div className='row'>

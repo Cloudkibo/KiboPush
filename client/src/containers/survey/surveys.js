@@ -153,7 +153,7 @@ class Survey extends React.Component {
         <HeaderResponsive />
         <Sidebar />
         <Responsive />
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
         <div className='container'>
           <br /><br /><br /><br /><br /><br />

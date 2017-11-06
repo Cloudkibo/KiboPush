@@ -1,9 +1,13 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadSurveysList } from '../../redux/actions/backdoor.actions'
+import { loadSurveysList, saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import Select from 'react-select'
+import Moment from 'moment'
+import { extendMoment } from 'moment-range'
+const moment = extendMoment(Moment)
 
 class SurveysInfo extends React.Component {
   constructor (props, context) {
@@ -12,11 +16,18 @@ class SurveysInfo extends React.Component {
     props.loadSurveysList(props.userID)
     this.state = {
       SurveyData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterOptions: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }],
+      selectedFilterValue: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSurveys = this.searchSurveys.bind(this)
+    this.onFilter = this.onFilter.bind(this)
+    this.filterByDays = this.filterByDays.bind(this)
+    this.onSurveyClick = this.onSurveyClick.bind(this)
   }
 
   componentDidMount () {
@@ -77,6 +88,41 @@ class SurveysInfo extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+  onFilter (val) {
+    console.log('Selected: ' + JSON.stringify(val))
+    if (!val) {
+      this.setState({selectedFilterValue: null})
+      this.displayData(0, this.props.surveys)
+    } else if (val.value === 10) {
+      console.log('Selected:', val.value)
+      this.filterByDays(10)
+      this.setState({ selectedFilterValue: val.value })
+    } else if (val.value === 30) {
+      this.filterByDays(30)
+      this.setState({ selectedFilterValue: val.value })
+    }
+  }
+
+  filterByDays (val) {
+    var data = []
+    var index = 0
+    this.props.surveys.map((survey) => {
+      let surveyDate = moment(survey.datetime, 'YYYY-MM-DD')
+      const end = moment(moment(), 'YYYY-MM-DD')
+      const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
+      const range = moment.range(start, end)
+      if (range.contains(surveyDate)) {
+        data[index] = survey
+        index = index + 1
+      }
+    })
+    this.displayData(0, data)
+  }
+  onSurveyClick (e, survey) {
+    console.log('Survey Click', survey)
+    this.props.saveSurveyInformation(survey)
+  }
+
   render () {
     return (
       <div className='row'>
@@ -86,10 +132,25 @@ class SurveysInfo extends React.Component {
               <h4>Surveys</h4><br />
               { this.props.surveys && this.props.surveys.length > 0
               ? <div className='table-responsive'>
-                <div>
-                  <label> Search </label>
-                  <input type='text' placeholder='Search Survey' className='form-control' onChange={this.searchSurveys} />
-                </div>
+                <form>
+                  <div className='form-row' style={{display: 'flex'}}>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Survey' className='form-control' onChange={this.searchSurveys} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                      <label> Filter </label>
+                      <Select
+                        name='form-field-name'
+                        options={this.state.filterOptions}
+                        onChange={this.onFilter}
+                        placeholder='Filter by last:'
+                        value={this.state.selectedFilterValue}
+                        clearValueText='Filter by:'
+                      />
+                    </div>
+                  </div>
+                </form>
                 {
                   this.state.SurveyData && this.state.SurveyData.length > 0
                   ? <div>
@@ -108,6 +169,11 @@ class SurveysInfo extends React.Component {
                               <td>{survey.title}</td>
                               <td>{survey.description}</td>
                               <td>{handleDate(survey.datetime)}</td>
+                              <td>
+                                <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm'>
+                                  View Survey
+                                </Link>
+                              </td>
                             </tr>
                           ))
                         }
@@ -149,6 +215,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList}, dispatch)
+    {loadSurveysList: loadSurveysList, saveSurveyInformation}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SurveysInfo)

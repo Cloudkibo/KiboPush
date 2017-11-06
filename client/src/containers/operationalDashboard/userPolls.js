@@ -4,6 +4,10 @@ import { loadPollsList } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import Select from 'react-select'
+import Moment from 'moment'
+import { extendMoment } from 'moment-range'
+const moment = extendMoment(Moment)
 
 class PollsInfo extends React.Component {
   constructor (props, context) {
@@ -12,11 +16,18 @@ class PollsInfo extends React.Component {
     props.loadPollsList(props.userID)
     this.state = {
       PollData: [],
-      totalLength: 0
+      totalLength: 0,
+      filterOptions: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }],
+      selectedFilterValue: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPolls = this.searchPolls.bind(this)
+    this.onFilter = this.onFilter.bind(this)
+    this.filterByDays = this.filterByDays.bind(this)
+    this.gotoViewPoll = this.gotoViewPoll.bind(this)
   }
 
   componentDidMount () {
@@ -76,6 +87,42 @@ class PollsInfo extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+
+  onFilter (val) {
+    console.log('Selected: ' + JSON.stringify(val))
+    if (!val) {
+      this.setState({selectedFilterValue: null})
+      this.displayData(0, this.props.polls)
+    } else if (val.value === 10) {
+      console.log('Selected:', val.value)
+      this.filterByDays(10)
+      this.setState({ selectedFilterValue: val.value })
+    } else if (val.value === 30) {
+      this.filterByDays(30)
+      this.setState({ selectedFilterValue: val.value })
+    }
+  }
+
+  filterByDays (val) {
+    var data = []
+    var index = 0
+    this.props.polls.map((poll) => {
+      let pollDate = moment(poll.datetime, 'YYYY-MM-DD')
+      const end = moment(moment(), 'YYYY-MM-DD')
+      const start = moment(moment().subtract(val, 'days'), 'YYYY-MM-DD')
+      const range = moment.range(start, end)
+      if (range.contains(pollDate)) {
+        data[index] = poll
+        index = index + 1
+      }
+    })
+    this.displayData(0, data)
+  }
+
+  gotoViewPoll (poll) {
+    console.log(poll)
+  }
+
   render () {
     return (
       <div className='row'>
@@ -85,10 +132,25 @@ class PollsInfo extends React.Component {
               <h4>Polls</h4><br />
               { this.props.polls && this.props.polls.length > 0
               ? <div className='table-responsive'>
-                <div>
-                  <label> Search </label>
-                  <input type='text' placeholder='Search Polls' className='form-control' onChange={this.searchPolls} />
-                </div>
+                <form>
+                  <div className='form-row' style={{display: 'flex'}}>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                      <label> Search </label>
+                      <input type='text' placeholder='Search Polls' className='form-control' onChange={this.searchPolls} />
+                    </div>
+                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                      <label> Filter </label>
+                      <Select
+                        name='form-field-name'
+                        options={this.state.filterOptions}
+                        onChange={this.onFilter}
+                        placeholder='Filter by last:'
+                        value={this.state.selectedFilterValue}
+                        clearValueText='Filter by:'
+                      />
+                    </div>
+                  </div>
+                </form>
                 {
                   this.state.PollData && this.state.PollData.length > 0
                   ? <div>
@@ -98,6 +160,7 @@ class PollsInfo extends React.Component {
                           <th>Platform</th>
                           <th>Descripton</th>
                           <th>Created at</th>
+                          <th />
                         </tr>
                       </thead>
                       <tbody>
@@ -107,6 +170,11 @@ class PollsInfo extends React.Component {
                               <td>{poll.platform}</td>
                               <td>{poll.statement}</td>
                               <td>{handleDate(poll.datetime)}</td>
+                              <td> <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.gotoViewPoll(poll)}>
+                              View
+                              </button></td>
                             </tr>
                           ))
                         }

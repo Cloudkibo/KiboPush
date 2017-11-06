@@ -25,16 +25,19 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+
+    props.loadSubscribersList()
     props.loadDashboardData()
     props.loadMyPagesList()
-    props.loadSubscribersList()
     props.getuserdetails()
     props.sentVsSeen()
+
     this.state = {
       isShowingModal: false,
       steps: [],
       sentseendata1: []
     }
+
     console.log('anishachhatwani')
     this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -48,9 +51,13 @@ class Dashboard extends React.Component {
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
-    } else if (nextprops.pages && nextprops.pages.length > 0 &&
-      nextprops.subscribers && nextprops.subscribers.length === 0 &&
-      this.props.dashboard.subscribers === 0) {
+    } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+      // this means more than 0 subscribers
+      console.log('More than 0 subscribers')
+      this.setState({isShowingModal: false})
+    } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      // this means 0 subscribers
+      console.log('0 subscribers')
       this.setState({isShowingModal: true})
     }
     if (nextprops.user) {
@@ -97,9 +104,9 @@ class Dashboard extends React.Component {
       type: 'hover',
       isFixed: true},
     {
-      title: 'Scheduled Broadcasts',
-      text: 'These are the current number of posts scheduled to be broadcasted',
-      selector: 'div#scheduled',
+      title: 'New Messages',
+      text: 'The number of unread message',
+      selector: 'div#newMessages',
       position: 'bottom-left',
       type: 'hover',
       isFixed: true},
@@ -173,9 +180,9 @@ class Dashboard extends React.Component {
     return (
       <div className='container'>
         {
-        !(this.props.user && this.props.user.dashboardTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-      }
+          !(this.props.user && this.props.user.dashboardTourSeen) &&
+          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+        }
         <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {
@@ -186,104 +193,155 @@ class Dashboard extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='row'>
-          <main
-            className='col-xl-4 push-xl-4 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
-            <div id='subscribers' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.subscribers}</h1>
-                    <div className='author-content'>
-                      <Link to='/subscribers' className='h5 author-name'>Subscribers</Link>
+        <h3>Dashboard</h3>
+        <div className='ui-block'>
+          <div className='ui-block-content'>
+            <div className='row'>
+              <div id='pages' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-primary'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-facebook fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.pages}</div>
+                        <div>Pages!</div>
+                      </div>
                     </div>
                   </div>
+                  <Link to='/pages'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+              <div id='subscribers' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-green'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-users fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
+                        <div>Subscribers!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Link to='/subscribers'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+              <div id='newMessages' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-yellow'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-comments fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>0</div>
+                        <div>New Messages!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Link to='/live'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
-
-            <div id='polls' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.activityChart.polls}</h1>
-                    <div className='author-content'>
-                      <Link to='/poll' className='h5 author-name'>Polls</Link>
+            <div className='row'>
+              <div id='broadcasts' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-purple'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-bullhorn fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.messages}</div>
+                        <div>Broadcasts!</div>
+                      </div>
                     </div>
                   </div>
+                  <Link to='/convos'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+              <div id='polls' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-red'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-list fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.polls}</div>
+                        <div>Polls!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Link to='/poll'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
+                </div>
+              </div>
+              <div id='surveys' className='col-lg-4 col-md-12'>
+                <div className='dashboard-panel dashboard-panel-grey'>
+                  <div className='dashboard-panel-heading'>
+                    <div className='row'>
+                      <div className='dashboard-col-xs-4'>
+                        <i className='fa fa-list-alt fa-5x' />
+                      </div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.surveys}</div>
+                        <div>Surveys!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Link to='/surveys'>
+                    <div className='panel-footer'>
+                      <span className='pull-left'>View Details</span>
+                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                      <div className='clearfix' />
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
-
-          </main>
-          <aside
-            className='col-xl-4 pull-xl-4 col-lg-6 pull-lg-0 col-md-6 col-sm-12 col-xs-12'>
-            <div id='pages' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.pages}</h1>
-                    <div className='author-content'>
-                      <Link to='/pages' className='h5 author-name'>Pages</Link>
-                    </div>
+            <div className='row'>
+              <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                <div className='ui-block'>
+                  <div className='birthday-item inline-items badges'>
+                    <StackedBar sentseendata={this.state.sentseendata1} />
                   </div>
                 </div>
-              </div>
+              </main>
             </div>
-
-            <div id='surveys' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.activityChart.surveys}</h1>
-                    <div className='author-content'>
-                      <Link to='/surveys'
-                        className='h5 author-name'>Surveys</Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </aside>
-          <aside className='col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-            <div id='scheduled' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.scheduledBroadcast}</h1>
-                    <div className='author-content'>
-                      <Link to='#' className='h5 author-name'>Scheduled
-                        Broadcasts</Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div id='broadcasts' className='ui-block' data-mh='friend-groups-item'>
-              <div className='friend-item friend-groups'>
-                <div className='friend-item-content'>
-                  <div className='friend-avatar'>
-                    <h1>{this.props.dashboard.activityChart.messages}</h1>
-                    <div className='author-content'>
-                      <Link to='/broadcasts' className='h5 author-name'>Broadcasts</Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </aside>
-        </div>
-        <div className='row'>
-          <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-            <div className='ui-block'>
-              <div className='birthday-item inline-items badges'>
-                <StackedBar sentseendata={this.state.sentseendata1} />
-              </div>
-            </div>
-          </main>
+          </div>
         </div>
       </div>
     )

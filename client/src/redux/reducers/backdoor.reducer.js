@@ -7,7 +7,10 @@ const initialState = {
   polls: [],
   dataobjects: [],
   toppages: [],
-  currentUser: null
+  surveyDetails: [],
+  currentUser: null,
+  currentPage: null,
+  currentSurvey: null
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -100,13 +103,48 @@ export function SurveysInfo (state = initialState, action) {
       return state
   }
 }
-
+export function SurveyDetailsInfo (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_SURVEY_DETAILS:
+      return Object.assign({}, state, {
+        survey: action.survey,
+        questions: action.questions,
+        responses: action.responses
+      })
+    default:
+      return state
+  }
+}
 export function getCurrentUser (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SAVE_USER_INFORMATION:
       console.log('getCurrentUser', action.data)
       return Object.assign({}, state, {
         currentUser: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function getCurrentPage (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.SAVE_PAGE_INFORMATION:
+      console.log('getCurrentPage', action.data)
+      return Object.assign({}, state, {
+        currentPage: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function getCurrentSurvey (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.SAVE_SURVEY_INFORMATION:
+      console.log('getCurrentSurvey', action.data)
+      return Object.assign({}, state, {
+        currentSurvey: action.data
       })
 
     default:

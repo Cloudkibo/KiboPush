@@ -12,6 +12,8 @@ const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 const PollResponse = require('../polls/pollresponse.model')
+const SurveyQuestions = require('../surveys/surveyquestions.model')
+const SurveyResponses = require('../surveys/surveyresponse.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
@@ -156,7 +158,7 @@ exports.allpolls = function (req, res) {
 exports.allsurveys = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all surveys api is working')
   // todo put pagination for scaling
-  Surveys.find({userId: req.params.userid}, (err, surveys) => {
+  Surveys.find({}, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
@@ -168,6 +170,40 @@ exports.allsurveys = function (req, res) {
       status: 'success',
       payload: surveys
     })
+  })
+}
+exports.surveyDetails = function (req, res) {
+  logger.serverLog(TAG, 'Backdoor surveyDetails api is working')
+  Surveys.find({_id: req.params.surveyid}, (err, survey) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    // find questions
+    SurveyQuestions.find({surveyId: req.params.surveyid})
+      .populate('surveyId')
+      .exec((err2, questions) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
+        }
+        SurveyResponses.find({surveyId: req.params.surveyid})
+          .populate('surveyId subscriberId questionId')
+          .exec((err3, responses) => {
+            if (err3) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err3)}`
+              })
+            }
+            return res.status(200)
+              .json({status: 'success', payload: {survey, questions, responses}})
+          })
+      })
   })
 }
 
