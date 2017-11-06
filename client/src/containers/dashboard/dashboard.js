@@ -201,11 +201,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-primary'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-facebook fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>{this.props.dashboard.pages}</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.pages}</div>
                         <div>Pages!</div>
                       </div>
                     </div>
@@ -223,11 +223,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-green'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-users fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>{this.props.dashboard.subscribers}</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
                         <div>subscribers!</div>
                       </div>
                     </div>
@@ -245,11 +245,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-yellow'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-comments fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>0</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>0</div>
                         <div>New Messages!</div>
                       </div>
                     </div>
@@ -269,11 +269,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-purple'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-bullhorn fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>{this.props.dashboard.activityChart.messages}</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.messages}</div>
                         <div>Broadcasts!</div>
                       </div>
                     </div>
@@ -291,11 +291,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-red'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-list fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>{this.props.dashboard.activityChart.polls}</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.polls}</div>
                         <div>Polls!</div>
                       </div>
                     </div>
@@ -313,11 +313,11 @@ class Dashboard extends React.Component {
                 <div className='dashboard-panel dashboard-panel-grey'>
                   <div className='dashboard-panel-heading'>
                     <div className='row'>
-                      <div className='col-xs-4'>
+                      <div className='dashboard-col-xs-4'>
                         <i className='fa fa-list-alt fa-5x' />
                       </div>
-                      <div className='col-xs-8 text-right'>
-                        <div className='huge'>{this.props.dashboard.activityChart.surveys}</div>
+                      <div className='dashboard-col-xs-8 text-right'>
+                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.surveys}</div>
                         <div>Surveys!</div>
                       </div>
                     </div>

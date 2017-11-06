@@ -26,7 +26,7 @@
 .dashboard-panel {
   margin-bottom: 20px;
   background-color: #fff;
-  border: 1px solid transparent;
+  border: 1px solid;
   border-radius: 4px;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
@@ -73,4 +73,26 @@
   color: #fff;
   background-color: #999999;
   border-color: #999999;
+}
+
+.dashboard-huge {
+  font-size: 40px;
+}
+
+.dashboard-col-xs-4 {
+  width: 33.33333333%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.dashboard-col-xs-8 {
+  width: 66.66666667%;
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
