@@ -13,10 +13,13 @@ const hub = 'https://pubsubhubbub.appspot.com/'
 
 let pubsub
 
-module.exports = function () {
+module.exports = function (app) {
   pubsub = pubSubHubbub.createServer(config.pubsubhubbub)
 
   pubsub.listen(config.pubsub_port)
+
+  app.get('/pubsubhubbub', pubsub._onGetRequest.bind(pubsub))
+  app.post('/pubsubhubbub', pubsub._onPostRequest.bind(pubsub))
 
   pubsub.on('denied', data => {
     logger.serverLog(TAG, 'Denied')
@@ -47,14 +50,16 @@ module.exports = function () {
   })
 
   pubsub.on('listen', () => {
-    logger.serverLog(TAG, `Server listening on port ${pubsub.port} and callback URL ${config.pubsubhubbub.callbackUrl}`)
-    pubsub.subscribe(topic, hub, config.pubsubhubbub.callbackUrl, (err, topic) => {
-      if (err) {
-        logger.serverLog(TAG, 'Error in subscribing to pubsubhubbub')
-        logger.serverLog(TAG, JSON.stringify(err))
-      }
-      logger.serverLog(TAG, `Callback of subscribe in pubhub ${JSON.stringify(
-        (topic))}`)
-    })
+    logger.serverLog(TAG,
+      `Server listening on port ${pubsub.port} and callback URL ${config.pubsubhubbub.callbackUrl}`)
+    pubsub.subscribe(topic, hub, config.pubsubhubbub.callbackUrl,
+      (err, topic) => {
+        if (err) {
+          logger.serverLog(TAG, 'Error in subscribing to pubsubhubbub')
+          logger.serverLog(TAG, JSON.stringify(err))
+        }
+        logger.serverLog(TAG, `Callback of subscribe in pubhub ${JSON.stringify(
+          (topic))}`)
+      })
   })
 }
