@@ -46,6 +46,7 @@ class OperationalDashboard extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.displayPages = this.displayPages.bind(this)
+    this.handleUser = this.handleUser.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
@@ -68,24 +69,23 @@ class OperationalDashboard extends React.Component {
   }
   displayData (n, users) {
     console.log('one', users)
+    let offset = n * 4
     let data = []
-    // let offset = n * 4
-    // let data = []
-    // let limit
-    // let index = 0
-    // // if ((offset + 4) > users.length) {
-    //   limit = users.length
-    // } else {
-    //   limit = offset + 4
-    // }
-    // for (var i = offset; i < limit; i++) {
-    //   data[index] = users[i]
-    //   index++
-    // }
-    for (var i = 0; i < users.length; i++) {
-      data.push(users[i])
-      console.log('data', data[i])
+    let limit
+    let index = 0
+    if ((offset + 4) > users.length) {
+      limit = users.length
+    } else {
+      limit = offset + 4
     }
+    for (var i = offset; i < limit; i++) {
+      data[index] = users[i]
+      index++
+    }
+    // for (var i = 0; i < users.length; i++) {
+    //   data.push(users[i])
+    //   console.log('data', data[i])
+    // }
     this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }
@@ -149,6 +149,10 @@ class OperationalDashboard extends React.Component {
   handleClickEvent (data) {
     console.log('handle click event', data)
     this.displayPages(data.selected, this.props.toppages)
+  }
+  handleUser (data) {
+    console.log('handle click event', data)
+    this.displayData(data.selected, this.props.users)
   }
   goToBroadcasts (user) {
     console.log(this.props.user)
@@ -259,10 +263,13 @@ class OperationalDashboard extends React.Component {
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
-                          marginPagesDisplayed={2}
+                          pageCount={Math.ceil(this.props.length / 4)}
+                          marginPagesDisplayed={1}
                           pageRangeDisplayed={3}
-                          onPageChange={this.handlePageClick}
+                          onPageChange={(data) => {
+                            data.name = 'users'
+                            this.handleUser(data)
+                          }}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}
                           activeClassName={'active'} />
