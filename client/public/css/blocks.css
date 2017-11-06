@@ -2,26 +2,6 @@
 /*------------- #BLOCKS --------------*/
 /*------------- #UI-BLOCK --------------*/
 
-.panel-green {
-  border-color: #5cb85c;
-}
-
-.panel-yellow {
-  border-color: #f0ad4e;
-}
-
-.panel-purple {
-  border-color: #9361ea;
-}
-
-.panel-red {
-  border-color: #d9534f;
-}
-
-.panel-grey {
-  border-color: #999999;
-}
-
 .wrapperforURL {
   border-radius: 15;
   background-color: #f0f0f0;
