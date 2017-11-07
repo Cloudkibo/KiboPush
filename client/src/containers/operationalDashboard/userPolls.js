@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadPollsList } from '../../redux/actions/backdoor.actions'
+import { loadPollsList, saveCurrentPoll } from '../../redux/actions/backdoor.actions'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -123,6 +124,7 @@ class PollsInfo extends React.Component {
 
   gotoViewPoll (poll) {
     console.log(poll)
+    this.props.saveCurrentPoll(poll)
   }
 
   render () {
@@ -172,11 +174,12 @@ class PollsInfo extends React.Component {
                               <td>{poll.platform}</td>
                               <td>{poll.statement}</td>
                               <td>{handleDate(poll.datetime)}</td>
-                              <td> <button className='btn btn-primary btn-sm'
+                              <td> <Link className='btn btn-primary btn-sm'
+                                to='/viewPollDetail'
                                 style={{float: 'left', margin: 2}}
                                 onClick={() => this.gotoViewPoll(poll)}>
                               View
-                              </button></td>
+                              </Link></td>
                             </tr>
                           ))
                         }
@@ -218,6 +221,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadPollsList: loadPollsList}, dispatch)
+    { loadPollsList: loadPollsList,
+      saveCurrentPoll: saveCurrentPoll }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PollsInfo)
