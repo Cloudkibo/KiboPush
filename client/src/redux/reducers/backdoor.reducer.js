@@ -75,7 +75,8 @@ export function PageSubscribersInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
-        pageSubscribers: action.data
+        pageSubscribers: action.data,
+        locales: action.locale
       })
 
     default:

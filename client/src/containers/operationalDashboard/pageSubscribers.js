@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate'
 import { loadPageSubscribersList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import Select from 'react-select'
 
 class PageSubscribers extends React.Component {
   constructor (props, context) {
@@ -21,12 +22,21 @@ class PageSubscribers extends React.Component {
     this.state = {
       pageName: pageName,
       pageSubscribersData: [],
-      totalLength: 0
+      pageSubscribersDataAll: [],
+      totalLength: 0,
+      genders: [
+        { value: 'male', label: 'Male' },
+        { value: 'female', label: 'Female' },
+        { value: 'other', label: 'Other' }],
+      genderValue: '',
+      localeValue: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscribers = this.searchSubscribers.bind(this)
     this.backToUserDetails = this.backToUserDetails.bind(this)
+    this.onFilterByGender = this.onFilterByGender.bind(this)
+    this.onFilterByLocale = this.onFilterByLocale.bind(this)
   }
 
   displayData (n, pageSubscribers) {
@@ -45,12 +55,12 @@ class PageSubscribers extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({pageSubscribersData: data})
+    this.setState({pageSubscribersData: data, pageSubscribersDataAll: pageSubscribers})
     console.log('in displayData', this.state.pageSubscribersData)
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.pageSubscribers)
+    this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -96,6 +106,73 @@ class PageSubscribers extends React.Component {
     document.body.appendChild(addScript)
   }
 
+  onFilterByGender (data) {
+    var filtered = []
+    if (!data) {
+      if (this.state.localeValue !== '') {
+        for (var a = 0; a < this.props.pageSubscribers.length; a++) {
+          if (this.props.pageSubscribers[a].locale === this.state.localeValue) {
+            filtered.push(this.props.pageSubscribers[a])
+          }
+        }
+      } else {
+        filtered = this.props.pageSubscribers
+      }
+      this.setState({genderValue: ''})
+    } else {
+      if (this.state.localeValue !== '') {
+        for (var i = 0; i < this.props.pageSubscribers.length; i++) {
+          if (this.props.pageSubscribers[i].gender === data.value && this.props.pageSubscribers[i].locale === this.state.localeValue) {
+            filtered.push(this.props.pageSubscribers[i])
+          }
+        }
+      } else {
+        for (var j = 0; j < this.props.pageSubscribers.length; j++) {
+          if (this.props.pageSubscribers[j].gender === data.value) {
+            filtered.push(this.props.pageSubscribers[j])
+          }
+        }
+      }
+      this.setState({genderValue: data.value})
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
+  onFilterByLocale (data) {
+    console.log(data)
+    var filtered = []
+    if (!data) {
+      if (this.state.genderValue !== '') {
+        for (var a = 0; a < this.props.pageSubscribers.length; a++) {
+          if (this.props.pageSubscribers[a].gender === this.state.genderValue) {
+            filtered.push(this.props.pageSubscribers[a])
+          }
+        }
+      } else {
+        filtered = this.props.pageSubscribers
+      }
+      this.setState({localeValue: ''})
+    } else {
+      if (this.state.genderValue !== '') {
+        for (var i = 0; i < this.props.pageSubscribers.length; i++) {
+          if (this.props.pageSubscribers[i].gender === this.state.genderValue && this.props.pageSubscribers[i].locale === data.value) {
+            filtered.push(this.props.pageSubscribers[i])
+          }
+        }
+      } else {
+        for (var j = 0; j < this.props.pageSubscribers.length; j++) {
+          if (this.props.pageSubscribers[j].locale === data.value) {
+            filtered.push(this.props.pageSubscribers[j])
+          }
+        }
+      }
+      this.setState({localeValue: data.value})
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
   render () {
     return (
       <div>
@@ -105,27 +182,51 @@ class PageSubscribers extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
+          <h3>{ this.state.pageName }</h3>
           <div className='row'>
             <main
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges'>
-                  <h3>{ this.state.pageName }</h3><br />
                   <h4>Subscribers List</h4>
                   { this.props.pageSubscribers && this.props.pageSubscribers.length > 0
                   ? <div className='table-responsive'>
-                    <div>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscribers} />
-                    </div>
+                    <form>
+                      <div className='form-row' style={{display: 'flex'}}>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Search </label>
+                          <input type='text' placeholder='Search Subscribers...' className='form-control' onChange={this.searchSubscribers} />
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Gender </label>
+                          <Select
+                            name='form-field-name'
+                            options={this.state.genders}
+                            onChange={this.onFilterByGender}
+                            placeholder='Filter by gender...'
+                            value={this.state.genderValue}
+                          />
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <label> Locale </label>
+                          <Select
+                            name='form-field-name'
+                            options={this.props.locales}
+                            onChange={this.onFilterByLocale}
+                            placeholder='Filter by locale...'
+                            value={this.state.localeValue}
+                          />
+                        </div>
+                      </div>
+                    </form>
                     {
                       this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                       ? <div>
                         <table className='table table-striped'>
                           <thead>
                             <tr>
+                              <th>Profile Pic</th>
                               <th>Subscriber</th>
-                              <th>Email</th>
                               <th>Gender</th>
                               <th>Locale</th>
                               <th />
@@ -135,8 +236,10 @@ class PageSubscribers extends React.Component {
                             {
                               this.state.pageSubscribersData.map((subscriber, i) => (
                                 <tr>
+                                  <td><img alt='pic'
+                                    src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                    className='img-circle' width='60' height='60' /></td>
                                   <td>{subscriber.firstName}{' '}{subscriber.lastName}</td>
-                                  <td>{subscriber.email}</td>
                                   <td>{subscriber.gender}</td>
                                   <td>{subscriber.locale}</td>
                                 </tr>
@@ -182,6 +285,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
     pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
+    locales: (state.PageSubscribersInfo.locales),
     currentUser: (state.getCurrentUser.currentUser),
     currentPage: (state.getCurrentPage.currentPage)
   }

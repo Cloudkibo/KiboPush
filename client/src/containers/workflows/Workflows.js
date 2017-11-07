@@ -24,6 +24,7 @@ class Workflows extends React.Component {
     props.loadWorkFlowList()
     this.state = {
       workflowsData: [],
+      workflowsDataAll: [],
       totalLength: 0,
       filterByCondition: '',
       filterByStatus: ''
@@ -59,11 +60,11 @@ class Workflows extends React.Component {
       data[index] = workflows[i]
       index++
     }
-    this.setState({workflowsData: data})
+    this.setState({workflowsData: data, workflowsDataAll: workflows})
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.workflows)
+    this.displayData(data.selected, this.state.workflowsDataAll)
   }
 
   disableWorkflow (workflow) {

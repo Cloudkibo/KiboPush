@@ -11,6 +11,7 @@ class BroadcastsInfo extends React.Component {
     props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
+      broadcastsDataAll: [],
       totalLength: 0,
       filterValue: ''
     }
@@ -52,11 +53,11 @@ class BroadcastsInfo extends React.Component {
       index++
     }
     console.log('data[index]', data)
-    this.setState({broadcastsData: data})
+    this.setState({broadcastsData: data, broadcastsDataAll: broadcasts})
     console.log('in displayData', this.state.broadcastsData)
   }
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.broadcasts)
+    this.displayData(data.selected, this.state.broadcastsDataAll)
   }
   componentWillReceiveProps (nextProps) {
     console.log('userbroadcasts componentWillReceiveProps is called')
