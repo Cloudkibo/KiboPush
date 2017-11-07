@@ -29,6 +29,9 @@ const subscriberSchema = new Schema({
   profilePic: {
     type: String
   },
+  coverPhoto: {
+    type: String
+  },
   pageId: {
     type: Schema.ObjectId,
     ref: 'pages'
