@@ -19,6 +19,7 @@ class Subscriber extends React.Component {
     props.loadSubscribersList()
     this.state = {
       subscribersData: [],
+      subscribersDataAll: [],
       totalLength: 0,
       filterByGender: '',
       filterByLocale: ''
@@ -70,11 +71,11 @@ class Subscriber extends React.Component {
       data[index] = subscribers[i]
       index++
     }
-    this.setState({subscribersData: data})
+    this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.subscribers)
+    this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {

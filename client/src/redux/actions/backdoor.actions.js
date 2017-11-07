@@ -107,9 +107,19 @@ export function loadPollsList (id) {
 
 export function updatePageSubscribersList (data) {
   console.log('updatePageSubscribersList', data.payload)
+  var locale = [{ value: data.payload[0].locale, label: data.payload[0].locale }]
+  var tempLocale = [data.payload[0].locale]
+  for (var i = 1; i < data.payload.length; i++) {
+    if (tempLocale.indexOf(data.payload[i].locale) === -1) {
+      var temp = { value: data.payload[i].locale, label: data.payload[i].locale }
+      locale.push(temp)
+      tempLocale.push(data.payload[i].locale)
+    }
+  }
   return {
     type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
-    data: data.payload
+    data: data.payload,
+    locale
   }
 }
 
