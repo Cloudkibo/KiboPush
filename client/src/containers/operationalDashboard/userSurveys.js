@@ -94,6 +94,7 @@ class SurveysInfo extends React.Component {
     if (!val) {
       this.setState({selectedFilterValue: null})
       this.displayData(0, this.props.surveys)
+      this.setState({ totalLength: this.props.surveys.length })
     } else if (val.value === 10) {
       console.log('Selected:', val.value)
       this.filterByDays(10)
