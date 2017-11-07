@@ -114,7 +114,7 @@ exports.getfbMessage = function (req, res) {
 
               needle.get(options.url, options, (error, response) => {
                 const subsriber = response.body
-
+                logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                 if (!error) {
                   const payload = {
                     firstName: subsriber.first_name,

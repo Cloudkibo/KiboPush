@@ -9,6 +9,8 @@ const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const SurveyPage = require('../page_survey/page_survey.model')
 const TAG = 'api/surveys/surveys.controller.js'
+const mongoose = require('mongoose')
+
 let _ = require('lodash')
 
 const needle = require('needle')
@@ -29,12 +31,13 @@ exports.index = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Surveys not found'})
       }
-      SurveyResponses.aggregate([
-        {$group: {_id: '$surveyId', count: {$sum: 1}}}
+      Surveys.aggregate([
+        {$match: {isresponded: true}},
+        {$group: {_id: '$_id', count: {$sum: 1}}}
       ], (err2, responsesCount) => {
         if (err2) {
           return res.status(404)
-          .json({status: 'failed', description: 'Surveys not found'})
+          .json({status: 'failed', description: 'responses count not found'})
         }
         res.status(200).json({
           status: 'success',
@@ -273,6 +276,7 @@ exports.submitresponse = function (req, res) {
       }
     })
   }
+  Surveys.update({ _id: mongoose.Types.ObjectId(req.body.surveyId) }, { $set: { isresponded: true } })
   return res.status(200)
     .json({status: 'success', payload: 'Response submitted successfully'})
 }
