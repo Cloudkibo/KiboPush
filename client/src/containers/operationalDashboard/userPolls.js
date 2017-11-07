@@ -117,6 +117,7 @@ class PollsInfo extends React.Component {
       }
     })
     this.displayData(0, data)
+    this.setState({ totalLength: data.length })
   }
 
   gotoViewPoll (poll) {

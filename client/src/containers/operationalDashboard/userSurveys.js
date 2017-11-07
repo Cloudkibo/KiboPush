@@ -118,6 +118,7 @@ class SurveysInfo extends React.Component {
       }
     })
     this.displayData(0, data)
+    this.setState({ totalLength: data.length })
   }
   onSurveyClick (e, survey) {
     console.log('Survey Click', survey)
