@@ -22,6 +22,7 @@ class Menu extends React.Component {
     props.loadMyPagesList()
     this.state = {
       pageOptions: [],
+      setWebUrl: false,
       pageValue: '',
       itemName: '',
       itemType: '',
@@ -141,13 +142,13 @@ class Menu extends React.Component {
         document.getElementById('popover').contains(document.getElementById(e.target.id))) {
       return
     }
-    this.setState({openPopover: false})
+    this.setState({openPopover: false, setWebUrl: false})
   }
   onSelectItem (index) {
     this.setState({indexClicked: index})
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
-    this.setState({openPopover: !this.state.openPopover})
+    this.setState({openPopover: !this.state.openPopover, setWebUrl: false})
   }
   addItem () {
     var temp = this.state.itemMenus
@@ -237,12 +238,16 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
-  save(){
+  save () {
     data = {}
     data.payload = transformData(this.state.itemMenus)
     data.pageId = ''
     data.userId = this.props.user._id
     this.props.saveMenu(data)
+  }
+
+  setWebUrl () {
+    this.setState({setWebUrl: !this.state.setWebUrl})
   }
 
   render () {
@@ -259,7 +264,7 @@ class Menu extends React.Component {
 
     let popup = <Popover
       id='popup'
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '450px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
@@ -287,11 +292,20 @@ class Menu extends React.Component {
           </Link>
         </div>
         {
-          !getUrl(this.state.itemMenus, this.clickIndex).nested && <div id='popover-option3' className='container'>
-            <div id='popover-option3-row' className='row'>
-              <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-              <input id='popover-website-input' style={{marginBottom: '20px'}} placeholder={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+          !getUrl(this.state.itemMenus, this.clickIndex).nested &&
+          <div className='container' id='popover-option3'>
+            <div className='row'>
+              <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>Set Web Url</button>
             </div>
+            {
+              (this.state.setWebUrl) && <div id='popover-option3' className='container'>
+                <div id='popover-option3-row' className='row'>
+                  <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
+                  <input id='popover-website-input' style={{marginBottom: '20px'}} placeholder={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+                </div>
+              </div>
+            }
+
           </div>
         }
 
@@ -448,7 +462,7 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     addMenuItem: addMenuItem,
     fetchMenu: fetchMenu,
-    saveMenu: saveMenu,
+    saveMenu: saveMenu
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
