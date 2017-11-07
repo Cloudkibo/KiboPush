@@ -35,6 +35,7 @@ import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
+import ViewPollDetail from './containers/operationalDashboard/pollDetails'
 import UserBroadcasts from './containers/operationalDashboard/userBroadcasts'
 import SurveyDetails from './containers/operationalDashboard/surveyDetails'
 import PageSubscribers from './containers/operationalDashboard/pageSubscribers'
@@ -103,6 +104,7 @@ const routes = (
     <Route path='/surveyResult' component={SurveyResult} onEnter={requireAuth} />
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
+    <Route path='/viewPollDetail' component={ViewPollDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
     <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />

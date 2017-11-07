@@ -199,6 +199,7 @@ class Survey extends React.Component {
                           <th>Created At</th>
                           <th>Sent</th>
                           <th>Seen</th>
+                          <th>Responded</th>
                           <th>Actions</th>
 
                         </tr>
@@ -212,6 +213,7 @@ class Survey extends React.Component {
                               <td>{handleDate(survey.datetime)}</td>
                               <td>{survey.sent}</td>
                               <td>{survey.seen}</td>
+                              <td>{survey.responses}</td>
                               <td>
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}

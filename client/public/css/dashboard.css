@@ -119,3 +119,62 @@
 .dashboard-panel-grey > a {
   color: #999999;
 }
+
+.op-dash-o-hidden {
+  overflow: hidden !important;
+}
+
+.op-dash-card-body-icon {
+  position: absolute;
+  z-index: 0;
+  top: -25px;
+  right: -25px;
+  font-size: 5rem;
+  -webkit-transform: rotate(15deg);
+  -ms-transform: rotate(15deg);
+  transform: rotate(15deg);
+}
+
+.op-dash-bg-purple {
+  background-color: #9361ea !important;
+}
+
+.op-dash-bg-grey {
+  background-color: #999999 !important;
+}
+
+.op-dash-bg-primary {
+  background-color: #007bff !important;
+}
+
+.op-dash-bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.op-dash-bg-success {
+  background-color: #28a745 !important;
+}
+
+.op-dash-bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.op-dash-card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.op-dash-card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}

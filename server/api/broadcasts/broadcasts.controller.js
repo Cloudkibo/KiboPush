@@ -10,6 +10,7 @@ const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const PollPage = require('../page_poll/page_poll.model')
 const SurveyPage = require('../page_survey/page_survey.model')
+const Surveys = require('../surveys/surveys.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Workflows = require('../workflows/Workflows.model')
@@ -17,6 +18,7 @@ const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
 const utility = require('./broadcasts.utility')
+const mongoose = require('mongoose')
 const og = require('open-graph')
 let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
@@ -111,47 +113,56 @@ exports.getfbMessage = function (req, res) {
                 method: 'GET'
 
               }
+              const options1 = {
+                url: `https://graph.facebook.com/v2.6/${sender}?fields=cover&access_token=${page.accessToken}`,
+                qs: {access_token: page.accessToken},
+                method: 'GET'
 
+              }
               needle.get(options.url, options, (error, response) => {
                 const subsriber = response.body
-
-                if (!error) {
-                  const payload = {
-                    firstName: subsriber.first_name,
-                    lastName: subsriber.last_name,
-                    locale: subsriber.locale,
-                    gender: subsriber.gender,
-                    userId: page.userId,
-                    provider: 'facebook',
-                    timezone: subsriber.timezone,
-                    profilePic: subsriber.profile_pic,
-                    pageScopedId: '',
-                    email: '',
-                    senderId: sender,
-                    pageId: page._id,
-                    isSubscribed: true
-                  }
-
-                  Subscribers.findOne({senderId: sender}, (err, subscriber) => {
-                    if (err) logger.serverLog(TAG, err)
-                    if (subscriber === null) {
-                      // subsriber not found, create subscriber
-                      Subscribers.create(payload, (err2, subscriberCreated) => {
-                        if (err2) {
-                          logger.serverLog(TAG, err2)
-                        }
-                        logger.serverLog(TAG, 'new Subscriber added')
-                        createSession(page, subscriberCreated, event)
-                      })
-                    } else {
-                      createSession(page, subscriber, event)
+                needle.get(options1.url, options1, (error1, response1) => {
+                  const coverphoto = response1.body
+                  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
+                  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
+                  if (!error) {
+                    const payload = {
+                      firstName: subsriber.first_name,
+                      lastName: subsriber.last_name,
+                      locale: subsriber.locale,
+                      gender: subsriber.gender,
+                      userId: page.userId,
+                      provider: 'facebook',
+                      timezone: subsriber.timezone,
+                      profilePic: subsriber.profile_pic,
+                      pageScopedId: '',
+                      email: '',
+                      senderId: sender,
+                      pageId: page._id,
+                      isSubscribed: true
                     }
-                  })
-                } else {
-                  logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
-                }
+
+                    Subscribers.findOne({senderId: sender}, (err, subscriber) => {
+                      if (err) logger.serverLog(TAG, err)
+                      if (subscriber === null) {
+                        // subsriber not found, create subscriber
+                        Subscribers.create(payload, (err2, subscriberCreated) => {
+                          if (err2) {
+                            logger.serverLog(TAG, err2)
+                          }
+                          logger.serverLog(TAG, 'new Subscriber added')
+                          createSession(page, subscriberCreated, event)
+                        })
+                      } else {
+                        createSession(page, subscriber, event)
+                      }
+                    })
+                  } else {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                  }
+                })
+                sendautomatedmsg(event, page)
               })
-              sendautomatedmsg(event, page)
             })
         }
 
@@ -640,7 +651,7 @@ function savesurvey (req) {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
       }
-
+      Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
       SurveyQuestions.find({
         surveyId: resp.survey_id,
