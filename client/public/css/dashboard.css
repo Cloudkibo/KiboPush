@@ -136,11 +136,11 @@
 }
 
 .op-dash-bg-purple {
-  background-color: #9361ea;
+  background-color: #9361ea !important;
 }
 
 .op-dash-bg-grey {
-  background-color: #999999;
+  background-color: #999999 !important;
 }
 
 .op-dash-bg-primary {
