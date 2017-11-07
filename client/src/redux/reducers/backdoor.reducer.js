@@ -18,7 +18,8 @@ export function UsersInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_USERS_LIST:
       return Object.assign({}, state, {
-        users: action.data
+        users: action.data,
+        locales: action.locale
       })
 
     default:
