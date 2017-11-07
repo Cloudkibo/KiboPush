@@ -93,6 +93,7 @@ class PollsInfo extends React.Component {
     if (!val) {
       this.setState({selectedFilterValue: null})
       this.displayData(0, this.props.polls)
+      this.setState({ totalLength: this.props.polls.length })
     } else if (val.value === 10) {
       console.log('Selected:', val.value)
       this.filterByDays(10)
@@ -117,6 +118,7 @@ class PollsInfo extends React.Component {
       }
     })
     this.displayData(0, data)
+    this.setState({ totalLength: data.length })
   }
 
   gotoViewPoll (poll) {
