@@ -49,6 +49,7 @@ class Menu extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.changeLabel = this.changeLabel.bind(this)
     this.removeItem = this.removeItem.bind(this)
+    this.handleOption = this.handleOption.bind(this)
     props.fetchMenu()
   }
 
@@ -81,11 +82,11 @@ class Menu extends React.Component {
   handleOption (option) {
     console.log('option selected: ', option)
     this.setState({optionSelected: option})
-    if (option === 'Add submenu') {
+    if (option === this.option1) {
       this.setState({itemType: 'submenu'})
-    } else if (option === 'Reply with a message') {
+    } else if (option === this.option2) {
       this.setState({itemType: 'reply'})
-    } else if (option === 'Open website') {
+    } else if (option === this.option3) {
       this.setState({itemType: 'weblink'})
     }
   }
@@ -135,12 +136,14 @@ class Menu extends React.Component {
     this.setState({openPopover: false})
   }
   handleClose (e) {
-    console.log('handleClose', e)
+    console.log('handleClose', e.target.id)
     if (e.target.id === 'popover' ||
-        document.getElementById('popover').contains(document.getElementById(e.target.id))) {
+        document.getElementById('popover').contains(document.getElementById(e.target.id)) ||
+        e.target.id === 'option3-btn'
+      ) {
       return
     }
-    this.setState({openPopover: false})
+    this.setState({openPopover: false, itemType: ''})
   }
   onSelectItem (index) {
     this.setState({indexClicked: index})
@@ -259,7 +262,7 @@ class Menu extends React.Component {
         {
           (!this.target.includes('nested')) ? <div id='popover-option1' className='container'>
             <div className='row'>
-              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
+              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => { this.handleOption(this.option1); this.addSubmenu() }}> Add Submenu </button>
             </div>
           </div> : ''
         }
@@ -271,14 +274,24 @@ class Menu extends React.Component {
             </div>
           </Link>
         </div>
-
-        <div id='popover-option3' className='container'>
-          <div id='popover-option3-row' className='row'>
-            <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-            <input id='popover-website-input' style={{marginBottom: '20px'}} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+        {
+          (this.state.itemType !== 'weblink') &&
+          <div id='popover-option3-btn' className='container'>
+            <div className='row' id='popover3-row-btn'>
+              <button id='option3-btn' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => { this.handleOption(this.option3) }}>Add Website URL</button>
+            </div>
           </div>
-        </div>
+        }
 
+        {
+          (this.state.itemType === 'weblink') &&
+          <div id='popover-option3' className='container'>
+            <div id='popover-option3-row' className='row'>
+              <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
+              <input id='popover-website-input' style={{marginBottom: '20px'}} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+            </div>
+          </div>
+        }
         <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
         <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
       </div>
