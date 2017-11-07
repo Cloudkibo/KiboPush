@@ -10,7 +10,7 @@ import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
 import Select from 'react-select'
-
+import ListItem from './ListItem'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
@@ -31,26 +31,26 @@ class OperationalDashboard extends React.Component {
       usersData: [],
       objectsData: [],
       objects: {},
-      pagesData: [],
       totalLength: 0,
       objectsLength: 0,
-      pagesLength: 0,
       options: [
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
-      selectedValue: 0
+      selectedValue: 0,
+      showTopTenPages: false,
+      showUsers: false
     }
-    props.loadUsersList()
     props.loadDataObjectsCount(0)
     props.loadTopPages()
+    props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
-    this.displayPages = this.displayPages.bind(this)
-    this.handleClickEvent = this.handleClickEvent.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
     this.getFile = this.getFile.bind(this)
     this.logChange = this.logChange.bind(this)
+    this.showContent = this.showContent.bind(this)
+    this.hideContent = this.hideContent.bind(this)
   }
 
   componentDidMount () {
@@ -66,29 +66,26 @@ class OperationalDashboard extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
+
   displayData (n, users) {
     console.log('one', users)
     let data = []
-    // let offset = n * 4
-    // let data = []
-    // let limit
-    // let index = 0
-    // // if ((offset + 4) > users.length) {
-    //   limit = users.length
-    // } else {
-    //   limit = offset + 4
-    // }
-    // for (var i = offset; i < limit; i++) {
-    //   data[index] = users[i]
-    //   index++
-    // }
-    for (var i = 0; i < users.length; i++) {
-      data.push(users[i])
-      console.log('data', data[i])
+    let offset = n * 5
+    let limit
+    let index = 0
+    if ((offset + 5) > users.length) {
+      limit = users.length
+    } else {
+      limit = offset + 5
+    }
+    for (var i = offset; i < limit; i++) {
+      data[index] = users[i]
+      index++
     }
     this.setState({usersData: data})
     console.log('in displayData', this.state.usersData)
   }
+
   displayObjects (n, users) {
     console.log('users', users)
     var temp = []
@@ -107,28 +104,11 @@ class OperationalDashboard extends React.Component {
     // console.log('in displayData of diplayObjects2', this.state.objectsData[0].PagesCount)
   //  console.log('in displayData of diplayObjects3', this.state.objectsData[0].PagesCount.count)
   }
-  displayPages (n, users) {
-    console.log('one', users)
-    let offset = n * 4
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 4) > users.length) {
-      limit = users.length
-    } else {
-      limit = offset + 4
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = users[i]
-      index++
-    }
-    console.log('data[index]', data)
-    this.setState({pagesData: data})
-    console.log('in displayData', this.state.pagesData)
-  }
+
   handlePageClick (data) {
     this.displayData(data.selected, this.props.users)
   }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
@@ -142,14 +122,9 @@ class OperationalDashboard extends React.Component {
     }
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
-      this.displayPages(0, nextProps.toppages)
-      this.setState({ pagesLength: nextProps.toppages.length })
     }
   }
-  handleClickEvent (data) {
-    console.log('handle click event', data)
-    this.displayPages(data.selected, this.props.toppages)
-  }
+
   goToBroadcasts (user) {
     console.log(this.props.user)
     this.props.saveUserInformation(user)
@@ -161,6 +136,7 @@ class OperationalDashboard extends React.Component {
     console.log('goToBroadcasts', user._id, user.name)
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
+
   searchUser (event) {
     var filtered = []
     for (let i = 0; i < this.props.users.length; i++) {
@@ -171,9 +147,11 @@ class OperationalDashboard extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+
   getFile () {
     this.props.downloadFile()
   }
+
   logChange (val) {
     console.log('Selected: ' + JSON.stringify(val))
     if (!val) {
@@ -188,6 +166,23 @@ class OperationalDashboard extends React.Component {
       this.props.loadDataObjectsCount(val.value)
     }
   }
+
+  showContent (title) {
+    if (title === 'Top Ten Pages') {
+      this.setState({showTopTenPages: true})
+    } else {
+      this.setState({showUsers: true})
+    }
+  }
+
+  hideContent (title) {
+    if (title === 'Top Ten Pages') {
+      this.setState({showTopTenPages: false})
+    } else {
+      this.setState({showUsers: false})
+    }
+  }
+
   render () {
     return (
       <div>
@@ -214,7 +209,16 @@ class OperationalDashboard extends React.Component {
               <br />
               <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
               <br />
-              <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
+              {
+                this.state.showTopTenPages
+                ? <Top10pages
+                  iconClassName={'fa fa-facebook'}
+                  title={'Top Ten Pages'}
+                  hideContent={this.hideContent}
+                  pagesData={this.props.toppages}
+                />
+                : <ListItem iconClassName={'fa fa-facebook'} title={'Top Ten Pages'} showContent={this.showContent} />
+              }
               <div className='row'>
                 <main
                   className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
@@ -298,8 +302,6 @@ function mapStateToProps (state) {
     currentUser: (state.getCurrentUser.currentUser),
     dataobjects: (state.dataObjectsInfo.dataobjects),
     toppages: (state.topPagesInfo.toppages)
-
-  //  usersData: state.usersData
   }
 }
 
