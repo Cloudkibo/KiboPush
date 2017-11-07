@@ -344,8 +344,13 @@ class OperationalDashboard extends React.Component {
                                       subContainerClassName={'pages pagination'}
                                       activeClassName={'active'} />
                                   </div>
-                                  <div className='pull-right' style={{display: 'inline-block'}}>
-                                    <label>Get data in CSV file: <i style={{cursor: 'pointer'}} className='fa fa-download' onClick={() => this.getFile()} /></label>
+                                  <div className='pull-right' style={{display: 'inline-block', paddingTop: '25px'}}>
+                                    <div style={{display: 'inline-block'}}>
+                                      <label>Get data in CSV file: </label>
+                                    </div>
+                                    <div style={{display: 'inline-block', marginRight: '10px'}}>
+                                      <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' onClick={() => this.getFile()} />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
