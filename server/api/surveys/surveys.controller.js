@@ -29,9 +29,17 @@ exports.index = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Surveys not found'})
       }
-      res.status(200).json({
-        status: 'success',
-        payload: {surveys, surveypages}
+      SurveyResponses.aggregate([
+        {$group: {_id: '$surveyId', count: {$sum: 1}}}
+      ], (err2, responsesCount) => {
+        if (err2) {
+          return res.status(404)
+          .json({status: 'failed', description: 'Surveys not found'})
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {surveys, surveypages, responsesCount}
+        })
       })
     })
   })
