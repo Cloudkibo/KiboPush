@@ -13,8 +13,8 @@ class dataObjectsCount extends React.Component {
           ? <div>
             <div className='row'>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white bg-primary op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-primary op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-users' />
                     </div>
@@ -24,8 +24,8 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white bg-warning op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-warning op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-facebook' />
                     </div>
@@ -35,8 +35,8 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white bg-success op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-success op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-users' />
                     </div>
@@ -46,10 +46,11 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
             </div>
+            <br />
             <div className='row'>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white op-dash-bg-purple op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-purple op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-bullhorn' />
                     </div>
@@ -59,8 +60,8 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white bg-danger op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-danger op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-list' />
                     </div>
@@ -70,8 +71,8 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
               <div className='col-xl-4 col-sm-12'>
-                <div className='card text-white op-dash-bg-grey op-dash-o-hidden h-100'>
-                  <div className='card-body'>
+                <div className='op-dash-card text-white op-dash-bg-grey op-dash-o-hidden h-100'>
+                  <div className='op-dash-card-body'>
                     <div className='op-dash-card-body-icon'>
                       <i className='fa fa-fw fa-list-alt' />
                     </div>
