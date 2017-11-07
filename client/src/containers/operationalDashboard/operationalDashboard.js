@@ -211,7 +211,9 @@ class OperationalDashboard extends React.Component {
                 value={this.state.selectedValue}
                 clearValueText='Filter by:'
               />
+              <br />
               <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
+              <br />
               <Top10pages pagesData={this.state.pagesData} length={this.state.pagesLength} handleClickEvent={this.handleClickEvent} />
               <div className='row'>
                 <main
