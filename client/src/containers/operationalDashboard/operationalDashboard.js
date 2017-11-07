@@ -28,6 +28,7 @@ class OperationalDashboard extends React.Component {
     super(props, context)
     this.state = {
       usersData: [],
+      usersDataAll: [],
       objectsData: [],
       objects: {},
       totalLength: 0,
@@ -90,7 +91,7 @@ class OperationalDashboard extends React.Component {
       data[index] = users[i]
       index++
     }
-    this.setState({usersData: data})
+    this.setState({usersData: data, usersDataAll: users})
     console.log('in displayData', this.state.usersData)
   }
 
@@ -114,7 +115,7 @@ class OperationalDashboard extends React.Component {
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.props.users)
+    this.displayData(data.selected, this.state.usersDataAll)
   }
 
   handleDate (d) {
