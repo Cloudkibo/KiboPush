@@ -36,6 +36,16 @@ class OperationalDashboard extends React.Component {
       options: [
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
+      genders: [
+        { value: 'male', label: 'Male' },
+        { value: 'female', label: 'Female' },
+        { value: 'other', label: 'Other' }],
+      locales: [
+        { value: 'en_US', label: 'en_US' },
+        { value: 'en_GB', label: 'en_GB' },
+        { value: 'nl_NL', label: 'nl_NL' }],
+      genderValue: '',
+      localeValue: '',
       selectedValue: 0,
       showTopTenPages: false,
       showUsers: false
@@ -51,6 +61,8 @@ class OperationalDashboard extends React.Component {
     this.logChange = this.logChange.bind(this)
     this.showContent = this.showContent.bind(this)
     this.hideContent = this.hideContent.bind(this)
+    this.onFilterByGender = this.onFilterByGender.bind(this)
+    this.onFilterByLocale = this.onFilterByLocale.bind(this)
   }
 
   componentDidMount () {
@@ -183,6 +195,22 @@ class OperationalDashboard extends React.Component {
     }
   }
 
+  onFilterByGender (data) {
+    if (!data) {
+      this.setState({genderValue: ''})
+    } else {
+      this.setState({genderValue: data.value})
+    }
+  }
+
+  onFilterByLocale (data) {
+    if (!data) {
+      this.setState({localeValue: ''})
+    } else {
+      this.setState({localeValue: data.value})
+    }
+  }
+
   render () {
     return (
       <div>
@@ -192,10 +220,6 @@ class OperationalDashboard extends React.Component {
         <Responsive />
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
-          { /**
-            <button className='btn btn-primary btn-sm' onClick={() => this.getFile()}>Download File
-            </button>
-          **/}
           <div className='ui-block'>
             <div className='ui-block-content'>
               <div className='ui-block'>
@@ -243,10 +267,34 @@ class OperationalDashboard extends React.Component {
                         {
                           this.props.users && this.props.users.length > 0
                           ? <div className='table-responsive'>
-                            <div>
-                              <label> Users </label>
-                              <input type='text' placeholder='Search Users' className='form-control' onChange={this.searchUser} />
-                            </div>
+                            <form>
+                              <div className='form-row' style={{display: 'flex'}}>
+                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                                  <label> Search </label>
+                                  <input type='text' placeholder='Search Users...' className='form-control' onChange={this.searchUser} />
+                                </div>
+                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                                  <label> Gender </label>
+                                  <Select
+                                    name='form-field-name'
+                                    options={this.state.genders}
+                                    onChange={this.onFilterByGender}
+                                    placeholder='Filter by gender...'
+                                    value={this.state.genderValue}
+                                  />
+                                </div>
+                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                                  <label> Locale </label>
+                                  <Select
+                                    name='form-field-name'
+                                    options={this.state.locales}
+                                    onChange={this.onFilterByLocale}
+                                    placeholder='Filter by locale...'
+                                    value={this.state.localeValue}
+                                  />
+                                </div>
+                              </div>
+                            </form>
                             {
                               this.state.usersData && this.state.usersData.length > 0
                               ? <div>
@@ -282,17 +330,24 @@ class OperationalDashboard extends React.Component {
                                     }
                                   </tbody>
                                 </table>
-                                <ReactPaginate previousLabel={'previous'}
-                                  nextLabel={'next'}
-                                  breakLabel={<a>...</a>}
-                                  breakClassName={'break-me'}
-                                  pageCount={Math.ceil(this.state.totalLength / 5)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={this.handlePageClick}
-                                  containerClassName={'pagination'}
-                                  subContainerClassName={'pages pagination'}
-                                  activeClassName={'active'} />
+                                <div>
+                                  <div style={{display: 'inline-block'}}>
+                                    <ReactPaginate previousLabel={'previous'}
+                                      nextLabel={'next'}
+                                      breakLabel={<a>...</a>}
+                                      breakClassName={'break-me'}
+                                      pageCount={Math.ceil(this.state.totalLength / 5)}
+                                      marginPagesDisplayed={2}
+                                      pageRangeDisplayed={3}
+                                      onPageChange={this.handlePageClick}
+                                      containerClassName={'pagination'}
+                                      subContainerClassName={'pages pagination'}
+                                      activeClassName={'active'} />
+                                  </div>
+                                  <div className='pull-right' style={{display: 'inline-block'}}>
+                                    <label>Get data in CSV file: <i style={{cursor: 'pointer'}} className='fa fa-download' onClick={() => this.getFile()} /></label>
+                                  </div>
+                                </div>
                               </div>
                               : <p> No search results found. </p>
                             }
