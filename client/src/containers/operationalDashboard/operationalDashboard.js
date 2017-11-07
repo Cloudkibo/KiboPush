@@ -220,7 +220,7 @@ class OperationalDashboard extends React.Component {
         }
       } else {
         for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.subscribers[j].gender === data.value) {
+          if (this.props.users[j].gender === data.value) {
             filtered.push(this.props.users[j])
           }
         }
@@ -253,7 +253,7 @@ class OperationalDashboard extends React.Component {
         }
       } else {
         for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.subscribers[j].locale === data.value) {
+          if (this.props.users[j].locale === data.value) {
             filtered.push(this.props.users[j])
           }
         }
