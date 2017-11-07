@@ -22,7 +22,6 @@ import {
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { handleDate } from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -40,10 +39,6 @@ class OperationalDashboard extends React.Component {
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
         { value: 'other', label: 'Other' }],
-      locales: [
-        { value: 'en_US', label: 'en_US' },
-        { value: 'en_GB', label: 'en_GB' },
-        { value: 'nl_NL', label: 'nl_NL' }],
       genderValue: '',
       localeValue: '',
       selectedValue: 0,
@@ -63,6 +58,7 @@ class OperationalDashboard extends React.Component {
     this.hideContent = this.hideContent.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
+    this.handleDate = this.handleDate.bind(this)
   }
 
   componentDidMount () {
@@ -119,6 +115,13 @@ class OperationalDashboard extends React.Component {
 
   handlePageClick (data) {
     this.displayData(data.selected, this.props.users)
+  }
+
+  handleDate (d) {
+    if (d) {
+      let c = new Date(d)
+      return c.toDateString()
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -196,19 +199,69 @@ class OperationalDashboard extends React.Component {
   }
 
   onFilterByGender (data) {
+    var filtered = []
     if (!data) {
+      if (this.state.localeValue !== '') {
+        for (var a = 0; a < this.props.users.length; a++) {
+          if (this.props.users[a].locale === this.state.localeValue) {
+            filtered.push(this.props.users[a])
+          }
+        }
+      } else {
+        filtered = this.props.users
+      }
       this.setState({genderValue: ''})
     } else {
+      if (this.state.localeValue !== '') {
+        for (var i = 0; i < this.props.users.length; i++) {
+          if (this.props.users[i].gender === data.value && this.props.users[i].locale === this.state.localeValue) {
+            filtered.push(this.props.users[i])
+          }
+        }
+      } else {
+        for (var j = 0; j < this.props.users.length; j++) {
+          if (this.props.subscribers[j].gender === data.value) {
+            filtered.push(this.props.users[j])
+          }
+        }
+      }
       this.setState({genderValue: data.value})
     }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   onFilterByLocale (data) {
+    var filtered = []
     if (!data) {
+      if (this.state.genderValue !== '') {
+        for (var a = 0; a < this.props.users.length; a++) {
+          if (this.props.users[a].gender === this.state.gender) {
+            filtered.push(this.props.users[a])
+          }
+        }
+      } else {
+        filtered = this.props.users
+      }
       this.setState({localeValue: ''})
     } else {
+      if (this.state.genderValue !== '') {
+        for (var i = 0; i < this.props.users.length; i++) {
+          if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
+            filtered.push(this.props.users[i])
+          }
+        }
+      } else {
+        for (var j = 0; j < this.props.users.length; j++) {
+          if (this.props.subscribers[j].locale === data.value) {
+            filtered.push(this.props.users[j])
+          }
+        }
+      }
       this.setState({localeValue: data.value})
     }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -287,7 +340,7 @@ class OperationalDashboard extends React.Component {
                                   <label> Locale </label>
                                   <Select
                                     name='form-field-name'
-                                    options={this.state.locales}
+                                    options={this.props.locales}
                                     onChange={this.onFilterByLocale}
                                     placeholder='Filter by locale...'
                                     value={this.state.localeValue}
@@ -305,6 +358,7 @@ class OperationalDashboard extends React.Component {
                                       <th>Users</th>
                                       <th>Email</th>
                                       <th>Gender</th>
+                                      <th>Locale</th>
                                       <th>Created At</th>
                                       <th />
                                     </tr>
@@ -319,7 +373,8 @@ class OperationalDashboard extends React.Component {
                                           <td>{user.name}</td>
                                           <td>{user.email}</td>
                                           <td>{user.gender}</td>
-                                          <td>{handleDate(user.createdAt)}</td>
+                                          <td>{user.locale}</td>
+                                          <td>{this.handleDate(user.createdAt)}</td>
                                           <td>
                                             <button className='btn btn-primary btn-sm'
                                               style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
@@ -344,7 +399,7 @@ class OperationalDashboard extends React.Component {
                                       subContainerClassName={'pages pagination'}
                                       activeClassName={'active'} />
                                   </div>
-                                  <div className='pull-right' style={{display: 'inline-block', paddingTop: '32px'}}>
+                                  <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}}>
                                     <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
                                       <label>Get data in CSV file: </label>
                                     </div>
@@ -378,6 +433,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     users: (state.UsersInfo.users),
+    locales: (state.UsersInfo.locales),
     currentUser: (state.getCurrentUser.currentUser),
     dataobjects: (state.dataObjectsInfo.dataobjects),
     toppages: (state.topPagesInfo.toppages)

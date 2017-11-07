@@ -4,10 +4,16 @@ export const API_URL = '/api'
 
 export function updateUsersList (data) {
   console.log('Data Fetched From Users', data)
-  console.log('Data Fetched From Users', data.payload.length)
+  var locale = [data.payload[0].locale]
+  for (var i = 1; i < data.payload.length; i++) {
+    if (locale.indexOf(data.payload[i].locale) === -1) {
+      locale.push(data.payload[i].locale)
+    }
+  }
   return {
     type: ActionTypes.LOAD_USERS_LIST,
-    data: data.payload
+    data: data.payload,
+    locale
   }
 }
 
