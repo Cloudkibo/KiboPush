@@ -4,6 +4,7 @@ import { loadSurveysList, saveSurveyInformation } from '../../redux/actions/back
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
+import { Link } from 'react-router'
 import Select from 'react-select'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
