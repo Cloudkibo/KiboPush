@@ -232,11 +232,12 @@ class OperationalDashboard extends React.Component {
   }
 
   onFilterByLocale (data) {
+    console.log(data)
     var filtered = []
     if (!data) {
       if (this.state.genderValue !== '') {
         for (var a = 0; a < this.props.users.length; a++) {
-          if (this.props.users[a].gender === this.state.gender) {
+          if (this.props.users[a].gender === this.state.genderValue) {
             filtered.push(this.props.users[a])
           }
         }
