@@ -1,4 +1,4 @@
-export default function transformData (data) {
+export function transformData (data) {
   data = JSON.parse(JSON.stringify(data))
   data.map((item) => {
     item.submenu.map((sub) => {
@@ -6,6 +6,7 @@ export default function transformData (data) {
         sub.type = 'nested'
         sub.call_to_actions = sub.submenu
         delete sub.submenu
+        delete sub.url
       } else {
         delete sub.submenu
       }
@@ -14,6 +15,7 @@ export default function transformData (data) {
       item.type = 'nested'
       item.call_to_actions = item.submenu
       delete item.submenu
+      delete item.url
     } else {
       delete item.submenu
     }
@@ -22,6 +24,35 @@ export default function transformData (data) {
   final.persistent_menu = [{ call_to_actions: data}]
   JSONstringify(final)
   return final
+}
+
+export function getUrl (data, str) {
+  console.log('In setUrl ', event.target.value, str)
+  var temp = data
+  var index = str.split('-')
+  switch (index[0]) {
+    case 'item':
+      if (temp[index[1]].submenu.length === 0) {
+        return {placeholder: temp[index[1]].url, nested: false}
+      } else {
+        return {placeholder: '', nested: true}
+      }
+      break
+    case 'submenu':
+      if (temp[index[1]].submenu[index[2]].submenu.length === 0) {
+        return {placeholder: temp[index[1]].submenu[index[2]].url, nested: false}
+      } else {
+        return {placeholder: '', nested: true}
+      }
+      break
+    case 'nested':
+      return {placeholder: temp[index[1]].submenu[index[2]].submenu[index[3]].url, nested: false}
+      break
+
+    default:
+      return 'default'
+      break
+  }
 }
 
 function JSONstringify (json) {

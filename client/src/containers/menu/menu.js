@@ -9,7 +9,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
-import transformData from './utility'
+import { transformData, getUrl } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 //  import RadioGroup from 'react-radio'
@@ -43,6 +43,7 @@ class Menu extends React.Component {
     this.option3 = 'Open website'
 
     this.target = ''
+    this.clickIndex = ''
     this.pageChange = this.pageChange.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
@@ -219,15 +220,21 @@ class Menu extends React.Component {
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
+        temp[index[1]].submenu[index[2]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].url = event.target.value
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
         break
 
       default:
         console.log('In switch', index[0])
         break
     }
+
+    this.setState({itemMenus: temp})
   }
 
   render () {
@@ -271,13 +278,14 @@ class Menu extends React.Component {
             </div>
           </Link>
         </div>
-
-        <div id='popover-option3' className='container'>
-          <div id='popover-option3-row' className='row'>
-            <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-            <input id='popover-website-input' style={{marginBottom: '20px'}} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+        {
+          !getUrl(this.state.itemMenus, this.clickIndex).nested && <div id='popover-option3' className='container'>
+            <div id='popover-option3-row' className='row'>
+              <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
+              <input id='popover-website-input' style={{marginBottom: '20px'}} placeholder={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+            </div>
           </div>
-        </div>
+        }
 
         <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
         <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
