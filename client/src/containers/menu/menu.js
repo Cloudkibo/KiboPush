@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem, fetchMenu } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu, saveMenu } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
@@ -237,6 +237,14 @@ class Menu extends React.Component {
     this.setState({itemMenus: temp})
   }
 
+  save(){
+    data = {}
+    data.payload = transformData(this.state.itemMenus)
+    data.pageId = ''
+    data.userId = this.props.user._id
+    this.props.saveMenu(data)
+  }
+
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
     console.log('Target Value: ', this.target, this.target.includes('nested'))
@@ -415,7 +423,7 @@ class Menu extends React.Component {
               }
               <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
-              <button className='btn btn-sm btn-primary pull-right'>
+              <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>
             </ul>
@@ -429,7 +437,8 @@ class Menu extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
     //  items: (state.menuInfo.menuitems)
   }
 }
@@ -438,7 +447,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     addMenuItem: addMenuItem,
-    fetchMenu: fetchMenu
+    fetchMenu: fetchMenu,
+    saveMenu: saveMenu,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
