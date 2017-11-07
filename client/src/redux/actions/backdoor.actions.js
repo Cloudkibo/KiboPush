@@ -5,10 +5,12 @@ export const API_URL = '/api'
 export function updateUsersList (data) {
   console.log('Data Fetched From Users', data)
   var locale = [{ value: data.payload[0].locale, label: data.payload[0].locale }]
+  var tempLocale = [data.payload[0].locale]
   for (var i = 1; i < data.payload.length; i++) {
-    if (locale.indexOf(data.payload[i].locale) === -1) {
+    if (tempLocale.indexOf(data.payload[i].locale) === -1) {
       var temp = { value: data.payload[i].locale, label: data.payload[i].locale }
       locale.push(temp)
+      tempLocale.push(data.payload[i].locale)
     }
   }
   return {
