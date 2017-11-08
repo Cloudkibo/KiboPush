@@ -231,6 +231,7 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('props', this.props)
     return (
       <div className='container'>
         {
@@ -303,7 +304,7 @@ class Dashboard extends React.Component {
                         <i className='fa fa-comments fa-5x' />
                       </div>
                       <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>0</div>
+                        <div className='dashboard-huge'>{this.props.dashboard.unreadCount}</div>
                         <div>New Messages!</div>
                       </div>
                     </div>
