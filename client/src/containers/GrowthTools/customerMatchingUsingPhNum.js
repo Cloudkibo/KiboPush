@@ -43,11 +43,13 @@ class CustomerMatching extends React.Component {
   }
 
   onFilesChange (files) {
-    this.setState({
-      file: files,
-      fileErrors: []
-    })
-    console.log(this.state.file[0])
+    if (files.length > 0) {
+      this.setState({
+        file: files,
+        fileErrors: []
+      })
+      console.log(this.state.file[0])
+    }
   }
 
   onFilesError (error, file) {
@@ -142,13 +144,15 @@ class CustomerMatching extends React.Component {
                 <div className='birthday-item inline-items badges'>
                   <h3>Customer Matching Using Phone Numbers</h3>
                   <br />
-                  <h7>Upload a file with '.csv', '.xls' or '.xlsx' extension containing phone numbers
+                  <h7>
+                    Upload a file with '.csv' extension containing phone numbers
                     of your customers to invite them for a chat on messenger.
                     The
-                    file should contain columns 'names' and 'phone_numbers'
+                    file should contain columns 'names' and 'phone_numbers'.
                     The columns should contain the list all the customers&#39; name and phone
                     numbers respectively. An invitation message will be sent on Facebook messenger
-                    to all the customers listed using their phone numbers.
+                    to all the customers listed using their phone numbers.<br />
+                    <b>Note</b>This is an experimental feature and it is specific for pages that belong to United States of America (One of the page admins should be from USA).
                   </h7>
                   <div
                     className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
@@ -160,9 +164,7 @@ class CustomerMatching extends React.Component {
                         'text/comma-separated-values',
                         'text/csv',
                         'application/csv',
-                        '.csv',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        'application/vnd.ms-excel']}
+                        '.csv']}
                       multiple={false}
                       maxFileSize={25000000}
                       minFileSize={0}
@@ -172,7 +174,7 @@ class CustomerMatching extends React.Component {
                           style={{maxHeight: 40}} />
                         <h4>Upload here</h4>
                         <p>Try dropping some files here, or click to select a
-                          file to upload. Only '.csv', '.xlsx', '.xls' files are accepted</p>
+                          file to upload. Only '.csv' files are accepted</p>
                         <h4>{this.state.file !== ''
                           ? this.state.file[0].name
                           : ''}</h4>
@@ -183,7 +185,7 @@ class CustomerMatching extends React.Component {
                         className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
                         <label>File Selected</label>
                         <input type='text' disabled='true'
-                          value={this.state.file
+                          value={this.state.file !== ''
                                    ? this.state.file[0].name
                                    : ''} style={{width: '50%'}} />
                         <div
