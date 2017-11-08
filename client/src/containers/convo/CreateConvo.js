@@ -61,7 +61,7 @@ class CreateConvo extends React.Component {
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
-      convoTitle: 'Conversation Title',
+      convoTitle: 'Broadcast Title',
       steps: [],
       showMessengerModal: false
     }
@@ -114,21 +114,21 @@ class CreateConvo extends React.Component {
 
     this.addSteps([{
       title: 'Component',
-      text: 'You can add components to your conversation using these button',
+      text: 'You can add components to your broadcast using these button',
       selector: 'div#text',
       position: 'bottom-left',
       type: 'hover',
       isFixed: true},
     {
       title: 'Edit Title',
-      text: 'You can edit the title of your conversation by clicking the pencil icon',
+      text: 'You can edit the title of your broadcast by clicking the pencil icon',
       selector: 'i#convoTitle',
       position: 'bottom-left',
       type: 'hover',
       isFixed: true},
     {
-      title: 'Send Conversation',
-      text: 'You can send your conversation using these buttons',
+      title: 'Send broadcast',
+      text: 'You can send your broadcast using these buttons',
       selector: 'button#send',
       position: 'bottom-left',
       type: 'hover',
@@ -495,9 +495,9 @@ class CreateConvo extends React.Component {
                   </div>
                 </fieldset>
                 <div className='row'>
-                  <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Conversation </button>
-                  <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Conversation </button>
+                  <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
+                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                  <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
 
                 </div>
               </div>

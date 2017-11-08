@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem, fetchMenu } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu, saveMenu } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
-import transformData from './utility'
+import { transformData, getUrl } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 //  import RadioGroup from 'react-radio'
@@ -22,6 +22,7 @@ class Menu extends React.Component {
     props.loadMyPagesList()
     this.state = {
       pageOptions: [],
+      setWebUrl: false,
       pageValue: '',
       itemName: '',
       itemType: '',
@@ -43,13 +44,13 @@ class Menu extends React.Component {
     this.option3 = 'Open website'
 
     this.target = ''
+    this.clickIndex = ''
     this.pageChange = this.pageChange.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.changeLabel = this.changeLabel.bind(this)
     this.removeItem = this.removeItem.bind(this)
-    this.handleOption = this.handleOption.bind(this)
     props.fetchMenu()
   }
 
@@ -82,11 +83,11 @@ class Menu extends React.Component {
   handleOption (option) {
     console.log('option selected: ', option)
     this.setState({optionSelected: option})
-    if (option === this.option1) {
+    if (option === 'Add submenu') {
       this.setState({itemType: 'submenu'})
-    } else if (option === this.option2) {
+    } else if (option === 'Reply with a message') {
       this.setState({itemType: 'reply'})
-    } else if (option === this.option3) {
+    } else if (option === 'Open website') {
       this.setState({itemType: 'weblink'})
     }
   }
@@ -136,20 +137,18 @@ class Menu extends React.Component {
     this.setState({openPopover: false})
   }
   handleClose (e) {
-    console.log('handleClose', e.target.id)
+    console.log('handleClose', e)
     if (e.target.id === 'popover' ||
-        document.getElementById('popover').contains(document.getElementById(e.target.id)) ||
-        e.target.id === 'option3-btn'
-      ) {
+        document.getElementById('popover').contains(document.getElementById(e.target.id))) {
       return
     }
-    this.setState({openPopover: false, itemType: ''})
+    this.setState({openPopover: false, setWebUrl: false})
   }
   onSelectItem (index) {
     this.setState({indexClicked: index})
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
-    this.setState({openPopover: !this.state.openPopover})
+    this.setState({openPopover: !this.state.openPopover, setWebUrl: false})
   }
   addItem () {
     var temp = this.state.itemMenus
@@ -222,15 +221,33 @@ class Menu extends React.Component {
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
+        temp[index[1]].submenu[index[2]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].url = event.target.value
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
         break
 
       default:
         console.log('In switch', index[0])
         break
     }
+
+    this.setState({itemMenus: temp})
+  }
+
+  save () {
+    data = {}
+    data.payload = transformData(this.state.itemMenus)
+    data.pageId = ''
+    data.userId = this.props.user._id
+    this.props.saveMenu(data)
+  }
+
+  setWebUrl () {
+    this.setState({setWebUrl: !this.state.setWebUrl})
   }
 
   render () {
@@ -247,7 +264,7 @@ class Menu extends React.Component {
 
     let popup = <Popover
       id='popup'
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '450px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
@@ -262,7 +279,7 @@ class Menu extends React.Component {
         {
           (!this.target.includes('nested')) ? <div id='popover-option1' className='container'>
             <div className='row'>
-              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => { this.handleOption(this.option1); this.addSubmenu() }}> Add Submenu </button>
+              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
             </div>
           </div> : ''
         }
@@ -275,23 +292,23 @@ class Menu extends React.Component {
           </Link>
         </div>
         {
-          (this.state.itemType !== 'weblink') &&
-          <div id='popover-option3-btn' className='container'>
-            <div className='row' id='popover3-row-btn'>
-              <button id='option3-btn' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => { this.handleOption(this.option3) }}>Add Website URL</button>
+          !getUrl(this.state.itemMenus, this.clickIndex).nested &&
+          <div className='container' id='popover-option3'>
+            <div className='row'>
+              <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>Set Web Url</button>
             </div>
+            {
+              (this.state.setWebUrl) && <div id='popover-option3' className='container'>
+                <div id='popover-option3-row' className='row'>
+                  <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
+                  <input id='popover-website-input' style={{marginBottom: '20px'}} placeholder={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+                </div>
+              </div>
+            }
+
           </div>
         }
 
-        {
-          (this.state.itemType === 'weblink') &&
-          <div id='popover-option3' className='container'>
-            <div id='popover-option3-row' className='row'>
-              <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-              <input id='popover-website-input' style={{marginBottom: '20px'}} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
-            </div>
-          </div>
-        }
         <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
         <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
       </div>
@@ -420,7 +437,7 @@ class Menu extends React.Component {
               }
               <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
               <p><b>Note: </b>Only three menu items can be added.</p>
-              <button className='btn btn-sm btn-primary pull-right'>
+              <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>
             </ul>
@@ -434,7 +451,8 @@ class Menu extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
     //  items: (state.menuInfo.menuitems)
   }
 }
@@ -443,7 +461,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     addMenuItem: addMenuItem,
-    fetchMenu: fetchMenu
+    fetchMenu: fetchMenu,
+    saveMenu: saveMenu
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

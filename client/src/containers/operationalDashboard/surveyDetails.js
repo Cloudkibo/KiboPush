@@ -88,7 +88,7 @@ class SurveyDetails extends React.Component {
         <Sidebar />
         <Responsive />
         <div className='container'>
-          <br /><br /><br />
+          <br /><br /><br /><br /><br /><br />
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <div className='container'>
               {this.props.survey && this.props.survey.length > 0 &&
@@ -126,7 +126,7 @@ class SurveyDetails extends React.Component {
                               ? <Response responses={this.props.responses.filter(
                                 (d) => d.questionId._id === c._id)}
                                 question={c} />
-                              : <ul>
+                              : <ol>
                                 {c.options.map((c) => (
                                   <li style={{marginLeft: '30px'}}
                                     key={c}
@@ -134,16 +134,16 @@ class SurveyDetails extends React.Component {
                                   </li>
                                     ))}
 
-                              </ul>
+                              </ol>
                             }
                             </div>
                           ))
                         }
                       </ul>
-                    </div>
-                    <div className='back-button' style={{float: 'right', margin: 2}}>
-                      <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
-                      </button>
+                      <div className='add-options-message' style={{marginTop: '30px'}}>
+                        <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

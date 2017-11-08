@@ -57,3 +57,16 @@ export function fetchMenu (setMenu) {
     })
   }
 }
+
+export function saveMenu (data) {
+  console.log('Saving Menu', data)
+  return (dispatch) => {
+    callApi('menu/create', 'post', data).then(res => {
+      if (res.status === 'success') {
+        console.log('Menu saved successfully', res)
+      } else {
+        console.log('Menu saved failed', res)
+      }
+    })
+  }
+}

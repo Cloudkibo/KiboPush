@@ -114,7 +114,7 @@ exports.getfbMessage = function (req, res) {
 
               }
               const options1 = {
-                url: `https://graph.facebook.com/v2.6/${sender}?fields=cover&access_token=${page.accessToken}`,
+                url: `https://graph.facebook.com/v2.10/${sender}?fields=cover&access_token=${page.accessToken}`,
                 qs: {access_token: page.accessToken},
                 method: 'GET'
 
@@ -135,6 +135,7 @@ exports.getfbMessage = function (req, res) {
                       provider: 'facebook',
                       timezone: subsriber.timezone,
                       profilePic: subsriber.profile_pic,
+                      coverPhoto: coverphoto.source,
                       pageScopedId: '',
                       email: '',
                       senderId: sender,
@@ -651,6 +652,24 @@ function savesurvey (req) {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
       }
+      Surveys.find({}, (err, subscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Error occurred in finding subscriber${JSON.stringify(
+              err)}`)
+        }
+        logger.serverLog(TAG,
+          `all surveys${JSON.stringify(subscriber)}`)
+      })
+      Surveys.find({_id: mongoose.Types.ObjectId(resp.survey_id)}, (err, subscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Error occurred in finding subscriber${JSON.stringify(
+              err)}`)
+        }
+        logger.serverLog(TAG,
+          `all surveys with particular id${JSON.stringify(subscriber)}`)
+      })
       Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
       SurveyQuestions.find({
