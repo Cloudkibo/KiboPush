@@ -260,7 +260,7 @@ exports.stats = function (req, res) {
                 LiveChat.count({
                   company_id: req.user._id,
                   status: 'unseen',
-                  recipient_id: req.user_id
+                  format: 'facebook'
                 }, (err7, unreadCount) => {
                   if (err7) {
                     return res.status(500).json({
