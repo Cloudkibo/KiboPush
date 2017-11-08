@@ -252,7 +252,7 @@ class Menu extends React.Component {
 
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
-    console.log('Target Value: ', this.target, this.target.includes('nested'))
+    console.log('Page options', this.state.pageOptions)
 
     var alertOptions = {
       offset: 14,

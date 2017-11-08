@@ -27,7 +27,7 @@ export function transformData (data) {
 }
 
 export function getUrl (data, str) {
-  console.log('In setUrl ', event.target.value, str)
+  // console.log('In setUrl ', event.target.value, str)
   var temp = data
   var index = str.split('-')
   switch (index[0]) {
