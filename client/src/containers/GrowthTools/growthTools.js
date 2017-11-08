@@ -62,32 +62,32 @@ class GrowthTools extends React.Component {
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='img/customer_matching.jpg' alt='Card image cap' />
-                <div className='col-md-6 col-sm-6 col-xs-6'>
-                  <div className='card-body'>
+                <img className='img-card' src='icons/smartphone.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <div className='col-md-6 col-sm-6 col-xs-6' style={{padding: 10}}>
+                  <div className='card-body' >
                     <h4 className='card-title'>Customer Matching Using Phone Numbers</h4>
                     <hr />
                     <p className='card-text'>Upload your csv file containing your customers phone numbers to invite them for a chat on Messenger</p>
+                    <Link to={`/customerMatchingUsingPhNum`} className='btn btn-primary'>
+                      Open
+                    </Link>
                   </div>
-                  <Link to={`/customerMatchingUsingPhNum`} className='btn btn-primary'>
-                    Open
-                  </Link>
                 </div>
               </div>
             </div>
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='img/facebook-messenger.png' alt='Card image cap' />
-                <div className='col-md-6 col-sm-6 col-xs-6'>
+                <img className='img-card' src='icons/messenger.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <div className='col-md-6 col-sm-6 col-xs-6' style={{margin: 10}}>
                   <div className='card-body'>
                     <h4 className='card-title'>Subscribe to Messenger</h4>
                     <hr />
                     <p className='card-text'>Add a button to your website which sends your facebook page link to your followers on the messenger.</p>
+                    <Link to={`/subscribeToMessenger`} className='btn btn-primary'>
+                      Open
+                    </Link>
                   </div>
-                  <Link to={`/subscribeToMessenger`} className='btn btn-primary'>
-                    Open
-                  </Link>
                 </div>
               </div>
             </div>
@@ -96,16 +96,16 @@ class GrowthTools extends React.Component {
             <div
               className='col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 card-outer'>
               <div className='card'>
-                <img className='img-card' src='img/copy-link.png' alt='Card image cap' />
-                <div className='col-md-6 col-sm-6 col-xs-6'>
-                  <div className='card-body'>
+                <img className='img-card' src='icons/invitation.png' style={{width: 200, height: 200}} alt='Card image cap' />
+                <div className='col-md-6 col-sm-6 col-xs-6' style={{padding: 10}}>
+                  <div className='card-body'  >
                     <h4 className='card-title'>Copy Page Link</h4>
                     <hr />
                     <p className='card-text'>Copy facebook page link to send to your friends</p>
+                    <button ref={(c) => { this.copyLink = c }} onClick={this.showCopyPopover} className='btn btn-primary' data-tip='copyLink'>
+                      Copy Link
+                    </button>
                   </div>
-                  <button ref={(c) => { this.copyLink = c }} onClick={this.showCopyPopover} className='btn btn-primary' data-tip='copyLink'>
-                    Copy Link
-                  </button>
                 </div>
               </div>
             </div>
