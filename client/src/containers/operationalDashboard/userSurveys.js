@@ -173,7 +173,7 @@ class SurveysInfo extends React.Component {
                               <td>{survey.description}</td>
                               <td>{handleDate(survey.datetime)}</td>
                               <td>
-                                <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm'>
+                                <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                   View Survey
                                 </Link>
                               </td>
