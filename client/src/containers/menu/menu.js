@@ -74,7 +74,7 @@ class Menu extends React.Component {
       var myPages = []
       nextProps.pages.map((page) => {
         if (page.connected) {
-          myPages.push({value: page._id, label: page.pageName})
+          myPages.push({value: page.pageId, label: page.pageName})
         }
       })
       this.setState({pageOptions: myPages})
