@@ -8,6 +8,7 @@ const TAG = 'api/autoposting/autopostings.controller.js'
 const TwitterUtility = require('../../config/integrations/twitter')
 const Page = require('./../pages/Pages.model')
 
+const urllib = require('url')
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
 
@@ -103,7 +104,10 @@ exports.create = function (req, res) {
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
           logger.serverLog(TAG, `the parse got as ${screenName}`)
-          Page.findOne({userId: req.user._id, $or: [{pageId: screenName}, {pageUserName: screenName}]}, (err, pageInfo) => {
+          Page.findOne({
+            userId: req.user._id,
+            $or: [{pageId: screenName}, {pageUserName: screenName}]
+          }, (err, pageInfo) => {
             if (err) {
               logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
               return res.status(403).json({
@@ -145,11 +149,52 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
-                logger.serverLog(TAG, `FB Page added ${JSON.stringify(createdRecord)}`)
+                logger.serverLog(TAG,
+                  `FB Page added ${JSON.stringify(createdRecord)}`)
                 res.status(201)
-                .json({status: 'success', payload: createdRecord})
+                  .json({status: 'success', payload: createdRecord})
               }
             })
+          })
+        } else if (req.body.subscriptionType === 'youtube') {
+          // URL https://www.youtube.com/channel/UCcQnaQ0sHD9A0GXKcXBVE-Q
+          let url = req.body.subscriptionUrl
+          let urlAfterDot = url.substring(url.indexOf('.') + 1)
+          let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
+          logger.serverLog(TAG, `the parse got as ${channelName}`)
+          let autoPostingPayload = {
+            userId: req.user._id,
+            subscriptionUrl: req.body.subscriptionUrl,
+            subscriptionType: req.body.subscriptionType,
+            accountTitle: req.body.accountTitle,
+            accountUniqueName: channelName
+          }
+          if (req.body.isSegmented) {
+            autoPostingPayload.isSegmented = true
+            autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+              ? req.body.pageIds
+              : null
+            autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+              ? req.body.segmentationGender
+              : null
+            autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+              ? req.body.segmentationLocale
+              : null
+          }
+          const autoPosting = new AutoPosting(autoPostingPayload)
+          autoPosting.save((err, createdRecord) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                error: err,
+                description: 'Failed to insert record'
+              })
+            } else {
+              logger.serverLog(TAG,
+                `Youtube added ${JSON.stringify(createdRecord)}`)
+              res.status(201).json({status: 'success', payload: createdRecord})
+            }
           })
         }
       }
@@ -237,12 +282,118 @@ exports.twitterverify = function (req, res) {
 
 exports.pubsubhook = function (req, res) {
   logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
-  logger.serverLog(TAG, JSON.stringify(req.params))
-  return res.status(200).json({status: 'success', description: 'got the data.'})
+  let params = urllib.parse(req.url, true, true)
+
+  logger.serverLog(TAG, JSON.stringify(params.query))
+
+  // Does not seem to be a valid PubSubHubbub request
+  if (!params.query['hub.topic'] || !params.query['hub.mode']) {
+    return res.status(400).json({status: 'failed', description: 'bad request'})
+  }
+
+  switch (params.query['hub.mode']) {
+    case 'denied':
+      res.writeHead(200, {'Content-Type': 'text/plain'})
+      res.end(params.query['hub.challenge'] || 'ok')
+      break
+    case 'subscribe':
+    case 'unsubscribe':
+      res.writeHead(200, {'Content-Type': 'text/plain'})
+      res.end(params.query['hub.challenge'])
+      break
+    default:
+      // Not a valid mode
+      return res.status(403).json({status: 'failed', description: 'forbidden'})
+  }
+  // return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 
 exports.pubsubhookPost = function (req, res) {
   logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Post Called')
   logger.serverLog(TAG, JSON.stringify(req.body))
-  return res.status(200).json({status: 'success', description: 'got the data.'})
+  var bodyChunks = [],
+    params = urllib.parse(req.url, true, true),
+    topic = params && params.query && params.query.topic,
+    hub = params && params.query && params.query.hub,
+    bodyLen = 0,
+    tooLarge = false,
+    signatureParts, algo, signature, hmac;
+
+  // v0.4 hubs have a link header that includes both the topic url and hub url
+  (req.headers && req.headers.link || '')
+    .replace(/<([^>]+)>\s*(?:;\s*rel=['"]([^'"]+)['"])?/gi,
+      function (o, url, rel) {
+        switch ((rel || '').toLowerCase()) {
+          case 'self':
+            topic = url
+            break
+          case 'hub':
+            hub = url
+            break
+        }
+      })
+
+  if (!topic) {
+    return this._sendError(req, res, 400, 'Bad Request')
+  }
+
+  // Hub must notify with signature header if secret specified.
+  if (this.secret && !req.headers['x-hub-signature']) {
+    return this._sendError(req, res, 403, 'Forbidden')
+  }
+
+  if (this.secret) {
+    signatureParts = req.headers['x-hub-signature'].split('=')
+    algo = (signatureParts.shift() || '').toLowerCase()
+    signature = (signatureParts.pop() || '').toLowerCase()
+
+    try {
+      hmac = crypto.createHmac(algo,
+        crypto.createHmac('sha1', this.secret).update(topic).digest('hex'))
+    } catch (E) {
+      return this._sendError(req, res, 403, 'Forbidden')
+    }
+  }
+
+  req.on('data', function (chunk) {
+    if (!chunk || !chunk.length || tooLarge) {
+      return
+    }
+
+    if (bodyLen + chunk.length <= this.maxContentSize) {
+      bodyChunks.push(chunk)
+      bodyLen += chunk.length
+      if (this.secret) {
+        hmac.update(chunk)
+      }
+    } else {
+      tooLarge = true
+    }
+
+    chunk = null
+  }.bind(this))
+
+  req.on('end', function () {
+    if (tooLarge) {
+      return this._sendError(req, res, 413, 'Request Entity Too Large')
+    }
+
+    // Must return 2xx code even if signature doesn't match.
+    if (this.secret && hmac.digest('hex').toLowerCase() !== signature) {
+      res.writeHead(202, {'Content-Type': 'text/plain; charset=utf-8'})
+      return res.end()
+    }
+
+    res.writeHead(204, {'Content-Type': 'text/plain; charset=utf-8'})
+    res.end()
+
+    this.emit('feed', {
+      topic: topic,
+      hub: hub,
+      callback: 'http://' + req.headers.host + req.url,
+      feed: Buffer.concat(bodyChunks, bodyLen),
+      headers: req.headers
+    })
+  }.bind(this))
+  // return res.status(200).json({status: 'success', description: 'got the data.'})
 }

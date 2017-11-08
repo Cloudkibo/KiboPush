@@ -18,5 +18,5 @@ const appObj = (config.env === 'production') ? app : httpApp
 require('./config/express')(appObj)
 require('./routes')(appObj)
 require('./config/setup')(app, httpApp, config)
-require('./config/integrations/pubsubhubbub')(app)
+require('./config/integrations/pubsubhubbub')()
 require('./config/integrations/twitter').connect()

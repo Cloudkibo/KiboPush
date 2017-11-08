@@ -8,18 +8,15 @@ const config = require('../environment/index')
 const logger = require('../../components/logger')
 const TAG = 'config/integrations/pubsubhubbub.js'
 
-const topic = 'https://www.youtube.com/feeds/videos.xml?channel_id=UCWMz6QX04xYwqYoQVEtxneQ'
+const topic = 'https://www.youtube.com/xml/feeds/videos.xml?channel_id=UCcQnaQ0sHD9A0GXKcXBVE-Q'
 const hub = 'https://pubsubhubbub.appspot.com/'
 
 let pubsub
 
-module.exports = function (app) {
+module.exports = function () {
   pubsub = pubSubHubbub.createServer(config.pubsubhubbub)
 
   pubsub.listen(config.pubsub_port)
-
-  app.get('/pubsubhubbub', pubsub._onGetRequest.bind(pubsub))
-  app.post('/pubsubhubbub', pubsub._onPostRequest.bind(pubsub))
 
   pubsub.on('denied', data => {
     logger.serverLog(TAG, 'Denied')

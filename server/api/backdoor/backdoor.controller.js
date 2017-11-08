@@ -12,6 +12,7 @@ const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
 const Surveys = require('../surveys/surveys.model')
 const PollResponse = require('../polls/pollresponse.model')
+const PollPages = require('../page_poll/page_poll.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const SurveyResponses = require('../surveys/surveyresponse.model')
 const sortBy = require('sort-array')
@@ -654,18 +655,21 @@ exports.poll = function (req, res) {
         description: `Poll not found.`
       })
     }
-    PollResponse.find({pollId: req.params.pollid})
-      .populate('pollId subscriberId')
-      .exec((err, pollResponses) => {
+    PollResponse.find({pollId: req.params.pollid}, (err, pollResponses) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      PollPages.find({userId: req.user._id}, (err, pollpages) => {
         if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error${JSON.stringify(err)}`
-          })
+          return res.status(404)
+            .json({status: 'failed', description: 'Polls not found'})
         }
-
         return res.status(200)
-          .json({status: 'success', payload: {pollResponses, poll}})
+        .json({status: 'success', payload: {pollResponses, poll, pollpages}})
       })
+    })
   })
 }
