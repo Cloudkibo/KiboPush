@@ -662,7 +662,7 @@ exports.poll = function (req, res) {
           description: `Internal Server Error${JSON.stringify(err)}`
         })
       }
-      PollPages.find({userId: req.user._id}, (err, pollpages) => {
+      PollPages.find({userId: req.params.pollid}, (err, pollpages) => {
         if (err) {
           return res.status(404)
             .json({status: 'failed', description: 'Polls not found'})
