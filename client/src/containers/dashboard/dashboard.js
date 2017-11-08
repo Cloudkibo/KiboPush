@@ -393,14 +393,14 @@ class Dashboard extends React.Component {
                     <StackedBar sentseendata={this.state.sentseendata1} />
                   </div>
                   <div className='birthday-item inline-items badges'>
-                    <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                    <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
                       <XAxis dataKey='Page' />
                       <YAxis />
                       <CartesianGrid strokeDasharray='3 3' />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey='Subscribers' fill='#8884d8' />
-                      <Bar dataKey='Likes' fill='#82ca9d' />
+                      <Bar dataKey='Likes' fill='#8884d8' />
+                      <Bar dataKey='Subscribers' fill='#82ca9d' />
                     </BarChart>
                   </div>
                 </div>
