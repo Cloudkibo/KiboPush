@@ -21,7 +21,7 @@ import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
-
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -35,7 +35,16 @@ class Dashboard extends React.Component {
     this.state = {
       isShowingModal: false,
       steps: [],
-      sentseendata1: []
+      sentseendata1: [],
+      chartData: [
+      {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
+      {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
+      {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
+      {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
+      {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
+      {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
+      {name: 'Page G', uv: 3490, pv: 4300, amt: 2100}
+      ]
     }
 
     console.log('anishachhatwani')
@@ -43,11 +52,11 @@ class Dashboard extends React.Component {
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    // this.dataPrepForChart = this.dataPrepForChart(this)
   }
 
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
-    console.log('seens :', nextprops.user.dashboardTourSeen)
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
       browserHistory.push('/addPages')
@@ -72,6 +81,38 @@ class Dashboard extends React.Component {
       this.setState({sentseendata1: nextprops.sentseendata})
       console.log('sentseendata1', this.state.sentseendata1)
     }
+
+    this.setState({chartData: []})
+
+    let temp_array = []
+
+    for (let page of nextprops.pages) {
+      // console.log('Pages', page)
+      // console.log(typeof (chartData))
+      let temp_page = {
+        'Page': page.pageName,
+        'Subscribers': page.subscribers,
+        'Likes': page.likes
+      }
+      temp_array.push(temp_page)
+    }
+
+    this.setState({
+      chartData: temp_array
+    })
+
+    console.log('Temp_Page', temp_array)
+
+    // for (var i = 0; nextprops.pages.length > i; i++) {
+    //   this.setState({chartData: [...this.state.chartData, {
+    //     'Page': nextprops.pages[i].pageName,
+    //     'Subscribers': nextprops.pages[i].subscribers,
+    //     'Likes': nextprops.pages[i].likes
+    //   }]
+    //   })
+    // }
+    console.log('ChartData', this.state.chartData)
+    // dataPrepForChart(nextprops.pages)
   }
 
   componentDidMount () {
@@ -89,6 +130,7 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
+
     this.addSteps([{
       title: 'Pages',
       text: 'This shows the number of pages currently connected',
@@ -133,6 +175,18 @@ class Dashboard extends React.Component {
       isFixed: true}
     ])
   }
+
+  // dataPrepForChart (pages) {
+  //   this.setState({chartData: {}})
+  //   for (var i = 0; pages.length > i; i++) {
+  //     this.setState({chartData: [...this.state.chartData, {
+  //       'Page': pages.pageName,
+  //       'Subscribers': pages.subscribers,
+  //       'Likes': pages.likes
+  //     }]
+  //     })
+  //   }
+  // }
 
   closeDialog () {
     this.setState({isShowingModal: false})
@@ -337,6 +391,17 @@ class Dashboard extends React.Component {
                 <div className='ui-block'>
                   <div className='birthday-item inline-items badges'>
                     <StackedBar sentseendata={this.state.sentseendata1} />
+                  </div>
+                  <div className='birthday-item inline-items badges'>
+                    <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
+                      <XAxis dataKey='Page' />
+                      <YAxis />
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey='Likes' fill='#8884d8' />
+                      <Bar dataKey='Subscribers' fill='#82ca9d' />
+                    </BarChart>
                   </div>
                 </div>
               </main>
