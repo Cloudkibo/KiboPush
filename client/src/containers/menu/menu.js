@@ -239,7 +239,7 @@ class Menu extends React.Component {
   }
 
   save () {
-    data = {}
+    var data = {}
     if(this.state.pageValue === ''){
       this.msg.error("Please select a page")
       return
