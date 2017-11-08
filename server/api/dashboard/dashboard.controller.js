@@ -11,6 +11,7 @@ const Surveys = require('../surveys/surveys.model')
 const pageBroadcast = require('../page_broadcast/page_broadcast.model')
 const pageSurvey = require('../page_survey/page_survey.model')
 const pagePoll = require('../page_poll/page_poll.model')
+const LiveChat = require('../livechat/livechat.model')
 const TAG = 'api/pages/pages.controller.js'
 const mongoose = require('mongoose')
 
@@ -20,77 +21,84 @@ exports.index = function (req, res) {
   Pages.count((err, c) => {
     if (err) {
       return res.status(500)
-      .json({status: 'failed', description: JSON.stringify(err)})
+        .json({status: 'failed', description: JSON.stringify(err)})
     }
     data.pagesCount = c
     res.status(200).json(data)
   })
 }
+
 exports.sentVsSeen = function (req, res) {
   pageBroadcast.aggregate(
     [
-      { $match: {userId: req.user._id} },
-      { $group: { _id: null, count: { $sum: 1 } } }
+      {$match: {userId: req.user._id}},
+      {$group: {_id: null, count: {$sum: 1}}}
     ], (err, broadcastSentCount) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
-        description: `Error in getting broadcastSentCount count ${JSON.stringify(err)}`
+        description: `Error in getting broadcastSentCount count ${JSON.stringify(
+            err)}`
       })
     }
     pageBroadcast.aggregate(
       [
-        { $match: {seen: true, userId: req.user._id} },
-        { $group: { _id: null, count: { $sum: 1 } } }
+          {$match: {seen: true, userId: req.user._id}},
+          {$group: {_id: null, count: {$sum: 1}}}
       ], (err, broadcastSeenCount) => {
       if (err) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting broadcastSeenCount count ${JSON.stringify(err)}`
+          description: `Error in getting broadcastSeenCount count ${JSON.stringify(
+                err)}`
         })
       }
       pageSurvey.aggregate(
         [
-          { $match: {userId: req.user._id} },
-          { $group: { _id: null, count: { $sum: 1 } } }
+              {$match: {userId: req.user._id}},
+              {$group: {_id: null, count: {$sum: 1}}}
         ], (err, surveySentCount) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
-            description: `Error in getting surveySentCount count ${JSON.stringify(err)}`
+            description: `Error in getting surveySentCount count ${JSON.stringify(
+                    err)}`
           })
         }
         pageSurvey.aggregate(
           [
-            { $match: {seen: true, userId: req.user._id} },
-            { $group: { _id: null, count: { $sum: 1 } } }
+                  {$match: {seen: true, userId: req.user._id}},
+                  {$group: {_id: null, count: {$sum: 1}}}
           ], (err, surveySeenCount) => {
           if (err) {
             return res.status(404).json({
               status: 'failed',
-              description: `Error in getting surveytSeenCount count ${JSON.stringify(err)}`
+              description: `Error in getting surveytSeenCount count ${JSON.stringify(
+                        err)}`
             })
           }
           pagePoll.aggregate(
             [
-              { $match: {userId: req.user._id} },
-              { $group: { _id: null, count: { $sum: 1 } } }
+                      {$match: {userId: req.user._id}},
+                      {$group: {_id: null, count: {$sum: 1}}}
             ], (err, pollSentCount) => {
             if (err) {
               return res.status(404).json({
                 status: 'failed',
-                description: `Error in getting pollSentCount count ${JSON.stringify(err)}`
+                description: `Error in getting pollSentCount count ${JSON.stringify(
+                            err)}`
               })
             }
             pagePoll.aggregate(
               [
-                { $match: {seen: true, userId: req.user._id} },
-                { $group: { _id: null, count: { $sum: 1 } } }
+                          {$match: {seen: true, userId: req.user._id}},
+                          {$group: {_id: null, count: {$sum: 1}}}
               ], (err, pollSeenCount) => {
               if (err) {
                 return res.status(404).json({
                   status: 'failed',
-                  description: `Error in getting pollSeenCount count ${JSON.stringify(err)}`
+                  description: `Error in getting pollSeenCount count ${JSON.stringify(
+                                err)}`
                 })
               }
               let datacounts = {
@@ -101,7 +109,8 @@ exports.sentVsSeen = function (req, res) {
                 pollSentCount: pollSentCount,
                 pollSeenCount: pollSeenCount
               }
-              logger.serverLog(TAG, `counts ${JSON.stringify(datacounts)}`)
+              logger.serverLog(TAG,
+                            `counts ${JSON.stringify(datacounts)}`)
               res.status(200).json({
                 status: 'success',
                 payload: datacounts
@@ -123,20 +132,22 @@ exports.likesVsSubscribers = function (req, res) {
       })
     }
     logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
-    Subscribers.aggregate([{
-      $match: {
-        userId: mongoose.Types.ObjectId(req.params.userid)
-      }
-    }, {
-      $group: {
-        _id: {pageId: '$pageId'},
-        count: {$sum: 1}
-      }
-    }], (err2, gotSubscribersCount) => {
+    Subscribers.aggregate([
+      {
+        $match: {
+          userId: mongoose.Types.ObjectId(req.params.userid)
+        }
+      }, {
+        $group: {
+          _id: {pageId: '$pageId'},
+          count: {$sum: 1}
+        }
+      }], (err2, gotSubscribersCount) => {
       if (err2) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+          description: `Error in getting pages subscriber count ${JSON.stringify(
+            err2)}`
         })
       }
       let pagesPayload = []
@@ -156,15 +167,18 @@ exports.likesVsSubscribers = function (req, res) {
       logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
-          if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
+          if (pagesPayload[i]._id.toString() ===
+            gotSubscribersCount[j]._id.pageId.toString()) {
+            logger.serverLog(TAG,
+              `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
             logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
             logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
       }
-      logger.serverLog(TAG, `Total pages in after double loop ${pagesPayload.length}`)
+      logger.serverLog(TAG,
+        `Total pages in after double loop ${pagesPayload.length}`)
       res.status(200).json({
         status: 'success',
         payload: pagesPayload
@@ -202,7 +216,7 @@ exports.stats = function (req, res) {
   Pages.count({connected: true, userId: req.user._id}, (err, pagesCount) => {
     if (err) {
       return res.status(500)
-      .json({status: 'failed', description: JSON.stringify(err)})
+        .json({status: 'failed', description: JSON.stringify(err)})
     }
     payload.pages = pagesCount
     Subscribers.count({userId: req.user._id}, (err2, subscribersCount) => {
@@ -243,9 +257,22 @@ exports.stats = function (req, res) {
                   surveys: surveysCount
                 }
 
-                res.status(200).json({
-                  status: 'success',
-                  payload
+                LiveChat.count({
+                  company_id: req.user._id,
+                  status: 'unseen',
+                  recipient_id: req.user_id
+                }, (err7, unreadCount) => {
+                  if (err7) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: JSON.stringify(err7)
+                    })
+                  }
+                  payload.unreadCount = unreadCount
+                  res.status(200).json({
+                    status: 'success',
+                    payload
+                  })
                 })
               })
             })
