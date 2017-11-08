@@ -11,7 +11,8 @@ const initialState = {
   currentUser: null,
   currentPage: null,
   currentSurvey: null,
-  currentPoll: null
+  currentPoll: null,
+  pollDetails: null
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -113,6 +114,16 @@ export function SurveyDetailsInfo (state = {}, action) {
         survey: action.survey,
         questions: action.questions,
         responses: action.responses
+      })
+    default:
+      return state
+  }
+}
+export function PollDetailsInfo (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.LOAD_POLL_DETAILS:
+      return Object.assign({}, state, {
+        pollDetails: action.data
       })
     default:
       return state

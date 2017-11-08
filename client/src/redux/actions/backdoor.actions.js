@@ -156,11 +156,26 @@ export function updateSurveyDetails (data) {
     responses: data.payload.responses
   }
 }
+export function updatePollDetails (data) {
+  console.log('updatePollDetails', data.payload)
+
+  return {
+    type: ActionTypes.LOAD_POLL_DETAILS,
+    data: data.payload
+  }
+}
 export function loadSurveyDetails (id) {
   console.log('loadSurveyDetails called: ', id)
   return (dispatch) => {
     callApi(`backdoor/surveyDetails/${id}`)
       .then(res => dispatch(updateSurveyDetails(res)))
+  }
+}
+export function loadPollDetails (id) {
+  console.log('loadPollDetails called: ', id)
+  return (dispatch) => {
+    callApi(`backdoor/polls/${id}`)
+      .then(res => dispatch(updatePollDetails(res)))
   }
 }
 export function saveUserInformation (user) {
