@@ -22,5 +22,7 @@ router.get('/datacount/:userid', auth.isAuthorizedSuperUser(), controller.dataco
 router.get('/uploadFile', auth.isAuthorizedSuperUser(), controller.uploadFile)
 router.get('/polls/:pollid', auth.isAuthorizedSuperUser(), controller.poll)
 router.get('/surveyDetails/:surveyid', auth.isAuthorizedSuperUser(), controller.surveyDetails)
-
+router.get('/broadcastsGraph/:days', auth.isAuthorizedSuperUser(), controller.broadcastsGraph)
+router.get('/pollsGraph/:days', auth.isAuthorizedSuperUser(), controller.pollsGraph)
+router.get('/surveysGraph/:days', auth.isAuthorizedSuperUser(), controller.surveysGraph)
 module.exports = router

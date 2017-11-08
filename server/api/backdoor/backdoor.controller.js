@@ -272,6 +272,7 @@ exports.toppages = function (req, res) {
 exports.datacount = function (req, res) {
   logger.serverLog(TAG,
     `req.params.userid ${JSON.stringify(req.params.userid)}`)
+  var days = 0
   if (req.params.userid === '0') {
     Users.aggregate(
       [
@@ -360,244 +361,128 @@ exports.datacount = function (req, res) {
       })
     })
   } else if (req.params.userid === '10') {
-    Users.aggregate(
-      [
-        {
-          $match: {
-            'createdAt': {
-              $gte: new Date(
-                (new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
-            }
-          }
-        },
-        {$group: {_id: null, count: {$sum: 1}}}
-      ], (err, gotUsersCount) => {
-      if (err) {
-        return res.status(404).json({
-          status: 'failed',
-          description: `Error in getting Users count ${JSON.stringify(err)}`
-        })
-      }
-      Subscribers.aggregate(
-        [
-            {$group: {_id: null, count: {$sum: 1}}}
-        ], (err2, gotSubscribersCount) => {
-        if (err2) {
-          return res.status(404).json({
-            status: 'failed',
-            description: `Error in getting pages subscriber count ${JSON.stringify(
-                  err2)}`
-          })
-        }
-        Pages.aggregate(
-          [
-                {$match: {connected: true}},
-                {$group: {_id: null, count: {$sum: 1}}}
-          ], (err2, gotPagesCount) => {
-          if (err2) {
-            return res.status(404).json({
-              status: 'failed',
-              description: `Error in getting pages count ${JSON.stringify(
-                      err2)}`
-            })
-          }
-          Broadcasts.aggregate(
-            [
-              {
-                $match: {
-                  'datetime': {
-                    $gte: new Date(
-                            (new Date().getTime() - (10 * 24 * 60 * 60 * 1000)))
-                  }
-                }
-              },
-                    {$group: {_id: null, count: {$sum: 1}}}
-            ], (err2, gotBroadcastsCount) => {
-            if (err2) {
-              return res.status(404).json({
-                status: 'failed',
-                description: `Error in getting pages subscriber count ${JSON.stringify(
-                          err2)}`
-              })
-            }
-            Polls.aggregate(
-              [
-                {
-                  $match: {
-                    'datetime': {
-                      $gte: new Date((new Date().getTime() -
-                              (10 * 24 * 60 * 60 * 1000)))
-                    }
-                  }
-                },
-                        {$group: {_id: null, count: {$sum: 1}}}
-              ], (err2, gotPollsCount) => {
-              if (err2) {
-                return res.status(404).json({
-                  status: 'failed',
-                  description: `Error in getting polls count ${JSON.stringify(
-                              err2)}`
-                })
-              }
-              Surveys.aggregate(
-                [
-                  {
-                    $match: {
-                      'datetime': {
-                        $gte: new Date((new Date().getTime() -
-                                  (10 * 24 * 60 * 60 * 1000)))
-                      }
-                    }
-                  },
-                            {$group: {_id: null, count: {$sum: 1}}}
-                ], (err2, gotSurveysCount) => {
-                if (err2) {
-                  return res.status(404).json({
-                    status: 'failed',
-                    description: `Error in getting surveys count ${JSON.stringify(
-                                  err2)}`
-                  })
-                }
-                let datacounts = {
-                  UsersCount: gotUsersCount,
-                  SubscribersCount: gotSubscribersCount,
-                  PagesCount: gotPagesCount,
-                  BroadcastsCount: gotBroadcastsCount,
-                  PollsCount: gotPollsCount,
-                  SurveysCount: gotSurveysCount
-                }
-                logger.serverLog(TAG,
-                              `counts ${JSON.stringify(datacounts)}`)
-                res.status(200).json({
-                  status: 'success',
-                  payload: datacounts
-                })
-              })
-            })
-          })
-        })
-      })
-    })
+    days = 10
   } else if (req.params.userid === '30') {
-    Users.aggregate(
-      [
-        {
-          $match: {
-            'createdAt': {
-              $gte: new Date(
-                (new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
-            }
+    days = 30
+  }
+  Users.aggregate(
+    [
+      {
+        $match: {
+          'createdAt': {
+            $gte: new Date(
+              (new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
           }
-        },
-        {$group: {_id: null, count: {$sum: 1}}}
-      ], (err, gotUsersCount) => {
-      if (err) {
+        }
+      },
+      {$group: {_id: null, count: {$sum: 1}}}
+    ], (err, gotUsersCount) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting Users count ${JSON.stringify(err)}`
+      })
+    }
+    Subscribers.aggregate(
+      [
+          {$group: {_id: null, count: {$sum: 1}}}
+      ], (err2, gotSubscribersCount) => {
+      if (err2) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting Users count ${JSON.stringify(err)}`
+          description: `Error in getting pages subscriber count ${JSON.stringify(
+                err2)}`
         })
       }
-      Subscribers.aggregate(
+      Pages.aggregate(
         [
-            {$group: {_id: null, count: {$sum: 1}}}
-        ], (err2, gotSubscribersCount) => {
+              {$match: {connected: true}},
+              {$group: {_id: null, count: {$sum: 1}}}
+        ], (err2, gotPagesCount) => {
         if (err2) {
           return res.status(404).json({
             status: 'failed',
-            description: `Error in getting pages subscriber count ${JSON.stringify(
-                  err2)}`
+            description: `Error in getting pages count ${JSON.stringify(
+                    err2)}`
           })
         }
-        Pages.aggregate(
+        Broadcasts.aggregate(
           [
-                {$match: {connected: true}},
-                {$group: {_id: null, count: {$sum: 1}}}
-          ], (err2, gotPagesCount) => {
+            {
+              $match: {
+                'datetime': {
+                  $gte: new Date(
+                          (new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
+                }
+              }
+            },
+                  {$group: {_id: null, count: {$sum: 1}}}
+          ], (err2, gotBroadcastsCount) => {
           if (err2) {
             return res.status(404).json({
               status: 'failed',
-              description: `Error in getting pages count ${JSON.stringify(
-                      err2)}`
+              description: `Error in getting pages subscriber count ${JSON.stringify(
+                        err2)}`
             })
           }
-          Broadcasts.aggregate(
+          Polls.aggregate(
             [
               {
                 $match: {
                   'datetime': {
-                    $gte: new Date(
-                            (new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+                    $gte: new Date((new Date().getTime() -
+                            (days * 24 * 60 * 60 * 1000)))
                   }
                 }
               },
-                    {$group: {_id: null, count: {$sum: 1}}}
-            ], (err2, gotBroadcastsCount) => {
+                      {$group: {_id: null, count: {$sum: 1}}}
+            ], (err2, gotPollsCount) => {
             if (err2) {
               return res.status(404).json({
                 status: 'failed',
-                description: `Error in getting pages subscriber count ${JSON.stringify(
-                          err2)}`
+                description: `Error in getting polls count ${JSON.stringify(
+                            err2)}`
               })
             }
-            Polls.aggregate(
+            Surveys.aggregate(
               [
                 {
                   $match: {
                     'datetime': {
                       $gte: new Date((new Date().getTime() -
-                              (30 * 24 * 60 * 60 * 1000)))
+                                (days * 24 * 60 * 60 * 1000)))
                     }
                   }
                 },
-                        {$group: {_id: null, count: {$sum: 1}}}
-              ], (err2, gotPollsCount) => {
+                          {$group: {_id: null, count: {$sum: 1}}}
+              ], (err2, gotSurveysCount) => {
               if (err2) {
                 return res.status(404).json({
                   status: 'failed',
-                  description: `Error in getting polls count ${JSON.stringify(
-                              err2)}`
+                  description: `Error in getting surveys count ${JSON.stringify(
+                                err2)}`
                 })
               }
-              Surveys.aggregate(
-                [
-                  {
-                    $match: {
-                      'datetime': {
-                        $gte: new Date((new Date().getTime() -
-                                  (30 * 24 * 60 * 60 * 1000)))
-                      }
-                    }
-                  },
-                            {$group: {_id: null, count: {$sum: 1}}}
-                ], (err2, gotSurveysCount) => {
-                if (err2) {
-                  return res.status(404).json({
-                    status: 'failed',
-                    description: `Error in getting surveys count ${JSON.stringify(
-                                  err2)}`
-                  })
-                }
-                let datacounts = {
-                  UsersCount: gotUsersCount,
-                  SubscribersCount: gotSubscribersCount,
-                  PagesCount: gotPagesCount,
-                  BroadcastsCount: gotBroadcastsCount,
-                  PollsCount: gotPollsCount,
-                  SurveysCount: gotSurveysCount
-                }
-                logger.serverLog(TAG,
-                              `counts ${JSON.stringify(datacounts)}`)
-                res.status(200).json({
-                  status: 'success',
-                  payload: datacounts
-                })
+              let datacounts = {
+                UsersCount: gotUsersCount,
+                SubscribersCount: gotSubscribersCount,
+                PagesCount: gotPagesCount,
+                BroadcastsCount: gotBroadcastsCount,
+                PollsCount: gotPollsCount,
+                SurveysCount: gotSurveysCount
+              }
+              logger.serverLog(TAG,
+                            `counts ${JSON.stringify(datacounts)}`)
+              res.status(200).json({
+                status: 'success',
+                payload: datacounts
               })
             })
           })
         })
       })
     })
-  }
+  })
 }
 
 exports.uploadFile = function (req, res) {
@@ -671,5 +556,104 @@ exports.poll = function (req, res) {
         .json({status: 'success', payload: {pollResponses, poll, pollpages}})
       })
     })
+  })
+}
+exports.broadcastsGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Broadcasts.aggregate([
+    {
+      $match: {
+        'datetime': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+        count: {$sum: 1}}
+    }], (err, broadcastsgraphdata) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting surveys count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {broadcastsgraphdata}})
+  })
+}
+exports.pollsGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Polls.aggregate([
+    {
+      $match: {
+        'datetime': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+        count: {$sum: 1}}
+    }], (err, pollsgraphdata) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting surveys count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {pollsgraphdata}})
+  })
+}
+exports.surveysGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Surveys.aggregate([
+    {
+      $match: {
+        'datetime': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+        count: {$sum: 1}}
+    }], (err, surveysgraphdata) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting surveys count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {surveysgraphdata}})
   })
 }
