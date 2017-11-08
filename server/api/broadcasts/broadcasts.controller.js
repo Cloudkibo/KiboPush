@@ -113,14 +113,14 @@ exports.getfbMessage = function (req, res) {
                 method: 'GET'
 
               }
-              const options1 = {
-                url: `https://graph.facebook.com/v2.10/${sender}?fields=cover&access_token=${page.accessToken}`,
-                qs: {access_token: page.accessToken},
-                method: 'GET'
-
-              }
               needle.get(options.url, options, (error, response) => {
                 const subsriber = response.body
+                const options1 = {
+                  url: `https://graph.facebook.com/v2.10/${subsriber.id}?fields=cover}`,
+                  qs: {access_token: page.accessToken},
+                  method: 'GET'
+
+                }
                 needle.get(options1.url, options1, (error1, response1) => {
                   const coverphoto = response1.body
                   logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
