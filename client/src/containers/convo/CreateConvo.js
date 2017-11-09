@@ -106,6 +106,7 @@ class CreateConvo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
+    document.title = 'KiboPush | Create Broadcast'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}

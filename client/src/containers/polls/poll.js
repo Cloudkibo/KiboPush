@@ -37,6 +37,7 @@ class Poll extends React.Component {
 
   componentWillMount () {
    // this.props.loadSubscribersList()
+    document.title('KiboPush | Poll')
   }
 
   displayData (n, polls) {
