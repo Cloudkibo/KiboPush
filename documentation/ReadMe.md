@@ -4,6 +4,10 @@
 
 You should have MongoDB installed on your system.
 
+#### Setup Nodejs and NPM
+
+You should have Nodejs and NPM installed on your system.
+
 #### Install Forever
 
 To install forever run the following command:

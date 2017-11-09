@@ -46,6 +46,7 @@ class GrowthTools extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    document.title = 'KiboPush | GrowthTools'
   }
 
   render () {
@@ -98,7 +99,7 @@ class GrowthTools extends React.Component {
               <div className='card'>
                 <img className='img-card' src='icons/invitation.png' style={{width: 200, height: 200}} alt='Card image cap' />
                 <div className='col-md-6 col-sm-6 col-xs-6' style={{padding: 10}}>
-                  <div className='card-body'  >
+                  <div className='card-body' >
                     <h4 className='card-title'>Copy Page Link</h4>
                     <hr />
                     <p className='card-text'>Copy facebook page link to send to your friends</p>
