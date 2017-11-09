@@ -115,16 +115,16 @@ exports.getfbMessage = function (req, res) {
               }
               needle.get(options.url, options, (error, response) => {
                 const subsriber = response.body
-                const options1 = {
-                  url: `https://graph.facebook.com/v2.10/${subsriber.id}?fields=cover}`,
-                  qs: {access_token: page.accessToken},
-                  method: 'GET'
-
-                }
-                needle.get(options1.url, options1, (error1, response1) => {
-                  const coverphoto = response1.body
-                  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
-                  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
+                // const options1 = {
+                //   url: `https://graph.facebook.com/v2.10/${subsriber.id}?fields=cover}`,
+                //   qs: {access_token: page.accessToken},
+                //   method: 'GET'
+                //
+                // }
+                // needle.get(options1.url, options1, (error1, response1) => {
+                //  const coverphoto = response1.body
+                //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
+                //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
                     const payload = {
                       firstName: subsriber.first_name,
@@ -161,7 +161,7 @@ exports.getfbMessage = function (req, res) {
                   } else {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
                   }
-                })
+                //  })
                 sendautomatedmsg(event, page)
               })
             })
