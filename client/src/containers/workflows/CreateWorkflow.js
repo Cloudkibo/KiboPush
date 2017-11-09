@@ -52,6 +52,7 @@ class CreateWorkflow extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    document.title = 'KiboPush | Create Workflows'
 
     this.addSteps([
       {

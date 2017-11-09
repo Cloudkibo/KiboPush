@@ -45,6 +45,7 @@ class LiveChat extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    document.title = 'KiboPush | Live Chat'
     if (!this.state.ignore) {
       this.setState({ignore: true})
     }
