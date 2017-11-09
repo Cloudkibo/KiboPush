@@ -46,6 +46,13 @@ exports.updateChecks = function (req, res) {
     if (req.body.surveyTourSeen) user.surveyTourSeen = req.body.surveyTourSeen
     if (req.body.convoTourSeen) user.convoTourSeen = req.body.convoTourSeen
     if (req.body.pollTourSeen) user.pollTourSeen = req.body.pollTourSeen
+    if (req.body.growthToolsTourSeen) user.growthToolsTourSeen = req.body.growthToolsTourSeen
+    if (req.body.subscriberTourSeen) user.subscriberTourSeen = req.body.subscriberTourSeen
+    if (req.body.liveChatTourSeen) user.liveChatTourSeen = req.body.liveChatTourSeen
+    if (req.body.autoPostingTourSeen) user.autoPostingTourSeen = req.body.autoPostingTourSeen
+    if (req.body.mainMenuTourSeen) user.mainMenuTourSeen = req.body.mainMenuTourSeen
+    if (req.body.subscribeToMessengerTourSeen) user.subscribeToMessengerTourSeen = req.body.subscribeToMessengerTourSeen
+    if (req.body.pagesTourSeen) user.pagesTourSeen = req.body.pagesTourSeen
 
     user.save((err) => {
       if (err) {
