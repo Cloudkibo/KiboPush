@@ -44,6 +44,13 @@ class CustomerMatching extends React.Component {
 
   onFilesChange (files) {
     if (files.length > 0) {
+      let fileSelected = files[0]
+      if (fileSelected.extension !== 'csv') {
+        this.setState({
+          fileErrors: [{errorMsg: 'Please select a file with .csv extension'}]
+        })
+        return
+      }
       this.setState({
         file: files,
         fileErrors: []
@@ -164,7 +171,8 @@ class CustomerMatching extends React.Component {
                         'text/comma-separated-values',
                         'text/csv',
                         'application/csv',
-                        '.csv']}
+                        '.csv',
+                        'application/vnd.ms-excel']}
                       multiple={false}
                       maxFileSize={25000000}
                       minFileSize={0}
