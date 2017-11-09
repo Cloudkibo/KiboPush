@@ -310,36 +310,41 @@ exports.pubsubhook = function (req, res) {
 
 exports.pubsubhookPost = function (req, res) {
   logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Post Called')
-  logger.serverLog(TAG, JSON.stringify(req.body))
-  var bodyChunks = [],
-    params = urllib.parse(req.url, true, true),
-    topic = params && params.query && params.query.topic,
-    hub = params && params.query && params.query.hub,
-    bodyLen = 0,
-    tooLarge = false,
-    signatureParts, algo, signature, hmac;
+  logger.serverLog(TAG, JSON.stringify(req.headers))
+  let bodyChunks = []
+  let params = urllib.parse(req.url, true, true)
+  let topic = params && params.query && params.query.topic
+  let hub = params && params.query && params.query.hub
+  let bodyLen = 0
+  let tooLarge = false
+  let signatureParts
+  let algo
+  let signature
+  let hmac
 
   // v0.4 hubs have a link header that includes both the topic url and hub url
-  (req.headers && req.headers.link || '')
-    .replace(/<([^>]+)>\s*(?:;\s*rel=['"]([^'"]+)['"])?/gi,
-      function (o, url, rel) {
-        switch ((rel || '').toLowerCase()) {
-          case 'self':
-            topic = url
-            break
-          case 'hub':
-            hub = url
-            break
-        }
-      })
+  ((req.headers && req.headers.link) || '').replace(
+    /<([^>]+)>\s*(?:;\s*rel=['"]([^'"]+)['"])?/gi,
+    function (o, url, rel) {
+      switch ((rel || '').toLowerCase()) {
+        case 'self':
+          topic = url
+          break
+        case 'hub':
+          hub = url
+          break
+      }
+    })
 
+  logger.serverLog(TAG, 'topic found')
+  logger.serverLog(TAG, topic)
   if (!topic) {
-    return this._sendError(req, res, 400, 'Bad Request')
+    return _sendError(req, res, 400, 'Bad Request')
   }
 
   // Hub must notify with signature header if secret specified.
   if (this.secret && !req.headers['x-hub-signature']) {
-    return this._sendError(req, res, 403, 'Forbidden')
+    return _sendError(req, res, 403, 'Forbidden')
   }
 
   if (this.secret) {
@@ -351,7 +356,7 @@ exports.pubsubhookPost = function (req, res) {
       hmac = crypto.createHmac(algo,
         crypto.createHmac('sha1', this.secret).update(topic).digest('hex'))
     } catch (E) {
-      return this._sendError(req, res, 403, 'Forbidden')
+      return _sendError(req, res, 403, 'Forbidden')
     }
   }
 
@@ -375,7 +380,7 @@ exports.pubsubhookPost = function (req, res) {
 
   req.on('end', function () {
     if (tooLarge) {
-      return this._sendError(req, res, 413, 'Request Entity Too Large')
+      return _sendError(req, res, 413, 'Request Entity Too Large')
     }
 
     // Must return 2xx code even if signature doesn't match.
@@ -387,6 +392,14 @@ exports.pubsubhookPost = function (req, res) {
     res.writeHead(204, {'Content-Type': 'text/plain; charset=utf-8'})
     res.end()
 
+    logger.serverLog(TAG, {
+      topic: topic,
+      hub: hub,
+      callback: 'http://' + req.headers.host + req.url,
+      feed: Buffer.concat(bodyChunks, bodyLen),
+      headers: req.headers
+    })
+
     this.emit('feed', {
       topic: topic,
       hub: hub,
@@ -396,4 +409,18 @@ exports.pubsubhookPost = function (req, res) {
     })
   }.bind(this))
   // return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
+function _sendError (req, res, code, message) {
+  res.writeHead(code, {'Content-Type': 'text/html'})
+  res.end('<!DOCTYPE html>\n' +
+    '<html>\n' +
+    '    <head>\n' +
+    '        <meta charset="utf-8"/>\n' +
+    '        <title>' + code + ' ' + message + '</title>\n' +
+    '    </head>\n' +
+    '    <body>\n' +
+    '        <h1>' + code + ' ' + message + '</h1>\n' +
+    '    </body>\n' +
+    '</html>')
 }
