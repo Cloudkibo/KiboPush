@@ -159,7 +159,7 @@ class CustomerMatching extends React.Component {
                     The columns should contain the list all the customers&#39; name and phone
                     numbers respectively. An invitation message will be sent on Facebook messenger
                     to all the customers listed using their phone numbers.<br />
-                    <b>Note</b>This is an experimental feature and it is specific for pages that belong to United States of America (One of the page admins should be from USA).
+                    <b>Note:</b>This is an experimental feature and it is specific for pages that belong to United States of America (One of the page admins should be from USA).
                   </h7>
                   <div
                     className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
