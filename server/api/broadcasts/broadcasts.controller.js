@@ -135,7 +135,7 @@ exports.getfbMessage = function (req, res) {
                       provider: 'facebook',
                       timezone: subsriber.timezone,
                       profilePic: subsriber.profile_pic,
-                      coverPhoto: coverphoto.source,
+                      //  coverPhoto: coverphoto.source,
                       pageScopedId: '',
                       email: '',
                       senderId: sender,
@@ -670,8 +670,9 @@ function savesurvey (req) {
         logger.serverLog(TAG,
           `all surveys with particular id${JSON.stringify(subscriber)}`)
       })
-      Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
+      //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
+      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {_id: mongoose.Types.ObjectId(resp.survey_id), $inc: {isresponded: 1}}, true)
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}
