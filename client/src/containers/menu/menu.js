@@ -74,7 +74,7 @@ class Menu extends React.Component {
       var myPages = []
       nextProps.pages.map((page) => {
         if (page.connected) {
-          myPages.push({value: page._id, label: page.pageName})
+          myPages.push({value: page.pageId, label: page.pageName})
         }
       })
       this.setState({pageOptions: myPages})
@@ -239,9 +239,13 @@ class Menu extends React.Component {
   }
 
   save () {
-    data = {}
+    var data = {}
+    if(this.state.pageValue === ''){
+      this.msg.error("Please select a page")
+      return
+    }
     data.payload = transformData(this.state.itemMenus)
-    data.pageId = ''
+    data.pageId = this.state.pageValue
     data.userId = this.props.user._id
     this.props.saveMenu(data)
   }
@@ -252,7 +256,7 @@ class Menu extends React.Component {
 
   render () {
     console.log('This transform data', transformData(this.state.itemMenus))
-    console.log('Target Value: ', this.target, this.target.includes('nested'))
+    console.log('Page options', this.state.pageOptions)
 
     var alertOptions = {
       offset: 14,

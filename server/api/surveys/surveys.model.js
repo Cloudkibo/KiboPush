@@ -15,7 +15,7 @@ const surveySchema = new Schema({
   segmentationLocale: [String],
   segmentationGender: [String],
   segmentationTimeZone: String,
-  isresponded: { type: Boolean, default: false }
+  isresponded: { type: Number, default: 0 }
 })
 
 module.exports = mongoose.model('surveys', surveySchema)

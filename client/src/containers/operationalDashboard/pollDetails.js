@@ -15,7 +15,8 @@ class ViewPollDetail extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      totalResponses: 0
+      totalResponses: 0,
+      totalSent: 0
     }
     console.log('Poll Detail', props.currentPoll)
     props.loadPollDetails(props.currentPoll._id)
@@ -43,6 +44,10 @@ class ViewPollDetail extends React.Component {
     console.log('Poll Details Receive Props', nextProps.pollDetails)
     if (nextProps.pollDetails) {
       let pollResponses = nextProps.pollDetails.pollResponses
+      let pollPages = nextProps.pollDetails.pollpages
+      if (pollPages) {
+        this.setState({ totalResponses: pollPages.length })
+      }
       if (pollResponses) {
         this.setState({ totalResponses: pollResponses.length })
         var counts = []
@@ -160,7 +165,7 @@ class ViewPollDetail extends React.Component {
                                   Polls Sent So Far
                                 </span>
                               </div>
-                              <div className='count-stat'>1
+                              <div className='count-stat'>{this.state.totalSent}
                               </div>
                             </li>
                           </ul>
