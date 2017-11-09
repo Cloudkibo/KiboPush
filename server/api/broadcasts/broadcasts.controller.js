@@ -125,42 +125,42 @@ exports.getfbMessage = function (req, res) {
                 //  const coverphoto = response1.body
                 //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                 //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
-                  if (!error) {
-                    const payload = {
-                      firstName: subsriber.first_name,
-                      lastName: subsriber.last_name,
-                      locale: subsriber.locale,
-                      gender: subsriber.gender,
-                      userId: page.userId,
-                      provider: 'facebook',
-                      timezone: subsriber.timezone,
-                      profilePic: subsriber.profile_pic,
-                      //  coverPhoto: coverphoto.source,
-                      pageScopedId: '',
-                      email: '',
-                      senderId: sender,
-                      pageId: page._id,
-                      isSubscribed: true
-                    }
-
-                    Subscribers.findOne({senderId: sender}, (err, subscriber) => {
-                      if (err) logger.serverLog(TAG, err)
-                      if (subscriber === null) {
-                        // subsriber not found, create subscriber
-                        Subscribers.create(payload, (err2, subscriberCreated) => {
-                          if (err2) {
-                            logger.serverLog(TAG, err2)
-                          }
-                          logger.serverLog(TAG, 'new Subscriber added')
-                          createSession(page, subscriberCreated, event)
-                        })
-                      } else {
-                        createSession(page, subscriber, event)
-                      }
-                    })
-                  } else {
-                    logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                if (!error) {
+                  const payload = {
+                    firstName: subsriber.first_name,
+                    lastName: subsriber.last_name,
+                    locale: subsriber.locale,
+                    gender: subsriber.gender,
+                    userId: page.userId,
+                    provider: 'facebook',
+                    timezone: subsriber.timezone,
+                    profilePic: subsriber.profile_pic,
+                    //  coverPhoto: coverphoto.source,
+                    pageScopedId: '',
+                    email: '',
+                    senderId: sender,
+                    pageId: page._id,
+                    isSubscribed: true
                   }
+
+                  Subscribers.findOne({senderId: sender}, (err, subscriber) => {
+                    if (err) logger.serverLog(TAG, err)
+                    if (subscriber === null) {
+                      // subsriber not found, create subscriber
+                      Subscribers.create(payload, (err2, subscriberCreated) => {
+                        if (err2) {
+                          logger.serverLog(TAG, err2)
+                        }
+                        logger.serverLog(TAG, 'new Subscriber added')
+                        createSession(page, subscriberCreated, event)
+                      })
+                    } else {
+                      createSession(page, subscriber, event)
+                    }
+                  })
+                } else {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                }
                 //  })
                 sendautomatedmsg(event, page)
               })
@@ -672,7 +672,7 @@ function savesurvey (req) {
       })
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
-      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {_id: mongoose.Types.ObjectId(resp.survey_id), $inc: {isresponded: 1}}, true)
+      Surveys.update({_id: '5a0407775789780498b38d03'}, {$inc: {isresponded: 1}}, true)
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}

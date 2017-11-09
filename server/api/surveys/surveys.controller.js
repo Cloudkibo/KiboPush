@@ -31,10 +31,7 @@ exports.index = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Surveys not found'})
       }
-      Surveys.aggregate([
-        {$match: {isresponded: true}},
-        {$group: {_id: '$_id', count: {$sum: 1}}}
-      ], (err2, responsesCount) => {
+      Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
         if (err2) {
           return res.status(404)
           .json({status: 'failed', description: 'responses count not found'})
