@@ -652,16 +652,10 @@ function savesurvey (req) {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
       }
+      //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
+      // send the next question
+      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, true)
       Surveys.find({}, (err, subscriber) => {
-        if (err) {
-          logger.serverLog(TAG,
-            `Error occurred in finding subscriber${JSON.stringify(
-              err)}`)
-        }
-        logger.serverLog(TAG,
-          `all surveys${JSON.stringify(subscriber)}`)
-      })
-      Surveys.find({_id: mongoose.Types.ObjectId(resp.survey_id)}, (err, subscriber) => {
         if (err) {
           logger.serverLog(TAG,
             `Error occurred in finding subscriber${JSON.stringify(
@@ -670,9 +664,6 @@ function savesurvey (req) {
         logger.serverLog(TAG,
           `all surveys with particular id${JSON.stringify(subscriber)}`)
       })
-      //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
-      // send the next question
-      Surveys.update({_id: '5a0407775789780498b38d03'}, {$inc: {isresponded: 1}}, true)
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}
