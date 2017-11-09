@@ -30,7 +30,7 @@ function connect () {
       if (err) {
         return logger.serverLog(TAG, 'Internal Server Error on connect')
       }
-      if (autoposting) {
+      if (autoposting.length > 0) {
         let arrUsers = []
         for (let i = 0; i < autoposting.length; i++) {
           arrUsers.push(autoposting[i].payload.id)
