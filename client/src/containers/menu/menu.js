@@ -240,8 +240,8 @@ class Menu extends React.Component {
 
   save () {
     var data = {}
-    if(this.state.pageValue === ''){
-      this.msg.error("Please select a page")
+    if (this.state.pageValue === '') {
+      this.msg.error('Please select a page')
       return
     }
     data.payload = transformData(this.state.itemMenus)

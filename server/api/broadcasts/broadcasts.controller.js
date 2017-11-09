@@ -656,7 +656,7 @@ function savesurvey (req) {
       // send the next question
       logger.serverLog(TAG,
         `survey respnse create ${JSON.stringify(resp.survey_id)}`)
-      Surveys.update({_id: resp.survey_id}, {$inc: {isresponded: 1}}, true)
+      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}})
       Surveys.find({}, (err, subscriber) => {
         if (err) {
           logger.serverLog(TAG,
