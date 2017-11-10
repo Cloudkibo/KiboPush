@@ -234,12 +234,11 @@ class Dashboard extends React.Component {
     }
     console.log('props', this.props)
     return (
-      <div className='container'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
           !(this.props.user && this.props.user.dashboardTourSeen) &&
           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
         }
-        <br /><br /><br /><br /><br /><br />
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         {
           this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
@@ -249,7 +248,13 @@ class Dashboard extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <h3>Dashboard</h3>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Manage Subscribers</h3>
+            </div>
+          </div>
+        </div>
         <div className='ui-block'>
           <div className='ui-block-content'>
             <div className='row'>

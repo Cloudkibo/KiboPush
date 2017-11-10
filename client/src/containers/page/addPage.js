@@ -74,7 +74,93 @@ class AddPage extends React.Component {
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='container'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Pages</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet m-portlet--full-height '>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                                Add Pages
+                              </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link active' data-toggle='tab' href='#m_widget2_tab1_content' role='tab'>
+                                  View Connected Pages
+                                </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='m-widget4'>
+                        <div className='m-widget4__item'>
+                          <div className='m-widget4__img m-widget4__img--icon'>
+                            <img src='assets/app/media/img/files/javascript.svg' alt='' />
+                          </div>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__text'>
+                                Make JS Great Again
+                                </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            <a href='#' className='m-widget4__icon'>
+                              <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                            </a>
+                          </div>
+                        </div>
+                        <div className='m-widget4__item'>
+                          <div className='m-widget4__img m-widget4__img--icon'>
+                            <img src='assets/app/media/img/files/zip.svg' alt='' />
+                          </div>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__text'>
+                                Download Ziped version OF 5.0
+                                </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            <a href='#' className='m-widget4__icon'>
+                              <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                            </a>
+                          </div>
+                        </div>
+                        <div className='m-widget4__item'>
+                          <div className='m-widget4__img m-widget4__img--icon'>
+                            <img src='assets/app/media/img/files/pdf.svg' alt='' />
+                          </div>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__text'>
+                                Finance Report 2016/2017
+                                </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            <a href='#' className='m-widget4__icon'>
+                              <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/*
+             <div className='container'>
             <br /><br /><br /><br /><br /><br />
             <div className='row'>
               <main
@@ -121,6 +207,8 @@ class AddPage extends React.Component {
 
             </div>
           </div>
+          */}
+
         </div>
       </div>
 

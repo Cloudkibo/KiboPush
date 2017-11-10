@@ -27,8 +27,7 @@ class Header extends React.Component {
 									</h4>
                 </div>
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
-                  <a href='javascript:;' id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block
-					 '>
+                  <a href='javascript:;' id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
                     <span />
                   </a>
                   <a href='javascript:;' id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
@@ -54,7 +53,7 @@ class Header extends React.Component {
                     <a href='#' className='m-menu__link m-menu__toggle'>
                       <i className='m-menu__link-icon flaticon-add' />
                       <span className='m-menu__link-text'>
-												Actions
+												Quick Actions
 											</span>
                       <i className='m-menu__hor-arrow la la-angle-down' />
                       <i className='m-menu__ver-arrow la la-angle-right' />
@@ -64,321 +63,28 @@ class Header extends React.Component {
                       <ul className='m-menu__subnav'>
                         <li className='m-menu__item ' aria-haspopup='true'>
                           <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-file' />
+                            <i className='m-menu__link-icon flaticon-tool-1' />
                             <span className='m-menu__link-text'>
-															Create New Post
+															Send Page Invites
 														</span>
                           </a>
                         </li>
                         <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
                           <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-diagram' />
-                            <span className='m-menu__link-title'>
-                              <span className='m-menu__link-wrap'>
-                                <span className='m-menu__link-text'>
-																	Generate Reports
-																</span>
-                                <span className='m-menu__link-badge'>
-                                  <span className='m-badge m-badge--success'>
-																		2
-																	</span>
-                                </span>
-                              </span>
+                            <i className='m-menu__link-icon flaticon-interface-8' />
+                            <span className='m-menu__link-text'>
+																	Setup Messenger Menu
                             </span>
                           </a>
                         </li>
-                        <li className='m-menu__item  m-menu__item--submenu' data-menu-submenu-toggle='hover' data-redirect='true' aria-haspopup='true'>
-                          <a href='#' className='m-menu__link m-menu__toggle'>
-                            <i className='m-menu__link-icon flaticon-business' />
-                            <span className='m-menu__link-text'>
-															Manage Orders
-														</span>
-                            <i className='m-menu__hor-arrow la la-angle-right' />
-                            <i className='m-menu__ver-arrow la la-angle-right' />
-                          </a>
-                          <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--right'>
-                            <span className='m-menu__arrow ' />
-                            <ul className='m-menu__subnav'>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Latest Orders
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Pending Orders
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Processed Orders
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Delivery Reports
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Payments
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Customers
-																	</span>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-                        <li className='m-menu__item  m-menu__item--submenu' data-menu-submenu-toggle='hover' data-redirect='true' aria-haspopup='true'>
-                          <a href='#' className='m-menu__link m-menu__toggle'>
-                            <i className='m-menu__link-icon flaticon-chat-1' />
-                            <span className='m-menu__link-text'>
-															Customer Feedbacks
-														</span>
-                            <i className='m-menu__hor-arrow la la-angle-right' />
-                            <i className='m-menu__ver-arrow la la-angle-right' />
-                          </a>
-                          <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--right'>
-                            <span className='m-menu__arrow ' />
-                            <ul className='m-menu__subnav'>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Customer Feedbacks
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Supplier Feedbacks
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Reviewed Feedbacks
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Resolved Feedbacks
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <span className='m-menu__link-text'>
-																		Feedback Reports
-																	</span>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
+
                         <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
                           <a href='header/actions.html' className='m-menu__link '>
                             <i className='m-menu__link-icon flaticon-users' />
                             <span className='m-menu__link-text'>
-															Register Member
+															Subscribe to Messenger
 														</span>
                           </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                    <a href='#' className='m-menu__link m-menu__toggle'>
-                      <i className='m-menu__link-icon flaticon-line-graph' />
-                      <span className='m-menu__link-text'>
-												Reports
-											</span>
-                      <i className='m-menu__hor-arrow la la-angle-down' />
-                      <i className='m-menu__ver-arrow la la-angle-right' />
-                    </a>
-                  </li>
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                    <a href='#' className='m-menu__link m-menu__toggle'>
-                      <i className='m-menu__link-icon flaticon-paper-plane' />
-                      <span className='m-menu__link-title'>
-                        <span className='m-menu__link-wrap'>
-                          <span className='m-menu__link-text'>
-														Apps
-													</span>
-                          <span className='m-menu__link-badge'>
-                            <span className='m-badge m-badge--brand m-badge--wide'>
-															new
-														</span>
-                          </span>
-                        </span>
-                      </span>
-                      <i className='m-menu__hor-arrow la la-angle-down' />
-                      <i className='m-menu__ver-arrow la la-angle-right' />
-                    </a>
-                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                      <span className='m-menu__arrow m-menu__arrow--adjust' />
-                      <ul className='m-menu__subnav'>
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-business' />
-                            <span className='m-menu__link-text'>
-															eCommerce
-														</span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item  m-menu__item--submenu' data-menu-submenu-toggle='hover' data-redirect='true' aria-haspopup='true'>
-                          <a href='crud/datatable_v1.html' className='m-menu__link m-menu__toggle'>
-                            <i className='m-menu__link-icon flaticon-computer' />
-                            <span className='m-menu__link-text'>
-															Audience
-														</span>
-                            <i className='m-menu__hor-arrow la la-angle-right' />
-                            <i className='m-menu__ver-arrow la la-angle-right' />
-                          </a>
-                          <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--right'>
-                            <span className='m-menu__arrow ' />
-                            <ul className='m-menu__subnav'>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-users' />
-                                  <span className='m-menu__link-text'>
-																		Active Users
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-interface-1' />
-                                  <span className='m-menu__link-text'>
-																		User Explorer
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-lifebuoy' />
-                                  <span className='m-menu__link-text'>
-																		Users Flows
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-graphic-1' />
-                                  <span className='m-menu__link-text'>
-																		Market Segments
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-graphic' />
-                                  <span className='m-menu__link-text'>
-																		User Reports
-																	</span>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-map' />
-                            <span className='m-menu__link-text'>
-															Marketing
-														</span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-graphic-2' />
-                            <span className='m-menu__link-title'>
-                              <span className='m-menu__link-wrap'>
-                                <span className='m-menu__link-text'>
-																	Campaigns
-																</span>
-                                <span className='m-menu__link-badge'>
-                                  <span className='m-badge m-badge--success'>
-																		3
-																	</span>
-                                </span>
-                              </span>
-                            </span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item  m-menu__item--submenu' data-menu-submenu-toggle='hover' data-redirect='true' aria-haspopup='true'>
-                          <a href='#' className='m-menu__link m-menu__toggle'>
-                            <i className='m-menu__link-icon flaticon-infinity' />
-                            <span className='m-menu__link-text'>
-															Cloud Manager
-														</span>
-                            <i className='m-menu__hor-arrow la la-angle-right' />
-                            <i className='m-menu__ver-arrow la la-angle-right' />
-                          </a>
-                          <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                            <span className='m-menu__arrow ' />
-                            <ul className='m-menu__subnav'>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-add' />
-                                  <span className='m-menu__link-title'>
-                                    <span className='m-menu__link-wrap'>
-                                      <span className='m-menu__link-text'>
-																				File Upload
-																			</span>
-                                      <span className='m-menu__link-badge'>
-                                        <span className='m-badge m-badge--danger'>
-																					3
-																				</span>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-signs-1' />
-                                  <span className='m-menu__link-text'>
-																		File Attributes
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-folder' />
-                                  <span className='m-menu__link-text'>
-																		Folders
-																	</span>
-                                </a>
-                              </li>
-                              <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                                <a href='header/actions.html' className='m-menu__link '>
-                                  <i className='m-menu__link-icon flaticon-cogwheel-2' />
-                                  <span className='m-menu__link-text'>
-																		System Settings
-																	</span>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
                         </li>
                       </ul>
                     </div>
@@ -388,37 +94,7 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
-                    <li className='
-	m-nav__item m-dropdown m-dropdown--large m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width m-dropdown--skin-light	m-list-search m-list-search--skin-light'
-                      data-dropdown-toggle='click' data-dropdown-persistent='true' id='m_quicksearch' data-search-type='dropdown'>
-                      <a href='#' className='m-nav__link m-dropdown__toggle'>
-                        <span className='m-nav__link-icon'>
-                          <i className='flaticon-search-1' />
-                        </span>
-                      </a>
-                      <div className='m-dropdown__wrapper'>
-                        <span className='m-dropdown__arrow m-dropdown__arrow--center' />
-                        <div className='m-dropdown__inner '>
-                          <div className='m-dropdown__header'>
-                            <form className='m-list-search__form'>
-                              <div className='m-list-search__form-wrapper'>
-                                <span className='m-list-search__form-input-wrapper'>
-                                  <input id='m_quicksearch_input' autocomplete='off' type='text' name='q' className='m-list-search__form-input' value='' placeholder='Search...' />
-                                </span>
-                                <span className='m-list-search__form-icon-close' id='m_quicksearch_close'>
-                                  <i className='la la-remove' />
-                                </span>
-                              </div>
-                            </form>
-                          </div>
-                          <div className='m-dropdown__body'>
-                            <div className='m-dropdown__scrollable m-scrollable' data-scrollable='true' data-max-height='300' data-mobile-max-height='200'>
-                              <div className='m-dropdown__content' />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
+
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
@@ -435,16 +111,6 @@ class Header extends React.Component {
                                 <li className='nav-item m-tabs__item'>
                                   <a className='nav-link m-tabs__link active' data-toggle='tab' href='#topbar_notifications_notifications' role='tab'>
 																		Alerts
-																	</a>
-                                </li>
-                                <li className='nav-item m-tabs__item'>
-                                  <a className='nav-link m-tabs__link' data-toggle='tab' href='#topbar_notifications_events' role='tab'>
-																		Events
-																	</a>
-                                </li>
-                                <li className='nav-item m-tabs__item'>
-                                  <a className='nav-link m-tabs__link' data-toggle='tab' href='#topbar_notifications_logs' role='tab'>
-																		Logs
 																	</a>
                                 </li>
                               </ul>
@@ -541,68 +207,6 @@ class Header extends React.Component {
                                     </div>
                                   </div>
                                 </div>
-                                <div className='tab-pane' id='topbar_notifications_events' role='tabpanel'>
-                                  <div className='m-scrollable' m-scrollabledata-scrollable='true' data-max-height='250' data-mobile-max-height='200'>
-                                    <div className='m-list-timeline m-list-timeline--skin-light'>
-                                      <div className='m-list-timeline__items'>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-success' />
-                                          <a href='' className='m-list-timeline__text'>
-																						New order received
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						Just now
-																					</span>
-                                        </div>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-danger' />
-                                          <a href='' className='m-list-timeline__text'>
-																						New invoice received
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						20 mins
-																					</span>
-                                        </div>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-success' />
-                                          <a href='' className='m-list-timeline__text'>
-																						Production server up
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						5 hrs
-																					</span>
-                                        </div>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-info' />
-                                          <a href='' className='m-list-timeline__text'>
-																						New order received
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						7 hrs
-																					</span>
-                                        </div>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-info' />
-                                          <a href='' className='m-list-timeline__text'>
-																						System shutdown
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						11 mins
-																					</span>
-                                        </div>
-                                        <div className='m-list-timeline__item'>
-                                          <span className='m-list-timeline__badge m-list-timeline__badge--state1-info' />
-                                          <a href='' className='m-list-timeline__text'>
-																						Production server down
-																					</a>
-                                          <span className='m-list-timeline__time'>
-																						3 hrs
-																					</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -627,13 +231,13 @@ class Header extends React.Component {
                                     <a href='#' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>
-																				Generate Report
+																				Send New Broadcast
 																			</span>
                                     </a>
                                     <a href='#' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>
-																				Add New Event
+																				Send New Poll
 																			</span>
                                     </a>
                                   </div>
@@ -641,13 +245,13 @@ class Header extends React.Component {
                                     <a href='#' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-folder' />
                                       <span className='m-nav-grid__text'>
-																				Create New Task
+																				Send New Survey
 																			</span>
                                     </a>
                                     <a href='#' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
                                       <span className='m-nav-grid__text'>
-																				Completed Tasks
+																				Create New Workflow
 																			</span>
                                     </a>
                                   </div>
@@ -658,6 +262,7 @@ class Header extends React.Component {
                         </div>
                       </div>
                     </li>
+
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
@@ -740,13 +345,10 @@ class Header extends React.Component {
                         </div>
                       </div>
                     </li>
-                    <li id='m_quick_sidebar_toggle' className='m-nav__item'>
-                      <a href='#' className='m-nav__link m-dropdown__toggle'>
-                        <span className='m-nav__link-icon'>
-                          <i className='flaticon-grid-menu' />
-                        </span>
-                      </a>
-                    </li>
+
+                    <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
+                                        Documentation
+                      </li>
                   </ul>
                 </div>
               </div>

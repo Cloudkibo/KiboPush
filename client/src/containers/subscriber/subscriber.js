@@ -158,21 +158,26 @@ class Subscriber extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <h3>Subscribers</h3>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
-                    style={{float: 'right'}}>Invite Subscribers</Link>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Subscribers</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <h3>Subscribers</h3>
+                  <div className='ui-block'>
+                    <div className='birthday-item inline-items badges'>
+                      <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
+                        style={{float: 'right'}}>Invite Subscribers</Link>
 
-                  { this.props.subscribers && this.props.subscribers.length > 0
+                      { this.props.subscribers && this.props.subscribers.length > 0
                   ? <div className='table-responsive'>
                     <form>
                       <div className='form-row'>
@@ -255,11 +260,13 @@ class Subscriber extends React.Component {
                     <p> No data to display </p>
                   </div>
                 }
+                    </div>
+                  </div>
+
                 </div>
+
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
