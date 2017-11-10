@@ -31,7 +31,7 @@ class Reports extends React.Component {
                     <CartesianGrid strokeDasharray='3 3' />
                     <Tooltip />
                     <Legend />
-                    <Line type='monotone' dataKey='chats' stroke='#8884d8' activeDot={{r: 8}} />
+                    <Line type='monotone' dataKey='count' stroke='#8884d8' activeDot={{r: 8}} />
                   </LineChart>
                 </div>
               </div>

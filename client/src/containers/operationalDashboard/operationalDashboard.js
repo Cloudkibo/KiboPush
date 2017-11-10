@@ -56,7 +56,8 @@ class OperationalDashboard extends React.Component {
         { date: '1 JAN', month: 'feb', year: '2017', chats: 9 },
         { date: '2 JAN', month: 'feb', year: '2017', chats: 2 },
         { date: '3 JAN', month: 'feb', year: '2017', chats: 11 }
-      ]
+      ],
+      chartData: []
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
@@ -73,6 +74,7 @@ class OperationalDashboard extends React.Component {
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
+    this.prepareLineCharData = this.prepareLineCharData.bind(this)
   }
 
   componentDidMount () {
@@ -154,8 +156,26 @@ class OperationalDashboard extends React.Component {
       console.log('top pages Updated', nextProps.toppages)
     }
     if (nextProps.chatsGraphData) {
-      console.log('Chart Graph Data', nextProps.chatsGraphData)
+      console.log('Chart Graph Data', nextProps.chatsGraphData.chatsGraphInfo)
+      var graphInfo = nextProps.chatsGraphData.chatsGraphInfo
+      if (graphInfo.broadcastsgraphdata.length > 0) {
+        var dataChart = this.prepareLineCharData(graphInfo.broadcastsgraphdata)
+        console.log(dataChart)
+        this.setState({chartData: dataChart})
+      }
     }
+  }
+  prepareLineCharData (data) {
+    var dataChart = []
+    var records = data
+    records.map((record) => {
+      var recordId = record._id
+      var date = recordId.day + '/' + recordId.month + '/' + recordId.year
+      var count = record.count
+      var chartRecord = { date: date, count: count }
+      dataChart.push(chartRecord)
+    })
+    return dataChart
   }
 
   goToBroadcasts (user) {
@@ -329,7 +349,7 @@ class OperationalDashboard extends React.Component {
                   iconClassName={'fa fa-facebook'}
                   title={'Reports'}
                   hideContent={this.hideContent}
-                  lineChartData={this.state.lineChartData}
+                  lineChartData={this.state.chartData}
                 />
                 : <ListItem iconClassName={'fa fa-facebook'} title={'Reports'} showContent={this.showContent} />
               }
