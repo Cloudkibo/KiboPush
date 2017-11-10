@@ -12,7 +12,8 @@ const initialState = {
   currentPage: null,
   currentSurvey: null,
   currentPoll: null,
-  pollDetails: null
+  pollDetails: null,
+  chatsGraphInfo: []
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -171,6 +172,17 @@ export function getCurrentPoll (state = initialState, action) {
       console.log('getCurrentPoll', action.data)
       return Object.assign({}, state, {
         currentPoll: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function chatsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_CHATS_GRAPH:
+      return Object.assign({}, state, {
+        chatsGraphInfo: action.data
       })
 
     default:
