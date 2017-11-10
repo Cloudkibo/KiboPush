@@ -247,7 +247,7 @@ class Sidebar extends Component {
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
-        <div id='m_aside_left' className='m-grid__item	m-aside-left  m-aside-left--skin-dark '>
+        <div id='m_aside_left' className='m-grid__item	m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + 'vh'}}>
           <div
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
@@ -255,43 +255,33 @@ class Sidebar extends Component {
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'
 		>
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-              <li className='m-menu__item  m-menu__item--active' aria-haspopup='true' >
-                <a href='index.html' className='m-menu__link '>
-                  <i className='m-menu__link-icon flaticon-line-graph' />
-                  <span className='m-menu__link-title'>
-                    <span className='m-menu__link-wrap'>
-                      <span className='m-menu__link-text'>
-												Dashboard
-											</span>
-                      <span className='m-menu__link-badge'>
-                        <span className='m-badge m-badge--danger'>
-													2
-												</span>
-                      </span>
-                    </span>
-                  </span>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <a href='#' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-squares-4' />
+                  <span className='m-menu__link-text'>
+										Dashboard
+									</span>
                 </a>
               </li>
               <li className='m-menu__section'>
                 <h4 className='m-menu__section-text'>
-									Components
+									Actions
 								</h4>
                 <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-layers' />
+                  <i className='m-menu__link-icon flaticon-users' />
                   <span className='m-menu__link-text'>
-										Base
+										Subscribers
 									</span>
-                  <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-share' />
+                  <i className='m-menu__link-icon flaticon-rocket' />
                   <span className='m-menu__link-text'>
-										Icons
+										Growth Tools
 									</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
@@ -304,7 +294,7 @@ class Sidebar extends Component {
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
-													Flaticon
+													Customer Matching
 												</span>
                       </a>
                     </li>
@@ -314,7 +304,7 @@ class Sidebar extends Component {
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
-													Fontawesome
+													Subscribe to Messenger
 												</span>
                       </a>
                     </li>
@@ -324,17 +314,7 @@ class Sidebar extends Component {
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
-													Lineawesome
-												</span>
-                      </a>
-                    </li>
-                    <li className='m-menu__item ' aria-haspopup='true' >
-                      <a href='components/icons/socicons.html' className='m-menu__link '>
-                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                          <span />
-                        </i>
-                        <span className='m-menu__link-text'>
-													Socicons
+													Send Page Invites
 												</span>
                       </a>
                     </li>
@@ -343,67 +323,123 @@ class Sidebar extends Component {
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-multimedia-1' />
+                  <i className='m-menu__link-icon flaticon-chat-1' />
                   <span className='m-menu__link-text'>
-										Buttons
+										Live Chat
 									</span>
-                  <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
               </li>
 
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-network' />
+                  <i className='m-menu__link-icon flaticon-paper-plane' />
                   <span className='m-menu__link-text'>
-										Widgets
+										Broadcasting
 									</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
-
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  <ul className='m-menu__subnav'>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/flaticon.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Broadcasts
+												</span>
+                      </a>
+                    </li>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/fontawesome.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Surveys
+												</span>
+                      </a>
+                    </li>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/lineawesome.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Polls
+												</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </li>
+
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-calendar' />
+                  <i className='m-menu__link-icon flaticon-share' />
                   <span className='m-menu__link-text'>
-										Calendar
+										Automation
 									</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
-
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-diagram' />
-                  <span className='m-menu__link-text'>
-										Charts
-									</span>
-                  <i className='m-menu__ver-arrow la la-angle-right' />
-                </a>
-
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  <ul className='m-menu__subnav'>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/flaticon.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Autoposting
+												</span>
+                      </a>
+                    </li>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/fontawesome.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Workflows
+												</span>
+                      </a>
+                    </li>
+                    <li className='m-menu__item ' aria-haspopup='true' >
+                      <a href='components/icons/lineawesome.html' className='m-menu__link '>
+                        <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                          <span />
+                        </i>
+                        <span className='m-menu__link-text'>
+													Messenger Menu
+												</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </li>
 
               <li className='m-menu__section'>
                 <h4 className='m-menu__section-text'>
-									Snippets
+									Settings
 								</h4>
                 <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-interface-3' />
+                  <i className='m-menu__link-icon flaticon-add' />
                   <span className='m-menu__link-text'>
-										General
+										Pages
 									</span>
-                  <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-suitcase' />
+                  <i className='m-menu__link-icon flaticon-info' />
                   <span className='m-menu__link-text'>
-										Custom Pages
+										User Guide
 									</span>
-                  <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
               </li>
             </ul>

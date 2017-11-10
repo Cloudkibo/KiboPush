@@ -74,14 +74,13 @@ class AddPage extends React.Component {
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-        </div>
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
-              <h3>Add Pages</h3>
-              {this.state.showAlert === true &&
+          <div className='container'>
+            <br /><br /><br /><br /><br /><br />
+            <div className='row'>
+              <main
+                className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
+                <h3>Add Pages</h3>
+                {this.state.showAlert === true &&
                 <center>
                   <Alert type='danger' timeout={this.state.timeout}
                     onDismiss={this.onDismissAlert.bind(this)}>
@@ -90,7 +89,7 @@ class AddPage extends React.Component {
                 </center>
 
                     }
-              {
+                {
                 (this.props.otherPages) &&
                 this.props.otherPages.map((page, i) => (
                   <div className='ui-block'>
@@ -115,11 +114,12 @@ class AddPage extends React.Component {
                   </div>
                 ))
               }
-              <button onClick={() => this.gotoView()}
-                className='btn btn-sm bg-blue'>Done
+                <button onClick={() => this.gotoView()}
+                  className='btn btn-sm bg-blue'>Done
               </button>
-            </main>
+              </main>
 
+            </div>
           </div>
         </div>
       </div>
