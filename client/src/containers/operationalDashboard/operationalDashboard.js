@@ -20,7 +20,9 @@ import {
   loadTopPages,
   saveUserInformation,
   downloadFile,
-  loadChatsGraphData
+  loadBroadcastsGraphData,
+  loadPollsGraphData,
+  loadSurveysGraphData
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -61,7 +63,9 @@ class OperationalDashboard extends React.Component {
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
-    props.loadChatsGraphData(0)
+    props.loadBroadcastsGraphData(0)
+    props.loadPollsGraphData(0)
+    props.loadSurveysGraphData(0)
     props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -155,14 +159,20 @@ class OperationalDashboard extends React.Component {
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
     }
-    if (nextProps.chatsGraphData) {
-      console.log('Chart Graph Data', nextProps.chatsGraphData.chatsGraphInfo)
-      var graphInfo = nextProps.chatsGraphData.chatsGraphInfo
+    if (nextProps.broadcastsGraphData) {
+      console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
+      var graphInfo = nextProps.broadcastsGraphData.broadcastsGraphInfo
       if (graphInfo.broadcastsgraphdata.length > 0) {
         var dataChart = this.prepareLineCharData(graphInfo.broadcastsgraphdata)
         console.log(dataChart)
         this.setState({chartData: dataChart})
       }
+    }
+    if (nextProps.pollsGraphData) {
+      console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
+    }
+    if (nextProps.surveysGraphData) {
+      console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
     }
   }
   prepareLineCharData (data) {
@@ -172,7 +182,7 @@ class OperationalDashboard extends React.Component {
       var recordId = record._id
       var date = recordId.day + '/' + recordId.month + '/' + recordId.year
       var count = record.count
-      var chartRecord = { date: date, count: count }
+      var chartRecord = { date: date, broadcastscount: count }
       dataChart.push(chartRecord)
     })
     return dataChart
@@ -346,12 +356,12 @@ class OperationalDashboard extends React.Component {
               {
                 this.state.showReports
                 ? <Reports
-                  iconClassName={'fa fa-facebook'}
+                  iconClassName={'fa fa-line-chart'}
                   title={'Reports'}
                   hideContent={this.hideContent}
                   lineChartData={this.state.chartData}
                 />
-                : <ListItem iconClassName={'fa fa-facebook'} title={'Reports'} showContent={this.showContent} />
+                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
               }
               {
                 this.state.showUsers
@@ -490,7 +500,9 @@ function mapStateToProps (state) {
     currentUser: (state.getCurrentUser.currentUser),
     dataobjects: (state.dataObjectsInfo.dataobjects),
     toppages: (state.topPagesInfo.toppages),
-    chatsGraphData: (state.chatsGraphInfo)
+    broadcastsGraphData: (state.broadcastsGraphInfo),
+    pollsGraphData: (state.pollsGraphInfo),
+    surveysGraphData: (state.surveysGraphInfo)
   }
 }
 
@@ -500,7 +512,9 @@ function mapDispatchToProps (dispatch) {
     loadTopPages: loadTopPages,
     saveUserInformation: saveUserInformation,
     downloadFile: downloadFile,
-    loadChatsGraphData: loadChatsGraphData},
+    loadBroadcastsGraphData: loadBroadcastsGraphData,
+    loadSurveysGraphData: loadSurveysGraphData,
+    loadPollsGraphData: loadPollsGraphData},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)

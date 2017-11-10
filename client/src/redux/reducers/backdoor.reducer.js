@@ -13,7 +13,9 @@ const initialState = {
   currentSurvey: null,
   currentPoll: null,
   pollDetails: null,
-  chatsGraphInfo: []
+  broadcastsGraphInfo: [],
+  surveysGraphInfo: [],
+  pollsGraphInfo: []
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -178,11 +180,33 @@ export function getCurrentPoll (state = initialState, action) {
       return state
   }
 }
-export function chatsGraphInfo (state = initialState, action) {
+export function surveysGraphInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.UPDATE_CHATS_GRAPH:
+    case ActionTypes.UPDATE_SURVEYS_GRAPH:
       return Object.assign({}, state, {
-        chatsGraphInfo: action.data
+        surveysGraphInfo: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function pollsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_POLLS_GRAPH:
+      return Object.assign({}, state, {
+        pollsGraphInfo: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function broadcastsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_BROADCASTS_GRAPH:
+      return Object.assign({}, state, {
+        broadcastsGraphInfo: action.data
       })
 
     default:
