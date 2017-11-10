@@ -44,6 +44,7 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
+    var datatable = $('#m_datatable').mDatatable({})
   }
 
   searchSubscriber (event) {
@@ -248,58 +249,41 @@ class Subscriber extends React.Component {
                       </div>
 
                       { this.props.subscribers && this.props.subscribers.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded'>
-                    {
-                      this.state.subscribersData && this.state.subscribersData.length > 0
-                      ? <div>
-                        <table className='m-datatable__table'>
-                          <thead className='m-datatable__head'>
-                            <tr className="m-datatable__row">
-                              <th className="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort">Profile Picture</th>
-                              <th className="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort">Name</th>
-                              <th className="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort">Page</th>
-                              <th className="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort">Locale</th>
-                              <th className="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort">Gender</th>
-                            </tr>
-                          </thead>
-                          <tbody className="m-datatable__body">
-                            {
+                  ? <div id='m_datatable'>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Profile Picture</th>
+                          <th>Name</th>
+                          <th>Page</th>
+                          <th>Locale</th>
+                          <th>Gender</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
                               this.state.subscribersData.map((subscriber, i) => (
-                                <tr className="m-datatable__row m-datatable__row--even">
-                                  <td className="m-datatable__cell--center m-datatable__cell">
+                                <tr>
+                                  <td>
                                     <img alt='pic'
                                       src={(subscriber.profilePic) ? subscriber.profilePic : ''}
                                       className='img-circle' width='60' height='60'
                                     />
                                   </td>
-                                  <td className="m-datatable__cell--center m-datatable__cell">{subscriber.firstName} {subscriber.lastName}</td>
-                                  <td className="m-datatable__cell--center m-datatable__cell">{subscriber.pageId.pageName}</td>
-                                  <td className="m-datatable__cell--center m-datatable__cell">{subscriber.locale}</td>
-                                  <td className="m-datatable__cell--center m-datatable__cell">{subscriber.gender}</td>
+                                  <td>{subscriber.firstName} {subscriber.lastName}</td>
+                                  <td>{subscriber.pageId.pageName}</td>
+                                  <td>{subscriber.locale}</td>
+                                  <td>{subscriber.gender}</td>
                                 </tr>
                               ))
                             }
-                          </tbody>
-                        </table>
-                        <ReactPaginate previousLabel={'previous'}
-                          nextLabel={'next'}
-                          breakLabel={<a>...</a>}
-                          breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 4)}
-                          marginPagesDisplayed={1}
-                          pageRangeDisplayed={3}
-                          onPageChange={this.handlePageClick}
-                          containerClassName={'pagination'}
-                          subContainerClassName={'pages pagination'}
-                          activeClassName={'active'} />
-                      </div>
+                      </tbody>
+                    </table>
+
+                  </div>
                       : <p> No search results found. </p>
                     }
-                  </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
+
                     </div>
                   </div>
 
