@@ -264,7 +264,7 @@ class Subscriber extends React.Component {
                   ? 
                       <tbody>
                         {
-                              this.state.subscribersData.map((subscriber, i) => (
+                              this.props.subscribers.map((subscriber, i) => (
                                 <tr>
                                   <td>
                                     <img alt='pic'
