@@ -65,7 +65,22 @@ export function updatePagesList (data) {
     data: data.payload
   }
 }
+export function updateChatsGraph (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_CHATS_GRAPH,
+    data
+  }
+}
 
+export function loadChatsGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadChatsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/broadcastsGraph/${days}`)
+      .then(res => dispatch(updateChatsGraph(res.payload)))
+  }
+}
 export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
   console.log('loadPagesList called', id)
