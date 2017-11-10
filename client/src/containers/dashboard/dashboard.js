@@ -21,7 +21,7 @@ import GettingStarted from './gettingStarted'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -44,6 +44,15 @@ class Dashboard extends React.Component {
       {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
       {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
       {name: 'Page G', uv: 3490, pv: 4300, amt: 2100}
+      ],
+      lineChartData: [
+        { date: '21 FEB', month: 'feb', year: '2017', chats: 10 },
+        { date: '22 FEB', month: 'feb', year: '2017', chats: 12 },
+        { date: '29 FEB', month: 'feb', year: '2017', chats: 20 },
+        { date: '30 FEB', month: 'feb', year: '2017', chats: 11 },
+        { date: '1 JAN', month: 'feb', year: '2017', chats: 9 },
+        { date: '2 JAN', month: 'feb', year: '2017', chats: 2 },
+        { date: '3 JAN', month: 'feb', year: '2017', chats: 11 }
       ]
     }
 
@@ -59,7 +68,7 @@ class Dashboard extends React.Component {
     console.log('NextProps :', nextprops)
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-      browserHistory.push('/addPages')
+      //browserHistory.push('/addPages')
     } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
       // this means more than 0 subscribers
       console.log('More than 0 subscribers')
@@ -404,6 +413,17 @@ class Dashboard extends React.Component {
                       <Bar dataKey='Likes' fill='#8884d8' />
                       <Bar dataKey='Subscribers' fill='#82ca9d' />
                     </BarChart>
+                  </div>
+                  <div className='birthday-item inline-items badges'>
+                    <LineChart width={600} height={300} data={this.state.lineChartData}
+                      margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                      <XAxis dataKey='date' />
+                      <YAxis />
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <Tooltip />
+                      <Legend />
+                      <Line type='monotone' dataKey='chats' stroke='#8884d8' activeDot={{r: 8}} />
+                    </LineChart>
                   </div>
                 </div>
               </main>
