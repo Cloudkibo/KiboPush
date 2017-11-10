@@ -44,8 +44,9 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
-    var datatable = $('#m_datatable').mDatatable({})
+    var datatable = $('#m_datatable').mDatatable()
   }
+
 
   searchSubscriber (event) {
     var filtered = []
@@ -248,9 +249,8 @@ class Subscriber extends React.Component {
                         </div>
                       </div>
 
-                      { this.props.subscribers && this.props.subscribers.length > 0
-                  ? <div id='m_datatable'>
-                    <table>
+                    <div>
+                    <table id='m_datatable'>
                       <thead>
                         <tr>
                           <th>Profile Picture</th>
@@ -260,6 +260,8 @@ class Subscriber extends React.Component {
                           <th>Gender</th>
                         </tr>
                       </thead>
+                        { this.props.subscribers && this.props.subscribers.length > 0
+                  ? 
                       <tbody>
                         {
                               this.state.subscribersData.map((subscriber, i) => (
@@ -277,12 +279,12 @@ class Subscriber extends React.Component {
                                 </tr>
                               ))
                             }
-                      </tbody>
+                        </tbody> : "" 
+                      }
                     </table>
 
                   </div>
-                      : <p> No search results found. </p>
-                    }
+                    
 
                     </div>
                   </div>
