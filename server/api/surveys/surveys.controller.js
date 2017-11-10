@@ -9,7 +9,7 @@ const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const SurveyPage = require('../page_survey/page_survey.model')
 const TAG = 'api/surveys/surveys.controller.js'
-//  const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
 let _ = require('lodash')
 
@@ -64,7 +64,8 @@ exports.create = function (req, res) {
   let surveyPayload = {
     title: req.body.survey.title,
     description: req.body.survey.description,
-    userId: req.user._id
+    userId: req.user._id,
+    isresponded: 0
   }
   if (req.body.isSegmented) {
     surveyPayload.isSegmented = true
@@ -274,6 +275,7 @@ exports.submitresponse = function (req, res) {
     })
   }
   //  Surveys.update({ _id: mongoose.Types.ObjectId(req.body.surveyId) }, { $set: { isresponded: true } })
+  Surveys.update({_id: mongoose.Types.ObjectId(req.body.surveyId)}, {$inc: {isresponded: 1}})
   return res.status(200)
     .json({status: 'success', payload: 'Response submitted successfully'})
 }
