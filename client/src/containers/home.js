@@ -17,9 +17,7 @@ class Home extends Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
         <Sidebar />
-        <Responsive />
         <Dashboard />
       </div>
     )

@@ -12,6 +12,7 @@ class Login extends React.Component {
     log(TAG, 'Login Container Mounted')
   }
   render () {
+    console.log('In Login JS')
     return (
       <div className='landing-page'>
         <title>Landing Page</title>

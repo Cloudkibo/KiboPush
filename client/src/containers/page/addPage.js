@@ -72,9 +72,9 @@ class AddPage extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+        </div>
         <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='row'>
