@@ -155,7 +155,6 @@ class Subscriber extends React.Component {
   }
 
   render () {
-    console.log('Subscriber Data', this.state.subscribersData)
 
     return (
       <div>
@@ -171,6 +170,14 @@ class Subscriber extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+            <div className="m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30" role="alert">
+                <div className="m-alert__icon">
+                  <i className="flaticon-technology m--font-accent"></i>
+                </div>
+                <div className="m-alert__text">
+                  Learn how you can get more subscribers.
+                </div>
+              </div>
               <div className='row'>
                 <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
                   <div className='m-portlet m-portlet--mobile'>
@@ -269,13 +276,13 @@ class Subscriber extends React.Component {
                                   <td>
                                     <img alt='pic'
                                       src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                      className='img-circle' width='60' height='60'
+                                      className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                     />
                                   </td>
                                   <td>{subscriber.firstName} {subscriber.lastName}</td>
                                   <td>{subscriber.pageId.pageName}</td>
-                                  <td>{subscriber.locale}</td>
-                                  <td>{subscriber.gender}</td>
+                                  <td><span className="m-badge m-badge--brand m-badge--wide">{subscriber.locale}</span></td>
+                                  <td><span className="m-badge m-badge--brand m-badge--wide">{subscriber.gender}</span></td>
                                 </tr>
                               ))
                             }
