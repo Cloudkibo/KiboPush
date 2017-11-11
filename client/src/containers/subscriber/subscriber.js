@@ -44,7 +44,14 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
-    var datatable = $('#m_datatable').mDatatable()
+    var datatable = $('#m_datatable').mDatatable({ 
+      pagination: true,
+      search: {
+        // search delay in milliseconds
+        delay: 400,
+        // input text for search
+        input: $('#generalSearch'),
+      },})
   }
 
 
@@ -281,8 +288,8 @@ class Subscriber extends React.Component {
                                   </td>
                                   <td>{subscriber.firstName} {subscriber.lastName}</td>
                                   <td>{subscriber.pageId.pageName}</td>
-                                  <td><span className="m-badge m-badge--brand m-badge--wide">{subscriber.locale}</span></td>
-                                  <td><span className="m-badge m-badge--brand m-badge--wide">{subscriber.gender}</span></td>
+                                  <td><span className="m-badge m-badge--brand" style={{color: white}}>{subscriber.locale}</span></td>
+                                  <td><span className="m-badge m-badge--brand" style={{color: white}}>{subscriber.gender}</span></td>
                                 </tr>
                               ))
                             }
