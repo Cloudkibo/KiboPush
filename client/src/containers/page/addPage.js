@@ -107,41 +107,39 @@ class AddPage extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       <div className='m-widget4'>
-                       {
+                        {
                 (this.props.otherPages) &&
                 this.props.otherPages.map((page, i) => (
 
                   <div className='m-widget4__item'>
-                          <div className='m-widget4__img m-widget4__img--icon'>
-                            <img src={page.pagePic} width={60} height={60} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                          </div>
-                          <div className='m-widget4__info'>
-                            <span className='m-widget4__text'>
-                                {page.pageName}
-                                </span>
-                          </div>
-                          <div className='m-widget4__ext'>
-                          {(page.connected) &&
-                            
-                            <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
-                              <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
-                            </a>
-                            }
-                            {(!page.connected) &&
+                    <div className='m-widget4__img m-widget4__img--icon'>
+                      <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                    </div>
+                    <div className='m-widget4__info'>
+                      <span className='m-widget4__text'>
+                        {page.pageName}
+                      </span>
+                    </div>
+                    <div className='m-widget4__ext'>
+                      {(page.connected) &&
 
-                            <a href='#'  onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
-                              <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                            </a>
-                  
+                      <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                        <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                      </a>
                             }
-                            
-                          </div>
-                        </div>
+                      {(!page.connected) &&
+
+                      <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                        <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                      </a>
+
+                            }
+
+                    </div>
+                  </div>
                 ))
               }
 
-                        
-                       
                       </div>
                     </div>
                   </div>

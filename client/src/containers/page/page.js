@@ -200,8 +200,8 @@ class Page extends React.Component {
                         <div className='m-portlet__head-caption'>
                           <div className='m-portlet__head-title'>
                             <span className='m-portlet__head-icon'>
-                            <i className='flaticon-calendar' />
-                          </span>
+                              <i className='flaticon-calendar' />
+                            </span>
                             <h3 className='m-portlet__head-text m--font-primary'>
                             Pages
                           </h3>
@@ -211,10 +211,10 @@ class Page extends React.Component {
                         <div className='m-portlet__head-tools'>
                           <ul className='m-portlet__nav'>
                             <li className='m-portlet__nav-item'>
-                            <Link to='/addPages' className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                              <Link to='/addPages' className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
                     Add Pages
                   </Link>
-                          </li>
+                            </li>
 
                           </ul>
                         </div>
@@ -244,11 +244,11 @@ class Page extends React.Component {
                         <div className='row align-items-center'>
                           <div className='col-xl-4 col-lg-4 col-md-4'>
                             <div className='m-input-icon m-input-icon--left'>
-                            <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
-                            <span className='m-input-icon__icon m-input-icon__icon--left'>
-                              <span><i className='la la-search' /></span>
-                            </span>
-                          </div>
+                              <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -256,23 +256,23 @@ class Page extends React.Component {
 
                           <table id='m_datatable'>
                             <thead>
-                            <tr>
-                              <th>Page Pic</th>
-                              <th>Page Name</th>
-                              <th>Likes</th>
-                              <th>Subscribers</th>
-                              <th>Actions</th>
-                            </tr>
-                          </thead>
+                              <tr>
+                                <th>Page Pic</th>
+                                <th>Page Name</th>
+                                <th>Likes</th>
+                                <th>Subscribers</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
                             <tbody>
 
-                            { this.props.pages && this.props.pages.length > 0 &&
+                              { this.props.pages && this.props.pages.length > 0 &&
                         this.props.pages.map((page, i) => (
                           (page.connected &&
                             <tr>
                               <td><img alt='pic'
                                 src={(page.pagePic) ? page.pagePic : ''}
-                                className='img-rounded' width='60' height='60' /></td>
+                                className='m--img-rounded m--marginless m--img-centered' /></td>
                               <td>{page.pageName}</td>
                               <td>{page.likes}</td>
                               <td>{page.subscribers}</td>
@@ -296,7 +296,7 @@ class Page extends React.Component {
                         ))
                       }
 
-                          </tbody>
+                            </tbody>
                           </table>
                         </div>
 

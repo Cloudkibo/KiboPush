@@ -322,9 +322,9 @@ class Header extends React.Component {
                       </div>
                     </li>
 
-                    <li  className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                                       <a href="http://kibopush.com/user-guide/" style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
-                      </li>
+                    <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
+                      <a href='http://kibopush.com/user-guide/' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                    </li>
                   </ul>
                 </div>
               </div>

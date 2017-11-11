@@ -122,37 +122,69 @@ class Broadcast extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-
-                {
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              {
                   this.props.subscribers &&
                   this.props.subscribers.length === 0 &&
-                  <div style={{padding: '10px'}}>
-                    <center>
-                      <Alert type='info' headline='0 Subscribers'>
-                        Your connected pages have zero subscribers. Unless you
-                        do not have any subscriber, you will not be able to
-                        broadcast message, polls and surveys.
-                        To invite subscribers click <Link
-                          to='/invitesubscribers'
-                          style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                      </Alert>
-                    </center>
-                  </div>
-                }
-                <br />
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you don't
+                    have any subscriber, you will not be able to broadcast
+                    message, polls and surveys.
+                    Lets invite subscribers first. Dont worry, we will guide
+                    you on how you can invite subscribers.
+                    Click on 'Invite Subscribers' button on right side of the
+                    page title.
 
-                <div className='birthday-item inline-items badges'>
-                  <h3>Broadcasts</h3>
-                  {
+                  </div>
+            }
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding broadcasts? <a href='#'>Click Here </a>
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Broadcasts
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='m-portlet__body'>
+
+                      <div className='row align-items-center'>
+                        <div className='col-md-4'>
+                          <div className='m-input-icon m-input-icon--left'>
+                            <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                            <span><i className='la la-search' /></span>
+                          </span>
+                          </div>
+                        </div>
+                        <div className='col-xl-4 col-md-4' />
+                        <div className='col-xl-4 order-1 col-md-4 order-xl-2 m--align-right'>
+                          {
                     this.props.subscribers && this.props.subscribers.length === 0
 
                       ? <Link to='createbroadcast' className='pull-right'>
@@ -166,7 +198,11 @@ class Broadcast extends React.Component {
                       </button>
                       </Link>
                   }
-                  { this.state.broadcastsData && this.state.broadcastsData.length > 0
+
+                        </div>
+                      </div>
+
+                      { this.state.broadcastsData && this.state.broadcastsData.length > 0
                     ? <div className='table-responsive'>
                       <table className='table table-striped'>
                         <thead>
@@ -210,7 +246,7 @@ class Broadcast extends React.Component {
                     <p> No data to display </p>
                   </div>
                 }
-                  {
+                      {
                     this.state.alertMessage !== '' &&
                     <center>
                       <Alert type={this.state.type}>
@@ -218,11 +254,13 @@ class Broadcast extends React.Component {
                       </Alert>
                     </center>
                   }
+                    </div>
+                  </div>
+
                 </div>
+
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
