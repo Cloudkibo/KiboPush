@@ -267,10 +267,10 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <img src={this.props.user.profilePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <img src={(this.props.user) ? this.props.user.profilePic : ""} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
-													{this.props.user.name}
+													{(this.props.user) ? this.props.user.name : "Richard Hennricks"}
 												</span>
                       </a>
                       <div className='m-dropdown__wrapper'>
