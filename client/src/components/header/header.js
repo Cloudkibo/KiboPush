@@ -294,7 +294,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a href='#' className='m-nav__link'>
+                                  <a href='http://kibopush.com/faq/' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>
 																			FAQ
@@ -322,8 +322,8 @@ class Header extends React.Component {
                       </div>
                     </li>
 
-                    <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                                        Documentation
+                    <li  className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
+                                       <a href="http://kibopush.com/user-guide/" style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                       </li>
                   </ul>
                 </div>

@@ -107,51 +107,41 @@ class AddPage extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       <div className='m-widget4'>
-                        <div className='m-widget4__item'>
+                       {
+                (this.props.otherPages) &&
+                this.props.otherPages.map((page, i) => (
+
+                  <div className='m-widget4__item'>
                           <div className='m-widget4__img m-widget4__img--icon'>
-                            <img src='assets/app/media/img/files/javascript.svg' alt='' />
+                            <img src={page.pagePic} width={60} height={60} className='m--img-rounded m--marginless m--img-centered' alt='' />
                           </div>
                           <div className='m-widget4__info'>
                             <span className='m-widget4__text'>
-                                Make JS Great Again
+                                {page.pageName}
                                 </span>
                           </div>
                           <div className='m-widget4__ext'>
-                            <a href='#' className='m-widget4__icon'>
-                              <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                            </a>
-                          </div>
-                        </div>
-                        <div className='m-widget4__item'>
-                          <div className='m-widget4__img m-widget4__img--icon'>
-                            <img src='assets/app/media/img/files/zip.svg' alt='' />
-                          </div>
-                          <div className='m-widget4__info'>
-                            <span className='m-widget4__text'>
-                                Download Ziped version OF 5.0
-                                </span>
-                          </div>
-                          <div className='m-widget4__ext'>
-                            <a href='#' className='m-widget4__icon'>
+                          {(page.connected) &&
+                            
+                            <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
                               <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                             </a>
-                          </div>
-                        </div>
-                        <div className='m-widget4__item'>
-                          <div className='m-widget4__img m-widget4__img--icon'>
-                            <img src='assets/app/media/img/files/pdf.svg' alt='' />
-                          </div>
-                          <div className='m-widget4__info'>
-                            <span className='m-widget4__text'>
-                                Finance Report 2016/2017
-                                </span>
-                          </div>
-                          <div className='m-widget4__ext'>
-                            <a href='#' className='m-widget4__icon'>
+                            }
+                            {(!page.connected) &&
+
+                            <a href='#'  onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
                               <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                             </a>
+                  
+                            }
+                            
                           </div>
                         </div>
+                ))
+              }
+
+                        
+                       
                       </div>
                     </div>
                   </div>
