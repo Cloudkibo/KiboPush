@@ -78,6 +78,15 @@ class Page extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    var datatable = $('#m_datatable').mDatatable({
+      pagination: true,
+      paging: true,
+      search: {
+      // search delay in milliseconds
+        delay: 400,
+      // input text for search
+        input: $('#generalSearch')
+      }})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -147,13 +156,18 @@ class Page extends React.Component {
     return (
       <div>
         <Header />
-        <Sidebar />
-        <div className='container'>
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                {
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Pages</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              {
                   this.props.subscribers &&
                   this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
@@ -168,12 +182,45 @@ class Page extends React.Component {
 
                   </div>
                 }
-                <br />
-                <div className='birthday-item inline-items badges'>
-                  <h3>Pages</h3>
-                  <Link to='/addPages' className='btn btn-primary btn-sm'
-                    style={{float: 'right'}}>Add Pages</Link>
-                  {
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in configuring your pages? <a href='#'>Click Here </a>
+                  <br />
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <span className='m-portlet__head-icon'>
+                            <i className='flaticon-calendar' />
+                          </span>
+                            <h3 className='m-portlet__head-text m--font-primary'>
+                            Pages
+                          </h3>
+                          </div>
+
+                        </div>
+                        <div className='m-portlet__head-tools'>
+                          <ul className='m-portlet__nav'>
+                            <li className='m-portlet__nav-item'>
+                            <Link to='/addPages' className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                    Add Pages
+                  </Link>
+                          </li>
+
+                          </ul>
+                        </div>
+
+                      </div>
+                      {
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -192,30 +239,35 @@ class Page extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                   }
-                  { this.props.pages && this.props.pages.length
-                  ? <div className='table-responsive'>
-                    <div>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search Pages' className='form-control' onChange={this.searchPages} />
-                    </div>
-                    {
-                      this.state.pagesData && this.state.pagesData.length > 0
-                    ? <div>
+                      <div className='m-portlet__body'>
 
-                      <table className='table table-striped'>
-                        <thead>
-                          <tr>
-                            <th>Page Pic</th>
-                            <th>Page Name</th>
-                            <th>Likes</th>
-                            <th>Subscribers</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-4 col-lg-4 col-md-4'>
+                            <div className='m-input-icon m-input-icon--left'>
+                            <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                              <span><i className='la la-search' /></span>
+                            </span>
+                          </div>
+                          </div>
+                        </div>
 
-                          {
-                        this.state.pagesData.map((page, i) => (
+                        <div>
+
+                          <table id='m_datatable'>
+                            <thead>
+                            <tr>
+                              <th>Page Pic</th>
+                              <th>Page Name</th>
+                              <th>Likes</th>
+                              <th>Subscribers</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                            <tbody>
+
+                            { this.props.pages && this.props.pages.length > 0 &&
+                        this.props.pages.map((page, i) => (
                           (page.connected &&
                             <tr>
                               <td><img alt='pic'
@@ -244,33 +296,18 @@ class Page extends React.Component {
                         ))
                       }
 
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 5)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                          </tbody>
+                          </table>
+                        </div>
+
+                      </div>
                     </div>
-                    : <p> No search results found. </p>
+                  </div>
 
-                }
-                  </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
                 </div>
+
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>

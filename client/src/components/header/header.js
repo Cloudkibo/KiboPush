@@ -267,11 +267,11 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <img src={(this.props.user) ? this.props.user.profilePic : ""} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
-													{(this.props.user) ? this.props.user.name : "Richard Hennricks"}
-												</span>
+                          {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                        </span>
                       </a>
                       <div className='m-dropdown__wrapper'>
                         <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
@@ -285,7 +285,7 @@ class Header extends React.Component {
 																	</span>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <Link to="/live" className='m-nav__link'>
+                                  <Link to='/live' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-chat-1' />
                                     <span className='m-nav__link-text'>
 																			Messages
@@ -311,7 +311,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a  onClick={() => {auth.logout()}} href='#' className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                  <a onClick={() => { auth.logout() }} href='#' className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
 																		Logout
 																	</a>
                                 </li>

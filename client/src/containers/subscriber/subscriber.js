@@ -44,17 +44,16 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
-    var datatable = $('#m_datatable').mDatatable({ 
+    var datatable = $('#m_datatable').mDatatable({
       pagination: true,
       paging: true,
       search: {
         // search delay in milliseconds
         delay: 400,
         // input text for search
-        input: $('#generalSearch'),
-      },})
+        input: $('#generalSearch')
+      }})
   }
-
 
   searchSubscriber (event) {
     var filtered = []
@@ -163,7 +162,6 @@ class Subscriber extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <Header />
@@ -178,11 +176,11 @@ class Subscriber extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-            <div className="m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30" role="alert">
-                <div className="m-alert__icon">
-                  <i className="flaticon-technology m--font-accent"></i>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
                 </div>
-                <div className="m-alert__text">
+                <div className='m-alert__text'>
                   Learn how you can get more subscribers.
                 </div>
               </div>
@@ -264,21 +262,20 @@ class Subscriber extends React.Component {
                         </div>
                       </div>
 
-                    <div>
-                    <table id='m_datatable'>
-                      <thead>
-                        <tr>
-                          <th>Profile Picture</th>
-                          <th>Name</th>
-                          <th>Page</th>
-                          <th>Locale</th>
-                          <th>Gender</th>
-                        </tr>
-                      </thead>
-                        { this.props.subscribers && this.props.subscribers.length > 0
-                  ? 
-                      <tbody>
-                        {
+                      <div>
+                        <table id='m_datatable'>
+                          <thead>
+                            <tr>
+                              <th>Profile Picture</th>
+                              <th>Name</th>
+                              <th>Page</th>
+                              <th>Locale</th>
+                              <th>Gender</th>
+                            </tr>
+                          </thead>
+                          { this.props.subscribers && this.props.subscribers.length > 0
+                  ? <tbody>
+                    {
                               this.props.subscribers.map((subscriber, i) => (
                                 <tr>
                                   <td>
@@ -289,17 +286,16 @@ class Subscriber extends React.Component {
                                   </td>
                                   <td>{subscriber.firstName} {subscriber.lastName}</td>
                                   <td>{subscriber.pageId.pageName}</td>
-                                  <td><span className="m-badge m-badge--brand" style={{color: 'white'}}>{subscriber.locale}</span></td>
-                                  <td><span className="m-badge m-badge--brand" style={{color: 'white'}}>{subscriber.gender}</span></td>
+                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.locale}</span></td>
+                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.gender}</span></td>
                                 </tr>
                               ))
                             }
-                        </tbody> : "" 
+                  </tbody> : ''
                       }
-                    </table>
+                        </table>
 
-                  </div>
-                    
+                      </div>
 
                     </div>
                   </div>

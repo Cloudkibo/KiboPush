@@ -427,12 +427,12 @@ class Sidebar extends Component {
                 <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <a href='#' className='m-menu__link m-menu__toggle'>
+                <Link to='/pages' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-add' />
                   <span className='m-menu__link-text'>
 										Pages
 									</span>
-                </a>
+                </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>

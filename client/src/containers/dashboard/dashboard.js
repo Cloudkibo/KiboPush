@@ -235,20 +235,6 @@ class Dashboard extends React.Component {
     console.log('props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-      <div className="m-content">
-        {
-          !(this.props.user && this.props.user.dashboardTourSeen) &&
-          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-        }
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-        {
-          this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
-          <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
-            <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
-              <GettingStarted pages={this.props.pages} />
-            </ModalDialog>
-          </ModalContainer>
-        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -256,168 +242,183 @@ class Dashboard extends React.Component {
             </div>
           </div>
         </div>
-        <div className='ui-block'>
-          <div className='ui-block-content'>
-            <div className='row'>
-              <div id='pages' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-primary'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-facebook fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.pages}</div>
-                        <div>Pages!</div>
+        <div className='m-content'>
+          {
+          !(this.props.user && this.props.user.dashboardTourSeen) &&
+          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+        }
+          <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+          {
+          this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
+          <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
+            <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
+              <GettingStarted pages={this.props.pages} />
+            </ModalDialog>
+          </ModalContainer>
+        }
+
+          <div className='ui-block'>
+            <div className='ui-block-content'>
+              <div className='row'>
+                <div id='pages' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-primary'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-facebook fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.pages}</div>
+                          <div>Pages!</div>
+                        </div>
                       </div>
                     </div>
+                    <Link to='/pages'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
                   </div>
-                  <Link to='/pages'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
+                </div>
+                <div id='subscribers' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-green'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-users fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
+                          <div>Subscribers!</div>
+                        </div>
+                      </div>
                     </div>
-                  </Link>
+                    <Link to='/subscribers'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div id='newMessages' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-yellow'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-comments fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.unreadCount}</div>
+                          <div>New Messages!</div>
+                        </div>
+                      </div>
+                    </div>
+                    <Link to='/live'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              <div id='subscribers' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-green'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-users fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
-                        <div>Subscribers!</div>
+              <div className='row'>
+                <div id='broadcasts' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-purple'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-bullhorn fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.activityChart.messages}</div>
+                          <div>Broadcasts!</div>
+                        </div>
                       </div>
                     </div>
+                    <Link to='/convos'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
                   </div>
-                  <Link to='/subscribers'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
+                </div>
+                <div id='polls' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-red'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-list fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.activityChart.polls}</div>
+                          <div>Polls!</div>
+                        </div>
+                      </div>
                     </div>
-                  </Link>
+                    <Link to='/poll'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div id='surveys' className='col-lg-4 col-md-12'>
+                  <div className='dashboard-panel dashboard-panel-grey'>
+                    <div className='dashboard-panel-heading'>
+                      <div className='row'>
+                        <div className='dashboard-col-xs-4'>
+                          <i className='fa fa-list-alt fa-5x' />
+                        </div>
+                        <div className='dashboard-col-xs-8 text-right'>
+                          <div className='dashboard-huge'>{this.props.dashboard.activityChart.surveys}</div>
+                          <div>Surveys!</div>
+                        </div>
+                      </div>
+                    </div>
+                    <Link to='/surveys'>
+                      <div className='panel-footer'>
+                        <span className='pull-left'>View Details</span>
+                        <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
+                        <div className='clearfix' />
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              <div id='newMessages' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-yellow'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-comments fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.unreadCount}</div>
-                        <div>New Messages!</div>
-                      </div>
+              <div className='row'>
+                <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='ui-block'>
+                    <div className='birthday-item inline-items badges'>
+                      <StackedBar sentseendata={this.state.sentseendata1} />
+                    </div>
+                    <div className='birthday-item inline-items badges'>
+                      <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
+                        <XAxis dataKey='Page' />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray='3 3' />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey='Likes' fill='#8884d8' />
+                        <Bar dataKey='Subscribers' fill='#82ca9d' />
+                      </BarChart>
                     </div>
                   </div>
-                  <Link to='/live'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
+                </main>
               </div>
-            </div>
-            <div className='row'>
-              <div id='broadcasts' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-purple'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-bullhorn fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.messages}</div>
-                        <div>Broadcasts!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/convos'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='polls' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-red'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-list fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.polls}</div>
-                        <div>Polls!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/poll'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='surveys' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-grey'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-list-alt fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.surveys}</div>
-                        <div>Surveys!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/surveys'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className='row'>
-              <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='ui-block'>
-                  <div className='birthday-item inline-items badges'>
-                    <StackedBar sentseendata={this.state.sentseendata1} />
-                  </div>
-                  <div className='birthday-item inline-items badges'>
-                    <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
-                      <XAxis dataKey='Page' />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray='3 3' />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey='Likes' fill='#8884d8' />
-                      <Bar dataKey='Subscribers' fill='#82ca9d' />
-                    </BarChart>
-                  </div>
-                </div>
-              </main>
             </div>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 }

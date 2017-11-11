@@ -8,6 +8,7 @@ import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import {
   addPages,
   enablePage,
@@ -97,9 +98,9 @@ class AddPage extends React.Component {
                       <div className='m-portlet__head-tools'>
                         <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                           <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link active' data-toggle='tab' href='#m_widget2_tab1_content' role='tab'>
+                            <Link to='/pages' className='nav-link m-tabs__link active' data-toggle='tab' role='tab'>
                                   View Connected Pages
-                                </a>
+                                </Link>
                           </li>
                         </ul>
                       </div>
