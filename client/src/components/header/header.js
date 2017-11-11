@@ -7,6 +7,7 @@ import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 class Header extends React.Component {
   componentWillMount () {
     this.props.getuserdetails()
@@ -266,10 +267,10 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <img src='assets/app/media/img/users/user4.jpg' className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <img src={this.props.user.profilePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
-													Nick
+													{this.props.user.name}
 												</span>
                       </a>
                       <div className='m-dropdown__wrapper'>
@@ -280,45 +281,20 @@ class Header extends React.Component {
                               <ul className='m-nav m-nav--skin-light'>
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>
-																		Section
+																		My Pages
 																	</span>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <a href='header/profile.html' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-profile-1' />
-                                    <span className='m-nav__link-title'>
-                                      <span className='m-nav__link-wrap'>
-                                        <span className='m-nav__link-text'>
-																					My Profile
-																				</span>
-                                        <span className='m-nav__link-badge'>
-                                          <span className='m-badge m-badge--success'>
-																						2
-																					</span>
-                                        </span>
-                                      </span>
-                                    </span>
-                                  </a>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <a href='header/profile.html' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-share' />
-                                    <span className='m-nav__link-text'>
-																			Activity
-																		</span>
-                                  </a>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <a href='header/profile.html' className='m-nav__link'>
+                                  <Link to="/live" className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-chat-1' />
                                     <span className='m-nav__link-text'>
 																			Messages
 																		</span>
-                                  </a>
+                                  </Link>
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a href='header/profile.html' className='m-nav__link'>
+                                  <a href='#' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>
 																			FAQ
@@ -326,16 +302,16 @@ class Header extends React.Component {
                                   </a>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <a href='header/profile.html' className='m-nav__link'>
+                                  <a href='#' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-lifebuoy' />
                                     <span className='m-nav__link-text'>
-																			Support
+																			Report A Bug
 																		</span>
                                   </a>
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a href='snippets/pages/user/login-1.html' className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                  <a  onClick={() => {auth.logout()}} href='#' className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
 																		Logout
 																	</a>
                                 </li>

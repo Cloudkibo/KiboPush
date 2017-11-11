@@ -235,6 +235,7 @@ class Dashboard extends React.Component {
     console.log('props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className="m-content">
         {
           !(this.props.user && this.props.user.dashboardTourSeen) &&
           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
@@ -251,7 +252,7 @@ class Dashboard extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Manage Subscribers</h3>
+              <h3 className='m-subheader__title'>Dashboard</h3>
             </div>
           </div>
         </div>
@@ -416,6 +417,7 @@ class Dashboard extends React.Component {
           </div>
         </div>
       </div>
+    </div>
     )
   }
 }
