@@ -46,6 +46,7 @@ class Subscriber extends React.Component {
     document.title = 'KiboPush | Subscribers'
     var datatable = $('#m_datatable').mDatatable({ 
       pagination: true,
+      paging: true,
       search: {
         // search delay in milliseconds
         delay: 400,
