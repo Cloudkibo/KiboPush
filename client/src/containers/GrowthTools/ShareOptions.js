@@ -1,7 +1,7 @@
-/* eslint-disable no-undef */
 /**
- * Created by sojharo on 20/07/2017.
+ * Created by sojharo on 13/11/2017.
  */
+/* eslint-disable no-undef */
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
@@ -15,7 +15,9 @@ import {
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-class SubscribeToMessenger extends React.Component {
+import CopyToClipboard from 'react-copy-to-clipboard'
+
+class ShareOptions extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onChange = this.onChange.bind(this)
@@ -115,7 +117,7 @@ class SubscribeToMessenger extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Subscribe to Messenger</h3>
+                  <h3 className='m-subheader__title'>Share</h3>
                 </div>
               </div>
             </div>
@@ -127,8 +129,7 @@ class SubscribeToMessenger extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Add a button to your website which sends your facebook page
-                  link to your followers on the messenger.
+                  Share your messenger and page link with customers
                 </div>
               </div>
               <div className='row'>
@@ -139,7 +140,7 @@ class SubscribeToMessenger extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Get HTML code
+                            Copy the Page Messenger link
                           </h3>
                         </div>
                       </div>
@@ -168,84 +169,43 @@ class SubscribeToMessenger extends React.Component {
                             </div>
                           </div>
                         }
-                          <div className='alert alert-success'>
-                            <h4 className='block'>Code for Send To Messenger
-                            Button</h4>
-                          To embed the facebook messenger button on your
-                          website, you
-                          need to put this line inside &lt;body&gt; tag of HTML
-                          of your
-                          website&#39;s each page.
-                          <br /><br />
+                          <p>This is a link to your page, you can send it to your
+                          friends
+                        </p>
+                          <div className='form-group m-form__group row'>
+                            <label className='col-form-label col-lg-3 col-sm-12'>
+                            Link
+                          </label>
+                            <input className='form-control m-input'
+                              value={this.state.fblink} />
+                          </div>
+                          <div className='form-group m-form__group row'>
+                            <CopyToClipboard text={this.state.fblink}
+                              onCopy={() => this.setState(
+                                             {copied: true})}>
+                              { this.state.disabled === true
+                              ? <button disabled onClick={() => {
+                                this.setState({copied: true})
+                              }}
+                                className='btn btn-primary'
+                                style={{margin: 5}}>Copy
+                              </button>
+                              : <button onClick={() => {
+                                this.setState({copied: true})
+                              }}
+                                className='btn btn-primary'
+                                style={{margin: 5}}>Copy
+                              </button>
+                            }
+                            </CopyToClipboard>
+                            { this.state.copied &&
                             <center>
-                              <code className='codeBox'>
-                              &lt;a class='btn'
-                              href="https://m.me/{this.state.pageid}"
-                              style='{'background:' + this.state.buttonColor +
-                            ';color: ' + this.state.fontColor +
-                            '; border-color: white;'}' &gt;&lt;i class="fa
-                              fa-facebook
-                              fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;
-                              /a&gt;
-                            </code>
+                              <Alert type='success'>
+                              Copied!
+                            </Alert>
                             </center>
-                            <br />
-                          Note: For css, we are using Bootstrap library. The
-                          class btn
-                          is defined in Bootrap css file.
-                          <br />
+                          }
                           </div>
-
-                          {/* Below one is working, but it isn't from new template */}
-                          <div className='tab-content'>
-                            <div className='tab-pane active' id='home-1'
-                              role='tabpanel'
-                              aria-expanded='true'
-                              style={{display: 'flex', flexDirection: 'row'}}>
-                              <br />
-                              <div className='col-xl-6'>
-                                <div className='form-group'>
-                                  <label for='colorbtn'> Choose Color</label>
-                                  <select className='form-control' id='colorbtn'
-                                    ref='colorbtn'
-                                    onChange={this.handleChange.bind(this)}>
-                                    <option value='blue'>Blue</option>
-                                    <option value='white'>White</option>
-                                  </select>
-                                </div>
-                                <div className='form-group'>
-                                  <label for='textbtn'> Button Text</label>
-                                  <input type='text' className='form-control'
-                                    ref='textbtn'
-                                    placeholder='Send on Messenger'
-                                    id='textbtn' onChange={this.onChange} />
-                                </div>
-                                <br />
-                                <br />
-                              </div>
-                              <div className='col-xl-6'>
-                                <div className='form-group' style={{
-                                  textAlign: 'center',
-                                  border: 'dashed',
-                                  height: '135px',
-                                  padding: '20px',
-                                  color: '#3c763d'
-                                }}>
-                                  <label for='textbtn'> Button Preview</label>
-                                  <br />
-                                  <a className='btn' href='#' style={{
-                                    'backgroundColor': this.state.buttonColor,
-                                    'color': this.state.fontColor,
-                                    'borderColor': this.state.fontColor
-                                  }}>
-                                    <i
-                                      className='fa fa-facebook fa-lg' /> {this.state.buttonText}
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
                         </div>
                         : <div className='m-portlet__body'>
                           <div className='alert alert-success'
@@ -281,4 +241,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadMyPagesList: loadMyPagesList}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
-  SubscribeToMessenger)
+  ShareOptions)
