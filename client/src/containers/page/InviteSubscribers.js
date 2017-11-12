@@ -3,14 +3,10 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Alert } from 'react-bs-notifier'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 
@@ -22,7 +18,7 @@ class InviteSubscribers extends React.Component {
     this.state = {
       fblink: '',
       copied: false,
-      selectPage: {pageId: -1}
+      selectPage: {}
     }
   }
 
@@ -43,6 +39,12 @@ class InviteSubscribers extends React.Component {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageId}`,
         selectPage: this.props.location.state
+      })
+    }
+    if (this.props.pages && this.props.pages.length > 0) {
+      this.setState({
+        fblink: `https://m.me/${this.props.pages[0].pageId}`,
+        selectPage: this.props.pages[0]
       })
     }
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -82,7 +84,7 @@ class InviteSubscribers extends React.Component {
     } else {
       this.setState({
         fblink: '',
-        selectPage: {pageId: -1}
+        selectPage: {}
       })
     }
   }
@@ -91,78 +93,119 @@ class InviteSubscribers extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Invite Your Subscribers</h2>
-            <div className='ui-block'>
-              <div className='news-feed-form'>
-                <div className='form-group'>
-                  <label style={{paddingLeft: '5px'}}><strong>Page:</strong></label>
-                  <div style={{padding: '5px'}} className='form-group form-inline'>
-                    <select value={this.state.selectPage.pageId} className='input-sm' onChange={this.onChangeValue}>
-                      <option value={-1}>--Select Page--</option>
-                      {this.props.pages && this.props.pages.map((page, i) => (
-                        <option value={page.pageId}>{page.pageName}</option>
-                    ))
-                    }
-                    </select>
-                  </div>
-                  <br />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Invite Subscribers</h3>
                 </div>
-                { this.props.pages.length === 0 &&
-                  <div>
-                    <center>
-                      <Alert type='info'>
-                        It seems you have not connected any Facebook pages yet. To invite subscribers you need to connect one or more Facebook pages first.
-                        Click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages.
-                      </Alert>
-                    </center>
-                  </div>
-                }
-                { this.state.selectPage.pageId !== -1 &&
-                <div
-                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                  Build your audience by sharing a page link on your timeline.
-                  This will let your friends know about your facebook page.
-                  <br />
-                  <a className='btn btn-blue' target='_blank'
-                    href={this.getlink()}><i className='fa fa-facebook'
-                      style={{marginRight: '10px'}} /><span>Share Page</span></a>
-                  <hr />
-                  This is a link to your page, use it to invite subscribers
-                  <br />
-
-                  <input value={this.state.fblink} />
-
-                  <CopyToClipboard text={this.state.fblink}
-                    onCopy={() => this.setState({copied: true})}>
-                    <button onClick={() => { this.setState({copied: true}) }}
-                      className='uk-button uk-button-small uk-button-primary'
-                      style={{margin: 5}}>Copy
-                    </button>
-                  </CopyToClipboard>
-                  {this.state.copied &&
-                  <center>
-                    <Alert type='success'>
-                      Copied!
-                    </Alert>
-                  </center>
-                  }
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
                 </div>
-              }
+                <div className='m-alert__text'>
+                  Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--tab'>
+                    <form className='m-form m-form--fit m-form--label-align-right'>
+                      <div className='m-portlet__body'>
+                        <div className='form-group m-form__group row'>
+                          <label className='col-2 col-form-label'>
+                            Change Page
+                          </label>
+                          <div className='col-10'>
+                            <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                              {
+                                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                  <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                                ))
+                              }
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div className='row'>
+                    <div className='col-xl-6 col-lg-6  col-md-6 col-sm-6 col-xs-6'>
+                      <div className='m-portlet m-portlet--tab'>
+                        <div className='m-portlet__head'>
+                          <div className='m-portlet__head-caption'>
+                            <div className='m-portlet__head-title'>
+                              <span className='m-portlet__head-icon m--hide'>
+                                <i className='la la-gear' />
+                              </span>
+                              <h3 className='m-portlet__head-text'>
+                                Share Your Page
+                              </h3>
+                            </div>
+                          </div>
+                        </div>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group m--margin-top-10'>
+                              <div className='alert m-alert m-alert--default' role='alert'>
+                                Build your audience by sharing the page on your timeline.
+                                This will let your friends know about your Facebook page.
+                              </div>
+                            </div>
+                            <div className='m--space-30' />
+                            <a style={{marginLeft: '30px'}} className='btn btn-primary' target='_blank' href={this.getlink()}>
+                              <i className='fa fa-facebook' style={{marginRight: '10px'}} />
+                              <span>Share Page</span>
+                            </a>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div className='col-xl-6 col-lg-6  col-md-6 col-sm-6 col-xs-6'>
+                      <div className='m-portlet m-portlet--tab'>
+                        <div className='m-portlet__head'>
+                          <div className='m-portlet__head-caption'>
+                            <div className='m-portlet__head-title'>
+                              <span className='m-portlet__head-icon m--hide'>
+                                <i className='la la-gear' />
+                              </span>
+                              <h3 className='m-portlet__head-text'>
+                                Share Page Link
+                              </h3>
+                            </div>
+                          </div>
+                        </div>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group m--margin-top-10'>
+                              <div className='alert m-alert m-alert--default' role='alert'>
+                                This is a link of your page. Use it to invite subscribers.
+                                <input className='form-control m-input m-input--air' value={this.state.fblink} />
+                              </div>
+                            </div>
+                            <div className='m--space-30' />
+                            <CopyToClipboard text={this.state.fblink}
+                              onCopy={() => this.setState({copied: true})}>
+                              <button style={{marginLeft: '30px'}} type='button' className='btn btn-success'>
+                                Copy Link
+                              </button>
+                            </CopyToClipboard>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }

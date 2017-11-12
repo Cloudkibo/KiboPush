@@ -9,6 +9,7 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
+// import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -19,7 +20,6 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
 
@@ -38,7 +38,6 @@ class Dashboard extends React.Component {
       steps: [],
       sentseendata1: []
     }
-    this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
@@ -53,7 +52,7 @@ class Dashboard extends React.Component {
       // this means more than 0 subscribers
       console.log('More than 0 subscribers')
       this.setState({isShowingModal: false})
-    } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
       // this means 0 subscribers
       console.log('0 subscribers')
       this.setState({isShowingModal: true})
@@ -134,10 +133,6 @@ class Dashboard extends React.Component {
     ])
   }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
   tourFinished (data) {
     console.log('Next Tour Step')
     if (data.type === 'finished') {
@@ -194,12 +189,8 @@ class Dashboard extends React.Component {
           }
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
-            this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
-            <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
-              <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
-                <GettingStarted pages={this.props.pages} />
-              </ModalDialog>
-            </ModalContainer>
+            this.state.isShowingModal &&
+            <GettingStarted pages={this.props.pages} />
           }
           <div className='row'>
             {
@@ -211,6 +202,10 @@ class Dashboard extends React.Component {
               <CardBoxes data={this.props.dashboard} />
             }
           </div>
+          {/**
+            this.props.sentseendata &&
+            <CardsWithProgress data={this.props.sentseendata} />
+          **/}
         </div>
       </div>
     )

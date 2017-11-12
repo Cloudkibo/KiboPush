@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
