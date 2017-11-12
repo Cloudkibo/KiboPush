@@ -5,7 +5,7 @@
 
 import React from 'react'
 
-class PageLikesSubscribers extends React.Component {
+class CardBoxes extends React.Component {
   render () {
     return (
       <div className='col-xl-6'>
@@ -70,4 +70,4 @@ class PageLikesSubscribers extends React.Component {
   }
 }
 
-export default PageLikesSubscribers
+export default CardBoxes
