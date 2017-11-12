@@ -299,7 +299,7 @@ class Sidebar extends Component {
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <Link to='/customerMatchingUsingPhNum' className='m-menu__link '>
+                      <Link to='/subscribeToMessenger' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
@@ -309,12 +309,12 @@ class Sidebar extends Component {
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <Link to='/customerMatchingUsingPhNum' className='m-menu__link '>
+                      <Link to='/shareOptions' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
-													Send Page Invites
+													Share
 												</span>
                       </Link>
                     </li>
