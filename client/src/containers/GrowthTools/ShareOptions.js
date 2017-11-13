@@ -25,13 +25,11 @@ class ShareOptions extends React.Component {
     this.onChangeValue = this.onChangeValue.bind(this)
     this.props.loadMyPagesList()
     this.state = {
-      'buttonText': 'Send to Messenger',
-      'buttonColor': 'blue',
-      'fontColor': 'white',
       'pageid': '',
       'showbutton': true,
       'fblink': 'https://m.me/',
-      'copied': false
+      'copied': false,
+      'showCopyLink': true
     }
   }
 
@@ -79,16 +77,11 @@ class ShareOptions extends React.Component {
   }
 
   onChange (event) {
-    this.setState({
-      'buttonText': event.target.value
-    })
+    this.setState({})
   }
 
   handleChange (e) {
-    this.setState({
-      'buttonColor': e.target.value,
-      'fontColor': e.target.value === 'blue' ? 'white' : 'black'
-    })
+    this.setState({})
   }
 
   componentDidMount () {
@@ -198,12 +191,12 @@ class ShareOptions extends React.Component {
                               </button>
                             }
                             </CopyToClipboard>
+                          </div>
+                          <div className='form-group m-form__group row'>
                             { this.state.copied &&
-                            <center>
-                              <Alert type='success'>
-                              Copied!
-                            </Alert>
-                            </center>
+                            <div className='alert alert-success' role='alert'>
+                              Copied to Clipboard
+                            </div>
                           }
                           </div>
                         </div>
