@@ -65,7 +65,54 @@ export function updatePagesList (data) {
     data: data.payload
   }
 }
+export function updateSurveysGraphData (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_SURVEYS_GRAPH,
+    data
+  }
+}
 
+export function loadSurveysGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadSurveysGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/surveysGraph/${days}`)
+      .then(res => dispatch(updateSurveysGraphData(res.payload)))
+  }
+}
+export function updatePollsGraphData (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_POLLS_GRAPH,
+    data
+  }
+}
+
+export function loadPollsGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/pollsGraph/${days}`)
+      .then(res => dispatch(updatePollsGraphData(res.payload)))
+  }
+}
+export function updateBroadcastsGraphData (data) {
+  console.log('Broadcasts Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_BROADCASTS_GRAPH,
+    data
+  }
+}
+
+export function loadBroadcastsGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadBroadcastsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/broadcastsGraph/${days}`)
+      .then(res => dispatch(updateBroadcastsGraphData(res.payload)))
+  }
+}
 export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
   console.log('loadPagesList called', id)

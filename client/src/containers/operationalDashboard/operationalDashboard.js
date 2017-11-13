@@ -9,6 +9,7 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
+import Reports from './reports'
 import Select from 'react-select'
 import ListItem from './ListItem'
 //  import { Link } from 'react-router'
@@ -18,7 +19,10 @@ import {
   loadDataObjectsCount,
   loadTopPages,
   saveUserInformation,
-  downloadFile
+  downloadFile,
+  loadBroadcastsGraphData,
+  loadPollsGraphData,
+  loadSurveysGraphData
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -44,10 +48,24 @@ class OperationalDashboard extends React.Component {
       localeValue: '',
       selectedValue: 0,
       showTopTenPages: false,
-      showUsers: false
+      showReports: false,
+      showUsers: false,
+      lineChartData: [
+        { date: '21 FEB', month: 'feb', year: '2017', chats: 10 },
+        { date: '22 FEB', month: 'feb', year: '2017', chats: 12 },
+        { date: '29 FEB', month: 'feb', year: '2017', chats: 20 },
+        { date: '30 FEB', month: 'feb', year: '2017', chats: 11 },
+        { date: '1 JAN', month: 'feb', year: '2017', chats: 9 },
+        { date: '2 JAN', month: 'feb', year: '2017', chats: 2 },
+        { date: '3 JAN', month: 'feb', year: '2017', chats: 11 }
+      ],
+      chartData: []
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
+    props.loadBroadcastsGraphData(0)
+    props.loadPollsGraphData(0)
+    props.loadSurveysGraphData(0)
     props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -60,6 +78,7 @@ class OperationalDashboard extends React.Component {
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
+    this.prepareLineCharData = this.prepareLineCharData.bind(this)
   }
 
   componentDidMount () {
@@ -140,6 +159,33 @@ class OperationalDashboard extends React.Component {
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
     }
+    if (nextProps.broadcastsGraphData) {
+      console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
+      var graphInfo = nextProps.broadcastsGraphData.broadcastsGraphInfo
+      if (graphInfo.broadcastsgraphdata.length > 0) {
+        var dataChart = this.prepareLineCharData(graphInfo.broadcastsgraphdata)
+        console.log(dataChart)
+        this.setState({chartData: dataChart})
+      }
+    }
+    if (nextProps.pollsGraphData) {
+      console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
+    }
+    if (nextProps.surveysGraphData) {
+      console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
+    }
+  }
+  prepareLineCharData (data) {
+    var dataChart = []
+    var records = data
+    records.map((record) => {
+      var recordId = record._id
+      var date = recordId.day + '/' + recordId.month + '/' + recordId.year
+      var count = record.count
+      var chartRecord = { date: date, broadcastscount: count }
+      dataChart.push(chartRecord)
+    })
+    return dataChart
   }
 
   goToBroadcasts (user) {
@@ -187,6 +233,8 @@ class OperationalDashboard extends React.Component {
   showContent (title) {
     if (title === 'Top Ten Pages') {
       this.setState({showTopTenPages: true})
+    } else if (title === 'Reports') {
+      this.setState({showReports: true})
     } else {
       this.setState({showUsers: true})
     }
@@ -195,6 +243,8 @@ class OperationalDashboard extends React.Component {
   hideContent (title) {
     if (title === 'Top Ten Pages') {
       this.setState({showTopTenPages: false})
+    } else if (title === 'Reports') {
+      this.setState({showReports: false})
     } else {
       this.setState({showUsers: false})
     }
@@ -302,6 +352,16 @@ class OperationalDashboard extends React.Component {
                   pagesData={this.props.toppages}
                 />
                 : <ListItem iconClassName={'fa fa-facebook'} title={'Top Ten Pages'} showContent={this.showContent} />
+              }
+              {
+                this.state.showReports
+                ? <Reports
+                  iconClassName={'fa fa-line-chart'}
+                  title={'Reports'}
+                  hideContent={this.hideContent}
+                  lineChartData={this.state.chartData}
+                />
+                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
               }
               {
                 this.state.showUsers
@@ -439,7 +499,10 @@ function mapStateToProps (state) {
     locales: (state.UsersInfo.locales),
     currentUser: (state.getCurrentUser.currentUser),
     dataobjects: (state.dataObjectsInfo.dataobjects),
-    toppages: (state.topPagesInfo.toppages)
+    toppages: (state.topPagesInfo.toppages),
+    broadcastsGraphData: (state.broadcastsGraphInfo),
+    pollsGraphData: (state.pollsGraphInfo),
+    surveysGraphData: (state.surveysGraphInfo)
   }
 }
 
@@ -448,7 +511,10 @@ function mapDispatchToProps (dispatch) {
     loadDataObjectsCount: loadDataObjectsCount,
     loadTopPages: loadTopPages,
     saveUserInformation: saveUserInformation,
-    downloadFile: downloadFile },
+    downloadFile: downloadFile,
+    loadBroadcastsGraphData: loadBroadcastsGraphData,
+    loadSurveysGraphData: loadSurveysGraphData,
+    loadPollsGraphData: loadPollsGraphData},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
