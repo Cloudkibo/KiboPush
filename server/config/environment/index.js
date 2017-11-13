@@ -41,12 +41,12 @@ const all = {
   facebook: {
     clientID: process.env.FACEBOOK_ID || '159385484629940',
     clientSecret: process.env.FACEBOOK_SECRET || '67527aa04570a034b6ff67335d95e91c',
-    callbackURL: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}/auth/facebook/callback`
+    callbackURL: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/auth/facebook/callback`
   },
 
   pubsubhubbub: {
     secret: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4',
-    callbackUrl: `${process.env.DOMAIN || 'https://kibopush-sojharo.ngrok.io'}/api/autoposting/pubsub/webhook`
+    callbackUrl: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/api/autoposting/pubsub/webhook`
   },
 
   twitter: {
@@ -54,7 +54,7 @@ const all = {
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET || 'L00OE6SIGOMjI0ZDe5n3ncnFdaxHaAco6wzkR2jdzLXJnXYoID',
     consumer_token: process.env.TWITTER_TOKEN || '2616186000-dAaH7yuQsBGNcbvnCiHweB8rFm54pF2YOC0hOtP',
     consumer_token_secret: process.env.TWITTER_TOKEN_SECRET || '6hWNxP6qwjPEjEfLwT8uK9JpPVFzwA3BxBeCSU7J6rylT',
-    callbackUrl: `${process.env.DOMAIN || 'https://app.kibopush.com'}/api/autoposting/twitter`
+    callbackUrl: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/api/autoposting/twitter`
   }
 }
 
