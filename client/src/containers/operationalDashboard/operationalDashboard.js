@@ -12,6 +12,7 @@ import Top10pages from './top10pages'
 import Reports from './reports'
 import Select from 'react-select'
 import ListItem from './ListItem'
+import moment from 'moment'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
@@ -50,16 +51,8 @@ class OperationalDashboard extends React.Component {
       showTopTenPages: false,
       showReports: false,
       showUsers: false,
-      lineChartData: [
-        { date: '21 FEB', month: 'feb', year: '2017', chats: 10 },
-        { date: '22 FEB', month: 'feb', year: '2017', chats: 12 },
-        { date: '29 FEB', month: 'feb', year: '2017', chats: 20 },
-        { date: '30 FEB', month: 'feb', year: '2017', chats: 11 },
-        { date: '1 JAN', month: 'feb', year: '2017', chats: 9 },
-        { date: '2 JAN', month: 'feb', year: '2017', chats: 2 },
-        { date: '3 JAN', month: 'feb', year: '2017', chats: 11 }
-      ],
-      chartData: []
+      chartData: [],
+      selectedDays: 10
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
@@ -78,7 +71,9 @@ class OperationalDashboard extends React.Component {
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
-    this.prepareLineCharData = this.prepareLineCharData.bind(this)
+    this.prepareLineChartData = this.prepareLineChartData.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+    this.includeZeroCounts = this.includeZeroCounts.bind(this)
   }
 
   componentDidMount () {
@@ -145,6 +140,25 @@ class OperationalDashboard extends React.Component {
     }
   }
 
+  onDaysChange (e) {
+    var defaultVal = 10
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    console.log('On days change', value)
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      this.props.loadBroadcastsGraphData(value)
+      this.props.loadPollsGraphData(value)
+      this.props.loadSurveysGraphData(value)
+    } else if (value === '') {
+      this.setState({selectedDays: defaultVal})
+      this.props.loadBroadcastsGraphData(defaultVal)
+      this.props.loadPollsGraphData(defaultVal)
+      this.props.loadSurveysGraphData(defaultVal)
+    }
+  }
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
@@ -161,30 +175,75 @@ class OperationalDashboard extends React.Component {
     }
     if (nextProps.broadcastsGraphData) {
       console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
-      var graphInfo = nextProps.broadcastsGraphData.broadcastsGraphInfo
-      if (graphInfo.broadcastsgraphdata.length > 0) {
-        var dataChart = this.prepareLineCharData(graphInfo.broadcastsgraphdata)
-        console.log(dataChart)
-        this.setState({chartData: dataChart})
+      var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
+      if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
+        var broadcastData = graphInfoBroadcast.broadcastsgraphdata
+        broadcastData = this.includeZeroCounts(broadcastData)
       }
     }
     if (nextProps.pollsGraphData) {
       console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
+      var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
+      if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
+        var pollsData = graphInfoPolls.pollsgraphdata
+        pollsData = this.includeZeroCounts(pollsData)
+      }
     }
     if (nextProps.surveysGraphData) {
       console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
+      var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
+      if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
+        var surveysData = graphInfoSurveys.surveysgraphdata
+        surveysData = this.includeZeroCounts(surveysData)
+      }
     }
+    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+    this.setState({chartData: dataChart})
   }
-  prepareLineCharData (data) {
+  includeZeroCounts (data) {
+    var dataArray = []
+    var days = this.state.selectedDays
+    var index = 0
+    var varDate = moment()
+    for (var i = 0; i < days; i++) {
+      for (var j = 0; j < data.length; j++) {
+        var recordId = data[j]._id
+        var date = `${recordId.day}-${recordId.month}-${recordId.year}`
+        var loopDate = moment(varDate).format('DD-MM-YYYY')
+        if (date.trim() === loopDate.trim()) {
+          var d = {}
+          d.date = loopDate
+          d.count = data[j].count
+          dataArray.push(d)
+          varDate = moment(varDate).subtract(1, 'days')
+          index = 0
+          break
+        }
+        index++
+      }
+      if (index === data.length) {
+        var obj = {}
+        obj.date = varDate.format('DD-MM-YYYY')
+        obj.count = 0
+        dataArray.push(obj)
+        varDate = moment(varDate).subtract(1, 'days')
+        index = 0
+      }
+    }
+    return dataArray
+  }
+  prepareLineChartData (surveys, polls, broadcasts) {
     var dataChart = []
-    var records = data
-    records.map((record) => {
-      var recordId = record._id
-      var date = recordId.day + '/' + recordId.month + '/' + recordId.year
-      var count = record.count
-      var chartRecord = { date: date, broadcastscount: count }
-      dataChart.push(chartRecord)
-    })
+    if (surveys) {
+      for (var i = 0; i < surveys.length; i++) {
+        var record = {}
+        record.date = surveys[i].date
+        record.broadcastscount = broadcasts[i].count
+        record.pollscount = polls[i].count
+        record.surveyscount = surveys[i].count
+        dataChart.push(record)
+      }
+    }
     return dataChart
   }
 
@@ -360,6 +419,8 @@ class OperationalDashboard extends React.Component {
                   title={'Reports'}
                   hideContent={this.hideContent}
                   lineChartData={this.state.chartData}
+                  onDaysChange={this.onDaysChange}
+                  selectedDays={this.state.selectedDays}
                 />
                 : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
               }
