@@ -208,9 +208,9 @@ class OperationalDashboard extends React.Component {
     for (var i = 0; i < days; i++) {
       for (var j = 0; j < data.length; j++) {
         var recordId = data[j]._id
-        var date = `${recordId.day}/${recordId.month}/${recordId.year}`
-        var loopDate = moment(varDate).format('DD/MM/YYYY')
-        if (moment(date).isSame(loopDate)) {
+        var date = `${recordId.day}-${recordId.month}-${recordId.year}`
+        var loopDate = moment(varDate).format('DD-MM-YYYY')
+        if (date.trim() === loopDate.trim()) {
           var d = {}
           d.date = loopDate
           d.count = data[j].count
@@ -223,7 +223,7 @@ class OperationalDashboard extends React.Component {
       }
       if (index === data.length) {
         var obj = {}
-        obj.date = varDate.format('DD/MM/YYYY')
+        obj.date = varDate.format('DD-MM-YYYY')
         obj.count = 0
         dataArray.push(obj)
         varDate = moment(varDate).subtract(1, 'days')
