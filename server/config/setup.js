@@ -19,6 +19,18 @@ module.exports = function (app, httpapp, config) {
   if (config.env === 'production') {
     try {
       options = {
+        ca: fs.readFileSync('/root/certs/kibopush.ca-bundle'),
+        key: fs.readFileSync('/root/certs/kibopush.key'),
+        cert: fs.readFileSync('/root/certs/kibopush.crt')
+      }
+    } catch (e) {
+
+    }
+  }
+
+  if (config.env === 'staging') {
+    try {
+      options = {
         ca: fs.readFileSync('/root/certs/gd_bundle-g2-g1.crt'),
         key: fs.readFileSync('/root/certs/kibopush.key'),
         cert: fs.readFileSync('/root/certs/3b414648bf907e49.crt')
@@ -37,7 +49,14 @@ module.exports = function (app, httpapp, config) {
     })
   }
 
-  const socket = require('socket.io').listen(config.env === 'production' ? httpsServer
+  if (config.env === 'staging') {
+    httpapp.get('*', (req, res) => {
+      res.redirect(`https://staging.kibopush.com${req.url}`)
+    })
+  }
+
+  const socket = require('socket.io').listen(
+    (config.env === 'production' || config.env === 'staging') ? httpsServer
     : server)
 
   require('./socketio').setup(socket)
@@ -52,7 +71,7 @@ module.exports = function (app, httpapp, config) {
       config.secure_port} in ${config.env} mode`)
   })
 
-  if (config.env === 'production') {
+  if (config.env === 'production' || config.env ==='staging') {
     console.log('KiboPush server STARTED on %s in %s mode', config.port, config.env)
   }
 }

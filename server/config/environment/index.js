@@ -38,12 +38,6 @@ const all = {
     }
   },
 
-  facebook: {
-    clientID: process.env.FACEBOOK_ID || '159385484629940',
-    clientSecret: process.env.FACEBOOK_SECRET || '67527aa04570a034b6ff67335d95e91c',
-    callbackURL: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/auth/facebook/callback`
-  },
-
   pubsubhubbub: {
     secret: process.env.SESSION_SECRET || 'f83b0cd6ccb20142185616dsf54dsf4',
     callbackUrl: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/api/autoposting/pubsub/webhook`
