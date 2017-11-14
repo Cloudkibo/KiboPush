@@ -23,6 +23,15 @@ class Reports extends React.Component {
           </div>
           <div className='row'>
             <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+              <form>
+                <div className='form-row'>
+                  <div style={{display: 'flex'}} className='form-group col-md-6'>
+                    <label> Show record for last: </label>
+                    <input type='number' min='0' step='1' value={this.props.selectedDays} className='form-control col-md-2' style={{left: '10px', top: '-8px', height: '10px'}} onChange={this.props.onDaysChange} />
+                    <label className='col-md-2'> days</label>
+                  </div>
+                </div>
+              </form>
               <div className='ui-block'>
                 <div className='birthday-item inline-items badges' style={{textAlign: 'center'}}>
                   <LineChart width={600} height={300} data={this.props.lineChartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
@@ -32,8 +41,8 @@ class Reports extends React.Component {
                     <Tooltip />
                     <Legend />
                     <Line type='monotone' dataKey='broadcastscount' stroke='#8884d8' activeDot={{r: 8}} />
-                    <Line type='monotone' dataKey='pollscount' stroke='#8884d8' activeDot={{r: 8}} />
-                    <Line type='monotone' dataKey='surveyscount' stroke='#8884d8' activeDot={{r: 8}} />
+                    <Line type='monotone' dataKey='pollscount' stroke='#82ca9d' activeDot={{r: 8}} />
+                    <Line type='monotone' dataKey='surveyscount' stroke='#FF7F50' activeDot={{r: 8}} />
                   </LineChart>
                 </div>
               </div>
