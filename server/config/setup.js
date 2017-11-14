@@ -71,7 +71,7 @@ module.exports = function (app, httpapp, config) {
       config.secure_port} in ${config.env} mode`)
   })
 
-  if (config.env === 'production' || config.env ==='staging') {
+  if (config.env === 'production' || config.env === 'staging') {
     console.log('KiboPush server STARTED on %s in %s mode', config.port, config.env)
   }
 }
