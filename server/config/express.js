@@ -44,7 +44,7 @@ module.exports = function (app) {
 
   app.use(passport.initialize())
 
-  if (env === 'production') {
+  if (env === 'production' || env === 'staging') {
     /**
      * Helmet can help protect your app from some
      * well-known web vulnerabilities by setting
