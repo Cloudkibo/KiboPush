@@ -19,9 +19,9 @@ module.exports = function (app, httpapp, config) {
   if (config.env === 'production') {
     try {
       options = {
-        ca: fs.readFileSync('/root/certs/kibopush.ca-bundle'),
+        ca: fs.readFileSync('/root/certs/gd_bundle-g2-g1.crt'),
         key: fs.readFileSync('/root/certs/kibopush.key'),
-        cert: fs.readFileSync('/root/certs/kibopush.crt')
+        cert: fs.readFileSync('/root/certs/3b414648bf907e49.crt')
       }
     } catch (e) {
 
