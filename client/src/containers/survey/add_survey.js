@@ -130,16 +130,19 @@ class AddSurvey extends React.Component {
 
   handlePageChange (value) {
     var temp = value.split(',')
+    console.log('handlePageChange', temp)
     this.setState({ pageValue: temp })
   }
 
   handleGenderChange (value) {
     var temp = value.split(',')
+    console.log('handleGenderChange', temp)
     this.setState({ genderValue: temp })
   }
 
   handleLocaleChange (value) {
     var temp = value.split(',')
+    console.log('handleLocaleChange', temp)
     this.setState({ localeValue: temp })
   }
 

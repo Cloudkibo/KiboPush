@@ -367,16 +367,19 @@ class Sidebar extends Component {
                   <span>Workflows</span>
                 </ReactTooltip>
               </li>
-              <li>
-                <Link to='/menu' data-for='menu' data-tip>
-                  <div style={{paddingRight: 20}}>
-                    <img className='icon icons8-Survey' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAB50lEQVRYR2NkoBJw6zh2nvE/ox7IuP9MDAd3lVs6UcNoRmoY4tZ+/AQDA4PGv79/fUDmMTEzb/nPwHBhd6WlA6XmY3WgT/fJpb///osixfC/f/7a7qmxOQLS49JyxIaZhfkwKfpZmZmWbSk1j0bXg9WB7h3H/+eHmOM0f+KakwyBLmZw+Y37zjB8ZGJVOFZi9BDmQA5O9kM+9kZw89fvOcVAyMydFZYY7qGKA6/cfvLv/pMXX3/+/O0FciA7O+s2BRlxHl1VWdo70FMZ0w8enSdQQhDkqOt3nzLcf/ISHKqKMuIMmsrSKDEACsEd5RYYsbL97n+wGChWyApBbA4M6D/NYGmoySDAy0VUMvvw+RvDxau3GJZlG9HHgZcefWLo2HyH4d2XX0Q5UIiHjaHCV4VBT46PPg4kylVEKqJJFBNpN1HKRh1IVDDhUTQagqMhiC0EkOti9IIaVIvAALaagdQQpXoaxObAuOnnGF59Ilxoi/GxMSzKRK1N6OJAUkMNWT3VHUiJY7DpHXUgpSE6GoKDLgRHy0G0KCHYaRpyNQmlaQ5d/2gupjRER0NwNARJbbBSGmKjuXjQhSC1HYTLPLJHtwalA726Ti77++9fJL0cB7KHmYlp+bYyc4xhZ6oMotPSI4PegQB/a844XdCD1wAAAABJRU5ErkJggg==' />
-                  </div>
-                </Link>
-                <ReactTooltip place='right' type='dark' effect='float' id='menu'>
-                  <span>Main Menu</span>
-                </ReactTooltip>
-              </li>
+              {
+                this.props.user && this.props.user.isSuperUser &&
+                <li>
+                  <Link to='/menu' data-for='menu' data-tip>
+                    <div style={{paddingRight: 20}}>
+                      <img className='icon icons8-Survey' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAB50lEQVRYR2NkoBJw6zh2nvE/ox7IuP9MDAd3lVs6UcNoRmoY4tZ+/AQDA4PGv79/fUDmMTEzb/nPwHBhd6WlA6XmY3WgT/fJpb///osixfC/f/7a7qmxOQLS49JyxIaZhfkwKfpZmZmWbSk1j0bXg9WB7h3H/+eHmOM0f+KakwyBLmZw+Y37zjB8ZGJVOFZi9BDmQA5O9kM+9kZw89fvOcVAyMydFZYY7qGKA6/cfvLv/pMXX3/+/O0FciA7O+s2BRlxHl1VWdo70FMZ0w8enSdQQhDkqOt3nzLcf/ISHKqKMuIMmsrSKDEACsEd5RYYsbL97n+wGChWyApBbA4M6D/NYGmoySDAy0VUMvvw+RvDxau3GJZlG9HHgZcefWLo2HyH4d2XX0Q5UIiHjaHCV4VBT46PPg4kylVEKqJJFBNpN1HKRh1IVDDhUTQagqMhiC0EkOti9IIaVIvAALaagdQQpXoaxObAuOnnGF59Ilxoi/GxMSzKRK1N6OJAUkMNWT3VHUiJY7DpHXUgpSE6GoKDLgRHy0G0KCHYaRpyNQmlaQ5d/2gupjRER0NwNARJbbBSGmKjuXjQhSC1HYTLPLJHtwalA726Ti77++9fJL0cB7KHmYlp+bYyc4xhZ6oMotPSI4PegQB/a844XdCD1wAAAABJRU5ErkJggg==' />
+                    </div>
+                  </Link>
+                  <ReactTooltip place='right' type='dark' effect='float' id='menu'>
+                    <span>Main Menu</span>
+                  </ReactTooltip>
+                </li>
+            }
               <li>
                 <Link to='/subscribeToMessenger' data-for='subscribe' data-tip>
                   <div style={{paddingRight: 20}}>
@@ -512,14 +515,17 @@ class Sidebar extends Component {
                   <span className='left-menu-title'>Workflows</span>
                 </Link>
               </li>
-              <li id='menu'>
-                <Link to='/menu'>
-                  <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Main Menu' style={{paddingRight: 20}}>
-                    <img className='icon icons8-Survey' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAB50lEQVRYR2NkoBJw6zh2nvE/ox7IuP9MDAd3lVs6UcNoRmoY4tZ+/AQDA4PGv79/fUDmMTEzb/nPwHBhd6WlA6XmY3WgT/fJpb///osixfC/f/7a7qmxOQLS49JyxIaZhfkwKfpZmZmWbSk1j0bXg9WB7h3H/+eHmOM0f+KakwyBLmZw+Y37zjB8ZGJVOFZi9BDmQA5O9kM+9kZw89fvOcVAyMydFZYY7qGKA6/cfvLv/pMXX3/+/O0FciA7O+s2BRlxHl1VWdo70FMZ0w8enSdQQhDkqOt3nzLcf/ISHKqKMuIMmsrSKDEACsEd5RYYsbL97n+wGChWyApBbA4M6D/NYGmoySDAy0VUMvvw+RvDxau3GJZlG9HHgZcefWLo2HyH4d2XX0Q5UIiHjaHCV4VBT46PPg4kylVEKqJJFBNpN1HKRh1IVDDhUTQagqMhiC0EkOti9IIaVIvAALaagdQQpXoaxObAuOnnGF59Ilxoi/GxMSzKRK1N6OJAUkMNWT3VHUiJY7DpHXUgpSE6GoKDLgRHy0G0KCHYaRpyNQmlaQ5d/2gupjRER0NwNARJbbBSGmKjuXjQhSC1HYTLPLJHtwalA726Ti77++9fJL0cB7KHmYlp+bYyc4xhZ6oMotPSI4PegQB/a844XdCD1wAAAABJRU5ErkJggg==' />
-                  </div>
-                  <span className='left-menu-title'>Main Menu</span>
-                </Link>
-              </li>
+              {
+                this.props.user && this.props.user.isSuperUser &&
+                <li id='menu'>
+                  <Link to='/menu'>
+                    <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Main Menu' style={{paddingRight: 20}}>
+                      <img className='icon icons8-Survey' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAB50lEQVRYR2NkoBJw6zh2nvE/ox7IuP9MDAd3lVs6UcNoRmoY4tZ+/AQDA4PGv79/fUDmMTEzb/nPwHBhd6WlA6XmY3WgT/fJpb///osixfC/f/7a7qmxOQLS49JyxIaZhfkwKfpZmZmWbSk1j0bXg9WB7h3H/+eHmOM0f+KakwyBLmZw+Y37zjB8ZGJVOFZi9BDmQA5O9kM+9kZw89fvOcVAyMydFZYY7qGKA6/cfvLv/pMXX3/+/O0FciA7O+s2BRlxHl1VWdo70FMZ0w8enSdQQhDkqOt3nzLcf/ISHKqKMuIMmsrSKDEACsEd5RYYsbL97n+wGChWyApBbA4M6D/NYGmoySDAy0VUMvvw+RvDxau3GJZlG9HHgZcefWLo2HyH4d2XX0Q5UIiHjaHCV4VBT46PPg4kylVEKqJJFBNpN1HKRh1IVDDhUTQagqMhiC0EkOti9IIaVIvAALaagdQQpXoaxObAuOnnGF59Ilxoi/GxMSzKRK1N6OJAUkMNWT3VHUiJY7DpHXUgpSE6GoKDLgRHy0G0KCHYaRpyNQmlaQ5d/2gupjRER0NwNARJbbBSGmKjuXjQhSC1HYTLPLJHtwalA726Ti77++9fJL0cB7KHmYlp+bYyc4xhZ6oMotPSI4PegQB/a844XdCD1wAAAABJRU5ErkJggg==' />
+                    </div>
+                    <span className='left-menu-title'>Main Menu</span>
+                  </Link>
+                </li>
+            }
               <li>
                 <Link to='/subscribeToMessenger'>
                   <div data-toggle='tooltip' data-placement='right' title='' data-original-title='Subscribe To Messenger' style={{paddingRight: 20}}>
