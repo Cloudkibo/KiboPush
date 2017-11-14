@@ -156,7 +156,7 @@ class Survey extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                  <h3 className='m-subheader__title'>Manage Surveys</h3>
                 </div>
               </div>
             </div>
@@ -277,7 +277,7 @@ class Survey extends React.Component {
                       }
                           </tbody>
                         </table>
-                        <ReactPaginate previousLabel={'previous'}
+                        <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}

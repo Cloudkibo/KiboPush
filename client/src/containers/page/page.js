@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
@@ -17,7 +15,6 @@ import {
 
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import ReactPaginate from 'react-paginate'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 
