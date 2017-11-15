@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -151,19 +149,19 @@ class Survey extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-
-                {
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              {
                 this.props.subscribers && this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
                   <center>
@@ -174,66 +172,89 @@ class Survey extends React.Component {
                   </center>
                 </div>
               }
-                <br />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding surveys? <a href='#'>Click Here </a>
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
 
-                <div className='birthday-item inline-items badges'>
-                  <h3>Surveys</h3>
-                  {
-                this.props.subscribers && this.props.subscribers.length === 0
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Surveys
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
 
-                  ? <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-primary btn-sm' disabled> Create Survey
-                    </button>
-                  </Link>
-                  : <Link to='addsurvey' className='pull-right'>
-                    <button className='btn btn-primary btn-sm'> Create Survey
-                    </button>
-                  </Link>
-                }
-                  { this.state.surveysData && this.state.surveysData.length > 0
-                  ? <div className='table-responsive'>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Description</th>
-                          <th>Created At</th>
-                          <th>Sent</th>
-                          <th>Seen</th>
-                          <th>Responded</th>
-                          <th>Actions</th>
+                    <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-md-4' />
+                        <div className='col-xl-4 col-md-4' />
+                        <div className='col-xl-4 order-1 col-md-4 order-xl-2 m--align-right'>
+                          {
+                            this.props.subscribers && this.props.subscribers.length === 0
 
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          this.state.surveysData.map((survey, i) => (
+                              ? <Link to='addsurvey' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                                 Create Survey
+                              </Link>
+                              : <Link to='addsurvey' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                               Create Survey
+                              </Link>
+                            }
+                        </div>
+                      </div>
+                      { this.state.surveysData && this.state.surveysData.length > 0
+                      ? <div className='table-responsive'>
+                        <table className='table table-striped'>
+                          <thead>
                             <tr>
-                              <td>{survey.title}</td>
-                              <td>{survey.description}</td>
-                              <td>{handleDate(survey.datetime)}</td>
-                              <td>{survey.sent}</td>
-                              <td>{survey.seen}</td>
-                              <td>{survey.responses}</td>
-                              <td>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(survey)}>View
-                              </button>
-                                { this.props.subscribers && this.props.subscribers.length === 0
-                                ? <span>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoResults(survey)}>
-                                Report
-                              </button>
+                              <th>Title</th>
+                              <th>Description</th>
+                              <th>Created At</th>
+                              <th>Sent</th>
+                              <th>Seen</th>
+                              <th>Responded</th>
+                              <th>Actions</th>
 
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                            this.state.surveysData.map((survey, i) => (
+                              <tr>
+                                <td>{survey.title}</td>
+                                <td>{survey.description}</td>
+                                <td>{handleDate(survey.datetime)}</td>
+                                <td>{survey.sent}</td>
+                                <td>{survey.seen}</td>
+                                <td>{survey.responses}</td>
+                                <td>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
-                                    onClick={() => this.props.sendsurvey(
-                                        survey)}> Send
-                              </button>
-                                </span>
+                                    onClick={() => this.gotoView(survey)}>View
+                                  </button>
+                                  { this.props.subscribers && this.props.subscribers.length === 0
+                                    ? <span>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.gotoResults(survey)}>
+                                    Report
+                                  </button>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.props.sendsurvey(
+                                            survey)}> Send
+                                      </button>
+                                    </span>
                               : <span>
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
@@ -249,38 +270,38 @@ class Survey extends React.Component {
                               </span>
                               }
 
-                              </td>
-                            </tr>
+                                </td>
+                              </tr>
 
                         ))
                       }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
-                  </div>
+                          </tbody>
+                        </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
                   : <div className='table-responsive'>
                     <p> No data to display </p>
                   </div>
                 }
-
+                    </div>
+                  </div>
                 </div>
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
+
     )
   }
 }

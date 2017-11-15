@@ -359,14 +359,12 @@ class Sidebar extends Component {
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <a href='components/icons/fontawesome.html' className='m-menu__link '>
+                      <Link to='/surveys' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Surveys
-												</span>
-                      </a>
+                        <span className='m-menu__link-text'>Surveys</span>
+                      </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
                       <a href='components/icons/lineawesome.html' className='m-menu__link '>

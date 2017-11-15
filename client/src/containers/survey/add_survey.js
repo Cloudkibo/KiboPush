@@ -6,9 +6,7 @@
 import React from 'react'
 import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { createsurvey } from '../../redux/actions/surveys.actions'
@@ -48,7 +46,8 @@ class AddSurvey extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
-      steps: []
+      steps: [],
+      showDropDown: false
     }
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
@@ -63,6 +62,8 @@ class AddSurvey extends React.Component {
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
   }
 
   componentDidMount () {
@@ -127,10 +128,27 @@ class AddSurvey extends React.Component {
       })
     }
   }
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
 
-  handlePageChange (value) {
-    var temp = value.split(',')
-    this.setState({ pageValue: temp })
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
+  handlePageChange (page) {
+    //  this.setState({ pageValue: temp })
+    var index = 0
+    for (var i = 0; i < this.props.pages.length; i++) {
+      if (page.pageName === this.props.pages[i].pageName) {
+        index = i
+        break
+      }
+    }
+    this.setState({
+      pageValue: this.props.pages[index].pageId
+    })
+    console.log('handlePageChange', this.state.pageValue)
   }
 
   handleGenderChange (value) {
@@ -488,41 +506,36 @@ class AddSurvey extends React.Component {
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='row'>
-            <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-              <div id='survey'>
-                <h2 className='presentation-margin'>Create Survey Form</h2>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Create Survey Form</h3>
+                </div>
               </div>
-              <div className='ui-block'>
-                <div className='news-feed-form'>
-
-                  <div className='tab-content'>
-                    <div className='tab-pane active' id='home-1' role='tabpanel'
-                      aria-expanded='true'>
-                      <div id='identity'>
-                        <div className='col-xl-12'>
-                          <div className='form-group' id='titl'>
-                            <label className='control-label'>Title</label>
-                            <input className='form-control'
-                              placeholder='Enter form title here' ref='title' />
-                          </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div
+                  className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        <div className='form-group' id='titl'>
+                          <label className='control-label'><h5>Title</h5></label>
+                          <input className='form-control'
+                            placeholder='Enter form title here' ref='title' />
                         </div>
-                        <br />
-                        <div className='col-xl-12'>
-                          <div className='form-group' id='desc'>
-                            <label className='control-label'>Description</label>
-                            <textarea className='form-control'
-                              placeholder='Enter form description here'
-                              rows='3' ref='description' />
-                          </div>
+                      </div>
+                      <br />
+                      <div className='col-xl-12'>
+                        <div className='form-group' id='desc'>
+                          <label className='control-label'><h5>Description</h5></label>
+                          <textarea className='form-control'
+                            placeholder='Enter form description here'
+                            rows='3' ref='description' />
                         </div>
                       </div>
                       <br />
@@ -530,6 +543,7 @@ class AddSurvey extends React.Component {
                         <h5> Add Questions </h5>
                         {this.createUI()}
                       </div>
+
                       {/*
                      <div className='col-xl-12'>
                      <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
@@ -548,6 +562,7 @@ class AddSurvey extends React.Component {
                           onClick={this.addClick.bind(this)}> Add Questions
                       </button>
                       </div>
+                      <br /><br />
                       <div className='add-options-message'>
 
                         <button className='btn btn-primary'
@@ -569,56 +584,86 @@ class AddSurvey extends React.Component {
 
                     }
                     </div>
-
+                  </div>
+                </div>
+                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <h2 className='presentation-margin'>Targeting</h2>
+                  <p>Select the type of customer you want to send survey to</p>
+                  <div className='m-portlet__head-tools'>
+                    <ul className='m-portlet__nav'>
+                      <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                        <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                          Change Page
+                        </a>
+                        {
+                          this.state.showDropDown &&
+                          <div className='m-dropdown__wrapper'>
+                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                            <div className='m-dropdown__inner'>
+                              <div className='m-dropdown__body'>
+                                <div className='m-dropdown__content'>
+                                  <ul className='m-nav'>
+                                    <li className='m-nav__section m-nav__section--first'>
+                                      <span className='m-nav__section-text'>
+                                    Connected Pages
+                                      </span>
+                                    </li>
+                                    {
+                                      this.props.pages.map((page, i) => (
+                                        <li key={page.pageId} className='m-nav__item'>
+                                          <a onClick={() => this.handlePageChange(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            <span className='m-nav__link-text multiselect-selected-text'>
+                                              {page.pageName}
+                                            </span>
+                                          </a>
+                                        </li>
+                                      ))
+                                    }
+                                    <li className='m-nav__separator m-nav__separator--fit' />
+                                    <li className='m-nav__item'>
+                                      <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                        Cancel
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          }
+                      </li>
+                    </ul>
+                  </div>
+                  <div className='form-group'>
+                    <Select
+                      closeOnSelect={!stayOpen}
+                      disabled={disabled}
+                      multi
+                      onChange={this.handleGenderChange}
+                      options={this.state.Gender.options}
+                      placeholder='Select Gender'
+                      simpleValue
+                      value={this.state.genderValue}
+                    />
+                  </div>
+                  <div className='form-group'>
+                    <Select
+                      closeOnSelect={!stayOpen}
+                      disabled={disabled}
+                      multi
+                      onChange={this.handleLocaleChange}
+                      options={this.state.Locale.options}
+                      placeholder='Select Locale'
+                      simpleValue
+                      value={this.state.localeValue}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <h2 className='presentation-margin'>Targeting</h2>
-              <p>Select the type of customer you want to send survey to</p>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handlePageChange}
-                  options={this.state.page.options}
-                  placeholder='Select page(s)'
-                  simpleValue
-                  value={this.state.pageValue}
-                />
-              </div>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handleGenderChange}
-                  options={this.state.Gender.options}
-                  placeholder='Select Gender'
-                  simpleValue
-                  value={this.state.genderValue}
-                />
-              </div>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handleLocaleChange}
-                  options={this.state.Locale.options}
-                  placeholder='Select Locale'
-                  simpleValue
-                  value={this.state.localeValue}
-                />
-              </div>
-            </div>
           </div>
         </div>
-
       </div>
-
     )
   }
 }
