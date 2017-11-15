@@ -565,15 +565,16 @@ class AddSurvey extends React.Component {
                       <br /><br />
                       <div className='add-options-message'>
 
-                        <button className='btn btn-primary'
+                        <button className='btn btn-primary pull-right'
                           onClick={this.createSurvey}> Create Survey
                       </button>
                         <Link
                           to='/surveys'
                           style={{float: 'right', margin: 2}}
-                          className='btn btn-border-think btn-transparent c-grey'>
+                          className='btn btn-border-think btn-transparent c-grey pull-right'>
                         Cancel
                       </Link>
+                        <br />
                       </div>
                       {this.state.alertMessage !== '' &&
                       <center>
@@ -634,6 +635,17 @@ class AddSurvey extends React.Component {
                       </li>
                     </ul>
                   </div>
+                  <div className='col-lg-4 col-md-9 col-sm-12'>
+											<select className='form-control m-select2' id='m_select2_9' name='param' multiple='' tabIndex='-1' aria-hidden='false'>
+												<option>dsadsa</option>
+												<optgroup label='Alaskan/Hawaiian Time Zone'>
+													<option value='AK'>
+														Alaska
+													</option>
+												</optgroup>
+											</select>
+                      <span className="select2 select2-container select2-container--default select2-container--focus select2-container--below" dir="ltr"><span className="selection"><span className="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabIndex="-1"><ul className="select2-selection__rendered"><li className="select2-search select2-search--inline"><input className="select2-search__field" type="search" tabIndex="0" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" role="textbox" aria-autocomplete="list" placeholder="" /></li></ul></span></span><span className="dropdown-wrapper" aria-hidden="true"></span></span>
+										</div>
                   <div className='form-group'>
                     <Select
                       closeOnSelect={!stayOpen}
