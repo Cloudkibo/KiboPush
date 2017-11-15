@@ -5,9 +5,7 @@
 import React from 'react'
 import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -37,7 +35,7 @@ class Poll extends React.Component {
 
   componentWillMount () {
    // this.props.loadSubscribersList()
-    document.title('KiboPush | Poll')
+  //  document.title('KiboPush | Poll')
   }
 
   displayData (n, polls) {
@@ -128,134 +126,139 @@ class Poll extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-
-                {
-                this.props.subscribers && this.props.subscribers.length === 0 &&
-                <div style={{padding: '10px'}}>
-                  <center>
-                    <Alert type='info' headline='0 Subscribers' >
-                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                    </Alert>
-                  </center>
-                </div>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              {
+              this.props.subscribers && this.props.subscribers.length === 0 &&
+              <div style={{padding: '10px'}}>
+                <center>
+                  <Alert type='info' headline='0 Subscribers' >
+                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                  </Alert>
+                </center>
+              </div>
               }
-                <br />
-
-                <div className='birthday-item inline-items badges'>
-                  <h3>Polls</h3>
-                  {this.props.subscribers && this.props.subscribers.length === 0
-                    ? <Link to='createpoll' className='pull-right'>
-                      <button className='btn btn-sm' disabled> Create Poll
-                    </button>
-                    </Link>
-                : <Link to='createpoll' className='pull-right'>
-                  <button className='btn btn-primary btn-sm'> Create Poll
-                    </button>
-                </Link>
-                }
-                  { this.state.pollsData && this.state.pollsData.length > 0
-                  ? <div className='table-responsive'>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Platform</th>
-                          <th>Statment</th>
-                          <th>Created At</th>
-                          <th>Sent</th>
-                          <th>Seen</th>
-                          <th>Responded</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                        this.state.pollsData.map((poll, i) => (
-                          <tr>
-                            <td>{poll.platform}</td>
-                            <td>{poll.statement}</td>
-                            <td>{handleDate(poll.datetime)}</td>
-                            <td>{poll.sent}</td>
-                            <td>{poll.seen}</td>
-                            <td>{poll.responses}</td>
-                            <td>
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}
-                                onClick={() => this.gotoViewPoll(poll)}>
-                                View
-                              </button>
-                              { this.props.subscribers && this.props.subscribers.length === 0
-                              ? <span>
-                                <button className='btn btn-sm' disabled
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.props.sendpoll(poll)}>
-                                  Send
-                                </button>
-                                <button className='btn btn-sm' disabled
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(poll)}>Report
-                                </button>
-                              </span>
-                              : <span>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.props.sendpoll(poll)}>
-                                  Send
-                                </button>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(poll)}>Report
-                                </button>
-                              </span>
-                            }
-                            </td>
-                          </tr>
-                        ))
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Polls
+                          </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        {this.props.subscribers && this.props.subscribers.length === 0
+                        ? <Link disabled to='createpoll'className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                          Create Poll
+                        </Link>
+                        : <Link to='createpoll' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                          Create Poll
+                        </Link>
+                        }
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      {this.state.pollsData && this.state.pollsData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--scroll m-datatable--loaded'>
+                        <table className='m_datatable' id='poll_datatable'>
+                          <thead>
+                            <tr>
+                              <th>Platform</th>
+                              <th>Statment</th>
+                              <th>Created At</th>
+                              <th>Sent</th>
+                              <th>Seen</th>
+                              <th>Responded</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {
+                            this.state.pollsData.map((poll, i) => (
+                              <tr>
+                                <td>{poll.platform}</td>
+                                <td>{poll.statement}</td>
+                                <td>{handleDate(poll.datetime)}</td>
+                                <td>{poll.sent}</td>
+                                <td>{poll.seen}</td>
+                                <td>{poll.responses}</td>
+                                <td>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.gotoViewPoll(poll)}>
+                                    View
+                                  </button>
+                                  { this.props.subscribers && this.props.subscribers.length === 0
+                                  ? <span>
+                                    <button className='btn btn-sm' disabled
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.props.sendpoll(poll)}>
+                                      Send
+                                    </button>
+                                    <button className='btn btn-sm' disabled
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.gotoView(poll)}>Report
+                                    </button>
+                                  </span>
+                                  : <span>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.props.sendpoll(poll)}>
+                                      Send
+                                    </button>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.gotoView(poll)}>Report
+                                    </button>
+                                  </span>
+                                }
+                                </td>
+                              </tr>
+                          ))
+                        }
+                          </tbody>
+                        </table>
+                        <div className='m-datatable__pager m-datatable--paging-loaded clearfix'>
+                          <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
                       }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      {
+                        this.state.alertMessage !== '' &&
+                        <center>
+                          <Alert type={this.state.alertType} >
+                            {this.state.alertMessage}
+                          </Alert>
+                        </center>
+                      }
+                    </div>
                   </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
-                  {
-                      this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType} >
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-                  }
                 </div>
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
-
     )
   }
 }
