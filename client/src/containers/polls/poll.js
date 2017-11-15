@@ -155,13 +155,11 @@ class Poll extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {this.props.subscribers && this.props.subscribers.length === 0
-                        ? <Link to='createpoll' className='pull-right'>
-                          <button className='btn btn-sm' disabled> Create Poll
-                        </button>
+                        ? <Link disabled to='createpoll'className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                          Create Poll
                         </Link>
-                        : <Link to='createpoll' className='pull-right'>
-                          <button className='btn btn-primary btn-sm'> Create Poll
-                            </button>
+                        : <Link to='createpoll' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                          Create Poll
                         </Link>
                         }
                       </div>
@@ -169,19 +167,19 @@ class Poll extends React.Component {
                     <div className='m-portlet__body'>
                       {this.state.pollsData && this.state.pollsData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--scroll m-datatable--loaded'>
-                        <table className='m-datatable__table'>
-                          <thead className='m-datatable__head'>
-                            <tr className='m-datatable__row'>
-                              <th className='m-datatable__cell'>Platform</th>
-                              <th className='m-datatable__cell'>Statment</th>
-                              <th className='m-datatable__cell'>Created At</th>
-                              <th className='m-datatable__cell'>Sent</th>
-                              <th className='m-datatable__cell'>Seen</th>
-                              <th className='m-datatable__cell'>Responded</th>
-                              <th className='m-datatable__cell'>Actions</th>
+                        <table className='m_datatable' id='poll_datatable'>
+                          <thead>
+                            <tr>
+                              <th>Platform</th>
+                              <th>Statment</th>
+                              <th>Created At</th>
+                              <th>Sent</th>
+                              <th>Seen</th>
+                              <th>Responded</th>
+                              <th>Actions</th>
                             </tr>
                           </thead>
-                          <tbody className='m-datatable__body'>
+                          <tbody>
                             {
                             this.state.pollsData.map((poll, i) => (
                               <tr>
@@ -228,7 +226,7 @@ class Poll extends React.Component {
                           </tbody>
                         </table>
                         <div className='m-datatable__pager m-datatable--paging-loaded clearfix'>
-                          <ReactPaginate previousLabel={'previous'}
+                          <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
