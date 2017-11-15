@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class Subscriber extends React.Component {
   constructor (props, context) {
