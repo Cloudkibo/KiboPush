@@ -657,31 +657,31 @@ function savesurvey (req) {
       // send the next question
       logger.serverLog(TAG,
         `survey respnse create ${JSON.stringify(resp.survey_id)}`)
-      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
-        if (err) {
-          logger.serverLog(TAG,
-            `Error occurred in finding subscriber${JSON.stringify(
-              err)}`)
+      SurveyQuestions.find({
+          surveyId: resp.survey_id,
+        _id: {$gt: resp.question_id}
+      }).populate('surveyId').exec((err2, questions) => {
+        if (err2) {
+          logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
+            err2)}`)
         }
-        logger.serverLog(TAG,
-          `updated${JSON.stringify(subscriber)}`)
-        Surveys.find({}, (err, subscriber) => {
+        Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
           if (err) {
             logger.serverLog(TAG,
               `Error occurred in finding subscriber${JSON.stringify(
                 err)}`)
           }
           logger.serverLog(TAG,
-            `all surveys with particular id${JSON.stringify(subscriber)}`)
-        })
-        SurveyQuestions.find({
-          surveyId: resp.survey_id,
-          _id: {$gt: resp.question_id}
-        }).populate('surveyId').exec((err2, questions) => {
-          if (err2) {
-            logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
-              err2)}`)
-          }
+            `updated${JSON.stringify(subscriber)}`)
+          Surveys.find({}, (err, subscriber) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Error occurred in finding subscriber${JSON.stringify(
+                  err)}`)
+            }
+            logger.serverLog(TAG,
+              `all surveys with particular id${JSON.stringify(subscriber)}`)
+          })
           logger.serverLog(TAG,
           `Questions are ${JSON.stringify(questions)}`)
           if (questions.length > 0) {
