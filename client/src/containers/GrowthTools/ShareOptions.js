@@ -194,14 +194,14 @@ class ShareOptions extends React.Component {
                           </div>
                           <div className='form-group m-form__group row'>
                             { this.state.copied &&
-                            <div className='alert alert-success' role='alert'>
+                            <div className='alert m-alert--default' role='alert'>
                               Copied to Clipboard
                             </div>
                           }
                           </div>
                         </div>
                         : <div className='m-portlet__body'>
-                          <div className='alert alert-success'
+                          <div className='alert m-alert--default'
                             style={{marginTop: '150px'}}>
                           You don't have any connected pages. Please connect
                           pages
