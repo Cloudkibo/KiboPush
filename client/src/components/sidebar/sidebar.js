@@ -392,14 +392,14 @@ class Sidebar extends Component {
                   <span className='m-menu__arrow' />
                   <ul className='m-menu__subnav'>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <a href='components/icons/flaticon.html' className='m-menu__link '>
+                      <Link to='/autoposting' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
-													Autoposting
+													Auto Posting
 												</span>
-                      </a>
+                      </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
                       <Link to='/workflows' className='m-menu__link '>
@@ -412,14 +412,14 @@ class Sidebar extends Component {
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <a href='components/icons/lineawesome.html' className='m-menu__link '>
+                      <Link to='/workflows' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
                         <span className='m-menu__link-text'>
 													Messenger Menu
 												</span>
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
