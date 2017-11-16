@@ -70,7 +70,8 @@ class Login extends React.Component {
         </div>
       </div>
     )
-    { /*
+    {  
+       /*
           <div className='landing-page'>
         <title>Landing Page</title>
 

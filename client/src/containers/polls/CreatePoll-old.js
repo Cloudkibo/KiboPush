@@ -3,10 +3,12 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Joyride from 'react-joyride'
+import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
+import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
+import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
@@ -214,151 +216,133 @@ class CreatePoll extends React.Component {
     const { disabled, stayOpen } = this.state
     return (
       <div>
+        {
+          !(this.props.user && this.props.user.pollTourSeen) &&
+          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+      }
         <Header />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Poll</h3>
+        <HeaderResponsive />
+        <Sidebar />
+        <Responsive />
+
+        <div className='container'>
+          <br />
+          <br />
+          <br />
+          <div className='row'>
+            <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+              <h2 className='presentation-margin'>Ask Facebook Subscribers a
+              Question</h2>
+              <div className='ui-block'>
+                <div className='news-feed-form'>
+
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='home-1' role='tabpanel'
+                      aria-expanded='true'>
+                      <div id='question' className='form-group label-floating is-empty'>
+                        <label className='control-label'>Ask something...</label>
+                        <textarea className='form-control'
+                          value={this.state.statement}
+                          onChange={(e) => this.updateStatment(e)} />
+                      </div>
+                      <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                        <label className='control-label'> Add 3 responses</label>
+                        <fieldset className='input-group-vertical'>
+                          <div id='responses' className='form-group'>
+                            <label className='sr-only'>Response1</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option1}
+                              onChange={(e) => this.updateOptions(e, 1)}
+                              placeholder='Response 1' />
+                          </div>
+                          <div className='form-group'>
+                            <label className='sr-only'>Response2</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option2}
+                              onChange={(e) => this.updateOptions(e, 2)}
+                              placeholder='Response 2' />
+                          </div>
+                          <div className='form-group'>
+                            <label className='sr-only'>Response3</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option3}
+                              onChange={(e) => this.updateOptions(e, 3)}
+                              placeholder='Response 3' />
+                          </div>
+                        </fieldset>
+                      </div>
+                      <br />
+                      { this.state.alert &&
+                      <center><Alert type='danger'>
+                      You have either left one or more responses empty or you
+                      have not asked anything. Please ask something and fill all
+                      three responses in order to create the poll.
+                    </Alert></center>
+                    }
+                      <div className='add-options-message'>
+
+                        <button className='btn btn-primary btn-sm'
+                          onClick={this.createPoll}> Create Poll
+                      </button>
+                        <Link
+                          to='/poll'
+                          style={{float: 'right', margin: 2}}
+                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
+                        Cancel
+                      </Link>
+                      </div>
+
+                    </div>
+
+                  </div>
                 </div>
               </div>
             </div>
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                          Ask Facebook Subscribers a Question
-                          </h3>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      <div className='m-form'>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Ask something...</label>
-                          <textarea className='form-control'
-                            value={this.state.statement}
-                            onChange={(e) => this.updateStatment(e)} />
-                        </div>
-                        <div style={{top: '10px'}}>
-                          <label className='control-label'> Add 3 responses</label>
-                          <fieldset className='input-group-vertical'>
-                            <div id='responses' className='form-group m-form__group'>
-                              <label className='sr-only'>Response1</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option1}
-                                onChange={(e) => this.updateOptions(e, 1)}
-                                placeholder='Response 1' />
-                            </div>
-                            <div className='form-group m-form__group'>
-                              <label className='sr-only'>Response2</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option2}
-                                onChange={(e) => this.updateOptions(e, 2)}
-                                placeholder='Response 2' />
-                            </div>
-                            <div className='form-group m-form__group'>
-                              <label className='sr-only'>Response3</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option3}
-                                onChange={(e) => this.updateOptions(e, 3)}
-                                placeholder='Response 3' />
-                            </div>
-                          </fieldset>
-                        </div>
-                      </div>
-                      { this.state.alert &&
-                        <center>
-                          <Alert type='danger'>
-                            You have either left one or more responses empty or you
-                            have not asked anything. Please ask something and fill all
-                            three responses in order to create the poll.
-                          </Alert>
-                        </center>
-                      }
-                    </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.createPoll}> Create Poll
-                        </button>
-                        <Link
-                          to='/poll'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Cancel
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                          Targeting
-                          </h3>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      <div className='alert m-alert m-alert--default' role='alert'>
-                        <p>Select the type of customer you want to send poll to</p>
-                      </div>
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handlePageChange}
-                            options={this.state.page.options}
-                            placeholder='Select page(s)'
-                            simpleValue
-                            value={this.state.pageValue}
-                          />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleGenderChange}
-                            options={this.state.Gender.options}
-                            placeholder='Select Gender'
-                            simpleValue
-                            value={this.state.genderValue}
-                          />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleLocaleChange}
-                            options={this.state.Locale.options}
-                            placeholder='Select Locale'
-                            simpleValue
-                            value={this.state.localeValue}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+              <h2 className='presentation-margin'>Targeting</h2>
+              <p>Select the type of customer you want to send poll to</p>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handlePageChange}
+                  options={this.state.page.options}
+                  placeholder='Select page(s)'
+                  simpleValue
+                  value={this.state.pageValue}
+                />
+              </div>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handleGenderChange}
+                  options={this.state.Gender.options}
+                  placeholder='Select Gender'
+                  simpleValue
+                  value={this.state.genderValue}
+                />
+              </div>
+              <div className='form-group'>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handleLocaleChange}
+                  options={this.state.Locale.options}
+                  placeholder='Select Locale'
+                  simpleValue
+                  value={this.state.localeValue}
+                />
               </div>
             </div>
           </div>
+
         </div>
       </div>
+
     )
   }
 }

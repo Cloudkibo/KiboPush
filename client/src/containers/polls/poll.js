@@ -155,11 +155,11 @@ class Poll extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {this.props.subscribers && this.props.subscribers.length === 0
-                        ? <Link disabled to='createpoll'className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                          Create Poll
+                        ? <Link to='createpoll'>
+                          <button className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air' disabled>Create Poll</button>
                         </Link>
-                        : <Link to='createpoll' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                          Create Poll
+                        : <Link to='createpoll'>
+                          <button className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>Create Poll</button>
                         </Link>
                         }
                       </div>
@@ -167,7 +167,7 @@ class Poll extends React.Component {
                     <div className='m-portlet__body'>
                       {this.state.pollsData && this.state.pollsData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--scroll m-datatable--loaded'>
-                        <table className='m_datatable' id='poll_datatable'>
+                        <table className='m_datatable' id='html_table'>
                           <thead>
                             <tr>
                               <th>Platform</th>
