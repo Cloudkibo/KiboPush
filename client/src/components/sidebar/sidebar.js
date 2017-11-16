@@ -8,8 +8,8 @@ import React, {Component} from 'react'
 import { Link } from 'react-router'
 import ReactTooltip from 'react-tooltip'
 // import Icon from 'react-icons-kit'
-import {ModalContainer, ModalDialog} from 'react-modal-dialog'
-import UserGuide from '../../containers/userGuide/userGuide'
+//  import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+//  import UserGuide from '../../containers/userGuide/userGuide'
 // import { question } from 'react-icons-kit/icomoon'   // userGuide
 // import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
 // import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
@@ -21,7 +21,7 @@ import UserGuide from '../../containers/userGuide/userGuide'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-import Notification from 'react-web-notification'
+//  import Notification from 'react-web-notification'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
@@ -247,42 +247,33 @@ class Sidebar extends Component {
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
-        <div id='m_aside_left' className='m-grid__item	m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + 'vh'}}>
+        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + 'vh'}}>
           <div
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
-            data-menu-scrollable='false' data-menu-dropdown-timeout='500'
-		>
+            data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/dashboard' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-squares-4' />
-                  <span className='m-menu__link-text'>
-										Dashboard
-									</span>
+                  <span className='m-menu__link-text'>Dashboard</span>
                 </Link>
               </li>
               <li className='m-menu__section'>
-                <h4 className='m-menu__section-text'>
-									Actions
-								</h4>
+                <h4 className='m-menu__section-text'>Actions</h4>
                 <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-users' />
-                  <span className='m-menu__link-text'>
-										Subscribers
-									</span>
+                  <span className='m-menu__link-text'>Subscribers</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-rocket' />
-                  <span className='m-menu__link-text'>
-										Growth Tools
-									</span>
+                  <span className='m-menu__link-text'>Growth Tools</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
                 <div className='m-menu__submenu'>
@@ -293,9 +284,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Customer Matching
-												</span>
+                        <span className='m-menu__link-text'>Customer Matching</span>
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
@@ -303,9 +292,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Subscribe to Messenger
-												</span>
+                        <span className='m-menu__link-text'>Subscribe to Messenger</span>
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
@@ -313,9 +300,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Share
-												</span>
+                        <span className='m-menu__link-text'>Share</span>
                       </Link>
                     </li>
                   </ul>
@@ -324,25 +309,19 @@ class Sidebar extends Component {
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/live' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-chat-1' />
-                  <span className='m-menu__link-text'>
-										Live Chat
-									</span>
+                  <span className='m-menu__link-text'>Live Chat</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/poll' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-chat-1' />
-                  <span className='m-menu__link-text'>
-										Polls
-									</span>
+                  <span className='m-menu__link-text'>Polls</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-paper-plane' />
-                  <span className='m-menu__link-text'>
-										Broadcasting
-									</span>
+                  <span className='m-menu__link-text'>Broadcasting</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
                 <div className='m-menu__submenu'>
@@ -353,9 +332,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Broadcasts
-												</span>
+                        <span className='m-menu__link-text'>Broadcasts</span>
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
@@ -371,9 +348,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Polls
-												</span>
+                        <span className='m-menu__link-text'>Polls</span>
                       </a>
                     </li>
                   </ul>
@@ -383,9 +358,7 @@ class Sidebar extends Component {
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='#' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-share' />
-                  <span className='m-menu__link-text'>
-										Automation
-									</span>
+                  <span className='m-menu__link-text'>Automation</span>
                   <i className='m-menu__ver-arrow la la-angle-right' />
                 </a>
                 <div className='m-menu__submenu'>
@@ -396,9 +369,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Autoposting
-												</span>
+                        <span className='m-menu__link-text'>Autoposting</span>
                       </a>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
@@ -406,9 +377,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Workflows
-												</span>
+                        <span className='m-menu__link-text'>Workflows</span>
                       </Link>
                     </li>
                     <li className='m-menu__item ' aria-haspopup='true' >
@@ -416,9 +385,7 @@ class Sidebar extends Component {
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
-                        <span className='m-menu__link-text'>
-													Messenger Menu
-												</span>
+                        <span className='m-menu__link-text'>Messenger Menu</span>
                       </a>
                     </li>
                   </ul>
@@ -426,25 +393,19 @@ class Sidebar extends Component {
               </li>
 
               <li className='m-menu__section'>
-                <h4 className='m-menu__section-text'>
-									Settings
-								</h4>
+                <h4 className='m-menu__section-text'>Settings</h4>
                 <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/pages' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-add' />
-                  <span className='m-menu__link-text'>
-										Pages
-									</span>
+                  <span className='m-menu__link-text'>Pages</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='http://kibopush.com/user-guide/' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-info' />
-                  <span className='m-menu__link-text'>
-										User Guide
-									</span>
+                  <span className='m-menu__link-text'>User Guide</span>
                 </a>
               </li>
             </ul>

@@ -1,13 +1,10 @@
 import React from 'react'
 import Files from 'react-files'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
-import { Alert } from 'react-bs-notifier'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
