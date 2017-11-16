@@ -1,7 +1,7 @@
 /**
  * Created by sojharo on 27/07/2017.
  */
-
+//  
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
