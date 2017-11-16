@@ -136,18 +136,35 @@ class AddSurvey extends React.Component {
     this.setState({showDropDown: false})
   }
 
-  handlePageChange (page) {
+  handlePageChange (event) {
     //  this.setState({ pageValue: temp })
-    var index = 0
-    for (var i = 0; i < this.props.pages.length; i++) {
-      if (page.pageName === this.props.pages[i].pageName) {
-        index = i
-        break
+    // var index = 0
+    // for (var i = 0; i < this.props.pages.length; i++) {
+    //   if (page.pageName === this.props.pages[i].pageName) {
+    //     index = i
+    //     break
+    //   }
+    // }
+    // this.setState({
+    //   pageValue: this.props.pages[index].pageId
+    // })
+    // console.log('handlePageChange', this.state.pageValue)
+    var temp = this.state.pageValue
+    console.log('handlePageChange', event.target.value)
+    if (temp.length === 0) {
+      temp.push(event.target.value)
+    } else {
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i].contains(event.target.value)) {
+          var index = temp.indexOf(event.target.value)
+          temp.splice(index, 1)
+        } else {
+          temp.push(event.target.value)
+        }
       }
     }
-    this.setState({
-      pageValue: this.props.pages[index].pageId
-    })
+    console.log('handlePageChange', temp)
+    this.setState({ pageValue: temp })
     console.log('handlePageChange', this.state.pageValue)
   }
 
@@ -635,10 +652,10 @@ class AddSurvey extends React.Component {
                       </li>
                     </ul>
                   </div>
-                  <select className='selectpicker' multiple title="Select Page(s)">
+                  <select multiple className='selectpicker' title='Select Page(s)' onChange={this.handlePageChange}>
                     {
                       this.props.pages.map((page, i) => (
-                        <option>{page.pageName}</option>
+                        <option value={page.pageName}>{page.pageName}</option>
                       ))
                     }
                   </select>

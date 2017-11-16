@@ -112,6 +112,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^4.0.4",
     "react-select": "^1.0.0-rc.10",
+    "react-select-picker": "0.0.7",
     "react-sidenav": "^2.1.2",
     "react-simple-popover": "^0.2.0",
     "react-slick": "^0.15.4",
