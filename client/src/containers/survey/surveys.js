@@ -20,8 +20,8 @@ import ReactPaginate from 'react-paginate'
 
 class Survey extends React.Component {
   constructor (props, context) {
-    props.loadSurveysList()
     super(props, context)
+    //  this.props.loadSurveysList()
     this.state = {
       alertMessage: '',
       alertType: '',
@@ -46,7 +46,9 @@ class Survey extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Survey'
   }
-
+  componentWillMount () {
+    this.props.loadSurveysList()
+  }
   displayData (n, surveys) {
     console.log(surveys)
     let offset = n * 5
@@ -212,6 +214,7 @@ class Survey extends React.Component {
                             }
                         </div>
                       </div>
+                      {console.log('surveysData', this.props.surveys)}
                       { this.state.surveysData && this.state.surveysData.length > 0
                       ? <div className='table-responsive'>
                         <table className='table table-striped'>
