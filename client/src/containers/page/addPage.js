@@ -4,9 +4,9 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
+//  import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
+//  import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import {
@@ -15,7 +15,7 @@ import {
   removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Alert } from 'react-bs-notifier'
+//  import { Alert } from 'react-bs-notifier'
 
 class AddPage extends React.Component {
   constructor (props) {

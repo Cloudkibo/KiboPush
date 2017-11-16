@@ -21,7 +21,7 @@ export function transformData (data) {
     }
   })
   var final = {}
-  final.persistent_menu = [{ call_to_actions: data}]
+  final.persistent_menu = [{ call_to_actions: data }]
   JSONstringify(final)
   return final
 }
