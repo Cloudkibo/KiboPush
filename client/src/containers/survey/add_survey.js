@@ -8,7 +8,6 @@ import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import Select from 'react-select'
 import { createsurvey } from '../../redux/actions/surveys.actions'
 import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -28,17 +27,17 @@ class AddSurvey extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-                  {label: 'Female', value: 'female'},
-                  {label: 'Other', value: 'other'}
+        options: [{id: 'Male', text: 'male'},
+                  {id: 'Female', text: 'female'},
+                  {id: 'Other', text: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'az_AZ', value: 'az_AZ'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -56,14 +55,12 @@ class AddSurvey extends React.Component {
     // choiceCount: //no of options
     // options: [] array of choice values
     this.createSurvey = this.createSurvey.bind(this)
-    this.handlePageChange = this.handlePageChange.bind(this)
-    this.handleGenderChange = this.handleGenderChange.bind(this)
-    this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
 
   componentDidMount () {
@@ -84,9 +81,14 @@ class AddSurvey extends React.Component {
     document.title = 'KiboPush | Add Survey'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
+    console.log('gender options', this.state.Gender.options)
+    console.log('locale', this.state.Locale.options)
     this.setState({page: {options: options}})
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializePageSelect(options)
     this.addSteps([
       {
         title: 'Surveys',
@@ -119,6 +121,76 @@ class AddSurvey extends React.Component {
     ])
   }
 
+  initializePageSelect (pageOptions) {
+    console.log('asd', pageOptions)
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (genderOptions) {
+    var self = this
+    $('#selectGender').select2({
+      data: genderOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectGender').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change Gender', selected)
+    })
+  }
+
+  initializeLocaleSelect (localeOptions) {
+    var self = this
+    $('#selectLocale').select2({
+      data: localeOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectLocale').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change Locale', selected)
+    })
+  }
+
   componentWillReceiveProps (nextprops) {
     if (nextprops.createwarning) {
       console.log('i am called')
@@ -128,56 +200,6 @@ class AddSurvey extends React.Component {
       })
     }
   }
-  showDropDown () {
-    this.setState({showDropDown: true})
-  }
-
-  hideDropDown () {
-    this.setState({showDropDown: false})
-  }
-
-  handlePageChange (event) {
-    //  this.setState({ pageValue: temp })
-    // var index = 0
-    // for (var i = 0; i < this.props.pages.length; i++) {
-    //   if (page.pageName === this.props.pages[i].pageName) {
-    //     index = i
-    //     break
-    //   }
-    // }
-    // this.setState({
-    //   pageValue: this.props.pages[index].pageId
-    // })
-    // console.log('handlePageChange', this.state.pageValue)
-    var temp = this.state.pageValue
-    console.log('handlePageChange', event.target.value)
-    if (temp.length === 0) {
-      temp.push(event.target.value)
-    } else {
-      for (var i = 0; i < temp.length; i++) {
-        if (temp[i].contains(event.target.value)) {
-          var index = temp.indexOf(event.target.value)
-          temp.splice(index, 1)
-        } else {
-          temp.push(event.target.value)
-        }
-      }
-    }
-    console.log('handlePageChange', temp)
-    this.setState({ pageValue: temp })
-    console.log('handlePageChange', this.state.pageValue)
-  }
-
-  handleGenderChange (value) {
-    var temp = value.split(',')
-    this.setState({ genderValue: temp })
-  }
-
-  handleLocaleChange (value) {
-    var temp = value.split(',')
-    this.setState({ localeValue: temp })
-  }
-
   createSurvey (e) {
     e.preventDefault()
     let flag = 0
@@ -605,102 +627,32 @@ class AddSurvey extends React.Component {
                   </div>
                 </div>
                 <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <h2 className='presentation-margin'>Targeting</h2>
-                  <p>Select the type of customer you want to send survey to</p>
-                  <div className='m-portlet__head-tools'>
-                    <ul className='m-portlet__nav'>
-                      <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                        <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                          Change Page
-                        </a>
-                        {
-                          this.state.showDropDown &&
-                          <div className='m-dropdown__wrapper'>
-                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                            <div className='m-dropdown__inner'>
-                              <div className='m-dropdown__body'>
-                                <div className='m-dropdown__content'>
-                                  <ul className='m-nav'>
-                                    <li className='m-nav__section m-nav__section--first'>
-                                      <span className='m-nav__section-text'>
-                                    Connected Pages
-                                      </span>
-                                    </li>
-                                    {
-                                      this.props.pages.map((page, i) => (
-                                        <li key={page.pageId} className='m-nav__item'>
-                                          <a onClick={() => this.handlePageChange(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                            <span className='m-nav__link-text multiselect-selected-text'>
-                                              {page.pageName}
-                                            </span>
-                                          </a>
-                                        </li>
-                                      ))
-                                    }
-                                    <li className='m-nav__separator m-nav__separator--fit' />
-                                    <li className='m-nav__item'>
-                                      <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                        Cancel
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          }
-                      </li>
-                    </ul>
-                  </div>
-                  <select multiple className='selectpicker' title='Select Page(s)' onChange={this.handlePageChange}>
-                    {
-                      this.props.pages.map((page, i) => (
-                        <option value={page.pageName}>{page.pageName}</option>
-                      ))
-                    }
-                  </select>
-                  <div className="form-group m-form__group row">
-										<label className="col-form-label col-lg-3 col-sm-12">
-											Multi Select
-										</label>
-										<div className="col-lg-4 col-md-9 col-sm-12">
-
-											<select className="form-control m-select2" id="m_select2_3" name="param" multiple="">
-                        {
-                          this.props.pages.map((page, i) => (
-
-                            <option>{page.pageName}</option>
-                          ))
-                        }
-
-											</select><span className="select2 select2-container select2-container--default select2-container--focus select2-container--below select2-container--open" dir="ltr"><span className="selection"><span className="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="true" tabindex="-1" aria-owns="select2-m_select2_3-results" aria-activedescendant="select2-m_select2_3-result-pt0d-CO"><ul className="select2-selection__rendered">
-                      <li className="select2-search select2-search--inline"><input className="select2-search__field" type="search" tabIndex="0" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" role="textbox" aria-autocomplete="list" placeholder="" /></li></ul></span></span>
-                          <span className="dropdown-wrapper" aria-hidden="true"></span></span>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Targeting
+                          </h3>
                         </div>
                       </div>
-                  <div className='form-group'>
-                    <Select
-                      closeOnSelect={!stayOpen}
-                      disabled={disabled}
-                      multi
-                      onChange={this.handleGenderChange}
-                      options={this.state.Gender.options}
-                      placeholder='Select Gender'
-                      simpleValue
-                      value={this.state.genderValue}
-                    />
-                  </div>
-                  <div className='form-group'>
-                    <Select
-                      closeOnSelect={!stayOpen}
-                      disabled={disabled}
-                      multi
-                      onChange={this.handleLocaleChange}
-                      options={this.state.Locale.options}
-                      placeholder='Select Locale'
-                      simpleValue
-                      value={this.state.localeValue}
-                    />
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='alert m-alert m-alert--default' role='alert'>
+                        <p>Select the type of customer you want to send survey to</p>
+                      </div>
+                      <div className='m-form'>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectGender' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectLocale' />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
