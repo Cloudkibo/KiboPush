@@ -21,7 +21,6 @@ import ReactPaginate from 'react-paginate'
 
 class Poll extends React.Component {
   constructor (props, context) {
-    props.loadPollsList()
     super(props, context)
     this.state = {
       alertMessage: '',
@@ -34,6 +33,7 @@ class Poll extends React.Component {
   }
 
   componentWillMount () {
+    this.props.loadPollsList()
    // this.props.loadSubscribersList()
   //  document.title('KiboPush | Poll')
   }
@@ -99,13 +99,6 @@ class Poll extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  gotoEdit (broadcast) {
-    this.props.history.push({
-      pathname: '/editbroadcast',
-      state: broadcast
-    })
-  }
-
   gotoView (poll) {
     this.props.history.push({
       pathname: `/pollResult`,
@@ -155,94 +148,118 @@ class Poll extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {this.props.subscribers && this.props.subscribers.length === 0
-                        ? <Link disabled to='createpoll'className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                          Create Poll
+                        ? <Link to='createpoll'>
+                          <button className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air' disabled>Create Poll</button>
                         </Link>
-                        : <Link to='createpoll' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                          Create Poll
+                        : <Link to='createpoll'>
+                          <button className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>Create Poll</button>
                         </Link>
                         }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      {this.state.pollsData && this.state.pollsData.length > 0
-                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--scroll m-datatable--loaded'>
-                        <table className='m_datatable' id='poll_datatable'>
-                          <thead>
-                            <tr>
-                              <th>Platform</th>
-                              <th>Statment</th>
-                              <th>Created At</th>
-                              <th>Sent</th>
-                              <th>Seen</th>
-                              <th>Responded</th>
-                              <th>Actions</th>
+                      { this.state.pollsData && this.state.pollsData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px'}}>Platform</span>
+                              </th>
+                              <th data-field='statement'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Statement</span>
+                              </th>
+                              <th data-field='datetime'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Created At</span>
+                              </th>
+                              <th data-field='sent'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '50px'}}>Sent</span>
+                              </th>
+                              <th data-field='seen'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '50px'}}>Seen</span>
+                              </th>
+                              <th data-field='responses'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px'}}>Responses</span>
+                              </th>
+                              <th data-field='actions'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '200px'}}>Actions</span>
+                              </th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody className='m-datatable__body'>
                             {
                             this.state.pollsData.map((poll, i) => (
-                              <tr>
-                                <td>{poll.platform}</td>
-                                <td>{poll.statement}</td>
-                                <td>{handleDate(poll.datetime)}</td>
-                                <td>{poll.sent}</td>
-                                <td>{poll.seen}</td>
-                                <td>{poll.responses}</td>
-                                <td>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoViewPoll(poll)}>
-                                    View
-                                  </button>
-                                  { this.props.subscribers && this.props.subscribers.length === 0
-                                  ? <span>
-                                    <button className='btn btn-sm' disabled
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.props.sendpoll(poll)}>
-                                      Send
-                                    </button>
-                                    <button className='btn btn-sm' disabled
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(poll)}>Report
-                                    </button>
-                                  </span>
-                                  : <span>
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{poll.platform}</span></td>
+                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{poll.statement}</span></td>
+                                <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
+                                <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.sent}</span></td>
+                                <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td>
+                                <td data-field='responses' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.responses}</span></td>
+                                <td data-field='actions' className='m-datatable__cell'>
+                                  <span style={{width: '200px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.props.sendpoll(poll)}>
-                                      Send
+                                      onClick={() => this.gotoViewPoll(poll)}>
+                                      View
                                     </button>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(poll)}>Report
-                                    </button>
+                                    { this.props.subscribers && this.props.subscribers.length === 0
+                                    ? <span style={{width: '150px'}}>
+                                      <button className='btn btn-sm' disabled
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.props.sendpoll(poll)}>
+                                        Send
+                                      </button>
+                                      <button className='btn btn-sm' disabled
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.gotoView(poll)}>Report
+                                      </button>
+                                    </span>
+                                    : <span style={{width: '150px'}}>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.props.sendpoll(poll)}>
+                                        Send
+                                      </button>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.gotoView(poll)}>Report
+                                      </button>
+                                    </span>
+                                    }
                                   </span>
-                                }
                                 </td>
                               </tr>
-                          ))
-                        }
+                            ))
+                          }
                           </tbody>
                         </table>
-                        <div className='m-datatable__pager m-datatable--paging-loaded clearfix'>
-                          <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
-                            nextLabel={'next'}
-                            breakLabel={<a>...</a>}
-                            breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
-                        </div>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
                       </div>
                       : <span>
                         <p> No data to display </p>
                       </span>
-                      }
+                    }
                       {
                         this.state.alertMessage !== '' &&
                         <center>
