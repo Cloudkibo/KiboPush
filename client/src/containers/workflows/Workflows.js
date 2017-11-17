@@ -4,16 +4,14 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import {
   addWorkFlow,
-  loadWorkFlowList,
   disableworkflow,
-  enableworkflow
+  enableworkflow,
+  loadWorkFlowList
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
