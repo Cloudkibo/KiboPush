@@ -25,8 +25,23 @@ class EditWorkflow extends React.Component {
       condition: props.location.state.condition,
       keywords: props.location.state.keywords,
       reply: props.location.state.reply,
-      isActive: props.location.state.isActive === true ? 'Yes' : 'No'
+      isActive: props.location.state.isActive === true ? 'Yes' : 'No',
+      conditionSelect: {
+        options: [
+          {id: 'message_is', text: 'Message is'},
+          {id: 'message_contains', text: 'Message Contains'},
+          {id: 'message_begins', text: 'Message Begins with'}
+        ]
+      },
+      activeSelect: {
+        options: [
+          {id: 'yes', text: 'Yes'},
+          {id: 'no', text: 'No'}
+        ]
+      }
     }
+    this.initializeConditionSelect = this.initializeConditionSelect.bind(this)
+    this.initializeActiveSelect = this.initializeActiveSelect.bind(this)
   }
 
   componentDidMount () {
@@ -42,6 +57,55 @@ class EditWorkflow extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Edit Workflow'
+
+    this.initializeConditionSelect(this.state.conditionSelect.options)
+    this.initializeActiveSelect(this.state.activeSelect.options)
+  }
+
+  initializeConditionSelect (conditionOptions) {
+    var self = this
+    $('#conditionSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Condition',
+      allowClear: true,
+      multiple: true
+    })
+    $('#conditionSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ condition: selected })
+      }
+      console.log('change condition', selected)
+    })
+  }
+
+  initializeActiveSelect (activeOptions) {
+    var self = this
+    $('#isActiveSelect').select2({
+      data: activeOptions,
+      placeholder: 'Select Status',
+      allowClear: true,
+      multiple: true
+    })
+    $('#isActiveSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ isActive: selected })
+      }
+      console.log('change active', selected)
+    })
   }
 
   gotoWorkflow () {
@@ -113,25 +177,7 @@ class EditWorkflow extends React.Component {
                           Rule
                         </label>
                         <div className='col-lg-6' id='rules'>
-                          <select className='form-control m-select2 select2-hidden-accessible' id='m_select2_1' name='param' tabIndex='-1' aria-hidden='true' onChange={this.changeCondition}
-                            value={this.state.condition}>
-                            <option value='message_is'>Message is</option>
-                            <option value='message_contains'>Message Contains</option>
-                            <option value='message_begins'>Message Begins with</option>
-                          </select>
-                          <span className='select2 select2-container select2-container--default select2-container--below select2-container--focus' dir='ltr' style={{width: '281.328px'}}>
-                            <span className='selection'>
-                              <span className='select2-selection select2-selection--single' role='combobox' aria-haspopup='true' aria-expanded='false' tabIndex='0' aria-labelledby='select2-m_select2_1-container'>
-                                <span className='select2-selection__rendered' id='select2-m_select2_1-container' title={this.state.condition}>
-                                  {this.state.condition}
-                                </span>
-                                <span className='select2-selection__arrow' role='presentation'>
-                                  <b role='presentation' />
-                                </span>
-                              </span>
-                            </span>
-                            <span className='dropdown-wrapper' aria-hidden='true' />
-                          </span>
+                          <select id='conditionSelect' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -162,24 +208,7 @@ class EditWorkflow extends React.Component {
                           Is Active?
                         </label>
                         <div className='col-lg-6'>
-                          <select className='form-control m-select2 select2-hidden-accessible' id='isActive' name='param' tabIndex='-1' aria-hidden='true' onChange={this.changeActive}
-                            value={this.state.isActive}>
-                            <option value='message_is'>Yes</option>
-                            <option value='message_contains'>No</option>
-                          </select>
-                          <span className='select2 select2-container select2-container--default select2-container--below select2-container--focus' dir='ltr' style={{width: '281.328px'}}>
-                            <span className='selection'>
-                              <span className='select2-selection select2-selection--single' role='combobox' aria-haspopup='true' aria-expanded='false' tabIndex='0' aria-labelledby='select2-m_select2_1-container'>
-                                <span className='select2-selection__rendered' id='select2-m_select2_1-container' title={this.state.isActive}>
-                                  {this.state.isActive}
-                                </span>
-                                <span className='select2-selection__arrow' role='presentation'>
-                                  <b role='presentation' />
-                                </span>
-                              </span>
-                            </span>
-                            <span className='dropdown-wrapper' aria-hidden='true' />
-                          </span>
+                          <select id='isActiveSelect' />
                         </div>
                       </div>
                     </div>

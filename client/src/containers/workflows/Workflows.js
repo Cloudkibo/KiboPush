@@ -25,7 +25,20 @@ class Workflows extends React.Component {
       workflowsDataAll: [],
       totalLength: 0,
       filterByCondition: '',
-      filterByStatus: ''
+      filterByStatus: '',
+      conditionSelect: {
+        options: [
+          {id: 'message_is', text: 'Message is'},
+          {id: 'message_contains', text: 'Message Contains'},
+          {id: 'message_begins', text: 'Message Begins with'}
+        ]
+      },
+      activeSelect: {
+        options: [
+          {id: 'yes', text: 'Yes'},
+          {id: 'no', text: 'No'}
+        ]
+      }
     }
     this.disableWorkflow = this.disableWorkflow.bind(this)
     this.enableWorkflow = this.enableWorkflow.bind(this)
@@ -33,6 +46,8 @@ class Workflows extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleFilterByCondition = this.handleFilterByCondition.bind(this)
     this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
+    this.initializeConditionSelect = this.initializeConditionSelect.bind(this)
+    this.initializeActiveSelect = this.initializeActiveSelect.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -90,6 +105,55 @@ class Workflows extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Workflows'
+
+    this.initializeConditionSelect(this.state.conditionSelect.options)
+    this.initializeActiveSelect(this.state.activeSelect.options)
+  }
+
+  initializeConditionSelect (conditionOptions) {
+    var self = this
+    $('#conditionSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Condition',
+      allowClear: true,
+      multiple: true
+    })
+    $('#conditionSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ filterByCondition: selected })
+      }
+      console.log('change condition', selected)
+    })
+  }
+
+  initializeActiveSelect (activeOptions) {
+    var self = this
+    $('#isActiveSelect').select2({
+      data: activeOptions,
+      placeholder: 'Select Status',
+      allowClear: true,
+      multiple: true
+    })
+    $('#isActiveSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ filterByStatus: selected })
+      }
+      console.log('change active', selected)
+    })
   }
 
   handleFilterByCondition (e) {
@@ -215,78 +279,7 @@ class Workflows extends React.Component {
                                   <div className='m-form__control'>
                                     <div
                                       className='btn-group bootstrap-select form-control m-bootstrap-select'>
-                                      <button type='button'
-                                        className='btn dropdown-toggle bs-placeholder btn-default'
-                                        data-toggle='dropdown'
-                                        role='button'
-                                        data-id='m_form_status'
-                                        title='All'><span
-                                          className='filter-option pull-left'>
-                                  All
-                                </span>&nbsp;<span className='bs-caret'><span
-                                  className='caret' /></span></button>
-                                      <div className='dropdown-menu open'
-                                        role='combobox'>
-                                        <ul className='dropdown-menu inner'
-                                          role='listbox'
-                                          aria-expanded='false'>
-                                          <li data-original-index='0'
-                                            className='selected'><a
-                                              tabIndex='0' className=''
-                                              data-tokens='null' role='option'
-                                              aria-disabled='false'
-                                              aria-selected='true'><span
-                                                className='text'>
-                                  All
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                          <li data-original-index='1'><a
-                                            tabIndex='0' className=''
-                                            data-tokens='null' role='option'
-                                            aria-disabled='false'
-                                            aria-selected='false'><span
-                                              className='text'>
-                                  message_is
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                          <li data-original-index='2'><a
-                                            tabIndex='0' className=''
-                                            data-tokens='null' role='option'
-                                            aria-disabled='false'
-                                            aria-selected='false'><span
-                                              className='text'>
-                                  message_contains
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                          <li data-original-index='3'><a
-                                            tabIndex='0' className=''
-                                            data-tokens='null' role='option'
-                                            aria-disabled='false'
-                                            aria-selected='false'><span
-                                              className='text'>
-                                  message_begins
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      <select
-                                        className='form-control m-bootstrap-select'
-                                        id='m_form_status' tabIndex='-98'
-                                        value={this.state.filterByCondition}
-                                        onChange={this.handleFilterByCondition}>
-                                        <option value=''>
-                                            All
-                                          </option>
-                                        <option value='1'>
-                                            message_is
-                                          </option>
-                                        <option value='2'>
-                                            message_contains
-                                          </option>
-                                        <option value='3'>
-                                            message_begins
-                                          </option>
-                                      </select>
+                                      <select id='conditionSelect' />
                                     </div>
                                   </div>
                                 </div>
@@ -304,66 +297,7 @@ class Workflows extends React.Component {
                                   <div className='m-form__control'>
                                     <div
                                       className='btn-group bootstrap-select form-control m-bootstrap-select'>
-                                      <button type='button'
-                                        className='btn dropdown-toggle bs-placeholder btn-default'
-                                        data-toggle='dropdown'
-                                        role='button'
-                                        data-id='m_form_status'
-                                        title='All'><span
-                                          className='filter-option pull-left'>
-                                  All
-                                </span>&nbsp;<span className='bs-caret'><span
-                                  className='caret' /></span></button>
-                                      <div className='dropdown-menu open'
-                                        role='combobox'>
-                                        <ul className='dropdown-menu inner'
-                                          role='listbox'
-                                          aria-expanded='false'>
-                                          <li data-original-index='0'
-                                            className='selected'><a
-                                              tabIndex='0' className=''
-                                              data-tokens='null' role='option'
-                                              aria-disabled='false'
-                                              aria-selected='true'><span
-                                                className='text'>
-                                  All
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                          <li data-original-index='1'><a
-                                            tabIndex='0' className=''
-                                            data-tokens='null' role='option'
-                                            aria-disabled='false'
-                                            aria-selected='false'><span
-                                              className='text'>
-                                  yes
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                          <li data-original-index='2'><a
-                                            tabIndex='0' className=''
-                                            data-tokens='null' role='option'
-                                            aria-disabled='false'
-                                            aria-selected='false'><span
-                                              className='text'>
-                                  no
-                                </span><span className='glyphicon glyphicon-ok check-mark' /></a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      <select
-                                        className='form-control m-bootstrap-select'
-                                        id='m_form_status' tabIndex='-98'
-                                        value={this.state.filterByCondition}
-                                        onChange={this.handleFilterByCondition}>
-                                        <option value=''>
-                                            All
-                                          </option>
-                                        <option value='1'>
-                                            yes
-                                          </option>
-                                        <option value='2'>
-                                            no
-                                          </option>
-                                      </select>
+                                      <select id='isActiveSelect' />
                                     </div>
                                   </div>
                                 </div>
