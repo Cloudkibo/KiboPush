@@ -24,17 +24,17 @@ class CreatePoll extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-                  {label: 'Female', value: 'female'},
-                  {label: 'Other', value: 'other'}
+        options: [{id: 'Male', text: 'male'},
+                  {id: 'Female', text: 'female'},
+                  {id: 'Other', text: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'az_AZ', value: 'az_AZ'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -57,6 +57,9 @@ class CreatePoll extends React.Component {
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
 
   componentDidMount () {
@@ -77,9 +80,13 @@ class CreatePoll extends React.Component {
     document.title = 'KiboPush | Create Poll'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
     this.setState({page: {options: options}})
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializePageSelect(options)
+
     this.addSteps([{
       title: 'Question',
       text: 'You can write a question here that you need to get feedback on',
@@ -102,6 +109,74 @@ class CreatePoll extends React.Component {
       type: 'hover',
       isFixed: true}
     ])
+  }
+  initializePageSelect (pageOptions) {
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (genderOptions) {
+    var self = this
+    $('#selectGender').select2({
+      data: genderOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectGender').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change Gender', selected)
+    })
+  }
+
+  initializeLocaleSelect (localeOptions) {
+    var self = this
+    $('#selectLocale').select2({
+      data: localeOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectLocale').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change Locale', selected)
+    })
   }
 
   handlePageChange (value) {
@@ -315,40 +390,13 @@ class CreatePoll extends React.Component {
                       </div>
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handlePageChange}
-                            options={this.state.page.options}
-                            placeholder='Select page(s)'
-                            simpleValue
-                            value={this.state.pageValue}
-                          />
+                          <select id='selectPage' />
                         </div>
                         <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleGenderChange}
-                            options={this.state.Gender.options}
-                            placeholder='Select Gender'
-                            simpleValue
-                            value={this.state.genderValue}
-                          />
+                          <select id='selectGender' />
                         </div>
                         <div className='form-group m-form__group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleLocaleChange}
-                            options={this.state.Locale.options}
-                            placeholder='Select Locale'
-                            simpleValue
-                            value={this.state.localeValue}
-                          />
+                          <select id='selectLocale' />
                         </div>
                       </div>
                     </div>
