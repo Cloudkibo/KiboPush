@@ -6,11 +6,8 @@
 import React from 'react'
 import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import AlertContainer from 'react-alert'
 import {
   addWorkFlow,
   loadWorkFlowList
