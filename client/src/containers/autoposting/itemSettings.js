@@ -139,34 +139,84 @@ class ItemSettings extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <h3><i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}</h3>
-                  <br />
-                  <div className='table-responsive'>
-                    <form>
-                      <div className='form-group'>
-                        <label>Account Title</label>
-                        <input ref={(c) => { this.accountTitleValue = c }} type='text' className='form-control' defaultValue={this.props.location.state.title} />
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Channel Settings</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        <i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <form className='m-form m-form--label-align-right'>
+                  <div className='m-portlet__body'>
+                    <div className='m-form__section m-form__section--first'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Info
+                        </h3>
                       </div>
-                      <div className='form-group'>
-                        <label>Status</label>
-                        <select onChange={this.handleSelectChange} value={this.state.isActive}>
-                          <option value='Active'>Active</option>
-                          <option value='Disabled'>Disabled</option>
-                        </select>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Account Title
+                        </label>
+                        <div className='col-lg-6'>
+                          <input className='form-control m-input'
+                            ref={(c) => { this.accountTitleValue = c }}
+                            defaultValue={this.props.location.state.title} />
+                        </div>
                       </div>
-                      <fieldset className='form-group'>
-                        <legend>Set Targetting</legend>
-                        <div className='form-group'>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Status
+                        </label>
+                        <div className='col-lg-6' id='rules'>
+                          <select className='form-control m-select2 select2-hidden-accessible' id='m_select2_1' name='param' tabIndex='-1' aria-hidden='true'
+                            onChange={this.handleSelectChange} value={this.state.isActive}>
+                            <option value='message_is'>Active</option>
+                            <option value='message_contains'>Disabled</option>
+                          </select>
+                          <span className='select2 select2-container select2-container--default select2-container--below select2-container--focus' dir='ltr' style={{width: '281.328px'}}>
+                            <span className='selection'>
+                              <span className='select2-selection select2-selection--single' role='combobox' aria-haspopup='true' aria-expanded='false' tabIndex='0' aria-labelledby='select2-m_select2_1-container'>
+                                <span className='select2-selection__rendered' id='select2-m_select2_1-container' title={this.state.isActive}>
+                                  {this.state.isActive}
+                                </span>
+                                <span className='select2-selection__arrow' role='presentation'>
+                                  <b role='presentation' />
+                                </span>
+                              </span>
+                            </span>
+                            <span className='dropdown-wrapper' aria-hidden='true' />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-form__seperator m-form__seperator--dashed' />
+                    <div className='m-form__section m-form__section--last'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Set Segmentation
+                        </h3>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Pages
+                        </label>
+                        <div className='col-lg-6'>
                           <Select
                             closeOnSelect={!stayOpen}
                             disabled={disabled}
@@ -178,7 +228,12 @@ class ItemSettings extends React.Component {
                             value={this.state.pageValue}
                           />
                         </div>
-                        <div className='form-group'>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Gender
+                        </label>
+                        <div className='col-lg-6'>
                           <Select
                             closeOnSelect={!stayOpen}
                             disabled={disabled}
@@ -190,7 +245,12 @@ class ItemSettings extends React.Component {
                             value={this.state.genderValue}
                           />
                         </div>
-                        <div className='form-group'>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Locale
+                        </label>
+                        <div className='col-lg-6'>
                           <Select
                             closeOnSelect={!stayOpen}
                             disabled={disabled}
@@ -202,31 +262,43 @@ class ItemSettings extends React.Component {
                             value={this.state.localeValue}
                           />
                         </div>
-                      </fieldset>
-                    </form>
-                    <button onClick={this.editAutoposting} style={{float: 'left', margin: 2}} className='btn btn-primary btn-sm'>Save Changes</button>
-                    <Link
-                      style={{float: 'left', margin: 2}}
-                      to='/autoposting'
-                      className='btn btn-sm btn-border-think btn-transparent c-grey'
-                    >
-                      Back
-                    </Link>
-                    <br />
-                    {
-                      this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-                    }
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div className='m-form__actions m-form__actions'>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          <button className='btn btn-primary' onClick={this.editAutoposting} >
+                            Save Changes
+                          </button>
+                          <span>&nbsp;&nbsp;</span>
+                          <Link to='/autoposting'>
+                            <button className='btn btn-secondary'>
+                              Back
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          {
+                            this.state.alertMessage !== '' &&
+                            <center>
+                              <Alert type={this.state.alertType}>
+                                {this.state.alertMessage}
+                              </Alert>
+                            </center>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
