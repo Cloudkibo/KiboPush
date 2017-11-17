@@ -21,6 +21,7 @@ import ReactPaginate from 'react-paginate'
 
 class Poll extends React.Component {
   constructor (props, context) {
+    props.loadPollsList()
     super(props, context)
     this.state = {
       alertMessage: '',
@@ -33,7 +34,6 @@ class Poll extends React.Component {
   }
 
   componentWillMount () {
-    this.props.loadPollsList()
    // this.props.loadSubscribersList()
   //  document.title('KiboPush | Poll')
   }
