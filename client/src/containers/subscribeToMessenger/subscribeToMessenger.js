@@ -5,9 +5,9 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
+//  import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
+//  import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   loadMyPagesList

@@ -147,6 +147,15 @@ class Response extends React.Component {
             {
             response.map((c) => (
               <div>
+                <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+                  <div className='m-subheader '>
+                    <div className='d-flex align-items-center'>
+                      <div className='mr-auto'>
+                        <h3 className='m-subheader__title'>Manage Surveys</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <li
                   className='list-group-item'
                   style={{cursor: 'pointer'}}
@@ -171,7 +180,16 @@ class Response extends React.Component {
             'margin': '0 auto'
           }}>
             <canvas id={this.props.question._id} width={250} height={170} />
-          </div>
+              <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+                <div className='m-subheader '>
+                  <div className='d-flex align-items-center'>
+                    <div className='mr-auto'>
+                      <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
       )
     )
   }

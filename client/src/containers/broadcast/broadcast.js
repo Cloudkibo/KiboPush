@@ -6,9 +6,7 @@
 import React from 'react'
 import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -178,8 +176,8 @@ class Broadcast extends React.Component {
                           <div className='m-input-icon m-input-icon--left'>
                             <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
                             <span className='m-input-icon__icon m-input-icon__icon--left'>
-                            <span><i className='la la-search' /></span>
-                          </span>
+                              <span><i className='la la-search' /></span>
+                            </span>
                           </div>
                         </div>
                         <div className='col-xl-4 col-md-4' />

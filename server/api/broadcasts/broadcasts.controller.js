@@ -1,7 +1,7 @@
 /**
  * Created by sojharo on 27/07/2017.
  */
-
+//
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -641,7 +641,6 @@ function savesurvey (req) {
         `Error occurred in finding subscriber${JSON.stringify(
           err)}`)
     }
-
     const surveybody = {
       response: resp.option, // response submitted by subscriber
       surveyId: resp.survey_id,
@@ -649,6 +648,7 @@ function savesurvey (req) {
       subscriberId: subscriber._id
 
     }
+
     SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
@@ -657,129 +657,129 @@ function savesurvey (req) {
       // send the next question
       logger.serverLog(TAG,
         `survey respnse create ${JSON.stringify(resp.survey_id)}`)
-      Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
-        if (err) {
-          logger.serverLog(TAG,
-            `Error occurred in finding subscriber${JSON.stringify(
-              err)}`)
+      SurveyQuestions.find({
+        surveyId: resp.survey_id,
+        _id: {$gt: resp.question_id}
+      }).populate('surveyId').exec((err2, questions) => {
+        if (err2) {
+          logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
+            err2)}`)
         }
         logger.serverLog(TAG,
-          `updated${JSON.stringify(subscriber)}`)
-        Surveys.find({}, (err, subscriber) => {
-          if (err) {
-            logger.serverLog(TAG,
-              `Error occurred in finding subscriber${JSON.stringify(
-                err)}`)
-          }
-          logger.serverLog(TAG,
-            `all surveys with particular id${JSON.stringify(subscriber)}`)
-        })
-        SurveyQuestions.find({
-          surveyId: resp.survey_id,
-          _id: {$gt: resp.question_id}
-        }).populate('surveyId').exec((err2, questions) => {
-          if (err2) {
-            logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
-              err2)}`)
-          }
-          logger.serverLog(TAG,
           `Questions are ${JSON.stringify(questions)}`)
-          if (questions.length > 0) {
-            let firstQuestion = questions[0]
-            // create buttons
-            const buttons = []
-            let nextQuestionId = 'nil'
-            if (questions.length > 1) {
-              nextQuestionId = questions[1]._id
-            }
+        if (questions.length > 0) {
+          let firstQuestion = questions[0]
+          // create buttons
+          const buttons = []
+          let nextQuestionId = 'nil'
+          if (questions.length > 1) {
+            nextQuestionId = questions[1]._id
+          }
 
-            for (let x = 0; x < firstQuestion.options.length; x++) {
-              buttons.push({
-                type: 'postback',
-                title: firstQuestion.options[x],
-                payload: JSON.stringify({
-                  survey_id: resp.survey_id,
-                  option: firstQuestion.options[x],
-                  question_id: firstQuestion._id,
-                  nextQuestionId,
-                  userToken: resp.userToken
-                })
+          for (let x = 0; x < firstQuestion.options.length; x++) {
+            buttons.push({
+              type: 'postback',
+              title: firstQuestion.options[x],
+              payload: JSON.stringify({
+                survey_id: resp.survey_id,
+                option: firstQuestion.options[x],
+                question_id: firstQuestion._id,
+                nextQuestionId,
+                userToken: resp.userToken
               })
-            }
-            logger.serverLog(TAG,
+            })
+          }
+          logger.serverLog(TAG,
               `buttons created${JSON.stringify(buttons)}`)
-            needle.get(
-              `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
-              (err3, response) => {
-                if (err3) {
-                  logger.serverLog(TAG,
-                    `Page accesstoken from graph api Error${JSON.stringify(
-                      err3)}`)
-                }
-
+          needle.get(
+            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
+            (err3, response) => {
+              if (err3) {
                 logger.serverLog(TAG,
-                  `Page accesstoken from graph api ${JSON.stringify(
-                    response.body)}`)
-                const messageData = {
-                  attachment: {
-                    type: 'template',
-                    payload: {
-                      template_type: 'button',
-                      text: firstQuestion.statement,
-                      buttons
+                  `Page accesstoken from graph api Error${JSON.stringify(
+                    err3)}`)
+              }
 
-                    }
+              logger.serverLog(TAG,
+                `Page accesstoken from graph api ${JSON.stringify(
+                  response.body)}`)
+              const messageData = {
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'button',
+                    text: firstQuestion.statement,
+                    buttons
+
                   }
                 }
-                const data = {
-                  recipient: {id: req.sender.id}, // this is the subscriber id
-                  message: messageData
-                }
-                logger.serverLog(TAG, messageData)
-                needle.post(
-                  `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                  data, (err4, respp) => {
-                    logger.serverLog(TAG,
-                      `Sending survey to subscriber response ${JSON.stringify(
-                        respp.body)}`)
-                    if (err4) {
-
-                    }
-                  })
-              })
-          } else { // else send thank you message
-            needle.get(
-              `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
-              (err3, response) => {
-                if (err3) {
+              }
+              const data = {
+                recipient: {id: req.sender.id}, // this is the subscriber id
+                message: messageData
+              }
+              logger.serverLog(TAG, messageData)
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
                   logger.serverLog(TAG,
-                    `Page accesstoken from graph api Error${JSON.stringify(
-                      err3)}`)
-                }
+                    `Sending survey to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+                  if (err4) {
 
+                  }
+                })
+            })
+        } else { // else send thank you message
+          Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Error occurred in finding subscriber${JSON.stringify(
+                  err)}`)
+            }
+            logger.serverLog(TAG,
+              `updated${JSON.stringify(subscriber)}`)
+            Surveys.find({}, (err, subscriber) => {
+              if (err) {
                 logger.serverLog(TAG,
-                  `Page accesstoken from graph api ${JSON.stringify(
-                    response.body)}`)
-                const messageData = {
-                  text: 'Thank you. Response submitted successfully.'
-                }
-                const data = {
-                  recipient: {id: req.sender.id}, // this is the subscriber id
-                  message: messageData
-                }
-                logger.serverLog(TAG, messageData)
-                needle.post(
-                  `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                  data, (err4, respp) => {
-                    logger.serverLog(TAG,
-                      `Sending survey to subscriber response ${JSON.stringify(
-                        respp.body)}`)
-                    if (err4) {
-                    }
-                  })
-              })
-          }
-        })
+                  `Error occurred in finding subscriber${JSON.stringify(
+                    err)}`)
+              }
+              logger.serverLog(TAG,
+                `all surveys with particular id${JSON.stringify(subscriber)}`)
+            })
+          })
+          needle.get(
+            `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
+            (err3, response) => {
+              if (err3) {
+                logger.serverLog(TAG,
+                  `Page accesstoken from graph api Error${JSON.stringify(
+                    err3)}`)
+              }
+
+              logger.serverLog(TAG,
+                `Page accesstoken from graph api ${JSON.stringify(
+                  response.body)}`)
+              const messageData = {
+                text: 'Thank you. Response submitted successfully.'
+              }
+              const data = {
+                recipient: {id: req.sender.id}, // this is the subscriber id
+                message: messageData
+              }
+              logger.serverLog(TAG, messageData)
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
+                  logger.serverLog(TAG,
+                    `Sending survey to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+                  if (err4) {
+                  }
+                })
+            })
+        }
       })
     })
   })

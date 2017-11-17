@@ -136,18 +136,35 @@ class AddSurvey extends React.Component {
     this.setState({showDropDown: false})
   }
 
-  handlePageChange (page) {
+  handlePageChange (event) {
     //  this.setState({ pageValue: temp })
-    var index = 0
-    for (var i = 0; i < this.props.pages.length; i++) {
-      if (page.pageName === this.props.pages[i].pageName) {
-        index = i
-        break
+    // var index = 0
+    // for (var i = 0; i < this.props.pages.length; i++) {
+    //   if (page.pageName === this.props.pages[i].pageName) {
+    //     index = i
+    //     break
+    //   }
+    // }
+    // this.setState({
+    //   pageValue: this.props.pages[index].pageId
+    // })
+    // console.log('handlePageChange', this.state.pageValue)
+    var temp = this.state.pageValue
+    console.log('handlePageChange', event.target.value)
+    if (temp.length === 0) {
+      temp.push(event.target.value)
+    } else {
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i].contains(event.target.value)) {
+          var index = temp.indexOf(event.target.value)
+          temp.splice(index, 1)
+        } else {
+          temp.push(event.target.value)
+        }
       }
     }
-    this.setState({
-      pageValue: this.props.pages[index].pageId
-    })
+    console.log('handlePageChange', temp)
+    this.setState({ pageValue: temp })
     console.log('handlePageChange', this.state.pageValue)
   }
 
@@ -635,17 +652,32 @@ class AddSurvey extends React.Component {
                       </li>
                     </ul>
                   </div>
-                  <div className='col-lg-4 col-md-9 col-sm-12'>
-											<select className='form-control m-select2' id='m_select2_9' name='param' multiple='' tabIndex='-1' aria-hidden='false'>
-												<option>dsadsa</option>
-												<optgroup label='Alaskan/Hawaiian Time Zone'>
-													<option value='AK'>
-														Alaska
-													</option>
-												</optgroup>
-											</select>
-                      <span className="select2 select2-container select2-container--default select2-container--focus select2-container--below" dir="ltr"><span className="selection"><span className="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabIndex="-1"><ul className="select2-selection__rendered"><li className="select2-search select2-search--inline"><input className="select2-search__field" type="search" tabIndex="0" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" role="textbox" aria-autocomplete="list" placeholder="" /></li></ul></span></span><span className="dropdown-wrapper" aria-hidden="true"></span></span>
-										</div>
+                  <select multiple className='selectpicker' title='Select Page(s)' onChange={this.handlePageChange}>
+                    {
+                      this.props.pages.map((page, i) => (
+                        <option value={page.pageName}>{page.pageName}</option>
+                      ))
+                    }
+                  </select>
+                  <div className="form-group m-form__group row">
+										<label className="col-form-label col-lg-3 col-sm-12">
+											Multi Select
+										</label>
+										<div className="col-lg-4 col-md-9 col-sm-12">
+
+											<select className="form-control m-select2" id="m_select2_3" name="param" multiple="">
+                        {
+                          this.props.pages.map((page, i) => (
+
+                            <option>{page.pageName}</option>
+                          ))
+                        }
+
+											</select><span className="select2 select2-container select2-container--default select2-container--focus select2-container--below select2-container--open" dir="ltr"><span className="selection"><span className="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="true" tabindex="-1" aria-owns="select2-m_select2_3-results" aria-activedescendant="select2-m_select2_3-result-pt0d-CO"><ul className="select2-selection__rendered">
+                      <li className="select2-search select2-search--inline"><input className="select2-search__field" type="search" tabIndex="0" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" role="textbox" aria-autocomplete="list" placeholder="" /></li></ul></span></span>
+                          <span className="dropdown-wrapper" aria-hidden="true"></span></span>
+                        </div>
+                      </div>
                   <div className='form-group'>
                     <Select
                       closeOnSelect={!stayOpen}
