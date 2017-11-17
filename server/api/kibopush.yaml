@@ -56,6 +56,288 @@ securityDefinitions:
 #                                           Paths                              #
 ################################################################################
 paths:
+  /autoposting/:
+    get:
+      description: Gives all the autpostings created by the logged in user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Autoposting'
+                description: all the autopstings data
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /autoposting/create/:
+    post:
+      description: create a new autoposting
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: subscriptionUrl
+          in: formData
+          description: The url of facebook page, twitter account or youtube channel
+          type: string
+          required: true
+        - name: subscriptionType
+          in: formData
+          description: The type of subscription i.e. facebook, twitter or youtube
+          type: string
+          required: true
+        - name: accountTitle
+          in: formData
+          description: The title of subscription i.e. Facebook page, Twitter Account or Youtube Channel
+          type: string
+          required: true
+        - name: segmentationPageIds
+          in: formData
+          description: The unique page ids
+          type: string
+          required: false
+        - name: segmentationGender
+          in: formData
+          description: The gender of the subscribers
+          type: string
+          required: false
+        - name: segmentationLocale
+          in: formData
+          description: The locale of the subscribers
+          type: string
+          required: false
+        - name: isActive
+          in: formData
+          description: Whether this autoposting is enabled or not
+          type: boolean
+          required: true
+          default: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Autoposting'
+                description: The newly created autopost
+        '403':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response403'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /autoposting/edit/:
+    post:
+      description: create a new autoposting
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The unique id of the autopost to edit
+          type: string
+          required: true
+        - name: subscriptionUrl
+          in: formData
+          description: The url of facebook page, twitter account or youtube channel
+          type: string
+          required: true
+        - name: subscriptionType
+          in: formData
+          description: The type of subscription i.e. facebook, twitter or youtube
+          type: string
+          required: true
+        - name: accountTitle
+          in: formData
+          description: The title of subscription i.e. Facebook page, Twitter Account or Youtube Channel
+          type: string
+          required: true
+        - name: segmentationPageIds
+          in: formData
+          description: The unique page ids
+          type: string
+          required: false
+        - name: segmentationGender
+          in: formData
+          description: The gender of the subscribers
+          type: string
+          required: false
+        - name: segmentationLocale
+          in: formData
+          description: The locale of the subscribers
+          type: string
+          required: false
+        - name: isActive
+          in: formData
+          description: Whether this autoposting is enabled or not
+          type: boolean
+          required: true
+          default: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Autoposting'
+                description: The newly created autopost
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /autoposting/:id:
+    delete:
+      description: Delete an autopost
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /backdoor/alluser:
+    get:
+      description: Gives all users
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/User'
+                description: all the autopstings data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/allpages/:userid:
+    get:
+      description: Gives all pages of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Page'
+                description: all the autopstings data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/allsubscribers/:pageid:
+    get:
+      description: Gives all subscribers of all the pages of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Subscriber'
+                description: all the autopstings data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /backdoor/allbroadcasts/:userid:
+    get:
+      description: Gives all broadcasts of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Broadcast'
+                description: all the autopstings data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 
   /users/:
     post:
@@ -192,6 +474,9 @@ definitions:
       fbId:
         type: string
         description: This is the facebook id of the user who logged in with us.
+      fbToken:
+        type: string
+        description: This is the facebook token of the user who logged in with us.
       profilePic:
         type: string
         description: We store the URL of the facebook profile picture of user here.
@@ -201,6 +486,48 @@ definitions:
       updatedAt:
         type: string
         description: Date and time when this record was last updated.
+      pagesTourSeen:
+        type: boolean
+        description: Whether the user has visited the pages or not.
+      isSuperUser:
+        type: boolean
+        description: Whether the user is a super user or not
+      getStartedSeen:
+        type: boolean
+        description: Whether the user has seen the get started guide or not
+      dashboardTourSeen:
+          type: boolean
+          description: Whether the user has seen the dashboard or not
+      workFlowsTourSeen:
+        type: boolean
+        description: Whether the user has visited the workflows page or not
+      surveyTourSeen:
+        type: boolean
+        description: Whether the user has visited the surveys page or not
+      convoTourSeen:
+        type: boolean
+        description: Whether the user has visited the braodcasts page or not
+      pollTourSeen:
+        type: boolean
+        description: Whether the user has visited the polls page or not
+      growthToolsTourSeen:
+        type: boolean
+        description: Whether the user has visited the growth tools page or not
+      subscriberTourSeen:
+        type: boolean
+        description: Whether the user has visited the subscribers page or not
+      liveChatTourSeen:
+        type: boolean
+        description: Whether the user has visited the live chat page or not
+      autoPostingTourSeen:
+        type: boolean
+        description: Whether the user has visited the auto posting page or not
+      mainMenuTourSeen:
+        type: boolean
+        description: Whether the user has visited the main menu page or not
+      subscribeToMessengerTourSeen:
+        type: boolean
+        description: Whether the user has visited the subscribe to messenger page or not
 
   Broadcast:
     type: object
@@ -212,12 +539,39 @@ definitions:
       platform:
         type: string
         description: Name of the platform used for sending broadcast. In v1, the platform value is 'facebook' only.
+      payload:
+        type: object
+        description: The attached data like file, image etc
       type:
         type: string
-        description: This can be either text or attachment. In v1, we support text broadcasts only.
+        description: This can be either text or attachment.
+      title:
+        type: string
+        description: Title of the broadcast
       text:
         type: string
         description: The value of text.
+      fileurl:
+        type: string
+        description: The url of the file to send
+      attachmentType:
+        type: string
+        description: Type of attachement like file, image etc
+      isSegmented:
+        type: boolean
+        description: Whether this broadcast is segmented or not
+      segmentationPageIds:
+        type: string
+        description: The unique ids of the pages
+      segmentationLocale:
+        type: string
+        description: The locale of the subscriber to send broadcast to
+      segmentationGender:
+        type: string
+        description: The gender of the subscriber to send broadcast to
+      segmentationTimeZone:
+        type: string
+        description: The timezone of the subscriber to send broadcast to
       userId:
         type: string
         description: User who sent this broadcast to his/her page audience.
@@ -280,18 +634,21 @@ definitions:
     type: object
     description: Here we would store the pages of user which are either connected or not.
     properties:
+      _id:
+        type: string
+        description: The unique page id
       pageId:
         type: string
         description: Page id is the unique id of the facebook page provided to us by Facebook.
       pageName:
         type: string
         description: This is the name of the page.
+      accessToken:
+        type: string
+        description: This is the facebook token of the page
       pagePic:
         type: string
         description: This is the display picture of the page.
-      numberOfFollowers:
-        type: string
-        description: How many followers are following the page currently.
       likes:
         type: string
         description: How many likes a page has currently.
@@ -301,6 +658,12 @@ definitions:
       userId:
         type: string
         description: The unique id of the user.
+      pageUserName:
+        type: string
+        description: The username of the page
+      adminSubscriberId:
+        type: string
+        description: The subscriber id of the admin of the page
 
   Poll:
     type: object
@@ -349,6 +712,9 @@ definitions:
     type: object
     description: Subscribers are the facebook users who follow your page. All the required information about them is stored in this table.
     properties:
+      _id:
+        type: string
+        description: The unique id of the subscriber.
       pageScopedId:
         type: string
         description: Every facebook user who subscribes a page gets page scoped id.
@@ -379,9 +745,15 @@ definitions:
       pageId:
         type: string
         description: Facebook Page Id of the page subscriber has followed.
+      coverPhoto:
+        type: string
+        description: Cover photo of the subscriber. We only save the URL of the picture provided to us by Facebook.
       userId:
         type: string
         description: User Id of the admin of that page.
+      isSubscribed:
+        type: boolean
+        description: Whether the user is subscribed or not
 
   Survey:
     type: object
@@ -473,3 +845,89 @@ definitions:
         type: string
         description: Date of creation
 
+  Autoposting:
+    type: object
+    description: This table is used to store the facebook page, twitter account or youtube channel information.
+    properties:
+      _id:
+        type: string
+        description: Unique id of the autopost
+      userId:
+        type: string
+        description: Unique id of the admin of the page
+      accountTitle:
+        type: string
+        description: Whether it is a facebook page, twitter account or a youtube channel
+      subscriptionUrl:
+        type: string
+        description: The URL of a facebook page, twitter account or a youtube channel
+      subscriptionType:
+        type: string
+        description: facebook, twitter or youtube
+      accountUniqueName:
+        type: string
+        description: Name of the account holder
+      payload:
+        type: object
+        description: details of the admin of the facebook page, twitter account or youtube channel
+        properties:
+          profile_image_url:
+            type: string
+            description: The URL of the profile picture
+          screen_name:
+            type: string
+            description: The name of the account
+          name:
+            type: string
+            description: The name of the account
+          id:
+            type: string
+            description: The unique id of account
+      isActive:
+        type: boolean
+        description: Whether this autoposting is enabled or not
+      isSegmented:
+        type: boolean
+        description: Whether this autoposting is segmented or not
+      segmentationPageIds:
+        type: string
+        description: The unique id of the page
+      segmentationLocale:
+        type: string
+        description: The locale of the subscriber to send autoposting to
+      segmentationGender:
+        type: string
+        description: The gender of the subscriber to send autoposting to
+      segmentationTimeZone:
+        type: string
+        description: The timezone of the subscriber to send autoposting to
+
+  Response500:
+    type: object
+    properties:
+      status:
+        type: string
+        description: failed
+      description:
+        type: string
+        description: Internal server error
+
+  Response403:
+    type: object
+    properties:
+      status:
+        type: string
+        description: failed
+      description:
+        type: string
+        description: Cannot add duplicate records
+
+  Response404:
+    type: object
+    properties:
+      status:
+        type: string
+        description: failed
+      description:
+        type: string
+        description: Record not found
