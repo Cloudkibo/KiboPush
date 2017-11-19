@@ -458,7 +458,7 @@ class AddSurvey extends React.Component {
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
       if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12' key={ i + "-addSurveyUI"}>
             <br />
             <div className='panel panel-default field-editor'>
               <div className='panel-heading clearfix'>
