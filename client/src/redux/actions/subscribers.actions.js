@@ -4,7 +4,11 @@ import callApi from '../../utility/api.caller.service'
 export function updateSubscribersList (data) {
   console.log('Data Fetched From Subscribers', data)
   if(!data[0]){
-    return
+    return {
+    type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
+    data: [],
+    locale: [],
+  }
   }
   var locale = [data[0].locale]
   for (var i = 1; i < data.length; i++) {
