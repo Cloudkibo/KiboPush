@@ -9,7 +9,7 @@ export function updateSubscribersList (data) {
       locale.push(data[i].locale)
     }
   }
-  console.log('localeData', locale)
+  // console.log('localeData', locale)
   return {
     type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
     data,
