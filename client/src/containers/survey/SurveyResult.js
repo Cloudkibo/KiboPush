@@ -13,20 +13,20 @@ import Response from './Response'
 class SurveyResult extends React.Component {
   constructor (props, context) {
     super(props, context)
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    let addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    document.body.appendChild(addScript)
     console.log('Survey ID: ', this.props.location.state)
     this.props.loadsurveyresponses(this.props.location.state)
   }

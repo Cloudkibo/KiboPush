@@ -39,10 +39,10 @@ class Survey extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Survey'
   }

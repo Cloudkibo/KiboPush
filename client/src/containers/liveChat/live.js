@@ -37,13 +37,13 @@ class LiveChat extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Live Chat'
     if (!this.state.ignore) {
