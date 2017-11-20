@@ -94,6 +94,7 @@ class ShareOptions extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    adddScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Subscribe to Messenger'
   }
 
@@ -183,19 +184,30 @@ class ShareOptions extends React.Component {
                               </button>
                               : <button onClick={() => {
                                 this.setState({copied: true})
+                                toastr.options = {
+                                  'closeButton': true,
+                                  'debug': false,
+                                  'newestOnTop': false,
+                                  'progressBar': false,
+                                  'positionClass': 'toast-bottom-right',
+                                  'preventDuplicates': false,
+                                  'showDuration': '300',
+                                  'hideDuration': '1000',
+                                  'timeOut': '5000',
+                                  'extendedTimeOut': '1000',
+                                  'showEasing': 'swing',
+                                  'hideEasing': 'linear',
+                                  'showMethod': 'fadeIn',
+                                  'hideMethod': 'fadeOut'
+                                }
+
+                                toastr.success('Link Copied Successfully', 'Copied!')
                               }}
                                 className='btn btn-primary'
                                 style={{margin: 5}}>Copy
                               </button>
                             }
                             </CopyToClipboard>
-                          </div>
-                          <div className='form-group m-form__group row'>
-                            { this.state.copied &&
-                            <div className='alert m-alert--default' role='alert'>
-                              Copied to Clipboard
-                            </div>
-                          }
                           </div>
                         </div>
                         : <div className='m-portlet__body'>
