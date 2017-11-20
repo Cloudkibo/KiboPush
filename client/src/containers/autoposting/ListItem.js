@@ -68,12 +68,12 @@ class ListItem extends React.Component {
               {this.props.item.isActive ? 'Active' : 'Disabled'}
             </span>
           </div>
-          <div className="m-widget5__stats2">
-            <span className="m-widget5__number">
+          <div className='m-widget5__stats2'>
+            <span className='m-widget5__number'>
               Filter
             </span>
             <br />
-            <span className="m-widget5__votes">
+            <span className='m-widget5__votes'>
               {this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
             </span>
           </div>

@@ -111,7 +111,7 @@ class AddPage extends React.Component {
                 (this.props.otherPages) &&
                 this.props.otherPages.map((page, i) => (
 
-                  <div className='m-widget4__item' key={i + "-addPageItem"}>
+                  <div className='m-widget4__item' key={i + '-addPageItem'}>
                     <div className='m-widget4__img m-widget4__img--icon'>
                       <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
                     </div>

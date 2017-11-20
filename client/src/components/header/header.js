@@ -47,6 +47,7 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
+              {/*
               <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark ' >
                 <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
                   <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
@@ -83,11 +84,13 @@ class Header extends React.Component {
                   </li>
                 </ul>
               </div>
+          */}
+
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                      <a href="#" className='m-nav__link m-dropdown__toggle'>
+                      <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                         <span className='m-nav__link-icon'>
                           <i className='flaticon-share' />

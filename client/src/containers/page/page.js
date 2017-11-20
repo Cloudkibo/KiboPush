@@ -266,7 +266,7 @@ class Page extends React.Component {
                               { this.props.pages && this.props.pages.length > 0 &&
                         this.props.pages.map((page, i) => (
                           (page.connected &&
-                            <tr key={ i + '-connectedPages' }>
+                            <tr key={i + '-connectedPages'}>
                               <td><img alt='pic'
                                 src={(page.pagePic) ? page.pagePic : ''}
                                 className='m--img-rounded m--marginless m--img-centered' /></td>
