@@ -24,9 +24,9 @@ class CreatePoll extends React.Component {
         options: []
       },
       Gender: {
-        options: [{id: 'Male', text: 'male'},
-                  {id: 'Female', text: 'female'},
-                  {id: 'Other', text: 'other'}
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
@@ -351,7 +351,7 @@ class CreatePoll extends React.Component {
                         </div>
                       </div>
                       { this.state.alert &&
-                        <center>
+                        <center style={{marginTop: '30px'}}>
                           <Alert type='danger'>
                             You have either left one or more responses empty or you
                             have not asked anything. Please ask something and fill all
