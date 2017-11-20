@@ -25,23 +25,8 @@ class EditWorkflow extends React.Component {
       condition: props.location.state.condition,
       keywords: props.location.state.keywords,
       reply: props.location.state.reply,
-      isActive: props.location.state.isActive === true ? 'Yes' : 'No',
-      conditionSelect: {
-        options: [
-          {id: 'message_is', text: 'Message is'},
-          {id: 'message_contains', text: 'Message Contains'},
-          {id: 'message_begins', text: 'Message Begins with'}
-        ]
-      },
-      activeSelect: {
-        options: [
-          {id: 'yes', text: 'Yes'},
-          {id: 'no', text: 'No'}
-        ]
-      }
+      isActive: props.location.state.isActive === true ? 'Yes' : 'No'
     }
-    this.initializeConditionSelect = this.initializeConditionSelect.bind(this)
-    this.initializeActiveSelect = this.initializeActiveSelect.bind(this)
   }
 
   componentDidMount () {
@@ -57,55 +42,6 @@ class EditWorkflow extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Edit Workflow'
-
-    this.initializeConditionSelect(this.state.conditionSelect.options)
-    this.initializeActiveSelect(this.state.activeSelect.options)
-  }
-
-  initializeConditionSelect (conditionOptions) {
-    var self = this
-    $('#conditionSelect').select2({
-      data: conditionOptions,
-      placeholder: 'Select Condition',
-      allowClear: true,
-      multiple: true
-    })
-    $('#conditionSelect').on('change', function (e) {
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ condition: selected })
-      }
-      console.log('change condition', selected)
-    })
-  }
-
-  initializeActiveSelect (activeOptions) {
-    var self = this
-    $('#isActiveSelect').select2({
-      data: activeOptions,
-      placeholder: 'Select Status',
-      allowClear: true,
-      multiple: true
-    })
-    $('#isActiveSelect').on('change', function (e) {
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ isActive: selected })
-      }
-      console.log('change active', selected)
-    })
   }
 
   gotoWorkflow () {
@@ -177,7 +113,14 @@ class EditWorkflow extends React.Component {
                           Rule
                         </label>
                         <div className='col-lg-6' id='rules'>
-                          <select id='conditionSelect' />
+                          <div className='col-10'>
+                            <select className='form-control m-input' onChange={this.changeCondition}
+                                    value={this.state.condition}>
+                              <option value='message_is'>Message is</option>
+                              <option value='message_contains'>Message Contains</option>
+                              <option value='message_begins'>Message Begins with</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -208,7 +151,11 @@ class EditWorkflow extends React.Component {
                           Is Active?
                         </label>
                         <div className='col-lg-6'>
-                          <select id='isActiveSelect' />
+                          <select className='form-control m-input' onChange={this.changeActive}
+                                  value={this.state.isActive} id='isActive'>
+                            <option value='Yes'>Yes</option>
+                            <option value='No'>No</option>
+                          </select>
                         </div>
                       </div>
                     </div>
