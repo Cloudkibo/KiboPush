@@ -26,12 +26,11 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-
-    props.loadSubscribersList()
-    props.loadDashboardData()
     props.loadMyPagesList()
+    props.loadDashboardData()
     props.getuserdetails()
     props.sentVsSeen()
+    props.loadSubscribersList()
 
     this.state = {
       isShowingModal: false,

@@ -1,10 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  subscribers: []
-}
-
-export function subscribersInfo (state = initialState, action) {
+export function subscribersInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
