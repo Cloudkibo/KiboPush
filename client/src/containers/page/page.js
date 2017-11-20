@@ -70,11 +70,12 @@ class Page extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    document.body.appendChild(addScript)
+    
     var datatable = $('#m_datatable').mDatatable({
       pagination: true,
       paging: true,
