@@ -27,9 +27,9 @@ class AddSurvey extends React.Component {
         options: []
       },
       Gender: {
-        options: [{id: 'Male', text: 'male'},
-                  {id: 'Female', text: 'female'},
-                  {id: 'Other', text: 'other'}
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
