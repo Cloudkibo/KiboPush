@@ -89,6 +89,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: userId
+          in: formData
+          description: The id of the logged in user
+          type: string
+          required: true
         - name: subscriptionUrl
           in: formData
           description: The url of facebook page, twitter account or youtube channel
@@ -107,17 +112,23 @@ paths:
         - name: segmentationPageIds
           in: formData
           description: The unique page ids
-          type: string
+          type: array
+          items:
+            type: string
           required: false
         - name: segmentationGender
           in: formData
-          description: The gender of the subscribers
-          type: string
+          description: The genders of the subscribers
+          type: array
+          items:
+            type: string
           required: false
         - name: segmentationLocale
           in: formData
           description: The locale of the subscribers
-          type: string
+          type: array
+          items:
+            type: string
           required: false
         - name: isActive
           in: formData
@@ -259,7 +270,7 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/User'
-                description: all the autopstings data
+                description: all the users' data
         '404':
           description: failed
           schema:
@@ -284,7 +295,7 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Page'
-                description: all the autopstings data
+                description: pages data
         '404':
           description: failed
           schema:
@@ -309,11 +320,12 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Subscriber'
-                description: all the autopstings data
+                description: subscribers data
         '404':
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+
   /backdoor/allbroadcasts/:userid:
     get:
       description: Gives all broadcasts of a particular user
@@ -333,7 +345,393 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Broadcast'
-                description: all the autopstings data
+                description: all the broadcasts data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/allpolls/:userid:
+    get:
+      description: Gives all polls of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Poll'
+                description: all the polls of a particular user
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/allsurveys/:userid:
+    get:
+      description: Gives all polls of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Survey'
+                description: all the surveys of a particular user
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/toppages:
+    get:
+      description: Gives top ten pages according to the number of subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Page'
+                description: all the surveys of a particular user
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /backdoor/datacount:
+    get:
+      description: Gives the total count of broadcasts, polls, surveys, pages, subscribers and users
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  UsersCount:
+                    type: number
+                    description: The total number of users
+                  SubscribersCount:
+                    type: number
+                    description: The total number of subscribers
+                  PagesCount:
+                    type: number
+                    description: The total number of pages
+                  BroadcastsCount:
+                    type: number
+                    description: The total number of braodcasts
+                  PollsCount:
+                    type: number
+                    description: The total number of polls
+                  SurveysCount:
+                    type: number
+                    description: The total number of surveys
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /backdoor/polls/:pollid:
+    get:
+      description: Gives the data of poll, survey sent and survey responses
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  pollresponses:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll_Response'
+                  poll:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Page_Poll'
+                  pollpages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll'
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /backdoor/surveyDetails/:surveyid:
+    get:
+      description: Gives the data of survey, survey questions and survey responses
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  pollresponses:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey_Response'
+                  survey:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey'
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey_Question'
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /backdoor/broadcastsGraph/:days:
+    get:
+      description: Gives the number of broadcasts made on the given number of days
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  broadcastsgraphdata:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#definitions/Graph'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /backdoor/surveysGraph/:days:
+    get:
+      description: Gives the number of surveys made on the given number of days
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  broadcastsgraphdata:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#definitions/Graph'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /backdoor/pollsGraph/:days:
+    get:
+      description: Gives the number of polls made on the given number of days
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  broadcastsgraphdata:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#definitions/Graph'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /broadcasts/:
+    get:
+      description: Gives the data of braodcasts of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  broadcasts:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#definitions/Broadcast'
+                  broadcastpages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#definitions/Page_Broadcast'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /broadcasts/upload/:
+    post:
+      description: uploads the file sent
+      consumes:
+          - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: file
+          in: formData
+          description: The file to upload
+          type: file
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                description: The uploaded file
+                properties:
+                  id:
+                    type: string
+                    description: The path where the file is uploaded
+                  url:
+                    type: string
+                    description: The url of the file
+        '400':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response403'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /broadcasts/:id:
+    get:
+      description: Gives the broadacasts made by a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#definitions/Broadcast'
+                description: Broadcasts' data
+
         '404':
           description: failed
           schema:
@@ -561,14 +959,20 @@ definitions:
         type: boolean
         description: Whether this broadcast is segmented or not
       segmentationPageIds:
-        type: string
-        description: The unique ids of the pages
+        type: array
+        items:
+          type: string
+          description: The ids of the pages to send broadcast from
       segmentationLocale:
-        type: string
-        description: The locale of the subscriber to send broadcast to
+        type: array
+        items:
+          type: string
+          description: The locale of the subscribers to send broadcast to
       segmentationGender:
-        type: string
-        description: The gender of the subscriber to send broadcast to
+        type: array
+        items:
+          type: string
+          description: The genders of the subscribers to send broadcast to
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send broadcast to
@@ -583,23 +987,35 @@ definitions:
     type: object
     description: This is broadcast and page association table. We would use this to know which broadcast was sent to audience of which page. We can send broadcasts to multiple pages.
     properties:
+      _id:
+        type: string
+        description: Primary key or unique id of the record
       pageId:
         type: string
         description: Primary key or unique id of the page.
       userId:
         type: string
         description: Primary key or user id of the user.
+      subscriberId:
+        type: string
+        description: The id of the subscriber to send broadcast to
       broadcastId:
         type: string
         description: Primary key or unique id of the broadcast sent.
       datetime:
         type: string
         description: Date and time when this record was created.
+      seen:
+        type: boolean
+        description: whether the subscriber has seen the broadcast or not
 
   Page_Poll:
     type: object
     description: This is poll and page association table. We would use this to know which poll was sent to audience of which page. We can send polls to multiple pages.
     properties:
+      _id:
+        type: string
+        description: The unique id of the record
       pageId:
         type: string
         description: Primary key or unique id of the page.
@@ -612,6 +1028,12 @@ definitions:
       datetime:
         type: string
         description: Date and time when this record was created.
+      subscriberId:
+        type: string
+        description: Id of the subscriber to whom the poll is sent
+      seen:
+        type: boolean
+        description: whether the subscriber has seen the poll yet or not
 
   Page_Survey:
     type: object
@@ -650,8 +1072,8 @@ definitions:
         type: string
         description: This is the display picture of the page.
       likes:
-        type: string
-        description: How many likes a page has currently.
+        type: number
+        description: How many likes a page currently has.
       connected:
         type: string
         description: Has user connected this page with KiboPush or not. If not connected, then user can't send broadcasts to followers of this page.
@@ -674,27 +1096,50 @@ definitions:
         description: The unique id of the record
       platform:
         type: string
-        description: Name of the platform used for sending broadcast. In v1, the platform value is ‘facebook’ only.
+        description: Name of the platform used for sending poll. In v1, the platform value is 'facebook' only.
       statement:
         type: string
-        description: Full form for message (i.e. I don’t know)
+        description: statement of the poll
       options:
-        type: string
-        description: Unique id of the company
+        type: array
+        items:
+          type: string
+          description: Answer options given for a poll
       userId:
         type: string
-        description: Complete profile of the user who created the shortcut
+        description: The unique id of the user who has created the poll
       datetime:
         type: string
         description: Date of creation
-      sent:
-        type: integer
-        description: Number of times this poll is sent
+      isSegmented:
+        type: boolean
+        description: Whether this poll is segmented or not
+      segmentationPageIds:
+        type: array
+        items:
+          type: string
+          description: The ids of the pages to send poll from
+      segmentationLocale:
+        type: array
+        items:
+          type: string
+          description: The locale of the subscribers to send poll to
+      segmentationGender:
+        type: array
+        items:
+          type: string
+          description: The genders of the subscribers to send poll to
+      segmentationTimeZone:
+        type: string
+        description: The timezone of the subscriber to send poll to
 
   Poll_Response:
     type: object
     description: Responses to the poll given by facebook page audience is stored here.
     properties:
+      _id:
+        type: string
+        description: The unique id of the record
       response:
         type: string
         description: Reponse text or body goes here
@@ -759,6 +1204,9 @@ definitions:
     type: object
     description: The record of the survey created by user. This is main table for survey. Other linked tables are Survey_Questions and Survey_Response
     properties:
+      _id:
+        type: string
+        description: the unique id of the record
       title:
         type: string
         description: Title of the survey
@@ -774,11 +1222,38 @@ definitions:
       datetime:
         type: string
         description: Date of creation
+      isresponded:
+        type: number
+        description: The number of responses of a survey
+      isSegmented:
+        type: boolean
+        description: Whether this survey is segmented or not
+      segmentationPageIds:
+        type: array
+        items:
+          type: string
+          description: The ids of the pages to send survey from
+      segmentationLocale:
+        type: array
+        items:
+          type: string
+          description: The locale of the subscribers to send survey to
+      segmentationGender:
+        type: array
+        items:
+          type: string
+          description: The genders of the subscribers to send survey to
+      segmentationTimeZone:
+        type: string
+        description: The timezone of the subscriber to send survey to
 
   Survey_Response:
     type: object
     description: Here we store the responses coming for each question of the survey by subscribers
     properties:
+      _id:
+        type: string
+        description: The unique id of the record
       response:
         description: Text of the response.
         type: string
@@ -799,6 +1274,9 @@ definitions:
     type: object
     description: Here we store the questions which belong to a survey. This table is associated with Survey table.
     properties:
+      _id:
+        type: string
+        description: The unique id of the record
       statement:
         description: This is the statement of the question
         type: string
@@ -836,7 +1314,7 @@ definitions:
         type: string
         description: Unique id of the user which creates workflow for his/her pages
       sent:
-        type: integer
+        type: number
         description: Number of times this workflow is triggerred.
       isActive:
         type: boolean
@@ -852,6 +1330,7 @@ definitions:
       _id:
         type: string
         description: Unique id of the autopost
+        readOnly: true
       userId:
         type: string
         description: Unique id of the admin of the page
@@ -870,6 +1349,7 @@ definitions:
       payload:
         type: object
         description: details of the admin of the facebook page, twitter account or youtube channel
+        readOnly: true
         properties:
           profile_image_url:
             type: string
@@ -890,18 +1370,41 @@ definitions:
         type: boolean
         description: Whether this autoposting is segmented or not
       segmentationPageIds:
-        type: string
-        description: The unique id of the page
+        type: array
+        items:
+          type: string
+          description: The ids of the pages to send autoposting from
       segmentationLocale:
-        type: string
-        description: The locale of the subscriber to send autoposting to
+        type: array
+        items:
+          type: string
+          description: The locale of the subscribers to send autoposting to
       segmentationGender:
-        type: string
-        description: The gender of the subscriber to send autoposting to
+        type: array
+        items:
+          type: string
+          description: The genders of the subscribers to send autoposting to
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send autoposting to
 
+  Graph:
+    type: object
+    description: gives the number of broadcasts, surveys or polls made along with the date
+    properties:
+      _id:
+        type: object
+        description: The year, month and date on which broadcast, survey or poll is made
+        properties:
+          year:
+            type: number
+          month:
+           type: number
+          day:
+            type: number
+      count:
+        type: number
+        description: number of polls, surveys or broadcasts
   Response500:
     type: object
     properties:

@@ -13,6 +13,8 @@ const pageSurvey = require('../page_survey/page_survey.model')
 const pagePoll = require('../page_poll/page_poll.model')
 const LiveChat = require('../livechat/livechat.model')
 const TAG = 'api/pages/pages.controller.js'
+const SurveyResponses = require('../surveys/surveyresponse.model')
+const PollResponse = require('../polls/pollresponse.model')
 const mongoose = require('mongoose')
 
 exports.index = function (req, res) {
@@ -32,7 +34,8 @@ exports.sentVsSeen = function (req, res) {
   pageBroadcast.aggregate(
     [
       {$match: {userId: req.user._id}},
-      {$group: {_id: null, count: {$sum: 1}}}
+      {$group: {_id: null, count: {$sum: 1}}},
+      {$project: {_id: 0}}
     ], (err, broadcastSentCount) => {
     if (err) {
       return res.status(404).json({
@@ -44,7 +47,8 @@ exports.sentVsSeen = function (req, res) {
     pageBroadcast.aggregate(
       [
           {$match: {seen: true, userId: req.user._id}},
-          {$group: {_id: null, count: {$sum: 1}}}
+          {$group: {_id: null, count: {$sum: 1}}},
+          {$project: {_id: 0}}
       ], (err, broadcastSeenCount) => {
       if (err) {
         return res.status(404).json({
@@ -56,7 +60,8 @@ exports.sentVsSeen = function (req, res) {
       pageSurvey.aggregate(
         [
               {$match: {userId: req.user._id}},
-              {$group: {_id: null, count: {$sum: 1}}}
+              {$group: {_id: null, count: {$sum: 1}}},
+              {$project: {_id: 0}}
         ], (err, surveySentCount) => {
         if (err) {
           return res.status(404).json({
@@ -68,7 +73,8 @@ exports.sentVsSeen = function (req, res) {
         pageSurvey.aggregate(
           [
                   {$match: {seen: true, userId: req.user._id}},
-                  {$group: {_id: null, count: {$sum: 1}}}
+                  {$group: {_id: null, count: {$sum: 1}}},
+                  {$project: {_id: 0}}
           ], (err, surveySeenCount) => {
           if (err) {
             return res.status(404).json({
@@ -80,7 +86,8 @@ exports.sentVsSeen = function (req, res) {
           pagePoll.aggregate(
             [
                       {$match: {userId: req.user._id}},
-                      {$group: {_id: null, count: {$sum: 1}}}
+                      {$group: {_id: null, count: {$sum: 1}}},
+                      {$project: {_id: 0}}
             ], (err, pollSentCount) => {
             if (err) {
               return res.status(404).json({
@@ -92,7 +99,8 @@ exports.sentVsSeen = function (req, res) {
             pagePoll.aggregate(
               [
                           {$match: {seen: true, userId: req.user._id}},
-                          {$group: {_id: null, count: {$sum: 1}}}
+                          {$group: {_id: null, count: {$sum: 1}}},
+                          {$project: {_id: 0}}
               ], (err, pollSeenCount) => {
               if (err) {
                 return res.status(404).json({
@@ -101,19 +109,45 @@ exports.sentVsSeen = function (req, res) {
                                 err)}`
                 })
               }
-              let datacounts = {
-                broadcastSentCount: broadcastSentCount,
-                broadcastSeenCount: broadcastSeenCount,
-                surveySentCount: surveySentCount,
-                surveySeenCount: surveySeenCount,
-                pollSentCount: pollSentCount,
-                pollSeenCount: pollSeenCount
-              }
-              logger.serverLog(TAG,
-                            `counts ${JSON.stringify(datacounts)}`)
-              res.status(200).json({
-                status: 'success',
-                payload: datacounts
+              Surveys.find({userId: req.user._id}, (err2, surveyResponseCount) => {
+                if (err2) {
+                  return res.status(404)
+                  .json({status: 'failed', description: 'responses count not found'})
+                }
+                PollResponse.aggregate(
+                  [
+                              {$group: {_id: '$pollId', count: {$sum: 1}}}
+                  ], (err, pollResponseCount) => {
+                  if (err) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting surveyResponseCount count ${JSON.stringify(
+                                    err)}`
+                    })
+                  }
+                  var sum = 0
+                  for (var i = 0; i < pollResponseCount.length; i++) {
+                    sum = sum + pollResponseCount[i].count
+                  }
+                  var sum1 = 0
+                  for (var j = 0; j < surveyResponseCount.length; j++) {
+                    sum1 = sum1 + surveyResponseCount[j].isresponded
+                  }
+                  let datacounts = {
+                    broadcast:
+                      { sent: broadcastSentCount[0].count, seen: broadcastSeenCount[0].count },
+                    survey:
+                      { sent: surveySentCount[0].count, seen: surveySeenCount[0].count, responses: sum1 },
+                    poll:
+                      { sent: pollSentCount[0].count, seen: pollSeenCount[0].count, responses: sum }
+                  }
+                  logger.serverLog(TAG,
+                                `counts ${JSON.stringify(datacounts)}`)
+                  res.status(200).json({
+                    status: 'success',
+                    payload: datacounts
+                  })
+                })
               })
             })
           })
