@@ -159,7 +159,10 @@ class PollResult extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       <div className='ui-block-content'>
-                        <canvas id='radar-chart' />
+                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
+                        }}>
+                          <canvas id='radar-chart' width={250} height={170} />
+                        </div>
                       </div>
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
