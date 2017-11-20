@@ -26,7 +26,7 @@ class CreatePoll extends React.Component {
       Gender: {
         options: [{id: 'male', text: 'male'},
                   {id: 'female', text: 'female'},
-                  {id: 'Other', text: 'other'}
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
