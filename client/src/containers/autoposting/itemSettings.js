@@ -18,17 +18,17 @@ class ItemSettings extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-                  {label: 'Female', value: 'female'},
-                  {label: 'Other', value: 'other'}
+        options: [{id:'male', text: 'Male', value: 'male'},
+                  {id:'female', text: 'Female', value: 'female'},
+                  {id:'other', text: 'Other', value: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'az_AZ', value: 'az_AZ'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id:'en_US', text: 'en_US', value: 'en_US'},
+                  {id:'af_ZA', text: 'af_ZA', value: 'af_ZA'},
+                  {id:'ar_AR', text: 'ar_AR', value: 'ar_AR'},
+                  {id:'az_AZ', text: 'az_AZ', value: 'az_AZ'},
+                  {id:'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -46,6 +46,10 @@ class ItemSettings extends React.Component {
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.editAutoposting = this.editAutoposting.bind(this)
+
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
 
   componentDidMount () {
@@ -65,9 +69,82 @@ class ItemSettings extends React.Component {
     document.body.appendChild(addScript)
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
     }
     this.setState({page: {options: options}})
+    this.initializePageSelect(options)
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+  }
+
+  initializePageSelect (pageOptions) {
+    console.log(pageOptions)
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (conditionOptions) {
+    var self = this
+    $('#genderSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    $('#genderSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change condition', selected)
+    })
+  }
+
+  initializeLocaleSelect (conditionOptions) {
+    var self = this
+    $('#localeSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#localeSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change condition', selected)
+    })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -184,24 +261,10 @@ class ItemSettings extends React.Component {
                           Status
                         </label>
                         <div className='col-lg-6' id='rules'>
-                          <select className='form-control m-select2 select2-hidden-accessible' id='m_select2_1' name='param' tabIndex='-1' aria-hidden='true'
-                            onChange={this.handleSelectChange} value={this.state.isActive}>
-                            <option value='message_is'>Active</option>
-                            <option value='message_contains'>Disabled</option>
+                          <select className='form-control m-input' onChange={this.handleSelectChange} value={this.state.isActive}>
+                            <option value='Active'>Active</option>
+                            <option value='Disabled'>Disabled</option>
                           </select>
-                          <span className='select2 select2-container select2-container--default select2-container--below select2-container--focus' dir='ltr' style={{width: '281.328px'}}>
-                            <span className='selection'>
-                              <span className='select2-selection select2-selection--single' role='combobox' aria-haspopup='true' aria-expanded='false' tabIndex='0' aria-labelledby='select2-m_select2_1-container'>
-                                <span className='select2-selection__rendered' id='select2-m_select2_1-container' title={this.state.isActive}>
-                                  {this.state.isActive}
-                                </span>
-                                <span className='select2-selection__arrow' role='presentation'>
-                                  <b role='presentation' />
-                                </span>
-                              </span>
-                            </span>
-                            <span className='dropdown-wrapper' aria-hidden='true' />
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -217,16 +280,7 @@ class ItemSettings extends React.Component {
                           Pages
                         </label>
                         <div className='col-lg-6'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handlePageChange}
-                            options={this.state.page.options}
-                            placeholder='Select page(s)'
-                            simpleValue
-                            value={this.state.pageValue}
-                          />
+                          <select id='selectPage' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -234,16 +288,7 @@ class ItemSettings extends React.Component {
                           Gender
                         </label>
                         <div className='col-lg-6'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleGenderChange}
-                            options={this.state.Gender.options}
-                            placeholder='Select Gender'
-                            simpleValue
-                            value={this.state.genderValue}
-                          />
+                          <select id='genderSelect' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -251,16 +296,7 @@ class ItemSettings extends React.Component {
                           Locale
                         </label>
                         <div className='col-lg-6'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleLocaleChange}
-                            options={this.state.Locale.options}
-                            placeholder='Select Locale'
-                            simpleValue
-                            value={this.state.localeValue}
-                          />
+                          <select id='localeSelect' />
                         </div>
                       </div>
                     </div>
