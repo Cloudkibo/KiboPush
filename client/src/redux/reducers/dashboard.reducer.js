@@ -13,10 +13,9 @@ const initialState = {
       messages: 0,
       surveys: 0
     }
-  },
-  sentseendata: {}
+  }
 }
-export function sentSeenInfo (state = initialState, action) {
+export function sentSeenInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_SENT_VS_SEEN:
       return Object.assign({}, state, {
