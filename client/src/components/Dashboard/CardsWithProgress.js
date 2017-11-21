@@ -7,9 +7,11 @@ import React from 'react'
 
 class CardsWithProgress extends React.Component {
   render () {
-    var broadcastSeenConvertRate = (this.props.data.broadcastSeenCount[0].count / this.props.data.broadcastSentCount[0].count) * 100 + '%'
-    var pollSeenConvertRate = (this.props.data.pollSeenCount[0].count / this.props.data.pollSentCount[0].count) * 100 + '%'
-    var surveySeenConvertRate = (this.props.data.surveySeenCount[0].count / this.props.data.surveySentCount[0].count) * 100 + '%'
+    var broadcastSeenConvertRate = (this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100 + '%'
+    var pollSeenConvertRate = (this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100 + '%'
+    var pollResponseConvertRate = (this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100 + '%'
+    var surveySeenConvertRate = (this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100 + '%'
+    var surveyResponseConvertRate = (this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100 + '%'
     return (
       <div className='row'>
         <div className='col-xl-4'>
@@ -22,20 +24,11 @@ class CardsWithProgress extends React.Component {
                   </h3>
                 </div>
               </div>
-              <div className='m-portlet__head-tools'>
-                <ul className='m-portlet__nav'>
-                  <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
-                    <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                      Today
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </div>
             <div className='m-portlet__body'>
               <div className='m-widget20'>
                 <div className='m-widget20__number m--font-success'>
-                  {this.props.data.broadcastSentCount[0].count ? this.props.data.broadcastSentCount[0].count : 0}
+                  {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
                 </div>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
@@ -52,20 +45,6 @@ class CardsWithProgress extends React.Component {
                             <div className='m--space-10' />
                             <div className='progress m-progress--sm'>
                               <div className='progress-bar bg-primary' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcastSeenCount[0].count / this.props.data.broadcastSentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
-                            </div>
-                          </div>
-                        </div>
-                        <div className='col'>
-                          <div className='m-widget15__item'>
-                            <span className='m-widget15__stats'>
-                              {broadcastSeenConvertRate}
-                            </span>
-                            <span className='m-widget15__text'>
-                              Responded
-                            </span>
-                            <div className='m--space-10' />
-                            <div className='progress m-progress--sm'>
-                              <div className='progress-bar bg-success' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcastSeenCount[0].count / this.props.data.broadcastSentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
                             </div>
                           </div>
                         </div>
@@ -87,20 +66,11 @@ class CardsWithProgress extends React.Component {
                   </h3>
                 </div>
               </div>
-              <div className='m-portlet__head-tools'>
-                <ul className='m-portlet__nav'>
-                  <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
-                    <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                      Today
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </div>
             <div className='m-portlet__body'>
               <div className='m-widget20'>
                 <div className='m-widget20__number m--font-success'>
-                  {this.props.data.pollSentCount[0].count ? this.props.data.pollSentCount[0].count : 0}
+                  {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
                 </div>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
@@ -123,14 +93,14 @@ class CardsWithProgress extends React.Component {
                         <div className='col'>
                           <div className='m-widget15__item'>
                             <span className='m-widget15__stats'>
-                              {pollSeenConvertRate}
+                              {pollResponseConvertRate}
                             </span>
                             <span className='m-widget15__text'>
                               Responded
                             </span>
                             <div className='m--space-10' />
                             <div className='progress m-progress--sm'>
-                              <div className='progress-bar bg-success' role='progressbar' style={{width: pollSeenConvertRate}} aria-valuenow={(this.props.data.pollSeenCount[0].count / this.props.data.pollSentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
+                              <div className='progress-bar bg-success' role='progressbar' style={{width: pollResponseConvertRate}} aria-valuenow={(this.props.data.pollSeenCount[0].count / this.props.data.pollSentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
                             </div>
                           </div>
                         </div>
@@ -152,20 +122,11 @@ class CardsWithProgress extends React.Component {
                   </h3>
                 </div>
               </div>
-              <div className='m-portlet__head-tools'>
-                <ul className='m-portlet__nav'>
-                  <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
-                    <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                      Today
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </div>
             <div className='m-portlet__body'>
               <div className='m-widget20'>
                 <div className='m-widget20__number m--font-success'>
-                  {this.props.data.surveySentCount[0].count ? this.props.data.surveySentCount[0].count : 0}
+                  {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
                 </div>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
@@ -188,14 +149,14 @@ class CardsWithProgress extends React.Component {
                         <div className='col'>
                           <div className='m-widget15__item'>
                             <span className='m-widget15__stats'>
-                              {surveySeenConvertRate}
+                              {surveyResponseConvertRate}
                             </span>
                             <span className='m-widget15__text'>
                               Responded
                             </span>
                             <div className='m--space-10' />
                             <div className='progress m-progress--sm'>
-                              <div className='progress-bar bg-success' role='progressbar' style={{width: surveySeenConvertRate}} aria-valuenow={(this.props.data.surveySeenCount[0].count / this.props.data.surveySentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
+                              <div className='progress-bar bg-success' role='progressbar' style={{width: surveyResponseConvertRate}} aria-valuenow={(this.props.data.surveySeenCount[0].count / this.props.data.surveySentCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
                             </div>
                           </div>
                         </div>

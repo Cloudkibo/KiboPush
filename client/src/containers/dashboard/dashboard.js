@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
-// import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
+import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -201,10 +201,10 @@ class Dashboard extends React.Component {
               <CardBoxes data={this.props.dashboard} />
             }
           </div>
-          {/**
+          {
             this.props.sentseendata &&
             <CardsWithProgress data={this.props.sentseendata} />
-          **/}
+          }
         </div>
       </div>
     )
