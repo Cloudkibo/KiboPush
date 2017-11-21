@@ -103,12 +103,27 @@ exports.sentVsSeen = function (req, res) {
                 })
               }
               let datacounts = {
-                broadcastSentCount: broadcastSentCount,
-                broadcastSeenCount: broadcastSeenCount,
-                surveySentCount: surveySentCount,
-                surveySeenCount: surveySeenCount,
-                pollSentCount: pollSentCount,
-                pollSeenCount: pollSeenCount
+                broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
+                survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
+                poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0}
+              }
+              if (broadcastSentCount.length > 0) {
+                datacounts.broadcast.SentCount = broadcastSentCount[0].count
+                if (broadcastSeenCount.length > 0) {
+                  datacounts.broadcast.SeenCount = broadcastSeenCount[0].count
+                }
+              }
+              if (surveySentCount.length > 0) {
+                datacounts.survey.surveySentCount = surveySentCount[0].count
+                if (surveySeenCount.length > 0) {
+                  datacounts.survey.surveySeenCount = surveySeenCount[0].count
+                }
+              }
+              if (pollSentCount.length > 0) {
+                datacounts.poll.pollSentCount = pollSentCount[0].count
+                if (pollSeenCount.length > 0) {
+                  datacounts.poll.pollSeenCount = pollSeenCount[0].count
+                }
               }
               logger.serverLog(TAG,
                             `counts ${JSON.stringify(datacounts)}`)
