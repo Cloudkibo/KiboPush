@@ -43,7 +43,7 @@ class PageLikesSubscribers extends React.Component {
   }
 
   render () {
-    var convertRate = (this.state.subscribers / this.state.likes) * 100 + '%'
+    var convertRate = this.state.likes ? (this.state.subscribers / this.state.likes) * 100 + '%' : 0
     return (
       <div className='col-xl-6'>
         <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
