@@ -51,7 +51,7 @@ class PageLikesSubscribers extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text'>
-                  {this.state.selectedPage.length > 15 ? this.state.selectedPage.substring(0, 15) : this.state.selectedPage}
+                  {this.state.selectedPage.length > 15 ? this.state.selectedPage.substring(0, 15) + '...' : this.state.selectedPage}
                 </h3>
               </div>
             </div>

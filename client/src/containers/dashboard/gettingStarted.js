@@ -28,6 +28,22 @@ class GettingStarted extends React.Component {
     this.generateAlert = this.generateAlert.bind(this)
   }
 
+  componentDidMount () {
+    require('../../../public/js/jquery-3.2.0.min.js')
+    require('../../../public/js/jquery.min.js')
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    document.body.appendChild(addScript)
+    document.title = 'KiboPush | Getting Started'
+    $('#gettingStarted').click()
+  }
+
   componentWillReceiveProps (nextprops) {
     if (nextprops.successMessage) {
       this.generateAlert('success', nextprops.successMessage)
@@ -94,6 +110,9 @@ class GettingStarted extends React.Component {
     console.log('In Getting Started', this.state.step)
     return (
       <div>
+        <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden >
+          Launch Modal
+        </button>
         <AlertList
           position='top-right'
           alerts={this.state.alerts}
@@ -101,11 +120,11 @@ class GettingStarted extends React.Component {
           dismissTitle='Dismiss'
           onDismiss={this.onAlertDismissed}
         />
-        {
-          this.state.step === 0
-          ? <div className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <div className='modal-dialog' role='document'>
-              <div className='modal-content'>
+        <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div className='modal-dialog' role='document'>
+            {
+              this.state.step === 0
+              ? <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Getting Started
@@ -126,22 +145,18 @@ class GettingStarted extends React.Component {
                   <button type='button' className='btn btn-secondary' data-dismiss='modal'>
                     Close
                   </button>
-                  <button onClick={() => this.nextStep} type='button' className='btn btn-primary'>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
                     Start
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          : this.state.step === 1
-          ? <div className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <div className='modal-dialog' role='document'>
-              <div className='modal-content'>
+              : this.state.step === 1
+              ? <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 1:
                   </h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button type='button' id='m_modal_1_2' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
@@ -154,26 +169,22 @@ class GettingStarted extends React.Component {
                   <select onChange={this.selectPage} className='form-control m-input' id='exampleSelect1'>
                     {
                       this.props.pages.map((page, i) => (
-                        <option>{page.pageName}</option>
+                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
                       ))
                     }
                   </select>
                 </div>
                 <div className='modal-footer'>
-                  <button onClick={() => this.previousStep} type='button' className='btn btn-secondary'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
                     Back
                   </button>
-                  <button onClick={() => this.nextStep} type='button' className='btn btn-primary'>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
                     Next
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          : this.state.step === 2
-          ? <div className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <div className='modal-dialog' role='document'>
-              <div className='modal-content'>
+              : this.state.step === 2
+              ? <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 2:
@@ -194,20 +205,16 @@ class GettingStarted extends React.Component {
                   </a>
                 </div>
                 <div className='modal-footer'>
-                  <button onClick={() => this.previousStep} type='button' className='btn btn-secondary'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
                     Back
                   </button>
-                  <button onClick={() => this.nextStep} type='button' className='btn btn-primary'>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
                     Next
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          : this.state.step === 3
-          ? <div className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <div className='modal-dialog' role='document'>
-              <div className='modal-content'>
+              : this.state.step === 3
+              ? <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 3:
@@ -222,24 +229,20 @@ class GettingStarted extends React.Component {
                   <p>
                     Send a test broadcast to see how it works.
                   </p>
-                  <button onClick={() => this.sendTestBroadcast} type='button' className='btn btn-success'>
+                  <button onClick={this.sendTestBroadcast} type='button' className='btn btn-success'>
                     Send Test Broadcast
                   </button>
                 </div>
                 <div className='modal-footer'>
-                  <button onClick={() => this.previousStep} type='button' className='btn btn-secondary'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
                     Back
                   </button>
-                  <button onClick={() => this.nextStep} type='button' className='btn btn-primary'>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
                     Next
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          : <div className='modal fade' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            <div className='modal-dialog' role='document'>
-              <div className='modal-content'>
+              : <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 4:
@@ -253,7 +256,7 @@ class GettingStarted extends React.Component {
                 <div className='modal-body'>
                   <p>
                     Invite other people to subscribe your page by sharing this link:
-                    <a href={this.state.inviteUrl} target='_blank'>{this.state.inviteUrl}</a>
+                    <a href={this.state.inviteUrl} target='_blank'> {this.state.inviteUrl}</a>
                   </p>
                   <CopyToClipboard text={this.state.inviteUrl} onCopy={() => this.generateAlert('success', 'Link copied successfully!')}>
                     <button href={this.state.inviteUrl} className='btn btn-success'>
@@ -270,9 +273,9 @@ class GettingStarted extends React.Component {
                   </button>
                 </div>
               </div>
-            </div>
+            }
           </div>
-        }
+        </div>
       </div>
     )
   }
@@ -282,8 +285,6 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
-    pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage)
   }
