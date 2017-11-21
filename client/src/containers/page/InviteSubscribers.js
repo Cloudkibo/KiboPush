@@ -53,11 +53,12 @@ class InviteSubscribers extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    addScript.setAttribute('src', '../../../js/material.min.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    adddScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Invite Subscribers'
   }
 
@@ -190,7 +191,28 @@ class InviteSubscribers extends React.Component {
                             </div>
                             <div className='m--space-30' />
                             <CopyToClipboard text={this.state.fblink}
-                              onCopy={() => this.setState({copied: true})}>
+                              onCopy={() => {
+                                this.setState({copied: true})
+                                toastr.options = {
+                                  'closeButton': true,
+                                  'debug': false,
+                                  'newestOnTop': false,
+                                  'progressBar': false,
+                                  'positionClass': 'toast-bottom-right',
+                                  'preventDuplicates': false,
+                                  'showDuration': '300',
+                                  'hideDuration': '1000',
+                                  'timeOut': '5000',
+                                  'extendedTimeOut': '1000',
+                                  'showEasing': 'swing',
+                                  'hideEasing': 'linear',
+                                  'showMethod': 'fadeIn',
+                                  'hideMethod': 'fadeOut'
+                                }
+
+                                toastr.success('Link Copied Successfully', 'Copied!')
+                              }
+                            }>
                               <button style={{marginLeft: '30px'}} type='button' className='btn btn-success'>
                                 Copy Link
                               </button>
