@@ -31,7 +31,7 @@ class CardsWithProgress extends React.Component {
                   {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
                 </div>
               </div>
-              <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+              <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
                     <div className='m-widget15__items'>
@@ -75,7 +75,7 @@ class CardsWithProgress extends React.Component {
                   {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
                 </div>
               </div>
-              <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+              <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
                     <div className='m-widget15__items'>
@@ -133,7 +133,7 @@ class CardsWithProgress extends React.Component {
                   {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
                 </div>
               </div>
-              <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+              <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
                 <div className='m-portlet__body'>
                   <div className='m-widget15'>
                     <div className='m-widget15__items'>
