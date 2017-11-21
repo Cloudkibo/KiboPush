@@ -102,45 +102,19 @@ exports.sentVsSeen = function (req, res) {
                                 err)}`
                 })
               }
-              Surveys.find({userId: req.user._id}, (err2, surveyResponseCount) => {
-                if (err2) {
-                  return res.status(404)
-                  .json({status: 'failed', description: 'responses count not found'})
-                }
-                PollResponse.aggregate(
-                  [
-                              {$group: {_id: '$pollId', count: {$sum: 1}}}
-                  ], (err, pollResponseCount) => {
-                  if (err) {
-                    return res.status(404).json({
-                      status: 'failed',
-                      description: `Error in getting surveyResponseCount count ${JSON.stringify(
-                                    err)}`
-                    })
-                  }
-                  var sum = 0
-                  for (var i = 0; i < pollResponseCount.length; i++) {
-                    sum = sum + pollResponseCount[i].count
-                  }
-                  var sum1 = 0
-                  for (var j = 0; j < surveyResponseCount.length; j++) {
-                    sum1 = sum1 + surveyResponseCount[j].isresponded
-                  }
-                  let datacounts = {
-                    broadcast:
-                      { sent: broadcastSentCount[0].count, seen: broadcastSeenCount[0].count },
-                    survey:
-                      { sent: surveySentCount[0].count, seen: surveySeenCount[0].count, responses: sum1 },
-                    poll:
-                      { sent: pollSentCount[0].count, seen: pollSeenCount[0].count, responses: sum }
-                  }
-                  logger.serverLog(TAG,
-                                `counts ${JSON.stringify(datacounts)}`)
-                  res.status(200).json({
-                    status: 'success',
-                    payload: datacounts
-                  })
-                })
+              let datacounts = {
+                broadcast:
+                  { sent: broadcastSentCount[0].count, seen: broadcastSeenCount[0].count },
+                survey:
+                  { sent: surveySentCount[0].count, seen: surveySeenCount[0].count },
+                poll:
+                  { sent: pollSentCount[0].count, seen: pollSeenCount[0].count }
+              }
+              logger.serverLog(TAG,
+                            `counts ${JSON.stringify(datacounts)}`)
+              res.status(200).json({
+                status: 'success',
+                payload: datacounts
               })
             })
           })
