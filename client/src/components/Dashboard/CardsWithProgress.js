@@ -15,7 +15,7 @@ class CardsWithProgress extends React.Component {
     return (
       <div className='row'>
         <div className='col-xl-4'>
-          <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+          <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
@@ -56,7 +56,7 @@ class CardsWithProgress extends React.Component {
           </div>
         </div>
         <div className='col-xl-4'>
-          <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+          <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
@@ -111,7 +111,7 @@ class CardsWithProgress extends React.Component {
           </div>
         </div>
         <div className='col-xl-4'>
-          <div className='m-portlet m-portlet--bordered-semi m-portlet--half-height m-portlet--fit'>
+          <div className='m-portlet m-portlet--bordered-semi m-portlet--full-height'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
