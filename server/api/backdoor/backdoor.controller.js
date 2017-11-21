@@ -15,6 +15,7 @@ const PollResponse = require('../polls/pollresponse.model')
 const PollPages = require('../page_poll/page_poll.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const SurveyResponses = require('../surveys/surveyresponse.model')
+const LiveChat = require('../livechat/livechat.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
@@ -657,5 +658,39 @@ exports.surveysGraph = function (req, res) {
     }
     return res.status(200)
     .json({status: 'success', payload: {surveysgraphdata}})
+  })
+}
+
+exports.chatsGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  LiveChat.aggregate([
+    {
+      $match: {
+        'datetime': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+        count: {$sum: 1}}
+    }], (err, chatGraphData) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting chat count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {chatGraphData}})
   })
 }
