@@ -26,7 +26,7 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m--font-success'>
+              <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-success'>
                  {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
               </div>
               <div className='m--space-10' />
@@ -65,7 +65,7 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m--font-primary'>
+              <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-primary'>
                  {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
                </div>
               <div className='m--space-10' />
@@ -118,7 +118,7 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m--font-warning'>
+              <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-warning'>
                  {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
               </div>
               <div className='m--space-30' />
