@@ -75,9 +75,10 @@ class Page extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
-    
+
     var datatable = $('#m_datatable').mDatatable({
       pagingType: "full_numbers",
+      pagination: true,
       search: {
       // search delay in milliseconds
         delay: 400,
@@ -169,7 +170,7 @@ class Page extends React.Component {
                   this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
                     <h4 className='block'>0 Subscribers</h4>
-                    Your connected pages have zero subscribers. Unless you don't
+                    Your connected pages have zero subscribers. Unless you don not
                     have any subscriber, you will not be able to broadcast
                     message, polls and surveys.
                     Lets invite subscribers first. Dont worry, we will guide
