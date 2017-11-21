@@ -201,12 +201,10 @@ class Dashboard extends React.Component {
               <CardBoxes data={this.props.dashboard} />
             }
           </div>
-          <div className='row'>
-            {
-              this.props.sentseendata &&
-              <CardsWithProgress data={this.props.sentseendata} />
-            }
-          </div>
+          {
+            this.props.sentseendata &&
+            <CardsWithProgress data={this.props.sentseendata} />
+          }
         </div>
       </div>
     )
