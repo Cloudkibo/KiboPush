@@ -26,27 +26,25 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m-widget20'>
-                <div className='m-widget20__number m--font-success'>
-                  {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
-                </div>
+              <div className='m--font-success'>
+                 {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
               </div>
-            </div>
-            <div className='m--space-30' />
-            <div className='m-widget15'>
-              <div className='m-widget15__items'>
-                <div className='row'>
-                  <div className='col'>
-                    <div className='m-widget15__item'>
-                      <span className='m-widget15__stats'>
-                        {broadcastSeenConvertRate}
-                      </span>
-                      <span className='m-widget15__text'>
-                        Seen
-                      </span>
-                      <div className='m--space-10' />
-                      <div className='progress m-progress--sm'>
-                        <div className='progress-bar bg-primary' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+              <div className='m--space-10' />
+              <div className='m-widget15'>
+                <div className='m-widget15__items'>
+                  <div className='row'>
+                    <div className='col'>
+                      <div className='m-widget15__item'>
+                        <span className='m-widget15__stats'>
+                          {broadcastSeenConvertRate}
+                        </span>
+                        <span className='m-widget15__text'>
+                          Seen
+                        </span>
+                        <div className='m--space-10' />
+                        <div className='progress m-progress--sm'>
+                          <div className='progress-bar bg-primary' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -67,41 +65,39 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m-widget20'>
-                <div className='m-widget20__number m--font-success'>
-                  {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
-                </div>
-              </div>
-            </div>
-            <div className='m--space-30' />
-            <div className='m-widget15'>
-              <div className='m-widget15__items'>
-                <div className='row'>
-                  <div className='col'>
-                    <div className='m-widget15__item'>
-                      <span className='m-widget15__stats'>
-                        {pollSeenConvertRate}
-                      </span>
-                      <span className='m-widget15__text'>
-                        Seen
-                      </span>
-                      <div className='m--space-10' />
-                      <div className='progress m-progress--sm'>
-                        <div className='progress-bar bg-primary' role='progressbar' style={{width: pollSeenConvertRate}} aria-valuenow={(this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+              <div className='m--font-primary'>
+                 {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
+               </div>
+              <div className='m--space-10' />
+              <div className='m-widget15'>
+                <div className='m-widget15__items'>
+                  <div className='row'>
+                    <div className='col'>
+                      <div className='m-widget15__item'>
+                        <span className='m-widget15__stats'>
+                          {pollSeenConvertRate}
+                        </span>
+                        <span className='m-widget15__text'>
+                          Seen
+                        </span>
+                        <div className='m--space-10' />
+                        <div className='progress m-progress--sm'>
+                          <div className='progress-bar bg-primary' role='progressbar' style={{width: pollSeenConvertRate}} aria-valuenow={(this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='col'>
-                    <div className='m-widget15__item'>
-                      <span className='m-widget15__stats'>
-                        {pollResponseConvertRate}
-                      </span>
-                      <span className='m-widget15__text'>
-                        Responded
-                      </span>
-                      <div className='m--space-10' />
-                      <div className='progress m-progress--sm'>
-                        <div className='progress-bar bg-success' role='progressbar' style={{width: pollResponseConvertRate}} aria-valuenow={(this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                    <div className='col'>
+                      <div className='m-widget15__item'>
+                        <span className='m-widget15__stats'>
+                          {pollResponseConvertRate}
+                        </span>
+                        <span className='m-widget15__text'>
+                          Responded
+                        </span>
+                        <div className='m--space-10' />
+                        <div className='progress m-progress--sm'>
+                          <div className='progress-bar bg-success' role='progressbar' style={{width: pollResponseConvertRate}} aria-valuenow={(this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -122,41 +118,39 @@ class CardsWithProgress extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m-widget20'>
-                <div className='m-widget20__number m--font-success'>
-                  {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
-                </div>
+              <div className='m--font-warning'>
+                 {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
               </div>
-            </div>
-            <div className='m--space-30' />
-            <div className='m-widget15'>
-              <div className='m-widget15__items'>
-                <div className='row'>
-                  <div className='col'>
-                    <div className='m-widget15__item'>
-                      <span className='m-widget15__stats'>
-                        {surveySeenConvertRate}
-                      </span>
-                      <span className='m-widget15__text'>
-                        Seen
-                      </span>
-                      <div className='m--space-10' />
-                      <div className='progress m-progress--sm'>
-                        <div className='progress-bar bg-primary' role='progressbar' style={{width: surveySeenConvertRate}} aria-valuenow={(this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+              <div className='m--space-30' />
+              <div className='m-widget15'>
+                <div className='m-widget15__items'>
+                  <div className='row'>
+                    <div className='col'>
+                      <div className='m-widget15__item'>
+                        <span className='m-widget15__stats'>
+                          {surveySeenConvertRate}
+                        </span>
+                        <span className='m-widget15__text'>
+                          Seen
+                        </span>
+                        <div className='m--space-10' />
+                        <div className='progress m-progress--sm'>
+                          <div className='progress-bar bg-primary' role='progressbar' style={{width: surveySeenConvertRate}} aria-valuenow={(this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='col'>
-                    <div className='m-widget15__item'>
-                      <span className='m-widget15__stats'>
-                        {surveyResponseConvertRate}
-                      </span>
-                      <span className='m-widget15__text'>
-                        Responded
-                      </span>
-                      <div className='m--space-10' />
-                      <div className='progress m-progress--sm'>
-                        <div className='progress-bar bg-success' role='progressbar' style={{width: surveyResponseConvertRate}} aria-valuenow={(this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                    <div className='col'>
+                      <div className='m-widget15__item'>
+                        <span className='m-widget15__stats'>
+                          {surveyResponseConvertRate}
+                        </span>
+                        <span className='m-widget15__text'>
+                          Responded
+                        </span>
+                        <div className='m--space-10' />
+                        <div className='progress m-progress--sm'>
+                          <div className='progress-bar bg-success' role='progressbar' style={{width: surveyResponseConvertRate}} aria-valuenow={(this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                        </div>
                       </div>
                     </div>
                   </div>
