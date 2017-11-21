@@ -73,8 +73,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Autoposting'
+                type: array
+                items:
+                  $ref: '#/definitions/Autoposting'
                 description: all the autopstings data
         '500':
           description: failed
@@ -268,8 +269,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/User'
+                type: array
+                items:
+                  $ref: '#/definitions/User'
                 description: all the users' data
         '404':
           description: failed
@@ -293,8 +295,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Page'
+                type: array
+                items:
+                  $ref: '#/definitions/Page'
                 description: pages data
         '404':
           description: failed
@@ -318,8 +321,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Subscriber'
+                type: array
+                items:
+                  $ref: '#/definitions/Subscriber'
                 description: subscribers data
         '404':
           description: failed
@@ -343,8 +347,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Broadcast'
+                type: array
+                items:
+                  $ref: '#/definitions/Broadcast'
                 description: all the broadcasts data
         '404':
           description: failed
@@ -368,8 +373,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Poll'
+                type: array
+                items:
+                  $ref: '#/definitions/Poll'
                 description: all the polls of a particular user
         '404':
           description: failed
@@ -378,7 +384,7 @@ paths:
 
   /backdoor/allsurveys/:userid:
     get:
-      description: Gives all polls of a particular user
+      description: Gives all surveys of a particular user
       consumes:
         - application/json
       produces:
@@ -393,8 +399,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Survey'
+                type: array
+                items:
+                  $ref: '#/definitions/Survey'
                 description: all the surveys of a particular user
         '404':
           description: failed
@@ -418,8 +425,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Page'
+                type: array
+                items:
+                  $ref: '#/definitions/Page'
                 description: all the surveys of a particular user
         '404':
           description: failed
@@ -468,7 +476,7 @@ paths:
              $ref: '#/definitions/Response404'
   /backdoor/polls/:pollid:
     get:
-      description: Gives the data of poll, survey sent and survey responses
+      description: Gives the data of poll, poll sent and poll responses
       consumes:
         - application/json
       produces:
@@ -494,12 +502,12 @@ paths:
                     type: array
                     items:
                       type: object
-                      $ref: '#/definitions/Page_Poll'
+                      $ref: '#/definitions/Poll'
                   pollpages:
                     type: array
                     items:
                       type: object
-                      $ref: '#/definitions/Poll'
+                      $ref: '#/definitions/Page_Poll'
 
         '404':
           description: failed
@@ -728,14 +736,637 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#definitions/Broadcast'
+                type: array
+                items:
+                  $ref: '#definitions/Broadcast'
                 description: Broadcasts' data
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /dashboard/:id:
+    get:
+      description: Gives the total number of pages connected to KiboPush
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              pagesCount:
+                type: number
+                description: The number of pages conected
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /dashboard/sentVsSeen:
+    get:
+      description: Gives the sent, seen and responses count of all the surveys, poll and broadcasts of the logged in user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              payload:
+                type: object
+                properties:
+                  broadcast:
+                    type: object
+                    properties:
+                      sent:
+                        type: number
+                      seen:
+                        type: number
+                  survey:
+                    type: object
+                    $ref: '#/definitions/SentSeenResponses'
+                  poll:
+                    type: object
+                    $ref: '#/definitions/SentSeenResponses'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /dashboard/otherPages:
+    get:
+      description: Gives the pages of user that are not connected to KiboPush
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#/definitions/Page'
+                description: Pages' data
+  /dashboard/stats:
+    get:
+      description: Gives the the count of broadcasts, surveys, polls, and unread messages
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              payload:
+                type: object
+                properties:
+                  scheduledBroadcast:
+                    type: string
+                    description: The number of broadcasts scheduled
+                  username:
+                    type: string
+                    description: The user name of logged in user
+                  pages:
+                    type: number
+                    description: the number of connected pages of the user
+                  subscribers:
+                    type: number
+                    description: the total number of subscribers of all the connected pages
+                  recentBroadcasts:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Broadcast'
+                  activityChart:
+                    type: object
+                    properties:
+                      messages:
+                        type: number
+                        description: the total number of broadcasts that the user has made
+                      polls:
+                        type: number
+                        description: the total number of polls that the user has made
+                      surveys:
+                        type: number
+                        description: the total number of surveys that the user has made
+                  unreadCount:
+                    type: number
+                    description: The number of unread messages in live chat
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /livechat/:
+    post:
+      description: create a new chat
+      produces:
+        - application/json
+      parameters:
+        - name: livechat
+          in: body
+          description: The live chat details
+          required: true
+          schema:
+            $ref: '#/definitions/LiveChat'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/LiveChat'
+                description: The newly created chat
+        '400':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response400'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /livechat/:session_id:
+    get:
+      description: Gives the chats of a particular session
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/LiveChat'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /menu/:
+    get:
+      description: Gives the main menu
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Menu'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /menu/create:
+    post:
+      description: create a new menu
+      produces:
+        - application/json
+      parameters:
+        - name: main menu
+          in: body
+          description: The main menu details
+          required: true
+          schema:
+            $ref: '#/definitions/Menu'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Menu'
+                description: The newly created menu
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_broadcast/:
+    get:
+      description: Gives the details of the broadcasts sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Broadcast'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_broadcast/:id:
+    get:
+      description: Gives the details of a particular broadcast that is sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Broadcast'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_poll/:
+    get:
+      description: Gives the details of the polls sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Poll'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_poll/:id:
+    get:
+      description: Gives the details of a particular poll that is sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Poll'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_survey/:
+    get:
+      description: Gives the details of the surveys sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Survey'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /page_survey/:id:
+    get:
+      description: Gives the details of a particular survey that is sent to subscribers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page_Survey'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /pages/:
+    get:
+      description: Gives the details of all the connected pages of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /pages/allpages:
+    get:
+      description: Gives the details of the connected pages along with the number of subscribers of each page
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: The unique id of the record
+                    pageId:
+                      type: string
+                      description: The unique id of the page
+                    pageName:
+                      type: string
+                      description: The name of the page
+                    userId:
+                      type: string
+                      description: The id of the logged in user
+                    pagePic:
+                      type: string
+                      description: The page picture
+                    connected:
+                      type: boolean
+                      description: Whether the page is connected or not
+                    pageUserName:
+                      type: string
+                      description: The user name of the page
+                    likes:
+                      type: number
+                      description: The number of likes a page has
+                    subscribers:
+                      type: number
+                      description: The number of subscribers a page has
 
         '404':
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+  /pages/otherpages:
+    get:
+      description: Gives the pages of the user that are not connected to KiboPush
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /pages/addpages:
+    get:
+      description: Gives the details of all pages of a particular user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#definitions/Page'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /polls/:
+    get:
+      description: Gives the data of poll, poll sent and poll responsed
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  responsesCount:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll_Response'
+                  polls:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll'
+                  pollpages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Page_Poll'
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /polls/responses/:id:
+    get:
+      description: Gives the responses of a particular poll
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  responsesCount:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll_Response'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /polls/create:
+    post:
+      description: create a new chat
+      produces:
+        - application/json
+      parameters:
+        - name: poll
+          in: body
+          description: The poll details
+          required: true
+          schema:
+            $ref: '#/definitions/Poll'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Poll'
+                description: The newly created chat
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
   /users/:
     post:
@@ -1090,13 +1721,18 @@ definitions:
   Poll:
     type: object
     description: This is the main table for polls that are created to send to page audience in messenger.
+    required:
+      - statement
+      - options
     properties:
       _id:
         type: string
         description: The unique id of the record
+        readOnly: true
       platform:
         type: string
         description: Name of the platform used for sending poll. In v1, the platform value is 'facebook' only.
+        readOnly: true
       statement:
         type: string
         description: statement of the poll
@@ -1108,9 +1744,11 @@ definitions:
       userId:
         type: string
         description: The unique id of the user who has created the poll
+        readOnly: true
       datetime:
         type: string
         description: Date of creation
+        readOnly: true
       isSegmented:
         type: boolean
         description: Whether this poll is segmented or not
@@ -1387,7 +2025,69 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send autoposting to
-
+  LiveChat:
+    type: object
+    description: This table is used to store all the chats information
+    required:
+      - format
+      - sender_id
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+      format:
+        type: string
+        description: The format of the chat
+      sender_id:
+        type: string
+        description: The page id or subscriber id who sends the message
+      recipient_id:
+        type: string
+        description: The id of the subscriber who receives the message
+      sender_fb_id:
+        type: string
+        description: The page id or  facebook subscriber id who sends the message
+      recipient_fb_id:
+        type: string
+        description: The facebook id of the subscriber who receives the message
+      session_id:
+        type: string
+        description: The id of the session
+      company_id:
+        type: string
+        description: This is admin id till we have companies
+      status:
+        type: string
+        description: seen or unseen
+      payload:
+        type: object
+        description: The message content
+      url_meta:
+        type: object
+        description: The metadata of a url
+      datetime:
+        type: string
+        description: The date and time when the message is sent
+  Menu:
+    type: object
+    description: This table is used to store main menu details
+    required:
+      - pageId
+      - userId
+    properties:
+      _id:
+        type: object
+        description: The unique id of the record
+        readOnly: true
+      pageId:
+        type: string
+        description: The unique id of the page
+      userId:
+        type: string
+        description: The unique id of the page
+      payload:
+        type: object
+        description: when type is reply
   Graph:
     type: object
     description: gives the number of broadcasts, surveys or polls made along with the date
@@ -1405,6 +2105,21 @@ definitions:
       count:
         type: number
         description: number of polls, surveys or broadcasts
+
+  SentSeenResponses:
+    type: object
+    description: gives the number of polls and surveys sent, seen and responded
+    properties:
+      sent:
+        type: number
+        description: The number of polls, surveys or broadcasts that are sent
+      seen:
+        type: number
+        description: The number of polls, surveys or broadcasts that are seen
+      responses:
+        type: number
+        description: The number of polls, surveys or broadcasts that are responded
+
   Response500:
     type: object
     properties:
@@ -1434,3 +2149,13 @@ definitions:
       description:
         type: string
         description: Record not found
+
+  Response400:
+    type: object
+    properties:
+      status:
+        type: string
+        description: failed
+      description:
+        type: string
+        description: Parameters missing

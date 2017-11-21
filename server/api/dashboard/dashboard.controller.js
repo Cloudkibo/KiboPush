@@ -137,9 +137,9 @@ exports.sentVsSeen = function (req, res) {
                     poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0}
                   }
                   if (broadcastSentCount.length > 0) {
-                    datacounts.broadcast.SentCount = broadcastSentCount[0].count
+                    datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
                     if (broadcastSeenCount.length > 0) {
-                      datacounts.broadcast.SeenCount = broadcastSeenCount[0].count
+                      datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
                     }
                   }
                   if (surveySentCount.length > 0) {
