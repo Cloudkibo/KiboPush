@@ -77,8 +77,7 @@ class Page extends React.Component {
     document.body.appendChild(addScript)
     
     var datatable = $('#m_datatable').mDatatable({
-      pagination: true,
-      paging: true,
+      pagingType: "full_numbers",
       search: {
       // search delay in milliseconds
         delay: 400,
