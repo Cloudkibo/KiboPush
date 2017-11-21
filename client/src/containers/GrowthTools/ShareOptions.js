@@ -83,8 +83,8 @@ class ShareOptions extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)

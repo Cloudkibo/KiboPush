@@ -328,7 +328,7 @@ class Sidebar extends Component {
                   <span className='m-menu__arrow' />
                   <ul className='m-menu__subnav'>
                     <li className='m-menu__item ' aria-haspopup='true' >
-                      <Link to='/broadcasts' className='m-menu__link '>
+                      <Link to='/convos' className='m-menu__link '>
                         <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                           <span />
                         </i>
