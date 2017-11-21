@@ -7,11 +7,11 @@ import React from 'react'
 
 class CardsWithProgress extends React.Component {
   render () {
-    var broadcastSeenConvertRate = (this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100 + '%'
-    var pollSeenConvertRate = (this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100 + '%'
-    var pollResponseConvertRate = (this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100 + '%'
-    var surveySeenConvertRate = (this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100 + '%'
-    var surveyResponseConvertRate = (this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100 + '%'
+    var broadcastSeenConvertRate = this.props.data.broadcast.broadcastSentCount !== 0 ? (this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100 + '%' : 0
+    var pollSeenConvertRate = this.props.data.poll.pollSentCount !== 0 ? (this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100 + '%' : 0
+    var pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? (this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100 + '%' : 0
+    var surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? (this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100 + '%' : 0
+    var surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? (this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100 + '%' : 0
     return (
       <div className='row'>
         <div className='col-xl-4'>
@@ -121,7 +121,7 @@ class CardsWithProgress extends React.Component {
               <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-warning'>
                  {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
               </div>
-              <div className='m--space-30' />
+              <div className='m--space-10' />
               <div className='m-widget15'>
                 <div className='m-widget15__items'>
                   <div className='row'>
