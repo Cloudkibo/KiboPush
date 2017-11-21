@@ -13,7 +13,6 @@ const pageSurvey = require('../page_survey/page_survey.model')
 const pagePoll = require('../page_poll/page_poll.model')
 const LiveChat = require('../livechat/livechat.model')
 const TAG = 'api/pages/pages.controller.js'
-const SurveyResponses = require('../surveys/surveyresponse.model')
 const PollResponse = require('../polls/pollresponse.model')
 const mongoose = require('mongoose')
 
@@ -34,8 +33,7 @@ exports.sentVsSeen = function (req, res) {
   pageBroadcast.aggregate(
     [
       {$match: {userId: req.user._id}},
-      {$group: {_id: null, count: {$sum: 1}}},
-      {$project: {_id: 0}}
+      {$group: {_id: null, count: {$sum: 1}}}
     ], (err, broadcastSentCount) => {
     if (err) {
       return res.status(404).json({
