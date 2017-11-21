@@ -57,8 +57,7 @@ exports.sentVsSeen = function (req, res) {
       pageSurvey.aggregate(
         [
               {$match: {userId: req.user._id}},
-              {$group: {_id: null, count: {$sum: 1}}},
-              {$project: {_id: 0}}
+              {$group: {_id: null, count: {$sum: 1}}}
         ], (err, surveySentCount) => {
         if (err) {
           return res.status(404).json({
@@ -70,8 +69,7 @@ exports.sentVsSeen = function (req, res) {
         pageSurvey.aggregate(
           [
                   {$match: {seen: true, userId: req.user._id}},
-                  {$group: {_id: null, count: {$sum: 1}}},
-                  {$project: {_id: 0}}
+                  {$group: {_id: null, count: {$sum: 1}}}
           ], (err, surveySeenCount) => {
           if (err) {
             return res.status(404).json({
@@ -83,8 +81,7 @@ exports.sentVsSeen = function (req, res) {
           pagePoll.aggregate(
             [
                       {$match: {userId: req.user._id}},
-                      {$group: {_id: null, count: {$sum: 1}}},
-                      {$project: {_id: 0}}
+                      {$group: {_id: null, count: {$sum: 1}}}
             ], (err, pollSentCount) => {
             if (err) {
               return res.status(404).json({
@@ -96,8 +93,7 @@ exports.sentVsSeen = function (req, res) {
             pagePoll.aggregate(
               [
                           {$match: {seen: true, userId: req.user._id}},
-                          {$group: {_id: null, count: {$sum: 1}}},
-                          {$project: {_id: 0}}
+                          {$group: {_id: null, count: {$sum: 1}}}
               ], (err, pollSeenCount) => {
               if (err) {
                 return res.status(404).json({
