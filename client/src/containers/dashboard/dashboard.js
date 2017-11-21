@@ -29,7 +29,7 @@ class Dashboard extends React.Component {
     props.loadMyPagesList()
     props.loadDashboardData()
     props.getuserdetails()
-    props.sentVsSeen()
+    // props.sentVsSeen()
     props.loadSubscribersList()
 
     this.state = {
