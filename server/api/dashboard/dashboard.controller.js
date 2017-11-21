@@ -14,6 +14,7 @@ const pagePoll = require('../page_poll/page_poll.model')
 const LiveChat = require('../livechat/livechat.model')
 const TAG = 'api/pages/pages.controller.js'
 const PollResponse = require('../polls/pollresponse.model')
+const PollPage = require('../page_poll/page_poll.model')
 const mongoose = require('mongoose')
 
 exports.index = function (req, res) {
@@ -107,62 +108,75 @@ exports.sentVsSeen = function (req, res) {
                   return res.status(404)
                   .json({status: 'failed', description: 'responses count not found'})
                 }
-                PollResponse.aggregate(
-                  [
-                              {$group: {_id: '$userId', count: {$sum: 1}}}
-                  ], (err, pollResponseCount) => {
+                Polls.find({userId: req.user._id}, (err, polls) => {
                   if (err) {
-                    return res.status(404).json({
+                    logger.serverLog(TAG, `Error: ${err}`)
+                    return res.status(500).json({
                       status: 'failed',
-                      description: `Error in getting poll response count ${JSON.stringify(
-                                    err)}`
+                      description: `Internal Server Error${JSON.stringify(err)}`
                     })
                   }
-                  var sum = 0
-                  if (pollResponseCount.length > 0) {
-                    for (var i = 0; i < pollResponseCount.length; i++) {
-                      sum = sum + pollResponseCount[i].count
+                  PollPage.find({userId: req.user._id}, (err, pollpages) => {
+                    if (err) {
+                      return res.status(404)
+                      .json({status: 'failed', description: 'Polls not found'})
                     }
-                  }
-                  var sum1 = 0
-                  if (surveyResponseCount.length > 0) {
-                    for (var j = 0; j < surveyResponseCount.length; j++) {
-                      sum1 = sum1 + surveyResponseCount[j].isresponded
-                    }
-                  }
-
-                  let datacounts = {
-                    broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
-                    survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
-                    poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0}
-                  }
-                  if (broadcastSentCount.length > 0) {
-                    datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
-                    if (broadcastSeenCount.length > 0) {
-                      datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
-                    }
-                  }
-                  if (surveySentCount.length > 0) {
-                    datacounts.survey.surveySentCount = surveySentCount[0].count
-                    if (surveySeenCount.length > 0) {
-                      datacounts.survey.surveySeenCount = surveySeenCount[0].count
-                      datacounts.survey.surveyResponseCount = sum1
-                    }
-                  }
-                  if (pollSentCount.length > 0) {
-                    datacounts.poll.pollSentCount = pollSentCount[0].count
-                    if (pollSeenCount.length > 0) {
-                      datacounts.poll.pollSeenCount = pollSeenCount[0].count
-                      if (pollResponseCount.length > 0) {
-                        datacounts.poll.pollResponseCount = pollResponseCount[0].count
+                    PollResponse.aggregate(
+                      [
+                                  {$group: {_id: '$pollId', count: {$sum: 1}}}
+                      ], (err, pollResponseCount) => {
+                      if (err) {
+                        return res.status(404).json({
+                          status: 'failed',
+                          description: `Error in getting poll response count ${JSON.stringify(
+                                        err)}`
+                        })
                       }
-                    }
-                  }
-                  logger.serverLog(TAG,
-                                `counts ${JSON.stringify(datacounts)}`)
-                  res.status(200).json({
-                    status: 'success',
-                    payload: datacounts
+                      var sum = 0
+                      if (pollResponseCount.length > 0) {
+                        for (var i = 0; i < pollResponseCount.length; i++) {
+                          sum = sum + pollResponseCount[i].count
+                        }
+                      }
+                      var sum1 = 0
+                      if (surveyResponseCount.length > 0) {
+                        for (var j = 0; j < surveyResponseCount.length; j++) {
+                          sum1 = sum1 + surveyResponseCount[j].isresponded
+                        }
+                      }
+
+                      let datacounts = {
+                        broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
+                        survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
+                        poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0}
+                      }
+                      if (broadcastSentCount.length > 0) {
+                        datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
+                        if (broadcastSeenCount.length > 0) {
+                          datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
+                        }
+                      }
+                      if (surveySentCount.length > 0) {
+                        datacounts.survey.surveySentCount = surveySentCount[0].count
+                        if (surveySeenCount.length > 0) {
+                          datacounts.survey.surveySeenCount = surveySeenCount[0].count
+                          datacounts.survey.surveyResponseCount = sum1
+                        }
+                      }
+                      if (pollSentCount.length > 0) {
+                        datacounts.poll.pollSentCount = pollSentCount[0].count
+                        if (pollSeenCount.length > 0) {
+                          datacounts.poll.pollSeenCount = pollSeenCount[0].count
+                          datacounts.poll.pollResponseCount = sum
+                        }
+                      }
+                      logger.serverLog(TAG,
+                                    `counts ${JSON.stringify(datacounts)}`)
+                      res.status(200).json({
+                        status: 'success',
+                        payload: datacounts
+                      })
+                    })
                   })
                 })
               })
