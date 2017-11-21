@@ -103,12 +103,12 @@ exports.sentVsSeen = function (req, res) {
                 })
               }
               let datacounts = {
-                broadcast:
-                  { sent: broadcastSentCount[0].count, seen: broadcastSeenCount[0].count },
-                survey:
-                  { sent: surveySentCount[0].count, seen: surveySeenCount[0].count },
-                poll:
-                  { sent: pollSentCount[0].count, seen: pollSeenCount[0].count }
+                broadcastSentCount: broadcastSentCount,
+                broadcastSeenCount: broadcastSeenCount,
+                surveySentCount: surveySentCount,
+                surveySeenCount: surveySeenCount,
+                pollSentCount: pollSentCount,
+                pollSeenCount: pollSeenCount
               }
               logger.serverLog(TAG,
                             `counts ${JSON.stringify(datacounts)}`)
