@@ -153,7 +153,9 @@ exports.sentVsSeen = function (req, res) {
                     datacounts.poll.pollSentCount = pollSentCount[0].count
                     if (pollSeenCount.length > 0) {
                       datacounts.poll.pollSeenCount = pollSeenCount[0].count
-                      datacounts.poll.pollResponseCount = pollResponseCount
+                      if (pollResponseCount.length > 0) {
+                        datacounts.poll.pollResponseCount = pollResponseCount[0].count
+                      }
                     }
                   }
                   logger.serverLog(TAG,
