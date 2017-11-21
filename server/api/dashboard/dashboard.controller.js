@@ -109,7 +109,7 @@ exports.sentVsSeen = function (req, res) {
                 }
                 PollResponse.aggregate(
                   [
-                              {$group: {_id: '$pollId', count: {$sum: 1}}}
+                              {$group: {_id: '$userId', count: {$sum: 1}}}
                   ], (err, pollResponseCount) => {
                   if (err) {
                     return res.status(404).json({
@@ -153,7 +153,7 @@ exports.sentVsSeen = function (req, res) {
                     datacounts.poll.pollSentCount = pollSentCount[0].count
                     if (pollSeenCount.length > 0) {
                       datacounts.poll.pollSeenCount = pollSeenCount[0].count
-                      datacounts.poll.pollResponseCount = sum
+                      datacounts.poll.pollResponseCount = pollResponseCount
                     }
                   }
                   logger.serverLog(TAG,
