@@ -90,53 +90,12 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: userId
-          in: formData
-          description: The id of the logged in user
-          type: string
+        - name: autopost
+          in: body
           required: true
-        - name: subscriptionUrl
-          in: formData
-          description: The url of facebook page, twitter account or youtube channel
-          type: string
-          required: true
-        - name: subscriptionType
-          in: formData
-          description: The type of subscription i.e. facebook, twitter or youtube
-          type: string
-          required: true
-        - name: accountTitle
-          in: formData
-          description: The title of subscription i.e. Facebook page, Twitter Account or Youtube Channel
-          type: string
-          required: true
-        - name: segmentationPageIds
-          in: formData
-          description: The unique page ids
-          type: array
-          items:
-            type: string
-          required: false
-        - name: segmentationGender
-          in: formData
-          description: The genders of the subscribers
-          type: array
-          items:
-            type: string
-          required: false
-        - name: segmentationLocale
-          in: formData
-          description: The locale of the subscribers
-          type: array
-          items:
-            type: string
-          required: false
-        - name: isActive
-          in: formData
-          description: Whether this autoposting is enabled or not
-          type: boolean
-          required: true
-          default: true
+          description: Autopost details
+          schema:
+            $ref: '#/definitions/Autoposting'
       responses:
         '201':
           description: OK
@@ -161,7 +120,7 @@ paths:
 
   /autoposting/edit/:
     post:
-      description: create a new autoposting
+      description: Edit an already created autopost
       consumes:
           - application/json
           - application/x-www-form-urlencoded
@@ -679,6 +638,39 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+  /broadcasts/sendConversation:
+    post:
+      description: create a new broadcast
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: broadcast
+          in: body
+          description: The broadcast
+          required: true
+          schema:
+            $ref: '#/definitions/Broadcast'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Broadcast'
+                description: The newly created broadcast
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
   /broadcasts/upload/:
     post:
       description: uploads the file sent
@@ -719,6 +711,45 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /broadcasts/download:
+    get:
+      description: Gives the file, image ect attached by the user in broadcast
+      consumes:
+        - application/json
+      produces:
+        - application/*
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: file
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /broadcasts/delete/:id:
+    delete:
+      description: Delete the file that the user has attached with broadcast
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              payload:
+                type: string
+                description: File deleted successfully
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
   /broadcasts/:id:
     get:
       description: Gives the broadacasts made by a particular user
@@ -878,6 +909,9 @@ paths:
   /livechat/:
     post:
       description: create a new chat
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -913,6 +947,39 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
 
+  /growthtools/upload/:
+    post:
+      description: uploads the csv file containing customers' name and phone numbers
+      consumes:
+          - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: file
+          in: formData
+          description: The file to upload
+          type: file
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+                description: Contacts were invited to your messenger
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
   /livechat/:session_id:
     get:
       description: Gives the chats of a particular session
@@ -965,6 +1032,9 @@ paths:
   /menu/create:
     post:
       description: create a new menu
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -1240,6 +1310,82 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /pages/enable:
+    post:
+      description: connects the page to KiboPush
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: pageId
+          in: formData
+          description: The id of the page to connect
+          required: true
+          type: string
+        - name: _id
+          in: formData
+          description: The unique id of the record in pages table
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  pages:
+                    type: object
+                    $ref: '#/definitions/Poll'
+                    description: all the pages of the user
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /pages/disable:
+    post:
+      description: disconnects the page from KiboPush
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: pageId
+          in: formData
+          description: The id of the page to connect
+          required: true
+          type: string
+        - name: _id
+          in: formData
+          description: The unique id of the record in pages table
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Poll'
+                description: all the pages of the user
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
   /pages/addpages:
     get:
       description: Gives the details of all pages of a particular user
@@ -1340,7 +1486,10 @@ paths:
 
   /polls/create:
     post:
-      description: create a new chat
+      description: creates a new poll
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
@@ -1362,12 +1511,445 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Poll'
-                description: The newly created chat
+                description: The newly created poll
         '500':
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /polls/send:
+    post:
+      description: Sends a poll
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: formData
+          description: The unique id of the poll to send
+          required: true
+          type: string
+        - name: statement
+          in: formData
+          description: The statement of the poll
+          required: true
+          type: string
+        - name: options
+          in: formData
+          description: The options of the poll
+          required: true
+          type: string
+        - name: isSegemented
+          in: formData
+          description: Whether the survey is segmented or not
+          required: false
+          type: boolean
+          default: false
+        - name: segmentationPageIds
+          in: formData
+          description: The ids of the segmented pages
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationGender
+          in: formData
+          description: The segmented genders
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationLocale
+          in: formData
+          description: The segmented locales
+          required: false
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: string
+                description: Poll sent successfully
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /sessions/:
+    post:
+      description: creates a new session
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: company_id
+          in: formData
+          description: The admin id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Session'
 
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /sessions/markread/:id:
+    get:
+      description: update the status of a particular chat to seen
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/LiveChat'
+  /sessions/:id:
+    get:
+      description: Gives a particular session
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/LiveChat'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /subscribers/:
+    get:
+      description: Gives all the subscribers of all the pages of a user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            $ref: '#/definitions/Subscriber'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /surveys/:
+    get:
+      description: Gives the data of surveys, surveys sent and surveys responsed
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  responsesCount:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey_Response'
+                  surveys:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey'
+                  surveypages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Page_Survey'
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/create:
+    post:
+      description: creates a new survey
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: survey
+          in: body
+          description: The survey details
+          required: true
+          schema:
+            allOf:
+            - $ref: '#/definitions/Survey'
+            - $ref: '#/definitions/Survey_Question'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Survey'
+                description: The newly created Survey
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/edit:
+    post:
+      description: Edit a survey
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: survey
+          in: body
+          description: The survey details
+          required: true
+          schema:
+            allOf:
+            - $ref: '#/definitions/EditSurvey'
+            - $ref: '#/definitions/Survey_Question'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Autoposting'
+                description: The newly created autopost
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/send:
+    post:
+      description: Sends a survey
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: formData
+          description: The id of the survey to send
+          required: true
+          type: string
+        - name: isSegemented
+          in: formData
+          description: Whether the survey is segmented or not
+          required: false
+          type: boolean
+          default: false
+        - name: segmentationPageIds
+          in: formData
+          description: The ids of the segmented pages
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationGender
+          in: formData
+          description: The segmented genders
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationLocale
+          in: formData
+          description: The segmented locales
+          required: false
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: string
+                description: Survey sent successfully
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/submitresponse:
+    post:
+      description: creates a survey response
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: surveyResponse
+          in: body
+          required: true
+          description: Survey Response details
+          schema:
+            $ref: '#/definitions/Survey_Response'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: string
+                description: Response submitted successfully
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/showquestions/:id:
+    get:
+      description: Gives the survey and questions of a particular survey
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  survey:
+                    type: object
+                    $ref: '#/definitions/Survey'
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Survey_Question'
+
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/:id:
+    get:
+      description: Gives the survey, survey questions and survey responses of a particular survey
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  survey:
+                    type: object
+                    $ref: '#/definitions/Survey'
+                  responses:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Survey_Response'
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Survey_Question'
+
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
   /users/:
     post:
       description: Create a new customer support session
@@ -1559,18 +2141,28 @@ definitions:
         description: Whether the user has visited the subscribe to messenger page or not
 
   Broadcast:
+    required:
+      - payload
+      - type
+      - title
+      - text
+      - isSegmented
     type: object
     description: Broadcasts are the messages that we want to send to our facebook page audience. These can be platform specific. In v1, the platform value is 'facebook' only.
     properties:
       _id:
         description: Primary key or unique id given to each record
         type: string
+        readOnly: true
       platform:
         type: string
         description: Name of the platform used for sending broadcast. In v1, the platform value is 'facebook' only.
       payload:
-        type: object
+        type: array
         description: The attached data like file, image etc
+        items:
+          type: object
+          description: The payload array would have different types of objects with different json structure. So, for now, we will provide a link that will tell the json structure
       type:
         type: string
         description: This can be either text or attachment.
@@ -1589,6 +2181,7 @@ definitions:
       isSegmented:
         type: boolean
         description: Whether this broadcast is segmented or not
+        default: false
       segmentationPageIds:
         type: array
         items:
@@ -1609,10 +2202,10 @@ definitions:
         description: The timezone of the subscriber to send broadcast to
       userId:
         type: string
-        description: User who sent this broadcast to his/her page audience.
       datetime:
         type: string
         description: Date and time when this record was created.
+        readOnly: true
 
   Page_Broadcast:
     type: object
@@ -1798,6 +2391,7 @@ definitions:
       _id:
         type: string
         description: The unique id of the subscriber.
+        readOnly: true
       pageScopedId:
         type: string
         description: Every facebook user who subscribes a page gets page scoped id.
@@ -1826,8 +2420,8 @@ definitions:
         type: string
         description: Profile picture of the subscriber. We only save the URL of the picture provided to us by Facebook.
       pageId:
-        type: string
-        description: Facebook Page Id of the page subscriber has followed.
+        type: object
+        $ref: '#definitions/Page'
       coverPhoto:
         type: string
         description: Cover photo of the subscriber. We only save the URL of the picture provided to us by Facebook.
@@ -1841,10 +2435,14 @@ definitions:
   Survey:
     type: object
     description: The record of the survey created by user. This is main table for survey. Other linked tables are Survey_Questions and Survey_Response
+    required:
+      - title
+      - description
     properties:
       _id:
         type: string
         description: the unique id of the record
+        readOnly: true
       title:
         type: string
         description: Title of the survey
@@ -1857,15 +2455,19 @@ definitions:
       userId:
         type: string
         description: User Id of the admin of that page.
+        readOnly: true
       datetime:
         type: string
         description: Date of creation
+        readOnly: true
       isresponded:
         type: number
         description: The number of responses of a survey
+        readOnly: true
       isSegmented:
         type: boolean
         description: Whether this survey is segmented or not
+        default: false
       segmentationPageIds:
         type: array
         items:
@@ -1884,14 +2486,37 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send survey to
-
+  EditSurvey:
+    type: object
+    description: The table contains information for editing a survey
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        description: the unique id of the record
+      title:
+        type: string
+        description: Title of the survey
+      description:
+        type: string
+        description: Detailed description of the survey
+      image:
+        type: string
+        description: Image attached to survey
   Survey_Response:
     type: object
     description: Here we store the responses coming for each question of the survey by subscribers
+    required:
+      - response
+      - surveyId
+      - questionId
+      - subscriberId
     properties:
       _id:
         type: string
         description: The unique id of the record
+        readOnly: true
       response:
         description: Text of the response.
         type: string
@@ -1907,14 +2532,21 @@ definitions:
       datetime:
         type: string
         description: Date of creation
+        readOnly: true
 
   Survey_Question:
     type: object
     description: Here we store the questions which belong to a survey. This table is associated with Survey table.
+    required:
+      - statement
+      - options
+      - type
+      - surveyId
     properties:
       _id:
         type: string
         description: The unique id of the record
+        readOnly: true
       statement:
         description: This is the statement of the question
         type: string
@@ -1932,6 +2564,8 @@ definitions:
       datetime:
         type: string
         description: Date of creation
+        readOnly: true
+
 
   Workflow:
     type: object
@@ -1964,6 +2598,11 @@ definitions:
   Autoposting:
     type: object
     description: This table is used to store the facebook page, twitter account or youtube channel information.
+    required:
+      - accountTitle
+      - subscriptionUrl
+      - subscriptionType
+
     properties:
       _id:
         type: string
@@ -1972,6 +2611,7 @@ definitions:
       userId:
         type: string
         description: Unique id of the admin of the page
+        readOnly: true
       accountTitle:
         type: string
         description: Whether it is a facebook page, twitter account or a youtube channel
@@ -2007,6 +2647,7 @@ definitions:
       isSegmented:
         type: boolean
         description: Whether this autoposting is segmented or not
+        default: false
       segmentationPageIds:
         type: array
         items:
@@ -2035,6 +2676,7 @@ definitions:
       _id:
         type: string
         description: The unique id of the record
+        readOnly: true
       format:
         type: string
         description: The format of the chat
@@ -2060,14 +2702,18 @@ definitions:
         type: string
         description: seen or unseen
       payload:
-        type: object
+        type: array
         description: The message content
+        items:
+            type: object
+            description: The payload array would have different types of objects with different json structure. So, for now, we will provide a link that will tell the json structure
       url_meta:
         type: object
         description: The metadata of a url
       datetime:
         type: string
         description: The date and time when the message is sent
+        readOnly: true
   Menu:
     type: object
     description: This table is used to store main menu details
@@ -2119,6 +2765,34 @@ definitions:
       responses:
         type: number
         description: The number of polls, surveys or broadcasts that are responded
+  Session:
+    type: object
+    description: This table is used to store Facebook session information
+    required:
+      - subscriber_id
+      - page_id
+      - company_id
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+      subscriber_id:
+        type: string
+        description: The id of the subscriber
+      page_id:
+        type: string
+        description: The id of the page
+      company_id:
+        type: string
+        description: This is admin id till we have companies
+      status:
+        type: string
+        description: The status of the session
+        default: new
+      request_time:
+        type: string
+        description: The date and time at which the session is created
+        readOnly: true
 
   Response500:
     type: object
