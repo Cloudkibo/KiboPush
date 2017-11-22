@@ -233,7 +233,7 @@ class Page extends React.Component {
                         <div className='row align-items-center'>
                           <div className='col-xl-4 col-lg-4 col-md-4'>
                             <div className='m-input-icon m-input-icon--left'>
-                              <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                              <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} placeholder='Search...' id='generalSearch' />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
                                 <span><i className='la la-search' /></span>
                               </span>
