@@ -115,7 +115,7 @@ class EditWorkflow extends React.Component {
                         <div className='col-lg-6' id='rules'>
                           <div className='col-10'>
                             <select className='form-control m-input' onChange={this.changeCondition}
-                                    value={this.state.condition}>
+                              value={this.state.condition}>
                               <option value='message_is'>Message is</option>
                               <option value='message_contains'>Message Contains</option>
                               <option value='message_begins'>Message Begins with</option>
@@ -152,7 +152,7 @@ class EditWorkflow extends React.Component {
                         </label>
                         <div className='col-lg-6'>
                           <select className='form-control m-input' onChange={this.changeActive}
-                                  value={this.state.isActive} id='isActive'>
+                            value={this.state.isActive} id='isActive'>
                             <option value='Yes'>Yes</option>
                             <option value='No'>No</option>
                           </select>

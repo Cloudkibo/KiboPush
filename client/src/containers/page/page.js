@@ -75,16 +75,6 @@ class Page extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
-
-    var datatable = $('#m_datatable').mDatatable({
-      pagingType: "full_numbers",
-      pagination: true,
-      search: {
-      // search delay in milliseconds
-        delay: 400,
-      // input text for search
-        input: $('#generalSearch')
-      }})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -250,53 +240,83 @@ class Page extends React.Component {
                           </div>
                         </div>
 
-                        <div>
-
-                          <table id='m_datatable'>
-                            <thead>
-                              <tr>
-                                <th>Page Pic</th>
-                                <th>Page Name</th>
-                                <th>Likes</th>
-                                <th>Subscribers</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-
-                              { this.props.pages && this.props.pages.length > 0 &&
-                        this.props.pages.map((page, i) => (
-                          (page.connected &&
-                            <tr key={i + '-connectedPages'}>
-                              <td><img alt='pic'
-                                src={(page.pagePic) ? page.pagePic : ''}
-                                className='m--img-rounded m--marginless m--img-centered' /></td>
-                              <td>{page.pageName}</td>
-                              <td>{page.likes}</td>
-                              <td>{page.subscribers}</td>
-                              <td>
-                                <button onClick={() => this.showDialog(page)}
-                                  className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}>
-                                  Remove
-                                </button>
-                                <button
-                                  onClick={() => this.inviteSubscribers(page)}
-                                  className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}>Invite
-                                  Subscribers
-                                </button>
-                              </td>
-
+                        { this.state.pagesData && this.state.pagesData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '100px'}}>Page Pic</span>
+                              </th>
+                              <th data-field='statement'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Page Name</span>
+                              </th>
+                              <th data-field='datetime'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Likes</span>
+                              </th>
+                              <th data-field='sent'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '50px'}}>Subscribers</span>
+                              </th>
+                              <th data-field='seen'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '50px'}}>Actions</span>
+                              </th>
                             </tr>
-                          )
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {
+                            this.state.pagesData.map((page, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{page.pagePic}</span></td>
+                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{page.pageName}</span></td>
+                                <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{page.likes}</span></td>
+                                <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{page.subscribers}</span></td>
+                                <td data-field='seen' className='m-datatable__cell'>
+                                  <span style={{width: '200px'}}>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.showDialog(page)}>
+                                      Remove
+                                    </button>
 
-                        ))
-                      }
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.inviteSubscribers(page)}>
+                                      Invite Subscribers
+                                    </button>
 
-                            </tbody>
-                          </table>
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
+                            nextLabel={<i className='fa fa-angle-right' />}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination pagination-lg'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
                         </div>
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
 
                       </div>
                     </div>

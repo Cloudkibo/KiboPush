@@ -18,17 +18,17 @@ class ItemSettings extends React.Component {
         options: []
       },
       Gender: {
-        options: [{id:'male', text: 'Male', value: 'male'},
-                  {id:'female', text: 'Female', value: 'female'},
-                  {id:'other', text: 'Other', value: 'other'}
+        options: [{id: 'male', text: 'Male', value: 'male'},
+                  {id: 'female', text: 'Female', value: 'female'},
+                  {id: 'other', text: 'Other', value: 'other'}
         ]
       },
       Locale: {
-        options: [{id:'en_US', text: 'en_US', value: 'en_US'},
-                  {id:'af_ZA', text: 'af_ZA', value: 'af_ZA'},
-                  {id:'ar_AR', text: 'ar_AR', value: 'ar_AR'},
-                  {id:'az_AZ', text: 'az_AZ', value: 'az_AZ'},
-                  {id:'pa_IN', text: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US', value: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA', value: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR', value: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ', value: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
       stayOpen: false,

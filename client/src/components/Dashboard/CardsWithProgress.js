@@ -27,7 +27,7 @@ class CardsWithProgress extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-success'>
-                 {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
+                {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
               </div>
               <div className='m--space-10' />
               <div className='m-widget15'>
@@ -66,8 +66,8 @@ class CardsWithProgress extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-primary'>
-                 {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
-               </div>
+                {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
+              </div>
               <div className='m--space-10' />
               <div className='m-widget15'>
                 <div className='m-widget15__items'>
@@ -119,7 +119,7 @@ class CardsWithProgress extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div style={{fontSize: '2.5em', fontWeight: '500'}} className='m--font-warning'>
-                 {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
+                {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
               </div>
               <div className='m--space-10' />
               <div className='m-widget15'>
