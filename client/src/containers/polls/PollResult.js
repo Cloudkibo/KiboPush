@@ -21,6 +21,7 @@ class PollResult extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      totalSent: 0,
       totalResponses: 0
     }
     console.log('this.props.location.state', this.props.location.state._id)
@@ -46,6 +47,8 @@ class PollResult extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps', nextprops.responses)
+    var poll = this.props.location.state
+    this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
       console.log('after if', nextprops.responses)
       if (nextprops.responses.length > 0) {
@@ -119,7 +122,7 @@ class PollResult extends React.Component {
                       <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
                         <div className='m-widget26'>
                           <div className='m-widget26__number'>
-                            {this.props.polls.length}
+                            {this.state.totalSent}
                             <h5>
                               Polls Sent So Far
                             </h5>

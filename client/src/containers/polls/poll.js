@@ -245,15 +245,15 @@ class Poll extends React.Component {
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate previousLabel={'previous'}
-                            nextLabel={'next'}
+                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
+                            nextLabel={<i className='fa fa-angle-right' />}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 5)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
+                            containerClassName={'pagination pagination-lg'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
