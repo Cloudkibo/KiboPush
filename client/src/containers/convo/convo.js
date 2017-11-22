@@ -260,7 +260,7 @@ class Convo extends React.Component {
                             </tr>
                             ))
                           </tbody>
-                          : ''
+                          : <p>No data found</p>
                           }
                         </table>
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
@@ -277,7 +277,7 @@ class Convo extends React.Component {
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
-                        : ''
+                        : <br />
                         }
                       </div>
                     </div>

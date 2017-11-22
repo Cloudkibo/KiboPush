@@ -104,7 +104,7 @@ class Header extends React.Component {
                               <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
                                 <div className='m-nav-grid m-nav-grid--skin-light'>
                                   <div className='m-nav-grid__row'>
-                                    <Link to='/createbroadcast' className='m-nav-grid__item'>
+                                    <Link to='/createconvo' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
