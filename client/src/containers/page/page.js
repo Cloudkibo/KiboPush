@@ -17,6 +17,7 @@ import {
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
+import ReactPaginate from 'react-paginate'
 
 class Page extends React.Component {
   constructor (props) {
