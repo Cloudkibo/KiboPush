@@ -1,7 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  sessions: [],
   socketSession: '',
   socketData: {},
   userChat: []
