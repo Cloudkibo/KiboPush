@@ -50,6 +50,7 @@ import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
+import Settings from './containers/settings/settings'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -121,6 +122,8 @@ const routes = (
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />
     <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
     <Route path='/surveyDetails' component={SurveyDetails} onEnter={requireAuth} />
+    <Route path='/settings' component={Settings} onEnter={requireAuth} />
+
 
   </Route>
 
