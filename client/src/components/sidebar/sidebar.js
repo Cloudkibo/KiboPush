@@ -260,10 +260,6 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Dashboard</span>
                 </Link>
               </li>
-              <li className='m-menu__section'>
-                <h4 className='m-menu__section-text'>Actions</h4>
-                <i className='m-menu__section-icon flaticon-more-v3' />
-              </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-users' />
@@ -272,13 +268,13 @@ class Sidebar extends Component {
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-users' />
+                  <i className='m-menu__link-icon flaticon-alarm' />
                   <span className='m-menu__link-text'>Subscribe to Messenger</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-users' />
+                  <i className='m-menu__link-icon flaticon-share' />
                   <span className='m-menu__link-text'>Share</span>
                 </Link>
               </li>
@@ -290,37 +286,33 @@ class Sidebar extends Component {
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/convos' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <i className='m-menu__link-icon flaticon-paper-plane' />
                   <span className='m-menu__link-text'>Broadcasts</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/surveys' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <i className='m-menu__link-icon flaticon-list-1' />
                   <span className='m-menu__link-text'>Surveys</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/poll' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <i className='m-menu__link-icon flaticon-multimedia-2' />
                   <span className='m-menu__link-text'>Polls</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <i className='m-menu__link-icon flaticon-signs-2' />
                   <span className='m-menu__link-text'>Auto Posting</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/workflows' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <i className='m-menu__link-icon flaticon-interface-8' />
                   <span className='m-menu__link-text'>Workflows</span>
                 </Link>
-              </li>
-              <li className='m-menu__section'>
-                <h4 className='m-menu__section-text'>Settings</h4>
-                <i className='m-menu__section-icon flaticon-more-v3' />
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/pages' className='m-menu__link m-menu__toggle'>
