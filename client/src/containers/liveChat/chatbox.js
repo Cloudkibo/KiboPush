@@ -57,8 +57,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false
     }
-    props.fetchUserChats(this.props.session._id)
-    props.markRead(this.props.session._id, this.props.sessions)
+    props.fetchUserChats(this.props.currentSession._id)
+    props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -96,8 +96,8 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
-    this.scrollToBottom()
-    this.props.markRead(this.props.session._id, this.props.sessions)
+    // this.scrollToBottom()
+    this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
@@ -402,7 +402,7 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    this.scrollToBottom()
+    // this.scrollToBottom()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -423,7 +423,7 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    this.scrollToBottom()
+    // this.scrollToBottom()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
       this.props.markRead(this.props.session._id, this.props.sessions)
     }
@@ -433,9 +433,9 @@ class ChatBox extends React.Component {
   }
 
   render () {
-    console.log('current session', this.props.session)
+    console.log('current session', this.props.currentSession)
     return (
-      <div className='col-xl-3'>
+      <div className='col-xl-6'>
         <div id='m_quick_sidebar' className='m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light'>
           <div className='m-quick-sidebar__content m--hide'>
             <div className='tab-content'>
