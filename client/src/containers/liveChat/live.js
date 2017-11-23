@@ -123,7 +123,7 @@ class LiveChat extends React.Component {
             </div>
             <div className='m-content'>
               {
-                this.props.sessions && this.props.sessions.length === 0
+                this.props.sessions && this.props.sessions.length > 0
                 ? <div className='row'>
                   <div className='col-xl-3'>
                     <div className='m-portlet m-portlet--full-height' >
