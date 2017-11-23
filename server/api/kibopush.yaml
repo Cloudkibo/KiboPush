@@ -25,8 +25,8 @@ info:
     ## Authentication
     In order for client application to call our API, he/she would have to attach the following information to the http headers:
 
-      app_id (the API key)
-      app_secret (the API key secret)
+      * app_id (the API key)
+      * app_secret (the API key secret)
 
 
     ## Error Handling
@@ -50,10 +50,18 @@ consumes:
 #                                  Security                                    #
 ################################################################################
 securityDefinitions:
-  internalApiKey:
+  apiKey:
     type: apiKey
     in: header
-    name: Authorization
+    name: app_id
+  apiSecret:
+    type: apiKey
+    in: header
+    name: app_secret
+security:
+  - apiKey: []
+    apiSecret: []
+
 ################################################################################
 #                                           Paths                              #
 ################################################################################
