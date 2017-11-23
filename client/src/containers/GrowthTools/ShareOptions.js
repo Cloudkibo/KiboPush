@@ -153,7 +153,7 @@ class ShareOptions extends React.Component {
                                 (
                                   page.connected &&
                                   <option
-                                    value={page.pageId}>{page.pageName}</option>
+                                    value={page.pageId} key={page.pageId}>{page.pageName}</option>
                                 )
                               ))
                               }

@@ -160,7 +160,7 @@ class SubscribeToMessenger extends React.Component {
                                 (
                                   page.connected &&
                                   <option
-                                    value={page.pageId}>{page.pageName}</option>
+                                    value={page.pageId} key={page.pageId}>{page.pageName}</option>
                                 )
                               ))
                               }
@@ -205,7 +205,7 @@ class SubscribeToMessenger extends React.Component {
                               <br />
                               <div className='col-xl-6'>
                                 <div className='form-group'>
-                                  <label for='colorbtn'> Choose Color</label>
+                                  <label htmlFor='colorbtn'> Choose Color</label>
                                   <select className='form-control' id='colorbtn'
                                     ref='colorbtn'
                                     onChange={this.handleChange.bind(this)}>
@@ -214,7 +214,7 @@ class SubscribeToMessenger extends React.Component {
                                   </select>
                                 </div>
                                 <div className='form-group'>
-                                  <label for='textbtn'> Button Text</label>
+                                  <label htmlFor='textbtn'> Button Text</label>
                                   <input type='text' className='form-control'
                                     ref='textbtn'
                                     placeholder='Send on Messenger'
@@ -231,7 +231,7 @@ class SubscribeToMessenger extends React.Component {
                                   padding: '20px',
                                   color: '#3c763d'
                                 }}>
-                                  <label for='textbtn'> Button Preview</label>
+                                  <label htmlFor='textbtn'> Button Preview</label>
                                   <br />
                                   <a className='btn' href='#' style={{
                                     'backgroundColor': this.state.buttonColor,
