@@ -10,10 +10,10 @@ import Header from '../../components/header/header'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
-// import Sessions from './sessions'
 import Profile from './profile'
 // import Halogen from 'halogen'
 // import Notification from 'react-web-notification'
+var _ = require('lodash/core')
 
 class LiveChat extends React.Component {
   constructor (props, context) {
@@ -21,10 +21,20 @@ class LiveChat extends React.Component {
     this.state = {
       activeSession: '',
       loading: true,
-      ignore: true
+      ignore: true,
+      sessionsData: [],
+      searchValue: '',
+      filterValue: '',
+      sortValue: '',
+      showDropDown: false
     }
     props.fetchSessions({ company_id: this.props.user._id })
     this.changeActiveSession = this.changeActiveSession.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
+    this.handleSort = this.handleSort.bind(this)
+    this.handleFilter = this.handleFilter.bind(this)
+    this.filterSession = this.filterSession.bind(this)
+    this.showDropdown = this.showDropdown.bind(this)
   }
 
   componentDidMount () {
@@ -58,13 +68,83 @@ class LiveChat extends React.Component {
     this.setState({activeSession: session})
   }
 
+  handleSearch (e) {
+    this.setState({searchValue: e.target.value})
+    this.filterSession()
+  }
+
+  handleSort (value) {
+    if (value !== this.state.sortValue) {
+      this.setState({sortValue: value})
+    } else {
+      this.setState({sortValue: ''})
+    }
+    this.filterSession()
+  }
+
+  handleFilter (value) {
+    if (value !== this.state.filterValue) {
+      this.setState({filterValue: value})
+    } else {
+      this.setState({filterValue: ''})
+    }
+    this.filterSession()
+  }
+
+  filterSession () {
+    var temp = this.props.sessions
+
+    // For Search
+    if (this.state.searchValue !== '') {
+      temp = _.filter(temp, function (item) {
+        var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
+        if (name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) > -1) {
+          return item
+        }
+      })
+      console.log('Array After Search', temp)
+    }
+
+    // For Sort
+    if (this.state.sortValue !== '') {
+      if (this.state.sortValue === 'old') {
+        console.log('Sorting Oldest to Newest')
+        temp = temp.sort(function (a, b) {
+          return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
+        })
+      } else {
+        console.log('Sorting Newest to Oldest')
+        temp = temp.sort(function (a, b) {
+          return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
+        })
+      }
+      console.log('Array After Sorting', temp)
+    }
+
+    // For Filter
+    if (this.state.filterValue !== '') {
+      temp = _.filter(temp, function (item) {
+        if (item.page_id.pageId === this.state.filterValue) {
+          return item
+        }
+      })
+      console.log('Array After Page Filter', temp)
+    }
+
+    this.setState({sessionsData: temp})
+  }
+
+  showDropdown () {
+    this.setState({showDropDown: true})
+  }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     this.setState({ignore: true})
 
     if (nextProps.sessions) {
       this.setState({loading: false})
-      this.setState({activeSession: nextProps.sessions[0]})
+      this.setState({activeSession: nextProps.sessions[0], sessionsData: nextProps.sessions})
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
@@ -125,13 +205,13 @@ class LiveChat extends React.Component {
               {
                 this.props.sessions && this.props.sessions.length > 0
                 ? <div className='row'>
-                  <div className='col-xl-3'>
+                  <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>
-                        <div className='row'>
+                        <div style={{paddingTop: '20px'}} className='row'>
                           <div className='col-md-10'>
                             <div className='m-input-icon m-input-icon--left'>
-                              <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                              <input type='text' onChange={() => this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
                                 <span><i className='la la-search' /></span>
                               </span>
@@ -139,10 +219,89 @@ class LiveChat extends React.Component {
                           </div>
                           <div className='col-md-2'>
                             <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i style={{fontSize: '20px'}} className='la la-ellipsis-h' />
+                              <i onClick={() => this.showDropdown} style={{fontSize: '35px', float: 'right'}} className='la la-ellipsis-v' />
                             </a>
                           </div>
                         </div>
+                        {
+                          this.state.showDropDown &&
+                          <div className='m-dropdown__wrapper'>
+                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                            <div className='m-dropdown__inner'>
+                              <div className='m-dropdown__body'>
+                                <div className='m-dropdown__content'>
+                                  <ul className='m-nav'>
+                                    <li className='m-nav__section m-nav__section--first'>
+                                      <span className='m-nav__section-text'>
+                                        Sort By:
+                                      </span>
+                                    </li>
+                                    <li className='m-nav__item'>
+                                      <a onClick={() => this.handleSort('old')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        {
+                                          this.state.sortValue === 'old'
+                                          ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                            <i className='la la-check' /> Oldest to Newest
+                                          </span>
+                                          : <span className='m-nav__link-text'>
+                                            Oldest to Newest
+                                          </span>
+                                        }
+                                      </a>
+                                    </li>
+                                    <li className='m-nav__item'>
+                                      <a onClick={() => this.handleSort('new')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                        {
+                                          this.state.sortValue === 'new'
+                                          ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                            <i className='la la-check' /> Newest to Oldest
+                                          </span>
+                                          : <span className='m-nav__link-text'>
+                                            Newest to Oldest
+                                          </span>
+                                        }
+                                      </a>
+                                    </li>
+                                    <li className='m-nav__section m-nav__section--first'>
+                                      <span className='m-nav__section-text'>
+                                        Filter by:
+                                      </span>
+                                    </li>
+                                    {
+                                      this.props.pages.map((page, i) => (
+                                        <li key={page.pageId} className='m-nav__item'>
+                                          <a onClick={() => this.handleFilter(page.pageId)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                            {
+                                              page.pageId === this.state.filterValue
+                                              ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                <i className='la la-check' /> {page.pageName}
+                                              </span>
+                                              : <span className='m-nav__link-text'>
+                                                {page.pageName}
+                                              </span>
+                                            }
+                                          </a>
+                                        </li>
+                                      ))
+                                    }
+                                    <li className='m-nav__separator m-nav__separator--fit' />
+                                    <li className='m-nav__item'>
+                                      {
+                                        (this.state.filterValue !== '' || this.state.sortValue !== '')
+                                        ? <a onClick={() => this.hideDropDown} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
+                                          Done
+                                        </a>
+                                        : <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                          Cancel
+                                        </a>
+                                      }
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        }
                       </div>
                       <div className='m-portlet__body'>
                         <div className='tab-content'>
@@ -252,6 +411,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
+    pages: (state.pagesInfo.pages),
     socketData: (state.liveChat.socketData)
   }
 }
