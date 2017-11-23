@@ -128,26 +128,20 @@ class LiveChat extends React.Component {
                   <div className='col-xl-3'>
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>
-                        <div className='m-portlet__head-caption'>
-                          <div className='m-portlet__head-title'>
-                            <h3 className='m-portlet__head-text'>
-                              Sessions
-                            </h3>
+                        <div className='row'>
+                          <div className='col-md-9'>
+                            <div className='m-input-icon m-input-icon--left'>
+                              <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className='m-portlet__head-tools'>
-                          <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                            <li className='nav-item m-tabs__item'>
-                              <a className='nav-link m-tabs__link active' data-toggle='tab' href='#m_widget4_tab1_content' role='tab'>
-                                Today
-                              </a>
-                            </li>
-                            <li className='nav-item m-tabs__item'>
-                              <a className='nav-link m-tabs__link' data-toggle='tab' href='#m_widget4_tab2_content' role='tab'>
-                                Month
-                              </a>
-                            </li>
-                          </ul>
+                          <div className='col-md-3'>
+                            <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                              <i className='la la-ellipsis-h' />
+                            </a>
+                          </div>
                         </div>
                       </div>
                       <div className='m-portlet__body'>
