@@ -23,9 +23,11 @@ info:
     to get information of logged in user.
 
     ## Authentication
-    Each client will be given Authorization token which should be added to header of each http request. Almost all the routes are authenticated therefore token is required.
+    In order for client application to call our API, he/she would have to attach the following information to the http headers:
 
-    In the next version of the API, we would automate the generation of this token for client applications. For now, this authorization token can be obtained from us on request. This token will expire within 4 days.
+      app_id (the API key)
+      app_secret (the API key secret)
+
 
     ## Error Handling
     Errors are returned using standard HTTP error code syntax. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error (bad or missing parameters, not authenticated etc.), and codes in the 5xx range indicate an error with KiboPush’s servers. Any additional info is included in the body of the return call, JSON-formatted.
@@ -210,401 +212,6 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-
-  /backdoor/alluser:
-    get:
-      description: Gives all users
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/User'
-                description: all the users' data
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/allpages/:userid:
-    get:
-      description: Gives all pages of a particular user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page'
-                description: pages data
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/allsubscribers/:pageid:
-    get:
-      description: Gives all subscribers of all the pages of a particular user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Subscriber'
-                description: subscribers data
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/allbroadcasts/:userid:
-    get:
-      description: Gives all broadcasts of a particular user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Broadcast'
-                description: all the broadcasts data
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/allpolls/:userid:
-    get:
-      description: Gives all polls of a particular user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Poll'
-                description: all the polls of a particular user
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/allsurveys/:userid:
-    get:
-      description: Gives all surveys of a particular user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Survey'
-                description: all the surveys of a particular user
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/toppages:
-    get:
-      description: Gives top ten pages according to the number of subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page'
-                description: all the surveys of a particular user
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-  /backdoor/datacount:
-    get:
-      description: Gives the total count of broadcasts, polls, surveys, pages, subscribers and users
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  UsersCount:
-                    type: number
-                    description: The total number of users
-                  SubscribersCount:
-                    type: number
-                    description: The total number of subscribers
-                  PagesCount:
-                    type: number
-                    description: The total number of pages
-                  BroadcastsCount:
-                    type: number
-                    description: The total number of braodcasts
-                  PollsCount:
-                    type: number
-                    description: The total number of polls
-                  SurveysCount:
-                    type: number
-                    description: The total number of surveys
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-  /backdoor/polls/:pollid:
-    get:
-      description: Gives the data of poll, poll sent and poll responses
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  pollresponses:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Poll_Response'
-                  poll:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Poll'
-                  pollpages:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Page_Poll'
-
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /backdoor/surveyDetails/:surveyid:
-    get:
-      description: Gives the data of survey, survey questions and survey responses
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  pollresponses:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Survey_Response'
-                  survey:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Survey'
-                  questions:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#/definitions/Survey_Question'
-
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-
-  /backdoor/broadcastsGraph/:days:
-    get:
-      description: Gives the number of broadcasts made on the given number of days
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  broadcastsgraphdata:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#definitions/Graph'
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-
-  /backdoor/surveysGraph/:days:
-    get:
-      description: Gives the number of surveys made on the given number of days
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  broadcastsgraphdata:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#definitions/Graph'
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-  /backdoor/pollsGraph/:days:
-    get:
-      description: Gives the number of polls made on the given number of days
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: object
-                properties:
-                  broadcastsgraphdata:
-                    type: array
-                    items:
-                      type: object
-                      $ref: '#definitions/Graph'
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
   /broadcasts/:
     get:
       description: Gives the data of braodcasts of a particular user
@@ -1342,9 +949,10 @@ paths:
                 type: object
                 properties:
                   pages:
-                    type: object
-                    $ref: '#/definitions/Poll'
-                    description: all the pages of the user
+                    type: array
+                    items:
+                      $ref: '#/definitions/Page'
+                      description: all the pages of the user
         '500':
           description: failed
           schema:
@@ -1379,9 +987,10 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Poll'
-                description: all the pages of the user
+                type: array
+                items:
+                  $ref: '#/definitions/Page'
+                  description: all the pages of the user
         '500':
           description: failed
           schema:
@@ -1950,100 +1559,107 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-  /users/:
+  /user/:
+    get:
+      description: Gives all the details of the logged in user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/User'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+           $ref: '#/definitions/Response404'
+  /user/updateChecks:
     post:
-      description: Create a new customer support session
+      description: updates the tour seen fields in the User table
       consumes:
         - application/json
         - application/x-www-form-urlencoded
       produces:
         - application/json
       parameters:
-        - name: customerID
+        - name: getStartedSeen
           in: formData
-          description: The unique id of the customer
-          type: string
-          required: true
-        - name: customerName
+          description: Whether the user has seen get started guide or not
+          type: boolean
+          required: false
+        - name: dashboardTourSeen
           in: formData
-          description: The name of the customer
-          type: string
-          required: true
-        - name: email
+          description: Whether the user has seen dashboard or not
+          type: boolean
+          required: false
+        - name: workFlowsTourSeen
           in: formData
-          description: The email address of the customer
-          type: string
-          required: true
-        - name: country
+          description: Whether the user has seen workflows page or not
+          type: boolean
+          required: false
+        - name: surveyTourSeen
           in: formData
-          description: The country of the customer
-          type: string
-          required: true
-        - name: phone
+          description: Whether the user has seen surveys page or not
+          type: boolean
+          required: false
+        - name: convoTourSeen
           in: formData
-          description: The phone number of the customer
-          type: string
-          required: true
-        - name: isMobile
+          description: Whether the user has seen broadcasts page or not
+          type: boolean
+          required: false
+        - name: pollTourSeen
           in: formData
-          description: possible value, 'false' for web client and 'true' for mobile client
-          type: string
-          required: true
-        - name: messagechannel
+          description: Whether the user has seen polls page or not
+          type: boolean
+          required: false
+        - name: growthToolsTourSeen
           in: formData
-          description: The message channel (sub group) where support is required
-          type: string
-          required: true
-        - name: session_id
+          description: Whether the user has seen dashboard or not
+          type: boolean
+          required: false
+        - name: subscriberTourSeen
           in: formData
-          description: Unique id of the new session
+          description: Whether the user has seen subscribers page or not
           type: string
-          required: true
-        - name: departmentid
+          required: false
+        - name: liveChatTourSeen
           in: formData
-          description: The unique id of the department (group) where support is required
-          type: string
-          required: true
-        - name: currentPage
+          description: Whether the user has seen live chat page or not
+          type: boolean
+          required: false
+        - name: autoPostingTourSeen
           in: formData
-          description: The title of the web page from where client wants to start support call (i.e. where web widget is installed)
-          type: string
-          required: true
-        - name: requesttime
+          description: Whether the user has seen auotoposting page or not
+          type: boolean
+          required: false
+        - name: mainMenuTourSeen
           in: formData
-          description: The time when support call session is created
-          type: string
-          required: true
-        - name: ipAddress
+          description: Whether the user has seen main menu page or not
+          type: boolean
+          required: false
+        - name: subscribeToMessengerTourSeen
           in: formData
-          description: The IP Address of client
-          type: string
-          required: true
-        - name: companyid
+          description: Whether the user has seen subscribe to messenger page or not
+          type: boolean
+          required: false
+        - name: pagesTourSeen
           in: formData
-          description: The unique id of the company of which the widget is used by client to do support call
-          type: string
-          required: true
-        - name: socketid
-          in: formData
-          description: The socket.io unique id given to web widget
-          type: string
-          required: true
-        - name: platform
-          in: formData
-          description: Shows if the visitor is on mobile application widget or web widget. Possible values are "web", and "mobile"
-          type: string
-          required: true
-        - name: device
-          in: formData
-          description: Shows which mobile device it is, possible values are "android", "ios"
-          type: string
-          required: true
-        - name: device_version
-          in: formData
-          description: Shows version of mobile device OS
-          type: string
-          required: true
+          description: Whether the user has seen pages or not
+          type: boolean
+          required: false
       responses:
         '200':
           description: OK
@@ -2052,6 +1668,196 @@ paths:
             properties:
               status:
                 type: string
+                description: success
+              payload:
+                type: object
+                $ref: '#/definitions/User'
+
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+           $ref: '#/definitions/Response404'
+
+  /workflows/:
+    get:
+      description: Gives all the details of workflows created by a user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#/definitions/Workflow'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /workflows/create:
+    post:
+      description: creates a new workflow
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: survey
+          in: body
+          description: The workflow details
+          required: true
+          schema:
+            $ref: '#/definitions/Workflow'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Workflow'
+                description: The newly created workflow
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /workflows/edit:
+    post:
+      description: Edit a workflow
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: formData
+          description: The id of the workflow to edit
+          required: true
+          type: string
+        - name: condition
+          in: formData
+          description: The condition of the workflow
+          required: false
+          type: string
+        - name: keywords
+          in: formData
+          description: The keywords to specify a reply
+          required: false
+          type: array
+          items:
+            type: string
+        - name: reply
+          in: formData
+          description: The reply when any of the words from keywords is found
+          required: false
+          type: string
+        - name: isActive
+          in: formData
+          description: Whether the workflow is active of not
+          required: false
+          type: boolean
+          default: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Workflow'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /workflows/enable:
+    post:
+      description: Enables a workflow
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The id of the workflow whose status to enable
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The id of the workflow whose status is enabled
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /workflows/disable:
+    post:
+      description: Disables a workflow
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The id of the workflow whose status to disable
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: The id of the workflow whose status is enabled
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
 ################################################################################
 #                                 Definitions                                  #
@@ -2570,7 +2376,15 @@ definitions:
   Workflow:
     type: object
     description: This table is used to store workflows. This is an experimental feature in v1.
+    required:
+      - condition
+      - reply
+      - keywords
     properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
       condition:
         description: Condition to trigger this workflow
         type: string
@@ -2585,15 +2399,19 @@ definitions:
       userId:
         type: string
         description: Unique id of the user which creates workflow for his/her pages
+        readOnly: true
       sent:
         type: number
         description: Number of times this workflow is triggerred.
+        readOnly: true
       isActive:
         type: boolean
         description: Whether this workflow is enabled or disabled
+        default: true
       datetime:
         type: string
         description: Date of creation
+        readOnly: true
 
   Autoposting:
     type: object
