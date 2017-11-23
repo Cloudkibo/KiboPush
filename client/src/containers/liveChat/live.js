@@ -181,7 +181,10 @@ class LiveChat extends React.Component {
               {
                 this.props.sessions && this.props.sessions.length === 0
                 ? <ChatBox session={this.props.sessions[0]} />
-                <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+              }
+              {
+                this.props.sessions && this.props.sessions.length === 0
+                ? <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
               }
             </div>
           </div>
