@@ -71,28 +71,35 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     console.log('handle search', e.target.value)
-    this.setState({searchValue: e.target.value})
-    this.filterSession()
+    this.setState({searchValue: e.target.value}, function () {
+      this.filterSession()
+    })
   }
 
   handleSort (value) {
     console.log('handle sort', value)
     if (value !== this.state.sortValue) {
-      this.setState({sortValue: value})
+      this.setState({sortValue: value}, function () {
+        this.filterSession()
+      })
     } else {
-      this.setState({sortValue: ''})
+      this.setState({sortValue: ''}, function () {
+        this.filterSession()
+      })
     }
-    this.filterSession()
   }
 
   handleFilter (value) {
     console.log('handle filter', value)
     if (value !== this.state.filterValue) {
-      this.setState({filterValue: value})
+      this.setState({filterValue: value}, function () {
+        this.filterSession()
+      })
     } else {
-      this.setState({filterValue: ''})
+      this.setState({filterValue: ''}, function () {
+        this.filterSession()
+      })
     }
-    this.filterSession()
   }
 
   filterSession () {
@@ -217,11 +224,11 @@ class LiveChat extends React.Component {
                 ? <div className='row'>
                   <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
-                      <div style={{paddingRight: '10px'}} className='m-portlet__head'>
+                      <div className='m-portlet__head'>
                         <div style={{paddingTop: '20px'}} className='row'>
                           <div className='col-md-10'>
                             <div className='m-input-icon m-input-icon--left'>
-                              <input type='text' onChange={() => this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                              <input type='text' onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
                                 <span><i className='la la-search' /></span>
                               </span>
@@ -232,7 +239,7 @@ class LiveChat extends React.Component {
                               <ul className='m-portlet__nav'>
                                 <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                                   <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                                    <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '35px', float: 'right'}} className='la la-ellipsis-h' />
+                                    <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
                                   </a>
                                   {
                                     this.state.showDropDown &&
