@@ -143,6 +143,18 @@ class Header extends React.Component {
                       <div className='m-dropdown__wrapper'>
                         <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
                         <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__header m--align-center'>
+                            <div className='m-card-user m-card-user--skin-dark'>
+                              <div className='m-card-user__pic'>
+                                <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless' alt='' />
+                              </div>
+                              <div className='m-card-user__details'>
+                                <span className='m-card-user__name m--font-weight-500'>
+                                  {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                           <div className='m-dropdown__body'>
                             <div className='m-dropdown__content'>
                               <ul className='m-nav m-nav--skin-light'>
@@ -163,10 +175,10 @@ class Header extends React.Component {
                                   </a>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <a href='#' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-lifebuoy' />
-                                    <span className='m-nav__link-text'>Report A Bug</span>
-                                  </a>
+                                  <Link to='/settings'>
+                                    <i className='m-nav__link-icon flaticon-settings' />
+                                    <span className='m-nav__link-text'>&nbsp;&nbsp;&nbsp;Settings</span>
+                                  </Link>
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
