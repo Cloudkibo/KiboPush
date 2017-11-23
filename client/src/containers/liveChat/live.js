@@ -187,7 +187,7 @@ class LiveChat extends React.Component {
 
   render () {
     console.log('sessions: ', this.props.sessions)
-    console.log('currentProfile: ', this.state.currentProfile)
+    console.log('state: ', this.state)
     return (
       <div>
         <Header />
@@ -207,7 +207,7 @@ class LiveChat extends React.Component {
                 ? <div className='row'>
                   <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
-                      <div className='m-portlet__head'>
+                      <div style={{paddingRight: '10px'}} className='m-portlet__head'>
                         <div style={{paddingTop: '20px'}} className='row'>
                           <div className='col-md-10'>
                             <div className='m-input-icon m-input-icon--left'>
@@ -219,7 +219,7 @@ class LiveChat extends React.Component {
                           </div>
                           <div className='col-md-2'>
                             <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i onClick={() => this.showDropdown} style={{fontSize: '35px', float: 'right'}} className='la la-ellipsis-v' />
+                              <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '35px', float: 'right'}} className='la la-ellipsis-h' />
                             </a>
                           </div>
                         </div>
@@ -308,10 +308,10 @@ class LiveChat extends React.Component {
                           <div className='tab-pane active' id='m_widget4_tab1_content'>
                             <div className='m-widget4'>
                               {
-                                this.props.sessions.map((session) => (
+                                this.state.sessionsData.map((session) => (
                                   <div key={session._id} style={{cursor: 'pointer'}} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
-                                      <img src={session.subscriber_id.profilePic} alt='' />
+                                      <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                     </div>
                                     <div className='m-widget4__info'>
                                       <span className='m-widget4__title'>
@@ -325,7 +325,7 @@ class LiveChat extends React.Component {
                                     <div className='m-widget4__ext'>
                                       {
                                         session.unreadCount &&
-                                        <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                                        <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                                           {session.unreadCount}
                                         </a>
                                       }
