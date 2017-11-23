@@ -78,15 +78,9 @@ class LiveChat extends React.Component {
 
   handleSort (value) {
     console.log('handle sort', value)
-    if (value !== this.state.sortValue) {
-      this.setState({sortValue: value}, function () {
-        this.filterSession()
-      })
-    } else {
-      this.setState({sortValue: ''}, function () {
-        this.filterSession()
-      })
-    }
+    this.setState({sortValue: value}, function () {
+      this.filterSession()
+    })
   }
 
   handleFilter (value) {
@@ -108,9 +102,10 @@ class LiveChat extends React.Component {
 
     // For Search
     if (this.state.searchValue !== '') {
+      var search = this.state.searchValue
       temp = _.filter(temp, function (item) {
         var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
-        if (name.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) > -1) {
+        if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
           return item
         }
       })
@@ -306,10 +301,10 @@ class LiveChat extends React.Component {
                                               <li className='m-nav__item'>
                                                 {
                                                   (this.state.filterValue !== '' || this.state.sortValue !== '')
-                                                  ? <a onClick={() => this.hideDropDown} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                  ? <a onClick={() => this.hideDropDown} style={{borderColor: '#34bfa3', color: '#34bfa3'}} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
                                                     Done
                                                   </a>
-                                                  : <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                  : <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                                     Cancel
                                                   </a>
                                                 }
