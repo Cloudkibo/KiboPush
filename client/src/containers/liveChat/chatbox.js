@@ -437,7 +437,7 @@ class ChatBox extends React.Component {
     return (
       <div className='col-xl-5'>
         <div id='m_quick_sidebar' className='m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light'>
-          <div className='m-quick-sidebar__content'>
+          <div className='m-quick-sidebar__content m--hide'>
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' id='m_quick_sidebar_tabs_messenger' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
