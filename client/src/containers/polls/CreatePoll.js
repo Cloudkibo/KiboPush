@@ -111,7 +111,7 @@ class CreatePoll extends React.Component {
     ])
   }
   initializePageSelect (pageOptions) {
-    console.log(pageOptions)
+    console.log('Page Options in select', pageOptions)
     var self = this
     $('#selectPage').select2({
       data: pageOptions,

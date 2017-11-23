@@ -43,16 +43,17 @@ class CreateConvo extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-          {label: 'Female', value: 'female'},
-          {label: 'Other', value: 'other'}
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-          {label: 'af_ZA', value: 'af_ZA'},
-          {label: 'ar_AR', value: 'ar_AR'},
-          {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -112,7 +113,7 @@ class CreateConvo extends React.Component {
     document.title = 'KiboPush | Create Broadcast'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageName, text: this.props.pages[i].pageId}
     }
 
     this.setState({page: {options: options}})
@@ -404,6 +405,8 @@ class CreateConvo extends React.Component {
       allowClear: true,
       multiple: true
     })
+
+    console.log('In Initialize Gender Select', genderOptions)
     $('#selectGender').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
@@ -544,33 +547,12 @@ class CreateConvo extends React.Component {
                           <select id='selectLocale' />
                         </div>
                       </div>
-
-                      <div className='form-group'>
-                        <Select
-                          closeOnSelect={!stayOpen}
-                          disabled={disabled}
-                          multi
-                          onChange={this.handleGenderChange}
-                          options={this.state.Gender.options}
-                          placeholder='Select Gender'
-                          simpleValue
-                          value={this.state.genderValue}
-                    />
-                      </div>
-                      <div className='form-group'>
-                        <Select
-                          closeOnSelect={!stayOpen}
-                          disabled={disabled}
-                          multi
-                          onChange={this.handleLocaleChange}
-                          options={this.state.Locale.options}
-                          placeholder='Select Locale(s)'
-                          simpleValue
-                          value={this.state.localeValue}
-                    />
-                      </div>
+                      <br />
                     </fieldset>
+                    <br />
                     <div className='row'>
+                      <br />
+                      <br />
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
                       <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
                       <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
