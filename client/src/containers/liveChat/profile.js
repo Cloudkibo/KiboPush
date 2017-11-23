@@ -37,46 +37,71 @@ class Profile extends React.Component {
   render () {
     console.log('Profile', this.props.profile)
     return (
-      <div className='ui-block'>
-        <div className='friend-item'>
-          <div className='friend-header-thumb'>
-            <img src='https://previews.123rf.com/images/kannaa123rf/kannaa123rf1401/kannaa123rf140100030/25351554-Abstract-colorful-geometric-background-Vector-illustration-for-retro-design-Pattern-of-shapes-Mosaic-Stock-Vector.jpg' alt='friend' />
-          </div>
-          <div className='friend-item-content'>
-
-            <div className='more'>
-              <ul className='more-dropdown'>
-                <li>
-                  <a href='#'>Report Profile</a>
-                </li>
-                <li>
-                  <a href='#'>Block Profile</a>
-                </li>
-                <li>
-                  <a href='#'>Turn Off Notifications</a>
-                </li>
-              </ul>
-            </div>
-            <div className='friend-avatar'>
-              <div className='author-thumb'>
-                <img style={{width: 100 + '%', height: 100, overflow: 'hidden', objectFit: 'cover', objectPosition: 'center'}} src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'} alt='author' />
+      <div className='col-xl-3'>
+        <div className='m-portlet m-portlet--full-height'>
+          <div className='m-portlet__body'>
+            <div className='m-card-profile'>
+              <div className='m-card-profile__title m--hide'>
+                Your Profile
               </div>
-              <div className='author-content'>
-                <a href='#' className='h5 author-name'>{this.props.profile.firstName + this.props.profile.lastName}</a>
-                <div className='country'>{this.props.profile.gender}</div>
+              <div className='m-card-profile__pic'>
+                <div className='m-card-profile__pic-wrapper'>
+                  <img src='../assets/app/media/img/users/user4.jpg' alt='' />
+                </div>
               </div>
-            </div>
-
-            <div className='swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal' id='swiper-unique-id-2'>
-              <div className='swiper-wrapper' ><div className='swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next' data-swiper-slide-index='1' >
-                <p className='friend-about' data-swiper-parallax='-500' />
-              </div>
+              <div className='m-card-profile__details'>
+                <span className='m-card-profile__name'>
+                  Mark Andre
+                </span>
+                <a className='m-card-profile__email m-link'>
+                  mark.andre@gmail.com
+                </a>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        {/**
+        <div className='ui-block'>
+          <div className='friend-item'>
+            <div className='friend-header-thumb'>
+              <img src='https://previews.123rf.com/images/kannaa123rf/kannaa123rf1401/kannaa123rf140100030/25351554-Abstract-colorful-geometric-background-Vector-illustration-for-retro-design-Pattern-of-shapes-Mosaic-Stock-Vector.jpg' alt='friend' />
+            </div>
+            <div className='friend-item-content'>
 
+              <div className='more'>
+                <ul className='more-dropdown'>
+                  <li>
+                    <a href='#'>Report Profile</a>
+                  </li>
+                  <li>
+                    <a href='#'>Block Profile</a>
+                  </li>
+                  <li>
+                    <a href='#'>Turn Off Notifications</a>
+                  </li>
+                </ul>
+              </div>
+              <div className='friend-avatar'>
+                <div className='author-thumb'>
+                  <img style={{width: 100 + '%', height: 100, overflow: 'hidden', objectFit: 'cover', objectPosition: 'center'}} src={this.props.profile.profilePic ? this.props.profile.profilePic : 'https://cdn.dribbble.com/users/160522/screenshots/1183620/minions.jpg'} alt='author' />
+                </div>
+                <div className='author-content'>
+                  <a href='#' className='h5 author-name'>{this.props.profile.firstName + this.props.profile.lastName}</a>
+                  <div className='country'>{this.props.profile.gender}</div>
+                </div>
+              </div>
+
+              <div className='swiper-container swiper-swiper-unique-id-2 initialized swiper-container-horizontal' id='swiper-unique-id-2'>
+                <div className='swiper-wrapper' ><div className='swiper-slide swiper-slide-duplicate swiper-slide-prev swiper-slide-duplicate-next' data-swiper-slide-index='1' >
+                  <p className='friend-about' data-swiper-parallax='-500' />
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        **/}
+      </div>
     )
   }
 }
