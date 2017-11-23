@@ -135,7 +135,7 @@
     "sort-array": "^2.0.0",
     "subdomain": "^1.2.0",
     "superagent": "^3.6.3",
-    "swagger-tools": "^0.10.1",
+    "swagger-tools": "^0.10.3",
     "twit": "^2.2.9",
     "watch": "^1.0.2",
     "watchify": "^3.9.0",
