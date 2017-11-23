@@ -87,7 +87,7 @@ class PageLikesSubscribers extends React.Component {
                               }
                               <li className='m-nav__separator m-nav__separator--fit' />
                               <li className='m-nav__item'>
-                                <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                   Cancel
                                 </a>
                               </li>
