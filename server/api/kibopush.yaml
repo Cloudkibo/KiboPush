@@ -23,9 +23,11 @@ info:
     to get information of logged in user.
 
     ## Authentication
-    Each client will be given Authorization token which should be added to header of each http request. Almost all the routes are authenticated therefore token is required.
+    In order for client application to call our API, he/she would have to attach the following information to the http headers:
 
-    In the next version of the API, we would automate the generation of this token for client applications. For now, this authorization token can be obtained from us on request. This token will expire within 4 days.
+      app_id (the API key)
+      app_secret (the API key secret)
+
 
     ## Error Handling
     Errors are returned using standard HTTP error code syntax. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error (bad or missing parameters, not authenticated etc.), and codes in the 5xx range indicate an error with KiboPush’s servers. Any additional info is included in the body of the return call, JSON-formatted.
