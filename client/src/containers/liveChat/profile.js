@@ -35,26 +35,23 @@ class Profile extends React.Component {
   }
 
   render () {
-    console.log('Profile', this.props.profile)
+    console.log('session in profile', this.props.currentSession)
     return (
       <div className='col-xl-3'>
         <div className='m-portlet m-portlet--full-height'>
           <div className='m-portlet__body'>
             <div className='m-card-profile'>
-              <div className='m-card-profile__title m--hide'>
-                Your Profile
-              </div>
               <div className='m-card-profile__pic'>
                 <div className='m-card-profile__pic-wrapper'>
-                  <img src='../assets/app/media/img/users/user4.jpg' alt='' />
+                  <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
                 </div>
               </div>
               <div className='m-card-profile__details'>
                 <span className='m-card-profile__name'>
-                  Mark Andre
+                  {this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName}
                 </span>
                 <a className='m-card-profile__email m-link'>
-                  mark.andre@gmail.com
+                  {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
               </div>
             </div>

@@ -151,7 +151,7 @@ class PageLikesSubscribers extends React.Component {
                     Followers converted into Subscribers
                   </span>
                   <div className='m--space-10' />
-                  <div className='progress m-progress--sm'>
+                  <div className='progress m-progress--sm' style={{height: '6px'}}>
                     <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.state.subscribers / this.state.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
                   </div>
                 </div>

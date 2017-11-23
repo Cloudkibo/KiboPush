@@ -20,7 +20,6 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       activeSession: '',
-      currentProfile: {},
       loading: true,
       ignore: true
     }
@@ -53,10 +52,10 @@ class LiveChat extends React.Component {
     console.log('Fetch Sessions')
   }
 
-  changeActiveSession (session, subscriber) {
+  changeActiveSession (session) {
     console.log('active session updated')
     this.props.fetchUserChats(session._id)
-    this.setState({activeSession: session, currentProfile: subscriber})
+    this.setState({activeSession: session})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -65,6 +64,7 @@ class LiveChat extends React.Component {
 
     if (nextProps.sessions) {
       this.setState({loading: false})
+      this.setState({activeSession: nextProps.sessions[0]})
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
@@ -156,7 +156,7 @@ class LiveChat extends React.Component {
                             <div className='m-widget4'>
                               {
                                 this.props.sessions.map((session) => (
-                                  <div className='m-widget4__item'>
+                                  <div key={session._id} style={{cursor: 'pointer'}} onClick={this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
                                       <img src={session.subscriber_id.profilePic} alt='' />
                                     </div>
@@ -186,8 +186,8 @@ class LiveChat extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <ChatBox session={this.props.sessions[0]} />
-                  <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
+                  <ChatBox currentSession={this.state.activeSession} />
+                  <Profile currentSession={this.state.activeSession} />
                 </div>
                 : <div className='col-xl-12'>
                   <h3>Right now you dont have any chat sessions</h3>
