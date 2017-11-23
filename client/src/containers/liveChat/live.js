@@ -129,7 +129,7 @@ class LiveChat extends React.Component {
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>
                         <div className='row'>
-                          <div className='col-md-9'>
+                          <div className='col-md-10'>
                             <div className='m-input-icon m-input-icon--left'>
                               <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
@@ -137,9 +137,9 @@ class LiveChat extends React.Component {
                               </span>
                             </div>
                           </div>
-                          <div className='col-md-3'>
+                          <div className='col-md-2'>
                             <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i className='la la-ellipsis-h' />
+                              <i style={{fontSize: '20px'}} className='la la-ellipsis-h' />
                             </a>
                           </div>
                         </div>
@@ -150,7 +150,7 @@ class LiveChat extends React.Component {
                             <div className='m-widget4'>
                               {
                                 this.props.sessions.map((session) => (
-                                  <div key={session._id} style={{cursor: 'pointer'}} onClick={this.changeActiveSession(session)} className='m-widget4__item'>
+                                  <div key={session._id} style={{cursor: 'pointer'}} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
                                       <img src={session.subscriber_id.profilePic} alt='' />
                                     </div>
