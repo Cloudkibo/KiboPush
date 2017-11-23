@@ -9,9 +9,9 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-// import ChatBox from './chatbox'
+import ChatBox from './chatbox'
 // import Sessions from './sessions'
-// import Profile from './profile'
+import Profile from './profile'
 // import Halogen from 'halogen'
 // import Notification from 'react-web-notification'
 
@@ -122,52 +122,54 @@ class LiveChat extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <div className='col-xl-4'>
-                <div className='m-portlet m-portlet--full-height' >
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Sessions
-                        </h3>
+              <div className='row'>
+                <div className='col-xl-3'>
+                  <div className='m-portlet m-portlet--full-height' >
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Sessions
+                          </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link active' data-toggle='tab' href='#m_widget4_tab1_content' role='tab'>
+                              Today
+                            </a>
+                          </li>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link' data-toggle='tab' href='#m_widget4_tab2_content' role='tab'>
+                              Month
+                            </a>
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                        <li className='nav-item m-tabs__item'>
-                          <a className='nav-link m-tabs__link active' data-toggle='tab' href='#m_widget4_tab1_content' role='tab'>
-                            Today
-                          </a>
-                        </li>
-                        <li className='nav-item m-tabs__item'>
-                          <a className='nav-link m-tabs__link' data-toggle='tab' href='#m_widget4_tab2_content' role='tab'>
-                            Month
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className='m-portlet__body'>
-                    <div className='tab-content'>
-                      <div className='tab-pane active' id='m_widget4_tab1_content'>
-                        <div className='m-widget4'>
-                          <div className='m-widget4__item'>
-                            <div className='m-widget4__img m-widget4__img--pic'>
-                              <img src='../../assets/app/media/img/users/100_4.jpg' alt='' />
-                            </div>
-                            <div className='m-widget4__info'>
-                              <span className='m-widget4__title'>
-                                Anna Strong
-                              </span>
-                              <br />
-                              <span className='m-widget4__sub'>
-                                Visual Designer,Google Inc
-                              </span>
-                            </div>
-                            <div className='m-widget4__ext'>
-                              <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                Follow
-                              </a>
+                    <div className='m-portlet__body'>
+                      <div className='tab-content'>
+                        <div className='tab-pane active' id='m_widget4_tab1_content'>
+                          <div className='m-widget4'>
+                            <div className='m-widget4__item'>
+                              <div className='m-widget4__img m-widget4__img--pic'>
+                                <img src='../../assets/app/media/img/users/100_4.jpg' alt='' />
+                              </div>
+                              <div className='m-widget4__info'>
+                                <span className='m-widget4__title'>
+                                  Anna Strong
+                                </span>
+                                <br />
+                                <span className='m-widget4__sub'>
+                                  Visual Designer,Google Inc
+                                </span>
+                              </div>
+                              <div className='m-widget4__ext'>
+                                <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                  Follow
+                                </a>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -176,6 +178,8 @@ class LiveChat extends React.Component {
                   </div>
                 </div>
               </div>
+              <ChatBox session={this.props.sessions[0]} />
+              <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
             </div>
           </div>
         </div>
