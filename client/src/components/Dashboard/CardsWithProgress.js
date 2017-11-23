@@ -42,7 +42,7 @@ class CardsWithProgress extends React.Component {
                           Seen
                         </span>
                         <div className='m--space-10' />
-                        <div className='progress m-progress--sm'>
+                        <div className='progress m-progress--sm' style={{height: '6px'}}>
                           <div className='progress-bar bg-primary' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
@@ -81,7 +81,7 @@ class CardsWithProgress extends React.Component {
                           Seen
                         </span>
                         <div className='m--space-10' />
-                        <div className='progress m-progress--sm'>
+                        <div className='progress m-progress--sm' style={{height: '6px'}}>
                           <div className='progress-bar bg-primary' role='progressbar' style={{width: pollSeenConvertRate}} aria-valuenow={(this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
@@ -95,7 +95,7 @@ class CardsWithProgress extends React.Component {
                           Responded
                         </span>
                         <div className='m--space-10' />
-                        <div className='progress m-progress--sm'>
+                        <div className='progress m-progress--sm' style={{height: '6px'}}>
                           <div className='progress-bar bg-success' role='progressbar' style={{width: pollResponseConvertRate}} aria-valuenow={(this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
@@ -134,7 +134,7 @@ class CardsWithProgress extends React.Component {
                           Seen
                         </span>
                         <div className='m--space-10' />
-                        <div className='progress m-progress--sm'>
+                        <div className='progress m-progress--sm' style={{height: '6px'}}>
                           <div className='progress-bar bg-primary' role='progressbar' style={{width: surveySeenConvertRate}} aria-valuenow={(this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
@@ -148,7 +148,7 @@ class CardsWithProgress extends React.Component {
                           Responded
                         </span>
                         <div className='m--space-10' />
-                        <div className='progress m-progress--sm'>
+                        <div className='progress m-progress--sm' style={{height: '6px'}}>
                           <div className='progress-bar bg-success' role='progressbar' style={{width: surveyResponseConvertRate}} aria-valuenow={(this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
