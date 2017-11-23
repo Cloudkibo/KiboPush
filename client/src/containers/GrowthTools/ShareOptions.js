@@ -32,12 +32,14 @@ class ShareOptions extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
+    console.log('Next Props', nextprops)
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
           'pageid': nextprops.pages[0].pageId,
           'fblink': 'https://m.me/' + nextprops.pages[0].pageUserName
         })
+        console.log('Value Initialized')
       } else {
         this.setState({
           'pageid': nextprops.pages[0].pageId,
