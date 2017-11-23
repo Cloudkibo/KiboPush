@@ -97,7 +97,7 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
     console.log('componentDidMount called')
     // this.scrollToBottom()
-    this.props.markRead(this.props.currentSession._id, this.props.sessions)
+    // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
@@ -425,7 +425,7 @@ class ChatBox extends React.Component {
   componentDidUpdate (nextProps) {
     // this.scrollToBottom()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
-      this.props.markRead(this.props.session._id, this.props.sessions)
+      // this.props.markRead(this.props.session._id, this.props.sessions)
     }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.session._id) {
       this.setState({textAreaValue: ''})
