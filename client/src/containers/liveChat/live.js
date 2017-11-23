@@ -35,6 +35,7 @@ class LiveChat extends React.Component {
     this.handleFilter = this.handleFilter.bind(this)
     this.filterSession = this.filterSession.bind(this)
     this.showDropdown = this.showDropdown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
   }
 
   componentDidMount () {
@@ -69,11 +70,13 @@ class LiveChat extends React.Component {
   }
 
   handleSearch (e) {
+    console.log('handle search', e.target.value)
     this.setState({searchValue: e.target.value})
     this.filterSession()
   }
 
   handleSort (value) {
+    console.log('handle sort', value)
     if (value !== this.state.sortValue) {
       this.setState({sortValue: value})
     } else {
@@ -83,6 +86,7 @@ class LiveChat extends React.Component {
   }
 
   handleFilter (value) {
+    console.log('handle filter', value)
     if (value !== this.state.filterValue) {
       this.setState({filterValue: value})
     } else {
@@ -92,6 +96,7 @@ class LiveChat extends React.Component {
   }
 
   filterSession () {
+    console.log('filter sessions', this.state)
     var temp = this.props.sessions
 
     // For Search
@@ -123,8 +128,9 @@ class LiveChat extends React.Component {
 
     // For Filter
     if (this.state.filterValue !== '') {
+      var filterValue = this.state.filterValue
       temp = _.filter(temp, function (item) {
-        if (item.page_id.pageId === this.state.filterValue) {
+        if (item.page_id.pageId === filterValue) {
           return item
         }
       })
@@ -136,6 +142,10 @@ class LiveChat extends React.Component {
 
   showDropdown () {
     this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
   }
 
   componentWillReceiveProps (nextProps) {
@@ -218,90 +228,96 @@ class LiveChat extends React.Component {
                             </div>
                           </div>
                           <div className='col-md-2'>
-                            <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '35px', float: 'right'}} className='la la-ellipsis-h' />
-                            </a>
-                          </div>
-                        </div>
-                        {
-                          this.state.showDropDown &&
-                          <div className='m-dropdown__wrapper'>
-                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                            <div className='m-dropdown__inner'>
-                              <div className='m-dropdown__body'>
-                                <div className='m-dropdown__content'>
-                                  <ul className='m-nav'>
-                                    <li className='m-nav__section m-nav__section--first'>
-                                      <span className='m-nav__section-text'>
-                                        Sort By:
-                                      </span>
-                                    </li>
-                                    <li className='m-nav__item'>
-                                      <a onClick={() => this.handleSort('old')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                        {
-                                          this.state.sortValue === 'old'
-                                          ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                            <i className='la la-check' /> Oldest to Newest
-                                          </span>
-                                          : <span className='m-nav__link-text'>
-                                            Oldest to Newest
-                                          </span>
-                                        }
-                                      </a>
-                                    </li>
-                                    <li className='m-nav__item'>
-                                      <a onClick={() => this.handleSort('new')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                        {
-                                          this.state.sortValue === 'new'
-                                          ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                            <i className='la la-check' /> Newest to Oldest
-                                          </span>
-                                          : <span className='m-nav__link-text'>
-                                            Newest to Oldest
-                                          </span>
-                                        }
-                                      </a>
-                                    </li>
-                                    <li className='m-nav__section m-nav__section--first'>
-                                      <span className='m-nav__section-text'>
-                                        Filter by:
-                                      </span>
-                                    </li>
-                                    {
-                                      this.props.pages.map((page, i) => (
-                                        <li key={page.pageId} className='m-nav__item'>
-                                          <a onClick={() => this.handleFilter(page.pageId)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                            {
-                                              page.pageId === this.state.filterValue
-                                              ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                <i className='la la-check' /> {page.pageName}
-                                              </span>
-                                              : <span className='m-nav__link-text'>
-                                                {page.pageName}
-                                              </span>
-                                            }
-                                          </a>
-                                        </li>
-                                      ))
-                                    }
-                                    <li className='m-nav__separator m-nav__separator--fit' />
-                                    <li className='m-nav__item'>
-                                      {
-                                        (this.state.filterValue !== '' || this.state.sortValue !== '')
-                                        ? <a onClick={() => this.hideDropDown} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
-                                          Done
-                                        </a>
-                                        : <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                          Cancel
-                                        </a>
-                                      }
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
+                            <div className='m-portlet__head-tools'>
+                              <ul className='m-portlet__nav'>
+                                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                  <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                    <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '35px', float: 'right'}} className='la la-ellipsis-h' />
+                                  </a>
+                                  {
+                                    this.state.showDropDown &&
+                                    <div className='m-dropdown__wrapper'>
+                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                      <div className='m-dropdown__inner'>
+                                        <div className='m-dropdown__body'>
+                                          <div className='m-dropdown__content'>
+                                            <ul className='m-nav'>
+                                              <li className='m-nav__section m-nav__section--first'>
+                                                <span className='m-nav__section-text'>
+                                                  Sort By:
+                                                </span>
+                                              </li>
+                                              <li className='m-nav__item'>
+                                                <a onClick={() => this.handleSort('old')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                  {
+                                                    this.state.sortValue === 'old'
+                                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                      <i className='la la-check' /> Oldest to Newest
+                                                    </span>
+                                                    : <span className='m-nav__link-text'>
+                                                      Oldest to Newest
+                                                    </span>
+                                                  }
+                                                </a>
+                                              </li>
+                                              <li className='m-nav__item'>
+                                                <a onClick={() => this.handleSort('new')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                  {
+                                                    this.state.sortValue === 'new'
+                                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                      <i className='la la-check' /> Newest to Oldest
+                                                    </span>
+                                                    : <span className='m-nav__link-text'>
+                                                      Newest to Oldest
+                                                    </span>
+                                                  }
+                                                </a>
+                                              </li>
+                                              <li className='m-nav__section m-nav__section--first'>
+                                                <span className='m-nav__section-text'>
+                                                  Filter by:
+                                                </span>
+                                              </li>
+                                              {
+                                                this.props.pages.map((page, i) => (
+                                                  <li key={page.pageId} className='m-nav__item'>
+                                                    <a onClick={() => this.handleFilter(page.pageId)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                      {
+                                                        page.pageId === this.state.filterValue
+                                                        ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                          <i className='la la-check' /> {page.pageName}
+                                                        </span>
+                                                        : <span className='m-nav__link-text'>
+                                                          {page.pageName}
+                                                        </span>
+                                                      }
+                                                    </a>
+                                                  </li>
+                                                ))
+                                              }
+                                              <li className='m-nav__separator m-nav__separator--fit' />
+                                              <li className='m-nav__item'>
+                                                {
+                                                  (this.state.filterValue !== '' || this.state.sortValue !== '')
+                                                  ? <a onClick={() => this.hideDropDown} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                    Done
+                                                  </a>
+                                                  : <a onClick={() => this.hideDropDown} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                    Cancel
+                                                  </a>
+                                                }
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
+                                </li>
+                              </ul>
                             </div>
                           </div>
-                        }
+                        </div>
                       </div>
                       <div className='m-portlet__body'>
                         <div className='tab-content'>
