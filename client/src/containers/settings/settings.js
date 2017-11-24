@@ -8,10 +8,15 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      type: 'password'
+    }
+    this.changeType = this.changeType.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -38,6 +43,10 @@ class Settings extends React.Component {
       offText: 'Disabled',
       offColor: 'danger'
     })
+  }
+  changeType (e) {
+    this.setState({type: 'text'})
+    e.preventDefault()
   }
   render () {
     return (
@@ -144,12 +153,15 @@ class Settings extends React.Component {
                                 API Secret
                               </label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type='password' readOnly value='12345678' />
+                                <input className='form-control m-input' type={this.state.type} readOnly value='12345678' />
                                 <span className='input-group-btn'>
-                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}}>Show</button>
+                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>Show</button>
                                 </span>
                               </div>
                             </div>
+                            <br />
+                            <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => { e.preventDefault() }}>Reset</button>
+                            <br />
                           </div>
                         </form>
                       </div>
