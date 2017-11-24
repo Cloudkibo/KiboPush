@@ -99,7 +99,7 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     /* eslint-disable */
-    $('#m_quick_sidebar_toggle').click()
+    $('#chat').click()
     /* eslint-enable */
     // this.scrollToBottom()
     // this.props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -442,7 +442,7 @@ class ChatBox extends React.Component {
     return (
       <div className='col-xl-5'>
         <div id='m_quick_sidebar_toggle' className='m-nav__item' hidden>
-          <a className='m-nav__link m-dropdown__toggle'>
+          <a id='chat' className='m-nav__link m-dropdown__toggle'>
             <span className='m-nav__link-icon'>
               <i className='flaticon-grid-menu' />
             </span>
