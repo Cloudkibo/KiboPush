@@ -45,7 +45,7 @@ $(function () {
     assert.strictEqual($tooltip[0], $el[0], 'collection contains element')
   })
 
-  QUnit.test('should expose default settings', function (assert) {
+  QUnit.test('should expose default api_settings', function (assert) {
     assert.expect(1)
     assert.ok($.fn.bootstrapTooltip.Constructor.Default, 'defaults is defined')
   })

@@ -31,7 +31,7 @@ class Settings extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
-    document.title = 'KiboPush | settings'
+    document.title = 'KiboPush | api_settings'
 
     $("[name='switch']").bootstrapSwitch({
       onText: 'Enabled',

@@ -124,7 +124,6 @@ const routes = (
     <Route path='/surveyDetails' component={SurveyDetails} onEnter={requireAuth} />
     <Route path='/settings' component={Settings} onEnter={requireAuth} />
 
-
   </Route>
 
 )
