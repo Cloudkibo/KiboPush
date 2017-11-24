@@ -14,7 +14,9 @@ class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      type: 'password'
+      type: 'password',
+      APIKey: '',
+      APISecret: ''
     }
     this.changeType = this.changeType.bind(this)
   }
@@ -42,6 +44,11 @@ class Settings extends React.Component {
       onText: 'Enabled',
       offText: 'Disabled',
       offColor: 'danger'
+    })
+    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      console.log(this) // DOM element
+      console.log(event) // jQuery event
+      console.log(state) // true | false
     })
   }
   changeType (e) {
@@ -145,7 +152,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <label for='example-text-input' className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type='text' readOnly value='12345678' />
+                                <input className='form-control m-input' type='text' readOnly value={this.state.APIKey} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
@@ -153,7 +160,7 @@ class Settings extends React.Component {
                                 API Secret
                               </label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type={this.state.type} readOnly value='12345678' />
+                                <input className='form-control m-input' type={this.state.type} readOnly value={this.state.APISecret} />
                                 <span className='input-group-btn'>
                                   <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>Show</button>
                                 </span>
