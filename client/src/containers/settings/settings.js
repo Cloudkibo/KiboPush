@@ -8,7 +8,7 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { enable, disable } from '../../redux/actions/settings.actions'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -19,6 +19,7 @@ class Settings extends React.Component {
       APISecret: ''
     }
     this.changeType = this.changeType.bind(this)
+    this.initializeSwitch = this.initializeSwitch.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -40,20 +41,33 @@ class Settings extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
 
+    this.initializeSwitch()
+  }
+  changeType (e) {
+    this.setState({type: 'text'})
+    e.preventDefault()
+  }
+  initializeSwitch () {
+    var self = this
     $("[name='switch']").bootstrapSwitch({
       onText: 'Enabled',
       offText: 'Disabled',
       offColor: 'danger'
     })
     $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
-      console.log(this) // DOM element
-      console.log(event) // jQuery event
-      console.log(state) // true | false
+      if (state === true) {
+        console.log('true')
+        self.props.enable({company_id: self.props.user._id})
+      } else {
+        console.log('false')
+      }
     })
   }
-  changeType (e) {
-    this.setState({type: 'text'})
-    e.preventDefault()
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.apiEnable) {
+      console.log('api enabled', nextProps.apiEnable)
+      this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
+    }
   }
   render () {
     return (
@@ -187,13 +201,17 @@ class Settings extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    apiEnable: (state.APIInfo.apiEnable),
+    apidisable: (state.APIInfo.apiEnable)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    enable: enable,
+    disable: disable
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

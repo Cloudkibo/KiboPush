@@ -13,4 +13,4 @@ let ApiSettingsSchema = new Schema({
   enabled: {type: Boolean, default: false}
 })
 
-module.exports = mongoose.model('sessions', ApiSettingsSchema)
+module.exports = mongoose.model('api_settings', ApiSettingsSchema)

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import {basicInfo} from './basicinfo.reducer'
+import {APIInfo} from './settings.reducer'
 import {pagesInfo} from './pages.reducer'
 import {subscribersInfo} from './subscribers.reducer'
 import {dashboardInfo, sentSeenInfo} from './dashboard.reducer'
@@ -41,7 +42,8 @@ const appReducer = combineReducers({
   SurveyDetailsInfo,
   PollDetailsInfo,
   getFileUploadResponse,
-  liveChat
+  liveChat,
+  APIInfo
 })
 
 export default appReducer
