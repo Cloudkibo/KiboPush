@@ -16,7 +16,8 @@ class Settings extends React.Component {
     this.state = {
       type: 'password',
       APIKey: '',
-      APISecret: ''
+      APISecret: '',
+      buttonText: 'Show'
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -44,7 +45,11 @@ class Settings extends React.Component {
     this.initializeSwitch()
   }
   changeType (e) {
-    this.setState({type: 'text'})
+    if (this.state.type === 'password') {
+      this.setState({type: 'text', buttonText: 'Hide'})
+    } else {
+      this.setState({type: 'password', buttonText: 'Show'})
+    }
     e.preventDefault()
   }
   initializeSwitch () {
@@ -60,6 +65,7 @@ class Settings extends React.Component {
         self.props.enable({company_id: self.props.user._id})
       } else {
         console.log('false')
+        self.props.disable({company_id: self.props.user._id})
       }
     })
   }
@@ -67,6 +73,10 @@ class Settings extends React.Component {
     if (nextProps.apiEnable) {
       console.log('api enabled', nextProps.apiEnable)
       this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
+    }
+    if (nextProps.apiDisable) {
+      console.log('api disabled', nextProps.apiDisable)
+      this.setState({APIKey: '', APISecret: ''})
     }
   }
   render () {
@@ -176,7 +186,7 @@ class Settings extends React.Component {
                               <div className='col-7 input-group'>
                                 <input className='form-control m-input' type={this.state.type} readOnly value={this.state.APISecret} />
                                 <span className='input-group-btn'>
-                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>Show</button>
+                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>{this.state.buttonText}</button>
                                 </span>
                               </div>
                             </div>
@@ -185,6 +195,11 @@ class Settings extends React.Component {
                             <br />
                           </div>
                         </form>
+                        <div className="form-group m-form__group">
+												<div className="alert m-alert m-alert--default" role="alert">
+                        For API documentation, please visit <a href='https://staging.kibopush.com/docs'>https://staging.kibopush.com/docs</a>
+												</div>
+											</div>
                       </div>
                       <div className='tab-pane active' id='m_user_profile_tab_2' />
                     </div>
