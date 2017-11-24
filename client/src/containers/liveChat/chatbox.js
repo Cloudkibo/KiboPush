@@ -441,17 +441,10 @@ class ChatBox extends React.Component {
     console.log('current session', this.props.currentSession)
     return (
       <div className='col-xl-5'>
-        <div id='m_quick_sidebar_toggle' className='m-nav__item' hidden>
-          <a id='chat' className='m-nav__link m-dropdown__toggle'>
-            <span className='m-nav__link-icon'>
-              <i className='flaticon-grid-menu' />
-            </span>
-          </a>
-        </div>
-        <div id='m_quick_sidebar' className='m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light'>
-          <div className='m-quick-sidebar__content m--hide'>
+        <div className='m-portlet m-portlet--mobile'>
+          <div className='m-portlet__body'>
             <div className='tab-content'>
-              <div className='tab-pane active m-scrollable' id='m_quick_sidebar_tabs_messenger' role='tabpanel'>
+              <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                   <div className='m-messenger__messages'>
                     <div className='m-messenger__message m-messenger__message--in'>
