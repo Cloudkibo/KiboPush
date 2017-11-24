@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
+const ApiSettings = require('../api/api_settings/api_settings.model')
 const validateJwt = expressJwt({secret: config.secrets.session})
 
 const logger = require('../components/logger')
@@ -20,13 +21,17 @@ const TAG = 'auth/auth.service.js'
  */
 function isAuthenticated () {
   return compose()
-  // Validate jwt
+  // Validate jwt or api keys
     .use((req, res, next) => {
-      // allow access_token to be passed through query parameter as well
-      if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = `Bearer ${req.query.access_token}`
+      if (req.headers.hasOwnProperty('app_id')) {
+        validateApiKeys(req, res, next)
+      } else {
+        // allow access_token to be passed through query parameter as well
+        if (req.query && req.query.hasOwnProperty('access_token')) {
+          req.headers.authorization = `Bearer ${req.query.access_token}`
+        }
+        validateJwt(req, res, next)
       }
-      validateJwt(req, res, next)
     })
     // Attach user to request
     .use((req, res, next) => {
@@ -67,6 +72,39 @@ function isAuthorizedSuperUser () {
 function signToken (id) {
   return jwt.sign({_id: id}, config.secrets.session,
     {expiresIn: 60 * 60 * 24 * 4})
+}
+
+function validateApiKeys (req, res, next) {
+  logger.serverLog(TAG, `going to validate api keys headers ${req.headers['app_id']} ${req.headers['app_secret']}`)
+  if (req.headers.hasOwnProperty('app_secret')) {
+    ApiSettings.findOne({app_id: req.headers['app_id'], app_secret: req.headers['app_secret'], enabled: true},
+      (err, setting) => {
+        if (err) return next(err)
+        if (setting) {
+          logger.serverLog(TAG, `keys validated ${setting}`)
+          Users.findOne({_id: setting.company_id}, (err, user) => {
+            if (err) {
+              return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            if (!user) {
+              return res.status(401)
+              .json({status: 'failed', description: 'User not found for the API keys'})
+            }
+
+            req.user = user
+            req.user._id = req.user.fbId
+            next()
+          })
+        } else {
+          return res.status(401)
+          .json({status: 'failed', description: 'Unauthorized. No such API credentials found.'})
+        }
+      })
+  } else {
+    return res.status(401)
+    .json({status: 'failed', description: 'Unauthorized. Please provide both app_id and app_secret in headers.'})
+  }
 }
 
 /**

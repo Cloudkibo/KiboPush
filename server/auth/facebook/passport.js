@@ -91,6 +91,7 @@ exports.setup = function (User, config) {
               //   `previous fb token before login: ${user.fbToken}`)
               user.updatedAt = Date.now()
               user.fbToken = accessToken
+              user.profilePic = resp.body.picture.data.url
               // logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
               user.save((err, userpaylaod) => {
                 if (err) {

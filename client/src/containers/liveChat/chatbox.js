@@ -90,12 +90,17 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called')
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
+    document.body.appendChild(addScript)
+    /* eslint-disable */
+    $('#chat').click()
+    /* eslint-enable */
     // this.scrollToBottom()
     // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
@@ -436,10 +441,10 @@ class ChatBox extends React.Component {
     console.log('current session', this.props.currentSession)
     return (
       <div className='col-xl-5'>
-        <div id='m_quick_sidebar' className='m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light'>
-          <div className='m-quick-sidebar__content m--hide'>
+        <div className='m-portlet m-portlet--mobile'>
+          <div className='m-portlet__body'>
             <div className='tab-content'>
-              <div className='tab-pane active m-scrollable' id='m_quick_sidebar_tabs_messenger' role='tabpanel'>
+              <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                   <div className='m-messenger__messages'>
                     <div className='m-messenger__message m-messenger__message--in'>
