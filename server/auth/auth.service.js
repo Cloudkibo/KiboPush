@@ -93,6 +93,7 @@ function validateApiKeys (req, res, next) {
             }
 
             req.user = user
+            req.user._id = req.user.fbId
             next()
           })
         } else {
