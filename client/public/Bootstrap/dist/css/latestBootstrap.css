@@ -24,6 +24,8 @@
 .ui-block{
   background: white;
   margin: 5px;
+  text-align: center;
+  padding-top: 10px; 
 }
 
 .cardimageblock{
