@@ -70,6 +70,7 @@ class Settings extends React.Component {
     })
   }
   componentWillReceiveProps (nextProps) {
+    console.log('hello', nextProps)
     if (nextProps.apiEnable) {
       console.log('api enabled', nextProps.apiEnable)
       this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
@@ -195,11 +196,11 @@ class Settings extends React.Component {
                             <br />
                           </div>
                         </form>
-                        <div className="form-group m-form__group">
-												<div className="alert m-alert m-alert--default" role="alert">
-                        For API documentation, please visit <a href='https://staging.kibopush.com/docs'>https://staging.kibopush.com/docs</a>
-												</div>
-											</div>
+                        <div className='form-group m-form__group'>
+                          <div className='alert m-alert m-alert--default' role='alert' style={{width: '515px', marginLeft: '90px'}}>
+                            For API documentation, please visit <a href='https://app.kibopush.com/docs'>https://app.kibopush.com/docs</a>
+                          </div>
+                        </div>
                       </div>
                       <div className='tab-pane active' id='m_user_profile_tab_2' />
                     </div>
@@ -218,7 +219,7 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     apiEnable: (state.APIInfo.apiEnable),
-    apidisable: (state.APIInfo.apiEnable)
+    apiDisable: (state.APIInfo.apiDisable)
   }
 }
 
