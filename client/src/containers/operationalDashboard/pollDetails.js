@@ -46,7 +46,7 @@ class ViewPollDetail extends React.Component {
       let pollResponses = nextProps.pollDetails.pollResponses
       let pollPages = nextProps.pollDetails.pollpages
       if (pollPages) {
-        this.setState({ totalResponses: pollPages.length })
+        this.setState({ totalSent: pollPages.length })
       }
       if (pollResponses) {
         this.setState({ totalResponses: pollResponses.length })

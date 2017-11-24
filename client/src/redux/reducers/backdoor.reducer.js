@@ -12,7 +12,10 @@ const initialState = {
   currentPage: null,
   currentSurvey: null,
   currentPoll: null,
-  pollDetails: null
+  pollDetails: null,
+  broadcastsGraphInfo: [],
+  surveysGraphInfo: [],
+  pollsGraphInfo: []
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -171,6 +174,39 @@ export function getCurrentPoll (state = initialState, action) {
       console.log('getCurrentPoll', action.data)
       return Object.assign({}, state, {
         currentPoll: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function surveysGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_SURVEYS_GRAPH:
+      return Object.assign({}, state, {
+        surveysGraphInfo: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function pollsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_POLLS_GRAPH:
+      return Object.assign({}, state, {
+        pollsGraphInfo: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function broadcastsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_BROADCASTS_GRAPH:
+      return Object.assign({}, state, {
+        broadcastsGraphInfo: action.data
       })
 
     default:

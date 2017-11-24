@@ -9,8 +9,10 @@ import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
+import Reports from './reports'
 import Select from 'react-select'
 import ListItem from './ListItem'
+import moment from 'moment'
 //  import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import {
@@ -18,7 +20,10 @@ import {
   loadDataObjectsCount,
   loadTopPages,
   saveUserInformation,
-  downloadFile
+  downloadFile,
+  loadBroadcastsGraphData,
+  loadPollsGraphData,
+  loadSurveysGraphData
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -44,10 +49,16 @@ class OperationalDashboard extends React.Component {
       localeValue: '',
       selectedValue: 0,
       showTopTenPages: false,
-      showUsers: false
+      showReports: false,
+      showUsers: false,
+      chartData: [],
+      selectedDays: 10
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
+    props.loadBroadcastsGraphData(0)
+    props.loadPollsGraphData(0)
+    props.loadSurveysGraphData(0)
     props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -60,6 +71,9 @@ class OperationalDashboard extends React.Component {
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
+    this.prepareLineChartData = this.prepareLineChartData.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+    this.includeZeroCounts = this.includeZeroCounts.bind(this)
   }
 
   componentDidMount () {
@@ -126,6 +140,25 @@ class OperationalDashboard extends React.Component {
     }
   }
 
+  onDaysChange (e) {
+    var defaultVal = 10
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    console.log('On days change', value)
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      this.props.loadBroadcastsGraphData(value)
+      this.props.loadPollsGraphData(value)
+      this.props.loadSurveysGraphData(value)
+    } else if (value === '') {
+      this.setState({selectedDays: defaultVal})
+      this.props.loadBroadcastsGraphData(defaultVal)
+      this.props.loadPollsGraphData(defaultVal)
+      this.props.loadSurveysGraphData(defaultVal)
+    }
+  }
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
@@ -140,6 +173,78 @@ class OperationalDashboard extends React.Component {
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
     }
+    if (nextProps.broadcastsGraphData) {
+      console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
+      var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
+      if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
+        var broadcastData = graphInfoBroadcast.broadcastsgraphdata
+        broadcastData = this.includeZeroCounts(broadcastData)
+      }
+    }
+    if (nextProps.pollsGraphData) {
+      console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
+      var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
+      if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
+        var pollsData = graphInfoPolls.pollsgraphdata
+        pollsData = this.includeZeroCounts(pollsData)
+      }
+    }
+    if (nextProps.surveysGraphData) {
+      console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
+      var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
+      if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
+        var surveysData = graphInfoSurveys.surveysgraphdata
+        surveysData = this.includeZeroCounts(surveysData)
+      }
+    }
+    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+    this.setState({chartData: dataChart})
+  }
+  includeZeroCounts (data) {
+    var dataArray = []
+    var days = this.state.selectedDays
+    var index = 0
+    var varDate = moment()
+    for (var i = 0; i < days; i++) {
+      for (var j = 0; j < data.length; j++) {
+        var recordId = data[j]._id
+        var date = `${recordId.year}-${recordId.month}-${recordId.day}`
+        var loopDate = moment(varDate).format('YYYY-MM-DD')
+        if (moment(date).isSame(loopDate, 'day')) {
+          var d = {}
+          d.date = loopDate
+          d.count = data[j].count
+          dataArray.push(d)
+          varDate = moment(varDate).subtract(1, 'days')
+          index = 0
+          break
+        }
+        index++
+      }
+      if (index === data.length) {
+        var obj = {}
+        obj.date = varDate.format('YYYY-MM-DD')
+        obj.count = 0
+        dataArray.push(obj)
+        varDate = moment(varDate).subtract(1, 'days')
+        index = 0
+      }
+    }
+    return dataArray
+  }
+  prepareLineChartData (surveys, polls, broadcasts) {
+    var dataChart = []
+    if (surveys) {
+      for (var i = 0; i < surveys.length; i++) {
+        var record = {}
+        record.date = surveys[i].date
+        record.broadcastscount = broadcasts[i].count
+        record.pollscount = polls[i].count
+        record.surveyscount = surveys[i].count
+        dataChart.push(record)
+      }
+    }
+    return dataChart
   }
 
   goToBroadcasts (user) {
@@ -187,6 +292,8 @@ class OperationalDashboard extends React.Component {
   showContent (title) {
     if (title === 'Top Ten Pages') {
       this.setState({showTopTenPages: true})
+    } else if (title === 'Reports') {
+      this.setState({showReports: true})
     } else {
       this.setState({showUsers: true})
     }
@@ -195,6 +302,8 @@ class OperationalDashboard extends React.Component {
   hideContent (title) {
     if (title === 'Top Ten Pages') {
       this.setState({showTopTenPages: false})
+    } else if (title === 'Reports') {
+      this.setState({showReports: false})
     } else {
       this.setState({showUsers: false})
     }
@@ -302,6 +411,18 @@ class OperationalDashboard extends React.Component {
                   pagesData={this.props.toppages}
                 />
                 : <ListItem iconClassName={'fa fa-facebook'} title={'Top Ten Pages'} showContent={this.showContent} />
+              }
+              {
+                this.state.showReports
+                ? <Reports
+                  iconClassName={'fa fa-line-chart'}
+                  title={'Reports'}
+                  hideContent={this.hideContent}
+                  lineChartData={this.state.chartData}
+                  onDaysChange={this.onDaysChange}
+                  selectedDays={this.state.selectedDays}
+                />
+                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
               }
               {
                 this.state.showUsers
@@ -439,7 +560,10 @@ function mapStateToProps (state) {
     locales: (state.UsersInfo.locales),
     currentUser: (state.getCurrentUser.currentUser),
     dataobjects: (state.dataObjectsInfo.dataobjects),
-    toppages: (state.topPagesInfo.toppages)
+    toppages: (state.topPagesInfo.toppages),
+    broadcastsGraphData: (state.broadcastsGraphInfo),
+    pollsGraphData: (state.pollsGraphInfo),
+    surveysGraphData: (state.surveysGraphInfo)
   }
 }
 
@@ -448,7 +572,10 @@ function mapDispatchToProps (dispatch) {
     loadDataObjectsCount: loadDataObjectsCount,
     loadTopPages: loadTopPages,
     saveUserInformation: saveUserInformation,
-    downloadFile: downloadFile },
+    downloadFile: downloadFile,
+    loadBroadcastsGraphData: loadBroadcastsGraphData,
+    loadSurveysGraphData: loadSurveysGraphData,
+    loadPollsGraphData: loadPollsGraphData},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
