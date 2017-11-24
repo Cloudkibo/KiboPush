@@ -265,7 +265,7 @@ class Page extends React.Component {
                               </th>
                               <th data-field='seen'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Actions</span>
+                                <span style={{width: '200px'}}>Actions</span>
                               </th>
                             </tr>
                           </thead>
@@ -275,7 +275,7 @@ class Page extends React.Component {
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
-                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{page.pagePic}</span></td>
+                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}><img src={page.pagePic}/></span></td>
                                 <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{page.pageName}</span></td>
                                 <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{page.likes}</span></td>
                                 <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{page.subscribers}</span></td>
