@@ -106,8 +106,8 @@ class Workflows extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Workflows'
 
-    this.initializeConditionSelect(this.state.conditionSelect.options)
-    this.initializeActiveSelect(this.state.activeSelect.options)
+    // this.initializeConditionSelect(this.state.conditionSelect.options)
+    // this.initializeActiveSelect(this.state.activeSelect.options)
   }
 
   initializeConditionSelect (conditionOptions) {
@@ -268,7 +268,7 @@ class Workflows extends React.Component {
                           this.props.workflows.length > 0 &&
                             <div
                               className='form-group m-form__group row align-items-center'>
-                              <div className='col-md-4'>
+                              <div className='col-md-5'>
                                 <div
                                   className='m-form__group m-form__group--inline'>
                                   <div className='m-form__label'>
@@ -277,16 +277,19 @@ class Workflows extends React.Component {
                                   </label>
                                   </div>
                                   <div className='m-form__control'>
-                                    <div
-                                      className='btn-group bootstrap-select form-control m-bootstrap-select'>
-                                      <select id='conditionSelect' />
-                                    </div>
+                                    <select className='custom-select' id='conditionSelect' value={this.state.filterByCondition} onChange={this.handleFilterByCondition} >
+                                      <option value='' disabled>Filter by Condition...</option>
+                                      <option value='message_is'>message_is</option>
+                                      <option value='message_contains'>message_contains</option>
+                                      <option value='message_begins'>message_begins</option>
+                                      <option value=''>all</option>
+                                    </select>
                                   </div>
                                 </div>
                                 <div
                                   className='d-md-none m--margin-bottom-10' />
                               </div>
-                              <div className='col-md-4'>
+                              <div className='col-md-3'>
                                 <div
                                   className='m-form__group m-form__group--inline'>
                                   <div className='m-form__label'>
@@ -295,10 +298,12 @@ class Workflows extends React.Component {
                                       </label>
                                   </div>
                                   <div className='m-form__control'>
-                                    <div
-                                      className='btn-group bootstrap-select form-control m-bootstrap-select'>
-                                      <select id='isActiveSelect' />
-                                    </div>
+                                    <select className='custom-select' id='isActiveSelect' value={this.state.filterByStatus} onChange={this.handleFilterByStatus}>
+                                      <option value='' disabled>Filter by Status...</option>
+                                      <option value='yes'>yes</option>
+                                      <option value='no'>no</option>
+                                      <option value=''>all</option>
+                                    </select>
                                   </div>
                                 </div>
                                 <div
