@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
+import ReactPaginate from 'react-paginate'
 
 class Subscriber extends React.Component {
   constructor (props, context) {
@@ -205,16 +206,16 @@ class Subscriber extends React.Component {
                                   <div className='m-form__label'>
                                     <label>Gender:</label>
                                   </div>
-                                  <div className='m-form__control'>
-                                    <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Pending</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Delivered</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Canceled</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
-                                    </div>
-                                      <select className='form-control m-bootstrap-select m-bootstrap-select--solid' id='m_form_status' tabIndex='-98'>
-                                        <option value=''>All</option>
-                                        <option value='1'>Pending</option>
-                                        <option value='2'>Delivered</option>
-                                        <option value='3'>Canceled</option>
-                                      </select></div>
-                                  </div>
+                                  {/* <div className='m-form__control'>
+                                    <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
+                                    </div> */}
+                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                    <option value=''>All</option>
+                                    <option value='male'>Male</option>
+                                    <option value='female'>Female</option>
+                                    <option value='other'>Other</option>
+                                  </select>{/* </div>
+                                  </div> */}
                                 </div>
                                 <div className='d-md-none m--margin-bottom-10' />
                               </div>
@@ -224,15 +225,19 @@ class Subscriber extends React.Component {
                                     <label className='m-label m-label--single'>Local:</label>
                                   </div>
                                   <div className='m-form__control'>
-                                    <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
+                                    {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
                                       <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
                                       <div className='dropdown-menu open' role='combobox'>
-                                        <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Online</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Retail</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Direct</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div><select className='form-control m-bootstrap-select m-bootstrap-select--solid' id='m_form_type' tabIndex='-98'>
-                                          <option value=''>All</option>
-                                          <option value='1'>Online</option>
-                                          <option value='2'>Retail</option>
-                                          <option value='3'>Direct</option>
-                                        </select></div>
+                                        <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
+                                      */}<select className='custom-select' id='m_form_type' tabIndex='-98'>
+                                        <option value='' disabled>Filter by Locale...</option>
+                                        {
+                                          this.props.locales.map((locale, i) => (
+                                            <option value={locale}>{locale}</option>
+                                          ))
+                                        }
+                                        <option value=''>all</option>
+                                      </select>{/* </div> */}
                                   </div>
                                 </div>
                                 <div className='d-md-none m--margin-bottom-10' />
@@ -270,10 +275,10 @@ class Subscriber extends React.Component {
                               <th>Gender</th>
                             </tr>
                           </thead>
-                          { this.props.subscribers && this.props.subscribers.length > 0
+                          { this.state.subscribersData && this.state.subscribersData.length > 0
                   ? <tbody>
                     {
-                              this.props.subscribers.map((subscriber, i) => (
+                              this.state.subscribersData.map((subscriber, i) => (
                                 <tr key={i}>
                                   <td>
                                     <img alt='pic'
@@ -291,6 +296,17 @@ class Subscriber extends React.Component {
                   </tbody> : ''
                       }
                         </table>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 4)}
+                          marginPagesDisplayed={1}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
 
                       </div>
 
