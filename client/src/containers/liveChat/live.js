@@ -156,7 +156,7 @@ class LiveChat extends React.Component {
 
     if (nextProps.sessions) {
       this.setState({loading: false})
-      this.setState({activeSession: nextProps.sessions[0], sessionsData: nextProps.sessions})
+      this.setState({activeSession: nextProps.sessions[1], sessionsData: nextProps.sessions})
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
@@ -327,6 +327,7 @@ class LiveChat extends React.Component {
                             <div className='m-widget4'>
                               {
                                 this.state.sessionsData.map((session) => (
+                                  session.subscriber_id !== null &&
                                   <div key={session._id} style={{cursor: 'pointer'}} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
                                       <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />

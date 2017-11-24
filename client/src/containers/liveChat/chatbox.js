@@ -15,12 +15,12 @@ import {
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-// import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player'
 // import { Picker } from 'emoji-mart'
 // import Popover from 'react-simple-popover'
 // import StickerMenu from '../../components/StickerPicker/stickers'
 // import GiphyPicker from 'react-gif-picker'
-// import { isEmoji, getmetaurl } from './utilities'
+import { isEmoji, getmetaurl } from './utilities'
 // import Halogen from 'halogen'
 
 // const styles = {
@@ -262,7 +262,7 @@ class ChatBox extends React.Component {
       e.preventDefault()
       console.log('state in onEnter: ', this.state)
       var payload = {}
-      var session = this.props.session
+      var session = this.props.currentSession
       var data = {}
       if (this.state.uploadedId !== '' && this.state.attachment) {
         payload = this.setDataPayload('attachment')
@@ -429,10 +429,10 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     // this.scrollToBottom()
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       // this.props.markRead(this.props.session._id, this.props.sessions)
     }
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.session._id) {
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.currentSession._id) {
       this.setState({textAreaValue: ''})
     }
   }
@@ -446,47 +446,300 @@ class ChatBox extends React.Component {
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                  <div className='m-messenger__messages'>
-                    <div className='m-messenger__message m-messenger__message--in'>
-                      <div className='m-messenger__message-pic'>
-                        <img src='assets/app/media/img//users/user3.jpg' alt='' />
-                      </div>
-                      <div className='m-messenger__message-body'>
-                        <div className='m-messenger__message-arrow' />
-                        <div className='m-messenger__message-content'>
-                          <div className='m-messenger__message-username'>
-                            Megan wrote
-                          </div>
-                          <div className='m-messenger__message-text'>
-                            Hi Bob. What time will be the meeting ?
-                          </div>
-                        </div>
+                  <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                    <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                      <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                        {
+                            this.props.userChat && this.props.userChat.map((msg) => (
+                              msg.format === 'facebook'
+                              ? <div className='m-messenger__message m-messenger__message--in'>
+                                <div className='m-messenger__message-pic'>
+                                  <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
+                                </div>
+                                <div className='m-messenger__message-body'>
+                                  <div className='m-messenger__message-arrow' />
+                                  {
+                                    msg.payload.attachments
+                                    ? (msg.payload.attachments[0].type === 'video'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a video
+                                        </div>
+                                        <ReactPlayer
+                                          url={msg.payload.attachments[0].payload.url}
+                                          controls
+                                          width='100%'
+                                          height='140'
+                                          onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                                        />
+                                      </div>
+                                      : msg.payload.attachments[0].type === 'audio'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared an audio
+                                        </div>
+                                        <ReactPlayer
+                                          url={msg.payload.attachments[0].payload.url}
+                                          controls
+                                          width='100%'
+                                          height='auto'
+                                          onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                                        />
+                                      </div>
+                                      : msg.payload.attachments[0].type === 'image'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared an image
+                                        </div>
+                                        <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                          <img
+                                            src={msg.payload.attachments[0].payload.url}
+                                            style={{maxWidth: '150px', maxHeight: '85px'}}
+                                          />
+                                        </a>
+                                      </div>
+                                      : msg.url_meta
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a link
+                                        </div>
+                                        <div style={{clear: 'both', display: 'block'}}>
+                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                            <table style={{maxWidth: '175px'}}>
+                                              {
+                                                msg.url_meta.type && msg.url_meta.type === 'video'
+                                                ? <tbody>
+                                                  <tr>
+                                                    <td style={{width: '30%'}} colspan='2'>
+                                                      <ReactPlayer
+                                                        url={msg.url_meta.url}
+                                                        controls
+                                                        width='100%'
+                                                        height='100px'
+                                                      />
+                                                    </td>
+                                                    <td style={{width: '70%'}}>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                : <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <div style={{width: 45, height: 45}}>
+                                                        {
+                                                          msg.url_meta.image &&
+                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        {
+                                                          msg.url_meta.description &&
+                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              }
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      : <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a file
+                                        </div>
+                                        <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                          <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                        </a>
+                                      </div>
+                                    )
+                                    : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                    ? <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-username'>
+                                        {this.props.currentSession.subscriber_id.firstName} reacted
+                                      </div>
+                                      <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                    : <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-username'>
+                                        {this.props.currentSession.subscriber_id.firstName} wrote
+                                      </div>
+                                      <div className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                              : <div className='m-messenger__message m-messenger__message--out'>
+                                <div className='m-messenger__message-body'>
+                                  <div className='m-messenger__message-arrow' />
+                                  {
+                                    msg.payload.componentType &&
+                                    (msg.payload.componentType === 'video'
+                                    ? <div className='m-messenger__message-content'>
+                                      <ReactPlayer
+                                        url={msg.payload.fileurl.url}
+                                        controls
+                                        width='100%'
+                                        height='140'
+                                        onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'audio'
+                                    ? <div className='m-messenger__message-content'>
+                                      <ReactPlayer
+                                        url={msg.payload.fileurl.url}
+                                        controls
+                                        width='100%'
+                                        height='auto'
+                                        onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'file'
+                                    ? <div className='m-messenger__message-content'>
+                                      <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
+                                    </div>
+                                    : msg.payload.componentType === 'image'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl.url}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'gif'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'sticker'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'thumbsUp'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.url_meta && msg.url_meta !== ''
+                                    ? (msg.url_meta.type
+                                      ? <div className='m-messenger__message-content'>
+                                        <div style={{clear: 'both', display: 'block'}}>
+                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                            <table style={{maxWidth: '175px'}}>
+                                              {
+                                                msg.url_meta.type && msg.url_meta.type === 'video'
+                                                ? <tbody>
+                                                  <tr>
+                                                    <td style={{width: '30%'}} colspan='2'>
+                                                      <ReactPlayer
+                                                        url={msg.url_meta.url}
+                                                        controls
+                                                        width='100%'
+                                                        height='100px'
+                                                      />
+                                                    </td>
+                                                    <td style={{width: '70%'}}>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                : <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <div style={{width: 45, height: 45}}>
+                                                        {
+                                                          msg.url_meta.image &&
+                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        {
+                                                          msg.url_meta.description &&
+                                                          <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              }
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      : <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-text'>
+                                          {msg.payload.text}
+                                        </div>
+                                      </div>
+                                    )
+                                    : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                    ? <div className='m-messenger__message-content'>
+                                      <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                    : <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                {/**
+                                  <div class="m-messenger__datetime">
+                                    3:15PM
+                                  </div>
+                                **/}
+                              </div>
+                            ))
+                        }
                       </div>
                     </div>
-                    <div className='m-messenger__message m-messenger__message--out'>
-                      <div className='m-messenger__message-body'>
-                        <div className='m-messenger__message-arrow' />
-                        <div className='m-messenger__message-content'>
-                          <div className='m-messenger__message-text'>
-                            Hi Megan. Its at 2:30 PM
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/**
-                      <div class="m-messenger__datetime">
-                        3:15PM
-                      </div>
-                    **/}
                   </div>
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input type='text' name='' placeholder='Type here...' className='m-messenger__form-input' />
+                      <input type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
-                        <i className='la la-paperclip' />
+                        <i className='la la-thumbs-o-up' />
                       </a>
                     </div>
                   </div>
