@@ -38,11 +38,11 @@ function isAuthenticated () {
       Users.findOne({fbId: req.user._id}, (err, user) => {
         if (err) {
           return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+            .json({status: 'failed', description: 'Internal Server Error'})
         }
         if (!user) {
           return res.status(401)
-          .json({status: 'failed', description: 'Unauthorized'})
+            .json({status: 'failed', description: 'Unauthorized'})
         }
 
         req.user = user
@@ -75,35 +75,44 @@ function signToken (id) {
 }
 
 function validateApiKeys (req, res, next) {
-  logger.serverLog(TAG, `going to validate api keys headers ${req.headers['app_id']} ${req.headers['app_secret']}`)
   if (req.headers.hasOwnProperty('app_secret')) {
-    ApiSettings.findOne({app_id: req.headers['app_id'], app_secret: req.headers['app_secret'], enabled: true},
+    ApiSettings.findOne({
+      app_id: req.headers['app_id'],
+      app_secret: req.headers['app_secret'],
+      enabled: true
+    },
       (err, setting) => {
         if (err) return next(err)
         if (setting) {
-          logger.serverLog(TAG, `keys validated ${setting}`)
           Users.findOne({_id: setting.company_id}, (err, user) => {
             if (err) {
               return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
+                .json({status: 'failed', description: 'Internal Server Error'})
             }
             if (!user) {
               return res.status(401)
-              .json({status: 'failed', description: 'User not found for the API keys'})
+                .json({
+                  status: 'failed',
+                  description: 'User not found for the API keys'
+                })
             }
-
-            req.user = user
-            req.user._id = req.user.fbId
+            req.user = {_id: user.fbId}
             next()
           })
         } else {
           return res.status(401)
-          .json({status: 'failed', description: 'Unauthorized. No such API credentials found.'})
+            .json({
+              status: 'failed',
+              description: 'Unauthorized. No such API credentials found.'
+            })
         }
       })
   } else {
     return res.status(401)
-    .json({status: 'failed', description: 'Unauthorized. Please provide both app_id and app_secret in headers.'})
+      .json({
+        status: 'failed',
+        description: 'Unauthorized. Please provide both app_id and app_secret in headers.'
+      })
   }
 }
 
