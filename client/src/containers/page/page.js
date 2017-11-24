@@ -240,6 +240,9 @@ class Page extends React.Component {
                             </div>
                           </div>
                         </div>
+                        <br />
+                        <br />
+                        <br />
 
                         { this.state.pagesData && this.state.pagesData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
