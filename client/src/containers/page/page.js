@@ -279,7 +279,7 @@ class Page extends React.Component {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic}/></span></td>
-                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
+                                <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
                                 <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{page.likes}</span></td>
                                 <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{page.subscribers}</span></td>
                                 <td data-field='seen'  style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
