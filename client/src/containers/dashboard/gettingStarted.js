@@ -41,7 +41,9 @@ class GettingStarted extends React.Component {
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Getting Started'
+    /* eslint-disable */
     $('#gettingStarted').click()
+    /* eslint-enable */
   }
 
   componentWillReceiveProps (nextprops) {
