@@ -8,10 +8,18 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { enable, disable } from '../../redux/actions/settings.actions'
 
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      type: 'password',
+      APIKey: '',
+      APISecret: ''
+    }
+    this.changeType = this.changeType.bind(this)
+    this.initializeSwitch = this.initializeSwitch.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -33,11 +41,33 @@ class Settings extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
 
+    this.initializeSwitch()
+  }
+  changeType (e) {
+    this.setState({type: 'text'})
+    e.preventDefault()
+  }
+  initializeSwitch () {
+    var self = this
     $("[name='switch']").bootstrapSwitch({
       onText: 'Enabled',
       offText: 'Disabled',
       offColor: 'danger'
     })
+    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      if (state === true) {
+        console.log('true')
+        self.props.enable({company_id: self.props.user._id})
+      } else {
+        console.log('false')
+      }
+    })
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.apiEnable) {
+      console.log('api enabled', nextProps.apiEnable)
+      this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
+    }
   }
   render () {
     return (
@@ -136,7 +166,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <label for='example-text-input' className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type='text' readOnly value='12345678' />
+                                <input className='form-control m-input' type='text' readOnly value={this.state.APIKey} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
@@ -144,12 +174,15 @@ class Settings extends React.Component {
                                 API Secret
                               </label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type='password' readOnly value='12345678' />
+                                <input className='form-control m-input' type={this.state.type} readOnly value={this.state.APISecret} />
                                 <span className='input-group-btn'>
-                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}}>Show</button>
+                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>Show</button>
                                 </span>
                               </div>
                             </div>
+                            <br />
+                            <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => { e.preventDefault() }}>Reset</button>
+                            <br />
                           </div>
                         </form>
                       </div>
@@ -168,13 +201,17 @@ class Settings extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    apiEnable: (state.APIInfo.apiEnable),
+    apidisable: (state.APIInfo.apiEnable)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    enable: enable,
+    disable: disable
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
