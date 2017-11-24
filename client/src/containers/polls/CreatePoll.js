@@ -3,12 +3,10 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import { Alert } from 'react-bs-notifier'
+import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
@@ -26,17 +24,17 @@ class CreatePoll extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-                  {label: 'Female', value: 'female'},
-                  {label: 'Other', value: 'other'}
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'az_AZ', value: 'az_AZ'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -59,6 +57,9 @@ class CreatePoll extends React.Component {
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
 
   componentDidMount () {
@@ -68,10 +69,10 @@ class CreatePoll extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
@@ -79,9 +80,13 @@ class CreatePoll extends React.Component {
     document.title = 'KiboPush | Create Poll'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
     this.setState({page: {options: options}})
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializePageSelect(options)
+
     this.addSteps([{
       title: 'Question',
       text: 'You can write a question here that you need to get feedback on',
@@ -104,6 +109,75 @@ class CreatePoll extends React.Component {
       type: 'hover',
       isFixed: true}
     ])
+  }
+  initializePageSelect (pageOptions) {
+    console.log('Page Options in select', pageOptions)
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (genderOptions) {
+    var self = this
+    $('#selectGender').select2({
+      data: genderOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectGender').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change Gender', selected)
+    })
+  }
+
+  initializeLocaleSelect (localeOptions) {
+    var self = this
+    $('#selectLocale').select2({
+      data: localeOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectLocale').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change Locale', selected)
+    })
   }
 
   handlePageChange (value) {
@@ -216,136 +290,124 @@ class CreatePoll extends React.Component {
     const { disabled, stayOpen } = this.state
     return (
       <div>
-        {
-          !(this.props.user && this.props.user.pollTourSeen) &&
-          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-      }
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='row'>
-            <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
-              <h2 className='presentation-margin'>Ask Facebook Subscribers a
-              Question</h2>
-              <div className='ui-block'>
-                <div className='news-feed-form'>
-
-                  <div className='tab-content'>
-                    <div className='tab-pane active' id='home-1' role='tabpanel'
-                      aria-expanded='true'>
-                      <div id='question' className='form-group label-floating is-empty'>
-                        <label className='control-label'>Ask something...</label>
-                        <textarea className='form-control'
-                          value={this.state.statement}
-                          onChange={(e) => this.updateStatment(e)} />
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Create Poll</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Ask Facebook Subscribers a Question
+                          </h3>
+                        </div>
                       </div>
-                      <br />
-                      <div
-                        className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                        <label className='control-label'> Add 3 responses</label>
-                        <fieldset className='input-group-vertical'>
-                          <div id='responses' className='form-group'>
-                            <label className='sr-only'>Response1</label>
-                            <input type='text' className='form-control'
-                              value={this.state.option1}
-                              onChange={(e) => this.updateOptions(e, 1)}
-                              placeholder='Response 1' />
-                          </div>
-                          <div className='form-group'>
-                            <label className='sr-only'>Response2</label>
-                            <input type='text' className='form-control'
-                              value={this.state.option2}
-                              onChange={(e) => this.updateOptions(e, 2)}
-                              placeholder='Response 2' />
-                          </div>
-                          <div className='form-group'>
-                            <label className='sr-only'>Response3</label>
-                            <input type='text' className='form-control'
-                              value={this.state.option3}
-                              onChange={(e) => this.updateOptions(e, 3)}
-                              placeholder='Response 3' />
-                          </div>
-
-                        </fieldset>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='m-form'>
+                        <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>Ask something...</label>
+                          <textarea className='form-control'
+                            value={this.state.statement}
+                            onChange={(e) => this.updateStatment(e)} />
+                        </div>
+                        <div style={{top: '10px'}}>
+                          <label className='control-label'> Add 3 responses</label>
+                          <fieldset className='input-group-vertical'>
+                            <div id='responses' className='form-group m-form__group'>
+                              <label className='sr-only'>Response1</label>
+                              <input type='text' className='form-control'
+                                value={this.state.option1}
+                                onChange={(e) => this.updateOptions(e, 1)}
+                                placeholder='Response 1' />
+                            </div>
+                            <div className='form-group m-form__group'>
+                              <label className='sr-only'>Response2</label>
+                              <input type='text' className='form-control'
+                                value={this.state.option2}
+                                onChange={(e) => this.updateOptions(e, 2)}
+                                placeholder='Response 2' />
+                            </div>
+                            <div className='form-group m-form__group'>
+                              <label className='sr-only'>Response3</label>
+                              <input type='text' className='form-control'
+                                value={this.state.option3}
+                                onChange={(e) => this.updateOptions(e, 3)}
+                                placeholder='Response 3' />
+                            </div>
+                          </fieldset>
+                        </div>
                       </div>
-                      <br />
                       { this.state.alert &&
-                      <center><Alert type='danger'>
-                      You have either left one or more responses empty or you
-                      have not asked anything. Please ask something and fill all
-                      three responses in order to create the poll.
-                    </Alert></center>
-                    }
-                      <div className='add-options-message'>
-
-                        <button className='btn btn-primary btn-sm'
+                        <center>
+                          <Alert type='danger'>
+                            You have either left one or more responses empty or you
+                            have not asked anything. Please ask something and fill all
+                            three responses in order to create the poll.
+                          </Alert>
+                        </center>
+                      }
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                        <button className='btn btn-primary'
                           onClick={this.createPoll}> Create Poll
-                      </button>
+                        </button>
                         <Link
                           to='/poll'
-                          style={{float: 'right', margin: 2}}
-                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
-                        Cancel
-                      </Link>
+                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                          Cancel
+                        </Link>
                       </div>
-
                     </div>
-
+                  </div>
+                </div>
+                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Targeting
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='alert m-alert m-alert--default' role='alert'>
+                        <p>Select the type of customer you want to send poll to</p>
+                      </div>
+                      <div className='m-form'>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectGender' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectLocale' />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <h2 className='presentation-margin'>Targeting</h2>
-              <p>Select the type of customer you want to send poll to</p>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handlePageChange}
-                  options={this.state.page.options}
-                  placeholder='Select page(s)'
-                  simpleValue
-                  value={this.state.pageValue}
-                />
-              </div>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handleGenderChange}
-                  options={this.state.Gender.options}
-                  placeholder='Select Gender'
-                  simpleValue
-                  value={this.state.genderValue}
-                />
-              </div>
-              <div className='form-group'>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handleLocaleChange}
-                  options={this.state.Locale.options}
-                  placeholder='Select Locale'
-                  simpleValue
-                  value={this.state.localeValue}
-                />
-              </div>
-            </div>
           </div>
-
         </div>
       </div>
-
     )
   }
 }

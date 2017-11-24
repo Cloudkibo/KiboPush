@@ -103,12 +103,13 @@ class Text extends React.Component {
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: '2', marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-            <i className='fa fa-times fa-stack-1x fa-inverse' />
+            <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div style={{marginBottom: '-7px'}}>
-          <textarea value={this.state.text} className='hoverbordersolid' onChange={this.handleChange} rows='2' style={{maxHeight: 25, width: 100 + '%'}} placeholder='Enter your text...' />
+        <div style={{marginBottom: '-14px'}}>
+          <textarea value={this.state.text} className='hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
+          {
+              /*
           <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
             <i onClick={this.showEmojiPicker} style={styles.iconclass}>
               <i style={{
@@ -131,7 +132,8 @@ class Text extends React.Component {
             show={this.state.showEmojiPicker}
             onHide={this.closeEmojiPicker}
         >
-            <div>
+
+               <div>
               <Picker
                 style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
                 emojiSize={24}
@@ -144,12 +146,15 @@ class Text extends React.Component {
                 onClick={(emoji, event) => this.setEmoji(emoji)}
             />
             </div>
+
           </Popover>
+          */}
         </div>
+
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%'}}>
+        <div className='ui-block hoverborder' style={{minHeight: 30, width: 99 + '%'}}>
           <Button onAdd={this.addButton} />
 
         </div>

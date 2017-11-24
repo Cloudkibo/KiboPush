@@ -15,27 +15,27 @@ import {
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import ReactPlayer from 'react-player'
-import { Picker } from 'emoji-mart'
-import Popover from 'react-simple-popover'
-import StickerMenu from '../../components/StickerPicker/stickers'
-import GiphyPicker from 'react-gif-picker'
-import { isEmoji, getmetaurl } from './utilities'
-import Halogen from 'halogen'
+// import ReactPlayer from 'react-player'
+// import { Picker } from 'emoji-mart'
+// import Popover from 'react-simple-popover'
+// import StickerMenu from '../../components/StickerPicker/stickers'
+// import GiphyPicker from 'react-gif-picker'
+// import { isEmoji, getmetaurl } from './utilities'
+// import Halogen from 'halogen'
 
-const styles = {
-  iconclass: {
-    height: 24,
-    padding: '0 15px',
-    width: 24,
-    position: 'relative',
-    display: 'inline-block',
-    cursor: 'pointer'
-  },
-  inputf: {
-    display: 'none'
-  }
-}
+// const styles = {
+//  iconclass: {
+//    height: 24,
+//    padding: '0 15px',
+//    width: 24,
+//    position: 'relative',
+//    display: 'inline-block',
+//    cursor: 'pointer'
+//  },
+//  inputf: {
+//    display: 'none'
+//  }
+// }
 
 class ChatBox extends React.Component {
   constructor (props, context) {
@@ -57,8 +57,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false
     }
-    props.fetchUserChats(this.props.session._id)
-    props.markRead(this.props.session._id, this.props.sessions)
+    props.fetchUserChats(this.props.currentSession._id)
+    props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -90,14 +90,19 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called')
-    this.scrollToBottom()
-    this.props.markRead(this.props.session._id, this.props.sessions)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
+    document.body.appendChild(addScript)
+    /* eslint-disable */
+    $('#chat').click()
+    /* eslint-enable */
+    // this.scrollToBottom()
+    // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
@@ -402,7 +407,7 @@ class ChatBox extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
-    this.scrollToBottom()
+    // this.scrollToBottom()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -423,9 +428,9 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    this.scrollToBottom()
+    // this.scrollToBottom()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
-      this.props.markRead(this.props.session._id, this.props.sessions)
+      // this.props.markRead(this.props.session._id, this.props.sessions)
     }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.session._id) {
       this.setState({textAreaValue: ''})
@@ -433,8 +438,64 @@ class ChatBox extends React.Component {
   }
 
   render () {
-    console.log('current session', this.props.session)
+    console.log('current session', this.props.currentSession)
     return (
+      <div className='col-xl-5'>
+        <div className='m-portlet m-portlet--mobile'>
+          <div className='m-portlet__body'>
+            <div className='tab-content'>
+              <div className='tab-pane active m-scrollable' role='tabpanel'>
+                <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                  <div className='m-messenger__messages'>
+                    <div className='m-messenger__message m-messenger__message--in'>
+                      <div className='m-messenger__message-pic'>
+                        <img src='assets/app/media/img//users/user3.jpg' alt='' />
+                      </div>
+                      <div className='m-messenger__message-body'>
+                        <div className='m-messenger__message-arrow' />
+                        <div className='m-messenger__message-content'>
+                          <div className='m-messenger__message-username'>
+                            Megan wrote
+                          </div>
+                          <div className='m-messenger__message-text'>
+                            Hi Bob. What time will be the meeting ?
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-messenger__message m-messenger__message--out'>
+                      <div className='m-messenger__message-body'>
+                        <div className='m-messenger__message-arrow' />
+                        <div className='m-messenger__message-content'>
+                          <div className='m-messenger__message-text'>
+                            Hi Megan. Its at 2:30 PM
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/**
+                      <div class="m-messenger__datetime">
+                        3:15PM
+                      </div>
+                    **/}
+                  </div>
+                  <div className='m-messenger__seperator' />
+                  <div className='m-messenger__form'>
+                    <div className='m-messenger__form-controls'>
+                      <input type='text' name='' placeholder='Type here...' className='m-messenger__form-input' />
+                    </div>
+                    <div className='m-messenger__form-tools'>
+                      <a className='m-messenger__form-attachment'>
+                        <i className='la la-paperclip' />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/**
       <div className='ui-block popup-chat' style={{zIndex: 0}}>
         {
           this.state.displayUrlMeta
@@ -600,8 +661,8 @@ class ChatBox extends React.Component {
                                             </td>
                                           </tr>
                                         </tbody>
+                                        <tr>
                                         : <tbody>
-                                          <tr>
                                             <td>
                                               <div style={{width: 45, height: 45}}>
                                                 {
@@ -639,13 +700,13 @@ class ChatBox extends React.Component {
                             <span className='emojis-right'>{msg.payload.text}</span>
                             {/**
                               <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
+                            **}
                           </div>
                           : <div className='notification-event'>
                             <span className='chat-message-item-right'>{msg.payload.text}</span>
                             {/**
                               <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
+                            **}
                           </div>
                         )
                       }
@@ -765,13 +826,13 @@ class ChatBox extends React.Component {
                           <span className='emojis-left'>{msg.payload.text}</span>
                           {/**
                             <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                          **}
                         </div>
                         : <div className='notification-event'>
                           <span className='chat-message-item-left'>{msg.payload.text}</span>
                           {/**
                             <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                          **}
                         </div>
                       }
                     </li>
@@ -994,6 +1055,8 @@ class ChatBox extends React.Component {
             }
           </div>
         </form>
+      </div>
+      **/}
       </div>
     )
   }

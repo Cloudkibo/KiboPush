@@ -44,7 +44,7 @@ $(function () {
     assert.strictEqual($modal[0], $el[0], 'collection contains element')
   })
 
-  QUnit.test('should expose defaults var for settings', function (assert) {
+  QUnit.test('should expose defaults var for api_settings', function (assert) {
     assert.expect(1)
     assert.ok($.fn.bootstrapModal.Constructor.Default, 'default object exposed')
   })

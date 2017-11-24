@@ -289,7 +289,7 @@ exports.download = function (req, res) {
   } catch (err) {
     logger.serverLog(TAG,
       `Inside Download file, err = ${JSON.stringify(err)}`)
-    res.status(201)
+    res.status(404)
       .json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
   }
 }

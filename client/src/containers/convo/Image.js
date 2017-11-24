@@ -72,8 +72,7 @@ class Image extends React.Component {
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-            <i className='fa fa-times fa-stack-1x fa-inverse' />
+            <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>

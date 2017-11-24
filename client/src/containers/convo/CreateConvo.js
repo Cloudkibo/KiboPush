@@ -43,16 +43,17 @@ class CreateConvo extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-          {label: 'Female', value: 'female'},
-          {label: 'Other', value: 'other'}
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-          {label: 'af_ZA', value: 'af_ZA'},
-          {label: 'ar_AR', value: 'ar_AR'},
-          {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -66,6 +67,9 @@ class CreateConvo extends React.Component {
       showMessengerModal: false
     }
     props.getuserdetails()
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -98,10 +102,10 @@ class CreateConvo extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
@@ -109,9 +113,13 @@ class CreateConvo extends React.Component {
     document.title = 'KiboPush | Create Broadcast'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageName, text: this.props.pages[i].pageId}
     }
+
     this.setState({page: {options: options}})
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializePageSelect(options)
 
     this.addSteps([{
       title: 'Component',
@@ -365,6 +373,78 @@ class CreateConvo extends React.Component {
     }
   }
 
+  initializePageSelect (pageOptions) {
+    console.log(pageOptions)
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (genderOptions) {
+    var self = this
+    $('#selectGender').select2({
+      data: genderOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+
+    console.log('In Initialize Gender Select', genderOptions)
+    $('#selectGender').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change Gender', selected)
+    })
+  }
+
+  initializeLocaleSelect (localeOptions) {
+    var self = this
+    $('#selectLocale').select2({
+      data: localeOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectLocale').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change Locale', selected)
+    })
+  }
+
   render () {
     console.log('Pages ', this.props.pages)
 
@@ -383,136 +463,113 @@ class CreateConvo extends React.Component {
         !(this.props.user && this.props.user.convoTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }
-        <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='row'>
-            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-              <div style={{padding: '25px'}} className='row' />
-              <div>
-                <div className='row' >
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                        <h6>Text</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                        <h6>Image</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                        <h6>Card</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                        <h6>Gallery</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                        <h6>Audio</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                        <h6>Video</h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                      <div className='align-center' style={{margin: 5}}>
-                        <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                        <h6>File</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <fieldset className='form-group'>
-                  <h3>Set Targeting:</h3>
-                  <div className='form-group'>
-                    <Select
-                      closeOnSelect={!stayOpen}
-                      disabled={disabled}
-                      multi={false}
-                      onChange={this.handlePageChange}
-                      options={this.state.page.options}
-                      placeholder='Select page(s)'
-                      simpleValue
-                      value={this.state.pageValue}
-                    />
-                  </div>
-                  <div className='form-group'>
-                    <Select
-                      closeOnSelect={!stayOpen}
-                      disabled={disabled}
-                      multi
-                      onChange={this.handleGenderChange}
-                      options={this.state.Gender.options}
-                      placeholder='Select Gender'
-                      simpleValue
-                      value={this.state.genderValue}
-                    />
-                  </div>
-                  <div className='form-group'>
-                    <Select
-                      closeOnSelect={!stayOpen}
-                      disabled={disabled}
-                      multi
-                      onChange={this.handleLocaleChange}
-                      options={this.state.Locale.options}
-                      placeholder='Select Locale(s)'
-                      simpleValue
-                      value={this.state.localeValue}
-                    />
-                  </div>
-                </fieldset>
-                <div className='row'>
-                  <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                  <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                  <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
+        <Header />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              <div className='row'>
 
-                </div>
-              </div>
-            </div>
-            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-              <div style={{padding: '25px'}} className='row' />
-              <StickyDiv offsetTop={70}>
-                <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                  <div style={{padding: '5px'}}>
-                    <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                  <div style={{padding: '25px'}} className='row' />
+                  <div>
+                    <div className='row' >
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                            <h6>Text</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                            <h6>Image</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                            <h6>Card</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                            <h6>Gallery</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                            <h6>Audio</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                            <h6>Video</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                            <h6>File</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <fieldset>
+                      <h3>Set Targeting:</h3>
+                      <div className='m-form'>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectGender' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectLocale' />
+                        </div>
+                      </div>
+                      <br />
+                    </fieldset>
+                    <br />
+                    <div className='row'>
+                      <br />
+                      <br />
+                      <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
+
+                    </div>
                   </div>
                 </div>
-              </StickyDiv>
-              {
+                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                  <div style={{padding: '25px'}} className='row' />
+                  <StickyDiv offsetTop={70}>
+                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                      <div style={{padding: '5px'}}>
+                        <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                      </div>
+                    </div>
+                  </StickyDiv>
+                  {
                 this.state.isShowingModal &&
                 <ModalContainer style={{width: '500px'}}
                   onClose={this.closeDialog}>
@@ -525,7 +582,7 @@ class CreateConvo extends React.Component {
                 </ModalContainer>
               }
 
-              {
+                  {
                 this.state.showMessengerModal &&
                 <ModalContainer style={{width: '500px'}}
                   onClose={() => { this.setState({showMessengerModal: false}) }}>
@@ -541,14 +598,16 @@ class CreateConvo extends React.Component {
                   </ModalDialog>
                 </ModalContainer>
               }
-              <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
-                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                  <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
+                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+
+                  </div>
+
+                </div>
 
               </div>
-
             </div>
-
           </div>
         </div>
       </div>

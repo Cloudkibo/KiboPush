@@ -55,7 +55,6 @@ exports.create = function (req, res) {
         `Internal Server Error ${JSON.stringify(err)}`)
       return res.status(500).json({
         status: 'failed',
-        error: err,
         description: 'Failed to find page. Internal Server Error'
       })
     }

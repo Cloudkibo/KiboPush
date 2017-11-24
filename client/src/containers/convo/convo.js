@@ -47,12 +47,16 @@ class Convo extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Broadcast'
+    var datatable = $('#m_datatable').mDatatable({
+      pagingType: 'full_numbers',
+      paging: true
+    })
   }
 
   displayData (n, broadcasts) {
@@ -163,61 +167,62 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-
-                {
-                  this.props.subscribers &&
-                  this.props.subscribers.length === 0 &&
-                  <div style={{padding: '10px'}}>
-                    <center>
-                      <Alert type='info' headline='0 Subscribers'>
-                        Your connected pages have zero subscribers. Unless you
-                        do not have any subscriber, you will not be able to
-                        broadcast message, polls and surveys.
-                        To invite subscribers click <Link
-                          to='/invitesubscribers'
-                          style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                      </Alert>
-                    </center>
-                  </div>
-                }
-                <br />
-
-                <div className='birthday-item inline-items badges'>
-                  <h3>Broadcasts</h3>
-                  {
-                    this.props.subscribers && this.props.subscribers.length === 0
-
-                      ? <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-sm btn-primary'> New
-                        Broadcast
-                      </button>
-                      </Link>
-                      : <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-primary btn-sm'> New
-                        Broadcast
-                      </button>
-                      </Link>
-                  }
-                  { this.props.broadcasts && this.props.broadcasts.length > 0
-                    ? <div className='table-responsive'>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              {
+                this.props.subscribers &&
+                this.props.subscribers.length === 0 &&
+                <div style={{padding: '10px'}}>
+                  <center>
+                    <Alert type='info' headline='0 Subscribers'>
+                      Your connected pages have zero subscribers. Unless you
+                      do not have any subscriber, you will not be able to
+                      broadcast message, polls and surveys.
+                      To invite subscribers click <Link
+                        to='/invitesubscribers'
+                        style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                    </Alert>
+                  </center>
+                </div>
+              }
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Broadcasts
+                          </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        {
+                          this.props.subscribers && this.props.subscribers.length === 0
+                            ? <Link to='createconvo'>
+                              <button className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'> New
+                              Broadcast
+                            </button>
+                            </Link>
+                            : <Link to='createconvo'>
+                              <button className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'> New
+                              Broadcast
+                              </button>
+                            </Link>
+                        }
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
                       <form>
                         <div className='form-row'>
                           <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                            <label> Search </label>
                             <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
                           </div>
                           <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                            <label> Filter </label>
-                            <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
                               <option value='' disabled>Filter by type...</option>
                               <option value='text'>text</option>
                               <option value='image'>image</option>
@@ -232,66 +237,57 @@ class Convo extends React.Component {
                           </div>
                         </div>
                       </form>
-                      { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                        ? <div>
-                          <table className='table table-striped'>
-                            <thead>
-                              <tr>
-                                <th>Title</th>
-                                <th>Type</th>
-                                <th>Created At</th>
-                                <th>Sent</th>
-                                <th>Seen</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {
-                                this.state.broadcastsData.map((broadcast, i) => (
-                                  <tr>
-                                    <td>{broadcast.title}</td>
-                                    <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
-                                    <td>{handleDate(broadcast.datetime)}</td>
-                                    <td>{broadcast.sent}</td>
-                                    <td>{broadcast.seen}</td>
-                                  </tr>
-                                ))
-                              }
-                            </tbody>
-                          </table>
-                          <ReactPaginate previousLabel={'previous'}
-                            nextLabel={'next'}
+                      <div>
+                        <table id='m_datatable'>
+                          <thead>
+                            <tr>
+                              <th>Title</th>
+                              <th>Type</th>
+                              <th>Created At</th>
+                              <th>Sent</th>
+                              <th>Seen</th>
+                            </tr>
+                          </thead>
+                          { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                          ? <tbody>
+                            this.state.broadcastsData.map((broadcast, i) => (
+                            <tr>
+                              <td>{broadcast.title}</td>
+                              <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
+                              <td>{handleDate(broadcast.datetime)}</td>
+                              <td>{broadcast.sent}</td>
+                              <td>{broadcast.seen}</td>
+                            </tr>
+                            ))
+                          </tbody>
+                          : <p>No data found</p>
+                          }
+                        </table>
+                        { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                        ? <div className='pagination'>
+                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
+                            nextLabel={<i className='fa fa-angle-right' />}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 4)}
-                            marginPagesDisplayed={1}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
+                            containerClassName={'pagination pagination-lg'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
-                        : <p> No search results found. </p>
-                      }
+                        : <br />
+                        }
+                      </div>
                     </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
                   </div>
-                    }
-                  {
-                this.state.alertMessage !== '' &&
-                <center>
-                  <Alert type={this.state.type}>
-                    {this.state.alertMessage}
-                  </Alert>
-                </center>
-                  }
                 </div>
               </div>
-            </main>
+            </div>
           </div>
         </div>
       </div>
-
     )
   }
 }

@@ -104,27 +104,7 @@ class Response extends React.Component {
         // eslint-disable-next-line no-unused-vars,no-undef
         var radarChartEl = new Chart(ctx_rc, {
           type: 'pie',
-          data: data_rc,
-          options: {
-            deferred: {           // enabled by default
-              delay: 300        // delay of 500 ms after the canvas is considered inside the viewport
-            },
-            legend: {
-              display: true
-            },
-            scale: {
-              gridLines: {
-                display: false
-              },
-              ticks: {
-                beginAtZero: true
-              },
-              reverse: false
-            },
-            animation: {
-              animateScale: true
-            }
-          }
+          data: data_rc
         })
       }
     }
@@ -165,12 +145,16 @@ class Response extends React.Component {
             ))
           }
           </ul>
-          : <div className='chart-js chart-js-one-bar' style={{
-            'width': '400px',
-            'height': '350px',
-            'margin': '0 auto'
-          }}>
-            <canvas id={this.props.question._id} width={250} height={170} />
+          : <div className='m-portlet__body'>
+            <div className='ui-block-content'>
+              <div style={{
+                'width': '600px',
+                'height': '400px',
+                'margin': '0 auto'
+              }}>
+                <canvas id={this.props.question._id} width={250} height={170} />
+              </div>
+            </div>
           </div>
       )
     )

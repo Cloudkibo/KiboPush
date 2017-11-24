@@ -18,17 +18,17 @@ class ItemSettings extends React.Component {
         options: []
       },
       Gender: {
-        options: [{label: 'Male', value: 'male'},
-                  {label: 'Female', value: 'female'},
-                  {label: 'Other', value: 'other'}
+        options: [{id: 'male', text: 'Male', value: 'male'},
+                  {id: 'female', text: 'Female', value: 'female'},
+                  {id: 'other', text: 'Other', value: 'other'}
         ]
       },
       Locale: {
-        options: [{label: 'en_US', value: 'en_US'},
-                  {label: 'af_ZA', value: 'af_ZA'},
-                  {label: 'ar_AR', value: 'ar_AR'},
-                  {label: 'az_AZ', value: 'az_AZ'},
-                  {label: 'pa_IN', value: 'pa_IN'}
+        options: [{id: 'en_US', text: 'en_US', value: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA', value: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR', value: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ', value: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -46,6 +46,10 @@ class ItemSettings extends React.Component {
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.editAutoposting = this.editAutoposting.bind(this)
+
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
 
   componentDidMount () {
@@ -65,9 +69,82 @@ class ItemSettings extends React.Component {
     document.body.appendChild(addScript)
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {label: this.props.pages[i].pageName, value: this.props.pages[i].pageId}
+      options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
     }
     this.setState({page: {options: options}})
+    this.initializePageSelect(options)
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+  }
+
+  initializePageSelect (pageOptions) {
+    console.log(pageOptions)
+    var self = this
+    $('#selectPage').select2({
+      data: pageOptions,
+      placeholder: 'Select Pages',
+      allowClear: true,
+      multiple: true
+    })
+    $('#selectPage').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+      console.log('change Page', selected)
+    })
+  }
+
+  initializeGenderSelect (conditionOptions) {
+    var self = this
+    $('#genderSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    $('#genderSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change condition', selected)
+    })
+  }
+
+  initializeLocaleSelect (conditionOptions) {
+    var self = this
+    $('#localeSelect').select2({
+      data: conditionOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    $('#localeSelect').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change condition', selected)
+    })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -139,94 +216,125 @@ class ItemSettings extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <h3><i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}</h3>
-                  <br />
-                  <div className='table-responsive'>
-                    <form>
-                      <div className='form-group'>
-                        <label>Account Title</label>
-                        <input ref={(c) => { this.accountTitleValue = c }} type='text' className='form-control' defaultValue={this.props.location.state.title} />
-                      </div>
-                      <div className='form-group'>
-                        <label>Status</label>
-                        <select onChange={this.handleSelectChange} value={this.state.isActive}>
-                          <option value='Active'>Active</option>
-                          <option value='Disabled'>Disabled</option>
-                        </select>
-                      </div>
-                      <fieldset className='form-group'>
-                        <legend>Set Targetting</legend>
-                        <div className='form-group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handlePageChange}
-                            options={this.state.page.options}
-                            placeholder='Select page(s)'
-                            simpleValue
-                            value={this.state.pageValue}
-                          />
-                        </div>
-                        <div className='form-group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleGenderChange}
-                            options={this.state.Gender.options}
-                            placeholder='Select Gender'
-                            simpleValue
-                            value={this.state.genderValue}
-                          />
-                        </div>
-                        <div className='form-group'>
-                          <Select
-                            closeOnSelect={!stayOpen}
-                            disabled={disabled}
-                            multi
-                            onChange={this.handleLocaleChange}
-                            options={this.state.Locale.options}
-                            placeholder='Select Locale'
-                            simpleValue
-                            value={this.state.localeValue}
-                          />
-                        </div>
-                      </fieldset>
-                    </form>
-                    <button onClick={this.editAutoposting} style={{float: 'left', margin: 2}} className='btn btn-primary btn-sm'>Save Changes</button>
-                    <Link
-                      style={{float: 'left', margin: 2}}
-                      to='/autoposting'
-                      className='btn btn-sm btn-border-think btn-transparent c-grey'
-                    >
-                      Back
-                    </Link>
-                    <br />
-                    {
-                      this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-                    }
-                  </div>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Channel Settings</h3>
                 </div>
               </div>
-
-            </main>
-
+            </div>
+            <div className='m-content'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        <i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <form className='m-form m-form--label-align-right'>
+                  <div className='m-portlet__body'>
+                    <div className='m-form__section m-form__section--first'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Info
+                        </h3>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Account Title
+                        </label>
+                        <div className='col-lg-6'>
+                          <input className='form-control m-input'
+                            ref={(c) => { this.accountTitleValue = c }}
+                            defaultValue={this.props.location.state.title} />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Status
+                        </label>
+                        <div className='col-lg-6' id='rules'>
+                          <select className='form-control m-input' onChange={this.handleSelectChange} value={this.state.isActive}>
+                            <option value='Active'>Active</option>
+                            <option value='Disabled'>Disabled</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-form__seperator m-form__seperator--dashed' />
+                    <div className='m-form__section m-form__section--last'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Set Segmentation
+                        </h3>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Pages
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='selectPage' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Gender
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='genderSelect' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Locale
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='localeSelect' />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div className='m-form__actions m-form__actions'>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          <button className='btn btn-primary' onClick={this.editAutoposting} >
+                            Save Changes
+                          </button>
+                          <span>&nbsp;&nbsp;</span>
+                          <Link to='/autoposting'>
+                            <button className='btn btn-secondary'>
+                              Back
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          {
+                            this.state.alertMessage !== '' &&
+                            <center>
+                              <Alert type={this.state.alertType}>
+                                {this.state.alertMessage}
+                              </Alert>
+                            </center>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>

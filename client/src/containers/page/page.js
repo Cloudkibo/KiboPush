@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
@@ -17,9 +15,9 @@ import {
 
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import ReactPaginate from 'react-paginate'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
+import ReactPaginate from 'react-paginate'
 
 class Page extends React.Component {
   constructor (props) {
@@ -73,10 +71,10 @@ class Page extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
   }
 
@@ -147,21 +145,23 @@ class Page extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                {
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Pages</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              {
                   this.props.subscribers &&
                   this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
                     <h4 className='block'>0 Subscribers</h4>
-                    Your connected pages have zero subscribers. Unless you don't
+                    Your connected pages have zero subscribers. Unless you don not
                     have any subscriber, you will not be able to broadcast
                     message, polls and surveys.
                     Lets invite subscribers first. Dont worry, we will guide
@@ -171,12 +171,45 @@ class Page extends React.Component {
 
                   </div>
                 }
-                <br />
-                <div className='birthday-item inline-items badges'>
-                  <h3>Pages</h3>
-                  <Link to='/addPages' className='btn btn-primary btn-sm'
-                    style={{float: 'right'}}>Add Pages</Link>
-                  {
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in configuring your pages? <a href='#'>Click Here </a>
+                  <br />
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <span className='m-portlet__head-icon'>
+                              <i className='flaticon-calendar' />
+                            </span>
+                            <h3 className='m-portlet__head-text m--font-primary'>
+                            Pages
+                          </h3>
+                          </div>
+
+                        </div>
+                        <div className='m-portlet__head-tools'>
+                          <ul className='m-portlet__nav'>
+                            <li className='m-portlet__nav-item'>
+                              <Link to='/addPages' className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
+                    Add Pages
+                  </Link>
+                            </li>
+
+                          </ul>
+                        </div>
+
+                      </div>
+                      {
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
@@ -195,85 +228,108 @@ class Page extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                   }
-                  { this.props.pages && this.props.pages.length
-                  ? <div className='table-responsive'>
-                    <div>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search Pages' className='form-control' onChange={this.searchPages} />
-                    </div>
-                    {
-                      this.state.pagesData && this.state.pagesData.length > 0
-                    ? <div>
+                      <div className='m-portlet__body'>
 
-                      <table className='table table-striped'>
-                        <thead>
-                          <tr>
-                            <th>Page Pic</th>
-                            <th>Page Name</th>
-                            <th>Likes</th>
-                            <th>Subscribers</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-4 col-lg-4 col-md-4'>
+                            <div className='m-input-icon m-input-icon--left'>
+                              <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} placeholder='Search...' id='generalSearch' />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <br />
+                        <br />
+                        <br />
 
-                          {
-                        this.state.pagesData.map((page, i) => (
-                          (page.connected &&
-                            <tr>
-                              <td><img alt='pic'
-                                src={(page.pagePic) ? page.pagePic : ''}
-                                className='img-rounded' width='60' height='60' /></td>
-                              <td>{page.pageName}</td>
-                              <td>{page.likes}</td>
-                              <td>{page.subscribers}</td>
-                              <td>
-                                <button onClick={() => this.showDialog(page)}
-                                  className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}>
-                                  Remove
-                                </button>
-                                <button
-                                  onClick={() => this.inviteSubscribers(page)}
-                                  className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}>Invite
-                                  Subscribers
-                                </button>
-                              </td>
-
+                        { this.state.pagesData && this.state.pagesData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Page Pic</span>
+                              </th>
+                              <th data-field='statement' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Page Name</span>
+                              </th>
+                              <th data-field='datetime' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Likes</span>
+                              </th>
+                              <th data-field='sent' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Subscribers</span>
+                              </th>
+                              <th data-field='seen' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Actions</span>
+                              </th>
                             </tr>
-                          )
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {
+                            this.state.pagesData.map((page, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic} /></span></td>
+                                <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
+                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{page.likes}</span></td>
+                                <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{page.subscribers}</span></td>
+                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                                  <span >
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.showDialog(page)}>
+                                      Remove
+                                    </button>
 
-                        ))
-                      }
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.inviteSubscribers(page)}>
+                                      Invite Subscribers
+                                    </button>
 
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 5)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
+                            nextLabel={<i className='fa fa-angle-right' />}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination pagination-lg'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
+
+                      </div>
                     </div>
-                    : <p> No search results found. </p>
+                  </div>
 
-                }
-                  </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
                 </div>
+
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>

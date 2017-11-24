@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -38,12 +36,21 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
+    var datatable = $('#m_datatable').mDatatable({
+      pagination: true,
+      paging: true,
+      search: {
+        // search delay in milliseconds
+        delay: 400,
+        // input text for search
+        input: $('#generalSearch')
+      }})
   }
 
   searchSubscriber (event) {
@@ -153,61 +160,112 @@ class Subscriber extends React.Component {
   }
 
   render () {
-    console.log('Subscriber Data', this.state.subscribersData)
-
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <h3>Subscribers</h3>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <Link to='/invitesubscribers' className='btn btn-primary btn-sm'
-                    style={{float: 'right'}}>Invite Subscribers</Link>
-
-                  { this.props.subscribers && this.props.subscribers.length > 0
-                  ? <div className='table-responsive'>
-                    <form>
-                      <div className='form-row'>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                          <label> Search </label>
-                          <input type='text' placeholder='Search Subscribers' className='form-control' onChange={this.searchSubscriber} />
-                        </div>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                          <label> Gender </label>
-                          <select className='input-sm' value={this.state.filterByGender} onChange={this.handleFilterByGender} >
-                            <option value='' disabled>Filter by Gender...</option>
-                            <option value='male'>male</option>
-                            <option value='female'>female</option>
-                            <option value='other'>other</option>
-                            <option value=''>all</option>
-                          </select>
-                        </div>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                          <label> Locale </label>
-                          <select className='input-sm' value={this.state.filterByLocale} onChange={this.handleFilterByLocale} >
-                            <option value='' disabled>Filter by Locale...</option>
-                            {
-                              this.props.locales.map((locale, i) => (
-                                <option value={locale}>{locale}</option>
-                              ))
-                            }
-                            <option value=''>all</option>
-                          </select>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Subscribers</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Learn how you can get more subscribers.
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Page Subscribers
+                          </h3>
                         </div>
                       </div>
-                    </form>
-                    {
-                      this.state.subscribersData && this.state.subscribersData.length > 0
-                      ? <div>
-                        <table className='table table-striped'>
+                    </div>
+
+                    <div className='m-portlet__body'>
+
+                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-8 order-2 order-xl-1'>
+                            <div className='form-group m-form__group row align-items-center'>
+                              <div className='col-md-4'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__label'>
+                                    <label>Gender:</label>
+                                  </div>
+                                  {/* <div className='m-form__control'>
+                                    <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
+                                    </div> */}
+                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                    <option value=''>All</option>
+                                    <option value='male'>Male</option>
+                                    <option value='female'>Female</option>
+                                    <option value='other'>Other</option>
+                                  </select>{/* </div>
+                                  </div> */}
+                                </div>
+                                <div className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-md-4'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__label'>
+                                    <label className='m-label m-label--single'>Local:</label>
+                                  </div>
+                                  <div className='m-form__control'>
+                                    {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
+                                      <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
+                                      <div className='dropdown-menu open' role='combobox'>
+                                        <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
+                                      */}<select className='custom-select' id='m_form_type' tabIndex='-98'>
+                                        <option value='' disabled>Filter by Locale...</option>
+                                        {
+                                          this.props.locales.map((locale, i) => (
+                                            <option value={locale}>{locale}</option>
+                                          ))
+                                        }
+                                        <option value=''>all</option>
+                                      </select>{/* </div> */}
+                                  </div>
+                                </div>
+                                <div className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-md-4'>
+                                <div className='m-input-icon m-input-icon--left'>
+                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                    <span><i className='la la-search' /></span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                            <Link to='/invitesubscribers' className='btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                              <span>
+                                <i className='la la-cart-plus' />
+                                <span>Invite Subscribers</span>
+                              </span>
+                            </Link>
+                            <div className='m-separator m-separator--dashed d-xl-none' />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <table id='m_datatable'>
                           <thead>
                             <tr>
                               <th>Profile Picture</th>
@@ -217,24 +275,26 @@ class Subscriber extends React.Component {
                               <th>Gender</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            {
+                          { this.state.subscribersData && this.state.subscribersData.length > 0
+                  ? <tbody>
+                    {
                               this.state.subscribersData.map((subscriber, i) => (
-                                <tr>
+                                <tr key={i}>
                                   <td>
                                     <img alt='pic'
                                       src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                      className='img-circle' width='60' height='60'
+                                      className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                     />
                                   </td>
                                   <td>{subscriber.firstName} {subscriber.lastName}</td>
                                   <td>{subscriber.pageId.pageName}</td>
-                                  <td>{subscriber.locale}</td>
-                                  <td>{subscriber.gender}</td>
+                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.locale}</span></td>
+                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.gender}</span></td>
                                 </tr>
                               ))
                             }
-                          </tbody>
+                  </tbody> : ''
+                      }
                         </table>
                         <ReactPaginate previousLabel={'previous'}
                           nextLabel={'next'}
@@ -247,19 +307,16 @@ class Subscriber extends React.Component {
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}
                           activeClassName={'active'} />
+
                       </div>
-                      : <p> No search results found. </p>
-                    }
+
+                    </div>
                   </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
-                }
+
                 </div>
+
               </div>
-
-            </main>
-
+            </div>
           </div>
         </div>
       </div>
