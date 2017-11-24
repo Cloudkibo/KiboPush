@@ -249,23 +249,23 @@ class Page extends React.Component {
                               style={{height: '53px'}}>
                               <th data-field='platform'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Page Pic</span>
+                                <span >Page Pic</span>
                               </th>
                               <th data-field='statement'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Page Name</span>
+                                <span>Page Name</span>
                               </th>
                               <th data-field='datetime'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Likes</span>
+                                <span>Likes</span>
                               </th>
                               <th data-field='sent'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Subscribers</span>
+                                <span >Subscribers</span>
                               </th>
                               <th data-field='seen'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '200px'}}>Actions</span>
+                                <span>Actions</span>
                               </th>
                             </tr>
                           </thead>
@@ -275,12 +275,12 @@ class Page extends React.Component {
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
-                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}><img src={page.pagePic}/></span></td>
-                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{page.pageName}</span></td>
-                                <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{page.likes}</span></td>
-                                <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{page.subscribers}</span></td>
+                                <td data-field='platform' className='m-datatable__cell'><span><img src={page.pagePic}/></span></td>
+                                <td data-field='statement' className='m-datatable__cell'><span >{page.pageName}</span></td>
+                                <td data-field='datetime' className='m-datatable__cell'><span>{page.likes}</span></td>
+                                <td data-field='sent' className='m-datatable__cell'><span >{page.subscribers}</span></td>
                                 <td data-field='seen' className='m-datatable__cell'>
-                                  <span style={{width: '200px'}}>
+                                  <span >
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialog(page)}>
