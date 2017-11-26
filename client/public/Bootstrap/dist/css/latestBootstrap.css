@@ -10,11 +10,16 @@
   color: #ccc;
 }
 
+.select2 {
+    min-width: 80% !important;
+}
+
 @media only screen and (min-width: 1025px) {
     .fixed {
         position: fixed;
     }
 }
+
 
 .slick-prev:hover:before,
 .slick-next:hover:before {

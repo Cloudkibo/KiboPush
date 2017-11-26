@@ -98,8 +98,7 @@ class Gallery extends React.Component {
           this.state.showPlus &&
           <div onClick={this.addSlide} style={{position: 'absolute', float: 'left', top: '-5px', left: '-10px', zIndex: '2', marginTop: '-5px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-              <i className='fa fa-plus fa-stack-1x fa-inverse' />
+              <i className='fa fa-plus fa-stack-2x' />
             </span>
           </div>
         }
