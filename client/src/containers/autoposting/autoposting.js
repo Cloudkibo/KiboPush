@@ -135,6 +135,19 @@ class Autoposting extends React.Component {
                       </h3>
                     </div>
                   </div>
+                  <div className='m-portlet__head-tools'>
+                    <Link onClick={this.showDialog}>
+                      <button
+                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Add Channel
+                          </span>
+                        </span>
+                      </button>
+                    </Link>
+                  </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div
@@ -143,17 +156,6 @@ class Autoposting extends React.Component {
                       <div className='col-xl-8 order-2 order-xl-1' />
                       <div
                         className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                        <Link onClick={this.showDialog}>
-                          <button
-                            className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            <span>
-                              <i className='la la-tasks' />
-                              <span>
-                                Add Channel
-                              </span>
-                            </span>
-                          </button>
-                        </Link>
                         {
                           this.state.isShowingModal &&
                           <ModalContainer style={{width: '500px'}}

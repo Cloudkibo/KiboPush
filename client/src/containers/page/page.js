@@ -200,9 +200,16 @@ class Page extends React.Component {
                         <div className='m-portlet__head-tools'>
                           <ul className='m-portlet__nav'>
                             <li className='m-portlet__nav-item'>
-                              <Link to='/addPages' className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                    Add Pages
-                  </Link>
+                              <Link to='/addPages' >
+                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                  <span>
+                                    <i className='la la-plus' />
+                                    <span>
+                                      Add Pages
+                                    </span>
+                                  </span>
+                                </button>
+                              </Link>
                             </li>
 
                           </ul>

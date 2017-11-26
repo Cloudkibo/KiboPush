@@ -11,7 +11,7 @@ import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Profile from './profile'
-// import Halogen from 'halogen'
+import Halogen from 'halogen'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
@@ -65,8 +65,22 @@ class LiveChat extends React.Component {
 
   changeActiveSession (session) {
     console.log('active session updated')
-    this.props.fetchUserChats(session._id)
     this.setState({activeSession: session})
+    var temp = this.state.sessionsData
+    for (var i = 0; i < temp.length; i++) {
+      if (temp[i]._id === session._id && temp[i].unreadCount) {
+        temp[i] = {
+          company_id: temp[i].company_id,
+          page_id: temp[i].page_id,
+          request_time: temp[i].request_time,
+          status: temp[i].status,
+          subscriber_id: temp[i].subscriber_id,
+          _id: temp[i]._id
+        }
+        this.setState({sessionsData: temp})
+      }
+    }
+    this.props.fetchUserChats(session._id)
   }
 
   handleSearch (e) {
@@ -156,7 +170,29 @@ class LiveChat extends React.Component {
 
     if (nextProps.sessions) {
       this.setState({loading: false})
-      this.setState({activeSession: nextProps.sessions[1], sessionsData: nextProps.sessions})
+      this.setState({sessionsData: nextProps.sessions})
+      if (this.state.activeSession === '') {
+        this.setState({activeSession: nextProps.sessions[1]})
+      }
+    }
+
+    if (nextProps.userChat.length > this.props.userChat.length) {
+      var sess = this.state.sessionsData
+      for (var j = 0; j < sess.length; j++) {
+        if (sess[j]._id === nextProps.userChat[0].session_id) {
+          sess[j] = {
+            company_id: sess[j].company_id,
+            page_id: sess[j].page_id,
+            request_time: sess[j].request_time,
+            status: sess[j].status,
+            subscriber_id: sess[j].subscriber_id,
+            _id: sess[j]._id
+          }
+          this.setState({sessionsData: sess}, () => {
+            console.log(this.state.sessionsData)
+          })
+        }
+      }
     }
 
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
@@ -215,8 +251,16 @@ class LiveChat extends React.Component {
             </div>
             <div className='m-content'>
               {
-                this.props.sessions && this.props.sessions.length > 0
-                ? <div className='row'>
+                this.state.loading
+                ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                  className='align-center'>
+                  <center><Halogen.RingLoader color='#716aca' /></center>
+                </div>
+                : (this.props.sessions && this.props.sessions.length === 0
+                ? <div className='col-xl-12'>
+                  <h3>Right now you dont have any chat sessions</h3>
+                </div>
+                : <div className='row'>
                   <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>
@@ -361,63 +405,11 @@ class LiveChat extends React.Component {
                   <ChatBox currentSession={this.state.activeSession} />
                   <Profile currentSession={this.state.activeSession} />
                 </div>
-                : <div className='col-xl-12'>
-                  <h3>Right now you dont have any chat sessions</h3>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-        {/**
-        <div>
-          <Header />
-          <HeaderResponsive />
-          <Sidebar />
-          <Responsive />
-          <div className='container'>
-            <br /><br /><br /><br /><br /><br />
-            <div className='row'>
-              {
-                this.state.loading
-                ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-                  className='align-center'>
-                  <center><Halogen.RingLoader color='#FF5E3A' /></center>
-                </div>
-                : (this.props.sessions && this.props.sessions.length === 0
-                ? <div className='col-xl-12 col-lg-12 col-md-4 col-sm-12 col-xs-12'>
-                  <h3>Right now you dont have any chat sessions</h3>
-                </div>
-                : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                  <Sessions activeSession={this.state.activeSession === '' ? this.props.sessions[0] : this.state.activeSession} changeActiveSession={this.changeActiveSession} />
-                </div>
-                )
-              }
-              {
-                this.props.sessions && this.props.sessions.length > 0 && (
-                  this.state.activeSession === ''
-                    ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                      <ChatBox session={this.props.sessions[0]} />
-                    </div>
-                    : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                      <ChatBox session={this.state.activeSession} />
-                    </div>
-                )
-              }
-              {
-                this.props.sessions && this.props.sessions.length > 0 && (
-                  this.state.activeSession === ''
-                    ? <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                      <Profile session={this.props.sessions[0]} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
-                    </div>
-                    : <div className='col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12'>
-                      <Profile session={this.state.activeSession} profile={(this.props.sessions[0] && Object.keys(this.state.currentProfile).length === 0) ? this.props.sessions[0].subscriber_id : this.state.currentProfile} />
-                    </div>
                 )
               }
             </div>
           </div>
         </div>
-      **/}
       </div>
     )
   }

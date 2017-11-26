@@ -171,6 +171,13 @@ class Convo extends React.Component {
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                </div>
+              </div>
+            </div>
             <div className='m-content'>
               {
                 this.props.subscribers &&
@@ -188,6 +195,14 @@ class Convo extends React.Component {
                   </center>
                 </div>
               }
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding broadcasts? <a href='http://kibopush.com/broadcast/' target='_blank'>Click Here </a>
+                </div>
+              </div>
               <div className='row'>
                 <div className='col-xl-12'>
                   <div className='m-portlet'>
@@ -202,14 +217,24 @@ class Convo extends React.Component {
                       <div className='m-portlet__head-tools'>
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
-                            ? <Link to='createconvo'>
-                              <button className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'> New
-                              Broadcast
-                            </button>
+                            ? <Link to='/createconvo'>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Create New Broadcast
+                                  </span>
+                                </span>
+                              </button>
                             </Link>
                             : <Link to='createconvo'>
-                              <button className='m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'> New
-                              Broadcast
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Create Broadcast
+                                  </span>
+                                </span>
                               </button>
                             </Link>
                         }

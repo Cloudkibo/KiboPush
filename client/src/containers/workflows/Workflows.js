@@ -258,11 +258,23 @@ class Workflows extends React.Component {
                       </h3>
                     </div>
                   </div>
+                  <div className='m-portlet__head-tools'>
+                    <Link to='createworkflow'>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create Workflow
+                          </span>
+                        </span>
+                      </button>
+                    </Link>
+                  </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                     <div className='row align-items-center'>
-                      <div className='col-xl-8 order-2 order-xl-1'>
+                      <div className='col-xl-12 order-2 order-xl-1'>
                         {
                           this.props.workflows &&
                           this.props.workflows.length > 0 &&
@@ -311,19 +323,6 @@ class Workflows extends React.Component {
                               </div>
                             </div>
                           }
-                      </div>
-                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                        <Link to='createworkflow'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            <span>
-                              <i className='la la-tasks' />
-                              <span>
-                                New Workflow
-                              </span>
-                            </span>
-                          </button>
-                        </Link>
-                        <div className='m-separator m-separator--dashed d-xl-none' />
                       </div>
                     </div>
                   </div>
