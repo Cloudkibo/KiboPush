@@ -275,6 +275,7 @@ class Convo extends React.Component {
                           </thead>
                           { this.state.broadcastsData && this.state.broadcastsData.length > 0
                           ? <tbody>
+                          {
                             this.state.broadcastsData.map((broadcast, i) => (
                             <tr>
                               <td>{broadcast.title}</td>
@@ -284,6 +285,7 @@ class Convo extends React.Component {
                               <td>{broadcast.seen}</td>
                             </tr>
                             ))
+                          }
                           </tbody>
                           : 'No data found'
                           }
