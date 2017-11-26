@@ -179,7 +179,7 @@ class Subscriber extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Learn how you can get more subscribers.
+                  <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
                 </div>
               </div>
               <div className='row'>
@@ -193,14 +193,34 @@ class Subscriber extends React.Component {
                           </h3>
                         </div>
                       </div>
+                      <div className='m-portlet__head-tools'>
+                        <Link to='/invitesubscribers'>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                            <span>
+                              <i className='la la-user-plus' />
+                              <span>
+                                Invite Subscribers
+                              </span>
+                            </span>
+                          </button>
+                        </Link>
+                      </div>
                     </div>
 
                     <div className='m-portlet__body'>
 
                       <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                         <div className='row align-items-center'>
-                          <div className='col-xl-8 order-2 order-xl-1'>
+                          <div className='col-xl-12 order-2 order-xl-1'>
                             <div className='form-group m-form__group row align-items-center'>
+                              <div className='col-md-4'>
+                                <div className='m-input-icon m-input-icon--left'>
+                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                    <span><i className='la la-search' /></span>
+                                  </span>
+                                </div>
+                              </div>
                               <div className='col-md-4'>
                                 <div className='m-form__group m-form__group--inline'>
                                   <div className='m-form__label'>
@@ -242,24 +262,7 @@ class Subscriber extends React.Component {
                                 </div>
                                 <div className='d-md-none m--margin-bottom-10' />
                               </div>
-                              <div className='col-md-4'>
-                                <div className='m-input-icon m-input-icon--left'>
-                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
-                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                    <span><i className='la la-search' /></span>
-                                  </span>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                            <Link to='/invitesubscribers' className='btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                              <span>
-                                <i className='la la-cart-plus' />
-                                <span>Invite Subscribers</span>
-                              </span>
-                            </Link>
-                            <div className='m-separator m-separator--dashed d-xl-none' />
                           </div>
                         </div>
                       </div>

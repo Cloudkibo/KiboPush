@@ -179,7 +179,7 @@ class Survey extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding surveys? <a href='#'>Click Here </a>
+                  Need help in understanding surveys? <a href='http://kibopush.com/survey/' target='_blank'>Click Here </a>
                 </div>
               </div>
               <div className='row'>
@@ -195,25 +195,34 @@ class Survey extends React.Component {
                           </h3>
                         </div>
                       </div>
+                      <div className='m-portlet__head-tools'>
+                        {
+                          this.props.subscribers && this.props.subscribers.length === 0
+                          ? <Link to='addsurvey'>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                              <span>
+                                <i className='la la-plus' />
+                                <span>
+                                  Create Survey
+                                </span>
+                              </span>
+                            </button>
+                          </Link>
+                          : <Link to='addsurvey' >
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                              <span>
+                                <i className='la la-plus' />
+                                <span>
+                                  Create Survey
+                                </span>
+                              </span>
+                            </button>
+                          </Link>
+                        }
+                      </div>
                     </div>
 
                     <div className='m-portlet__body'>
-                      <div className='row align-items-center'>
-                        <div className='col-md-4' />
-                        <div className='col-xl-4 col-md-4' />
-                        <div className='col-xl-4 order-1 col-md-4 order-xl-2 m--align-right'>
-                          {
-                            this.props.subscribers && this.props.subscribers.length === 0
-
-                              ? <Link to='addsurvey' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                                 Create Survey
-                              </Link>
-                              : <Link to='addsurvey' className='pull-right m-portlet__nav-link btn btn-success btn-sm m-btn--pill m-btn--air'>
-                               Create Survey
-                              </Link>
-                            }
-                        </div>
-                      </div>
                       {console.log('surveysData', this.props.surveys)}
                       { this.state.surveysData && this.state.surveysData.length > 0
                       ? <div className='table-responsive'>
