@@ -53,10 +53,6 @@ class Convo extends React.Component {
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Broadcast'
-    var datatable = $('#m_datatable').mDatatable({
-      pagingType: 'full_numbers',
-      paging: true
-    })
   }
 
   displayData (n, broadcasts) {
