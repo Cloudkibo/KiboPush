@@ -287,7 +287,7 @@ class Convo extends React.Component {
                             ))
                           }
                           </tbody>
-                          : 'No data found'
+                          : <tbody />
                           }
                         </table>
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
