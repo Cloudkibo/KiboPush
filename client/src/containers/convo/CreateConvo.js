@@ -113,7 +113,7 @@ class CreateConvo extends React.Component {
     document.title = 'KiboPush | Create Broadcast'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageName, text: this.props.pages[i].pageId}
+      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
 
     this.setState({page: {options: options}})
