@@ -263,35 +263,57 @@ class Convo extends React.Component {
                         </div>
                       </form>
                       <div>
-                        <table id='m_datatable'>
-                          <thead>
-                            <tr>
-                              <th>Title</th>
-                              <th>Type</th>
-                              <th>Created At</th>
-                              <th>Sent</th>
-                              <th>Seen</th>
+                       
+                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Title</span>
+                              </th>
+                              <th data-field='statement' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Type</span>
+                              </th>
+                              <th data-field='datetime' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Created At</span>
+                              </th>
+                              <th data-field='sent' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Sent</span>
+                              </th>
+                              <th data-field='seen' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Seen</span>
+                              </th>
                             </tr>
                           </thead>
-                          { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                          ? <tbody>
-                          {
+                          <tbody className='m-datatable__body'>
+                            {
                             this.state.broadcastsData.map((broadcast, i) => (
-                            <tr>
-                              <td>{broadcast.title}</td>
-                              <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
-                              <td>{handleDate(broadcast.datetime)}</td>
-                              <td>{broadcast.sent}</td>
-                              <td>{broadcast.seen}</td>
-                            </tr>
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={broadcast.title} /></span></td>
+                                <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.datetime}</span></td>
+                                <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
+                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                                  <span >
+                                  {broadcast.seen}
+
+                                  </span>
+                                </td>
+                              </tr>
                             ))
                           }
                           </tbody>
-                          : <tbody />
-                          }
                         </table>
-                        { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                        ? <div className='pagination'>
+                        <div className='pagination'>
                           <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
                             nextLabel={<i className='fa fa-angle-right' />}
                             breakLabel={<a>...</a>}
@@ -304,8 +326,12 @@ class Convo extends React.Component {
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
-                        : <br />
-                        }
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
+
                       </div>
                     </div>
                   </div>
