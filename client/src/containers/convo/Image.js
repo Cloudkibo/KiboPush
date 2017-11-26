@@ -89,7 +89,7 @@ class Image extends React.Component {
             <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
             <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
           </div>
-          : <img style={{maxWidth: 375, margin: -25, padding: 25}} src={this.state.imgSrc} />
+          : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
         }
 
         </div>
