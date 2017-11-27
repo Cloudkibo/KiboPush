@@ -68,13 +68,54 @@ class ItemSettings extends React.Component {
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
     let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (this.props.location.state.item.segmentationPageIds !== '') {
+        if (this.props.location.state.item.segmentationPageIds.indexOf(this.props.pages[i].pageId) !== -1) {
+          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true}
+        } else {
+          options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+        }
+      } else {
+        options[i] = {text: this.props.pages[i].pageName, id: this.props.pages[i].pageId}
+      }
     }
     this.setState({page: {options: options}})
+
+    let optionsGender = []
+    for (let i = 0; i < this.state.Gender.options.length; i++) {
+      if (this.props.location.state.item.segmentationGender !== '') {
+        if (this.props.location.state.item.segmentationGender.indexOf(this.state.Gender.options[i].value) !== -1) {
+          optionsGender[i] = {text: this.state.Gender.options[i].value, id: this.state.Gender.options[i].value, selected: true}
+        } else {
+          optionsGender[i] = {text: this.state.Gender.options[i].value, id: this.state.Gender.options[i].value}
+        }
+      } else {
+        optionsGender[i] = {text: this.state.Gender.options[i].value, id: this.state.Gender.options[i].value}
+      }
+    }
+    this.setState({Gender: {options: optionsGender}})
+
+    let optionsLocale = []
+    for (let i = 0; i < this.state.Locale.options.length; i++) {
+      if (this.props.location.state.item.segmentationLocale !== '') {
+        console.log('HELLO')
+        console.log(this.props.location.state.item.segmentationGender)
+        console.log(this.state.Gender.options[i])
+        console.log('HELLO')
+        if (this.props.location.state.item.segmentationLocale.indexOf(this.state.Locale.options[i].value) !== -1) {
+          optionsLocale[i] = {text: this.state.Locale.options[i].value, id: this.state.Locale.options[i].value, selected: true}
+        } else {
+          optionsLocale[i] = {text: this.state.Locale.options[i].value, id: this.state.Locale.options[i].value}
+        }
+      } else {
+        optionsLocale[i] = {text: this.state.Locale.options[i].value, id: this.state.Locale.options[i].value}
+      }
+    }
+    this.setState({Locale: {options: optionsLocale}})
+
     this.initializePageSelect(options)
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializeGenderSelect(optionsGender)
+    this.initializeLocaleSelect(optionsLocale)
   }
 
   initializePageSelect (pageOptions) {
@@ -84,7 +125,8 @@ class ItemSettings extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: true
+      multiple: true,
+      tags: true
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
@@ -107,7 +149,8 @@ class ItemSettings extends React.Component {
       data: conditionOptions,
       placeholder: 'Select Gender',
       allowClear: true,
-      multiple: true
+      multiple: true,
+      tags: true
     })
     $('#genderSelect').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
@@ -130,7 +173,8 @@ class ItemSettings extends React.Component {
       data: conditionOptions,
       placeholder: 'Select Locale',
       allowClear: true,
-      multiple: true
+      multiple: true,
+      tags: true
     })
     $('#localeSelect').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
@@ -280,7 +324,7 @@ class ItemSettings extends React.Component {
                           Pages
                         </label>
                         <div className='col-lg-6'>
-                          <select id='selectPage' />
+                          <select id='selectPage' value={this.state.pageValue} />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -288,7 +332,7 @@ class ItemSettings extends React.Component {
                           Gender
                         </label>
                         <div className='col-lg-6'>
-                          <select id='genderSelect' />
+                          <select id='genderSelect' value={this.state.genderValue} />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -296,7 +340,7 @@ class ItemSettings extends React.Component {
                           Locale
                         </label>
                         <div className='col-lg-6'>
-                          <select id='localeSelect' />
+                          <select id='localeSelect' value={this.state.localeValue} />
                         </div>
                       </div>
                     </div>
@@ -306,7 +350,7 @@ class ItemSettings extends React.Component {
                       <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
-                          <button className='btn btn-primary' onClick={this.editAutoposting} >
+                          <button className='btn btn-primary' type='button' onClick={this.editAutoposting} >
                             Save Changes
                           </button>
                           <span>&nbsp;&nbsp;</span>
