@@ -215,7 +215,7 @@ class Subscriber extends React.Component {
                             <div className='form-group m-form__group row align-items-center'>
                               <div className='col-md-4'>
                                 <div className='m-input-icon m-input-icon--left'>
-                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
                                   <span className='m-input-icon__icon m-input-icon__icon--left'>
                                     <span><i className='la la-search' /></span>
                                   </span>
@@ -249,7 +249,7 @@ class Subscriber extends React.Component {
                                       <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
                                       <div className='dropdown-menu open' role='combobox'>
                                         <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                      */}<select className='custom-select' id='m_form_type' tabIndex='-98'>
+                                      */}<select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
                                         <option value='' disabled>Filter by Locale...</option>
                                         {
                                           this.props.locales.map((locale, i) => (
