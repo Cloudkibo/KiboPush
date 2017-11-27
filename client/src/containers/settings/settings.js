@@ -94,7 +94,11 @@ class Settings extends React.Component {
       }
     }
     if (nextProps.resetData) {
-      this.setState({APIKey: nextProps.resetData.app_id, APISecret: nextProps.resetData.app_secret})
+      if (this.state.disable === false) {
+        this.setState({APIKey: nextProps.resetData.app_id, APISecret: nextProps.resetData.app_secret})
+      } else {
+        this.setState({APIKey: '', APISecret: ''})
+      }
     }
   }
   render () {
