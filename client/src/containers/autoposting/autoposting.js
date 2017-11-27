@@ -44,10 +44,10 @@ class Autoposting extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
   }
@@ -103,75 +103,115 @@ class Autoposting extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <h3>Autoposting</h3>
-                  <Link onClick={this.showDialog} className='btn btn-sm btn-primary'
-                    style={{float: 'right', color: '#003300'}}>Add Channel</Link>
-
-                  {
-                      this.state.isShowingModal &&
-                      <ModalContainer style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <ModalDialog style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <AddChannel onClose={this.closeDialog} />
-                        </ModalDialog>
-                      </ModalContainer>
-                    }
-                  {
-                    this.state.isShowingModalDelete &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialogDelete}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialogDelete}>
-                        <h3>Delete Integration</h3>
-                        <p>Are you sure you want to delete this integration?</p>
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.props.deleteautoposting(this.state.deleteid)
-                            this.closeDialogDelete()
-                          }}>Delete
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-
-                  <div className='table-responsive'>
-                    <br /><br />
-                    {
-                      this.state.alertMessage !== '' &&
-                      <div>
-                        <center>
-                          <Alert type={this.state.alertType}>
-                            {this.state.alertMessage}
-                          </Alert>
-                        </center>
-                        <br />
-                      </div>
-                    }
-                    {
-                      this.props.autopostingData && this.props.autopostingData.length > 0
-                      ? this.props.autopostingData.map((item, i) => (
-                        <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} />
-                      ))
-                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
-                    }
-                  </div>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Auto Posting</h3>
                 </div>
               </div>
-
-            </main>
-
+            </div>
+            <div className='m-content'>
+              <div
+                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+                role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  Connect several channels and information sources to send
+                  updates to your subscribers
+                </div>
+              </div>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Connected Channels
+                      </h3>
+                    </div>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    <Link onClick={this.showDialog}>
+                      <button
+                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Add Channel
+                          </span>
+                        </span>
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div
+                    className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div
+                        className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <AddChannel onClose={this.closeDialog} />
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
+                        {
+                          this.state.isShowingModalDelete &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialogDelete}>
+                            <ModalDialog style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <h3>Delete Integration</h3>
+                              <p>Are you sure you want to delete this integration?</p>
+                              <button style={{float: 'right'}}
+                                className='btn btn-primary btn-sm'
+                                onClick={() => {
+                                  this.props.deleteautoposting(this.state.deleteid)
+                                  this.closeDialogDelete()
+                                }}>Delete
+                              </button>
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
+                        <div
+                          className='m-separator m-separator--dashed d-xl-none' />
+                      </div>
+                    </div>
+                  </div>
+                  {
+                    this.state.alertMessage !== '' &&
+                    <div>
+                      <center>
+                        <Alert type={this.state.alertType}>
+                          {this.state.alertMessage}
+                        </Alert>
+                      </center>
+                      <br />
+                    </div>
+                  }
+                  {
+                    this.props.autopostingData && this.props.autopostingData.length > 0
+                      ? this.props.autopostingData.map((item, i) => (
+                        <div className='m-widget5'>
+                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} />
+                        </div>
+                    ))
+                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                  }
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

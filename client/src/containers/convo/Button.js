@@ -75,11 +75,11 @@ class Button extends React.Component {
           onHide={this.handleClose} >
           <div className='card'>
             <h5 className='card-header'> Add Button </h5>
-            <div className='card-block'>
+            <div className='card-block' style={{padding: 5}}>
               <h7 className='card-text'> Button Title: </h7>
-              <input type='text' onChange={this.changeTitle} />
+              <input type='text' className='form-control' onChange={this.changeTitle} />
               <h7 className='card-text'> Open this website when user press this button: </h7>
-              <input type='text' onChange={this.changeUrl} placeholder='Enter a link...' />
+              <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>

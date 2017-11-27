@@ -2,8 +2,8 @@
  * Created by sojharo on 19/09/2017.
  */
 
-const logger = require('../../components/logger')
-const TAG = 'api/broadcast/broadcasts.utility.js'
+// const logger = require('../../components/logger')
+// const TAG = 'api/broadcast/broadcasts.utility.js'
 const fs = require('fs')
 const path = require('path')
 

@@ -81,14 +81,14 @@ class EditButton extends React.Component {
           target={this.target}
           show={this.state.openPopover}
           onHide={this.handleClose} >
-          <div className='card'>
+          <div className='card' style={{padding: 10}}>
             <h5 className='card-header'> Edit Button </h5>
             <button onClick={this.handleRemove.bind(this)} className='btn btn-primary btn-sm pull-right'> Remove Button </button>
-            <div className='card-block'>
+            <div className='card-block' style={{padding: 10}}>
               <h7 className='card-text'> Button Title: </h7>
-              <input type='text' value={this.state.title} onChange={this.changeTitle} />
+              <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} />
               <h7 className='card-text'> Open this website when user press this button: </h7>
-              <input type='text' value={this.state.url} onChange={this.changeUrl} placeholder='Enter a link...' />
+              <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>

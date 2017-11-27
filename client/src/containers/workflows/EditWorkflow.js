@@ -4,15 +4,14 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   editWorkFlow,
   loadWorkFlowList
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 
 class EditWorkflow extends React.Component {
   constructor (props) {
@@ -37,10 +36,10 @@ class EditWorkflow extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Edit Workflow'
   }
@@ -84,60 +83,105 @@ class EditWorkflow extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>Edit Workflow</h2>
-            <div className='ui-block'>
-              <div className='ui-block-content'>
-                <label>Rule</label>
-
-                <div className='form-group form-inline'>
-
-                  <select className='input-lg' onChange={this.changeCondition}
-                    value={this.state.condition}>
-                    <option value='message_is'>Message is</option>
-                    <option value='message_contains'>Message Contains</option>
-                    <option value='message_begins'>Message Begins with</option>
-                  </select>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Edit Workflow</h3>
                 </div>
-                <div>
-                  <label>Keywords (Separated by comma)</label>
-                  <input type='text' className='form-control input-lg'
-                    onChange={this.changeKeywords}
-                    value={this.state.keywords} style={{width: 100 + '%'}}
-                    id='keywords'
-                    placeholder='Enter keywords separated by comma' />
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Form
+                      </h3>
+                    </div>
+                  </div>
                 </div>
-                <div className='form-group'>
-                  <label htmlFor='exampleInputReply'>Reply</label>
-                  <textarea className='form-control' onChange={this.changeReply}
-                    value={this.state.reply} rows='5'
-                    id='exampleInputReply' />
-                </div>
-                <div className='form-group'>
-                  <label htmlFor='isActive'>Is Active</label>
-                  <select onChange={this.changeActive}
-                    value={this.state.isActive} id='isActive'>
-                    <option value='Yes'>Yes</option>
-                    <option value='No'>No</option>
-                  </select>
-                </div>
-
-                <button onClick={this.gotoWorkflow} className='btn btn-primary'>
-                  Save Changes
-                </button>
-
+                <form className='m-form m-form--label-align-right'>
+                  <div className='m-portlet__body'>
+                    <div className='m-form__section m-form__section--first'>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Rule
+                        </label>
+                        <div className='col-lg-6' id='rules'>
+                          <div className='col-10'>
+                            <select className='form-control m-input' onChange={this.changeCondition}
+                              value={this.state.condition}>
+                              <option value='message_is'>Message is</option>
+                              <option value='message_contains'>Message Contains</option>
+                              <option value='message_begins'>Message Begins with</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Keywords (separated by comma)
+                        </label>
+                        <div className='col-lg-6'>
+                          <input className='form-control m-input'
+                            onChange={this.changeKeywords}
+                            value={this.state.keywords}
+                            id='keywords'
+                            placeholder='hi,hello,hey' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Reply
+                        </label>
+                        <div className='col-lg-6'>
+                          <textarea className='form-control m-input'
+                            onChange={this.changeReply}
+                            value={this.state.reply} rows='5'
+                            id='exampleInputReply' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Is Active?
+                        </label>
+                        <div className='col-lg-6'>
+                          <select className='form-control m-input' onChange={this.changeActive}
+                            value={this.state.isActive} id='isActive'>
+                            <option value='Yes'>Yes</option>
+                            <option value='No'>No</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div className='m-form__actions m-form__actions'>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          <button className='btn btn-primary' onClick={this.gotoWorkflow} >
+                            Save Changes
+                          </button>
+                          <span>&nbsp;&nbsp;</span>
+                          <Link to='workflows'>
+                            <button className='btn btn-secondary'>
+                              Cancel
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 

@@ -86,7 +86,6 @@ exports.enable = function (req, res) {
       if (err) {
         res.status(500).json({
           status: 'Failed',
-          error: err,
           description: 'Failed to update record'
         })
       }

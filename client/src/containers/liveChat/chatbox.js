@@ -57,8 +57,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false
     }
-    props.fetchUserChats(this.props.session._id)
-    props.markRead(this.props.session._id, this.props.sessions)
+    props.fetchUserChats(this.props.currentSession._id)
+    props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
@@ -90,14 +90,16 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called')
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
+    document.body.appendChild(addScript)
     this.scrollToBottom()
-    this.props.markRead(this.props.session._id, this.props.sessions)
+    // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
@@ -257,7 +259,7 @@ class ChatBox extends React.Component {
       e.preventDefault()
       console.log('state in onEnter: ', this.state)
       var payload = {}
-      var session = this.props.session
+      var session = this.props.currentSession
       var data = {}
       if (this.state.uploadedId !== '' && this.state.attachment) {
         payload = this.setDataPayload('attachment')
@@ -401,7 +403,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
+    console.log('componentWillReceiveProps in chatbox')
     this.scrollToBottom()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
@@ -423,30 +425,17 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+    console.log('componentDidUpdate in chatbox')
     this.scrollToBottom()
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.session._id) {
-      this.props.markRead(this.props.session._id, this.props.sessions)
-    }
-    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id !== this.props.session._id) {
-      this.setState({textAreaValue: ''})
+    if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
+      this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
   }
 
   render () {
-    console.log('current session', this.props.session)
+    console.log('current session', this.props.currentSession)
     return (
-      <div className='ui-block popup-chat' style={{zIndex: 0}}>
-        {
-          this.state.displayUrlMeta
-          ? <div className='ui-block-title'>
-            <span className='icon-status online' />
-            <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
-          </div>
-          : <div style={{marginTop: '28px'}} className='ui-block-title'>
-            <span className='icon-status online' />
-            <h6 className='title'>{this.props.session.subscriber_id.firstName + ' ' + this.props.session.subscriber_id.lastName}</h6>
-          </div>
-        }
+      <div className='col-xl-5'>
         <Popover
           style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -468,7 +457,6 @@ class ChatBox extends React.Component {
             />
           </div>
         </Popover>
-
         <Popover
           style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
           placement='top'
@@ -483,517 +471,516 @@ class ChatBox extends React.Component {
           />
         </Popover>
         <Popover
-          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          style={{ width: '232px', height: '400px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
           placement='top'
           target={this.gifs}
           show={this.state.showGifPicker}
           onHide={this.closeGif}
         >
-          <div>
+          <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
             <GiphyPicker onSelected={this.sendGif} />
           </div>
         </Popover>
-        <div className='mCustomScrollbar ps ps--theme_default' data-mcs-theme='dark' data-ps-id='380aaa0a-c1ab-f8a3-1933-5a0d117715f0'>
-          <ul style={{maxHeight: '275px', minHeight: '275px', overflowY: 'scroll'}} className='notification-list chat-message chat-message-field'>
-            {
-              this.props.userChat && this.props.userChat.map((msg) => (
-                msg.format === 'convos'
-                  ? (
-                    <li>
-                      <div className='author-thumb-right'>
-                        <img style={{width: '34px', height: '34px'}} src={this.props.user.profilePic} alt='author' />
-                      </div>
-                      {
-                        msg.payload.componentType && (msg.payload.componentType === 'video'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <ReactPlayer
-                                url={msg.payload.fileurl.url}
-                                controls
-                                width='100%'
-                                height='140'
-                                onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'audio'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <ReactPlayer
-                                url={msg.payload.fileurl.url}
-                                controls
-                                width='100%'
-                                height='auto'
-                                onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'file'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'image'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.fileurl.url}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'gif'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.fileurl}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'sticker'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.fileurl}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.componentType === 'thumbsUp'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-right'>
-                              <img
-                                src={msg.payload.fileurl}
-                                style={{maxWidth: '150px', maxHeight: '85px'}}
-                              />
-                            </div>
-                          </div>
-                          : msg.url_meta && msg.url_meta !== ''
-                          ? (msg.url_meta.type
-                            ? <div className='notification-event'>
-                              <div className='facebook-chat-right'>
-                                <div style={{clear: 'both', display: 'block'}}>
-                                  <div className='wrapperforURL'>
-                                    <table style={{maxWidth: '175px'}}>
-                                      {
-                                        msg.url_meta.type && msg.url_meta.type === 'video'
-                                        ? <tbody>
-                                          <tr>
-                                            <td style={{width: '30%'}} colspan='2'>
-                                              <ReactPlayer
-                                                url={msg.url_meta.url}
-                                                controls
-                                                width='100%'
-                                                height='100px'
-                                              />
-                                            </td>
-                                            <td style={{width: '70%'}}>
-                                              <div>
-                                                <a href={msg.url_meta.url} target='_blank'>
-                                                  <p className='urlTitle'>{msg.url_meta.title}</p>
-                                                </a>
-                                                <br />
-                                                <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                        : <tbody>
-                                          <tr>
-                                            <td>
-                                              <div style={{width: 45, height: 45}}>
-                                                {
-                                                  msg.url_meta.image &&
-                                                  <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
-                                                }
-                                              </div>
-                                            </td>
-                                            <td>
-                                              <div>
-                                                <a href={msg.url_meta.url} target='_blank'>
-                                                  <p className='urlTitle'>{msg.url_meta.title}</p>
-                                                </a>
-                                                <br />
-                                                {
-                                                  msg.url_meta.description &&
-                                                  <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                }
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      }
-                                    </table>
+        <div className='m-portlet m-portlet--mobile'>
+          <div className='m-portlet__body'>
+            <div className='tab-content'>
+              <div className='tab-pane active m-scrollable' role='tabpanel'>
+                <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                  <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                    <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                      <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                        {
+                            this.props.userChat && this.props.userChat.map((msg) => (
+                              msg.format === 'facebook'
+                              ? <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
+                                <div className='m-messenger__message-pic'>
+                                  <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
+                                </div>
+                                <div className='m-messenger__message-body'>
+                                  <div className='m-messenger__message-arrow' />
+                                  {
+                                    msg.payload.attachments
+                                    ? (msg.payload.attachments[0].type === 'video'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a video
+                                        </div>
+                                        <ReactPlayer
+                                          url={msg.payload.attachments[0].payload.url}
+                                          controls
+                                          width='100%'
+                                          height='140px'
+                                          onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
+                                        />
+                                      </div>
+                                      : msg.payload.attachments[0].type === 'audio'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared an audio
+                                        </div>
+                                        <ReactPlayer
+                                          url={msg.payload.attachments[0].payload.url}
+                                          controls
+                                          width='100%'
+                                          height='auto'
+                                          onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
+                                        />
+                                      </div>
+                                      : msg.payload.attachments[0].type === 'image'
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared an image
+                                        </div>
+                                        <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                          <img
+                                            src={msg.payload.attachments[0].payload.url}
+                                            style={{maxWidth: '150px', maxHeight: '85px'}}
+                                          />
+                                        </a>
+                                      </div>
+                                      : msg.url_meta
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a link
+                                        </div>
+                                        <div style={{clear: 'both', display: 'block'}}>
+                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                            <table style={{maxWidth: '175px'}}>
+                                              {
+                                                msg.url_meta.type && msg.url_meta.type === 'video'
+                                                ? <tbody>
+                                                  <tr>
+                                                    <td style={{width: '30%'}} colspan='2'>
+                                                      <ReactPlayer
+                                                        url={msg.url_meta.url}
+                                                        controls
+                                                        width='100%'
+                                                        height='100px'
+                                                      />
+                                                    </td>
+                                                    <td style={{width: '70%'}}>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                : <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <div style={{width: 45, height: 45}}>
+                                                        {
+                                                          msg.url_meta.image &&
+                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        {
+                                                          msg.url_meta.description &&
+                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              }
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      : <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a file
+                                        </div>
+                                        <a href={msg.payload.attachments[0].payload.url} target='_blank'>
+                                          <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                        </a>
+                                      </div>
+                                    )
+                                    : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                    ? <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-username'>
+                                        {this.props.currentSession.subscriber_id.firstName} reacted
+                                      </div>
+                                      <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                    : <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-username'>
+                                        {this.props.currentSession.subscriber_id.firstName} wrote
+                                      </div>
+                                      <div className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                              : <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
+                                <div className='m-messenger__message-body'>
+                                  <div className='m-messenger__message-arrow' />
+                                  {
+                                    msg.payload.componentType &&
+                                    (msg.payload.componentType === 'video'
+                                    ? <div className='m-messenger__message-content'>
+                                      <ReactPlayer
+                                        url={msg.payload.fileurl.url}
+                                        controls
+                                        width='100%'
+                                        height='140px'
+                                        onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'audio'
+                                    ? <div className='m-messenger__message-content'>
+                                      <ReactPlayer
+                                        url={msg.payload.fileurl.url}
+                                        controls
+                                        width='100%'
+                                        height='auto'
+                                        onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'file'
+                                    ? <div className='m-messenger__message-content'>
+                                      <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
+                                    </div>
+                                    : msg.payload.componentType === 'image'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl.url}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'gif'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'sticker'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.payload.componentType === 'thumbsUp'
+                                    ? <div className='m-messenger__message-content'>
+                                      <img
+                                        src={msg.payload.fileurl}
+                                        style={{maxWidth: '150px', maxHeight: '85px'}}
+                                      />
+                                    </div>
+                                    : msg.url_meta && msg.url_meta !== ''
+                                    ? (msg.url_meta.type
+                                      ? <div className='m-messenger__message-content'>
+                                        <div style={{clear: 'both', display: 'block'}}>
+                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                            <table style={{maxWidth: '175px'}}>
+                                              {
+                                                msg.url_meta.type && msg.url_meta.type === 'video'
+                                                ? <tbody>
+                                                  <tr>
+                                                    <td style={{width: '30%'}} colspan='2'>
+                                                      <ReactPlayer
+                                                        url={msg.url_meta.url}
+                                                        controls
+                                                        width='100%'
+                                                        height='100px'
+                                                      />
+                                                    </td>
+                                                    <td style={{width: '70%'}}>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                : <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <div style={{width: 45, height: 45}}>
+                                                        {
+                                                          msg.url_meta.image &&
+                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        {
+                                                          msg.url_meta.description &&
+                                                          <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              }
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      : <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-text'>
+                                          {msg.payload.text}
+                                        </div>
+                                      </div>
+                                    )
+                                    : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                    ? <div className='m-messenger__message-content'>
+                                      <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                    : <div className='m-messenger__message-content'>
+                                      <div className='m-messenger__message-text'>
+                                        {msg.payload.text}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                {/**
+                                  <div class="m-messenger__datetime">
+                                    3:15PM
                                   </div>
-                                </div>
+                                **/}
                               </div>
-                            </div>
-                            : <div className='notification-event'>
-                              <span className='chat-message-item-right'>{msg.payload.text}</span>
-                            </div>
-                          )
-                          : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                          ? <div className='notification-event'>
-                            <span className='emojis-right'>{msg.payload.text}</span>
-                            {/**
-                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
-                          </div>
-                          : <div className='notification-event'>
-                            <span className='chat-message-item-right'>{msg.payload.text}</span>
-                            {/**
-                              <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                            **/}
-                          </div>
-                        )
-                      }
-                    </li>
-                  )
-                  : (
-                    <li>
-                      <div className='author-thumb-left'>
-                        <img style={{width: '34px', height: '34px'}} src={this.props.session.subscriber_id.profilePic} alt='author' />
+                            ))
+                        }
+                        <div style={{float: 'left', clear: 'both'}}
+                          ref={(el) => { this.messagesEnd = el }} />
                       </div>
-                      {
-                        msg.payload.attachments
-                        ? (msg.payload.attachments[0].type === 'video'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <ReactPlayer
-                                url={msg.payload.attachments[0].payload.url}
-                                controls
-                                width='100%'
-                                height='140'
-                                onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.attachments[0].type === 'audio'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <ReactPlayer
-                                url={msg.payload.attachments[0].payload.url}
-                                controls
-                                width='100%'
-                                height='auto'
-                                onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
-                              />
-                            </div>
-                          </div>
-                          : msg.payload.attachments[0].type === 'image'
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                <img
-                                  src={msg.payload.attachments[0].payload.url}
-                                  style={{maxWidth: '150px', maxHeight: '85px'}}
-                                />
-                              </a>
-                            </div>
-                          </div>
-                          : msg.url_meta
-                          ? <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <div style={{clear: 'both', display: 'block'}}>
-                                <div className='wrapperforURL'>
-                                  <table style={{maxWidth: '175px'}}>
-                                    {
-                                      msg.url_meta.type && msg.url_meta.type === 'video'
-                                      ? <tbody>
-                                        <tr>
-                                          <td style={{width: '30%'}} colspan='2'>
-                                            <ReactPlayer
-                                              url={msg.url_meta.url}
-                                              controls
-                                              width='100%'
-                                              height='100px'
-                                            />
-                                          </td>
-                                          <td style={{width: '70%'}}>
-                                            <div>
-                                              <a href={msg.url_meta.url} target='_blank'>
-                                                <p className='urlTitle'>{msg.url_meta.title}</p>
-                                              </a>
-                                              <br />
-                                              <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                      : <tbody>
-                                        <tr>
-                                          <td>
-                                            <div style={{width: 45, height: 45}}>
-                                              {
-                                                msg.url_meta.image &&
-                                                <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
-                                              }
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div>
-                                              <a href={msg.url_meta.url} target='_blank'>
-                                                <p className='urlTitle'>{msg.url_meta.title}</p>
-                                              </a>
-                                              <br />
-                                              {
-                                                msg.url_meta.description &&
-                                                <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                              }
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    }
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          : <div className='notification-event'>
-                            <div className='facebook-chat-left'>
-                              <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                              </a>
-                            </div>
-                          </div>
-                        )
-                        : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                        ? <div className='notification-event'>
-                          <span className='emojis-left'>{msg.payload.text}</span>
-                          {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                    </div>
+                  </div>
+                  <div className='m-messenger__seperator' />
+                  <div className='m-messenger__form'>
+                    <div className='m-messenger__form-controls'>
+                      <input type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                    </div>
+                    <div className='m-messenger__form-tools'>
+                      <a className='m-messenger__form-attachment'>
+                        <i onClick={this.sendThumbsUp.bind(this)} className='la la-thumbs-o-up' />
+                      </a>
+                    </div>
+                  </div>
+                  { this.state.uploaded
+                    ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+                      <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
+                        <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
+                        <i className='fa fa-times fa-stack-1x fa-inverse' />
+                      </span>
+                      <div>{this.state.attachment.name}</div>
+                      <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
+                    </div>
+                    : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
+                  }
+                  <div>
+                    <div style={{display: 'inline-block'}} data-tip='emoticons'>
+                      <i style={styles.iconclass} onClick={() => {
+                        this.refs.selectFile.click()
+                      }}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '1em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-image-o' />
+                      </i>
+                    </div>
+                    <div style={{display: 'inline-block'}} data-tip='attachments'>
+                      { this.state.uploadedId !== ''
+                        ? <div>
+                          <i style={styles.iconclass} onClick={() => {
+                            this.refs.selectFile.click()
+                          }}>
+                            <i style={{
+                              fontSize: '20px',
+                              position: 'absolute',
+                              left: '0',
+                              width: '100%',
+                              height: '2em',
+                              margin: '5px',
+                              textAlign: 'center',
+                              color: 'lightgrey'
+                            }} className='fa fa-paperclip' />
+                          </i>
+                          <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                            multiple='false' ref='selectFile' style={styles.inputf} disabled />
                         </div>
-                        : <div className='notification-event'>
-                          <span className='chat-message-item-left'>{msg.payload.text}</span>
-                          {/**
-                            <span className='notification-date'><time className='entry-date updated' datetime='2004-07-24T18:18'>{msg.timestamp}</time></span>
-                          **/}
+                        : <div>
+                          <i style={styles.iconclass} onClick={() => {
+                            this.refs.selectFile.click()
+                          }}>
+                            <i style={{
+                              fontSize: '20px',
+                              position: 'absolute',
+                              left: '0',
+                              width: '100%',
+                              height: '2em',
+                              margin: '5px',
+                              textAlign: 'center'
+                            }} className='fa fa-paperclip' />
+                          </i>
+                          <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
+                            multiple='false' ref='selectFile' style={styles.inputf} />
                         </div>
                       }
-                    </li>
-                  )
-              ))}
-            <div style={{float: 'left', clear: 'both'}}
-              ref={(el) => { this.messagesEnd = el }} />
-          </ul>
-          <div className='ps__scrollbar-x-rail' ><div className='ps__scrollbar-x' tabindex='0' /></div>
-        </div>
-        <form>
-          <div className='form-group label-floating is-empty'>
-            <label className='control-label'>Press enter to send message...</label>
-            <textarea className='form-control' placeholder='' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} />
-            { this.state.uploaded
-              ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
-                <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
-                  <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-                  <i className='fa fa-times fa-stack-1x fa-inverse' />
-                </span>
-                <div>{this.state.attachment.name}</div>
-                <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
-              </div>
-              : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
-            }
-            <div>
-              <div style={{display: 'inline-block'}} data-tip='emoticons'>
-                <i style={styles.iconclass} onClick={() => {
-                  this.refs.selectFile.click()
-                }}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '1em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-file-image-o' />
-                </i>
-              </div>
-              <div style={{display: 'inline-block'}} data-tip='attachments'>
-                { this.state.uploadedId !== ''
-                  ? <div>
-                    <i style={styles.iconclass} onClick={() => {
-                      this.refs.selectFile.click()
-                    }}>
-                      <i style={{
-                        fontSize: '20px',
-                        position: 'absolute',
-                        left: '0',
-                        width: '100%',
-                        height: '2em',
-                        margin: '5px',
-                        textAlign: 'center',
-                        color: 'lightgrey'
-                      }} className='fa fa-paperclip' />
-                    </i>
-                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                      multiple='false' ref='selectFile' style={styles.inputf} disabled />
-                  </div>
-                  : <div>
-                    <i style={styles.iconclass} onClick={() => {
-                      this.refs.selectFile.click()
-                    }}>
-                      <i style={{
-                        fontSize: '20px',
-                        position: 'absolute',
-                        left: '0',
-                        width: '100%',
-                        height: '2em',
-                        margin: '5px',
-                        textAlign: 'center'
-                      }} className='fa fa-paperclip' />
-                    </i>
-                    <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                      multiple='false' ref='selectFile' style={styles.inputf} />
-                  </div>
-                }
-              </div>
-              <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
-                <i onClick={this.showEmojiPicker} style={styles.iconclass}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '2em',
-                    margin: '5px',
-                    textAlign: 'center',
-                    color: '#787878'
-                  }} className='fa fa-smile-o' />
-                </i>
-              </div>
+                    </div>
+                    <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                      <i onClick={this.showEmojiPicker} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-smile-o' />
+                      </i>
+                    </div>
 
-              <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                <i onClick={this.showStickers} style={styles.iconclass}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '2em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-file-o' />
-                  <i style={{
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    textAlign: 'center',
-                    margin: '5px',
-                    fontSize: '12px',
-                    bottom: -4
-                  }}
-                    className='center fa fa-smile-o' />
-                </i>
-              </div>
-              <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
-                <i onClick={this.showGif} style={styles.iconclass}>
-                  <i style={{
-                    fontSize: '20px',
-                    position: 'absolute',
-                    left: '0',
-                    width: '100%',
-                    height: '2em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-file-o' />
-                  <p style={{
-                    position: 'absolute',
-                    text: 'GIF',
-                    left: '0',
-                    width: '100%',
-                    textAlign: 'center',
-                    margin: '5px',
-                    fontSize: '8px',
-                    bottom: -5
-                  }}>GIF</p>
-                </i>
-              </div>
-              <div style={{display: 'inline-block', float: 'right'}} data-tip='Thumbs Up' onClick={this.sendThumbsUp.bind(this)}>
-                <i style={styles.iconclass}>
-                  <i style={{
-                    fontSize: '20px',
-                    color: '#0099e6',
-                    position: 'absolute',
-                    right: '0',
-                    width: '100%',
-                    height: '2.5em',
-                    margin: '5px',
-                    textAlign: 'center'
-                  }} className='fa fa-thumbs-up' />
-                </i>
+                    <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
+                      <i onClick={this.showStickers} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-o' />
+                        <i style={{
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          textAlign: 'center',
+                          margin: '5px',
+                          fontSize: '12px',
+                          bottom: -4
+                        }}
+                          className='center fa fa-smile-o' />
+                      </i>
+                    </div>
+                    <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                      <i onClick={this.showGif} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-o' />
+                        <p style={{
+                          position: 'absolute',
+                          text: 'GIF',
+                          left: '0',
+                          width: '100%',
+                          textAlign: 'center',
+                          margin: '5px',
+                          fontSize: '8px',
+                          bottom: -5
+                        }}>GIF</p>
+                      </i>
+                    </div>
+                  </div>
+                  {
+                    this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
+                    <div className='align-center'>
+                      <center><Halogen.RingLoader color='#716aca' /></center>
+                    </div>
+                  }
+                  {
+                     JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
+                     <div style={{clear: 'both', display: 'block'}}>
+                       <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                         <table style={{maxWidth: '318px'}}>
+                           {
+                             this.state.urlmeta.type && this.state.urlmeta.type === 'video'
+                             ? <tbody>
+                               <tr>
+                                 <td style={{width: '30%'}} colspan='2'>
+                                   <ReactPlayer
+                                     url={this.state.urlmeta.url}
+                                     controls
+                                     width='100%'
+                                     height='100px'
+                                   />
+                                 </td>
+                                 <td style={{width: '70%'}}>
+                                   <div>
+                                     <a href={this.state.urlmeta.url} target='_blank'>
+                                       <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                                     </a>
+                                     <br />
+                                     <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                                   </div>
+                                 </td>
+                               </tr>
+                             </tbody>
+                            : <tbody>
+                              <tr>
+                                <td>
+                                  <div style={{width: 45, height: 45}}>
+                                    {
+                                      this.state.urlmeta.image &&
+                                        <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
+                                    }
+                                  </div>
+                                </td>
+                                <td>
+                                  <div>
+                                    <a href={this.state.urlmeta.url} target='_blank'>
+                                      <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{this.state.urlmeta.title}</p>
+                                    </a>
+                                    <br />
+                                    {
+                                      this.state.urlmeta.description &&
+                                        <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
+                                    }
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          }
+                         </table>
+                       </div>
+                     </div>
+                  }
+                </div>
               </div>
             </div>
-            <div />
-            {
-              this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
-              <div className='align-center'>
-                <center><Halogen.RingLoader color='#FF5E3A' /></center>
-              </div>
-            }
-            {
-               JSON.stringify(this.state.urlmeta) !== '{}' && this.props.loadingUrl === false &&
-               <div style={{clear: 'both', display: 'block'}}>
-                 <div className='wrapperforURL'>
-                   <table style={{maxWidth: '318px'}}>
-                     {
-                       this.state.urlmeta.type && this.state.urlmeta.type === 'video'
-                       ? <tbody>
-                         <tr>
-                           <td style={{width: '30%'}} colspan='2'>
-                             <ReactPlayer
-                               url={this.state.urlmeta.url}
-                               controls
-                               width='100%'
-                               height='100px'
-                             />
-                           </td>
-                           <td style={{width: '70%'}}>
-                             <div>
-                               <a href={this.state.urlmeta.url} target='_blank'>
-                                 <p className='urlTitle'>{this.state.urlmeta.title}</p>
-                               </a>
-                               <br />
-                               <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
-                             </div>
-                           </td>
-                         </tr>
-                       </tbody>
-                      : <tbody>
-                        <tr>
-                          <td>
-                            <div style={{width: 45, height: 45}}>
-                              {
-                                this.state.urlmeta.image &&
-                                  <img src={this.state.urlmeta.image.url} style={{width: 45, height: 45}} />
-                              }
-                            </div>
-                          </td>
-                          <td>
-                            <div>
-                              <a href={this.state.urlmeta.url} target='_blank'>
-                                <p className='urlTitle'>{this.state.urlmeta.title}</p>
-                              </a>
-                              <br />
-                              {
-                                this.state.urlmeta.description &&
-                                  <p style={{marginTop: '-35px'}}>{this.state.urlmeta.description.length > 25 ? this.state.urlmeta.description.substring(0, 24) + '...' : this.state.urlmeta.description}</p>
-                              }
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    }
-                   </table>
-                 </div>
-               </div>
-            }
           </div>
-        </form>
+        </div>
       </div>
     )
   }

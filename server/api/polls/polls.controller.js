@@ -213,10 +213,6 @@ exports.send = function (req, res) {
                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
 
-              logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(
-                  resp.body.access_token)}`)
-
               for (let j = 0; j < subscribers.length; j++) {
                 logger.serverLog(TAG,
                   `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
@@ -261,5 +257,7 @@ exports.send = function (req, res) {
         }
       })
     }
+    return res.status(200)
+      .json({status: 'success', payload: 'Polls sent successfully.'})
   })
 }

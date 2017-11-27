@@ -1,13 +1,10 @@
 import React from 'react'
 import Files from 'react-files'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers } from '../../redux/actions/growthTools.actions'
-import { Alert } from 'react-bs-notifier'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -29,6 +26,7 @@ class CustomerMatching extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.clickAlert = this.clickAlert.bind(this)
   }
+
   clickAlert (e) {
     e.preventDefault()
     this.setState({
@@ -65,7 +63,8 @@ class CustomerMatching extends React.Component {
       fileErrors: [{errorMsg: error.message}]
     })
   }
- /* global FormData */
+
+  /* global FormData */
   handleSubmit () {
     var file = this.state.file
     if (file && file !== '') {
@@ -102,7 +101,8 @@ class CustomerMatching extends React.Component {
       })
       errors = true
     }
-    if (this.state.textAreaValue === '' && this.state.textAreaValue.length < 1) {
+    if (this.state.textAreaValue === '' &&
+      this.state.textAreaValue.length < 1) {
       this.setState({
         messageErrors: [{errorMsg: 'Enter an invitation message'}]
       })
@@ -139,110 +139,164 @@ class CustomerMatching extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-                <div className='birthday-item inline-items badges'>
-                  <h3>Customer Matching Using Phone Numbers</h3>
-                  <br />
-                  <h7>
-                    Upload a file with '.csv' extension containing phone numbers
-                    of your customers to invite them for a chat on messenger.
-                    The
-                    file should contain columns 'names' and 'phone_numbers'.
-                    The columns should contain the list all the customers&#39; name and phone
-                    numbers respectively. An invitation message will be sent on Facebook messenger
-                    to all the customers listed using their phone numbers.<br />
-                    <b>Note:</b>This is an experimental feature and it is specific for pages that belong to United States of America (One of the page admins should be from USA).
-                  </h7>
-                  <div
-                    className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 dropzone'>
-                    <Files
-                      className='file-upload-area'
-                      onChange={this.onFilesChange}
-                      onError={this.onFilesError}
-                      accepts={[
-                        'text/comma-separated-values',
-                        'text/csv',
-                        'application/csv',
-                        '.csv',
-                        'application/vnd.ms-excel']}
-                      multiple={false}
-                      maxFileSize={25000000}
-                      minFileSize={0}
-                      clickable>
-                      <div className='align-center'>
-                        <img src='icons/file.png' alt='Text'
-                          style={{maxHeight: 40}} />
-                        <h4>Upload here</h4>
-                        <p>Try dropping some files here, or click to select a
-                          file to upload. Only '.csv' files are accepted</p>
-                        <h4>{this.state.file !== ''
-                          ? this.state.file[0].name
-                          : ''}</h4>
-                      </div>
-                    </Files>
-                    <div className='row'>
-                      <div
-                        className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <label>File Selected</label>
-                        <input type='text' disabled='true'
-                          value={this.state.file !== ''
-                                   ? this.state.file[0].name
-                                   : ''} style={{width: '50%'}} />
-                        <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
-                          style={{color: 'red'}}>
-                          {
-                              this.state.fileErrors.map(
-                                f => <span>{f.errorMsg}</span>)
-                            }
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Customers Matching using
+                    phone numbers</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div
+                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+                role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  Upload a file with '.csv' extension containing phone numbers
+                  of your customers to invite them for a chat on messenger.
+                  The
+                  file should contain columns 'names' and 'phone_numbers'.
+                  The columns should contain the list all the customers&#39;
+                  name and phone
+                  numbers respectively. An invitation message will be sent on
+                  Facebook messenger
+                  to all the customers listed using their phone
+                  numbers.<br /><br />
+                  <b>Note: </b>This is an experimental feature and it is
+                  specific
+                  for pages that belong to United States of America (One of the
+                  page admins should be from USA).
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Upload CSV
+                          </h3>
                         </div>
                       </div>
-                      <div
-                        className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        <textarea className='textArea'
-                          placeholder='Enter Invitation Message'
-                          value={this.state.textAreaValue}
-                          onChange={this.onTextChange} />
-                        <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12 text-help'
-                          style={{color: 'red'}}>
-                          {
-                              this.state.messageErrors.map(
-                                m => <span>{m.errorMsg}</span>)
+                    </div>
+
+                    <div className='m-portlet__body'>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-form-label col-lg-3 col-sm-12'>
+                          Upload your file
+                        </label>
+                        <div className='col-lg-4 col-md-9 col-sm-12'>
+                          <div className='m-dropzone dropzone dz-clickable'
+                            id='m-dropzone-one'>
+                            <Files
+                              className='file-upload-area'
+                              onChange={this.onFilesChange}
+                              onError={this.onFilesError}
+                              accepts={[
+                                'text/comma-separated-values',
+                                'text/csv',
+                                'application/csv',
+                                '.csv',
+                                'application/vnd.ms-excel']}
+                              multiple={false}
+                              maxFileSize={25000000}
+                              minFileSize={0}
+                              clickable>
+                              <div
+                                className='m-dropzone__msg dz-message needsclick'>
+                                <h3 className='m-dropzone__msg-title'>
+                                  Drop file here or click to upload.
+                                </h3>
+                                <span className='m-dropzone__msg-desc'>
+                                Please upload the CSV type file.
+                              </span>
+                              </div>
+                            </Files>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='m-form'>
+                        <div className='m-portlet__body'>
+                          <div
+                            className='m-form__section m-form__section--first'>
+                            <div className='m-form__heading'>
+                              <h3 className='m-form__heading-title'>
+                                File Info and Invite Message:
+                              </h3>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-lg-2 col-form-label'>
+                                File Selected:
+                              </label>
+                              <div className='col-lg-6'>
+                                <input type='text' disabled='true'
+                                  className='form-control m-input'
+                                  value={this.state.file !== ''
+                                         ? this.state.file[0].name
+                                         : ''} />
+                                <span className='m-form__help'>
+                                  {
+                                    this.state.fileErrors.map(
+                                      f => <span>{f.errorMsg}</span>)
+                                  }
+                                </span>
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-lg-2 col-form-label'>
+                                Invitation Message
+                              </label>
+                              <div className='col-lg-6'>
+                                <textarea
+                                  className='form-control m-input m-input--solid'
+                                  id='exampleTextarea' rows='3'
+                                  placeholder='Enter Invitation Message'
+                                  value={this.state.textAreaValue}
+                                  onChange={this.onTextChange} />
+                                <span className='m-form__help'>
+                                  {
+                                    this.state.messageErrors.map(
+                                      m => <span>{m.errorMsg}</span>)
+                                  }
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='m-portlet__foot m-portlet__foot--fit'>
+                            <div className='m-form__actions m-form__actions'>
+                              { this.state.disabled
+                                ? <button type='submit' className='btn btn-primary' disabled='disabled'>
+                                  Submit
+                                </button>
+                                : <button onClick={this.handleSubmit} type='submit' className='btn btn-primary'>
+                                  Submit
+                                </button>
+                              }
+                            </div>
+                            {
+                              this.state.alertMessage !== '' &&
+                              <div className='alert alert-success' role='alert'>
+                                {this.state.alertMessage} <br />
+                                <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                              </div>
                             }
+                          </div>
                         </div>
-                        <div
-                          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                          { this.state.disabled
-                          ? <button onClick={this.handleSubmit}
-                            className='btn btn-primary' disabled >Submit
-                          </button>
-                          : <button onClick={this.handleSubmit}
-                            className='btn btn-primary' >Submit
-                          </button>
-                        }
-                        </div>
-                        {
-                          this.state.alertMessage !== '' &&
-                            <Alert type={this.state.type}>
-                              {this.state.alertMessage} <br />
-                              <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
-                            </Alert>
-                        }
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </main>
+            </div>
           </div>
         </div>
       </div>

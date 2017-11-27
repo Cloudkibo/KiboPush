@@ -35,7 +35,6 @@ exports.create = function (req, res) {
       if (error) {
         res.status(500).json({
           status: 'failed',
-          error: error,
           description: 'Internal Server Error'
         })
       }
@@ -187,7 +186,6 @@ exports.create = function (req, res) {
             if (err) {
               res.status(500).json({
                 status: 'Failed',
-                error: err,
                 description: 'Failed to insert record'
               })
             } else {

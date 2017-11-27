@@ -21,6 +21,7 @@ class PollResult extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      totalSent: 0,
       totalResponses: 0
     }
     console.log('this.props.location.state', this.props.location.state._id)
@@ -34,10 +35,10 @@ class PollResult extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/Chart.min.js')
@@ -46,6 +47,8 @@ class PollResult extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps', nextprops.responses)
+    var poll = this.props.location.state
+    this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
       console.log('after if', nextprops.responses)
       if (nextprops.responses.length > 0) {
@@ -81,27 +84,7 @@ class PollResult extends React.Component {
         // eslint-disable-next-line no-unused-vars,no-undef
         var radarChartEl = new Chart(ctx_rc, {
           type: 'pie',
-          data: data_rc,
-          options: {
-            deferred: {           // enabled by default
-              delay: 300        // delay of 500 ms after the canvas is considered inside the viewport
-            },
-            legend: {
-              display: true
-            },
-            scale: {
-              gridLines: {
-                display: false
-              },
-              ticks: {
-                beginAtZero: true
-              },
-              reverse: false
-            },
-            animation: {
-              animateScale: true
-            }
-          }
+          data: data_rc
         })
       }
     }
@@ -111,98 +94,95 @@ class PollResult extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h3 className='presentation-margin'>Poll Report</h3>
-            <div className='container'>
-              <br />
-              <div className='row'>
-                <div className='col-lg-12 col-sm-12 col-xs-12'>
-                  <div className='ui-block responsive-flex'>
-                    <h5 className='presentation-margin'>Title: {this.props.location.state.statement}</h5>
-                  </div>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Poll Report</h3>
                 </div>
               </div>
+            </div>
+            <div className='m-content'>
               <div className='row'>
-                <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='ui-block'>
-                    <div className='ui-block-content'>
-                      <ul className='statistics-list-count'>
-                        <li>
-                          <div className='points'>
-                            <span>
-                          Polls Sent So Far
-                        </span>
-                          </div>
-                          <div className='count-stat'>{this.props.polls.length}
-                          </div>
-                        </li>
-                      </ul>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Title: {this.props.location.state.statement}
+                          </h3>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='ui-block'>
-                    <div className='ui-block-content'>
-                      <ul className='statistics-list-count'>
-                        <li>
-                          <div className='points'>
-                            <span>
-                          Poll Responses
-                        </span>
+                    <div className='m-portlet__body' style={{'display': 'flex'}}>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            {this.state.totalSent}
+                            <h5>
+                              Polls Sent So Far
+                            </h5>
                           </div>
-                          { this.props.responses
-                          ? <div className='count-stat'>{this.state.totalResponses}
+                        </div>
+                      </div>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            { this.props.responses
+                            ? <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            : <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            }
+                            <h5>
+                              Polls Respones
+                            </h5>
                           </div>
-                          : <div className='count-stat'>{this.state.totalResponses}
-                          </div>
-                        }
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <div className='row'>
-                <div className='col-lg-12 col-sm-12 col-xs-12'>
-                  <div className='ui-block responsive-flex'>
-                    <div className='ui-block-title'>
-                      <div className='h6 title'>Poll Response Chart</div>
-                    </div>
-                    <div className='ui-block-content'>
-                      <div className='chart-js chart-js-one-bar' style={{
-                        'width': '400px',
-                        'height': '350px',
-                        'margin': '0 auto'
-                      }}>
-                        <canvas id='radar-chart' width={250} height={170} />
-                        <div className='add-options-message'>
-                          <Link
-                            to='/poll'
-                            style={{float: 'right', margin: 2}}
-                            className='pull-right btn btn-primary btn-sm'>
-                            Back
-                          </Link>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Poll Response Chart
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='ui-block-content'>
+                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
+                        }}>
+                          <canvas id='radar-chart' width={250} height={170} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <Link
+                        to='/poll'
+                        style={{ float: 'right', margin: '20px' }}
+                        className='btn btn-secondary'>
+                        Back
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
-
     )
   }
 }

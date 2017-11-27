@@ -43,7 +43,7 @@ exports.index = function (req, res) {
           })
         })
       } else {
-        return res.status(201).json({
+        return res.status(200).json({
           status: 'success',
           payload: sessions
         })
