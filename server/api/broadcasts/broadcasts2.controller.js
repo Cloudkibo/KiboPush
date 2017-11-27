@@ -20,6 +20,7 @@ const fs = require('fs')
 const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
+let config = require('./../../config/environment')
 
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
@@ -275,7 +276,7 @@ exports.upload = function (req, res) {
         status: 'success',
         payload: {
           id: serverPath,
-          url: `https://app.kibopush.com/api/broadcasts/download/${serverPath}`
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`
         }
       })
     }
