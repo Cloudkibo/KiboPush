@@ -51,6 +51,9 @@ class Subscriber extends React.Component {
         // input text for search
         input: $('#generalSearch')
       }})
+    // this.setState({subscribersData: props.subscribers})
+    this.displayData(0, props.subscribers)
+    this.setState({ totalLength: props.subscribers.length })
   }
 
   searchSubscriber (event) {
@@ -87,7 +90,7 @@ class Subscriber extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
+    console.log('componentWillReceiveProps is called', nextProps)
     if (nextProps.subscribers) {
       console.log('Broadcasts Updated', nextProps.subscribers)
       this.displayData(0, nextProps.subscribers)
@@ -267,32 +270,71 @@ class Subscriber extends React.Component {
                         </div>
                       </div>
 
-                      <div>
-                        <table id='m_datatable'>
-                          <thead>
-                            <tr>
-                              <th>Profile Picture</th>
-                              <th>Name</th>
-                              <th>Page</th>
-                              <th>Locale</th>
-                              <th>Gender</th>
+                      <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table'
+                          id='m-datatable--27866229129' style={{
+                            display: 'block',
+                            height: 'auto',
+                            overflowX: 'auto'
+                          }}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='Profile Picture'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Profile Picture</span>
+                              </th>
+                              <th data-field='Name'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Name</span>
+                              </th>
+                              <th data-field='Page'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Page</span>
+                              </th>
+                              <th data-field='Locale'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Locale</span>
+                              </th>
+                              <th data-field='Gender'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '150px'}}>Gender</span>
+                              </th>
                             </tr>
                           </thead>
                           { this.state.subscribersData && this.state.subscribersData.length > 0
-                  ? <tbody>
+                  ? <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                     {
                               this.state.subscribersData.map((subscriber, i) => (
-                                <tr key={i}>
-                                  <td>
-                                    <img alt='pic'
-                                      src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                      className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                <tr data-row={i}
+                                  className='m-datatable__row m-datatable__row--even'
+                                  style={{height: '55px'}} key={i}>
+                                  <td data-field='Profile Picture'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{width: '150px'}}>
+                                      <img alt='pic'
+                                        src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                        className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                     />
+                                    </span>
                                   </td>
-                                  <td>{subscriber.firstName} {subscriber.lastName}</td>
-                                  <td>{subscriber.pageId.pageName}</td>
-                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.locale}</span></td>
-                                  <td><span className='m-badge m-badge--brand' style={{color: 'white'}}>{subscriber.gender}</span></td>
+
+                                  <td data-field='Name'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{width: '150px'}}>{subscriber.firstName} {subscriber.lastName}</span>
+                                  </td>
+
+                                  <td data-field='Page'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{width: '150px'}}>
+                                      {subscriber.pageId.pageName}
+                                    </span>
+                                  </td>
+                                  <td data-field='Locale' className='m-datatable__cell'><span style={{width: '150px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                                  <td data-field='Gender' className='m-datatable__cell'><span style={{width: '150px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
                                 </tr>
                               ))
                             }
