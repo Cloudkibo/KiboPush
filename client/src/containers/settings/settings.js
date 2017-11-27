@@ -8,7 +8,7 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable } from '../../redux/actions/settings.actions'
+import { enable, disable, reset } from '../../redux/actions/settings.actions'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -21,6 +21,7 @@ class Settings extends React.Component {
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
+    this.setReset = this.setReset.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -69,6 +70,10 @@ class Settings extends React.Component {
       }
     })
   }
+  setReset (e) {
+    e.preventDefault()
+    this.props.reset({company_id: this.props.user._id})
+  }
   componentWillReceiveProps (nextProps) {
     console.log('hello', nextProps)
     if (nextProps.apiEnable) {
@@ -78,6 +83,9 @@ class Settings extends React.Component {
     if (nextProps.apiDisable) {
       console.log('api disabled', nextProps.apiDisable)
       this.setState({APIKey: '', APISecret: ''})
+    }
+    if (nextProps.resetData) {
+      this.setState({APIKey: nextProps.resetData.app_id, APISecret: nextProps.resetData.app_secret})
     }
   }
   render () {
@@ -192,7 +200,10 @@ class Settings extends React.Component {
                               </div>
                             </div>
                             <br />
-                            <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => { e.preventDefault() }}>Reset</button>
+                            {
+                              this.state.APIKey &&
+                              <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
+                            }
                             <br />
                           </div>
                         </form>
@@ -219,7 +230,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     apiEnable: (state.APIInfo.apiEnable),
-    apiDisable: (state.APIInfo.apiDisable)
+    apiDisable: (state.APIInfo.apiDisable),
+    resetData: (state.APIInfo.resetData)
   }
 }
 
@@ -227,7 +239,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
     enable: enable,
-    disable: disable
+    disable: disable,
+    reset: reset
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

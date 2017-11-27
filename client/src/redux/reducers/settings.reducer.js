@@ -10,6 +10,10 @@ export function APIInfo (state = {}, action) {
       return Object.assign({}, state, {
         apiDisable: action.data
       })
+    case ActionTypes.RESET_SUCCESS:
+      return Object.assign({}, state, {
+        resetData: action.data
+      })
     default:
       return state
   }

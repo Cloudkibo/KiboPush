@@ -41,3 +41,22 @@ export function disableSuccess (data) {
     data
   }
 }
+export function reset (API) {
+  console.log('Disabling API')
+  console.log(API.company_id)
+  return (dispatch) => {
+    callApi('api_settings/reset', 'post', API)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('reset', res.payload)
+          dispatch(resetSuccess(res.payload))
+        }
+      })
+  }
+}
+export function resetSuccess (data) {
+  return {
+    type: ActionTypes.RESET_SUCCESS,
+    data
+  }
+}
