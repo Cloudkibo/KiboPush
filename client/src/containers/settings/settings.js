@@ -64,11 +64,12 @@ class Settings extends React.Component {
     $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
       if (state === true) {
         console.log('true')
-        self.setState({disabed: false})
+        self.setState({disable: false})
+        console.log('self.state.disabled', self.state.disable)
         self.props.enable({company_id: self.props.user._id})
       } else {
         console.log('false')
-        self.setState({disabed: true})
+        self.setState({disable: true})
         self.props.disable({company_id: self.props.user._id})
       }
     })
@@ -80,13 +81,14 @@ class Settings extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('hello', nextProps)
     if (nextProps.apiEnable) {
-      if (this.state.disabled === false) {
+      console.log('this.state.disabled', this.state.disable)
+      if (this.state.disable === false) {
         console.log('api enabled', nextProps.apiEnable)
         this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
       }
     }
     if (nextProps.apiDisable) {
-      if (this.state.disabled === true) {
+      if (this.state.disable === true) {
         console.log('api disabled', nextProps.apiDisable)
         this.setState({APIKey: '', APISecret: ''})
       }
