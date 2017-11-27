@@ -172,7 +172,11 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       if (this.state.activeSession === '') {
-        this.setState({activeSession: nextProps.sessions[1]})
+        for (var a = 0; a < nextProps.sessions.length; a++) {
+          if (nextProps.sessions[a].subscriber_id !== null) {
+            this.setState({activeSession: nextProps.sessions[a]})
+          }
+        }
       }
     }
 
