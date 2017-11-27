@@ -30,6 +30,8 @@ const all = {
   process.env.IP ||
   undefined,
 
+  domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
+
   mongo: {
     options: {
       db: {
