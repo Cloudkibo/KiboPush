@@ -17,7 +17,8 @@ class Settings extends React.Component {
       type: 'password',
       APIKey: '',
       APISecret: '',
-      buttonText: 'Show'
+      buttonText: 'Show',
+      disable: true
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -63,9 +64,11 @@ class Settings extends React.Component {
     $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
       if (state === true) {
         console.log('true')
+        self.setState({disabed: false})
         self.props.enable({company_id: self.props.user._id})
       } else {
         console.log('false')
+        self.setState({disabed: true})
         self.props.disable({company_id: self.props.user._id})
       }
     })
@@ -77,12 +80,16 @@ class Settings extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('hello', nextProps)
     if (nextProps.apiEnable) {
-      console.log('api enabled', nextProps.apiEnable)
-      this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
+      if (this.state.disabled === false) {
+        console.log('api enabled', nextProps.apiEnable)
+        this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
+      }
     }
     if (nextProps.apiDisable) {
-      console.log('api disabled', nextProps.apiDisable)
-      this.setState({APIKey: '', APISecret: ''})
+      if (this.state.disabled === true) {
+        console.log('api disabled', nextProps.apiDisable)
+        this.setState({APIKey: '', APISecret: ''})
+      }
     }
     if (nextProps.resetData) {
       this.setState({APIKey: nextProps.resetData.app_id, APISecret: nextProps.resetData.app_secret})
