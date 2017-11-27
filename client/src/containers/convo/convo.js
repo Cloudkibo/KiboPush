@@ -259,8 +259,8 @@ class Convo extends React.Component {
                         </div>
                       </form>
                       <div>
-                       
-                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
+
+                        { this.state.broadcastsData && this.state.broadcastsData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                           <thead className='m-datatable__head'>
@@ -300,7 +300,7 @@ class Convo extends React.Component {
                                 <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
                                 <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span >
-                                  {broadcast.seen}
+                                    {broadcast.seen}
 
                                   </span>
                                 </td>

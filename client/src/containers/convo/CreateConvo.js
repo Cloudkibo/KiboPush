@@ -535,18 +535,18 @@ class CreateConvo extends React.Component {
                       </div>
                     </div>
                     <fieldset>
-                    <br />
+                      <br />
                       <h3>Set Targeting:</h3>
-                    <br />
+                      <br />
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
-                          <select id='selectPage' style={{minWidth: 75+'%'}} />
+                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
                         </div>
                         <div className='form-group m-form__group'>
-                          <select id='selectGender' style={{minWidth: 75+'%'}} />
+                          <select id='selectGender' style={{minWidth: 75 + '%'}} />
                         </div>
                         <div className='form-group m-form__group'>
-                          <select id='selectLocale' style={{minWidth: 75+'%'}} />
+                          <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                         </div>
                       </div>
                       <br />
