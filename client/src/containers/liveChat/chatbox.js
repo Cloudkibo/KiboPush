@@ -656,6 +656,22 @@ class ChatBox extends React.Component {
                                     ? <div className='m-messenger__message-content'>
                                       <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
                                     </div>
+                                    : msg.payload.componentType === 'card'
+                                    ? <div className='m-messenger__message-content'>
+                                      <div>
+                                        <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                          <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                            <a href={msg.payload.fileurl} target='_blank'>
+                                              <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.fileurl} />
+                                            </a>
+                                          </div>
+                                          <div style={{marginTop: '10px', padding: '5px'}}>
+                                            <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
+                                            <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.description}</div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                     : msg.payload.componentType === 'image'
                                     ? <div className='m-messenger__message-content'>
                                       <img
