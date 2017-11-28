@@ -83,7 +83,7 @@ class EditButton extends React.Component {
           onHide={this.handleClose} >
           <div className='card' style={{padding: 10}}>
             <h5 className='card-header'> Edit Button </h5>
-            <button onClick={this.handleRemove.bind(this)} className='btn btn-primary btn-sm pull-right'> Remove Button </button>
+            {/* <button onClick={this.handleRemove.bind(this)} className='btn btn-primary btn-sm pull-right'> Remove Button </button> */}
             <div className='card-block' style={{padding: 10}}>
               <h7 className='card-text'> Button Title: </h7>
               <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} />
@@ -91,7 +91,7 @@ class EditButton extends React.Component {
               <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove.bind(this)} className='btn pull-left'> Remove </button>
             </div>
           </div>
         </Popover>

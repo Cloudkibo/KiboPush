@@ -159,6 +159,9 @@ class CreateConvo extends React.Component {
   }
 
   renameTitle () {
+    if(this.titleConvo.value == ''){
+      return;
+    }
     this.setState({convoTitle: this.titleConvo.value})
     this.closeDialog()
   }
@@ -564,7 +567,7 @@ class CreateConvo extends React.Component {
                 </div>
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                   <div style={{padding: '25px'}} className='row' />
-                  <StickyDiv offsetTop={70}>
+                  <StickyDiv offsetTop={70}  zIndex={1}>
                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                       <div style={{padding: '5px'}}>
                         <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
@@ -578,7 +581,7 @@ class CreateConvo extends React.Component {
                   <ModalDialog style={{width: '500px'}}
                     onClose={this.closeDialog}>
                     <h3>Rename:</h3>
-                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} type='text' className='form-control' />
+                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
                     <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
                   </ModalDialog>
                 </ModalContainer>
