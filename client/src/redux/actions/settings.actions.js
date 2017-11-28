@@ -60,3 +60,31 @@ export function resetSuccess (data) {
     data
   }
 }
+export function getAPI (API) {
+  console.log('fetching API credentials')
+  console.log(API.company_id)
+  return (dispatch) => {
+    callApi('api_settings/', 'post', API)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('reset', res.payload)
+          dispatch(getAPISuccess(res.payload))
+        } else if (res.status === 'failed') {
+          console.log('reset', res.description)
+          dispatch(getAPIFailure(res.description))
+        }
+      })
+  }
+}
+export function getAPISuccess (data) {
+  return {
+    type: ActionTypes.GET_API_SUCCESS,
+    data
+  }
+}
+export function getAPIFailure (data) {
+  return {
+    type: ActionTypes.GET_API_FAILURE,
+    data
+  }
+}

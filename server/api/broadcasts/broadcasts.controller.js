@@ -24,6 +24,7 @@ let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const request = require('request')
+var array = []
 
 exports.index = function (req, res) {
   logger.serverLog(TAG, 'Broadcasts get api is working')
@@ -445,26 +446,43 @@ function savepoll (req) {
   // find subscriber from sender id
   logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)
   var resp = JSON.parse(req.postback.payload)
+  var temp = true
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG,
         `Error occurred in finding subscriber ${JSON.stringify(
           err)}`)
     }
-
+    if (array.length > 0) {
+      for (var i = 0; i < array.length; i++) {
+        console.log('responses from polls', array[i].subscriberId)
+        console.log('responses from polls', subscriber._id)
+        console.log('responses from polls', array[i].pollId)
+        console.log('responses from polls', resp.poll_id)
+        if (mongoose.Types.ObjectId(array[i].pollId) === mongoose.Types.ObjectId(resp.poll_id) && mongoose.Types.ObjectId(array[i].subscriberId) === mongoose.Types.ObjectId(subscriber._id)) {
+          console.log('condition true')
+          temp = false
+          break
+        }
+      }
+    }
     const pollbody = {
       response: resp.option, // response submitted by subscriber
       pollId: resp.poll_id,
       subscriberId: subscriber._id
 
     }
-    PollResponse.create(pollbody, (err, pollresponse) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      } else {
-        logger.serverLog(TAG, `Poll created ${JSON.stringify(pollresponse)}`)
-      }
-    })
+    console.log('temp', temp)
+    if (temp === true) {
+      PollResponse.create(pollbody, (err, pollresponse) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        } else {
+          logger.serverLog(TAG, `Poll created ${JSON.stringify(pollresponse)}`)
+          array.push(pollbody)
+        }
+      })
+    }
   })
 }
 

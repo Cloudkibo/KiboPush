@@ -20,29 +20,48 @@ class top10pages extends React.Component {
               <div style={{display: 'inline-block', padding: '10px'}} />
             </div>
           </div>
-          <div className='row'>
-            <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+          <div className='m-portlet__body'>
+            <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+              <div className='row align-items-center'>
+                <div className='col-xl-12 order-2 order-xl-1'>
               {
                 this.props.pagesData && this.props.pagesData.length > 0
-                ? <div className='table-responsive'>
-                  <table className='table table-striped'>
-                    <thead>
-                      <tr>
-                        <th>Page Pic</th>
-                        <th>Page Name</th>
-                        <th>Number of Subscribers</th>
+                ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                  <table className='m-datatable__table'
+                    id='m-datatable--27866229129' style={{
+                      display: 'block',
+                      height: 'auto',
+                      overflowX: 'auto'
+                    }}>
+                    <thead className='m-datatable__head'>
+                      <tr className='m-datatable__row' style={{height: '53px'}}>
+                        <th className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                          <span style={{width: '150px'}}>Page Pic</span></th>
+                        <th className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                          <span style={{width: '150px'}}>Page Name</span>
+                        </th>
+                        <th className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                          <span style={{width: '150px'}}>Number of Subscribers</span></th>
                       </tr>
                     </thead>
                     <tbody>
                       {
                         this.props.pagesData.map((page, i) => (
-                          <tr>
-                            <td><img alt='pic'
-                              src={(page.pagePic) ? page.pagePic : ''}
-                              className='img-circle' width='60' height='60' />
+                          <tr data-row={i}
+                            className='m-datatable__row m-datatable__row--even'
+                            style={{height: '55px'}} key={i}>
+                            <td className='m-datatable__cell'>
+                              <span
+                                style={{width: '150px'}}>
+                                <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} className='img-circle' width='60' height='60' />
+                              </span>
                             </td>
-                            <td>{page.pageName}</td>
-                            <td>{page.subscribers}</td>
+                            <td className='m-datatable__cell'>
+                              <span
+                                style={{width: '150px'}}>{page.pageName}</span></td>
+                            <td className='m-datatable__cell'>
+                              <span
+                                style={{width: '150px'}}>{page.subscribers}</span></td>
                           </tr>
                         ))
                       }
@@ -53,10 +72,12 @@ class top10pages extends React.Component {
                   <p> No data to display </p>
                 </div>
               }
-            </main>
           </div>
         </div>
       </div>
+      </div>
+      </div>
+    </div>
     )
   }
 }

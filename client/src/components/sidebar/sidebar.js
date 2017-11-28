@@ -178,15 +178,11 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
         return (
-          <li>
-            <Link to='/operationalDashboard' data-toggle='tooltip' data-for='operationalDashboard' data-tip>
-              <div style={{paddingRight: 20}}>
-                <img className='icon icons8-Home' width='30' height='30' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAFl0lEQVRoQ+2Za0xTZxjHn95bLqe1lGKBUkQ0azFiqejcNEE3iRi6iGYzmjFjMLrNacyi2ZZlW7It2RK3uLkZI84Zpwv6RTSgDIRJpsuG4yIOq2IZrfRKL7SlUM5p6VlODcReLG1tjWztx57n9nuf//s+50KC/8iPlGiOW5s2fe3Fcc+S8+ffS2SuhIF0y+UVFBrt+2yxeB6QSLhWoVB53e53ShoamhIBFHeQnrIyDrDZ9UhWlixbLE6fKtrrdoNBqRx1GI1dYLdXSdvbbfEEiivIzaqqd8k02vui4uJMekpKyDqx8XFQ9/aa3Cj6hezixUPxgokLSFd5uYyKIMf5BQVFHIGAHklxNr0eM/T3K73j42/IWlq6IvEJZ/NEIISMcASpTeVyX8qVSLhkGs0vl9NiAZ3Z6vsvm8eFtIwMv+uE3DQKhXXMam0jORw7n0RuMYN0b9hQTWcwPs4RiwuZbLZfgYR8tA+GwFv6AjBeq/Zdmzh5FCi3b0GOSAiBspuw2XDt3bsDGIp+WnLhwulYuhM1yB9lZfkMBKnnCoULswoLgzbCsEYDdgodGDv3Apk/178DwwZAaw8D24MBX5gbVK9RqRy3DA3dwxyOjSva21XRAEUF0i2XH2YhyOa84mJ+KBnph81Af70GKEuWhq1h8mYnYGdOgIDPCym3B729wy6H41xJQ8PeSGEiAumsrCwnZkKuRFKQxuNRHg1O6FytHIBJ8WJg1rwdaV7Ax5yAnv0JKIpeEC0ohKCFMZsntQrFgMft3rO0sbFlpsBhQXwySk+v5QgEywRisf9GAACLwQDmMRew9n0QJKOZEk/PF6MeXN9+CbwUFmQI/KVI2Ojv3LGP6HR/Yk7nm+Hk9liQ7oqKjxgcTk3uokWioM1pt8OQVg+0qs1AXbk60prD2nmuXwV3/TkQ5ggg1OGh6etToTbbjyVNTZ+FChQE0lFevobGYn2TW1RUmJ6ZyQqUkUatBlQgBGbNbiClpsUFYioIIbeJE0eAoRuC3HxRkNxGTSaX5vZtpdvl2re8peXXR5NPgxAzwctinWLn5CwXLFyYFajZEZMZLKgbaNU7gFKwIK4AgcG8A/cBO3McMug0mMPPDJo9+v5+o12r7SC7XNumZo8PpLOyciuVwfh8nlQqoqemkh/19N1SDKqBvLIMGBu3JBQgMDh6vg6816+CaF5+0OzBxsa8qu5uFYaiH5ZeunTWB9Illysla9bMDwykU6nBmYoAa8+BuMso0hUh5Ob67iCkjTkgO18U5PbPjRvNRXV160KCOG020JnMQN9aA9TF0khzJtTOc6sHsJ9PQDYxezic6VwhQQgZDQ6qcXKxjMTatjOhhcUa3HWqFsh/93iFIiGZOE2DQHh5eRkGo2VQXb1fIl0tY8Sa6Gn46frujTMOfdIv4PPynVZrx7S0OtevrydRqcfqKg5MSCXCpmVSEfNpFBRrDq3B5mxs65NvaTrIxD2eXUsvX67ymyP7j14rm00gX721qn1qMZIgscoiHn5T0kp2JB6rGY8YCeuIpaMRzH/9ElONvNJ1kLG8MirfhIEYLh+DQtoIzM3yv8GLpLrrGg/MXb8rEtNpmyTITMuV7AgAJKXV1ieP+xxJSisprYd3v0lpPe4Y/l/uEYPRBBjmhjxhtm9dZu3x29z6G1hHbLDl1VdmNwgBQfy4cx6+CZm1HQncZ0mQ5PEb5hb4mTx+S0vmN4tEvIg+MU+xOVt/gCKWPaYHqzYVBmkv75jpScHv+ujoBNrc2rsu7GRf8fxzLUwkxf878wxp8GsnQZY+GhPIJeUEkFZtjwqEguOe1is9a5Mgj1u2Z64jB478viRHyD3NRlIno+k1a+BKJuK4z6FQmXg0foTtSIrQ7pq/1hSNH4qi+IByePvB3S/eDPnKNJpgz5rtv18IxmAHP13mAAAAAElFTkSuQmCC' />
-              </div>
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-squares-4' />
+              <span className='m-menu__link-text'>Operational Dashboard</span>
             </Link>
-            <ReactTooltip place='right' type='dark' effect='float' id='operationalDashboard'>
-              <span>Operational Dashboard</span>
-            </ReactTooltip>
           </li>
         )
       } else {
@@ -260,6 +256,7 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Dashboard</span>
                 </Link>
               </li>
+              {this.showOperationalDashboard()}
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-users' />
@@ -312,6 +309,12 @@ class Sidebar extends Component {
                 <Link to='/workflows' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-interface-8' />
                   <span className='m-menu__link-text'>Workflows</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/menu' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-interface-8' />
+                  <span className='m-menu__link-text'>Main Menu</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>

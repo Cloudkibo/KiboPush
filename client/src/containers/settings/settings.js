@@ -8,7 +8,7 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset } from '../../redux/actions/settings.actions'
+import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -18,7 +18,9 @@ class Settings extends React.Component {
       APIKey: '',
       APISecret: '',
       buttonText: 'Show',
-      disable: true
+      disable: true,
+      buttonState: '',
+      count: 1
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -26,6 +28,7 @@ class Settings extends React.Component {
   }
   componentWillMount () {
     this.props.getuserdetails()
+    this.props.getAPI({company_id: this.props.user._id})
   }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -43,8 +46,6 @@ class Settings extends React.Component {
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
-
-    this.initializeSwitch()
   }
   changeType (e) {
     if (this.state.type === 'password') {
@@ -54,22 +55,24 @@ class Settings extends React.Component {
     }
     e.preventDefault()
   }
-  initializeSwitch () {
+  initializeSwitch (state) {
     var self = this
     $("[name='switch']").bootstrapSwitch({
       onText: 'Enabled',
       offText: 'Disabled',
-      offColor: 'danger'
+      offColor: 'danger',
+      state: state
     })
     $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      self.setState({buttonState: state})
       if (state === true) {
         console.log('true')
-        self.setState({disable: false})
+        self.setState({disable: false, buttonState: true})
         console.log('self.state.disabled', self.state.disable)
         self.props.enable({company_id: self.props.user._id})
       } else {
         console.log('false')
-        self.setState({disable: true})
+        self.setState({disable: true, buttonState: false})
         self.props.disable({company_id: self.props.user._id})
       }
     })
@@ -99,6 +102,16 @@ class Settings extends React.Component {
       } else {
         this.setState({APIKey: '', APISecret: ''})
       }
+    }
+    if (nextProps.apiSuccess) {
+      console.log('in apisuccess', nextProps.apiSuccess)
+      if (this.state.count === 1) {
+        this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
+        this.initializeSwitch(nextProps.apiSuccess.enabled)
+        this.setState({count: 2})
+      }
+    } else if (nextProps.apiFailure) {
+      this.setState({APIKey: '', APISecret: '', buttonState: false})
     }
   }
   render () {
@@ -189,7 +202,7 @@ class Settings extends React.Component {
                               <div className='col-lg-4 col-md-4 col-sm-4'>
                                 <div class='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '120px'}}>
                                   <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                    <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' />
+                                    <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                   </div>
                                 </div>
                               </div>
@@ -198,7 +211,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <label for='example-text-input' className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type='text' readOnly value={this.state.APIKey} />
+                                <input className='form-control m-input' type='text' readOnly value={this.state.buttonState ? this.state.APIKey : ''} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
@@ -206,7 +219,7 @@ class Settings extends React.Component {
                                 API Secret
                               </label>
                               <div className='col-7 input-group'>
-                                <input className='form-control m-input' type={this.state.type} readOnly value={this.state.APISecret} />
+                                <input className='form-control m-input' type={this.state.type} readOnly value={this.state.buttonState ? this.state.APISecret : ''} />
                                 <span className='input-group-btn'>
                                   <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>{this.state.buttonText}</button>
                                 </span>
@@ -244,7 +257,9 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     apiEnable: (state.APIInfo.apiEnable),
     apiDisable: (state.APIInfo.apiDisable),
-    resetData: (state.APIInfo.resetData)
+    resetData: (state.APIInfo.resetData),
+    apiSuccess: (state.APIInfo.apiSuccess),
+    apiFailure: (state.APIInfo.apiFailure)
   }
 }
 
@@ -253,7 +268,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     enable: enable,
     disable: disable,
-    reset: reset
+    reset: reset,
+    getAPI: getAPI
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
