@@ -7,7 +7,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
+import { fetchSessions,
+  fetchSingleSession,
+  fetchUserChats,
+  resetSocket,
+  resetUnreadSession,
+  markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
 import Profile from './profile'
@@ -81,6 +86,7 @@ class LiveChat extends React.Component {
       }
     }
     this.props.fetchUserChats(session._id)
+    this.props.markRead(session._id, this.props.sessions)
   }
 
   handleSearch (e) {
@@ -179,6 +185,20 @@ class LiveChat extends React.Component {
           }
         }
       }
+    }
+
+    if (nextProps.unreadSession) {
+      console.log('unreadSession')
+      var temp = this.state.sessionsData
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i]._id === nextProps.unreadSession) {
+          temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
+          this.setState({sessionsData: temp}, () => {
+            console.log(this.state.sessionsData)
+          })
+        }
+      }
+      this.props.resetUnreadSession()
     }
 
     if (nextProps.userChat.length > this.props.userChat.length) {
@@ -426,6 +446,7 @@ function mapStateToProps (state) {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
+    unreadSession: (state.liveChat.unreadSession),
     userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
     socketData: (state.liveChat.socketData)
@@ -437,7 +458,9 @@ function mapDispatchToProps (dispatch) {
     fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,
-    fetchSingleSession: fetchSingleSession
+    fetchSingleSession: fetchSingleSession,
+    resetUnreadSession: resetUnreadSession,
+    markRead: markRead
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
