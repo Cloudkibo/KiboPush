@@ -286,8 +286,8 @@ exports.stats = function (req, res) {
     payload.pages = pagesCount
     Pages.count({userId: req.user._id}, (err, allPagesCount) => {
       if (err) {
-        return res.status(500).
-          json({status: 'failed', description: JSON.stringify(err)})
+        return res.status(500)
+          .json({status: 'failed', description: JSON.stringify(err)})
       }
       payload.totalPages = allPagesCount
       Subscribers.count({userId: req.user._id}, (err2, subscribersCount) => {
