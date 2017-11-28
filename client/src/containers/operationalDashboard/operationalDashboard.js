@@ -173,6 +173,7 @@ class OperationalDashboard extends React.Component {
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
     }
+    /*
     if (nextProps.broadcastsGraphData) {
       console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
@@ -198,7 +199,7 @@ class OperationalDashboard extends React.Component {
       }
     }
     var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
-    this.setState({chartData: dataChart})
+    this.setState({chartData: dataChart}) */
   }
   includeZeroCounts (data) {
     var dataArray = []
@@ -380,10 +381,10 @@ class OperationalDashboard extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='container'>
           <br /><br /><br /><br /><br /><br />
           <div className='ui-block'>
             <div className='ui-block-content'>
@@ -412,7 +413,7 @@ class OperationalDashboard extends React.Component {
                 />
                 : <ListItem iconClassName={'fa fa-facebook'} title={'Top Ten Pages'} showContent={this.showContent} />
               }
-              {
+              {/*
                 this.state.showReports
                 ? <Reports
                   iconClassName={'fa fa-line-chart'}
@@ -423,7 +424,7 @@ class OperationalDashboard extends React.Component {
                   selectedDays={this.state.selectedDays}
                 />
                 : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
-              }
+              */}
               {
                 this.state.showUsers
                 ? <div style={{boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', margin: '10px', borderRadius: '5px', border: '1px solid #ccc'}} className='card'>
@@ -550,6 +551,8 @@ class OperationalDashboard extends React.Component {
           </div>
         </div>
       </div>
+    </div>
+  </div>
     )
   }
 }

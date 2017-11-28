@@ -14,6 +14,14 @@ export function APIInfo (state = {}, action) {
       return Object.assign({}, state, {
         resetData: action.data
       })
+    case ActionTypes.GET_API_SUCCESS:
+      return Object.assign({}, state, {
+        apiSuccess: action.data
+      })
+    case ActionTypes.GET_API_FAILURE:
+      return Object.assign({}, state, {
+        apiFailure: action.data
+      })
     default:
       return state
   }

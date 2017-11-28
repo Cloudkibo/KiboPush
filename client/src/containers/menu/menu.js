@@ -79,6 +79,8 @@ class Menu extends React.Component {
         }
       })
       this.setState({pageOptions: myPages})
+      this.setState({pageValue: nextProps.pages[0].pageId})
+      console.log('state', this.state.pageValue)
     }
   }
   handleOption (option) {
@@ -117,16 +119,16 @@ class Menu extends React.Component {
     }
     this.setState({itemMenus: temp})
   }
-
-  pageChange (val) {
-    console.log('Selected: ' + JSON.stringify(val))
-    if (val === null) {
-      this.setState({pageValue: val})
+//  275303122985641
+  pageChange (event) {
+    console.log('Selected: ', event.target.value)
+    if (event === null) {
+      this.setState({pageValue: event})
       return
     }
-    console.log('Page Value', val)
-    console.log('Page Value', val)
-    this.setState({pageValue: val.value})
+    console.log('Page Value', event.target.value)
+    console.log('Page Value', event.target.value)
+    this.setState({pageValue: event.target.value})
   }
   handleClick (event) {
     console.log('Handle Click Was Called')
@@ -321,9 +323,31 @@ class Menu extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>&nbsp;&nbsp;Select a page to setup its Main Menu</h3>
+                </div>
+                <div className='col-lg-7 col-md-9 col-sm-12'>
+                  <select
+                    className='custom-select'
+                    placeholder='Select a page...'
+                    onChange={this.pageChange}>
+                    { this.props.pages.map((page, i) => (
+                    (
+                      page.connected &&
+                      <option
+                        value={page.pageId} key={page.pageId}>{page.pageName}</option>
+                    )
+                  ))
+                  }
+                  </select>
+                </div>
+              </div>
+            </div>
         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='container'>
           <br /><br /><br /><br />
@@ -333,20 +357,6 @@ class Menu extends React.Component {
               SEND MESSAGE
               </button>
             </Link>
-
-            <div className='ui-block-title'>
-              <h5>Select a page to setup its Main Menu</h5>
-            </div>
-            <div className='ui-block-title'>
-              <Select
-                name='pageSelect'
-                options={this.state.pageOptions}
-                onChange={this.pageChange}
-                placeholder='Select Page'
-                value={this.state.pageValue}
-                />
-            </div>
-            <br />
             <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
             <ul style={{paddingLeft: '20px', width: '30%'}}>
               {
@@ -356,10 +366,13 @@ class Menu extends React.Component {
                     return (<li>
                       <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
-                          <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                            placeholder={itm.title} className='form-control'
-                            onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
-                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                          <div className='form-group'>
+                            <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                              placeholder={itm.title} className='form-control'
+                              onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}>
+                              <i className='fa fa-times' aria-hidden='true' />
+                            </div>
                           </div>
                         </form>
                         {popup}
@@ -401,7 +414,11 @@ class Menu extends React.Component {
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
                             onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
-                            <div onClick={this.addItem.bind(this)} style={{margin: 10}}><i className='fa fa-plus' aria-hidden='true' /></div>
+                          <span className="m-input-icon__icon m-input-icon__icon--right">
+                        <div onClick={this.addItem.bind(this)} style={{margin: 10}}>
+                              <span><i className='la la-thumb-tack' aria-hidden='true' /></span>
+                            </div>
+                          </span>
                             <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
                           </div>
                         </form>
@@ -449,7 +466,8 @@ class Menu extends React.Component {
           </div>
         </div>
       </div>
-
+    </div>
+  </div>
     )
   }
 }
