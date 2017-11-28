@@ -10,7 +10,6 @@ import {
   createbroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { AlertList } from 'react-bs-notifier'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
@@ -24,7 +23,6 @@ class GettingStarted extends React.Component {
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.nextStep = this.nextStep.bind(this)
     this.previousStep = this.previousStep.bind(this)
-    this.onAlertDismissed = this.onAlertDismissed.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
   }
 
@@ -35,12 +33,21 @@ class GettingStarted extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/material.min.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
+    addScript.setAttribute('src', '../../../js/main.js')
+    document.body.appendChild(addScript)
+    addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Getting Started'
+    var adddScript = document.createElement('script')
+    adddScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    document.body.appendChild(adddScript)
     /* eslint-disable */
     $('#gettingStarted').click()
     /* eslint-enable */
@@ -74,31 +81,31 @@ class GettingStarted extends React.Component {
     this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'})
   }
 
+/* eslint-disable */
   generateAlert (type, message) {
-    const newAlert = {
-      id: (new Date()).getTime(),
-      type: type,
-      message: message
+    toastr.options = {
+      'closeButton': true,
+      'debug': false,
+      'newestOnTop': false,
+      'progressBar': false,
+      'positionClass': 'toast-bottom-right',
+      'preventDuplicates': false,
+      'showDuration': '300',
+      'hideDuration': '1000',
+      'timeOut': '5000',
+      'extendedTimeOut': '1000',
+      'showEasing': 'swing',
+      'hideEasing': 'linear',
+      'showMethod': 'fadeIn',
+      'hideMethod': 'fadeOut'
     }
-
-    this.setState({
-      alerts: [...this.state.alerts, newAlert]
-    })
-  }
-
-  onAlertDismissed (alert) {
-    const alerts = this.state.alerts
-
-    // find the index of the alert that was dismissed
-    const idx = alerts.indexOf(alert)
-
-    if (idx >= 0) {
-      this.setState({
-        // remove the alert from the array
-        alerts: [...alerts.slice(0, idx), ...alerts.slice(idx + 1)]
-      })
+    if (type === 'success') {
+      toastr.success(message, 'Success!')
+    } else {
+      toastr.error(message, 'Failed!')
     }
   }
+/* eslint-enable */
 
   nextStep () {
     this.setState({step: this.state.step + 1})
@@ -115,23 +122,16 @@ class GettingStarted extends React.Component {
         <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden >
           Launch Modal
         </button>
-        <AlertList
-          position='top-right'
-          alerts={this.state.alerts}
-          timeout={3000}
-          dismissTitle='Dismiss'
-          onDismiss={this.onAlertDismissed}
-        />
         <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div className='modal-dialog' role='document'>
             {
               this.state.step === 0
-              ? <div className='modal-content'>
+              ? <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Getting Started
                   </h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button style={{marginLeft: '300px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
@@ -153,12 +153,12 @@ class GettingStarted extends React.Component {
                 </div>
               </div>
               : this.state.step === 1
-              ? <div className='modal-content'>
+              ? <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 1:
                   </h5>
-                  <button type='button' id='m_modal_1_2' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button style={{marginLeft: '370px'}} type='button' id='m_modal_1_2' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
@@ -186,12 +186,12 @@ class GettingStarted extends React.Component {
                 </div>
               </div>
               : this.state.step === 2
-              ? <div className='modal-content'>
+              ? <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 2:
                   </h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
@@ -216,12 +216,12 @@ class GettingStarted extends React.Component {
                 </div>
               </div>
               : this.state.step === 3
-              ? <div className='modal-content'>
+              ? <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 3:
                   </h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
@@ -244,12 +244,12 @@ class GettingStarted extends React.Component {
                   </button>
                 </div>
               </div>
-              : <div className='modal-content'>
+              : <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Step 4:
                   </h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>
                       &times;
                     </span>
