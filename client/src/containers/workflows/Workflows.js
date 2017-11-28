@@ -364,7 +364,7 @@ class Workflows extends React.Component {
                                 </th>
                               </tr>
                             </thead>
-                            <tbody className='m-datatable__body'>
+                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                               {
                                 this.state.workflowsData.map((workflow, i) => (
                                   <tr data-row={i}
