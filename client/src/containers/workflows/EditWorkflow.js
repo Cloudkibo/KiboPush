@@ -8,10 +8,12 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import {
   editWorkFlow,
-  loadWorkFlowList
+  loadWorkFlowList,
+  clearAlertMessages
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import { Alert } from 'react-bs-notifier'
 
 class EditWorkflow extends React.Component {
   constructor (props) {
@@ -25,7 +27,9 @@ class EditWorkflow extends React.Component {
       condition: props.location.state.condition,
       keywords: props.location.state.keywords,
       reply: props.location.state.reply,
-      isActive: props.location.state.isActive === true ? 'Yes' : 'No'
+      isActive: props.location.state.isActive === true ? 'Yes' : 'No',
+      alertMessage: '',
+      alertType: ''
     }
   }
 
@@ -44,6 +48,25 @@ class EditWorkflow extends React.Component {
     document.title = 'KiboPush | Edit Workflow'
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+    }
+  }
+
   gotoWorkflow () {
     console.log('Request Object', {
       condition: this.state.condition,
@@ -58,9 +81,9 @@ class EditWorkflow extends React.Component {
       isActive: this.state.isActive,
       _id: this.props.location.state._id
     })
-    this.props.history.push({
-      pathname: '/workflows'
-    })
+    // this.props.history.push({
+    //   pathname: '/workflows'
+    // })
   }
 
   changeCondition (event) {
@@ -165,7 +188,7 @@ class EditWorkflow extends React.Component {
                       <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
-                          <button className='btn btn-primary' onClick={this.gotoWorkflow} >
+                          <button className='btn btn-primary' type='button' onClick={this.gotoWorkflow} >
                             Save Changes
                           </button>
                           <span>&nbsp;&nbsp;</span>
@@ -174,6 +197,22 @@ class EditWorkflow extends React.Component {
                               Cancel
                             </button>
                           </Link>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <span>&nbsp;&nbsp;</span>
+                      </div>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          {
+                            this.state.alertMessage !== '' &&
+                            <center>
+                              <Alert type={this.state.alertType}>
+                                {this.state.alertMessage}
+                              </Alert>
+                            </center>
+                          }
                         </div>
                       </div>
                     </div>
@@ -192,12 +231,14 @@ class EditWorkflow extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    workflows: (state.workflowsInfo.workflows)
+    workflows: (state.workflowsInfo.workflows),
+    successMessage: (state.workflowsInfo.successMessageEdit),
+    errorMessage: (state.workflowsInfo.errorMessageEdit)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadWorkFlowList: loadWorkFlowList, editWorkFlow: editWorkFlow}, dispatch)
+    {loadWorkFlowList: loadWorkFlowList, editWorkFlow: editWorkFlow, clearAlertMessages: clearAlertMessages}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditWorkflow)

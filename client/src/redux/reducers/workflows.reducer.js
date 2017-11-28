@@ -14,6 +14,21 @@ export function workflowsInfo (state = {}, action) {
       return Object.assign({}, state, {
         workflows: [...state.workflows, action.data]
       })
+    case ActionTypes.EDIT_WORKFLOW_SUCCESS:
+      return Object.assign({}, state, {
+        successMessageEdit: action.successMessage
+      })
+
+    case ActionTypes.EDIT_WORKFLOW_FAILURE:
+      return Object.assign({}, state, {
+        errorMessageEdit: action.errorMessage
+      })
+
+    case ActionTypes.CLEAR_WORKFLOW_ALERT_MESSAGES:
+      return Object.assign({}, state, {
+        successMessageEdit: '',
+        errorMessageEdit: ''
+      })
 
     default:
       return state

@@ -362,6 +362,9 @@ class ItemSettings extends React.Component {
                         </div>
                       </div>
                       <div className='row'>
+                        <span>&nbsp;&nbsp;</span>
+                      </div>
+                      <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
                           {

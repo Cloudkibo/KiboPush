@@ -30,10 +30,39 @@ export function addWorkFlow (data) {
       .then(res => dispatch(updateWorkFlow(res.payload)))
   }
 }
+
+export function editWorkFlowSuccess () {
+  return {
+    type: ActionTypes.EDIT_WORKFLOW_SUCCESS,
+    successMessage: 'Changes saved successfully!'
+  }
+}
+
+export function editWorkFlowFailure (message) {
+  return {
+    type: ActionTypes.EDIT_WORKFLOW_FAILURE,
+    errorMessage: message
+  }
+}
+
+export function clearAlertMessages () {
+  return {
+    type: ActionTypes.CLEAR_WORKFLOW_ALERT_MESSAGES
+  }
+}
+
 export function editWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/edit', 'post', data)
-      .then(res => dispatch(loadWorkFlowList()))
+      .then(res => {
+      console.log(res)
+      if (res.status === 'success') {
+        dispatch(editWorkFlowSuccess())
+        dispatch(loadWorkFlowList())
+      } else {
+        dispatch(editWorkFlowFailure(res.description))
+      }
+    })
   }
 }
 export function disableworkflow (data) {
