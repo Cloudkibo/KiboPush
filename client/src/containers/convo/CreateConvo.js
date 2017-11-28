@@ -27,7 +27,6 @@ import Card from './Card'
 import Gallery from './Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
-import Select from 'react-select'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, convoTourCompleted } from '../../redux/actions/basicinfo.actions'
@@ -106,9 +105,6 @@ class CreateConvo extends React.Component {
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Create Broadcast'
     let options = []
