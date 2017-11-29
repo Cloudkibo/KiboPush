@@ -218,7 +218,7 @@ class PollsInfo extends React.Component {
                                     to='/viewPollDetail'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.gotoViewPoll(poll)}>
-                              View
+                              View Poll
                             </Link></span></td>
                             </tr>
                           ))

@@ -1,8 +1,6 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { loadSurveyDetails } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -84,65 +82,66 @@ class SurveyDetails extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <div className='container'>
-              {this.props.survey && this.props.survey.length > 0 &&
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
               <div className='row'>
-                <div className='col-lg-12 col-sm-12 col-xs-12'>
-                  <div className='ui-block responsive-flex'>
-                    <h5 className='presentation-margin' style={{marginLeft: '15px'}}>Title
-                      : {this.props.survey[0].title}</h5>
-                    <p style={{marginLeft: '15px'}}><b>Description: </b>{this.props.survey[0].description}</p>
+                {this.props.survey &&
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
+                          <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.survey[0].title}</h3>
+                          <p><b>Description: </b>{this.props.survey[0].description}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                }
               </div>
-              }
-
               <div className='row'>
-                <div className='col-lg-12 col-sm-12 col-xs-12'>
-                  <div className='ui-block responsive-flex'>
-                    <div className='ui-block-title'>
-                      <div className='h6 title'>Survey Questions</div>
-                    </div>
-                    <div className='ui-block-content'>
-                      <ul className='list-group'>
-                        {
-                          this.props.questions &&
-                          this.props.questions.map((c) => (
-                            <div className='card'>
-                              <li
-                                className='list-group-item'
-                                style={{cursor: 'pointer'}}
-                                key={c._id}
-                              >
-                                <strong>Q. {c.statement}</strong>
-                              </li>
-                              {this.props.responses && this.props.responses.length > 0
-                              ? <Response responses={this.props.responses.filter(
-                                (d) => d.questionId._id === c._id)}
-                                question={c} />
-                              : <ol>
-                                {c.options.map((c) => (
-                                  <li style={{marginLeft: '30px'}}
-                                    key={c}
-                                  >{c}
-                                  </li>
-                                    ))}
-
-                              </ol>
-                            }
-                            </div>
-                          ))
-                        }
-                      </ul>
-                      <div className='add-options-message' style={{marginTop: '30px'}}>
-                        <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
-                        </button>
+                <div
+                  className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        <h4>Survey Questions</h4>
+                        <ul className='list-group'>
+                          {
+                            this.props.questions &&
+                            this.props.questions.map((c) => (
+                              <div className='card'>
+                                <li
+                                  className='list-group-item'
+                                  style={{cursor: 'pointer'}}
+                                  key={c._id}
+                                >
+                                  <strong>Q. {c.statement}</strong>
+                                </li>
+                                {this.props.responses && this.props.responses.length > 0
+                                ? <Response responses={this.props.responses.filter(
+                                  (d) => d.questionId._id === c._id)}
+                                  question={c} />
+                                : <ol>
+                                  {c.options.map((c) => (
+                                    <li style={{marginLeft: '30px'}}
+                                      key={c}
+                                    >{c}
+                                    </li>
+                                      ))}
+                                </ol>
+                              }
+                              </div>
+                            ))
+                          }
+                        </ul>
+                        <div style={{'overflow': 'auto'}}>
+                          <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
