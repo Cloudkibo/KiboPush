@@ -20,7 +20,8 @@ class Settings extends React.Component {
       buttonText: 'Show',
       disable: true,
       buttonState: '',
-      count: 1
+      count: 1,
+      count1: 0
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -107,11 +108,13 @@ class Settings extends React.Component {
       console.log('in apisuccess', nextProps.apiSuccess)
       if (this.state.count === 1) {
         this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
-        this.initializeSwitch(nextProps.apiSuccess.enabled)
+        if (this.state.count1 !== 1) {
+          this.initializeSwitch(nextProps.apiSuccess.enabled)
+        }
         this.setState({count: 2})
       }
     } else if (nextProps.apiFailure) {
-      this.setState({APIKey: '', APISecret: '', buttonState: false})
+      this.setState({APIKey: '', APISecret: '', buttonState: false, count1: 1})
       this.initializeSwitch(false)
     }
   }
