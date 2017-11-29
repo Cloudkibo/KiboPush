@@ -165,14 +165,11 @@ class Survey extends React.Component {
             <div className='m-content'>
               {
                 this.props.subscribers && this.props.subscribers.length === 0 &&
-                <div style={{padding: '10px'}}>
-                  <center>
-                    <Alert type='info' headline='0 Subscribers' >
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
                     Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
                     To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                    </Alert>
-                  </center>
-                </div>
+                  </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
