@@ -259,12 +259,12 @@ class Survey extends React.Component {
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
                                         onClick={() => this.gotoResults(survey)}>
-                                    Report
-                                  </button>
+                                        Report
+                                      </button>
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
                                         onClick={() => this.props.sendsurvey(
-                                            survey)}> Send
+                                            survey)} disabled> Send
                                       </button>
                                     </span>
                               : <span>

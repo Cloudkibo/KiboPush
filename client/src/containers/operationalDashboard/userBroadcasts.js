@@ -108,54 +108,90 @@ class BroadcastsInfo extends React.Component {
   render () {
     return (
       <div className='row'>
-        <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-          <div className='ui-block'>
-            <div className='birthday-item inline-items badges'>
-              <h4>Broadcasts</h4><br />
-              { this.props.broadcasts && this.props.broadcasts.length > 0
-              ? <div className='table-responsive'>
-                <form>
-                  <div className='form-row'>
-                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
-                    </div>
-                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                      <label> Filter </label>
-                      <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
-                        <option value='' disabled>Filter by type...</option>
-                        <option value='text'>text</option>
-                        <option value='image'>image</option>
-                        <option value='card'>card</option>
-                        <option value='gallery'>gallery</option>
-                        <option value='audio'>audio</option>
-                        <option value='video'>video</option>
-                        <option value='file'>file</option>
-                        <option value='miscellaneous'>miscellaneous</option>
-                        <option value=''>all</option>
-                      </select>
-                    </div>
+        <div
+          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+          <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    Broadcasts
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-portlet__body'>
+              <div className='row align-items-center'>
+                { this.props.broadcasts && this.props.broadcasts.length > 0
+              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                <div className='form-group m-form__group row align-items-center'>
+                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchBroadcast(event) }} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                      <span><i className='la la-search' /></span>
+                    </span>
                   </div>
-                </form>
+                  <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                  <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                    <div className='m-form__label'>
+                      <label>Type:&nbsp;&nbsp;</label>
+                    </div>
+                    <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
+                      <option value=''>All</option>
+                      <option value='text'>Text</option>
+                      <option value='image'>Image</option>
+                      <option value='card'>Card</option>
+                      <option value='gallery'>Gallery</option>
+                      <option value='audio'>Audio</option>
+                      <option value='video'>Video</option>
+                      <option value='file'>File</option>
+                      <option value='miscellaneous'>Miscellaneous</option>
+                    </select>
+                  </div>
+                </div>
                 {
                   this.state.broadcastsData && this.state.broadcastsData.length > 0
-                  ? <div>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Type</th>
-                          <th>Created At</th>
-                          <th />
+                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                    <table className='m-datatable__table'
+                      id='m-datatable--27866229129' style={{
+                        display: 'block',
+                        height: 'auto',
+                        overflowX: 'auto'
+                      }}>
+                      <thead className='m-datatable__head'>
+                        <tr className='m-datatable__row'
+                          style={{height: '53px'}}>
+                          <th data-field='title'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Title</span>
+                          </th>
+                          <th data-field='type'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Type</span>
+                          </th>
+                          <th data-field='created'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Created At</span>
+                          </th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                         {
                           this.state.broadcastsData.map((broadcast, i) => (
-                            <tr>
-                              <td>{broadcast.title}</td>
-                              <td>{broadcast.payload.length > 1 ? 'miscellaneous' : broadcast.payload[0].componentType}</td>
-                              <td>{handleDate(broadcast.datetime)}</td>
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{height: '55px'}} key={i}>
+                              <td data-field='title'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>{broadcast.title}</span></td>
+                              <td data-field='type' className='m-datatable__cell'>
+                                <span style={{width: '150px'}}>{broadcast.payload.length > 1 ? 'miscellaneous' : broadcast.payload[0].componentType}</span>
+                              </td>
+                              <td data-field='created'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>{handleDate(broadcast.datetime)}</span></td>
                             </tr>
                           ))
                         }
@@ -180,9 +216,10 @@ class BroadcastsInfo extends React.Component {
                 <p> No data to display </p>
               </div>
             }
+              </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     )
   }

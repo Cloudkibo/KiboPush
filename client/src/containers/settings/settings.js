@@ -112,6 +112,7 @@ class Settings extends React.Component {
       }
     } else if (nextProps.apiFailure) {
       this.setState({APIKey: '', APISecret: '', buttonState: false})
+      this.initializeSwitch(false)
     }
   }
   render () {
@@ -155,17 +156,7 @@ class Settings extends React.Component {
                           <span className='m-nav__section-text'>Section</span>
                         </li>
                         <li className='m-nav__item'>
-                          <a href='' className='m-nav__link'>
-                            <i className='m-nav__link-icon flaticon-profile-1' />
-                            <span className='m-nav__link-title'>
-                              <span className='m-nav__link-wrap'>
-                                <span className='m-nav__link-text'>My Profile</span>
-                              </span>
-                            </span>
-                          </a>
-                        </li>
-                        <li className='m-nav__item'>
-                          <a href='' className='m-nav__link'>
+                          <a className='m-nav__link'>
                             <i className='m-nav__link-icon flaticon-share' />
                             <span className='m-nav__link-text'>API</span>
                           </a>
