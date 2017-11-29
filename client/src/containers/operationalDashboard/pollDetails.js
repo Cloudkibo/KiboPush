@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { loadPollDetails } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
@@ -95,27 +93,7 @@ class ViewPollDetail extends React.Component {
       // eslint-disable-next-line no-unused-vars,no-undef
       var radarChartEl = new Chart(ctx_rc, {
         type: 'pie',
-        data: data_rc,
-        options: {
-          deferred: {           // enabled by default
-            delay: 300        // delay of 500 ms after the canvas is considered inside the viewport
-          },
-          legend: {
-            display: true
-          },
-          scale: {
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              beginAtZero: true
-            },
-            reverse: false
-          },
-          animation: {
-            animateScale: true
-          }
-        }
+        data: data_rc
       })
     }
   }
@@ -132,80 +110,108 @@ class ViewPollDetail extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container' style={{top: '100px'}}>
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>View Poll</h2>
-            <div className='ui-block'>
-              <div className='container'>
-                <div className='row'>
-                  <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{top: '10px'}}>
-                    <label>Q. {this.props.currentPoll.statement}</label>
-                    <ol className='table-bordered'>
-                      <div className='container'>
-                        <li>{this.props.currentPoll.options[0]}</li>
-                        <li>{this.props.currentPoll.options[1]}</li>
-                        <li>{this.props.currentPoll.options[2]}</li>
-                      </div>
-                    </ol>
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='response-count col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{top: '20px', display: 'flex', textAlign: 'center'}}>
-                    <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                      <div className='ui-block'>
-                        <div className='ui-block-content'>
-                          <ul className='statistics-list-count'>
-                            <li>
-                              <div className='points'>
-                                <span>
-                                  Polls Sent So Far
-                                </span>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12' style={{marginTop: '20px'}}>
+                          <div className='m-section'>
+                            <h3 className='m-section__heading' style={{marginTop: '15px'}}>
+                            Q. {this.props.currentPoll.statement}
+                            </h3>
+                            <div className='m-section__content'>
+                              <div data-code-preview='true' data-code-html='true' data-code-js='false'>
+                                <div className='m-demo__preview'>
+                                  <div className='m-list-timeline' style={{marginTop: '10px', marginLeft: '30px'}}>
+                                    <div className='m-list-timeline__items'>
+                                      <div className='m-list-timeline__item'>
+                                        <span className='m-list-timeline__badge m-list-timeline__badge--success' />
+                                        <span className='m-list-timeline__text'>
+                                          {this.props.currentPoll.options[0]}
+                                        </span>
+                                      </div>
+                                      <div className='m-list-timeline__item'>
+                                        <span className='m-list-timeline__badge m-list-timeline__badge--danger' />
+                                        <span className='m-list-timeline__text'>
+                                          {this.props.currentPoll.options[1]}
+                                        </span>
+                                      </div>
+                                      <div className='m-list-timeline__item'>
+                                        <span className='m-list-timeline__badge m-list-timeline__badge--warning' />
+                                        <span className='m-list-timeline__text'>
+                                          {this.props.currentPoll.options[2]}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                              <div className='count-stat'>{this.state.totalSent}
-                              </div>
-                            </li>
-                          </ul>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                      <div className='ui-block'>
-                        <div className='ui-block-content'>
-                          <ul className='statistics-list-count'>
-                            <li>
-                              <div className='points'>
-                                <span>
-                              Poll Responses
-                            </span>
-                              </div>
-                              <div className='count-stat'>{this.state.totalResponses}
-                              </div>
-                            </li>
-                          </ul>
+                    <div className='m-portlet__body' style={{'display': 'flex'}}>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            {this.state.totalSent}
+                            <h5>
+                              Polls Sent So Far
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            { this.props.responses
+                            ? <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            : <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            }
+                            <h5>
+                              Polls Respones
+                            </h5>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className='row'>
-                  <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                    <h4 style={{marginTop: '20px'}}>Poll Response Chart</h4>
-                    <div className='chart-js chart-js-one-bar' style={{
-                      'width': '400px',
-                      'height': '350px',
-                      'margin': '0 auto'
-                    }} >
-                      <canvas id='radar-chart' width={250} height={170} />
+              </div>
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Poll Response Chart
+                            </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='ui-block-content'>
+                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
+                        }}>
+                          <canvas id='radar-chart' width={250} height={170} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <button className='btn btn-primary' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
+                      </button>
                     </div>
                   </div>
-                </div>
-                <div className='back-button col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12' style={{float: 'right', marginTop: '20px'}}>
-                  <button className='pull-right btn btn-primary btn-sm' onClick={() => this.backToUserDetails()}>Back
-                  </button>
                 </div>
               </div>
             </div>
