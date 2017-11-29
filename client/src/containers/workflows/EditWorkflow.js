@@ -194,7 +194,7 @@ class EditWorkflow extends React.Component {
                           <span>&nbsp;&nbsp;</span>
                           <Link to='workflows'>
                             <button className='btn btn-secondary'>
-                              Cancel
+                              Back
                             </button>
                           </Link>
                         </div>
