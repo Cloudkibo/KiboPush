@@ -95,16 +95,24 @@ class UserDetails extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
-          <BroadcastsInfo userID={this.props.location.state._id} />
-          <SurveysInfo userID={this.props.location.state._id} />
-          <PollsInfo userID={this.props.location.state._id} />
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
+              <BroadcastsInfo userID={this.props.location.state._id} />
+              <SurveysInfo userID={this.props.location.state._id} />
+              <PollsInfo userID={this.props.location.state._id} />
+            </div>
+          </div>
         </div>
       </div>
     )

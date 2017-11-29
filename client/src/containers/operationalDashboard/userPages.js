@@ -18,41 +18,95 @@ class PagesInfo extends React.Component {
   render () {
     return (
       <div className='row'>
-        <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-          <div className='ui-block'>
-            <div className='birthday-item inline-items badges'>
-              <h4>Pages</h4><br />
-              { this.props.pagesData && this.props.pagesData.length > 0
-              ? <div className='table-responsive'>
-                <div>
-                  <label> Search </label>
-                  <input type='text' placeholder='Search Pages' className='form-control' onChange={(event) => { this.props.search(event, 'pages') }} />
+        <div
+          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+          <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    Pages
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-portlet__body'>
+              <div className='row align-items-center'>
+                { this.props.pagesData && this.props.pagesData.length
+              ? <div className='col-lg-12 col-md-12'>
+                <div className='m-input-icon m-input-icon--left'>
+                  <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />
+                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                    <span><i className='la la-search' /></span>
+                  </span>
                 </div>
                 {
                   this.props.pages && this.props.length > 0
-                 ? <div>
-                   <table className='table table-striped'>
-                     <thead>
-                       <tr>
-                         <th>Pages</th>
-                         <th>Number of Likes</th>
-                         <th>Number of Subscribers</th>
-                         <th>Connected</th>
-                         <th />
+                 ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                   <table className='m-datatable__table'
+                     id='m-datatable--27866229129' style={{
+                       display: 'block',
+                       height: 'auto',
+                       overflowX: 'auto'
+                     }}>
+                     <thead className='m-datatable__head'>
+                       <tr className='m-datatable__row'
+                         style={{height: '53px'}}>
+                         <th data-field='pages'
+                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                           <span style={{width: '150px'}}>Pages</span>
+                         </th>
+                         <th data-field='likes'
+                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                           <span style={{width: '150px'}}>Likes</span>
+                         </th>
+                         <th data-field='subscribers'
+                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                           <span style={{width: '150px'}}>Subscribers</span>
+                         </th>
+                         <th data-field='connected'
+                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                           <span style={{width: '150px'}}>Connected</span>
+                         </th>
+                         <th data-field='more'
+                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                           <span style={{width: '150px'}} /></th>
                        </tr>
                      </thead>
-                     <tbody>
+                     <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                        {
                        this.props.pages.map((page, i) => (
-                         <tr>
-                           <td>{page.pageName}</td>
-                           <td>{page.likes}</td>
-                           <td>{page.subscribers}</td>
-                           <td>{page.connected ? 'true' : 'false'}</td>
-                           <td>
-                             <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
+                         <tr data-row={i}
+                           className='m-datatable__row m-datatable__row--even'
+                           style={{height: '55px'}} key={i}>
+                           <td data-field='pages'
+                             className='m-datatable__cell'>
+                             <span
+                               style={{width: '150px'}}>{page.pageName}</span>
+                           </td>
+                           <td data-field='likes'
+                             className='m-datatable__cell'>
+                             <span
+                               style={{width: '150px'}}>{page.likes}</span>
+                           </td>
+                           <td data-field='subscribers'
+                             className='m-datatable__cell'>
+                             <span
+                               style={{width: '150px'}}>{page.subscribers}</span>
+                           </td>
+                           <td data-field='connected'
+                             className='m-datatable__cell'>
+                             <span
+                               style={{width: '150px'}}>{page.connected ? 'true' : 'false'}</span>
+                           </td>
+                           <td data-field='more'
+                             className='m-datatable__cell'>
+                             <span
+                               style={{width: '150px'}}>
+                               <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
                                See Subscribers
                              </Link>
+                             </span>
                            </td>
                          </tr>
                        ))
@@ -78,9 +132,10 @@ class PagesInfo extends React.Component {
                 <p> No data to display </p>
               </div>
             }
+              </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     )
   }
