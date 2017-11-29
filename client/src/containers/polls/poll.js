@@ -133,13 +133,15 @@ class Poll extends React.Component {
             <div className='m-content'>
               {
               this.props.subscribers && this.props.subscribers.length === 0 &&
-              <div style={{padding: '10px'}}>
-                <center>
-                  <Alert type='info' headline='0 Subscribers' >
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                  </Alert>
-                </center>
+              <div className='alert alert-success'>
+                <h4 className='block'>0 Subscribers</h4>
+                Your connected pages have zero subscribers. Unless you don not
+                have any subscriber, you will not be able to broadcast
+                message, polls and surveys.
+                Lets invite subscribers first. Dont worry, we will guide
+                you on how you can invite subscribers.
+                Click on 'Invite Subscribers' button on right side of the
+                page title.
               </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -164,16 +166,7 @@ class Poll extends React.Component {
                       <div className='m-portlet__head-tools'>
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
-                          ? <Link to='createpoll'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                              <span>
-                                <i className='la la-plus' />
-                                <span>
-                                  Create Poll
-                                </span>
-                              </span>
-                            </button>
-                          </Link>
+                          ? <span />
                           : <Link to='createpoll'>
                             <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>
@@ -243,6 +236,10 @@ class Poll extends React.Component {
                                       onClick={() => this.gotoViewPoll(poll)}>
                                       View
                                     </button>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.gotoView(poll)}>Report
+                                    </button>
                                     { this.props.subscribers && this.props.subscribers.length === 0
                                     ? <span style={{width: '150px'}}>
                                       <button className='btn btn-sm' disabled
@@ -250,20 +247,12 @@ class Poll extends React.Component {
                                         onClick={() => this.props.sendpoll(poll)}>
                                         Send
                                       </button>
-                                      <button className='btn btn-sm' disabled
-                                        style={{float: 'left', margin: 2}}
-                                        onClick={() => this.gotoView(poll)}>Report
-                                      </button>
                                     </span>
                                     : <span style={{width: '150px'}}>
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
                                         onClick={() => this.props.sendpoll(poll)}>
                                         Send
-                                      </button>
-                                      <button className='btn btn-primary btn-sm'
-                                        style={{float: 'left', margin: 2}}
-                                        onClick={() => this.gotoView(poll)}>Report
                                       </button>
                                     </span>
                                     }
