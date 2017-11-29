@@ -159,7 +159,7 @@ exports.allpolls = function (req, res) {
 exports.allsurveys = function (req, res) {
   logger.serverLog(TAG, 'Backdoor get all surveys api is working')
   // todo put pagination for scaling
-  Surveys.find({}, (err, surveys) => {
+  Surveys.find({userId: req.params.userid}, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
