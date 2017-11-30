@@ -140,7 +140,6 @@ class PageSubscribers extends React.Component {
   }
 
   onFilterByLocale (data) {
-    console.log(data)
     var filtered = []
     if (!data) {
       if (this.state.genderValue !== '') {
@@ -206,11 +205,71 @@ class PageSubscribers extends React.Component {
                       <div className='row align-items-center'>
                         { this.props.pageSubscribers && this.props.pageSubscribers.length > 0
                           ? <div className='col-lg-12 col-md-12'>
-                            <div className='m-input-icon m-input-icon--left'>
-                              <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
-                              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                <span><i className='la la-search' /></span>
-                              </span>
+                            <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                              <div className='row align-items-center'>
+                                <div className='col-xl-12 order-2 order-xl-1'>
+                                  <div
+                                    className='form-group m-form__group row align-items-center'>
+                                    <div className='col-md-4'>
+                                      <div
+                                        className='m-form__group m-form__group--inline'>
+                                        <div className='m-input-icon m-input-icon--left'>
+                                          <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
+                                          <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                            <span>
+                                              <i className='la la-search' />
+                                            </span>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className='d-md-none m--margin-bottom-10' />
+                                    </div>
+                                    <div className='col-md-4'>
+                                      <div
+                                        className='m-form__group m-form__group--inline'>
+                                        <div className='m-form__label'>
+                                          <label>
+                                            Gender:
+                                          </label>
+                                        </div>
+                                        <div className='m-form__control'>
+                                          <Select
+                                            name='form-field-name'
+                                            options={this.state.genders}
+                                            onChange={this.onFilterByGender}
+                                            placeholder='Filter by gender...'
+                                            value={this.state.genderValue}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className='d-md-none m--margin-bottom-10' />
+                                    </div>
+                                    <div className='col-md-4'>
+                                      <div
+                                        className='m-form__group m-form__group--inline'>
+                                        <div className='m-form__label'>
+                                          <label>
+                                            Locale:
+                                          </label>
+                                        </div>
+                                        <div className='m-form__control'>
+                                          <Select
+                                            name='form-field-name'
+                                            options={this.props.locales}
+                                            onChange={this.onFilterByLocale}
+                                            placeholder='Filter by locale...'
+                                            value={this.state.localeValue}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className='d-md-none m--margin-bottom-10' />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             {
                               this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
@@ -251,21 +310,21 @@ class PageSubscribers extends React.Component {
                                             <td data-field='pages'
                                               className='m-datatable__cell'>
                                               <img alt='pic'
-                                                   src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                                   className='img-circle' width='60' height='60' />
+                                                src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                                className='img-circle' width='60' height='60' />
                                             </td>
                                             <td data-field='likes'
-                                                className='m-datatable__cell'>
+                                              className='m-datatable__cell'>
                                               <span
                                                 style={{width: '150px'}}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
                                             </td>
                                             <td data-field='subscribers'
-                                                className='m-datatable__cell'>
+                                              className='m-datatable__cell'>
                                               <span
                                                 style={{width: '150px'}}>{subscriber.gender}</span>
                                             </td>
                                             <td data-field='connected'
-                                                className='m-datatable__cell'>
+                                              className='m-datatable__cell'>
                                               <span
                                                 style={{width: '150px'}}>{subscriber.locale}</span>
                                             </td>
@@ -274,17 +333,17 @@ class PageSubscribers extends React.Component {
                                   }
                                     </tbody>
                                   </table>
-                                <ReactPaginate previousLabel={'previous'}
-                                               nextLabel={'next'}
-                                               breakLabel={<a>...</a>}
-                                               breakClassName={'break-me'}
-                                               pageCount={Math.ceil(this.state.totalLength / 5)}
-                                               marginPagesDisplayed={2}
-                                               pageRangeDisplayed={3}
-                                               onPageChange={this.handlePageClick}
-                                               containerClassName={'pagination'}
-                                               subContainerClassName={'pages pagination'}
-                                               activeClassName={'active'} />
+                                  <ReactPaginate previousLabel={'previous'}
+                                    nextLabel={'next'}
+                                    breakLabel={<a>...</a>}
+                                    breakClassName={'break-me'}
+                                    pageCount={Math.ceil(this.state.totalLength / 5)}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={this.handlePageClick}
+                                    containerClassName={'pagination'}
+                                    subContainerClassName={'pages pagination'}
+                                    activeClassName={'active'} />
                                 </div>
                                 : <p> No search results found. </p>
                             }

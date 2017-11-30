@@ -11,6 +11,7 @@ const Page = require('./../pages/Pages.model')
 const urllib = require('url')
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
+const _ = require('lodash')
 
 exports.index = function (req, res) {
   AutoPosting.find({userId: req.user._id}, (err, autoposting) => {
@@ -29,6 +30,18 @@ exports.create = function (req, res) {
   // todo check for individual content creator services validity
   logger.serverLog(TAG,
     `Inside Create Autoposting, req body = ${JSON.stringify(req.body)}`)
+
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'subscriptionUrl')) parametersMissing = true
+  if (!_.has(req.body, 'subscriptionType')) parametersMissing = true
+  if (!_.has(req.body, 'accountTitle')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
   AutoPosting.find(
     {userId: req.user._id, subscriptionUrl: req.body.subscriptionUrl},
     (error, gotData) => {

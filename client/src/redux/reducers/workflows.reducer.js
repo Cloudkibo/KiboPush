@@ -14,7 +14,7 @@ export function workflowsInfo (state = {}, action) {
       return Object.assign({}, state, {
         workflows: [...state.workflows, action.data]
       })
-    case ActionTypes.EDIT_WORKFLOW_SUCCESS:
+    case ActionTypes.WORKFLOW_SUCCESS:
       return Object.assign({}, state, {
         successMessageEdit: action.successMessage
       })

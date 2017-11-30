@@ -27,14 +27,22 @@ export function updateWorkFlow (data) {
 export function addWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/create', 'post', data)
-      .then(res => dispatch(updateWorkFlow(res.payload)))
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(workFlowSuccess('Workflow Created Successfully!'))
+          dispatch(updateWorkFlow(res.payload))
+        } else {
+          dispatch(editWorkFlowFailure(res.description))
+        }
+      })
   }
 }
 
-export function editWorkFlowSuccess () {
+export function workFlowSuccess (msg) {
   return {
-    type: ActionTypes.EDIT_WORKFLOW_SUCCESS,
-    successMessage: 'Changes saved successfully!'
+    type: ActionTypes.WORKFLOW_SUCCESS,
+    successMessage: msg
   }
 }
 
@@ -55,14 +63,14 @@ export function editWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/edit', 'post', data)
       .then(res => {
-      console.log(res)
-      if (res.status === 'success') {
-        dispatch(editWorkFlowSuccess())
-        dispatch(loadWorkFlowList())
-      } else {
-        dispatch(editWorkFlowFailure(res.description))
-      }
-    })
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(workFlowSuccess('Changes Saved Successfully!'))
+          dispatch(loadWorkFlowList())
+        } else {
+          dispatch(editWorkFlowFailure(res.description))
+        }
+      })
   }
 }
 export function disableworkflow (data) {
