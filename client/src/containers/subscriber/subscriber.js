@@ -14,7 +14,6 @@ import ReactPaginate from 'react-paginate'
 class Subscriber extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSubscribersList()
     this.state = {
       subscribersData: [],
       subscribersDataAll: [],
@@ -22,6 +21,7 @@ class Subscriber extends React.Component {
       filterByGender: '',
       filterByLocale: ''
     }
+    props.loadSubscribersList()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
@@ -42,18 +42,16 @@ class Subscriber extends React.Component {
     addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
-    var datatable = $('#m_datatable').mDatatable({
-      pagination: true,
-      paging: true,
-      search: {
-        // search delay in milliseconds
-        delay: 400,
-        // input text for search
-        input: $('#generalSearch')
-      }})
+    // var datatable = $('#m_datatable').mDatatable({
+    //   pagination: true,
+    //   paging: true,
+    //   search: {
+    //     // search delay in milliseconds
+    //     delay: 400,
+    //     // input text for search
+    //     input: $('#generalSearch')
+    //   }})
     // this.setState({subscribersData: props.subscribers})
-    this.displayData(0, props.subscribers)
-    this.setState({ totalLength: props.subscribers.length })
   }
 
   searchSubscriber (event) {
@@ -90,9 +88,9 @@ class Subscriber extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called', nextProps)
+    console.log('componentWillReceiveProps is called in sub', nextProps)
     if (nextProps.subscribers) {
-      console.log('Broadcasts Updated', nextProps.subscribers)
+      console.log('Subscribers Updated', nextProps.subscribers)
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.subscribers.length })
     }
