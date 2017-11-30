@@ -172,7 +172,10 @@ class CustomerMatching extends React.Component {
                   <b>Note: </b>This is an experimental feature and it is
                   specific
                   for pages that belong to United States of America (One of the
-                  page admins should be from USA).
+                  page admins should be from USA). There is a one time fee for for each page that you have connected.
+                  For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>
+                    here
+                  </a>
                 </div>
               </div>
               <div className='row'>
