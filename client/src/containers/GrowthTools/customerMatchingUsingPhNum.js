@@ -146,8 +146,8 @@ class CustomerMatching extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Customers Matching using
-                    phone numbers</h3>
+                  <h3 className='m-subheader__title'>Customer Matching using
+                    Phone Number (Experimental Feature)</h3>
                 </div>
               </div>
             </div>

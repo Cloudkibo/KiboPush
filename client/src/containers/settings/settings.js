@@ -21,7 +21,8 @@ class Settings extends React.Component {
       disable: true,
       buttonState: '',
       count: 1,
-      count1: 0
+      count1: 0,
+      firstTime: true
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -109,13 +110,17 @@ class Settings extends React.Component {
       if (this.state.count === 1) {
         this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
         if (this.state.count1 !== 1) {
+          console.log('apisuccess')
           this.initializeSwitch(nextProps.apiSuccess.enabled)
         }
         this.setState({count: 2})
       }
     } else if (nextProps.apiFailure) {
-      this.setState({APIKey: '', APISecret: '', buttonState: false, count1: 1})
-      this.initializeSwitch(false)
+      console.log('apifailure')
+      if (this.state.firstTime === true) {
+        this.initializeSwitch(false)
+        this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
+      }
     }
   }
   render () {
@@ -194,7 +199,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <div className='col-lg-8 col-md-8 col-sm-12' />
                               <div className='col-lg-4 col-md-4 col-sm-4'>
-                                <div class='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '120px'}}>
+                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
                                   <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
                                     <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                   </div>
@@ -203,13 +208,13 @@ class Settings extends React.Component {
                             </div>
                             <br /><br />
                             <div className='form-group m-form__group row'>
-                              <label for='example-text-input' className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
                               <div className='col-7 input-group'>
                                 <input className='form-control m-input' type='text' readOnly value={this.state.buttonState ? this.state.APIKey : ''} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
-                              <label for='example-text-input' className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
                                 API Secret
                               </label>
                               <div className='col-7 input-group'>
