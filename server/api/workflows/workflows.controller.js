@@ -5,6 +5,7 @@
 const logger = require('../../components/logger')
 const Workflows = require('./Workflows.model')
 const TAG = 'api/workflows/workflows.controller.js'
+const _ = require('lodash')
 
 exports.index = function (req, res) {
   Workflows.find({userId: req.user._id}, (err, workflows) => {
@@ -20,6 +21,21 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
+
+  logger.serverLog(TAG, 'Workflows create payload ' + JSON.stringify(req.body))
+
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'condition')) parametersMissing = true
+  if (!_.has(req.body, 'keywords')) parametersMissing = true
+  if (!_.has(req.body, 'reply')) parametersMissing = true
+  if (!_.has(req.body, 'isActive')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
   const workflow = new Workflows({
     condition: req.body.condition,
     keywords: req.body.keywords,
@@ -38,7 +54,7 @@ exports.create = function (req, res) {
         description: 'Failed to insert record'
       })
     } else {
-      res.status(201).json({status: 'Success', payload: workflow})
+      res.status(201).json({status: 'success', payload: workflow})
     }
   })
 }
@@ -122,7 +138,7 @@ exports.sent = function (req, res) {
           description: 'Failed to update record'
         })
       } else {
-        res.status(200).json({status: 'Success'})
+        res.status(200).json({status: 'success'})
       }
     }
   )

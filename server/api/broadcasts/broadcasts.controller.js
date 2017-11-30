@@ -674,7 +674,7 @@ function savesurvey (req) {
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
       logger.serverLog(TAG,
-        `survey respnse create ${JSON.stringify(resp.survey_id)}`)
+        `survey response create ${JSON.stringify(resp.survey_id)}`)
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}

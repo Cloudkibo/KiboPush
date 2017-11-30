@@ -10,7 +10,8 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import {
   addWorkFlow,
-  loadWorkFlowList
+  loadWorkFlowList,
+  clearAlertMessages
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
@@ -18,6 +19,7 @@ import {
   getuserdetails,
   workflowsTourCompleted
 } from '../../redux/actions/basicinfo.actions'
+import { Alert } from 'react-bs-notifier'
 
 class CreateWorkflow extends React.Component {
   constructor (props) {
@@ -33,7 +35,9 @@ class CreateWorkflow extends React.Component {
       keywords: [],
       reply: '',
       isActive: 'Yes',
-      steps: []
+      steps: [],
+      alertMessage: '',
+      alertType: ''
     }
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
@@ -90,6 +94,25 @@ class CreateWorkflow extends React.Component {
     ])
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.successMessage) {
+      this.setState({
+        alertMessage: nextProps.successMessage,
+        alertType: 'success'
+      })
+    } else if (nextProps.errorMessage) {
+      this.setState({
+        alertMessage: nextProps.errorMessage,
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+    }
+  }
+
   gotoWorkflow () {
     console.log('Request Object', {
       condition: this.state.condition,
@@ -98,11 +121,17 @@ class CreateWorkflow extends React.Component {
       isActive: this.state.isActive
     })
     if (this.state.keywords.length === 0) {
-      this.msg.error('Please fill the keywords field')
+      this.setState({
+        alertMessage: 'Please fill the keywords field',
+        alertType: 'danger'
+      })
       return
     }
     if (this.state.reply === '') {
-      this.msg.error('Please fill the reply field')
+      this.setState({
+        alertMessage: 'Please fill the reply field',
+        alertType: 'danger'
+      })
       return
     }
 
@@ -112,9 +141,9 @@ class CreateWorkflow extends React.Component {
       reply: this.state.reply,
       isActive: this.state.isActive
     })
-    this.props.history.push({
-      pathname: '/workflows'
-    })
+    // this.props.history.push({
+    //   pathname: '/workflows'
+    // })
   }
 
   changeCondition (event) {
@@ -273,7 +302,7 @@ class CreateWorkflow extends React.Component {
                       <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
-                          <button className='btn btn-primary' onClick={this.gotoWorkflow} >
+                          <button className='btn btn-primary' type='button' onClick={this.gotoWorkflow} >
                             Create
                           </button>
                           <span>&nbsp;&nbsp;</span>
@@ -282,6 +311,22 @@ class CreateWorkflow extends React.Component {
                               Cancel
                             </button>
                           </Link>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <span>&nbsp;&nbsp;</span>
+                      </div>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          {
+                            this.state.alertMessage !== '' &&
+                            <center>
+                              <Alert type={this.state.alertType}>
+                                {this.state.alertMessage}
+                              </Alert>
+                            </center>
+                          }
                         </div>
                       </div>
                     </div>
@@ -301,7 +346,9 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    successMessage: (state.workflowsInfo.successMessageEdit),
+    errorMessage: (state.workflowsInfo.errorMessageEdit)
   }
 }
 
@@ -311,7 +358,8 @@ function mapDispatchToProps (dispatch) {
       loadWorkFlowList: loadWorkFlowList,
       addWorkFlow: addWorkFlow,
       getuserdetails: getuserdetails,
-      workflowsTourCompleted: workflowsTourCompleted
+      workflowsTourCompleted: workflowsTourCompleted,
+      clearAlertMessages: clearAlertMessages
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWorkflow)

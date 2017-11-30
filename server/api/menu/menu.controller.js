@@ -90,7 +90,7 @@ exports.create = function (req, res) {
             }
           })
 
-        res.status(201).json({status: 'Success', payload: savedMenu})
+        res.status(201).json({status: 'success', payload: savedMenu})
       }
     })
   })
