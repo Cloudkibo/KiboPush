@@ -12,15 +12,15 @@ class dataObjectsCount extends React.Component {
         <div className='col-xl-8'>
           { this.props.objectsData !== null && this.props.length > 0
           ? <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
-          <div className='m-portlet__head'>
-            <div className='m-portlet__head-caption'>
-              <div className='m-portlet__head-title'>
-                <h3 className='m-portlet__head-text'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
                   Pages Info
                 </h3>
+                </div>
               </div>
             </div>
-          </div>
             <div className='m-portlet__body'>
               <div className='m-widget21'>
                 <div className='row'>
@@ -101,57 +101,59 @@ class dataObjectsCount extends React.Component {
           }
         </div>
         <div className='col-xl-4'>
-        <div className='m-portlet__body'>
-        <div className='row m-row--full-height' style={{width: '430px'}}>
-          <div className='col-sm-12 col-md-12 col-lg-6'>
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
-              <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                  <div className='m-widget26__number'>
-                    {this.props.objectsData.UsersCount.length > 0 ? this.props.objectsData.UsersCount[0].count : 0}
-                    <small>
+          <div className='m-portlet__body'>
+            <div className='row m-row--full-height' style={{width: '430px'}}>
+              <div className='col-sm-12 col-md-12 col-lg-6'>
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+                  <div className='m-portlet__body'>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.props.objectsData.UsersCount.length > 0 ? this.props.objectsData.UsersCount[0].count : 0}
+                        <small>
                       Users
                     </small>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className='m--space-30' />
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger'>
-              <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                  <div className='m-widget26__number'>
-                    {this.props.objectsData.PollsCount.length > 0 ? this.props.objectsData.PollsCount[0].count : 0}
-                    <small>
+                <div className='m--space-30' />
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger'>
+                  <div className='m-portlet__body'>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.props.objectsData.PollsCount.length > 0 ? this.props.objectsData.PollsCount[0].count : 0}
+                        <small>
                       Polls
                     </small>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className='col-sm-12 col-md-12 col-lg-6'>
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
-              <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                  <div className='m-widget26__number'>
-                    {this.props.objectsData.BroadcastsCount.length > 0 ? this.props.objectsData.BroadcastsCount[0].count : 0}
-                    <small>
+              <div className='col-sm-12 col-md-12 col-lg-6'>
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                  <div className='m-portlet__body'>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.props.objectsData.BroadcastsCount.length > 0 ? this.props.objectsData.BroadcastsCount[0].count : 0}
+                        <small>
                       Broadcasts
                     </small>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className='m--space-30' />
-            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-accent'>
-              <div className='m-portlet__body'>
-                <div className='m-widget26'>
-                  <div className='m-widget26__number'>
-                    {this.props.objectsData.SurveysCount.length > 0 ? this.props.objectsData.SurveysCount[0].count : 0}
-                    <small>
+                <div className='m--space-30' />
+                <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-accent'>
+                  <div className='m-portlet__body'>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.props.objectsData.SurveysCount.length > 0 ? this.props.objectsData.SurveysCount[0].count : 0}
+                        <small>
                       Surveys
                     </small>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -159,8 +161,6 @@ class dataObjectsCount extends React.Component {
           </div>
         </div>
       </div>
-  </div>
-</div>
 
     )
   }
