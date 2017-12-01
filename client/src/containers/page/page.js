@@ -282,6 +282,7 @@ class Page extends React.Component {
                           <tbody className='m-datatable__body'>
                             {
                             this.state.pagesData.map((page, i) => (
+                              (page.connected) ?
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
@@ -305,7 +306,7 @@ class Page extends React.Component {
 
                                   </span>
                                 </td>
-                              </tr>
+                              </tr> : ""
                             ))
                           }
                           </tbody>
