@@ -458,11 +458,10 @@ class OperationalDashboard extends React.Component {
                                       </span>
                                       <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
                                     Locale: {user.locale}
-                                      </span>
-                                    </div>
-
-                                    <div className='m-widget4__ext'>
-                                      <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                </span>
+                                  </div>
+                                  <div className='m-widget4__ext'>
+                                    <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                       See more
                                     </button>
                                     </div>
