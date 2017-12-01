@@ -12,15 +12,15 @@ class dataObjectsCount extends React.Component {
         <div className='col-xl-8'>
           { this.props.objectsData !== null && this.props.length > 0
           ? <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
-            <div className='m-portlet__head'>
-              <div className='m-portlet__head-caption'>
-                <div className='m-portlet__head-title'>
-                  <h3 className='m-portlet__head-text'>
+          <div className='m-portlet__head'>
+            <div className='m-portlet__head-caption'>
+              <div className='m-portlet__head-title'>
+                <h3 className='m-portlet__head-text'>
                   Pages Info
                 </h3>
-                </div>
               </div>
             </div>
+          </div>
             <div className='m-portlet__body'>
               <div className='m-widget21'>
                 <div className='row'>
@@ -114,8 +114,6 @@ class dataObjectsCount extends React.Component {
                     <small>
                       Users
                     </small>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -129,8 +127,6 @@ class dataObjectsCount extends React.Component {
                     <small>
                       Polls
                     </small>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -145,8 +141,6 @@ class dataObjectsCount extends React.Component {
                     <small>
                       Broadcasts
                     </small>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -160,8 +154,6 @@ class dataObjectsCount extends React.Component {
                     <small>
                       Surveys
                     </small>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -169,6 +161,8 @@ class dataObjectsCount extends React.Component {
           </div>
         </div>
       </div>
+  </div>
+</div>
 
     )
   }
