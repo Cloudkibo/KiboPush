@@ -180,9 +180,9 @@ class Convo extends React.Component {
                 this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
 
-              <div class=' info-0-12 alert-info alert-0-12 alert'><i class='fa fa-info icon-0-12' aria-hidden='true' />
-                <div class='msgContainer-0-11'><h4 class='headline-0-13'>0 Subscribers</h4>
-                    <div class='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
+              <div className=' info-0-12 alert-info alert-0-12 alert'><i class='fa fa-info icon-0-12' aria-hidden='true' />
+                <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
+                    <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
                       to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
                     </div>
                 </div>
@@ -309,8 +309,9 @@ class Convo extends React.Component {
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
-                            nextLabel={<i className='fa fa-angle-right' />}
+                          <ReactPaginate 
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 5)}
