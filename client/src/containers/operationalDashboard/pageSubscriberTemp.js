@@ -225,43 +225,43 @@ class PageSubscribers extends React.Component {
                       {
                         this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
                           ? <div>
-                          <table className='table table-striped'>
-                            <thead>
-                            <tr>
-                              <th>Profile Pic</th>
-                              <th>Subscriber</th>
-                              <th>Gender</th>
-                              <th>Locale</th>
-                              <th />
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
+                            <table className='table table-striped'>
+                              <thead>
+                                <tr>
+                                  <th>Profile Pic</th>
+                                  <th>Subscriber</th>
+                                  <th>Gender</th>
+                                  <th>Locale</th>
+                                  <th />
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {
                               this.state.pageSubscribersData.map((subscriber, i) => (
                                 <tr>
                                   <td><img alt='pic'
-                                           src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                           className='img-circle' width='60' height='60' /></td>
+                                    src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                    className='img-circle' width='60' height='60' /></td>
                                   <td>{subscriber.firstName}{' '}{subscriber.lastName}</td>
                                   <td>{subscriber.gender}</td>
                                   <td>{subscriber.locale}</td>
                                 </tr>
                               ))
                             }
-                            </tbody>
-                          </table>
-                          <ReactPaginate previousLabel={'previous'}
-                                         nextLabel={'next'}
-                                         breakLabel={<a>...</a>}
-                                         breakClassName={'break-me'}
-                                         pageCount={Math.ceil(this.state.totalLength / 5)}
-                                         marginPagesDisplayed={2}
-                                         pageRangeDisplayed={3}
-                                         onPageChange={this.handlePageClick}
-                                         containerClassName={'pagination'}
-                                         subContainerClassName={'pages pagination'}
-                                         activeClassName={'active'} />
-                        </div>
+                              </tbody>
+                            </table>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(this.state.totalLength / 5)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'} />
+                          </div>
                           : <p> No search results found. </p>
                       }
                     </div>

@@ -392,34 +392,34 @@ class OperationalDashboard extends React.Component {
                 }
               </div>
               <div className='row'>
-                  <Top10pages pagesData={this.props.toppages} />
-                    <div className='col-xl-6'>
-                      <div className='m-portlet m-portlet--full-height '>
-                        <div className='m-portlet__head'>
-                          <div className='m-portlet__head-caption'>
-                            <div className='m-portlet__head-title'>
-                              <h3 className='m-portlet__head-text'>Users</h3>
-                            </div>
-                          </div>
-                          <div className='m-portlet__head-tools'>
-                            <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                              <li className='nav-item m-tabs__item' style={{marginTop: '6px'}}>
-                                <div className='m-input-icon m-input-icon--left'>
-                                  <input type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
-                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                    <span><i className='la la-search' /></span>
-                                  </span>
-                                </div>
-                              </li>
-                              <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
-                                <a href='#' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                                  <i className='flaticon flaticon-more' />
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
+                <Top10pages pagesData={this.props.toppages} />
+                <div className='col-xl-6'>
+                  <div className='m-portlet m-portlet--full-height '>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>Users</h3>
                         </div>
-                        <div className='m-portlet__body'>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                          <li className='nav-item m-tabs__item' style={{marginTop: '6px'}}>
+                            <div className='m-input-icon m-input-icon--left'>
+                              <input type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
+                            </div>
+                          </li>
+                          <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
+                            <a href='#' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                              <i className='flaticon flaticon-more' />
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
                           <div className='tab-content'>
                             <div className='tab-pane active m-scrollable' role='tabpanel'>
                               <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -431,33 +431,32 @@ class OperationalDashboard extends React.Component {
                             <div className='tab-pane active' id='m_widget4_tab1_content'>
                               {
                                 this.state.usersData && this.state.usersData.length > 0
-                              ?
-                              <div className='m-widget4'>
-                                 { this.state.usersData.map((user, i) => (
-                                 <div className='m-widget4__item'>
-                                  <div className='m-widget4__img m-widget4__img--pic'>
-                                    <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
-                                  </div>
-                                  <div className='m-widget4__info'>
-                                    <span className='m-widget4__title'>
-                                      {user.name}
-                                    </span>
-                                    {user.email &&
-                                  <br /> }
-                                    {user.email &&
-                                     <span className='m-widget4__sub'>
+                              ? <div className='m-widget4'>
+                                { this.state.usersData.map((user, i) => (
+                                  <div className='m-widget4__item'>
+                                    <div className='m-widget4__img m-widget4__img--pic'>
+                                      <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
+                                    </div>
+                                    <div className='m-widget4__info'>
+                                      <span className='m-widget4__title'>
+                                        {user.name}
+                                      </span>
+                                      {user.email &&
+                                      <br /> }
+                                      {user.email &&
+                                      <span className='m-widget4__sub'>
                                         Email: {user.email}
-                                    </span>
+                                      </span>
                                   }
-                                <br />
-                                <span className='m-widget4__sub'>
+                                      <br />
+                                      <span className='m-widget4__sub'>
                                     Created At: {this.handleDate(user.createdAt)}
-                                </span>
-                                <br />
-                                <span className='m-widget4__sub'>
+                                      </span>
+                                      <br />
+                                      <span className='m-widget4__sub'>
                                     Gender: {user.gender}
-                                </span>
-                                <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                                      </span>
+                                      <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
                                     Locale: {user.locale}
                                 </span>
                                   </div>
@@ -465,14 +464,12 @@ class OperationalDashboard extends React.Component {
                                     <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                       See more
                                     </button>
+                                    </div>
                                   </div>
-                                </div>
                               ))}
                               </div>
                               : <div>No Data to display</div>
                               }
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -487,6 +484,8 @@ class OperationalDashboard extends React.Component {
           </div>
         </div>
       </div>
+</div>
+</div>
     )
   }
 }
