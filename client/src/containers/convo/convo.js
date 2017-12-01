@@ -180,7 +180,7 @@ class Convo extends React.Component {
                 this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
 
-              <div className=' info-0-12 alert-info alert-0-12 alert'><i class='fa fa-info icon-0-12' aria-hidden='true' />
+              <div className='alert alert-success'><i class='fa fa-info icon-0-12' aria-hidden='true' />
                 <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
                     <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
                       to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.

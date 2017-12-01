@@ -331,7 +331,7 @@ class Sidebar extends Component {
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-add' />
+                  <i className='m-menu__link-icon flaticon-cogwheel' />
                   <span className='m-menu__link-text'>Settings</span>
                 </Link>
               </li>
