@@ -311,8 +311,9 @@ class Page extends React.Component {
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
-                            nextLabel={<i className='fa fa-angle-right' />}
+                          <ReactPaginate 
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 5)}

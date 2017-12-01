@@ -36,40 +36,39 @@ class top10pages extends React.Component {
               <div className='tab-pane active' id='m_widget4_tab1_content'>
                 {
                   this.props.pagesData && this.props.pagesData.length > 0
-                ?
-                <div className='m-widget4'>
-                   { this.props.pagesData.map((page, i) => (
-                   <div className='m-widget4__item'>
-                    <div className='m-widget4__img m-widget4__img--pic'>
-                      <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} />
-                    </div>
-                    <div className='m-widget4__info'>
-                      <span className='m-widget4__title'>
-                        {page.pageName}
-                      </span>
-                      <br />
-                      { page.pageUserName
+                ? <div className='m-widget4'>
+                  { this.props.pagesData.map((page, i) => (
+                    <div className='m-widget4__item'>
+                      <div className='m-widget4__img m-widget4__img--pic'>
+                        <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} />
+                      </div>
+                      <div className='m-widget4__info'>
+                        <span className='m-widget4__title'>
+                          {page.pageName}
+                        </span>
+                        <br />
+                        { page.pageUserName
                         ? <span className='m-widget4__sub'>
                           Page Username: {page.pageUserName}
-                      </span>
+                        </span>
                     : <span className='m-widget4__sub'>
                       <b>Page Id: </b>{page.pageId}
-                  </span>}
-                  <br />
-                  <span className='m-widget4__sub'>
+                    </span>}
+                        <br />
+                        <span className='m-widget4__sub'>
                       Likes: {page.likes}
-                  </span>
-                  <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                        </span>
+                        <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
                       Subscribers: {page.subscribers}
-                  </span>
-                    </div>
+                        </span>
+                      </div>
 
-                    <div className='m-widget4__ext'>
-                      <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                      <div className='m-widget4__ext'>
+                        <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                         See Subscribers
                       </Link>
+                      </div>
                     </div>
-                  </div>
                 ))}
                 </div>
                 : <div>No Data to display</div>
