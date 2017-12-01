@@ -135,13 +135,8 @@ class Poll extends React.Component {
               this.props.subscribers && this.props.subscribers.length === 0 &&
               <div className='alert alert-success'>
                 <h4 className='block'>0 Subscribers</h4>
-                Your connected pages have zero subscribers. Unless you don not
-                have any subscriber, you will not be able to broadcast
-                message, polls and surveys.
-                Lets invite subscribers first. Dont worry, we will guide
-                you on how you can invite subscribers.
-                Click on 'Invite Subscribers' button on right side of the
-                page title.
+                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
               </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>

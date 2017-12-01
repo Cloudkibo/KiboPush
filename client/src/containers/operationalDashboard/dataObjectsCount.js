@@ -6,86 +6,162 @@ class dataObjectsCount extends React.Component {
   }
 
   render () {
+    var convertRate = this.props.objectsData.AllPagesCount && this.props.objectsData.AllPagesCount.length > 0 && this.props.objectsData.PagesCount && this.props.objectsData.PagesCount.length > 0 ? ((this.props.objectsData.PagesCount[0].count / this.props.objectsData.AllPagesCount[0].count) * 100).toFixed(1) + '%' : '0%'
     return (
-      <div className='container'>
-        {
-          this.props.objectsData !== null && this.props.length > 0
-          ? <div>
-            <div className='row'>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-primary op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-users' />
-                    </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.UsersCount && this.props.objectsData.UsersCount.length > 0) ? this.props.objectsData.UsersCount[0].count : 0}</div>
-                    <div className='mr-5'>Users!</div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-warning op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-facebook' />
-                    </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.PagesCount && this.props.objectsData.PagesCount.length > 0) ? this.props.objectsData.PagesCount[0].count : 0}</div>
-                    <div className='mr-5'>Pages!</div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-success op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-users' />
-                    </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.SubscribersCount && this.props.objectsData.SubscribersCount.length > 0) ? this.props.objectsData.SubscribersCount[0].count : 0}</div>
-                    <div className='mr-5'>Subscribers!</div>
-                  </div>
-                </div>
+      <div className='row'>
+        <div className='col-xl-8'>
+          { this.props.objectsData !== null && this.props.length > 0
+          ? <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
+          <div className='m-portlet__head'>
+            <div className='m-portlet__head-caption'>
+              <div className='m-portlet__head-title'>
+                <h3 className='m-portlet__head-text'>
+                  Pages Info
+                </h3>
               </div>
             </div>
-            <br />
-            <div className='row'>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-purple op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-bullhorn' />
+          </div>
+            <div className='m-portlet__body'>
+              <div className='m-widget21'>
+                <div className='row'>
+                  <div className='col'>
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa fa-facebook m--font-light' />
+                        </a>
+                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.props.objectsData.AllPagesCount.length > 0 ? this.props.objectsData.AllPagesCount[0].count : 0}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Total Pages
+                        </span>
+                      </div>
                     </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.BroadcastsCount && this.props.objectsData.BroadcastsCount.length > 0) ? this.props.objectsData.BroadcastsCount[0].count : 0}</div>
-                    <div className='mr-5'>Broadcasts!</div>
+                  </div>
+                  <div className='col'>
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa fa-facebook m--font-light' />
+                        </a>
+                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.props.objectsData.PagesCount.length > 0 ? this.props.objectsData.PagesCount[0].count : 0}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Connected Pages
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col'>
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa flaticon-users m--font-light' />
+                        </a>
+                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.props.objectsData.SubscribersCount.length > 0 ? this.props.objectsData.SubscribersCount[0].count : 0}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Subscribers
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-danger op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-list' />
+                <div className='m--space-30' />
+                <div className='m-widget15'>
+                  <div className='m-widget15__item'>
+                    <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
+                      {convertRate}
+                    </span>
+                    <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
+                      Pages Connected
+                    </span>
+                    <div className='m--space-10' />
+                    <div className='progress m-progress--sm' style={{height: '6px'}}>
+                      <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.props.objectsData.PagesCount[0].count / this.props.objectsData.AllPagesCount[0].count) * 100} aria-valuemin='0' aria-valuemax='100' />
                     </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.PollsCount && this.props.objectsData.PollsCount.length > 0) ? this.props.objectsData.PollsCount[0].count : 0}</div>
-                    <div className='mr-5'>Polls!</div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-xl-4 col-sm-12'>
-                <div className='op-dash-card text-white op-dash-bg-grey op-dash-o-hidden h-100'>
-                  <div className='op-dash-card-body'>
-                    <div className='op-dash-card-body-icon'>
-                      <i className='fa fa-fw fa-list-alt' />
-                    </div>
-                    <div className='dashboard-huge'>{(this.props.objectsData.SurveysCount && this.props.objectsData.SurveysCount.length > 0) ? this.props.objectsData.SurveysCount[0].count : 0}</div>
-                    <div className='mr-5'>Surveys!</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         : <p>No data to display </p>
-        }
+          }
+        </div>
+        <div className='col-xl-4'>
+        <div className='m-portlet__body'>
+        <div className='row m-row--full-height' style={{width: '430px'}}>
+          <div className='col-sm-12 col-md-12 col-lg-6'>
+            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+              <div className='m-portlet__body'>
+                <div className='m-widget26'>
+                  <div className='m-widget26__number'>
+                    {this.props.objectsData.UsersCount.length > 0 ? this.props.objectsData.UsersCount[0].count : 0}
+                    <small>
+                      Users
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='m--space-30' />
+            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger'>
+              <div className='m-portlet__body'>
+                <div className='m-widget26'>
+                  <div className='m-widget26__number'>
+                    {this.props.objectsData.PollsCount.length > 0 ? this.props.objectsData.PollsCount[0].count : 0}
+                    <small>
+                      Polls
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-sm-12 col-md-12 col-lg-6'>
+            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+              <div className='m-portlet__body'>
+                <div className='m-widget26'>
+                  <div className='m-widget26__number'>
+                    {this.props.objectsData.BroadcastsCount.length > 0 ? this.props.objectsData.BroadcastsCount[0].count : 0}
+                    <small>
+                      Broadcasts
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='m--space-30' />
+            <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-accent'>
+              <div className='m-portlet__body'>
+                <div className='m-widget26'>
+                  <div className='m-widget26__number'>
+                    {this.props.objectsData.SurveysCount.length > 0 ? this.props.objectsData.SurveysCount[0].count : 0}
+                    <small>
+                      Surveys
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+  </div>
+</div>
+
     )
   }
 }
