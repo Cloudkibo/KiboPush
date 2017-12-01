@@ -22,6 +22,9 @@ import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import { isEmoji, getmetaurl } from './utilities'
 import Halogen from 'halogen'
+import Slider from 'react-slick'
+import RightArrow from '../convo/RightArrow'
+import LeftArrow from '../convo/LeftArrow'
 
 const styles = {
   iconclass: {
@@ -81,6 +84,7 @@ class ChatBox extends React.Component {
     this.sendGif = this.sendGif.bind(this)
     this.setDataPayload = this.setDataPayload.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
+    this.createGallery = this.createGallery.bind(this)
   }
 
   componentDidMount () {
@@ -432,8 +436,47 @@ class ChatBox extends React.Component {
     }
   }
 
+  createGallery (cards) {
+    var temp = []
+
+    for (var i = 0; i < cards.length; i++) {
+      temp.push({
+        elemnet: (<div>
+          <div style={{width: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+            <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+              <a href={cards[i].iamge_url} target='_blank'>
+                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].iamge_url} />
+              </a>
+            </div>
+            <div style={{marginTop: '10px', padding: '5px'}}>
+              <div style={{textAlign: 'left', fontWeight: 'bold'}}>{cards[i].title}</div>
+              <div style={{textAlign: 'left', color: '#ccc'}}>{cards[i].subtitle}</div>
+            </div>
+          </div>
+        </div>),
+        key: i
+      })
+    }
+    console.log(temp)
+    return (
+      temp.map((card, i) => (
+        <div key={card.key}>{card.element}</div>
+      ))
+    )
+  }
+
   render () {
     console.log('current session', this.props.currentSession)
+    var settings = {
+      arrows: true,
+      dots: false,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      nextArrow: <RightArrow />,
+      prevArrow: <LeftArrow />
+    }
     return (
       <div className='col-xl-5'>
         <Popover
@@ -670,7 +713,45 @@ class ChatBox extends React.Component {
                                             <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.description}</div>
                                           </div>
                                         </div>
+                                        {
+                                          msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                          msg.payload.buttons.map((b, i) => (
+                                            <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                              {b.title}
+                                            </a>
+                                          ))
+                                        }
                                       </div>
+                                    </div>
+                                    : msg.payload.componentType === 'gallery'
+                                    ? <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                      <Slider ref={(c) => { this.slider = c }} {...settings}>
+                                        {
+                                          msg.payload.cards.map((card, i) => (
+                                            <div key={i}>
+                                              <div id={i} style={{maxWidth: '200px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                                  <a href={card.image_url} target='_blank'>
+                                                    <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
+                                                  </a>
+                                                </div>
+                                                <div style={{marginTop: '10px', padding: '5px'}}>
+                                                  <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
+                                                  <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                </div>
+                                              </div>
+                                              {
+                                                card.buttons && card.buttons.length > 0 &&
+                                                card.buttons.map((b, i) => (
+                                                  <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                                    {b.title}
+                                                  </a>
+                                                ))
+                                              }
+                                            </div>
+                                          ))
+                                        }
+                                      </Slider>
                                     </div>
                                     : msg.payload.componentType === 'image'
                                     ? <div className='m-messenger__message-content'>
@@ -770,10 +851,20 @@ class ChatBox extends React.Component {
                                         {msg.payload.text}
                                       </div>
                                     </div>
-                                    : <div className='m-messenger__message-content'>
-                                      <div className='m-messenger__message-text'>
-                                        {msg.payload.text}
+                                    : <div>
+                                      <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-text'>
+                                          {msg.payload.text}
+                                        </div>
                                       </div>
+                                      {
+                                        msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                        msg.payload.buttons.map((b, i) => (
+                                          <a key={i} href={b.url} target='_blank' style={{borderColor: '#716aca', width: '100%', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
+                                            {b.title}
+                                          </a>
+                                        ))
+                                      }
                                     </div>
                                   )}
                                 </div>
