@@ -318,7 +318,7 @@ class Convo extends React.Component {
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
-                            containerClassName={'pagination pagination-lg'}
+                            containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
