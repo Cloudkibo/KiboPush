@@ -13,10 +13,10 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import { Alert } from 'react-bs-notifier'
-import AlertContainer from 'react-alert'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -26,7 +26,8 @@ class Survey extends React.Component {
       alertMessage: '',
       alertType: '',
       surveysData: [],
-      totalLength: 0
+      totalLength: 0,
+      sent: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -92,25 +93,15 @@ class Survey extends React.Component {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
     }
-    if (this.props.successTime !== nextProps.successTime) {
-      console.log('SuccessMessage: ', nextProps.successMessage)
+    if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
-      this.msg.show(nextProps.successMessage, {
-        time: 1500,
-        type: 'success'
-      })
-    } else if (this.props.errorTime !== nextProps.errorMessage) {
-      console.log('ErrorMessage: ', nextProps.errorMessage)
+    } else if (nextProps.errorMessage || nextProps.errorMessage) {
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
-      })
-      this.msg.show(nextProps.errorMessage, {
-        time: 1500,
-        type: 'error'
       })
     } else {
       this.setState({
@@ -118,10 +109,6 @@ class Survey extends React.Component {
         alertType: ''
       })
     }
-    this.setState({
-      alertMessage: '',
-      alertType: ''
-    })
   }
 
   showAlert (message, type) {
@@ -168,7 +155,7 @@ class Survey extends React.Component {
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Subscribers</h4>
                     Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
                   </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -273,15 +260,16 @@ class Survey extends React.Component {
 
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
-                                  onClick={() => this.props.sendsurvey(
-                                        survey)}> Send
+                                  onClick={() => {
+                                    this.props.sendsurvey(survey)
+                                  }}>
+                                  Send
                               </button>
                               </span>
                               }
 
                                 </td>
                               </tr>
-
                         ))
                       }
                           </tbody>
@@ -302,6 +290,14 @@ class Survey extends React.Component {
                     <p> No data to display </p>
                   </div>
                 }
+                      {
+                  this.state.alertMessage !== '' &&
+                  <center>
+                    <Alert type={this.state.alertType} >
+                      {this.state.alertMessage}
+                    </Alert>
+                  </center>
+                  }
                     </div>
                   </div>
                 </div>

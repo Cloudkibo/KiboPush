@@ -381,178 +381,100 @@ class OperationalDashboard extends React.Component {
     return (
       <div>
         <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='ui-block'>
-            <div className='ui-block-content'>
-              <div className='ui-block'>
-                <div className='ui-block-content'>
-                  <Select
-                    name='form-field-name'
-                    options={this.state.options}
-                    onChange={this.logChange}
-                    placeholder='Filter by last:'
-                    value={this.state.selectedValue}
-                    clearValueText='Filter by:'
-                  />
-                  <br />
+            <div className='m-content'>
+              <div className='row'>
+                { this.state.objectsLength > 0 &&
                   <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
-                </div>
+                }
               </div>
-              <br />
-              {
-                this.state.showTopTenPages
-                ? <Top10pages
-                  iconClassName={'fa fa-facebook'}
-                  title={'Top Ten Pages'}
-                  hideContent={this.hideContent}
-                  pagesData={this.props.toppages}
-                />
-                : <ListItem iconClassName={'fa fa-facebook'} title={'Top Ten Pages'} showContent={this.showContent} />
-              }
-              {/*
-                this.state.showReports
-                ? <Reports
-                  iconClassName={'fa fa-line-chart'}
-                  title={'Reports'}
-                  hideContent={this.hideContent}
-                  lineChartData={this.state.chartData}
-                  onDaysChange={this.onDaysChange}
-                  selectedDays={this.state.selectedDays}
-                />
-                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
-              */}
-              {
-                this.state.showUsers
-                ? <div style={{boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', margin: '10px', borderRadius: '5px', border: '1px solid #ccc'}} className='card'>
-                  <div style={{width: '100%', padding: '1rem'}} className='card-block'>
-                    <div style={{display: 'inline-block', padding: '20px'}}>
-                      <h4 className='card-title'><i className='fa fa-users' aria-hidden='true' /> Users</h4>
-                    </div>
-                    <div className='pull-right' style={{display: 'inline-block', padding: '10px'}}>
-                      <div style={{width: '100%', textAlign: 'center'}}>
-                        <div onClick={() => this.hideContent('Users')} style={{cursor: 'pointer', display: 'inline-block', padding: '10px'}}>
-                          <h4><i className='fa fa-chevron-circle-up' aria-hidden='true' /></h4>
+              <div className='row'>
+                  <Top10pages pagesData={this.props.toppages} />
+                    <div className='col-xl-6'>
+                      <div className='m-portlet m-portlet--full-height '>
+                        <div className='m-portlet__head'>
+                          <div className='m-portlet__head-caption'>
+                            <div className='m-portlet__head-title'>
+                              <h3 className='m-portlet__head-text'>Users</h3>
+                            </div>
+                          </div>
+                          <div className='m-portlet__head-tools'>
+                            <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                              <li className='nav-item m-tabs__item' style={{marginTop: '6px'}}>
+                                <div className='m-input-icon m-input-icon--left'>
+                                  <input type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
+                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                    <span><i className='la la-search' /></span>
+                                  </span>
+                                </div>
+                              </li>
+                              <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
+                                <a href='#' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                  <i className='flaticon flaticon-more' />
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
-                        <div style={{display: 'inline-block', padding: '10px'}} />
+                        <div className='m-portlet__body'>
+                          <div className='tab-content'>
+                            <div className='tab-pane active' id='m_widget4_tab1_content'>
+                              {
+                                this.state.usersData && this.state.usersData.length > 0
+                              ?
+                              <div className='m-widget4'>
+                                 { this.state.usersData.map((user, i) => (
+                                 <div className='m-widget4__item'>
+                                  <div className='m-widget4__img m-widget4__img--pic'>
+                                    <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
+                                  </div>
+                                  <div className='m-widget4__info'>
+                                    <span className='m-widget4__title'>
+                                      {user.name}
+                                    </span>
+                                    {user.email &&
+                                  <br /> }
+                                    {user.email &&
+                                     <span className='m-widget4__sub'>
+                                        Email: {user.email}
+                                    </span>
+                                  }
+                                <br />
+                                <span className='m-widget4__sub'>
+                                    Created At: {this.handleDate(user.createdAt)}
+                                </span>
+                                <br />
+                                <span className='m-widget4__sub'>
+                                    Gender: {user.gender}
+                                </span>
+                                <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                                    Locale: {user.locale}
+                                </span>
+                                  </div>
+
+                                  <div className='m-widget4__ext'>
+                                    <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                      See more
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                              </div>
+                              : <div>No Data to display</div>
+                              }
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className='row'>
-                      <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                        {
-                          this.props.users && this.props.users.length > 0
-                          ? <div className='table-responsive'>
-                            <form>
-                              <div className='form-row' style={{display: 'flex'}}>
-                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                                  <label> Search </label>
-                                  <input type='text' placeholder='Search Users...' className='form-control' onChange={this.searchUser} />
-                                </div>
-                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                                  <label> Gender </label>
-                                  <Select
-                                    name='form-field-name'
-                                    options={this.state.genders}
-                                    onChange={this.onFilterByGender}
-                                    placeholder='Filter by gender...'
-                                    value={this.state.genderValue}
-                                  />
-                                </div>
-                                <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                                  <label> Locale </label>
-                                  <Select
-                                    name='form-field-name'
-                                    options={this.props.locales}
-                                    onChange={this.onFilterByLocale}
-                                    placeholder='Filter by locale...'
-                                    value={this.state.localeValue}
-                                  />
-                                </div>
-                              </div>
-                            </form>
-                            {
-                              this.state.usersData && this.state.usersData.length > 0
-                              ? <div>
-                                <table className='table table-striped'>
-                                  <thead>
-                                    <tr>
-                                      <th>Profile Pic</th>
-                                      <th>Users</th>
-                                      <th>Email</th>
-                                      <th>Gender</th>
-                                      <th>Locale</th>
-                                      <th>Created At</th>
-                                      <th />
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {
-                                      this.state.usersData.map((user, i) => (
-                                        <tr>
-                                          <td><img alt='pic'
-                                            src={(user.profilePic) ? user.profilePic : ''}
-                                            className='img-circle' width='60' height='60' /></td>
-                                          <td>{user.name}</td>
-                                          <td>{user.email}</td>
-                                          <td>{user.gender}</td>
-                                          <td>{user.locale}</td>
-                                          <td>{this.handleDate(user.createdAt)}</td>
-                                          <td>
-                                            <button className='btn btn-primary btn-sm'
-                                              style={{float: 'left', margin: 2}} onClick={() => this.goToBroadcasts(user)}>See more
-                                            </button>
-                                          </td>
-                                        </tr>
-                                      ))
-                                    }
-                                  </tbody>
-                                </table>
-                                <div>
-                                  <div style={{display: 'inline-block'}}>
-                                    <ReactPaginate previousLabel={'previous'}
-                                      nextLabel={'next'}
-                                      breakLabel={<a>...</a>}
-                                      breakClassName={'break-me'}
-                                      pageCount={Math.ceil(this.state.totalLength / 5)}
-                                      marginPagesDisplayed={2}
-                                      pageRangeDisplayed={3}
-                                      onPageChange={this.handlePageClick}
-                                      containerClassName={'pagination'}
-                                      subContainerClassName={'pages pagination'}
-                                      activeClassName={'active'} />
-                                  </div>
-                                  <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}}>
-                                    <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                                      <label>Get data in CSV file: </label>
-                                    </div>
-                                    <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                                      <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' onClick={() => this.getFile()} />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              : <p> No search results found. </p>
-                            }
-                          </div>
-                          : <div className='table-responsive'>
-                            <p> No data to display </p>
-                          </div>
-                        }
-                      </main>
-                    </div>
-                  </div>
-                </div>
-                : <ListItem iconClassName={'fa fa-users'} title={'Users'} showContent={this.showContent} />
-              }
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
     )
   }
 }

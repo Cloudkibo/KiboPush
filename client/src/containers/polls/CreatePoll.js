@@ -352,7 +352,7 @@ class CreatePoll extends React.Component {
                       </div>
                       { this.state.alert &&
                         <center>
-                          <Alert type='danger'>
+                          <Alert type='danger' style={{marginTop: '30px'}}>
                             You have either left one or more responses empty or you
                             have not asked anything. Please ask something and fill all
                             three responses in order to create the poll.
