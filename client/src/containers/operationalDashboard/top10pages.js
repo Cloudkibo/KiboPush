@@ -8,6 +8,7 @@ class top10pages extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onPageClick = this.onPageClick.bind(this)
+    $(".content").mCustomScrollbar()
   }
   onPageClick (e, page) {
     console.log('Page Click', page)
@@ -26,6 +27,12 @@ class top10pages extends React.Component {
           </div>
           <div className='m-portlet__body'>
             <div className='tab-content'>
+              <div className='tab-pane active m-scrollable' role='tabpanel'>
+                <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                  <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                    <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                      <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+
               <div className='tab-pane active' id='m_widget4_tab1_content'>
                 {
                   this.props.pagesData && this.props.pagesData.length > 0
@@ -72,6 +79,11 @@ class top10pages extends React.Component {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+            </div>
+          </div>
+        </div>
     )
   }
 }

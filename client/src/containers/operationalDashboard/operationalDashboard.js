@@ -421,6 +421,13 @@ class OperationalDashboard extends React.Component {
                         </div>
                         <div className='m-portlet__body'>
                           <div className='tab-content'>
+                            <div className='tab-pane active m-scrollable' role='tabpanel'>
+                              <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                                <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                                  <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                    <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+
+                          <div className='tab-content'>
                             <div className='tab-pane active' id='m_widget4_tab1_content'>
                               {
                                 this.state.usersData && this.state.usersData.length > 0
@@ -470,6 +477,12 @@ class OperationalDashboard extends React.Component {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
               </div>
             </div>
           </div>
