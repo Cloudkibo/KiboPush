@@ -82,8 +82,14 @@ class Page extends React.Component {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
       console.log('Pages Updated', nextProps.pages)
-      this.displayData(0, nextProps.pages)
-      this.setState({ totalLength: nextProps.pages.length })
+      var connectedPages = []
+      nextProps.pages.map((page, i) => {
+        if (page.connected){
+          connectedPages.push(page)
+        }
+      })
+      this.displayData(0, connectedPages)
+      this.setState({ totalLength: connectedPages.length })
     }
   }
 
