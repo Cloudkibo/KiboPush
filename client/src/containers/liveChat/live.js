@@ -178,16 +178,26 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       if (this.state.activeSession === '') {
-        for (var a = 0; a < nextProps.sessions.length; a++) {
-          if (nextProps.sessions[a].subscriber_id !== null) {
-            this.setState({activeSession: nextProps.sessions[a]})
-            break
+        if (this.props.location.state && this.props.location.state.session_id) {
+          console.log(this.props.location.state.session_id)
+          for (var p = 0; p < nextProps.sessions.length; p++) {
+            if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
+              this.setState({activeSession: nextProps.sessions[p]})
+              break
+            }
+          }
+        } else {
+          for (var a = 0; a < nextProps.sessions.length; a++) {
+            if (nextProps.sessions[a].subscriber_id !== null) {
+              this.setState({activeSession: nextProps.sessions[a]})
+              break
+            }
           }
         }
       }
     }
 
-    if (nextProps.unreadSession) {
+    if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
       console.log('unreadSession')
       var temp = this.state.sessionsData
       for (var i = 0; i < temp.length; i++) {
