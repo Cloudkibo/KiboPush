@@ -21,7 +21,6 @@ import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-//  import Notification from 'react-web-notification'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
@@ -189,52 +188,6 @@ class Sidebar extends Component {
         return (null)
       }
     }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
-    this.setState({ignore: true})
-
-    if (nextProps.sessions) {
-      this.setState({loading: false})
-    }
-
-    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
-    }
-
-    if (nextProps.socketSession && nextProps.socketSession !== '') {
-      console.log('New Message Received at following session id', nextProps.socketSession)
-      console.log('New Message data', nextProps.socketData)
-      if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
-        this.props.fetchUserChats(nextProps.socketSession)
-      } else if (nextProps.socketSession !== '') {
-        var isPresent = false
-        this.props.sessions.map((sess) => {
-          if (sess._id === nextProps.socketSession) {
-            isPresent = true
-          }
-        })
-
-        if (isPresent) {
-          console.log('Session exists ignoring the message')
-          this.props.resetSocket()
-        } else {
-          console.log('New Session Detected, initiating session fetch')
-          this.props.fetchSessions({ company_id: this.props.user._id })
-        }
-      }
-    }
-  }
-
-  handleNotificationOnShow () {
-    this.setState({ignore: true})
-  }
-
-  onNotificationClick () {
-    window.focus()
-    console.log('Notificaation was clicked')
-    this.setState({ignore: true})
   }
 
   render () {
