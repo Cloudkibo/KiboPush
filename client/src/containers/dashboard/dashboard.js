@@ -46,7 +46,10 @@ class Dashboard extends React.Component {
     console.log('NextProps :', nextprops)
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-      browserHistory.push('/addPages')
+      browserHistory.push({
+        pathname: '/addPages',
+        state: {showMsg: true}
+      })
     } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
       // this means more than 0 subscribers
       console.log('More than 0 subscribers')
