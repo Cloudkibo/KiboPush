@@ -55,9 +55,9 @@ class GettingStarted extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.successMessage) {
+    if (nextprops.successMessage && this.state.step !== 0) {
       this.generateAlert('success', nextprops.successMessage)
-    } else if (nextprops.errorMessage) {
+    } else if (nextprops.errorMessage && this.state.step !== 0) {
       this.generateAlert('danger', nextprops.errorMessage)
     }
   }
