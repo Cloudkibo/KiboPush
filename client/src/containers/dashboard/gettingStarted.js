@@ -19,6 +19,7 @@ class GettingStarted extends React.Component {
       alerts: [],
       step: 0
     }
+    console.log('constructor in getting started')
     this.selectPage = this.selectPage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.nextStep = this.nextStep.bind(this)
