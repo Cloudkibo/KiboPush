@@ -85,6 +85,8 @@ class ChatBox extends React.Component {
     this.setDataPayload = this.setDataPayload.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.createGallery = this.createGallery.bind(this)
+    this.getmainURL = this.getmainURL.bind(this)
+    this.geturl = this.geturl.bind(this)
   }
 
   componentDidMount () {
@@ -465,6 +467,14 @@ class ChatBox extends React.Component {
     )
   }
 
+  geturl (payload) {
+    return `https://maps.googleapis.com/maps/api/staticmap?center=${payload.coordinates.lat},${payload.coordinates.long}&zoom=13&scale=false&size=400x200&maptype=roadmap&format=png&key=AIzaSyDDTb4NWqigQmW_qCVmSAkmZIIs3tp1x8Q&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7Clabel:1%7C${payload.coordinates.lat},${payload.coordinates.long}`
+  }
+
+  getmainURL (payload) {
+    return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
+  }
+
   render () {
     console.log('current session', this.props.currentSession)
     var settings = {
@@ -582,6 +592,26 @@ class ChatBox extends React.Component {
                                             />
                                           </a>
                                         </div>
+                                        : msg.payload.attachments[0].type === 'location'
+                                        ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.props.currentSession.subscriber_id.firstName} shared an address
+                                          </div>
+                                          <table style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
+                                            <tr>
+                                              <td>
+                                                <a href={this.getmainURL(msg.payload.attachments[0].payload)} target='_blank'>
+                                                  <img style={{width: '200px'}} src={this.geturl(msg.payload.attachments[0].payload)} />
+                                                </a>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>
+                                                <p style={{fontWeight: 'bold'}}> {msg.payload.attachments[0].title} </p>
+                                              </td>
+                                            </tr>
+                                          </table>
+                                        </div>
                                         : msg.url_meta
                                         ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
@@ -672,7 +702,7 @@ class ChatBox extends React.Component {
                                   </div>
                                 </div>
                               </div>
-                              : <div style={{marginLeft: 0, marginRight: 0}} className='row'>
+                              : <div style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
                                 <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
                                   <div className='m-messenger__message-body'>
                                     <div className='m-messenger__message-arrow' />
