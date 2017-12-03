@@ -672,7 +672,7 @@ class ChatBox extends React.Component {
                                   </div>
                                 </div>
                               </div>
-                              : <div style={{marginLeft: 0, marginRight: 0}} className='row'>
+                              : <div style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
                                 <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
                                   <div className='m-messenger__message-body'>
                                     <div className='m-messenger__message-arrow' />
