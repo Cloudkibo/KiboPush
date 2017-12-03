@@ -308,7 +308,7 @@ class LiveChat extends React.Component {
                               </span>
                             </div>
                           </div>
-                          <div className='col-md-2'>
+                          <div style={{paddingLeft: 0}} className='col-md-2'>
                             <div className='m-portlet__head-tools'>
                               <ul className='m-portlet__nav'>
                                 <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
