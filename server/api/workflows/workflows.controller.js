@@ -21,7 +21,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-
   logger.serverLog(TAG, 'Workflows create payload ' + JSON.stringify(req.body))
 
   let parametersMissing = false
