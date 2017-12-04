@@ -97,7 +97,7 @@ exports.getfbMessage = function (req, res) {
           const pageId = event.recipient.id
           logger.serverLog(TAG, `getfbmsg ${JSON.stringify(event)}`)
           // get accesstoken of page
-          Pages.findOne({pageId: pageId})
+          Pages.findOne({pageId: pageId, connected: true})
             .populate('userId')
             .exec((err, page) => {
               if (err) {
