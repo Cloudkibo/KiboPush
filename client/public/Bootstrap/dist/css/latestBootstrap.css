@@ -14,11 +14,6 @@
   height: 180vh !important;
 }
 
-
-[data-reactroot] > div {
-  height: 100% !important; 
-}
-
 div.m-body{
   height: 100% !important; 
 }
