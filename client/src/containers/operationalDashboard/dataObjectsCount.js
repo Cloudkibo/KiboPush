@@ -1,12 +1,15 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
+import Select from 'react-select'
+
 class dataObjectsCount extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       options: [
         { value: 10, label: '10 days' },
-        { value: 30, label: '30 days' }]
+        { value: 30, label: '30 days' }],
+      selectedValue: 0
     }
   }
 
@@ -116,6 +119,16 @@ class dataObjectsCount extends React.Component {
                     Other Info
                   </h3>
                 </div>
+              </div>
+              <div className='m-portlet__head-tools' style={{textAlign: 'left'}}>
+                <Select
+                  name='form-field-name'
+                  options={this.props.options}
+                  onChange={this.props.logChange}
+                  placeholder='Filter by last:'
+                  value={this.props.selectedValue}
+                  clearValueText='Filter by:'
+                  />
               </div>
             </div>
           </div>
