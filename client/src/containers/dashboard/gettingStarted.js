@@ -19,6 +19,7 @@ class GettingStarted extends React.Component {
       alerts: [],
       step: 0
     }
+    console.log('constructor in getting started')
     this.selectPage = this.selectPage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.nextStep = this.nextStep.bind(this)
@@ -54,9 +55,9 @@ class GettingStarted extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.successMessage) {
+    if (nextprops.successMessage && this.state.step !== 0) {
       this.generateAlert('success', nextprops.successMessage)
-    } else if (nextprops.errorMessage) {
+    } else if (nextprops.errorMessage && this.state.step !== 0) {
       this.generateAlert('danger', nextprops.errorMessage)
     }
   }

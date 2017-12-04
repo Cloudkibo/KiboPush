@@ -178,16 +178,26 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       if (this.state.activeSession === '') {
-        for (var a = 0; a < nextProps.sessions.length; a++) {
-          if (nextProps.sessions[a].subscriber_id !== null) {
-            this.setState({activeSession: nextProps.sessions[a]})
-            break
+        if (this.props.location.state && this.props.location.state.session_id) {
+          console.log(this.props.location.state.session_id)
+          for (var p = 0; p < nextProps.sessions.length; p++) {
+            if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
+              this.setState({activeSession: nextProps.sessions[p]})
+              break
+            }
+          }
+        } else {
+          for (var a = 0; a < nextProps.sessions.length; a++) {
+            if (nextProps.sessions[a].subscriber_id !== null) {
+              this.setState({activeSession: nextProps.sessions[a]})
+              break
+            }
           }
         }
       }
     }
 
-    if (nextProps.unreadSession) {
+    if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
       console.log('unreadSession')
       var temp = this.state.sessionsData
       for (var i = 0; i < temp.length; i++) {
@@ -298,7 +308,7 @@ class LiveChat extends React.Component {
                               </span>
                             </div>
                           </div>
-                          <div className='col-md-2'>
+                          <div style={{paddingLeft: 0}} className='col-md-2'>
                             <div className='m-portlet__head-tools'>
                               <ul className='m-portlet__nav'>
                                 <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
@@ -390,7 +400,7 @@ class LiveChat extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className='m-portlet__body'>
+                      <div style={{height: '525px', scrollY: 'scroll'}} className='m-portlet__body'>
                         <div className='tab-content'>
                           <div className='tab-pane active' id='m_widget4_tab1_content'>
                             <div className='m-widget4'>

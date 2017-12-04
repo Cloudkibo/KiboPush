@@ -179,16 +179,15 @@ class Convo extends React.Component {
                 this.props.subscribers &&
                 this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
-                  <center>
-                    <Alert type='info' headline='0 Subscribers'>
-                      Your connected pages have zero subscribers. Unless you
-                      do not have any subscriber, you will not be able to
-                      broadcast message, polls and surveys.
-                      To invite subscribers click <Link
-                        to='/invitesubscribers'
-                        style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                    </Alert>
-                  </center>
+
+              <div className='alert alert-success'><i class='fa fa-info icon-0-12' aria-hidden='true' />
+                <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
+                    <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
+                      to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                    </div>
+                </div>
+              </div>
+
                 </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -213,7 +212,7 @@ class Convo extends React.Component {
                       <div className='m-portlet__head-tools'>
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
-                            ? <Link to='/createconvo'>
+                            ? <a href='#'>
                               <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                                 <span>
                                   <i className='la la-plus' />
@@ -222,13 +221,13 @@ class Convo extends React.Component {
                                   </span>
                                 </span>
                               </button>
-                            </Link>
+                            </a>
                             : <Link to='createconvo'>
                               <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                                 <span>
                                   <i className='la la-plus' />
                                   <span>
-                                    Create Broadcast
+                                    Create New Broadcast
                                   </span>
                                 </span>
                               </button>
@@ -310,15 +309,16 @@ class Convo extends React.Component {
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
-                            nextLabel={<i className='fa fa-angle-right' />}
+                          <ReactPaginate 
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 5)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
-                            containerClassName={'pagination pagination-lg'}
+                            containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>

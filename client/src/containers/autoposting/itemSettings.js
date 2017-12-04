@@ -324,7 +324,7 @@ class ItemSettings extends React.Component {
                           Pages
                         </label>
                         <div className='col-lg-6'>
-                          <select id='selectPage' value={this.state.pageValue} />
+                          <select id='selectPage' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -332,7 +332,7 @@ class ItemSettings extends React.Component {
                           Gender
                         </label>
                         <div className='col-lg-6'>
-                          <select id='genderSelect' value={this.state.genderValue} />
+                          <select id='genderSelect' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
@@ -340,7 +340,7 @@ class ItemSettings extends React.Component {
                           Locale
                         </label>
                         <div className='col-lg-6'>
-                          <select id='localeSelect' value={this.state.localeValue} />
+                          <select id='localeSelect' />
                         </div>
                       </div>
                     </div>

@@ -182,7 +182,7 @@ class Survey extends React.Component {
                       <div className='m-portlet__head-tools'>
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
-                          ? <Link to='addsurvey'>
+                          ? <a href="#">
                             <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                               <span>
                                 <i className='la la-plus' />
@@ -191,7 +191,7 @@ class Survey extends React.Component {
                                 </span>
                               </span>
                             </button>
-                          </Link>
+                          </a>
                           : <Link to='addsurvey' >
                             <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>

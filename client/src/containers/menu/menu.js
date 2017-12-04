@@ -348,18 +348,18 @@ class Menu extends React.Component {
                 </div>
               </div>
             </div>
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-        <div className='container'>
-          <br /><br /><br /><br />
-          <div className='ui-block'>
-            <Link to='createMessage' className='pull-right'>
-              <button className='btn btn-sm btn-primary'>
+            <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+            <div className='container'>
+              <br /><br /><br /><br />
+              <div className='ui-block'>
+                <Link to='createMessage' className='pull-right'>
+                  <button className='btn btn-sm btn-primary'>
               SEND MESSAGE
               </button>
-            </Link>
-            <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
-            <ul style={{paddingLeft: '20px', width: '30%'}}>
-              {
+                </Link>
+                <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
+                <ul style={{paddingLeft: '20px', width: '30%'}}>
+                  {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
@@ -414,11 +414,11 @@ class Menu extends React.Component {
                           <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                             placeholder={itm.title} className='form-control'
                             onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
-                          <span className="m-input-icon__icon m-input-icon__icon--right">
-                        <div onClick={this.addItem.bind(this)} style={{margin: 10}}>
-                              <span><i className='la la-thumb-tack' aria-hidden='true' /></span>
-                            </div>
-                          </span>
+                            <span className='m-input-icon__icon m-input-icon__icon--right'>
+                              <div onClick={this.addItem.bind(this)} style={{margin: 10}}>
+                                <span><i className='la la-thumb-tack' aria-hidden='true' /></span>
+                              </div>
+                            </span>
                             <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
                           </div>
                         </form>
@@ -457,17 +457,17 @@ class Menu extends React.Component {
                   }
                 })
               }
-              <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
-              <p><b>Note: </b>Only three menu items can be added.</p>
-              <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
+                  <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
+                  <p><b>Note: </b>Only three menu items can be added.</p>
+                  <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>
-            </ul>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
     )
   }
 }

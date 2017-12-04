@@ -82,8 +82,14 @@ class Page extends React.Component {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
       console.log('Pages Updated', nextProps.pages)
-      this.displayData(0, nextProps.pages)
-      this.setState({ totalLength: nextProps.pages.length })
+      var connectedPages = []
+      nextProps.pages.map((page, i) => {
+        if (page.connected){
+          connectedPages.push(page)
+        }
+      })
+      this.displayData(0, connectedPages)
+      this.setState({ totalLength: connectedPages.length })
     }
   }
 
@@ -282,6 +288,7 @@ class Page extends React.Component {
                           <tbody className='m-datatable__body'>
                             {
                             this.state.pagesData.map((page, i) => (
+                              (page.connected) ?
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
@@ -305,21 +312,22 @@ class Page extends React.Component {
 
                                   </span>
                                 </td>
-                              </tr>
+                              </tr> : ""
                             ))
                           }
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate previousLabel={<i className='fa fa-angle-left' />}
-                            nextLabel={<i className='fa fa-angle-right' />}
+                          <ReactPaginate 
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.totalLength / 5)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
-                            containerClassName={'pagination pagination-lg'}
+                            containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>

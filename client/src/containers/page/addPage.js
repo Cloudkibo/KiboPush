@@ -84,6 +84,18 @@ class AddPage extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                this.props.location.state && this.props.location.state.showMsg &&
+                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-exclamation m--font-brand' />
+                  </div>
+                  <div className='m-alert__text'>
+                    This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
+                    To connect the pages click on connect buttons. Click on Done button to save them.
+                  </div>
+                </div>
+              }
               <div className='row'>
                 <div className='col-xl-12'>
                   <div className='m-portlet m-portlet--full-height '>
