@@ -36,8 +36,8 @@ class GettingStarted extends React.Component {
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Getting Started'
     var adddScript = document.createElement('script')
+    adddScript.setAttribute('type', 'text/javascript')
     adddScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
-    adddScript.setAttribute('type', "text/javascript")
     document.body.appendChild(adddScript)
     /* eslint-disable */
     $('#gettingStarted').click()
