@@ -13,7 +13,7 @@ const controller = require('./dashboard.controller')
 
 router.get('/sentVsSeen', auth.isAuthenticated(), controller.sentVsSeen)
 // todo this is also coded very badly
-router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
+//  router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 // todo remove this, this is not being used, discuss
 router.post('/enable', auth.isAuthenticated(), controller.enable)
 // todo remove this /disable, this is coded badly discuss with dayem

@@ -3,6 +3,11 @@ import React from 'react'
 class dataObjectsCount extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      options: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }]
+    }
   }
 
   render () {
