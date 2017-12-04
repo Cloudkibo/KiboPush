@@ -10,18 +10,23 @@
   color: #ccc;
 }
 
-[data-reactroot] {
-  height: 180vh !important;
+
+@media only screen and (min-height: 1025px) {
+    [data-reactroot] {
+        height: 180vh !important;
+      }
+
+      [data-reactroot] > div{
+        height: 180vh !important;
+      }
+
+
+      div.m-body{
+        height: 100% !important; 
+      }
 }
 
 
-[data-reactroot] > div {
-  height: 100% !important; 
-}
-
-[data-reactroot] > div > div{
-  height: 100% !important; 
-}
 
 
 

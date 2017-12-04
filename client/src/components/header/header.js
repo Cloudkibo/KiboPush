@@ -7,8 +7,39 @@ import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
+import Notification from 'react-web-notification'
+
 class Header extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      ignore: true
+    }
+    this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
+    this.onNotificationClick = this.onNotificationClick.bind(this)
+  }
+
+  handleNotificationOnShow () {
+    this.setState({ignore: true})
+  }
+
+  onNotificationClick () {
+    window.focus()
+    console.log('Notificaation is clicked')
+    browserHistory.push({
+      pathname: '/live',
+      state: {session_id: this.props.socketData.session_id}
+    })
+    this.setState({ignore: true})
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession && this.state.ignore) {
+      console.log('Notification Data', nextProps.socketData)
+      this.setState({ignore: false})
+    }
+  }
   componentWillMount () {
     this.props.getuserdetails()
   }
@@ -17,6 +48,19 @@ class Header extends React.Component {
 
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+        <Notification
+          ignore={this.state.ignore}
+          title={'New Message'}
+          onShow={this.handleNotificationOnShow}
+          onClick={this.onNotificationClick}
+          options={{
+            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
+            lang: 'en',
+            dir: 'ltr',
+            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
+          }}
+      />
+
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>
             <div className='m-stack__item m-brand  m-brand--skin-dark '>
@@ -210,7 +254,9 @@ class Header extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    socketData: (state.liveChat.socketData),
+    socketSession: (state.liveChat.socketSession)
   }
 }
 

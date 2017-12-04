@@ -432,41 +432,32 @@ paths:
                   broadcast:
                     type: object
                     properties:
-                      sent:
+                      broadcastSentCount:
                         type: number
-                      seen:
+                      broadcastSeenCount:
                         type: number
                   survey:
                     type: object
-                    $ref: '#/definitions/SentSeenResponses'
+                    properties:
+                      surveySentCount:
+                        type: number
+                      surveySeenCount:
+                        type: number
+                      surveyResponseCount:
+                        type: number
                   poll:
                     type: object
-                    $ref: '#/definitions/SentSeenResponses'
+                    properties:
+                      pollSentCount:
+                        type: number
+                      pollSeenCount:
+                        type: number
+                      pollResponseCount:
+                        type: number
         '404':
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-  /dashboard/otherPages:
-    get:
-      description: Gives the pages of user that are not connected to KiboPush
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page'
-                description: Pages' data
   /dashboard/stats:
     get:
       description: Gives the the count of broadcasts, surveys, polls, and unread messages
@@ -1051,7 +1042,12 @@ paths:
                     type: array
                     items:
                       type: object
-                      $ref: '#/definitions/Poll_Response'
+                      properties:
+                        _id:
+                          type: string
+                        count:
+                          type: number
+
                   polls:
                     type: array
                     items:
@@ -1206,7 +1202,7 @@ paths:
              $ref: '#/definitions/Response500'
   /sessions/:
     post:
-      description: creates a new session
+      description: Returns all the sessions of a partiular user
       consumes:
           - application/json
           - application/x-www-form-urlencoded
@@ -1215,7 +1211,7 @@ paths:
       parameters:
         - name: company_id
           in: formData
-          description: The admin id
+          description: This is the company id in case of mutiusers and user_id in case of single user.
           required: true
           type: string
       responses:
@@ -1567,7 +1563,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-  /user/:
+  /users/:
     get:
       description: Gives all the details of the logged in user
       consumes:
@@ -1594,7 +1590,7 @@ paths:
           description: failed
           schema:
            $ref: '#/definitions/Response404'
-  /user/updateChecks:
+  /users/updateChecks:
     post:
       description: updates the tour seen fields in the User table
       consumes:
@@ -1714,6 +1710,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+
   /workflows/create:
     post:
       description: creates a new workflow
