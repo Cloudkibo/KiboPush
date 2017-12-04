@@ -148,10 +148,18 @@ class Header extends React.Component {
                               <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
                                 <div className='m-nav-grid m-nav-grid--skin-light'>
                                   <div className='m-nav-grid__row'>
+                                  {
+                                    (this.props.subscribers &&
+                                    this.props.subscribers.length === 0) ?
                                     <Link to='/createconvo' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
+                                    </Link> :
+                                    <Link to='/convos' className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-file' />
+                                      <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
+                                  }
                                     <Link to='/createpoll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
@@ -238,7 +246,7 @@ class Header extends React.Component {
                     </li>
 
                     <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='http://kibopush.com/user-guide/' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                      <a href='http://kibopush.com/user-guide/' target="_blank" style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li>
                   </ul>
                 </div>
@@ -256,7 +264,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
-    socketSession: (state.liveChat.socketSession)
+    socketSession: (state.liveChat.socketSession),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
