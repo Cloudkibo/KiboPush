@@ -209,7 +209,7 @@ class Subscriber extends React.Component {
                     </div>
 
                     <div className='m-portlet__body'>
-                      { this.state.subscribersData && this.state.subscribersData.length > 0
+                      { this.props.subscribers && this.props.subscribers.length > 0
                         ? <div>
                           <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                             <div className='row align-items-center'>
@@ -336,8 +336,8 @@ class Subscriber extends React.Component {
                                 </tr>
                               ))
                             }
-                              </tbody> : ''
-                                              </table>
+                              </tbody>
+                            </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
                               breakLabel={<a>...</a>}
