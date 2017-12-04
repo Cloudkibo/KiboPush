@@ -24,3 +24,47 @@ export function getmetaurl (text) {
   }
   return onlyUrl
 }
+
+export function showDate (prev, next) {
+  var p = new Date(prev)
+  var n = new Date(next)
+
+  if (n.getMinutes() - p.getMinutes() > 30 || n.getDay() !== p.getDay() || n.getMonth() !== p.getMonth() || n.getFullYear() !== p.getFullYear()) {
+    return true
+  }
+  return false
+}
+
+export function formatAMPM (date) {
+  var hours = date.getHours()
+  var minutes = date.getMinutes()
+  var ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  hours = hours !== 0 ? hours : 12
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  var strTime = hours + ':' + minutes + ampm
+  return strTime
+}
+
+export function displayDate (x) {
+  var today = new Date()
+  var n = new Date(x)
+  var days = ['SUN', 'MON', 'TUES', 'WED', 'THU', 'FRI', 'SAT']
+  var month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+  var s = ''
+  if (today.getFullYear() === n.getFullYear()) {
+    if (today.getMonth() === n.getMonth()) {
+      if (today.getDay() === n.getDay()) {
+        s = formatAMPM(n)
+      } else {
+        s = days[n.getDay()] + ', ' + formatAMPM(n)
+      }
+    } else {
+      s = month[n.getMonth()] + ' ' + n.getDate() + 'TH, ' + formatAMPM(n)
+    }
+  } else {
+    s = (n.getMonth() + 1) + '/' + n.getDate() + '/' + n.getFullYear() + ' ' + formatAMPM(n)
+  }
+
+  return s
+}
