@@ -244,7 +244,7 @@ class Subscriber extends React.Component {
                                   <div className='col-md-4'>
                                     <div className='m-form__group m-form__group--inline'>
                                       <div className='m-form__label'>
-                                        <label className='m-label m-label--single'>Local:</label>
+                                        <label className='m-label m-label--single'>Locale:</label>
                                       </div>
                                       <div className='m-form__control'>
                                         {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
