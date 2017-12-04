@@ -209,7 +209,7 @@ class Subscriber extends React.Component {
                     </div>
 
                     <div className='m-portlet__body'>
-                      { this.state.subscribersData && this.state.subscribersData.length > 0
+                      { this.props.subscribers && this.props.subscribers.length > 0
                         ? <div>
                           <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                             <div className='row align-items-center'>
@@ -244,7 +244,7 @@ class Subscriber extends React.Component {
                                   <div className='col-md-4'>
                                     <div className='m-form__group m-form__group--inline'>
                                       <div className='m-form__label'>
-                                        <label className='m-label m-label--single'>Local:</label>
+                                        <label className='m-label m-label--single'>Locale:</label>
                                       </div>
                                       <div className='m-form__control'>
                                         {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
@@ -336,8 +336,8 @@ class Subscriber extends React.Component {
                                 </tr>
                               ))
                             }
-                              </tbody> : ''
-                                              </table>
+                              </tbody>
+                            </table>
                             <ReactPaginate previousLabel={'previous'}
                               nextLabel={'next'}
                               breakLabel={<a>...</a>}
