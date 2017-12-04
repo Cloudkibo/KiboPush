@@ -4,17 +4,15 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
 import Reports from './reports'
 import Select from 'react-select'
 import ListItem from './ListItem'
 import moment from 'moment'
-//  import { Link } from 'react-router'
-import ReactPaginate from 'react-paginate'
+import { Link } from 'react-router'
+import Popover from 'react-simple-popover'
 import {
   loadUsersList,
   loadDataObjectsCount,
@@ -52,7 +50,8 @@ class OperationalDashboard extends React.Component {
       showReports: false,
       showUsers: false,
       chartData: [],
-      selectedDays: 10
+      selectedDays: 10,
+      openPopover: false
     }
     props.loadDataObjectsCount(0)
     props.loadTopPages()
@@ -74,6 +73,8 @@ class OperationalDashboard extends React.Component {
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
   componentDidMount () {
@@ -91,6 +92,13 @@ class OperationalDashboard extends React.Component {
     document.title = 'KiboPush | Operational Dashboard'
   }
 
+  handleClick (e) {
+    this.setState({openPopover: !this.state.openPopover})
+  }
+
+  handleClose (e) {
+    this.setState({openPopover: false})
+  }
   displayData (n, users) {
     console.log('one', users)
     let data = []
@@ -392,6 +400,19 @@ class OperationalDashboard extends React.Component {
                 }
               </div>
               <div className='row'>
+                { this.state.showReports
+                ? <Reports
+                  iconClassName={'fa fa-line-chart'}
+                  title={'Reports'}
+                  hideContent={this.hideContent}
+                  lineChartData={this.state.chartData}
+                  onDaysChange={this.onDaysChange}
+                  selectedDays={this.state.selectedDays}
+                />
+                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
+            }
+              </div>
+              <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
                 <div className='col-xl-6'>
                   <div className='m-portlet m-portlet--full-height '>
@@ -403,7 +424,7 @@ class OperationalDashboard extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                          <li className='nav-item m-tabs__item' style={{marginTop: '6px'}}>
+                          <li className='nav-item m-tabs__item' style={{marginTop: '15px'}}>
                             <div className='m-input-icon m-input-icon--left'>
                               <input type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
@@ -411,65 +432,93 @@ class OperationalDashboard extends React.Component {
                               </span>
                             </div>
                           </li>
-                          <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='hover' aria-expanded='true'>
-                            <a href='#' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i className='flaticon flaticon-more' />
-                            </a>
+                          <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
+                            <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
+                              <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='flaticon flaticon-more' /> </Link>
+                              <Popover
+                                style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+                                placement='bottom'
+                                target={this.target}
+                                show={this.state.openPopover}
+                                onHide={this.handleClose} >
+                                <Select
+                                  name='form-field-name'
+                                  options={this.state.genders}
+                                  onChange={this.onFilterByGender}
+                                  placeholder='Filter by gender...'
+                                  value={this.state.genderValue}
+                                />
+                                <br />
+                                <Select
+                                  name='form-field-name'
+                                  options={this.props.locales}
+                                  onChange={this.onFilterByLocale}
+                                  placeholder='Filter by locale...'
+                                  value={this.state.localeValue}
+                                />
+                              </Popover>
+                            </div>
                           </li>
                         </ul>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                          <div className='tab-content'>
-                            <div className='tab-pane active m-scrollable' role='tabpanel'>
-                              <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                                <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                                  <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                                    <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-
-                          <div className='tab-content'>
-                            <div className='tab-pane active' id='m_widget4_tab1_content'>
-                              {
-                                this.state.usersData && this.state.usersData.length > 0
-                              ? <div className='m-widget4'>
-                                { this.state.usersData.map((user, i) => (
-                                  <div className='m-widget4__item'>
-                                    <div className='m-widget4__img m-widget4__img--pic'>
-                                      <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
+                      <div className='tab-content'>
+                        <div className='tab-pane active m-scrollable' role='tabpanel'>
+                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                            <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                                  <div className='tab-content'>
+                                    <div className='tab-pane active' id='m_widget4_tab1_content'>
+                                      {
+                                        this.state.usersData && this.state.usersData.length > 0
+                                      ? <div className='m-widget4'>
+                                        {
+                                           this.state.usersData.map((user, i) => (
+                                             <div className='m-widget4__item'>
+                                               <div className='m-widget4__img m-widget4__img--pic'>
+                                                 <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
+                                               </div>
+                                               <div className='m-widget4__info'>
+                                                 <span className='m-widget4__title'>
+                                                   {user.name}
+                                                 </span>
+                                                 {user.email &&
+                                                   <br /> }
+                                                 {user.email &&
+                                                   <span className='m-widget4__sub'>
+                                                        Email: {user.email}
+                                                   </span>
+                                                 }
+                                                 <br />
+                                                 <span className='m-widget4__sub'>
+                                                    Created At: {this.handleDate(user.createdAt)}
+                                                 </span>
+                                                 <br />
+                                                 <span className='m-widget4__sub'>
+                                                    Gender: {user.gender}
+                                                 </span>
+                                                 <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                                                    Locale: {user.locale}
+                                                 </span>
+                                               </div>
+                                               <div className='m-widget4__ext'>
+                                                 <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                                  See more
+                                                </button>
+                                               </div>
+                                             </div>
+                                              ))}
+                                      </div>
+                                      : <div>No Data to display</div>
+                                      }
                                     </div>
-                                    <div className='m-widget4__info'>
-                                      <span className='m-widget4__title'>
-                                        {user.name}
-                                      </span>
-                                      {user.email &&
-                                      <br /> }
-                                      {user.email &&
-                                      <span className='m-widget4__sub'>
-                                        Email: {user.email}
-                                      </span>
-                                  }
-                                      <br />
-                                      <span className='m-widget4__sub'>
-                                    Created At: {this.handleDate(user.createdAt)}
-                                      </span>
-                                      <br />
-                                      <span className='m-widget4__sub'>
-                                    Gender: {user.gender}
-                                      </span>
-                                      <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
-                                    Locale: {user.locale}
-                                </span>
                                   </div>
-                                  <div className='m-widget4__ext'>
-                                    <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                      See more
-                                    </button>
-                                    </div>
-                                  </div>
-                              ))}
+                                </div>
                               </div>
-                              : <div>No Data to display</div>
-                              }
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -479,13 +528,7 @@ class OperationalDashboard extends React.Component {
             </div>
           </div>
         </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-</div>
-</div>
     )
   }
 }
