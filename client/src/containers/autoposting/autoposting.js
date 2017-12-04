@@ -158,9 +158,9 @@ class Autoposting extends React.Component {
                         className='col-xl-4 order-1 order-xl-2 m--align-right'>
                         {
                           this.state.isShowingModal &&
-                          <ModalContainer style={{width: '500px', height: '200px'}}
+                          <ModalContainer style={{width: '500px'}}
                             onClose={this.closeDialog}>
-                            <ModalDialog style={{width: '500px', height: '200px'}}
+                            <ModalDialog style={{width: '500px'}}
                               onClose={this.closeDialog}>
                               <AddChannel onClose={this.closeDialog} />
                             </ModalDialog>
