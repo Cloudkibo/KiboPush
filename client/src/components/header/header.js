@@ -34,6 +34,22 @@ class Header extends React.Component {
     this.setState({ignore: true})
   }
 
+
+  componentDidMount () {
+      // require('../../../public/js/jquery-3.2.0.min.js')
+      // require('../../../public/js/jquery.min.js')
+      var addScript = document.createElement('script')
+      // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+      // document.body.appendChild(addScript)
+      // addScript = document.createElement('script')
+      // addScript = document.createElement('script')
+      addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+      document.body.appendChild(addScript)
+      addScript = document.createElement('script')
+      addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+      document.body.appendChild(addScript)
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession && this.state.ignore) {
       console.log('Notification Data', nextProps.socketData)
@@ -151,25 +167,45 @@ class Header extends React.Component {
                                   {
                                     (this.props.subscribers &&
                                     this.props.subscribers.length === 0) ?
-                                    <Link to='/createconvo' className='m-nav-grid__item'>
+                                    <Link to='/convos' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link> :
-                                    <Link to='/convos' className='m-nav-grid__item'>
+                                    <Link to='/createconvo'  className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
                                   }
+
+                                  {
+                                    (this.props.subscribers &&
+                                    this.props.subscribers.length === 0) ?
+                                    <Link to='/poll' className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-time' />
+                                      <span className='m-nav-grid__text'>Send New Poll</span>
+                                    </Link> :
                                     <Link to='/createpoll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
+                                  }
+                                    
                                   </div>
                                   <div className='m-nav-grid__row'>
-                                    <Link to='/addsurvey' className='m-nav-grid__item'>
+
+                                    {
+                                    (this.props.subscribers &&
+                                    this.props.subscribers.length === 0) ?
+                                     <Link to='/surveys' className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-folder' />
+                                      <span className='m-nav-grid__text'>Send New Survey</span>
+                                    </Link> :
+                                     <Link to='/addsurvey' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-folder' />
                                       <span className='m-nav-grid__text'>Send New Survey</span>
                                     </Link>
+                                  }
+                                   
                                     <Link to='/createworkflow' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
                                       <span className='m-nav-grid__text'>Create New Workflow</span>
