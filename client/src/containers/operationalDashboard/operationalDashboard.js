@@ -396,7 +396,7 @@ class OperationalDashboard extends React.Component {
             <div className='m-content'>
               <div className='row'>
                 { this.state.objectsLength > 0 &&
-                  <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} />
+                  <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
                 }
               </div>
               <div className='row'>
