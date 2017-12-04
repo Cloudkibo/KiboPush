@@ -16,7 +16,7 @@ exports.index = function (req, res) {
       })
     }
     logger.serverLog(TAG, workflows)
-    res.status(200).json(workflows)
+    res.status(200).json({status: 'success', payload: workflows})
   })
 }
 

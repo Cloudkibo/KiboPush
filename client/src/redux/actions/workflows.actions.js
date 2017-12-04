@@ -13,7 +13,7 @@ export function updateWorkFlowList (data) {
   console.log('Data Fetched From Workflows', data)
   return {
     type: ActionTypes.LOAD_WORKFLOW_LIST,
-    data
+    data: data.payload
   }
 }
 

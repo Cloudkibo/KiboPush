@@ -400,7 +400,7 @@ class LiveChat extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className='m-portlet__body'>
+                      <div style={{height: '525px', scrollY: 'scroll'}} className='m-portlet__body'>
                         <div className='tab-content'>
                           <div className='tab-pane active' id='m_widget4_tab1_content'>
                             <div className='m-widget4'>
