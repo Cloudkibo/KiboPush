@@ -99,6 +99,16 @@ class AddPage extends React.Component {
               }
               <div className='row'>
                 <div className='col-xl-12'>
+                  {this.state.showAlert === true &&
+
+                      <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                          </button>
+                          {this.state.alertmsg}
+                        </div>
+
+                      
+                  }
                   <div className='m-portlet m-portlet--full-height '>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -107,11 +117,7 @@ class AddPage extends React.Component {
                                 Add Pages
                               </h3>
 
-                              {this.state.showAlert === true &&
-                                <center>
-                                  <h1>{this.state.alertmsg}</h1>
-                                </center>
-                          }
+                            
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
