@@ -20,7 +20,12 @@ import { Picker } from 'emoji-mart'
 import Popover from 'react-simple-popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
-import { isEmoji, getmetaurl } from './utilities'
+import {
+  isEmoji,
+  getmetaurl,
+  displayDate,
+  showDate
+} from './utilities'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
@@ -54,11 +59,12 @@ class ChatBox extends React.Component {
       removeFileDescription: '',
       textAreaValue: '',
       showEmojiPicker: false,
-      showGif: false,
+      showGifPicker: false,
       gifUrl: '',
       urlmeta: '',
       prevURL: '',
-      displayUrlMeta: false
+      displayUrlMeta: false,
+      showStickers: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -543,9 +549,19 @@ class ChatBox extends React.Component {
                     <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                         {
-                            this.props.userChat && this.props.userChat.map((msg) => (
+                            this.props.userChat && this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
-                              ? <div style={{marginLeft: 0, marginRight: 0}} className='row'>
+                              ? <div key={index} style={{marginLeft: 0, marginRight: 0}} className='row'>
+                                {
+                                  index === 0
+                                  ? <div className='m-messenger__datetime'>
+                                    {displayDate(msg.datetime)}
+                                  </div>
+                                  : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                  <div className='m-messenger__datetime'>
+                                    {displayDate(msg.datetime)}
+                                  </div>
+                                }
                                 <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
                                   <div className='m-messenger__message-pic'>
                                     <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
@@ -702,7 +718,17 @@ class ChatBox extends React.Component {
                                   </div>
                                 </div>
                               </div>
-                              : <div style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
+                              : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
+                                {
+                                  index === 0
+                                  ? <div className='m-messenger__datetime'>
+                                    {displayDate(msg.datetime)}
+                                  </div>
+                                  : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                  <div className='m-messenger__datetime'>
+                                    {displayDate(msg.datetime)}
+                                  </div>
+                                }
                                 <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
                                   <div className='m-messenger__message-body'>
                                     <div className='m-messenger__message-arrow' />
@@ -901,11 +927,6 @@ class ChatBox extends React.Component {
                                       </div>
                                     )}
                                   </div>
-                                  {/**
-                                    <div class="m-messenger__datetime">
-                                      3:15PM
-                                    </div>
-                                  **/}
                                 </div>
                               </div>
                             ))
