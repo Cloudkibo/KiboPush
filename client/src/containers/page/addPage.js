@@ -15,7 +15,7 @@ import {
   removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-//  import { Alert } from 'react-bs-notifier'
+ import { Alert } from 'react-bs-notifier'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -105,6 +105,15 @@ class AddPage extends React.Component {
                           <h3 className='m-portlet__head-text'>
                                 Add Pages
                               </h3>
+
+                              {this.state.showAlert === true &&
+                                <center>
+                                  <Alert type='danger' timeout={this.state.timeout}
+                                    onDismiss={this.onDismissAlert.bind(this)}>
+                                    {this.state.alertmsg}
+                                  </Alert>
+                                </center>
+                          }
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
