@@ -28,26 +28,16 @@ class GettingStarted extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Getting Started'
     var adddScript = document.createElement('script')
     adddScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    adddScript.setAttribute('type', "text/javascript")
     document.body.appendChild(adddScript)
     /* eslint-disable */
     $('#gettingStarted').click()

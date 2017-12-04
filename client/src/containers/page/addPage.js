@@ -70,6 +70,7 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
+    console.log("SHow allert state", this.state.showAlert)
     return (
       <div>
         <Header />
@@ -108,10 +109,7 @@ class AddPage extends React.Component {
 
                               {this.state.showAlert === true &&
                                 <center>
-                                  <Alert type='danger' timeout={this.state.timeout}
-                                    onDismiss={this.onDismissAlert.bind(this)}>
-                                    {this.state.alertmsg}
-                                  </Alert>
+                                  <h1>{this.state.alertmsg}</h1>
                                 </center>
                           }
                         </div>
