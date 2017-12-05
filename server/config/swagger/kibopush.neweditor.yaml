@@ -1268,7 +1268,25 @@ paths:
                description: success
               payload:
                 type: object
-                $ref: '#/definitions/LiveChat'
+                properties:
+                  chats:
+                    type: array
+                    items:
+                      $ref: '#/definitions/LiveChat'
+                  _id:
+                    type: string
+                  subscriber_id:
+                    type: object
+                    $ref: '#/definitions/Subscriber'
+                  page_id:
+                    type: object
+                    $ref: '#/definitions/Page'
+                  company_id:
+                    type: string
+                  request_time:
+                    type: string
+                  status:
+                    type: string
         '500':
           description: failed
           schema:
@@ -2602,9 +2620,11 @@ definitions:
       subscriber_id:
         type: string
         description: The id of the subscriber
+        $ref: '#/definitions/Subscriber'
       page_id:
         type: string
         description: The id of the page
+        $ref: '#/definitions/Page'
       company_id:
         type: string
         description: This is admin id till we have companies

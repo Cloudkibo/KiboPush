@@ -35,10 +35,10 @@ class top10pages extends React.Component {
                         <div className='tab-pane active' id='m_widget4_tab1_content'>
                           {
                             this.props.pagesData && this.props.pagesData.length > 0
-                          ? <div className='m-widget4'>
+                          ? <div className='m-widget4' >
                             {
                              this.props.pagesData.map((page, i) => (
-                               <div className='m-widget4__item'>
+                               <div className='m-widget4__item' key={i}>
                                  <div className='m-widget4__img m-widget4__img--pic'>
                                    <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} />
                                  </div>

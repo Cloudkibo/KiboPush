@@ -270,12 +270,14 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Workflows</span>
                 </Link>
               </li>
+              { this.props.user && this.props.user.isSuperUser &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/menu' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-interface-8' />
                   <span className='m-menu__link-text'>Main Menu</span>
                 </Link>
               </li>
+            }
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/pages' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-add' />
