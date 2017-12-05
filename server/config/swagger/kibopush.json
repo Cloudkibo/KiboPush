@@ -1793,7 +1793,17 @@
                                 },
                                 "payload": {
                                     "type": "object",
-                                    "$ref": "#/definitions/LiveChat"
+                                    "properties": {
+                                        "ok": {
+                                            "type": "number"
+                                        },
+                                        "nModified": {
+                                            "type": "number"
+                                        },
+                                        "n": {
+                                            "type": "number"
+                                        }
+                                    }
                                 }
                             }
                         }

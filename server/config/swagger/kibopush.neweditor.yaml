@@ -1249,7 +1249,13 @@ paths:
                description: success
               payload:
                 type: object
-                $ref: '#/definitions/LiveChat'
+                properties:
+                  ok:
+                    type: number
+                  nModified:
+                    type: number
+                  n:
+                    type: number
   /sessions/:id:
     get:
       description: Gives a particular session
@@ -1265,7 +1271,7 @@ paths:
             properties:
               status:
                type: string
-               description: success
+               description: succrrress
               payload:
                 type: object
                 properties:
