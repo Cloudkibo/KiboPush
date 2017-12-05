@@ -111,7 +111,7 @@ class dataObjectsCount extends React.Component {
           }
         </div>
         <div className='col-xl-4'>
-          <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit' style={{height: 'fit-content', width: '400px'}}>
+          <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit' style={{height: 'fit-content'}}>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
@@ -133,7 +133,7 @@ class dataObjectsCount extends React.Component {
             </div>
           </div>
           <div className='m-portlet__body' style={{marginTop: '-28px'}}>
-            <div className='row m-row--full-height' style={{width: '430px'}}>
+            <div className='row m-row--full-height'>
               <div className='col-sm-12 col-md-12 col-lg-6' style={{paddingRight: '2px'}}>
                 <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
                   <div className='m-portlet__body'>

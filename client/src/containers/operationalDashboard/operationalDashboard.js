@@ -9,7 +9,7 @@ import DataObjectsCount from './dataObjectsCount'
 import Top10pages from './top10pages'
 import Reports from './reports'
 import Select from 'react-select'
-import ListItem from './ListItem'
+//  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
 import Popover from 'react-simple-popover'
@@ -84,10 +84,10 @@ class OperationalDashboard extends React.Component {
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
+    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
+    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Operational Dashboard'
   }
@@ -181,7 +181,6 @@ class OperationalDashboard extends React.Component {
     if (nextProps.toppages) {
       console.log('top pages Updated', nextProps.toppages)
     }
-    /*
     if (nextProps.broadcastsGraphData) {
       console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
@@ -204,10 +203,11 @@ class OperationalDashboard extends React.Component {
       if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
         var surveysData = graphInfoSurveys.surveysgraphdata
         surveysData = this.includeZeroCounts(surveysData)
+        console.log('surveys data', surveysData)
       }
     }
     var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
-    this.setState({chartData: dataChart}) */
+    this.setState({chartData: dataChart})
   }
   includeZeroCounts (data) {
     var dataArray = []
@@ -243,14 +243,56 @@ class OperationalDashboard extends React.Component {
   }
   prepareLineChartData (surveys, polls, broadcasts) {
     var dataChart = []
-    if (surveys) {
+    if (surveys && surveys.length > 0) {
       for (var i = 0; i < surveys.length; i++) {
         var record = {}
         record.date = surveys[i].date
-        record.broadcastscount = broadcasts[i].count
-        record.pollscount = polls[i].count
+        if (broadcasts && broadcasts.length > 0) {
+          record.broadcastscount = broadcasts[i].count
+        } else {
+          record.broadcastscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record.pollscount = polls[i].count
+        } else {
+          record.pollscount = 0
+        }
         record.surveyscount = surveys[i].count
         dataChart.push(record)
+      }
+    } else if (broadcasts && broadcasts.length > 0) {
+      for (var j = 0; j < broadcasts.length; j++) {
+        var record1 = {}
+        record1.date = broadcasts[j].date
+        if (surveys && surveys.length > 0) {
+          record1.surveyscount = surveys[j].count
+        } else {
+          record1.surveyscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record1.pollscount = polls[j].count
+        } else {
+          record1.pollscount = 0
+        }
+        record1.broadcastscount = broadcasts[j].count
+        dataChart.push(record1)
+      }
+    } else if (polls && polls.length > 0) {
+      for (var k = 0; k < polls.length; k++) {
+        var record2 = {}
+        record2.date = polls[k].date
+        if (surveys && surveys.length > 0) {
+          record2.surveyscount = surveys[k].count
+        } else {
+          record2.surveyscount = 0
+        }
+        if (broadcasts && broadcasts.length > 0) {
+          record2.broadcastscount = broadcasts[k].count
+        } else {
+          record2.pollscount = 0
+        }
+        record2.pollscount = polls[k].count
+        dataChart.push(record2)
       }
     }
     return dataChart
@@ -394,23 +436,17 @@ class OperationalDashboard extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              { this.state.objectsLength > 0 &&
+                <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
+              }
               <div className='row'>
-                { this.state.objectsLength > 0 &&
-                  <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
-                }
-              </div>
-              <div className='row'>
-                { this.state.showReports
-                ? <Reports
+                <Reports
                   iconClassName={'fa fa-line-chart'}
                   title={'Reports'}
-                  hideContent={this.hideContent}
                   lineChartData={this.state.chartData}
                   onDaysChange={this.onDaysChange}
                   selectedDays={this.state.selectedDays}
-                />
-                : <ListItem iconClassName={'fa fa-line-chart'} title={'Reports'} showContent={this.showContent} />
-            }
+                  />
               </div>
               <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
@@ -476,7 +512,7 @@ class OperationalDashboard extends React.Component {
                                       ? <div className='m-widget4'>
                                         {
                                            this.state.usersData.map((user, i) => (
-                                             <div className='m-widget4__item'>
+                                             <div className='m-widget4__item' key={i}>
                                                <div className='m-widget4__img m-widget4__img--pic'>
                                                  <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
                                                </div>
