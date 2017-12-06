@@ -4,11 +4,8 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -179,15 +176,13 @@ class Convo extends React.Component {
                 this.props.subscribers &&
                 this.props.subscribers.length === 0 &&
                 <div style={{padding: '10px'}}>
-
-              <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
-                <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
-                    <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
-                      to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                  <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
+                    <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
+                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
+                        to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                      </div>
                     </div>
-                </div>
-              </div>
-
+                  </div>
                 </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -309,7 +304,7 @@ class Convo extends React.Component {
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate 
+                          <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}

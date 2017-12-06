@@ -8,8 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import { Picker } from 'emoji-mart'
-import Popover from 'react-simple-popover'
 
 const styles = {
   iconclass: {

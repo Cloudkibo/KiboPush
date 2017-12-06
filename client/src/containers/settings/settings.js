@@ -59,13 +59,17 @@ class Settings extends React.Component {
   }
   initializeSwitch (state) {
     var self = this
+    /* eslint-disable */
     $("[name='switch']").bootstrapSwitch({
+      /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
       offColor: 'danger',
       state: state
     })
+    /* eslint-disable */
     $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      /* eslint-enable */
       self.setState({buttonState: state})
       if (state === true) {
         console.log('true')
