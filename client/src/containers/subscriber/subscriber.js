@@ -35,7 +35,7 @@ class Subscriber extends React.Component {
     // var addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/theme-plugins.js')
     // document.body.appendChild(addScript)
-    addScript = document.createElement('script')
+    var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     document.body.appendChild(addScript)
     addScript = document.createElement('script')
