@@ -40,20 +40,11 @@ class Subscriber extends React.Component {
     // var addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    document.body.appendChild(addScript)
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribers'
-    // var datatable = $('#m_datatable').mDatatable({
-    //   pagination: true,
-    //   paging: true,
-    //   search: {
-    //     // search delay in milliseconds
-    //     delay: 400,
-    //     // input text for search
-    //     input: $('#generalSearch')
-    //   }})
-    // this.setState({subscribersData: props.subscribers})
+
   }
 
   searchSubscriber (event) {

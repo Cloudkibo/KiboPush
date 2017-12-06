@@ -298,13 +298,13 @@ class Page extends React.Component {
                                 <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span >
                                     <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
+                                      style={{float: 'right', margin: 2}}
                                       onClick={() => this.showDialog(page)}>
                                       Remove
                                     </button>
 
                                     <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
+                                      style={{float: 'right', margin: 2}}
                                       onClick={() => this.inviteSubscribers(page)}>
                                       Invite Subscribers
                                     </button>
