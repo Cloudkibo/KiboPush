@@ -3,11 +3,8 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   createbroadcast,
@@ -155,7 +152,7 @@ class CreateConvo extends React.Component {
   }
 
   renameTitle () {
-    if (this.titleConvo.value == '') {
+    if (this.titleConvo.value === '') {
       return
     }
     this.setState({convoTitle: this.titleConvo.value})
@@ -462,7 +459,7 @@ class CreateConvo extends React.Component {
           /*
         !(this.props.user && this.props.user.convoTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-        
+
         */
     }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

@@ -16,7 +16,6 @@ import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { Alert } from 'react-bs-notifier'
-import AlertContainer from 'react-alert'
 
 class Survey extends React.Component {
   constructor (props, context) {

@@ -15,7 +15,6 @@ import {
   removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
- import { Alert } from 'react-bs-notifier'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -70,7 +69,7 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
-    console.log("SHow allert state", this.state.showAlert)
+    console.log('SHow allert state', this.state.showAlert)
     return (
       <div>
         <Header />
@@ -100,14 +99,10 @@ class AddPage extends React.Component {
               <div className='row'>
                 <div className='col-xl-12'>
                   {this.state.showAlert === true &&
-
-                      <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                          </button>
-                          {this.state.alertmsg}
-                        </div>
-
-                      
+                    <div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                      <button type='button' className='close' data-dismiss='alert' aria-label='Close' />
+                      {this.state.alertmsg}
+                      </div>
                   }
                   <div className='m-portlet m-portlet--full-height '>
                     <div className='m-portlet__head'>
@@ -116,8 +111,6 @@ class AddPage extends React.Component {
                           <h3 className='m-portlet__head-text'>
                                 Add Pages
                               </h3>
-
-                            
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>

@@ -63,7 +63,7 @@ class InviteSubscribers extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    adddScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    addScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Invite Subscribers'
   }
 

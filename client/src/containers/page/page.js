@@ -84,7 +84,7 @@ class Page extends React.Component {
       console.log('Pages Updated', nextProps.pages)
       var connectedPages = []
       nextProps.pages.map((page, i) => {
-        if (page.connected){
+        if (page.connected) {
           connectedPages.push(page)
         }
       })
@@ -288,8 +288,7 @@ class Page extends React.Component {
                           <tbody className='m-datatable__body'>
                             {
                             this.state.pagesData.map((page, i) => (
-                              (page.connected) ?
-                              <tr data-row={i}
+                              (page.connected) ? <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic} /></span></td>
@@ -312,13 +311,13 @@ class Page extends React.Component {
 
                                   </span>
                                 </td>
-                              </tr> : ""
+                              </tr> : ''
                             ))
                           }
                           </tbody>
                         </table>
                         <div className='pagination'>
-                          <ReactPaginate 
+                          <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
