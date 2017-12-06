@@ -27,9 +27,11 @@ class Subscriber extends React.Component {
     this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handleFilterByGender = this.handleFilterByGender.bind(this)
     this.handleFilterByLocale = this.handleFilterByLocale.bind(this)
+    console.log("exeuting subscriber")
   }
 
   componentDidMount () {
+    console.log("exeuting subscriber")
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
     // var addScript = document.createElement('script')
@@ -55,6 +57,7 @@ class Subscriber extends React.Component {
   }
 
   searchSubscriber (event) {
+    console.log("exeuting subscriber")
     var filtered = []
     for (let i = 0; i < this.props.subscribers.length; i++) {
       if (this.props.subscribers[i].firstName.toLowerCase().includes(event.target.value) || this.props.subscribers[i].lastName.toLowerCase().includes(event.target.value)) {
@@ -66,6 +69,7 @@ class Subscriber extends React.Component {
   }
 
   displayData (n, subscribers) {
+    console.log("exeuting subscriber")
     console.log(subscribers)
     let offset = n * 4
     let data = []
@@ -84,10 +88,12 @@ class Subscriber extends React.Component {
   }
 
   handlePageClick (data) {
+    console.log("exeuting subscriber")
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log("exeuting subscriber")
     console.log('componentWillReceiveProps is called in sub', nextProps)
     if (nextProps.subscribers) {
       console.log('Subscribers Updated', nextProps.subscribers)
@@ -97,6 +103,7 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByGender (e) {
+    console.log("exeuting subscriber")
     var filtered = []
     this.setState({filterByGender: e.target.value})
     if (this.state.filterByLocale !== '') {
@@ -129,6 +136,7 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByLocale (e) {
+    console.log("exeuting subscriber")
     var filtered = []
     this.setState({filterByLocale: e.target.value})
     if (this.state.filterByGender !== '') {
@@ -161,6 +169,7 @@ class Subscriber extends React.Component {
   }
 
   render () {
+    console.log("In render of subscriber")
     return (
       <div>
         <Header />
