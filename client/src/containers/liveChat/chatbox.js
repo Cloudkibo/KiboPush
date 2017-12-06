@@ -223,6 +223,7 @@ class ChatBox extends React.Component {
       company_id: session.company_id, // this is admin id till we have companies
       payload: payload, // this where message content will go
       url_meta: this.state.urlmeta,
+      datetime: new Date(),
       status: 'unseen' // seen or unseen
     }
     return data
@@ -614,18 +615,20 @@ class ChatBox extends React.Component {
                                             {this.props.currentSession.subscriber_id.firstName} shared an address
                                           </div>
                                           <table style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
-                                            <tr>
-                                              <td>
-                                                <a href={this.getmainURL(msg.payload.attachments[0].payload)} target='_blank'>
-                                                  <img style={{width: '200px'}} src={this.geturl(msg.payload.attachments[0].payload)} />
-                                                </a>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>
-                                                <p style={{fontWeight: 'bold'}}> {msg.payload.attachments[0].title} </p>
-                                              </td>
-                                            </tr>
+                                            <tbody>
+                                              <tr>
+                                                <td>
+                                                  <a href={this.getmainURL(msg.payload.attachments[0].payload)} target='_blank'>
+                                                    <img style={{width: '200px'}} src={this.geturl(msg.payload.attachments[0].payload)} />
+                                                  </a>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>
+                                                  <p style={{fontWeight: 'bold'}}> {msg.payload.attachments[0].title} </p>
+                                                </td>
+                                              </tr>
+                                            </tbody>
                                           </table>
                                         </div>
                                         : msg.url_meta
