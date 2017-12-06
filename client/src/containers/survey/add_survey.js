@@ -64,20 +64,20 @@ class AddSurvey extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    document.body.appendChild(addScript)
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Survey'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
