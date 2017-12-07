@@ -15,6 +15,7 @@ const PollResponse = require('../polls/pollresponse.model')
 const PollPages = require('../page_poll/page_poll.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const SurveyResponses = require('../surveys/surveyresponse.model')
+const Sessions = require('../sessions/sessions.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
@@ -683,5 +684,38 @@ exports.surveysGraph = function (req, res) {
     }
     return res.status(200)
     .json({status: 'success', payload: {surveysgraphdata}})
+  })
+}
+exports.sessionsGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Sessions.aggregate([
+    {
+      $match: {
+        'request_time': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
+        count: {$sum: 1}}
+    }], (err, sessionsgraphdata) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting sessions count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {sessionsgraphdata}})
   })
 }

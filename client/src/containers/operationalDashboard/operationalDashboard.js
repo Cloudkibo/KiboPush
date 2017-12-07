@@ -21,7 +21,8 @@ import {
   downloadFile,
   loadBroadcastsGraphData,
   loadPollsGraphData,
-  loadSurveysGraphData
+  loadSurveysGraphData,
+  loadSessionsGraphData
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -58,6 +59,7 @@ class OperationalDashboard extends React.Component {
     props.loadBroadcastsGraphData(0)
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
+    props.loadSessionsGraphData(0)
     props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -206,7 +208,15 @@ class OperationalDashboard extends React.Component {
         console.log('surveys data', surveysData)
       }
     }
-    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
+    if (nextProps.sessionsGraphData) {
+      console.log('Sessions Graph Data', nextProps.sessionsGraphData.sessionsGraphInfo)
+      var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
+      if (graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
+        var sessionsData = graphInfoSessions.sessionsgraphdata
+        sessionsData = this.includeZeroCounts(sessionsData)
+      }
+    }
+    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData, sessionsData)
     this.setState({chartData: dataChart})
   }
   includeZeroCounts (data) {
@@ -241,7 +251,7 @@ class OperationalDashboard extends React.Component {
     }
     return dataArray
   }
-  prepareLineChartData (surveys, polls, broadcasts) {
+  prepareLineChartData (surveys, polls, broadcasts, sessions) {
     var dataChart = []
     if (surveys && surveys.length > 0) {
       for (var i = 0; i < surveys.length; i++) {
@@ -256,6 +266,11 @@ class OperationalDashboard extends React.Component {
           record.pollscount = polls[i].count
         } else {
           record.pollscount = 0
+        }
+        if (sessions && sessions.length > 0) {
+          record.sessionscount = sessions[i].count
+        } else {
+          record.sessionscount = 0
         }
         record.surveyscount = surveys[i].count
         dataChart.push(record)
@@ -274,6 +289,11 @@ class OperationalDashboard extends React.Component {
         } else {
           record1.pollscount = 0
         }
+        if (sessions && sessions.length > 0) {
+          record1.sessionscount = sessions[j].count
+        } else {
+          record1.sessionscount = 0
+        }
         record1.broadcastscount = broadcasts[j].count
         dataChart.push(record1)
       }
@@ -291,8 +311,35 @@ class OperationalDashboard extends React.Component {
         } else {
           record2.pollscount = 0
         }
+        if (sessions && sessions.length > 0) {
+          record2.sessionscount = sessions[k].count
+        } else {
+          record2.sessionscount = 0
+        }
         record2.pollscount = polls[k].count
         dataChart.push(record2)
+      }
+    } else if (sessions && sessions.length > 0) {
+      for (var l = 0; l < sessions.length; l++) {
+        var record3 = {}
+        record3.date = sessions[l].date
+        if (surveys && surveys.length > 0) {
+          record3.surveyscount = surveys[l].count
+        } else {
+          record3.surveyscount = 0
+        }
+        if (broadcasts && broadcasts.length > 0) {
+          record3.broadcastscount = broadcasts[l].count
+        } else {
+          record3.pollscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record3.pollscount = polls[l].count
+        } else {
+          record3.pollscount = 0
+        }
+        record3.sessionscount = sessions[l].count
+        dataChart.push(record3)
       }
     }
     return dataChart
@@ -578,7 +625,8 @@ function mapStateToProps (state) {
     toppages: (state.topPagesInfo.toppages),
     broadcastsGraphData: (state.broadcastsGraphInfo),
     pollsGraphData: (state.pollsGraphInfo),
-    surveysGraphData: (state.surveysGraphInfo)
+    surveysGraphData: (state.surveysGraphInfo),
+    sessionsGraphData: (state.sessionsGraphInfo)
   }
 }
 
@@ -590,7 +638,8 @@ function mapDispatchToProps (dispatch) {
     downloadFile: downloadFile,
     loadBroadcastsGraphData: loadBroadcastsGraphData,
     loadSurveysGraphData: loadSurveysGraphData,
-    loadPollsGraphData: loadPollsGraphData},
+    loadPollsGraphData: loadPollsGraphData,
+    loadSessionsGraphData: loadSessionsGraphData},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
