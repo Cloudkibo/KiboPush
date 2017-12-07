@@ -10,6 +10,7 @@ let _ = require('lodash')
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
+  var responses = []
   logger.serverLog(TAG, 'Poll get api is working')
   Polls.find({userId: req.user._id}, (err, polls) => {
     if (err) {
@@ -31,6 +32,14 @@ exports.index = function (req, res) {
           return res.status(404)
           .json({status: 'failed', description: 'Polls not found'})
         }
+        for (var i = 0; i < polls.length; i++) {
+          for (var j = 0; j < responsesCount; j++) {
+          if (polls[i]._id === responsesCount[j]._id) {
+            responses.push(responsesCount)
+          }
+        }
+        }
+
         res.status(200).json({
           status: 'success',
           payload: {polls, pollpages, responsesCount}
