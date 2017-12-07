@@ -34,10 +34,12 @@ exports.index = function (req, res) {
         }
         for (var i = 0; i < polls.length; i++) {
           for (var j = 0; j < responsesCount; j++) {
-          if (polls[i]._id === responsesCount[j]._id) {
-            responses.push(responsesCount)
+            console.log('hello', polls[i]._id)
+            console.log(responsesCount[j]._id)
+            if (polls[i]._id === responsesCount[j]._id) {
+              responses.push(responsesCount)
+            }
           }
-        }
         }
 
         res.status(200).json({

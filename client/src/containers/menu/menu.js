@@ -331,13 +331,13 @@ class Menu extends React.Component {
               <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
                 <div className='m-portlet m-portlet--full-height '>
                   <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-caption' style={{width: '400px'}}>
                       <div className='m-portlet__head-title'>
                         <h3 className='m-portlet__head-text'>Select a page to setup its Main Menu </h3>
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                         <li className='nav-item m-tabs__item'>
                           <select
                             className='custom-select'
@@ -356,18 +356,18 @@ class Menu extends React.Component {
                         <li className='nav-item m-tabs__item' />
                         <li className='nav-item m-tabs__item' />
                       </ul>
-                      </div>
                     </div>
-            <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-              <div className='m-portlet__body'>
-                <div className='tab-content'>
-                <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br />
-                <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{paddingLeft: '20px', width: '30%'}}>
+                  </div>
+                  <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+                  <div className='m-portlet__body'>
+                    <div className='tab-content'>
+                    <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br />
+                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{paddingLeft: '20px', width: '30%'}}>
                   {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
-                    return (<li>
+                    return (<li className='nav-item m-tabs__item'>
                       <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
                         <form className='form-inline'>
                           <div className='form-group'>
@@ -413,22 +413,25 @@ class Menu extends React.Component {
                     </li>)
                   } else {
                     return <li>
-                      <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
-                        <form className='form-inline'>
-                          <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                            placeholder={itm.title} className='form-control'
-                            onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
-                            <span className='m-input-icon__icon m-input-icon__icon--right'>
-                              <div onClick={this.addItem.bind(this)} style={{margin: 10}}>
-                                <span><i className='la la-thumb-tack' aria-hidden='true' /></span>
+                      <div ref={'item-' + index} className='align-center'>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group'>
+                              <div className='input-group m-input-group'>
+                                <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                                  placeholder={itm.title} onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                <span className='input-group-addon' id='basic-addon1' onClick={this.addItem.bind(this)}>
+                                  <i className='fa fa-plus' aria-hidden='true' />
+                                </span>
+                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
+                                  <i className='fa fa-times' aria-hidden='true' />
+                                </span>
                               </div>
-                            </span>
-                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                            </div>
                           </div>
                         </form>
                         {popup}
                       </div>
-
                       { itm.submenu.map((sub, subindex) => {
                         return <div style={{marginLeft: 50}}>
                           <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >

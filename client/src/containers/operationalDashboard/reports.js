@@ -21,7 +21,7 @@ class Reports extends React.Component {
                 <li className='nav-item m-tabs__item' />
                 <li className='nav-item m-tabs__item' />
                 <li className='nav-item m-tabs__item'>
-                  <form className='m-form m-form--fit m-form--label-align-right' style={{marginLeft: '550px'}}>
+                  <form className='m-form m-form--fit m-form--label-align-right'>
                     <div className='m-portlet__body'>
                       <div className='form-group m-form__group row'>
                         <label htmlFor='example-text-input' className='col-form-label'>
