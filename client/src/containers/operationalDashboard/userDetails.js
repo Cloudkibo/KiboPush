@@ -96,7 +96,7 @@ class UserDetails extends React.Component {
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>

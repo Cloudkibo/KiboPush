@@ -113,6 +113,22 @@ export function loadBroadcastsGraphData (days) {
       .then(res => dispatch(updateBroadcastsGraphData(res.payload)))
   }
 }
+export function updateSessionsGraphData (data) {
+  console.log('Sessions Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_SESSIONS_GRAPH,
+    data
+  }
+}
+
+export function loadSessionsGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadSessionsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/sessionsGraph/${days}`)
+      .then(res => dispatch(updateSessionsGraphData(res.payload)))
+  }
+}
 export function loadPagesList (id) {
   // here we will fetch list of user pages from endpoint
   console.log('loadPagesList called', id)
