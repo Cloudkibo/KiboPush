@@ -323,42 +323,46 @@ class Menu extends React.Component {
     return (
       <div>
         <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>&nbsp;&nbsp;Select a page to setup its Main Menu</h3>
-                </div>
-                <div className='col-lg-7 col-md-9 col-sm-12'>
-                  <select
-                    className='custom-select'
-                    placeholder='Select a page...'
-                    onChange={this.pageChange}>
-                    { this.props.pages.map((page, i) => (
-                    (
-                      page.connected &&
-                      <option
-                        value={page.pageId} key={page.pageId}>{page.pageName}</option>
-                    )
-                  ))
-                  }
-                  </select>
-                </div>
-              </div>
-            </div>
+            <div className='m-content'>
+              <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet m-portlet--full-height '>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>Select a page to setup its Main Menu </h3>
+                      </div>
+                    </div>
+                    <div className='m-portlet__head-tools'>
+                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                        <li className='nav-item m-tabs__item'>
+                          <select
+                            className='custom-select'
+                            placeholder='Select a page...'
+                            onChange={this.pageChange}>
+                            { this.props.pages.map((page, i) => (
+                            (
+                              page.connected &&
+                              <option
+                                value={page.pageId} key={page.pageId}>{page.pageName}</option>
+                            )
+                          ))
+                          }
+                          </select>
+                        </li>
+                        <li className='nav-item m-tabs__item' />
+                        <li className='nav-item m-tabs__item' />
+                      </ul>
+                      </div>
+                    </div>
             <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-            <div className='container'>
-              <br /><br /><br /><br />
-              <div className='ui-block'>
-                <Link to='createMessage' className='pull-right'>
-                  <button className='btn btn-sm btn-primary'>
-              SEND MESSAGE
-              </button>
-                </Link>
-                <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4>
-                <ul style={{paddingLeft: '20px', width: '30%'}}>
+              <div className='m-portlet__body'>
+                <div className='tab-content'>
+                <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br />
+                <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{paddingLeft: '20px', width: '30%'}}>
                   {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
@@ -468,6 +472,9 @@ class Menu extends React.Component {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
     )
   }
 }

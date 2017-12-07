@@ -49,10 +49,10 @@ class Reports extends React.Component {
                   <CartesianGrid strokeDasharray='3 3' />
                   <Tooltip />
                   <Legend />
-                  <Line type='monotone' dataKey='broadcastscount' stroke='#8884d8' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='pollscount' stroke='#82ca9d' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='surveyscount' stroke='#FF7F50' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='sessionscount' stroke='#A11644' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='broadcastscount' name='Broadcasts' stroke='#8884d8' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='pollscount' name='Polls' stroke='#82ca9d' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='surveyscount' name='Surveys' stroke='#FF7F50' activeDot={{r: 8}} />
+                  <Line type='monotone' dataKey='sessionscount' name='Sessions' stroke='#A11644' activeDot={{r: 8}} />
                 </LineChart>
               </center>
             </div>
