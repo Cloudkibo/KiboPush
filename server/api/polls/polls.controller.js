@@ -32,16 +32,6 @@ exports.index = function (req, res) {
           return res.status(404)
           .json({status: 'failed', description: 'Polls not found'})
         }
-        for (var i = 0; i < polls.length; i++) {
-          for (var j = 0; j < responsesCount; j++) {
-            console.log('hello', polls[i]._id)
-            console.log(responsesCount[j]._id)
-            if (polls[i]._id === responsesCount[j]._id) {
-              responses.push(responsesCount)
-            }
-          }
-        }
-
         res.status(200).json({
           status: 'success',
           payload: {polls, pollpages, responsesCount}
