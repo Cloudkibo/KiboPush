@@ -593,14 +593,6 @@ class OperationalDashboard extends React.Component {
                                                </div>
                                              </div>
                                               ))}
-                                              <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}}>
-                                    <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                                      <label>Get data in CSV file: </label>
-                                    </div>
-                                    <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                                      <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' onClick={() => this.getFile()} />
-                                    </div>
-                                  </div>
                                       </div>
                                       : <div>No Data to display</div>
                                       }
@@ -609,6 +601,14 @@ class OperationalDashboard extends React.Component {
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                        <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}}>
+                          <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                            <label>Get data in CSV file: </label>
+                          </div>
+                          <div style={{display: 'inline-block', marginLeft: '10px'}}>
+                            <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' onClick={() => this.getFile()} />
                           </div>
                         </div>
                       </div>
