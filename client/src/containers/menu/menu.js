@@ -1,13 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Select from 'react-select'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { addMenuItem, fetchMenu, saveMenu } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl } from './utility'
 import { Link } from 'react-router'
@@ -96,6 +93,7 @@ class Menu extends React.Component {
   }
 
   addSubmenu () {
+    this.setState({openPopover: false})
     var temp = this.state.itemMenus
     console.log('Target', this.target)
     if (this.target === this.state.indexClicked + '-item') {
@@ -244,6 +242,7 @@ class Menu extends React.Component {
   save () {
     var data = {}
     if (this.state.pageValue === '') {
+      console.log('empty')
       this.msg.error('Please select a page')
       return
     }
@@ -271,7 +270,7 @@ class Menu extends React.Component {
 
     let popup = <Popover
       id='popup'
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '450px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
@@ -361,46 +360,64 @@ class Menu extends React.Component {
                   <AlertContainer ref={a => this.msg = a} {...alertOptions} />
                   <div className='m-portlet__body'>
                     <div className='tab-content'>
-                    <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br />
-                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{paddingLeft: '20px', width: '30%'}}>
+                    <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
+                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
                   {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
                     return (<li className='nav-item m-tabs__item'>
-                      <div ref={'item-' + index} style={{paddingTop: '5px'}} className='align-center'>
-                        <form className='form-inline'>
-                          <div className='form-group'>
-                            <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                              placeholder={itm.title} className='form-control'
-                              onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
-                            <div onClick={() => this.removeItem('item', {itemIndex: index})} style={{margin: 10}}>
-                              <i className='fa fa-times' aria-hidden='true' />
+                      <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group'>
+                              <div className='input-group m-input-group'>
+                                <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                                  placeholder={itm.title} className='form-control m-input'
+                                  onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
+                                  <i className='fa fa-times' aria-hidden='true' />
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </form>
                         {popup}
                       </div>
                       {itm.submenu.map((sub, subindex) => {
-                        return <div style={{marginLeft: 50}}>
+                        return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
                           <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
-                            <form className='form-inline'>
-                              <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
-                                onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
-                                className='form-control' style={{width: '350px'}} />
-                                <div onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                            <form className='m-form m-form--fit m-form--label-align-right'>
+                              <div className='m-portlet__body'>
+                                <div className='form-group m-form__group'>
+                                  <div className='input-group m-input-group'>
+                                    <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
+                                      onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
+                                      className='form-control m-input' style={{width: '350px'}} />
+                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
+                                      <i className='fa fa-times' aria-hidden='true' />
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </form>
                             {popup}
                           </div>
 
                           { sub.submenu.map((nested, nestedindex) => {
-                            return <div style={{marginLeft: 50}}>
+                            return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
                               <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
-                                <form className='form-inline'>
-                                  <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control'
-                                    onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
-                                    <div onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                <form className='m-form m-form--fit m-form--label-align-right'>
+                                  <div className='m-portlet__body'>
+                                    <div className='form-group m-form__group'>
+                                      <div className='input-group m-input-group'>
+                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control m-input'
+                                          onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                        <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
+                                          <i className='fa fa-times' aria-hidden='true' />
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
                                 </form>
                                 {popup}
@@ -412,8 +429,8 @@ class Menu extends React.Component {
 
                     </li>)
                   } else {
-                    return <li>
-                      <div ref={'item-' + index} className='align-center'>
+                    return <li className='nav-item m-tabs__item'>
+                      <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
                         <form className='m-form m-form--fit m-form--label-align-right'>
                           <div className='m-portlet__body'>
                             <div className='form-group m-form__group'>
@@ -433,25 +450,39 @@ class Menu extends React.Component {
                         {popup}
                       </div>
                       { itm.submenu.map((sub, subindex) => {
-                        return <div style={{marginLeft: 50}}>
+                        return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
                           <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
-                            <form className='form-inline'>
-                              <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
-                                placeholder={sub.title} className='form-control'
-                                onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
-                                style={{width: '350px'}} />
-                                <div onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                            <form className='m-form m-form--fit m-form--label-align-right'>
+                              <div className='m-portlet__body'>
+                                <div className='form-group m-form__group'>
+                                  <div className='input-group m-input-group'>
+                                    <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
+                                      placeholder={sub.title}
+                                      onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
+                                      style={{width: '350px'}} />
+                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
+                                      <i className='fa fa-times' aria-hidden='true' />
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </form>
                             {popup}
                           </div>
                           { sub.submenu.map((nested, nestedindex) => {
-                            return <div style={{marginLeft: 50}}>
+                            return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
                               <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
-                                <form className='form-inline'>
-                                  <div className='form-group'><input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
-                                    className='form-control' onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
-                                    <div onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} style={{margin: 10}}><i className='fa fa-times' aria-hidden='true' /></div>
+                                <form className='m-form m-form--fit m-form--label-align-right'>
+                                  <div className='m-portlet__body'>
+                                    <div className='form-group m-form__group'>
+                                      <div className='input-group m-input-group'>
+                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
+                                          className='form-control m-input' onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                        <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
+                                          <i className='fa fa-times' aria-hidden='true' />
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
                                 </form>
                                 {popup}
@@ -464,7 +495,20 @@ class Menu extends React.Component {
                   }
                 })
               }
-                  <li><input style={{margin: 10, width: '350px'}} type='text' readOnly value='Powered by KiboPush' className='form-control' /></li>
+              <li className='nav-item m-tabs__item'>
+                <div className='align-center' style={{marginTop: '-30px', marginLeft: '-13px'}}>
+                  <form className='m-form m-form--fit m-form--label-align-right'>
+                    <div className='m-portlet__body'>
+                      <div className='form-group m-form__group'>
+                        <div className='input-group m-input-group'>
+                          <input type='text' readOnly value='Powered by KiboPush'
+                            className='form-control m-input' style={{width: '350px'}} />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+                    </li>
                   <p><b>Note: </b>Only three menu items can be added.</p>
                   <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
