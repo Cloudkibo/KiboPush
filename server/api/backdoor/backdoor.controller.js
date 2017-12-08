@@ -538,8 +538,12 @@ exports.uploadFile = function (req, res) {
       {header: 'Name,Gender,Email,Locale,Timezone'})
     logger.serverLog(TAG, 'created file')
     try {
-      res.sendfile(dir)
-    } catch (err) {
+      res.set({
+     'Content-Disposition': 'attachment; filename=userInformation.csv',
+     'Content-Type': 'text/csv'
+   })
+   res.send(dir)
+ } catch (err) {
       logger.serverLog(TAG,
         `Inside Download file, err = ${JSON.stringify(err)}`)
       res.status(201)
