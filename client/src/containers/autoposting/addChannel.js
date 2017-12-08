@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createautoposting } from '../../redux/actions/autoposting.actions'
+import { createautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -56,6 +56,7 @@ class AddChannel extends React.Component {
         }
         break
     }
+    this.props.clearAlertMessages()
     this.props.createautoposting(autopostingData)
     this.props.onClose()
   }
@@ -175,7 +176,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createautoposting: createautoposting
+    createautoposting: createautoposting,
+    clearAlertMessages: clearAlertMessages
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddChannel)

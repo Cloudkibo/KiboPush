@@ -79,6 +79,7 @@ exports.create = function (req, res) {
           let url = req.body.subscriptionUrl
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
           TwitterUtility.findUser(screenName, (err, data) => {
             if (err) {
               logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
@@ -115,6 +116,7 @@ exports.create = function (req, res) {
           let url = req.body.subscriptionUrl
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
           logger.serverLog(TAG, `the parse got as ${screenName}`)
           Page.findOne({
             userId: req.user._id,

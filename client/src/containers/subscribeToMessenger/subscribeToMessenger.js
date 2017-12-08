@@ -148,13 +148,15 @@ class SubscribeToMessenger extends React.Component {
                       this.state.showbutton === true
                         ? <div className='m-portlet__body'>
                           { this.props.pages &&
-                          <div className='form-group m-form__group row'>
-                            <label className='col-form-label col-lg-3 col-sm-12'>
-                            Choose Page
-                          </label>
-                            <div className='col-lg-4 col-md-9 col-sm-12'>
+                          <div className='form-group'>
+                            {/*<label className='col-form-label col-lg-3 col-sm-12'>*/}
+                            <label>
+                              Choose Page
+                            </label>
+                            {/*<div className='col-lg-4 col-md-9 col-sm-12'>*/}
+                            <div>
                               <select
-                                className='custom-select'
+                                className='form-control'
                                 onChange={this.onChangeValue}>
                                 { this.props.pages.map((page, i) => (
                                 (
