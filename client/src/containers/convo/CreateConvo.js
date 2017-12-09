@@ -92,17 +92,6 @@ class CreateConvo extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Create Broadcast'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
@@ -312,10 +301,11 @@ class CreateConvo extends React.Component {
 
   testConvo () {
     for (let i = 0; i < this.props.pages.length; i++) {
-          console.log("In Loop", this.props.pages[i].pageId === this.state.pageValue);
-          console.log("In Other Loop", this.props.pages[i].pageId == this.state.pageValue); 
-      if (this.props.pages[i].pageId === this.state.pageValue) {
-        if (!this.props.pages[i].adminSubscriberId || !this.props.pages[i].hasOwnProperty('adminSubscriberId')) {
+          // console.log("In Loop", this.props.pages[i].pageId === this.state.pageValue);
+          // console.log("In Other Loop", this.props.pages[i].pageId == this.state.pageValue); 
+          // || !this.props.pages[i].hasOwnProperty('adminSubscriberId')
+      if (this.props.pages[i].pageId == this.state.pageValue) {
+        if (!this.props.pages[i].adminSubscriberId ) {
           this.setState({showMessengerModal: true})
           console.log('Setting Messenger Modal to True')
           return
