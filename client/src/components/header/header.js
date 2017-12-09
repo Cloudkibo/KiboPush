@@ -34,7 +34,6 @@ class Header extends React.Component {
     this.setState({ignore: true})
   }
 
-
   componentDidMount () {
       // require('../../../public/js/jquery-3.2.0.min.js')
       // require('../../../public/js/jquery.min.js')
@@ -164,48 +163,48 @@ class Header extends React.Component {
                               <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
                                 <div className='m-nav-grid m-nav-grid--skin-light'>
                                   <div className='m-nav-grid__row'>
-                                  {
+                                    {
                                     (this.props.subscribers &&
-                                    this.props.subscribers.length === 0) ?
-                                    <Link to='/convos' className='m-nav-grid__item'>
+                                    this.props.subscribers.length === 0)
+                                    ? <Link to='/convos' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
-                                    </Link> :
-                                    <Link to='/createconvo'  className='m-nav-grid__item'>
+                                    </Link>
+                                    : <Link to='/createconvo' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
                                   }
 
-                                  {
+                                    {
                                     (this.props.subscribers &&
-                                    this.props.subscribers.length === 0) ?
-                                    <Link to='/poll' className='m-nav-grid__item'>
+                                    this.props.subscribers.length === 0)
+                                    ? <Link to='/poll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
-                                    </Link> :
-                                    <Link to='/createpoll' className='m-nav-grid__item'>
+                                    </Link>
+                                    : <Link to='/createpoll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
                                   }
-                                    
+
                                   </div>
                                   <div className='m-nav-grid__row'>
 
                                     {
                                     (this.props.subscribers &&
-                                    this.props.subscribers.length === 0) ?
-                                     <Link to='/surveys' className='m-nav-grid__item'>
-                                      <i className='m-nav-grid__icon flaticon-folder' />
-                                      <span className='m-nav-grid__text'>Send New Survey</span>
-                                    </Link> :
-                                     <Link to='/addsurvey' className='m-nav-grid__item'>
-                                      <i className='m-nav-grid__icon flaticon-folder' />
-                                      <span className='m-nav-grid__text'>Send New Survey</span>
-                                    </Link>
+                                    this.props.subscribers.length === 0)
+                                     ? <Link to='/surveys' className='m-nav-grid__item'>
+                                       <i className='m-nav-grid__icon flaticon-folder' />
+                                       <span className='m-nav-grid__text'>Send New Survey</span>
+                                     </Link>
+                                     : <Link to='/addsurvey' className='m-nav-grid__item'>
+                                       <i className='m-nav-grid__icon flaticon-folder' />
+                                       <span className='m-nav-grid__text'>Send New Survey</span>
+                                     </Link>
                                   }
-                                   
+
                                     <Link to='/createworkflow' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
                                       <span className='m-nav-grid__text'>Create New Workflow</span>
@@ -282,7 +281,7 @@ class Header extends React.Component {
                     </li>
 
                     <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
-                      <a href='http://kibopush.com/user-guide/' target="_blank" style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
+                      <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li>
                   </ul>
                 </div>

@@ -360,9 +360,9 @@ class Menu extends React.Component {
                   <AlertContainer ref={a => this.msg = a} {...alertOptions} />
                   <div className='m-portlet__body'>
                     <div className='tab-content'>
-                    <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
-                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
-                  {
+                      <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
+                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
+                        {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 2) {
@@ -495,33 +495,33 @@ class Menu extends React.Component {
                   }
                 })
               }
-              <li className='nav-item m-tabs__item'>
-                <div className='align-center' style={{marginTop: '-30px', marginLeft: '-13px'}}>
-                  <form className='m-form m-form--fit m-form--label-align-right'>
-                    <div className='m-portlet__body'>
-                      <div className='form-group m-form__group'>
-                        <div className='input-group m-input-group'>
-                          <input type='text' readOnly value='Powered by KiboPush'
-                            className='form-control m-input' style={{width: '350px'}} />
+                        <li className='nav-item m-tabs__item'>
+                          <div className='align-center' style={{marginTop: '-30px', marginLeft: '-13px'}}>
+                            <form className='m-form m-form--fit m-form--label-align-right'>
+                              <div className='m-portlet__body'>
+                                <div className='form-group m-form__group'>
+                                  <div className='input-group m-input-group'>
+                                    <input type='text' readOnly value='Powered by KiboPush'
+                                      className='form-control m-input' style={{width: '350px'}} />
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </li>
+                        <p><b>Note: </b>Only three menu items can be added.</p>
+                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
+                Save Menu
+              </button>
+                      </ul>
                     </div>
                   </div>
                 </div>
-              </form>
-            </div>
-                    </li>
-                  <p><b>Note: </b>Only three menu items can be added.</p>
-                  <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
-                Save Menu
-              </button>
-                </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
     )
   }
 }

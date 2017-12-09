@@ -149,11 +149,11 @@ class SubscribeToMessenger extends React.Component {
                         ? <div className='m-portlet__body'>
                           { this.props.pages &&
                           <div className='form-group'>
-                            {/*<label className='col-form-label col-lg-3 col-sm-12'>*/}
+                            {/* <label className='col-form-label col-lg-3 col-sm-12'> */}
                             <label>
                               Choose Page
                             </label>
-                            {/*<div className='col-lg-4 col-md-9 col-sm-12'>*/}
+                            {/* <div className='col-lg-4 col-md-9 col-sm-12'> */}
                             <div>
                               <select
                                 className='form-control'

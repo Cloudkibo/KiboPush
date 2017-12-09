@@ -5,12 +5,13 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const PollPage = require('../page_poll/page_poll.model')
+const Sessions = require('../sessions/sessions.model')
+const LiveChat = require('../livechat/livechat.model')
 let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
-  var responses = []
   logger.serverLog(TAG, 'Poll get api is working')
   Polls.find({userId: req.user._id}, (err, polls) => {
     if (err) {
@@ -166,7 +167,7 @@ exports.send = function (req, res) {
       })
     }
   }
-  Pages.find(pagesFindCriteria, (err, pages) => {
+  Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       return res.status(500).json({
@@ -251,6 +252,41 @@ exports.send = function (req, res) {
                           err2
                         })
                       }
+                      Sessions.findOne({
+                        subscriber_id: subscribers[j]._id,
+                        page_id: pages[z]._id,
+                        company_id: pages[z].userId._id
+                      }, (err, session) => {
+                        if (err) {
+                          return logger.serverLog(TAG,
+                            `At get session ${JSON.stringify(err)}`)
+                        }
+                        if (!session) {
+                          return logger.serverLog(TAG,
+                            `No chat session was found for polls`)
+                        }
+                        const chatMessage = new LiveChat({
+                          sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                          recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                          sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                          recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                          session_id: session._id,
+                          company_id: pages[z].userId._id, // this is admin id till we have companies
+                          payload: {
+                            componentType: 'poll',
+                            payload: messageData
+                          }, // this where message content will go
+                          status: 'unseen' // seen or unseen
+                        })
+                        chatMessage.save((err, chatMessageSaved) => {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `At save chat${JSON.stringify(err)}`)
+                          }
+                          logger.serverLog(TAG,
+                            'Chat message saved for poll sent')
+                        })
+                      })
                     })
                   })
               }
