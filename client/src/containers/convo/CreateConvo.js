@@ -301,10 +301,10 @@ class CreateConvo extends React.Component {
 
   testConvo () {
     for (let i = 0; i < this.props.pages.length; i++) {
-          // console.log("In Loop", this.props.pages[i].pageId === this.state.pageValue);
+          console.log("In Loop", String(this.props.pages[i].pageId) === String(this.state.pageValue));
           // console.log("In Other Loop", this.props.pages[i].pageId == this.state.pageValue); 
           // || !this.props.pages[i].hasOwnProperty('adminSubscriberId')
-      if (this.props.pages[i].pageId == this.state.pageValue) {
+      if (String(this.props.pages[i].pageId) === String(this.state.pageValue)) {
         if (!this.props.pages[i].adminSubscriberId ) {
           this.setState({showMessengerModal: true})
           console.log('Setting Messenger Modal to True')
