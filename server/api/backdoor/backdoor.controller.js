@@ -539,11 +539,11 @@ exports.uploadFile = function (req, res) {
     logger.serverLog(TAG, 'created file')
     try {
       res.set({
-     'Content-Disposition': 'attachment; filename=userInformation.csv',
-     'Content-Type': 'text/csv'
-   })
-   res.send(dir)
- } catch (err) {
+        'Content-Disposition': 'attachment; filename=userInformation.csv',
+        'Content-Type': 'text/csv'
+      })
+      res.send(dir)
+    } catch (err) {
       logger.serverLog(TAG,
         `Inside Download file, err = ${JSON.stringify(err)}`)
       res.status(201)

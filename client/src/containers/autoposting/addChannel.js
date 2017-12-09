@@ -119,12 +119,12 @@ class AddChannel extends React.Component {
               <br />Twitter
             </button>
           </div>
-          {/*<div style={{display: 'inline-block', padding: '5px'}}>*/}
-            {/*<button onClick={() => this.onSelectItem('youtube')} style={{backgroundColor: youtubeColor, color: youtubeForeGroundColor}} className='btn'>*/}
-              {/*<i className='fa fa-youtube fa-2x' aria-hidden='true' />*/}
-              {/*<br />YouTube*/}
-            {/*</button>*/}
-          {/*</div>*/}
+          {/* <div style={{display: 'inline-block', padding: '5px'}}> */}
+          {/* <button onClick={() => this.onSelectItem('youtube')} style={{backgroundColor: youtubeColor, color: youtubeForeGroundColor}} className='btn'> */}
+          {/* <i className='fa fa-youtube fa-2x' aria-hidden='true' /> */}
+          {/* <br />YouTube */}
+          {/* </button> */}
+          {/* </div> */}
         </div>
         { facebookColor !== '' &&
         <div>
