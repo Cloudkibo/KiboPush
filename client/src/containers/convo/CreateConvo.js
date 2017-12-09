@@ -312,8 +312,8 @@ class CreateConvo extends React.Component {
 
   testConvo () {
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageId === this.state.pageValue) {
           console.log("In Loop"); 
+      if (this.props.pages[i].pageId === this.state.pageValue) {
         if (!this.props.pages[i].adminSubscriberId || !this.props.pages[i].hasOwnProperty('adminSubscriberId')) {
           this.setState({showMessengerModal: true})
           console.log('Setting Messenger Modal to True')
