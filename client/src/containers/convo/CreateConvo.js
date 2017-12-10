@@ -157,7 +157,7 @@ class CreateConvo extends React.Component {
 
   handlePageChange (value) {
     console.log("Setting a new pageValue", value)
-    this.setState({ pageValue: value[0] })
+    this.setState({ pageValue: String(value) })
   }
 
   handleGenderChange (value) {
