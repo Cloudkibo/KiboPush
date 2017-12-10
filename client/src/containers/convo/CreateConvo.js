@@ -378,10 +378,10 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        console.log("Setting a new pageValue", selected)
-        self.setState({ pageValue: selected })
+        console.log("Setting a new pageValue", selected[0])
+        self.setState({ pageValue: selected[0] })
       }
-      console.log('change Page', selected)
+      console.log('change Page', selected[0])
     })
   }
 
