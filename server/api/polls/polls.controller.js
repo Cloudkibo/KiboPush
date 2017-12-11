@@ -26,12 +26,29 @@ exports.index = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Polls not found'})
       }
-      PollResponse.aggregate([
-        {$group: {_id: '$pollId', count: {$sum: 1}}}
-      ], (err2, responsesCount) => {
+      PollResponse.aggregate([{
+        $group: {
+          _id: {pollId: '$pollId'},
+          count: {$sum: 1}
+        }}
+      ], (err2, responsesCount1) => {
         if (err2) {
           return res.status(404)
           .json({status: 'failed', description: 'Polls not found'})
+        }
+        let responsesCount = []
+        for (let i = 0; i < polls.length; i++) {
+          responsesCount.push({
+            _id: polls[i]._id,
+            count: 0
+          })
+        }
+        for (let i = 0; i < polls.length; i++) {
+          for (let j = 0; j < responsesCount1.length; j++) {
+            if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+              responsesCount[i].count = responsesCount1[j].count
+            }
+          }
         }
         res.status(200).json({
           status: 'success',
