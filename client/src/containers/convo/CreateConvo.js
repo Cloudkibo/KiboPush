@@ -156,7 +156,7 @@ class CreateConvo extends React.Component {
   }
 
   handlePageChange (value) {
-    console.log("Setting a new pageValue", value)
+    console.log('Setting a new pageValue', value)
     this.setState({ pageValue: String(value) })
   }
 
@@ -303,7 +303,7 @@ class CreateConvo extends React.Component {
   testConvo () {
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageId === this.state.pageValue) {
-        if (!this.props.pages[i].adminSubscriberId ) {
+        if (!this.props.pages[i].adminSubscriberId) {
           this.setState({showMessengerModal: true})
           console.log('Setting Messenger Modal to True')
           return
@@ -367,7 +367,7 @@ class CreateConvo extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: false,
+      multiple: false
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
@@ -378,7 +378,7 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        console.log("Setting a new pageValue", selected[0])
+        console.log('Setting a new pageValue', selected[0])
         self.setState({ pageValue: selected[0] })
       }
       console.log('change Page', selected[0])
@@ -435,7 +435,7 @@ class CreateConvo extends React.Component {
 
   render () {
     console.log('Pages ', this.props.pages)
-    console.log("Page Value", this.state.pageValue)
+    console.log('Page Value', this.state.pageValue)
 
     var alertOptions = {
       offset: 14,
