@@ -189,6 +189,7 @@ function fetchPages (url, user) {
             } else {
               page.likes = fanCount.body.fan_count
               page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+              page.accessToken = item.access_token
               if (fanCount.body.username) page.pageUserName = fanCount.body.username
               page.save((err) => {
                 if (err) {

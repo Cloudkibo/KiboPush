@@ -7,9 +7,9 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let menuSchema = new Schema({
-  pageId: {type: Schema.ObjectId, ref: 'pages'},
+  pageId: {type: String, ref: 'pages'},
   userId: {type: Schema.ObjectId, ref: 'users'},
-  payload: Schema.Types.Mixed // only when type is 'reply'
+  payload: Schema.Types.Mixed
 })
 
 module.exports = mongoose.model('menu', menuSchema)

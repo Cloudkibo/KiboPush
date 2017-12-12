@@ -21,7 +21,7 @@ export function transformData (data) {
     }
   })
   var final = {}
-  final.persistent_menu = [{ call_to_actions: data }]
+  final.persistent_menu = [{ locale: 'default', call_to_actions: data }]
   JSONstringify(final)
   return final
 }
@@ -89,6 +89,6 @@ function JSONstringify (json) {
   })
 
   arr.unshift(json)
-
+  console.log('hello')
   console.log.apply(console, arr)
 }

@@ -257,6 +257,7 @@ class Menu extends React.Component {
   }
 
   render () {
+    console.log('This transform data', this.state.itemMenus)
     console.log('This transform data', transformData(this.state.itemMenus))
     console.log('Page options', this.state.pageOptions)
 
