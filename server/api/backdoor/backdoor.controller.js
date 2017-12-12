@@ -562,8 +562,7 @@ exports.uploadFile = function (req, res) {
     // }
     // fs.unlinkSync(dir)
 
-    var info = JSON.parse(usersPayload)
-    console.log(info)
+    var info = usersPayload
     var keys = []
     var val = info[0]
 
@@ -571,16 +570,15 @@ exports.uploadFile = function (req, res) {
       var subKey = j
       keys.push(subKey)
     }
-    console.log(keys)
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
         console.log(err)
       }
       res.set({
-        'Content-Disposition': 'attachment; filename=userInformation.csv',
+        'Content-Disposition': 'attachment; filename=usersInformation.csv',
         'Content-Type': 'text/csv'
       })
-      res.send(csv)
+      res.status(200).send(csv)
     })
   })
 }

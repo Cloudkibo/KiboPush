@@ -153,7 +153,7 @@ exports.create = function (req, res) {
                   description: 'Failed to find menu. Internal Server Error'
                 })
               }
-              res.status(201).json({status: 'success', payload: info1})
+              res.status(201).json({status: 'success', payload: info1, hello: 'hi'})
             })
           }
         })
