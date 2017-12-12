@@ -183,41 +183,11 @@ class Sidebar extends Component {
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+              {this.showOperationalDashboard()}
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/dashboard' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-squares-4' />
                   <span className='m-menu__link-text'>Dashboard</span>
-                </Link>
-              </li>
-              {this.showOperationalDashboard()}
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-users' />
-                  <span className='m-menu__link-text'>Subscribers</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-alarm' />
-                  <span className='m-menu__link-text'>Subscribe to Messenger</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-share' />
-                  <span className='m-menu__link-text'>Share</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-file' />
-                  <span className='m-menu__link-text'>Customer Matching</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/live' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-chat-1' />
-                  <span className='m-menu__link-text'>Live Chat</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -239,15 +209,21 @@ class Sidebar extends Component {
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-signs-2' />
-                  <span className='m-menu__link-text'>Auto Posting</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/workflows' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-interface-8' />
                   <span className='m-menu__link-text'>Workflows</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/live' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-chat-1' />
+                  <span className='m-menu__link-text'>Live Chat</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-signs-2' />
+                  <span className='m-menu__link-text'>Auto Posting</span>
                 </Link>
               </li>
               { this.props.user && this.props.user.isSuperUser &&
@@ -257,11 +233,35 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Main Menu</span>
                 </Link>
               </li>
-            }
+              }
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/pages' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-add' />
-                  <span className='m-menu__link-text'>Pages</span>
+                  <span className='m-menu__link-text'>Manage Pages</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-users' />
+                  <span className='m-menu__link-text'>Manage Subscriptions</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-alarm' />
+                  <span className='m-menu__link-text'>Subscribe to Messenger</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-share' />
+                  <span className='m-menu__link-text'>Messenger Link</span>
+                </Link>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-file' />
+                  <span className='m-menu__link-text'>Invite using phone number</span>
                 </Link>
               </li>
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
