@@ -20,6 +20,8 @@ const sortBy = require('sort-array')
 const mongoose = require('mongoose')
 const csvdata = require('csvdata')
 const path = require('path')
+let config = require('./../../config/environment')
+
 let _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -533,13 +535,21 @@ exports.uploadFile = function (req, res) {
         Timezone: users[i].timezone
       })
     }
-    let dir = path.resolve(__dirname, './my-file.csv')
+    //  let dir = path.resolve(__dirname, './my-file.csv')
+    let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
     csvdata.write(dir, usersPayload,
       {header: 'Name,Gender,Email,Locale,Timezone'})
     logger.serverLog(TAG, 'created file')
+    // try {
+    //   return res.status(201).json({
+    //     status: 'success',
+    //     payload: {
+    //       url: `${config.domain}/api/broadcasts/download/users.csv`
+    //     }
+    //   })
     try {
       res.set({
-        'Content-Disposition': 'attachment; filename=userInformation.csv',
+        'Content-Disposition': 'attachment; filename=users.csv',
         'Content-Type': 'text/csv'
       })
       res.send(dir)

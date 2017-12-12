@@ -93,7 +93,6 @@ class OperationalDashboard extends React.Component {
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Operational Dashboard'
   }
-
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
   }
@@ -603,7 +602,7 @@ class OperationalDashboard extends React.Component {
                             </div>
                           </div>
                         </div>
-                        <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}}>
+                        <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}} onClick={this.getFile}>
                           <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
                             <label>Get data in CSV file: </label>
                           </div>
