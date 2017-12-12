@@ -64,33 +64,99 @@ exports.create = function (req, res) {
         description: 'Page not found'
       })
     }
-    const menu = new Menu(req.body)
-
-    // save model to MongoDB
-    menu.save((err, savedMenu) => {
+    Menu.findOne({pageId: req.body.pageId}, (err, info) => {
       if (err) {
-        res.status(500).json({
+        logger.serverLog(TAG,
+          `Internal Server Error ${JSON.stringify(err)}`)
+        return res.status(500).json({
           status: 'failed',
-          error: err,
-          description: 'Failed to insert record'
+          description: 'Failed to find menu. Internal Server Error'
         })
-        logger.serverLog(TAG, JSON.stringify(err))
+      }
+      if (!info) {
+        const menu = new Menu({
+          pageId: req.body.pageId,
+          userId: req.body.userId,
+          payload: req.body.payload})
+
+        // save model to MongoDB
+        menu.save((err, savedMenu) => {
+          if (err) {
+            res.status(500).json({
+              status: 'failed',
+              error: err,
+              description: 'Failed to insert record'
+            })
+            logger.serverLog(TAG, JSON.stringify(err))
+          } else {
+            const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
+
+            needle.request('post', requestUrl, req.body.payload, {json: true},
+              (err, resp) => {
+                if (!err) {
+                  logger.serverLog(TAG,
+                    `Menu added to page ${page.pageName}`)
+                  logger.serverLog(TAG, `responses from facebook1 ${JSON.stringify(resp.body)}`)
+                }
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error ${JSON.stringify(err)}`)
+                }
+              })
+
+            res.status(201).json({status: 'success', payload: savedMenu})
+          }
+        })
       } else {
-        const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
-
-        needle.request('post', requestUrl, req.body.payload, {json: true},
-          (err, resp) => {
-            if (!err) {
-              logger.serverLog(TAG,
-                `Menu added to page ${page.pageName}`)
-            }
-            if (err) {
-              logger.serverLog(TAG,
-                `Internal Server Error ${JSON.stringify(err)}`)
-            }
-          })
-
-        res.status(201).json({status: 'success', payload: savedMenu})
+        Menu.update({pageId: req.body.pageId}, {payload: req.body.payload}, (err, updated) => {
+          if (err) {
+            logger.serverLog(TAG,
+              `Error occurred in finding subscriber${JSON.stringify(
+                err)}`)
+          } else {
+            const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
+            // var valueForMenu = {
+            //   'persistent_menu': [
+            //     {
+            //       'locale': 'default',
+            //       'call_to_actions': [
+            //         {
+            //           'title': 'hey there',
+            //           'type': 'postback',
+            //           'payload': JSON.stringify({
+            //             id: 'one',
+            //             name: 'anisha'
+            //           })
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // }
+            needle.request('post', requestUrl, req.body.payload, {json: true},
+              (err, resp) => {
+                if (!err) {
+                  logger.serverLog(TAG,
+                    `Menu added to page ${page.pageName}`)
+                  logger.serverLog(TAG, `responses from facebook2 ${JSON.stringify(resp.body)}`)
+                }
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error ${JSON.stringify(err)}`)
+                }
+              })
+            Menu.findOne({pageId: req.body.pageId}, (err, info1) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Internal Server Error ${JSON.stringify(err)}`)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'Failed to find menu. Internal Server Error'
+                })
+              }
+              res.status(201).json({status: 'success', payload: info1})
+            })
+          }
+        })
       }
     })
   })

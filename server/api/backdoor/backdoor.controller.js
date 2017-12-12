@@ -21,6 +21,7 @@ const mongoose = require('mongoose')
 const csvdata = require('csvdata')
 const path = require('path')
 let config = require('./../../config/environment')
+var json2csv = require('json2csv')
 
 let _ = require('lodash')
 
@@ -536,10 +537,10 @@ exports.uploadFile = function (req, res) {
       })
     }
     //  let dir = path.resolve(__dirname, './my-file.csv')
-    let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
-    csvdata.write(dir, usersPayload,
-      {header: 'Name,Gender,Email,Locale,Timezone'})
-    logger.serverLog(TAG, 'created file')
+    // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
+    // csvdata.write(dir, usersPayload,
+    //   {header: 'Name,Gender,Email,Locale,Timezone'})
+    // logger.serverLog(TAG, 'created file')
     // try {
     //   return res.status(201).json({
     //     status: 'success',
@@ -547,25 +548,40 @@ exports.uploadFile = function (req, res) {
     //       url: `${config.domain}/api/broadcasts/download/users.csv`
     //     }
     //   })
-    try {
-      res.set({
-        'Content-Disposition': 'attachment; filename=users.csv',
-        'Content-Type': 'text/csv'
-      })
-      res.send(dir)
-    } catch (err) {
-      logger.serverLog(TAG,
-        `Inside Download file, err = ${JSON.stringify(err)}`)
-      res.status(201)
-        .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
-    }
+    // try {
+    //   res.set({
+    //     'Content-Disposition': 'attachment; filename=users.csv',
+    //     'Content-Type': 'text/csv'
+    //   })
+    //   res.send(dir)
+    // } catch (err) {
+    //   logger.serverLog(TAG,
+    //     `Inside Download file, err = ${JSON.stringify(err)}`)
+    //   res.status(201)
+    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    // }
     // fs.unlinkSync(dir)
 
-    // res.status(200).json({
-    //   status: 'success',
-    //   payload: dir
-    // })
-    //  fs.unlinkSync(dir)
+    var info = JSON.parse(usersPayload)
+    console.log(info)
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    console.log(keys)
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+        console.log(err)
+      }
+      res.set({
+        'Content-Disposition': 'attachment; filename=userInformation.csv',
+        'Content-Type': 'text/csv'
+      })
+      res.send(csv)
+    })
   })
 }
 
