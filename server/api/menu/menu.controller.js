@@ -93,18 +93,24 @@ exports.create = function (req, res) {
 
             needle.request('post', requestUrl, req.body.payload, {json: true},
               (err, resp) => {
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error ${JSON.stringify(err)}`)
+                }
                 if (!err) {
                   logger.serverLog(TAG,
                     `Menu added to page ${page.pageName}`)
                   logger.serverLog(TAG, `responses from facebook1 ${JSON.stringify(resp.body)}`)
                 }
-                if (err) {
-                  logger.serverLog(TAG,
-                    `Internal Server Error ${JSON.stringify(err)}`)
+                if (JSON.stringify(resp.body.error)) {
+                  return res.status(404).json({
+                    status: 'error',
+                    description: JSON.stringify(resp.body.error)
+                  })
+                } else {
+                  res.status(201).json({status: 'success', payload: savedMenu})
                 }
               })
-
-            res.status(201).json({status: 'success', payload: savedMenu})
           }
         })
       } else {
@@ -143,18 +149,25 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG,
                     `Internal Server Error ${JSON.stringify(err)}`)
                 }
+                if (JSON.stringify(resp.body.error)) {
+                  return res.status(404).json({
+                    status: 'error',
+                    description: JSON.stringify(resp.body.error)
+                  })
+                } else {
+                  Menu.findOne({pageId: req.body.pageId}, (err, info1) => {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Internal Server Error ${JSON.stringify(err)}`)
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: 'Failed to find menu. Internal Server Error'
+                      })
+                    }
+                    res.status(201).json({status: 'success', payload: info1})
+                  })
+                }
               })
-            Menu.findOne({pageId: req.body.pageId}, (err, info1) => {
-              if (err) {
-                logger.serverLog(TAG,
-                  `Internal Server Error ${JSON.stringify(err)}`)
-                return res.status(500).json({
-                  status: 'failed',
-                  description: 'Failed to find menu. Internal Server Error'
-                })
-              }
-              res.status(201).json({status: 'success', payload: info1, hello: 'hi'})
-            })
           }
         })
       }
