@@ -216,7 +216,7 @@ class Menu extends React.Component {
   }
 
   setUrl (event) {
-    console.log('In setUrl ', event.target.value, this.clickIndex)
+    console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     switch (index[0]) {
