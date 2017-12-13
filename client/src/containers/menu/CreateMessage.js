@@ -46,7 +46,11 @@ class CreateMessage extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
   }
-
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.currentMenuItem) {
+      console.log('Current MenuItem' :nextProps.currentMenuItem)
+    }
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -347,6 +351,7 @@ class CreateMessage extends React.Component {
 function mapStateToProps (state) {
   // console.log(state)
   return {
+    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
   }
 }
 
