@@ -574,11 +574,14 @@ exports.uploadFile = function (req, res) {
       if (err) {
         console.log(err)
       }
-      res.set({
-        'Content-Disposition': 'attachment; filename=usersInformation.csv',
-        'Content-Type': 'text/csv'
+      // res.set({
+      //   'Content-Disposition': 'attachment; filename=usersInformation.csv',
+      //   'Content-Type': 'text/csv'
+      // })
+      res.status(200).json({
+        status: 'success',
+        payload: csv
       })
-      res.status(200).send(csv)
     })
   })
 }

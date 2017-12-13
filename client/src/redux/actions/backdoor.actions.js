@@ -268,7 +268,7 @@ export function saveCurrentPoll (poll) {
   }
 }
 export function fileStatus (data) {
-  //console.log('fileStatus1', JSONdata)
+  //  console.log('fileStatus1', JSONdata)
   return {
     type: ActionTypes.DOWNLOAD_FILE,
     data
@@ -279,8 +279,8 @@ export function downloadFile () {
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
     .then(function (data) {
-      //  fileDownload(data, 'filename.csv')
-      FileSaver.saveAs(data, 'nameFile.csv')
+      console.log('in', data)
+      fileDownload(data.payload, 'users.csv')
     })
   }
 
