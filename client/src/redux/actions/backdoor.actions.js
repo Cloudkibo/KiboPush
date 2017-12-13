@@ -1,5 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import fileDownload from 'js-file-download'
+import FileSaver from 'file-saver'
 export const API_URL = '/api'
 
 export function updateUsersList (data) {
@@ -266,16 +268,20 @@ export function saveCurrentPoll (poll) {
   }
 }
 export function fileStatus (data) {
-  console.log('fileStatus1', data)
+  //console.log('fileStatus1', JSONdata)
+  return {
+    type: ActionTypes.DOWNLOAD_FILE,
+    data
+  }
 }
 export function downloadFile () {
   console.log('downloadFile called')
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
-        .then(res => {
-          dispatch(fileStatus(res))
-          console.log('res', res)
-        })
+    .then(function (data) {
+      //  fileDownload(data, 'filename.csv')
+      FileSaver.saveAs(data, 'nameFile.csv')
+    })
   }
 
   // return (dispatch) => {

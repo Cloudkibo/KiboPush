@@ -246,7 +246,20 @@ class Menu extends React.Component {
       this.msg.error('Please select a page')
       return
     }
-    data.payload = transformData(this.state.itemMenus)
+    var array = []
+    for (var j = 0; j < this.state.itemMenus.length; j++) {
+      array.push(this.state.itemMenus[j])
+    }
+    for (var k = 0; k < array.length; k++) {
+      if (array[k].title.includes('Powered By KiboPush')) {
+        break
+      } else {
+        array.push({title: 'Powered By KiboPush', submenu: [], type: 'web_url', url: 'https://www.messenger.com/t/151990922046256'})
+      }
+    }
+    console.log(array)
+    console.log('menu', this.state.itemMenus)
+    data.payload = transformData(array)
     data.pageId = this.state.pageValue
     data.userId = this.props.user._id
     data.jsonStructure = this.state.itemMenus
