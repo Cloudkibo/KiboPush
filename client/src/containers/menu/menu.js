@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem, fetchMenu, saveMenu } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import Popover from 'react-simple-popover'
@@ -78,7 +78,11 @@ class Menu extends React.Component {
       this.setState({pageOptions: myPages})
       this.setState({pageValue: nextProps.pages[0].pageId})
       console.log('state', this.state.pageValue)
+      if (this.state.pageValue !== '') {
+        this.props.getIndexBypage(this.state.pageValue)
+      }
     }
+    console.log('IndexByPage', nextProps)
   }
   handleOption (option) {
     console.log('option selected: ', option)
@@ -544,7 +548,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    indexByPage: (state.indexByPage.menuitems)
     //  items: (state.menuInfo.menuitems)
   }
 }
@@ -554,7 +559,8 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     addMenuItem: addMenuItem,
     fetchMenu: fetchMenu,
-    saveMenu: saveMenu
+    saveMenu: saveMenu,
+    getIndexBypage: getIndexBypage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

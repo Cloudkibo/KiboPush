@@ -58,6 +58,23 @@ export function fetchMenu (setMenu) {
   }
 }
 
+export function updateIndexByPage (data) {
+  return {
+    type: ActionTypes.UPDATE_INDEX_BY_PAGE,
+    data
+  }
+}
+
+export function getIndexBypage (pageId) {
+  console.log('Getting Index By Page')
+  return (dispatch) => {
+    callApi('menu/indexByPage', 'post', {pageId: pageId}).then(res => {
+      dispatch(updateIndexByPage(res.payload))
+      console.log('updateIndexByPage', res)
+    })
+  }
+}
+
 export function saveMenu (data) {
   console.log('Saving Menu', data)
   return (dispatch) => {
