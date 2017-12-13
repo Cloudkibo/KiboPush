@@ -13,7 +13,7 @@ import {autopostingInfo} from './autoposting.reducer.js'
 import {convosInfo} from './convos.reducer.js'
 import {getFileUploadResponse} from './growthTools.reducer.js'
 import {liveChat} from './livechat.reducer.js'
-import {indexByPage} from './menu.reducer.js'
+import {indexByPage, getCurrentMenuItem} from './menu.reducer.js'
 import {UsersInfo, PagesInfo, BroadcastsInfo, PageSubscribersInfo, PollsInfo, SurveysInfo, getCurrentUser, getCurrentPage, dataObjectsInfo, topPagesInfo, getCurrentSurvey, SurveyDetailsInfo, getCurrentPoll, PollDetailsInfo, broadcastsGraphInfo, pollsGraphInfo, surveysGraphInfo, sessionsGraphInfo} from './backdoor.reducer'
 
 const appReducer = combineReducers({
@@ -49,7 +49,8 @@ const appReducer = combineReducers({
   getFileUploadResponse,
   liveChat,
   APIInfo,
-  indexByPage
+  indexByPage,
+  getCurrentMenuItem
 })
 
 export default appReducer

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem, fetchMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import Popover from 'react-simple-popover'
@@ -48,6 +48,7 @@ class Menu extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.changeLabel = this.changeLabel.bind(this)
     this.removeItem = this.removeItem.bind(this)
+    this.setCreateMessage = this.setCreateMessage.bind(this)
     props.fetchMenu()
     props.getIndexBypage(this.props.pages[0].pageId)
   }
@@ -84,6 +85,9 @@ class Menu extends React.Component {
       this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
       console.log('MenuItem', nextProps.indexByPage)
     }
+    if (nextProps.currentMenuItem) {
+      console.log('Current MenuItem' :nextProps.currentMenuItem)
+    }
   }
 
   handleOption (option) {
@@ -97,7 +101,37 @@ class Menu extends React.Component {
       this.setState({itemType: 'weblink'})
     }
   }
+  setCreateMessage (event) {
+    console.log('In setCreateMessage ', event.target.value, this.clickIndex)
+    var temp = this.state.itemMenus
+    var index = this.clickIndex.split('-')
+    switch (index[0]) {
+      case 'item':
+        console.log('An Item was Clicked position ', index[1])
+        temp[index[1]].type = 'postback'
+        temp[index[1]].payload = ''
+        break
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        temp[index[1]].submenu[index[2]].type = 'postback'
+        temp[index[1]].submenu[index[2]].url = ''
+        break
+      case 'nested':
+        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = ''
+        break
 
+      default:
+        console.log('In switch', index[0])
+        break
+    }
+
+    this.setState({itemMenus: temp})
+    console.log('Saving menu item..', this.state.itemMenus)
+    var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex }
+    this.props.saveCurrentMenuItem(currentState)
+  }
   addSubmenu () {
     this.setState({openPopover: false})
     var temp = this.state.itemMenus
@@ -136,6 +170,7 @@ class Menu extends React.Component {
   }
   handleClick (event) {
     console.log('Handle Click Was Called')
+    this.props.saveCurrentMenuItem(this.state.itemMenus)
     // this.props.history.push({
     //   pathname: `/CreateMessage`,
     //   state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
@@ -301,7 +336,7 @@ class Menu extends React.Component {
         <div id='popover-option2' className='container'>
           <Link to='CreateMessage'>
             <div className='row'>
-              <button style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create New Message</button>
+              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create New Message</button>
             </div>
           </Link>
         </div>
@@ -538,7 +573,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    indexByPage: (state.indexByPage.menuitems)
+    indexByPage: (state.indexByPage.menuitems),
+    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
     //  items: (state.menuInfo.menuitems)
   }
 }
@@ -549,7 +585,8 @@ function mapDispatchToProps (dispatch) {
     addMenuItem: addMenuItem,
     fetchMenu: fetchMenu,
     saveMenu: saveMenu,
-    getIndexBypage: getIndexBypage
+    getIndexBypage: getIndexBypage,
+    saveCurrentMenuItem: saveCurrentMenuItem
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

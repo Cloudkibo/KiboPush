@@ -87,3 +87,10 @@ export function saveMenu (data) {
     })
   }
 }
+export function saveCurrentMenuItem (data) {
+  console.log('in saveCurrentMenuItem', data)
+  return {
+    type: ActionTypes.SAVE_CURRENT_MENUITEM,
+    data: data
+  }
+}

@@ -23,3 +23,16 @@ export function indexByPage (state = initialState, action) {
       return state
   }
 }
+
+export function getCurrentMenuItem (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.SAVE_CURRENT_MENUITEM:
+      console.log('getCurrentMenuItem', action.data)
+      return Object.assign({}, state, {
+        currentMenuItem: action.data
+      })
+
+    default:
+      return state
+  }
+}
