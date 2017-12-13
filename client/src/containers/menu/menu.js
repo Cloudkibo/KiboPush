@@ -249,6 +249,7 @@ class Menu extends React.Component {
     data.payload = transformData(this.state.itemMenus)
     data.pageId = this.state.pageValue
     data.userId = this.props.user._id
+    data.jsonStructure = this.state.itemMenus
     this.props.saveMenu(data)
   }
 
@@ -366,7 +367,7 @@ class Menu extends React.Component {
                         {
                 this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
-                  if (this.state.itemMenus[index + 1] || index === 2) {
+                  if (this.state.itemMenus[index + 1] || index === 1) {
                     return (<li className='nav-item m-tabs__item'>
                       <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
                         <form className='m-form m-form--fit m-form--label-align-right'>
