@@ -49,6 +49,7 @@ class Menu extends React.Component {
     this.changeLabel = this.changeLabel.bind(this)
     this.removeItem = this.removeItem.bind(this)
     props.fetchMenu()
+    props.getIndexBypage(this.props.pages[0].pageId)
   }
 
   componentDidMount () {
@@ -78,12 +79,12 @@ class Menu extends React.Component {
       this.setState({pageOptions: myPages})
       this.setState({pageValue: nextProps.pages[0].pageId})
       console.log('state', this.state.pageValue)
-      if (this.state.pageValue !== '') {
-        this.props.getIndexBypage(this.state.pageValue)
-      }
     }
-    console.log('IndexByPage', nextProps)
+    if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
+      console.log('MenuItem', nextProps.indexByPage)
+    }
   }
+
   handleOption (option) {
     console.log('option selected: ', option)
     this.setState({optionSelected: option})
@@ -263,7 +264,7 @@ class Menu extends React.Component {
 
   render () {
     console.log('This transform data', this.state.itemMenus)
-    console.log('This transform data', transformData(this.state.itemMenus))
+  //  console.log('This transform data', transformData(this.state.itemMenus))
     console.log('Page options', this.state.pageOptions)
 
     var alertOptions = {
