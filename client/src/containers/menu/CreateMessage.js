@@ -331,7 +331,7 @@ class CreateMessage extends React.Component {
                   </ModalDialog>
                 </ModalContainer>
               }
-                  <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
+                  <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc', height: '350px'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                     <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
