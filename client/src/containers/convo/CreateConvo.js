@@ -195,6 +195,8 @@ class CreateConvo extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('handleCard in CreateConvo is called: ')
+    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
