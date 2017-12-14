@@ -65,12 +65,13 @@ export function updateIndexByPage (data) {
   }
 }
 
-export function getIndexBypage (pageId) {
-  console.log('Getting Index By Page')
+export function getIndexBypage (pageId, handleIndexByPage) {
+  console.log('Getting Index By Page', pageId)
   return (dispatch) => {
     callApi('menu/indexByPage', 'post', {pageId: pageId}).then(res => {
       dispatch(updateIndexByPage(res.payload))
       console.log('updateIndexByPage', res)
+      handleIndexByPage()
     })
   }
 }
