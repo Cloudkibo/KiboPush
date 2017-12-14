@@ -148,7 +148,8 @@ class Card extends React.Component {
 
   updateImageUrl (data) {
     console.log('Update Card Image Url')
-    this.setState({ fileurl: 'https://app.kibopush.com/api/broadcasts/download/' + data.fileurl,
+    console.log(data)
+    this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
       type: data.type,
       size: data.size })

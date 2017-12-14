@@ -36,6 +36,7 @@ class Menu extends React.Component {
       optionSelected: ''
 
     }
+
     this.option1 = 'Add submenu'
     this.option2 = 'Reply with a message'
     this.option3 = 'Open website'
@@ -49,8 +50,12 @@ class Menu extends React.Component {
     this.changeLabel = this.changeLabel.bind(this)
     this.removeItem = this.removeItem.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
+    this.handleIndexByPage = this.handleIndexByPage.bind(this)
+
     props.fetchMenu()
-    props.getIndexBypage(this.props.pages[0].pageId)
+    if (this.props.pages) {
+      props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
+    }
   }
 
   componentDidMount () {
@@ -78,12 +83,16 @@ class Menu extends React.Component {
         }
       })
       this.setState({pageOptions: myPages})
-      this.setState({pageValue: nextProps.pages[0].pageId})
-      console.log('state', this.state.pageValue)
+      if (this.state.pageValue === '') {
+        this.setState({pageValue: nextProps.pages[0].pageId})
+      }
     }
+
     if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
-      this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
-      console.log('MenuItem', nextProps.indexByPage)
+      if (this.state.itemMenus[0].title === 'First Menu' && this.state.itemMenus[0].submenu.length < 1) {
+        this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
+        console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
+      }
     }
     if (nextProps.currentMenuItem) {
       console.log('Current MenuItem' :nextProps.currentMenuItem)
@@ -99,6 +108,14 @@ class Menu extends React.Component {
       this.setState({itemType: 'reply'})
     } else if (option === 'Open website') {
       this.setState({itemType: 'weblink'})
+    }
+  }
+  handleIndexByPage () {
+    if (this.props.indexByPage && this.props.indexByPage.length > 0) {
+      this.setState({itemMenus: this.props.indexByPage[0].jsonStructure})
+    } else {
+      var intialMenu = [{title: 'First Menu', submenu: []}]
+      this.setState({itemMenus: intialMenu})
     }
   }
   setCreateMessage (event) {
@@ -167,6 +184,7 @@ class Menu extends React.Component {
     console.log('Page Value', event.target.value)
     console.log('Page Value', event.target.value)
     this.setState({pageValue: event.target.value})
+    this.props.getIndexBypage(event.target.value, this.handleIndexByPage)
   }
   handleClick (event) {
     console.log('Handle Click Was Called')
@@ -281,16 +299,20 @@ class Menu extends React.Component {
   }
 
   save () {
+    console.log('Current Item', this.props.currentMenuItem)
+    this.setState({
+      itemMenus: this.props.currentMenuItem
+    })
     var data = {}
     if (this.state.pageValue === '') {
       console.log('empty')
       this.msg.error('Please select a page')
       return
     }
-    data.payload = transformData(this.state.itemMenus)
+    data.payload = transformData(this.props.currentMenuItem)
     data.pageId = this.state.pageValue
     data.userId = this.props.user._id
-    data.jsonStructure = this.state.itemMenus
+    data.jsonStructure = this.props.currentMenuItem
     this.props.saveMenu(data)
   }
 
