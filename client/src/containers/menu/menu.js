@@ -89,8 +89,10 @@ class Menu extends React.Component {
     }
 
     if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
-      this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
-      console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
+      if (this.state.itemMenus[0].title === 'First Menu' && this.state.itemMenus[0].submenu.length < 1) {
+        this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
+        console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
+      }
     }
     if (nextProps.currentMenuItem) {
       console.log('Current MenuItem' :nextProps.currentMenuItem)
@@ -297,16 +299,20 @@ class Menu extends React.Component {
   }
 
   save () {
+    console.log('Current Item', this.props.currentMenuItem)
+    this.setState({
+      itemMenus: this.props.currentMenuItem
+    })
     var data = {}
     if (this.state.pageValue === '') {
       console.log('empty')
       this.msg.error('Please select a page')
       return
     }
-    data.payload = transformData(this.state.itemMenus)
+    data.payload = transformData(this.props.currentMenuItem)
     data.pageId = this.state.pageValue
     data.userId = this.props.user._id
-    data.jsonStructure = this.state.itemMenus
+    data.jsonStructure = this.props.currentMenuItem
     this.props.saveMenu(data)
   }
 
