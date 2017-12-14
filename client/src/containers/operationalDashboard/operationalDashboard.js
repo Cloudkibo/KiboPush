@@ -607,7 +607,7 @@ class OperationalDashboard extends React.Component {
                             <label>Get data in CSV file: </label>
                           </div>
                           <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                            <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' onClick={() => this.getFile()} />
+                            <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
                           </div>
                         </div>
                       </div>

@@ -288,8 +288,8 @@ class CreateMessage extends React.Component {
                     <div className='row'>
                       <br />
                       <br />
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendMessage} className='btn btn-primary'> Save </button>
-                      <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
+                      <Link to='menu'><button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendMessage} className='btn btn-primary'> Save </button></Link>
+                      <Link to='menu'><button style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button></Link>
                     </div>
                   </div>
                 </div>

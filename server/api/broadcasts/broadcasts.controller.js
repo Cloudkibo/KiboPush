@@ -171,13 +171,14 @@ exports.getfbMessage = function (req, res) {
 
         // if event.post, the response will be of survey or poll. writing a logic to save response of poll
         if (event.postback) {
-          logger.serverLog(TAG, JSON.stringify(event.postback))
+          logger.serverLog(TAG, `Heelo ${JSON.stringify(event.postback)}`)
           let resp = JSON.parse(event.postback.payload)
           if (resp.poll_id) {
             savepoll(event)
           } else if (resp.survey_id) {
             savesurvey(event)
-          } else {
+          } else if (resp.componentType) {
+            sendReply(event)
           }
         }
 
@@ -442,6 +443,41 @@ function updateseenstatus (req) {
     })
 }
 
+function sendReply (req) {
+  logger.serverLog(TAG, `Inside sendReply ${JSON.stringify(req)}`)
+  let messageData = utility.prepareSendAPIPayload(
+    req.sender.id,
+    JSON.parse(req.postback.payload))
+  logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
+  Pages.find({pageId: req.recipient.id}, (err, pages) => {
+    if (err) {
+      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG,
+      `page found ${JSON.stringify(pages)}`)
+    request(
+      {
+        'method': 'POST',
+        'json': true,
+        'formData': messageData,
+        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+        pages[0].accessToken
+      },
+      function (err, res) {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At send test message broadcast ${JSON.stringify(err)}`)
+        } else {
+          logger.serverLog(TAG,
+            `At send reply response ${JSON.stringify(
+              res)}`)
+        }
+
+        logger.serverLog(TAG,
+          'Sent broadcast to subscriber to self for test')
+      })
+  })
+}
 function savepoll (req) {
   // find subscriber from sender id
   logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)
@@ -871,7 +907,7 @@ function savesurvey (req) {
                         company_id: subscriber.userId, // this is admin id till we have companies
                         payload: {
                           componentType: 'survey',
-                          payload: messageData
+                          text: messageData
                         }, // this where message content will go
                         status: 'unseen' // seen or unseen
                       })
