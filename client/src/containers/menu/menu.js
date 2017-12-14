@@ -297,7 +297,6 @@ class Menu extends React.Component {
   setWebUrl () {
     this.setState({setWebUrl: !this.state.setWebUrl})
   }
-
   render () {
     console.log('This transform data', this.state.itemMenus)
   //  console.log('This transform data', transformData(this.state.itemMenus))
