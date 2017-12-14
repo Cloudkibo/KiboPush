@@ -114,7 +114,23 @@ exports.enable = function (req, res) {
                   method: 'POST'
 
                 }
+                var valueForMenu = {
+                  'get_started': {
+                    'payload': '<GET_STARTED_PAYLOAD>'
+                  }
+                }
+                const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
 
+                needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+                  if (!err) {
+                    logger.serverLog(TAG,
+                      `Menu added to page ${req.body.pageName}`)
+                  }
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error ${JSON.stringify(err)}`)
+                  }
+                })
                 needle.post(options.url, options, (error, response) => {
                   if (error) {
                     return res.status(500)

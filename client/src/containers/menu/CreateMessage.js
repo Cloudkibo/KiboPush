@@ -19,6 +19,7 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { SendMessage } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
+import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -32,7 +33,8 @@ class CreateMessage extends React.Component {
       pageValue: '',
       isShowingModal: false,
       messageTitle: 'Message Title',
-      showMessengerModal: false
+      showMessengerModal: false,
+      itemMenus: []
     }
     // props.getuserdetails()
     this.handleText = this.handleText.bind(this)
@@ -46,30 +48,18 @@ class CreateMessage extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
   }
+  componentDidMount () {
+    document.title = 'KiboPush | Menu'
+    // let options = []
+    // this.setState({ page: { options: options } })
+  }
   componentWillReceiveProps (nextProps) {
+    console.log('next props', nextProps)
     if (nextProps.currentMenuItem) {
-      console.log('Current MenuItem' :nextProps.currentMenuItem)
+      console.log('Current MenuItem', nextProps.currentMenuItem)
+      //  this.setState({ itemMenus: true })
     }
   }
-  componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    document.body.appendChild(addScript)
-    let options = []
-    this.setState({ page: { options: options } })
-  }
-
   showDialog () {
     this.setState({ isShowingModal: true })
   }
@@ -84,27 +74,27 @@ class CreateMessage extends React.Component {
   }
 
   handleText (obj) {
-    var temp = this.state.message
-    var isPresent = false
-    temp.map((data) => {
-      if (data.id === obj.id) {
-        data.text = obj.text
-        if (obj.button.length > 0) {
-          data.buttons = obj.button
-        }
-        isPresent = true
-      }
-    })
-
-    if (!isPresent) {
-      if (obj.button.length > 0) {
-        temp.push({ id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button })
-      } else {
-        temp.push({ id: obj.id, text: obj.text, componentType: 'text' })
-      }
-    }
-
-    this.setState({ message: temp })
+    // var temp = this.state.message
+    // var isPresent = false
+    // temp.map((data) => {
+    //   if (data.id === obj.id) {
+    //     data.text = obj.text
+    //     if (obj.button.length > 0) {
+    //       data.buttons = obj.button
+    //     }
+    //     isPresent = true
+    //   }
+    // })
+    //
+    // if (!isPresent) {
+    //   if (obj.button.length > 0) {
+    //     temp.push({ id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button })
+    //   } else {
+    //     temp.push({ id: obj.id, text: obj.text, componentType: 'text' })
+    //   }
+    // }
+    //
+    // this.setState({ message: temp })
   }
 
   handleCard (obj) {
@@ -206,8 +196,6 @@ class CreateMessage extends React.Component {
   }
 
   render () {
-    console.log('Pages ', this.props.pages)
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -301,7 +289,7 @@ class CreateMessage extends React.Component {
                       <br />
                       <br />
                       <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendMessage} className='btn btn-primary'> Save </button>
-
+                      <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
                     </div>
                   </div>
                 </div>
@@ -349,7 +337,7 @@ class CreateMessage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  // console.log(state)
+  console.log('mapStateToProps', state)
   return {
     currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
   }

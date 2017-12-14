@@ -2,6 +2,9 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   menuitems: null
 }
+const initialState1 = {
+  currentMenuItem: null
+}
 export function menuInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.ADD_MENU_ITEM:
@@ -24,7 +27,7 @@ export function indexByPage (state = initialState, action) {
   }
 }
 
-export function getCurrentMenuItem (state = initialState, action) {
+export function getCurrentMenuItem (state = initialState1, action) {
   switch (action.type) {
     case ActionTypes.SAVE_CURRENT_MENUITEM:
       console.log('getCurrentMenuItem', action.data)
