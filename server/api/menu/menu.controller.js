@@ -131,8 +131,8 @@ exports.create = function (req, res) {
             //           'title': 'hey there',
             //           'type': 'postback',
             //           'payload': JSON.stringify({
-            //             id: 'one',
-            //             name: 'anisha'
+            //             'componentType': 'text',
+            //             'text': 'anisha'
             //           })
             //         }
             //       ]

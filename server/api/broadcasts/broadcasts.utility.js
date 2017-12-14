@@ -4,10 +4,14 @@
 
 // const logger = require('../../components/logger')
 // const TAG = 'api/broadcast/broadcasts.utility.js'
+const logger = require('../../components/logger')
+const TAG = 'api/broadcast/broadcasts.controller.js'
+
 const fs = require('fs')
 const path = require('path')
 
 function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
+  logger.serverLog(TAG, `utility ${JSON.stringify(subscriberId)}`)
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
     payload = {

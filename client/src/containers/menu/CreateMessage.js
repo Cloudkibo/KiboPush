@@ -17,7 +17,7 @@ import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { SendMessage, saveCurrentMenuItem } from '../../redux/actions/menu.actions'
+import { SendMessage } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
 import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -46,8 +46,7 @@ class CreateMessage extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
-    this.saveMessage = this.saveMessage.bind(this)
-    this.setCreateMessage = this.setCreateMessage.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
@@ -75,12 +74,6 @@ class CreateMessage extends React.Component {
   }
 
   handleText (obj) {
-    var payload = {
-      componentType: 'text',
-      text: obj.text,
-      buttons: obj.button
-    }
-    this.setState({message: payload})
     // var temp = this.state.message
     // var isPresent = false
     // temp.map((data) => {
@@ -185,41 +178,21 @@ class CreateMessage extends React.Component {
     this.setState({ list: temp, message: temp2 })
   }
 
-  setCreateMessage (clickedIndex, payload) {
-    console.log('In set Create Message ', this.clickIndex)
-    var temp = this.props.currentMenuItem.itemMenus
-    var index = clickedIndex.split('-')
-    switch (index[0]) {
-      case 'item':
-        console.log('An Item was Clicked position ', index[1])
-        temp[index[1]].type = 'postback'
-        temp[index[1]].payload = payload
-        break
-      case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
-        temp[index[1]].submenu[index[2]].type = 'postback'
-        temp[index[1]].submenu[index[2]].url = payload
-        break
-      case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
-        temp[index[1]].submenu[index[2]].submenu[index[3]].url = payload
-        break
-      default:
-        console.log('In switch', index[0])
-        break
-    }
-    return temp
-  }
-
-  saveMessage () {
+  sendMessage () {
     if (this.state.message.length === 0) {
       return
     }
-    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message)
-    this.props.saveCurrentMenuItem(updatedMenuItem)
-    console.log('Current Menu Items', this.props.currentMenuItem.menuitems)
-    console.log('Payload', this.state.message)
+    console.log(this.state.message)
+    var data = {
+      platform: 'facebook',
+      menuItemType: this.props.location.state.menuItemType,
+      pageId: this.props.location.state.pageId,
+      title: this.props.location.state.title,
+      payload: this.state.message
+    }
+    console.log('Data sent: ', data)
+    this.props.SendMessage(data, this.msg)
+    this.setState({message: [], list: []})
   }
 
   render () {
@@ -315,8 +288,8 @@ class CreateMessage extends React.Component {
                     <div className='row'>
                       <br />
                       <br />
-                      <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary'> Save </button>
-                      <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
+                      <Link to='menu'><button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendMessage} className='btn btn-primary'> Save </button></Link>
+                      <Link to='menu'><button style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button></Link>
                     </div>
                   </div>
                 </div>
@@ -373,8 +346,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      SendMessage: SendMessage,
-      saveCurrentMenuItem: saveCurrentMenuItem
+      SendMessage: SendMessage
     },
         dispatch)
 }

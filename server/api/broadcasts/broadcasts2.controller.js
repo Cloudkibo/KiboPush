@@ -184,7 +184,8 @@ exports.sendConversation = function (req, res) {
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
                 payloadItem)
-
+              logger.serverLog(TAG,
+                  `At send message broadcast response ${JSON.stringify(subscriber.senderId)}`)
               request(
                 {
                   'method': 'POST',
