@@ -122,24 +122,24 @@ exports.create = function (req, res) {
                 err)}`)
           } else {
             const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
-            var valueForMenu = {
-              'persistent_menu': [
-                {
-                  'locale': 'default',
-                  'call_to_actions': [
-                    {
-                      'title': 'heeeee',
-                      'type': 'postback',
-                      'payload': JSON.stringify({
-                        'componentType': 'text',
-                        'text': 'welcome'
-                      })
-                    }
-                  ]
-                }
-              ]
-            }
-            needle.request('post', requestUrl, valueForMenu, {json: true},
+            // var valueForMenu = {
+            //   'persistent_menu': [
+            //     {
+            //       'locale': 'default',
+            //       'call_to_actions': [
+            //         {
+            //           'title': 'heeeee',
+            //           'type': 'postback',
+            //           'payload': JSON.stringify({
+            //             'componentType': 'text',
+            //             'text': 'welcome'
+            //           })
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // }
+            needle.request('post', requestUrl, req.body.payload, {json: true},
               (err, resp) => {
                 if (!err) {
                   logger.serverLog(TAG,
