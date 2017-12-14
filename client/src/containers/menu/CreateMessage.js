@@ -47,6 +47,7 @@ class CreateMessage extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
+    this.setCreateMessage = this.setCreateMessage.bind(this)
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
@@ -178,21 +179,41 @@ class CreateMessage extends React.Component {
     this.setState({ list: temp, message: temp2 })
   }
 
+  setCreateMessage (clickedIndex) {
+    console.log('In set Create Message ', this.clickIndex)
+    var temp = this.props.currentMenuItem.itemMenus
+    var index = clickedIndex.split('-')
+    switch (index[0]) {
+      case 'item':
+        console.log('An Item was Clicked position ', index[1])
+        temp[index[1]].type = 'postback'
+        temp[index[1]].payload = 'abc'
+        break
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        temp[index[1]].submenu[index[2]].type = 'postback'
+        temp[index[1]].submenu[index[2]].url = 'abc'
+        break
+      case 'nested':
+        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = 'abc'
+        break
+      default:
+        console.log('In switch', index[0])
+        break
+    }
+    return temp
+  }
+
   sendMessage () {
     if (this.state.message.length === 0) {
       return
     }
-    console.log(this.state.message)
-    var data = {
-      platform: 'facebook',
-      menuItemType: this.props.location.state.menuItemType,
-      pageId: this.props.location.state.pageId,
-      title: this.props.location.state.title,
-      payload: this.state.message
-    }
-    console.log('Data sent: ', data)
-    this.props.SendMessage(data, this.msg)
-    this.setState({message: [], list: []})
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex)
+    this.props.saveCurrentMenuItem(updatedMenuItem)
+    console.log('Current Menu Items', this.props.currentMenuItem.menuitems)
+    console.log('Message', this.state.message)
   }
 
   render () {
