@@ -211,52 +211,52 @@ function fetchPages (url, user) {
   })
 }
 
-function createMenuForPage (page) {
-  logger.serverLog(TAG,
-    `PageAnisha ${page.pageName}`)
-  var valueForMenu = {
-    'get_started': {
-      'payload': '<GET_STARTED_PAYLOAD>'
-    }
-  }
-  const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
-
-  needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
-    if (!err) {
-      logger.serverLog(TAG,
-        `Menu added to page ${page.pageName}`)
-    }
-    if (err) {
-      logger.serverLog(TAG,
-        `Internal Server Error ${JSON.stringify(err)}`)
-    }
-  })
-
-  // var valueForMenu = {
-  //   'persistent_menu': [
-  //     {
-  //       'locale': 'default',
-  //       'call_to_actions': [
-  //         {
-  //           'type': 'web_url',
-  //           'title': 'Powered by KiboPush',
-  //           'url': 'https://www.messenger.com/t/151990922046256',
-  //           'webview_height_ratio': 'full'
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // }
-  // const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
-  //
-  // needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
-  //   if (!err) {
-  //     logger.serverLog(TAG,
-  //       `Menu added to page ${page.pageName}`)
-  //   }
-  //   if (err) {
-  //     logger.serverLog(TAG,
-  //       `Internal Server Error ${JSON.stringify(err)}`)
-  //   }
-  // })
-}
+// function createMenuForPage (page) {
+//   logger.serverLog(TAG,
+//     `PageAnisha ${page.pageName}`)
+//   var valueForMenu = {
+//     'get_started': {
+//       'payload': '<GET_STARTED_PAYLOAD>'
+//     }
+//   }
+//   const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
+//
+//   needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+//     if (!err) {
+//       logger.serverLog(TAG,
+//         `Menu added to page ${page.pageName}`)
+//     }
+//     if (err) {
+//       logger.serverLog(TAG,
+//         `Internal Server Error ${JSON.stringify(err)}`)
+//     }
+//   })
+//
+//   // var valueForMenu = {
+//   //   'persistent_menu': [
+//   //     {
+//   //       'locale': 'default',
+//   //       'call_to_actions': [
+//   //         {
+//   //           'type': 'web_url',
+//   //           'title': 'Powered by KiboPush',
+//   //           'url': 'https://www.messenger.com/t/151990922046256',
+//   //           'webview_height_ratio': 'full'
+//   //         }
+//   //       ]
+//   //     }
+//   //   ]
+//   // }
+//   // const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+//   //
+//   // needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+//   //   if (!err) {
+//   //     logger.serverLog(TAG,
+//   //       `Menu added to page ${page.pageName}`)
+//   //   }
+//   //   if (err) {
+//   //     logger.serverLog(TAG,
+//   //       `Internal Server Error ${JSON.stringify(err)}`)
+//   //   }
+//   // })
+// }
