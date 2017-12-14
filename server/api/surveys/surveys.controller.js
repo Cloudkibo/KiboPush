@@ -8,8 +8,6 @@ const Surveys = require('./surveys.model')
 const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const SurveyPage = require('../page_survey/page_survey.model')
-const Sessions = require('../sessions/sessions.model')
-const LiveChat = require('../livechat/livechat.model')
 const TAG = 'api/surveys/surveys.controller.js'
 const mongoose = require('mongoose')
 

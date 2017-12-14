@@ -5,8 +5,6 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const PollPage = require('../page_poll/page_poll.model')
-const Sessions = require('../sessions/sessions.model')
-const LiveChat = require('../livechat/livechat.model')
 let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'

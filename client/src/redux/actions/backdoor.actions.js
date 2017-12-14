@@ -1,7 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
-import FileSaver from 'file-saver'
 export const API_URL = '/api'
 
 export function updateUsersList (data) {

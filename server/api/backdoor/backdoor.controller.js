@@ -18,9 +18,6 @@ const SurveyResponses = require('../surveys/surveyresponse.model')
 const Sessions = require('../sessions/sessions.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
-const csvdata = require('csvdata')
-const path = require('path')
-let config = require('./../../config/environment')
 var json2csv = require('json2csv')
 
 let _ = require('lodash')
@@ -574,10 +571,7 @@ exports.uploadFile = function (req, res) {
       if (err) {
         console.log(err)
       }
-      // res.set({
-      //   'Content-Disposition': 'attachment; filename=usersInformation.csv',
-      //   'Content-Type': 'text/csv'
-      // })
+      logger.serverLog(TAG, 'sending the csv file of customer data')
       res.status(200).json({
         status: 'success',
         payload: csv
