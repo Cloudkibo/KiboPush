@@ -38,7 +38,7 @@ export function uploadImage (file, data, handleUpload) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('res', res)
-      data.fileurl = res.payload
+      data.fileurl = res.payload.url
       handleUpload(data)
     })
   }
