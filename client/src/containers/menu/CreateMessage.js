@@ -218,6 +218,13 @@ class CreateMessage extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Edit Reply Menu</h3>
+                </div>
+              </div>
+            </div>
             <div className='m-content'>
               <div className='row'>
 
