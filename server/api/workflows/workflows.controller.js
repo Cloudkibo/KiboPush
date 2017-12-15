@@ -15,7 +15,6 @@ exports.index = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, workflows)
     res.status(200).json({status: 'success', payload: workflows})
   })
 }
@@ -53,6 +52,7 @@ exports.create = function (req, res) {
         description: 'Failed to insert record'
       })
     } else {
+      logger.serverLog(TAG, 'Workflows created successfully ' + JSON.stringify(req.workflow))
       res.status(201).json({status: 'success', payload: workflow})
     }
   })
@@ -106,7 +106,6 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-  logger.serverLog(TAG, 'Workflows' + JSON.stringify(req.body))
   Workflows.findById(req.body._id, (err, workflow) => {
     if (err) {
       return res.status(500).json({

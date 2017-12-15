@@ -64,6 +64,6 @@ exports.setup = function (socketio) {
 }
 
 exports.sendChatToAgents = function (data) {
-  logger.serverLog(TAG, `Sending new chat payload to client ${JSON.stringify(data)}`)
+  logger.serverLog(TAG, `Sending new chat payload to client using socket.io`)
   globalSocket.to(data.room_id).emit('new_chat', data.payload)
 }

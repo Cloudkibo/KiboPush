@@ -13,7 +13,6 @@ exports.index = function (req, res) {
       return res.status(404)
       .json({status: 'failed', description: 'Subscribers not found'})
     }
-    logger.serverLog(TAG, `Total subscribers ${subscribers.length}`)
     res.status(200).json(subscribers)
   })
 }

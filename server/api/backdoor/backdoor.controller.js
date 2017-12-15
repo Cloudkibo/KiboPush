@@ -23,7 +23,6 @@ var json2csv = require('json2csv')
 let _ = require('lodash')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all users api is working')
   Users.find({}, (err, users) => {
     if (err) {
       return res.status(404).json({
@@ -31,7 +30,6 @@ exports.index = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total users ${users.length}`)
     res.status(200).json({
       status: 'success',
       payload: users
@@ -40,7 +38,6 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -48,7 +45,6 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
     Subscribers.aggregate([
       {
         $match: {
@@ -81,7 +77,6 @@ exports.allpages = function (req, res) {
           subscribers: 0
         })
       }
-      logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
@@ -105,7 +100,6 @@ exports.allpages = function (req, res) {
 }
 
 exports.allsubscribers = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all subscribers api is working')
   Subscribers.find({pageId: req.params.pageid}, (err, subscribers) => {
     if (err) {
       return res.status(404).json({
@@ -122,7 +116,6 @@ exports.allsubscribers = function (req, res) {
 }
 
 exports.allbroadcasts = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all broadcasts api is working')
   // todo put pagination for scaling
   Broadcasts.find({userId: req.params.userid}, (err, broadcasts) => {
     if (err) {
@@ -140,7 +133,6 @@ exports.allbroadcasts = function (req, res) {
 }
 
 exports.allpolls = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all polls api is working')
   // todo put pagination for scaling
   Polls.find({userId: req.params.userid}, (err, polls) => {
     if (err) {
@@ -149,7 +141,6 @@ exports.allpolls = function (req, res) {
         description: `Error in getting polls ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total polls ${polls.length}`)
     res.status(200).json({
       status: 'success',
       payload: polls
@@ -158,7 +149,6 @@ exports.allpolls = function (req, res) {
 }
 
 exports.allsurveys = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all surveys api is working')
   // todo put pagination for scaling
   Surveys.find({userId: req.params.userid}, (err, surveys) => {
     if (err) {
@@ -167,7 +157,6 @@ exports.allsurveys = function (req, res) {
         description: `Error in getting surveys ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total surveys ${surveys.length}`)
     res.status(200).json({
       status: 'success',
       payload: surveys
@@ -175,7 +164,6 @@ exports.allsurveys = function (req, res) {
   })
 }
 exports.surveyDetails = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor surveyDetails api is working')
   Surveys.find({_id: req.params.surveyid}, (err, survey) => {
     if (err) {
       return res.status(500).json({
@@ -210,7 +198,6 @@ exports.surveyDetails = function (req, res) {
 }
 
 exports.toppages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({connected: true}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -218,7 +205,6 @@ exports.toppages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
     Subscribers.aggregate([
       {
         $group: {
@@ -251,10 +237,6 @@ exports.toppages = function (req, res) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
             gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG,
-              `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
@@ -262,7 +244,7 @@ exports.toppages = function (req, res) {
       let sorted = sortBy(pagesPayload, 'subscribers')
       let top10 = _.takeRight(sorted, 10)
       top10 = top10.reverse()
-      logger.serverLog(TAG, `top10 ${JSON.stringify(top10)}`)
+      logger.serverLog(TAG, `top10 pages ${JSON.stringify(top10)}`)
       res.status(200).json({
         status: 'success',
         payload: top10
@@ -271,8 +253,6 @@ exports.toppages = function (req, res) {
   })
 }
 exports.datacount = function (req, res) {
-  logger.serverLog(TAG,
-    `req.params.userid ${JSON.stringify(req.params.userid)}`)
   var days = 0
   if (req.params.userid === '10') {
     days = 10
@@ -522,7 +502,6 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total users ${users.length}`)
     let usersPayload = []
     for (let i = 0; i < users.length; i++) {
       usersPayload.push({
@@ -571,7 +550,6 @@ exports.uploadFile = function (req, res) {
       if (err) {
         console.log(err)
       }
-      logger.serverLog(TAG, 'sending the csv file of customer data')
       res.status(200).json({
         status: 'success',
         payload: csv

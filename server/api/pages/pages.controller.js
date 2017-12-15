@@ -10,7 +10,6 @@ const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Get pages API called')
   Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error: ${err}`)
@@ -23,7 +22,6 @@ exports.index = function (req, res) {
   })
 }
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -31,7 +29,6 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
     Subscribers.aggregate([{
       $group: {
         _id: {pageId: '$pageId'},
@@ -215,13 +212,11 @@ exports.otherPages = function (req, res) {
           err)}`
       })
     }
-    logger.serverLog(TAG, pages)
     return res.status(200).json({status: 'success', payload: pages})
   })
 }
 
 exports.addPages = function (req, res) {
-  logger.serverLog(TAG, 'Add Pages called ')
   Users.findOne({fbId: req.user.fbId}, (err, user) => {
     if (err) {
       return res.status(500).json({status: 'failed', description: err})

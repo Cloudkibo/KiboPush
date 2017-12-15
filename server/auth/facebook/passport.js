@@ -48,12 +48,10 @@ exports.setup = function (User, config) {
           logger.serverLog(TAG, `Permissions check error: ${e}`)
         })
 
-      logger.serverLog(TAG, `Short-lived Token: ${accessToken}`)
       FBExtension.extendShortToken(accessToken).then((error) => {
         logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
         return done(error)
       }).fail((response) => {
-        logger.serverLog(TAG, `Long-lived Token: ${response.access_token}`)
         accessToken = response.access_token
         needle.get(`${'https://graph.facebook.com/me?fields=' +
         'id,name,locale,email,timezone,gender,picture' +
@@ -62,7 +60,6 @@ exports.setup = function (User, config) {
             logger.serverLog(TAG, 'error from graph api to get user data: ')
             logger.serverLog(TAG, JSON.stringify(err))
           }
-          logger.serverLog(TAG, 'resp from graph api to get user data: ')
           logger.serverLog(TAG, JSON.stringify(resp.body))
 
           if (err) return done(err)
@@ -164,8 +161,6 @@ function fetchPages (url, user) {
                 `Internal Server Error ${JSON.stringify(err)}`)
             }
             if (!page) {
-              logger.serverLog(TAG,
-                `Page ${item.name} not found. Creating a page`)
               let payloadPage = {
                 pageId: item.id,
                 pageName: item.name,

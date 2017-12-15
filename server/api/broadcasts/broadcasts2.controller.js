@@ -24,7 +24,7 @@ let config = require('./../../config/environment')
 
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
-    `Inside Send conversation, req body = ${JSON.stringify(req.body)}`)
+    `Inside Send Broadcast, req body = ${JSON.stringify(req.body)}`)
   if (req.body.self) {
     let pagesFindCriteria = {userId: req.user._id, connected: true}
 
@@ -72,9 +72,6 @@ exports.sendConversation = function (req, res) {
                   `At send test message broadcast response ${JSON.stringify(
                     res)}`)
               }
-
-              logger.serverLog(TAG,
-                'Sent broadcast to subscriber to self for test')
             })
         })
       })
@@ -184,8 +181,6 @@ exports.sendConversation = function (req, res) {
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
                 payloadItem)
-              logger.serverLog(TAG,
-                  `At send message broadcast response ${JSON.stringify(subscriber.senderId)}`)
               request(
                 {
                   'method': 'POST',
@@ -194,19 +189,19 @@ exports.sendConversation = function (req, res) {
                   'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
                   page.accessToken
                 },
-                function (err, res) {
+                function (err, resp) {
                   if (err) {
                     return logger.serverLog(TAG,
                       `At send message broadcast ${JSON.stringify(err)}`)
                   } else {
-                    if (res.statusCode !== 200) {
+                    if (resp.statusCode !== 200) {
                       logger.serverLog(TAG,
                         `At send message broadcast response ${JSON.stringify(
-                          res.body.error)}`)
+                          resp.body.error)}`)
                     } else {
                       logger.serverLog(TAG,
                         `At send message broadcast response ${JSON.stringify(
-                          res.body.message_id)}`)
+                          resp.body.message_id)}`)
                     }
                   }
 
@@ -272,7 +267,10 @@ exports.upload = function (req, res) {
         })
       }
       logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify(serverPath)}`)
+        `file uploaded, sending response now: ${JSON.stringify({
+          id: serverPath,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+        })}`)
       return res.status(201).json({
         status: 'success',
         payload: {
@@ -287,6 +285,8 @@ exports.upload = function (req, res) {
 exports.download = function (req, res) {
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   try {
+    logger.serverLog(TAG,
+      `Inside Download file, id = ${JSON.stringify(req.params)}`)
     res.sendfile(req.params.id, {root: dir})
   } catch (err) {
     logger.serverLog(TAG,

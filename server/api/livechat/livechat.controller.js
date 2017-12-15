@@ -135,7 +135,7 @@ exports.update = function (req, res) {
 
 exports.geturlmeta = function (req, res) {
   var url = req.body.url
-  logger.serverLog(TAG, `Url: ${url}`)
+  logger.serverLog(TAG, `Url for Meta: ${url}`)
   og(url, (err, meta) => {
     if (err) {
       return res.status(404)

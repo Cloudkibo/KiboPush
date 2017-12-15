@@ -27,9 +27,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  // todo check for individual content creator services validity
-  logger.serverLog(TAG,
-    `Inside Create Autoposting, req body = ${JSON.stringify(req.body)}`)
 
   let parametersMissing = false
 

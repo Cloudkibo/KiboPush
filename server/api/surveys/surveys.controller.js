@@ -18,7 +18,6 @@ const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Surveys get api is working')
   Surveys.find({userId: req.user._id}, (err, surveys) => {
     if (err) {
       return res.status(500).json({
@@ -105,8 +104,6 @@ exports.create = function (req, res) {
         if (err2) {
           // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
         }
-        logger.serverLog(TAG,
-          `This is the question created ${JSON.stringify(question1)}`)
       })
     }
     return res.status(201).json({status: 'success', payload: survey})
