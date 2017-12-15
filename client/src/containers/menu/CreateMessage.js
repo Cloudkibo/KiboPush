@@ -75,10 +75,18 @@ class CreateMessage extends React.Component {
   }
 
   handleText (obj) {
-    var payload = {
-      componentType: 'text',
-      text: obj.text,
-      buttons: obj.button
+    var payload = {}
+    if (obj.button.length < 1) {
+      payload = {
+        componentType: 'text',
+        text: obj.text
+      }
+    } else {
+      payload = {
+        componentType: 'text',
+        text: obj.text,
+        buttons: obj.button
+      }
     }
     this.setState({message: payload})
     // var temp = this.state.message
@@ -193,17 +201,17 @@ class CreateMessage extends React.Component {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
         temp[index[1]].type = 'postback'
-        temp[index[1]].payload = payload
+        temp[index[1]].payload = JSON.stringify(payload)
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
         temp[index[1]].submenu[index[2]].type = 'postback'
-        temp[index[1]].submenu[index[2]].url = payload
+        temp[index[1]].submenu[index[2]].url = JSON.stringify(payload)
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
-        temp[index[1]].submenu[index[2]].submenu[index[3]].url = payload
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = JSON.stringify(payload)
         break
       default:
         console.log('In switch', index[0])
