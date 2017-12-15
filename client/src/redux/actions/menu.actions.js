@@ -76,12 +76,13 @@ export function getIndexBypage (pageId, handleIndexByPage) {
   }
 }
 
-export function saveMenu (data) {
+export function saveMenu (data, handleSaveMenu) {
   console.log('Saving Menu', data)
   return (dispatch) => {
     callApi('menu/create', 'post', data).then(res => {
       if (res.status === 'success') {
         console.log('Menu saved successfully', res)
+        handleSaveMenu()
       } else {
         console.log('Menu saved failed', res)
       }

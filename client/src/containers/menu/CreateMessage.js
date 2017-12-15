@@ -200,17 +200,14 @@ class CreateMessage extends React.Component {
     switch (index[0]) {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
-        temp[index[1]].type = 'postback'
         temp[index[1]].payload = JSON.stringify(payload)
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
-        temp[index[1]].submenu[index[2]].type = 'postback'
         temp[index[1]].submenu[index[2]].url = JSON.stringify(payload)
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
         temp[index[1]].submenu[index[2]].submenu[index[3]].url = JSON.stringify(payload)
         break
       default:
@@ -225,7 +222,8 @@ class CreateMessage extends React.Component {
       return
     }
     var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message)
-    this.props.saveCurrentMenuItem(updatedMenuItem)
+    var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+    this.props.saveCurrentMenuItem(currentState)
     console.log('Current Menu Items', this.props.currentMenuItem.menuitems)
     console.log('Payload', this.state.message)
   }
