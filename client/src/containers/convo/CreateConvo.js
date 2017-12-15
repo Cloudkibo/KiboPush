@@ -156,8 +156,8 @@ class CreateConvo extends React.Component {
   }
 
   handlePageChange (value) {
-    console.log('Setting a new pageValue', value)
-    this.setState({ pageValue: String(value) })
+    var temp = value.split(',')
+    this.setState({ pageValue: temp })
   }
 
   handleGenderChange (value) {
@@ -369,7 +369,7 @@ class CreateConvo extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: false
+      multiple: true
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
@@ -380,10 +380,10 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        console.log('Setting a new pageValue', selected[0])
-        self.setState({ pageValue: selected[0] })
+        console.log('Setting a new pageValue', selected)
+        self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected[0])
+      console.log('change Page', selected)
     })
   }
 

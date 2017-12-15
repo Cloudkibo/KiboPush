@@ -25,6 +25,12 @@ let config = require('./../../config/environment')
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
     `Inside Send Broadcast, req body = ${JSON.stringify(req.body)}`)
+
+  if (!utility.validateInput(req.body)) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters or components are missing'})
+  }
+
   if (req.body.self) {
     let pagesFindCriteria = {userId: req.user._id, connected: true}
 
@@ -92,11 +98,13 @@ exports.sendConversation = function (req, res) {
 
     if (req.body.isSegmented) {
       if (req.body.segmentationPageIds.length > 0) {
-        pagesFindCriteria = _.merge(pagesFindCriteria, {
-          pageId: {
-            $in: req.body.segmentationPageIds
-          }
-        })
+        if (req.body.segmentationPageIds[0].length > 0) {
+          pagesFindCriteria = _.merge(pagesFindCriteria, {
+            pageId: {
+              $in: req.body.segmentationPageIds
+            }
+          })
+        }
       }
     }
 

@@ -27,7 +27,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-
   let parametersMissing = false
 
   if (!_.has(req.body, 'subscriptionUrl')) parametersMissing = true

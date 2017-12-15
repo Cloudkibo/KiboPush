@@ -11,7 +11,7 @@ const TAG = 'api/user/user.controller.js'
 exports.index = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
-      logger.serverLog(TAG, 'user object sent to client failed '+ JSON.stringify(err))
+      logger.serverLog(TAG, 'user object sent to client failed ' + JSON.stringify(err))
       return res.status(500).json({
         status: 'failed',
         description: 'internal server error' + JSON.stringify(err)
