@@ -285,8 +285,6 @@ exports.upload = function (req, res) {
 exports.download = function (req, res) {
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   try {
-    logger.serverLog(TAG,
-      `Inside Download file, id = ${JSON.stringify(req.params)}`)
     res.sendfile(req.params.id, {root: dir})
   } catch (err) {
     logger.serverLog(TAG,
