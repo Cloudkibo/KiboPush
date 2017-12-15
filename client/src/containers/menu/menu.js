@@ -51,6 +51,7 @@ class Menu extends React.Component {
     this.removeItem = this.removeItem.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
     this.handleIndexByPage = this.handleIndexByPage.bind(this)
+    this.initializeItemMenus = this.initializeItemMenus.bind(this)
 
     props.fetchMenu()
     if (this.props.pages) {
@@ -89,10 +90,8 @@ class Menu extends React.Component {
     }
 
     if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
-      if (this.state.itemMenus[0].title === 'First Menu' && this.state.itemMenus[0].submenu.length < 1) {
-        this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
-        console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
-      }
+      this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
+      console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
     }
     if (nextProps.currentMenuItem) {
       console.log('Current MenuItem' :nextProps.currentMenuItem)
@@ -110,12 +109,20 @@ class Menu extends React.Component {
       this.setState({itemType: 'weblink'})
     }
   }
+  initializeItemMenus () {
+    var tempItemMenus = [{
+      title: 'First Menu',
+      submenu: []
+    }]
+    this.setState({
+      itemMenus: tempItemMenus
+    })
+  }
   handleIndexByPage () {
     if (this.props.indexByPage && this.props.indexByPage.length > 0) {
       this.setState({itemMenus: this.props.indexByPage[0].jsonStructure})
     } else {
-      var intialMenu = [{title: 'First Menu', submenu: []}]
-      this.setState({itemMenus: intialMenu})
+      this.initializeItemMenus()
     }
   }
   setCreateMessage (event) {
@@ -182,8 +189,9 @@ class Menu extends React.Component {
       return
     }
     console.log('Page Value', event.target.value)
-    console.log('Page Value', event.target.value)
+    console.log('Page Value', this.state.pageValue)
     this.setState({pageValue: event.target.value})
+    this.initializeItemMenus()
     this.props.getIndexBypage(event.target.value, this.handleIndexByPage)
   }
   handleClick (event) {
