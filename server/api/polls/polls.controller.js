@@ -113,7 +113,6 @@ exports.submitresponses = function (req, res) {
 }
 
 exports.getresponses = function (req, res) {
-
   PollResponse.find({pollId: req.params.id})
     .populate('pollId subscriberId')
     .exec((err, pollresponses) => {
