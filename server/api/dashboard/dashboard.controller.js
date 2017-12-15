@@ -18,7 +18,6 @@ const PollPage = require('../page_poll/page_poll.model')
 const mongoose = require('mongoose')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Get Dashboard API called')
   const data = {}
   Pages.count((err, c) => {
     if (err) {
@@ -171,7 +170,7 @@ exports.sentVsSeen = function (req, res) {
                         }
                       }
                       logger.serverLog(TAG,
-                                    `counts ${JSON.stringify(datacounts)}`)
+                                    `counts for dashboard ${JSON.stringify(datacounts)}`)
                       res.status(200).json({
                         status: 'success',
                         payload: datacounts
@@ -196,7 +195,6 @@ exports.likesVsSubscribers = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
     Subscribers.aggregate([
       {
         $match: {
@@ -229,7 +227,6 @@ exports.likesVsSubscribers = function (req, res) {
           subscribers: 0
         })
       }
-      logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
@@ -242,8 +239,6 @@ exports.likesVsSubscribers = function (req, res) {
           }
         }
       }
-      logger.serverLog(TAG,
-        `Total pages in after double loop ${pagesPayload.length}`)
       res.status(200).json({
         status: 'success',
         payload: pagesPayload

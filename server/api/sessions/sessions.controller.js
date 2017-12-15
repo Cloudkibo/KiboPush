@@ -8,8 +8,6 @@ const TAG = 'api/sessions/sessions.controller.js'
 
 // get list of fb sessions
 exports.index = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside get sessions, req body = ${JSON.stringify(req.body)}`)
   Sessions.find({company_id: req.body.company_id})
     .populate('subscriber_id page_id')
     .exec(function (err, sessions) {
@@ -88,8 +86,6 @@ exports.show = function (req, res) {
 // get fb session
 exports.markread = function (req, res) {
   // todo tell fb users that message is read
-  logger.serverLog(TAG,
-    `Inside mark read, req body = ${JSON.stringify(req.params)}`)
   LiveChat.update(
     {session_id: req.params.id},
     {status: 'seen'},
@@ -97,9 +93,6 @@ exports.markread = function (req, res) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `The session read status marked read ${JSON.stringify(
-          updated)}`)
       res.status(200).json({status: 'success', payload: updated})
     })
 }

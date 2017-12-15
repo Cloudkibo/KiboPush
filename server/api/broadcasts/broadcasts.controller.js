@@ -27,13 +27,11 @@ const request = require('request')
 var array = []
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Broadcasts get api is working')
   Broadcasts.find({userId: req.user._id}, (err, broadcasts) => {
     if (err) {
       return res.status(404)
         .json({status: 'failed', description: 'Broadcasts not found'})
     }
-    logger.serverLog(TAG, `Total broadcasts ${broadcasts.length}`)
     BroadcastPage.find({userId: req.user._id}, (err, broadcastpages) => {
       if (err) {
         return res.status(404)
@@ -95,7 +93,6 @@ exports.getfbMessage = function (req, res) {
           (event.message.is_echo === false || !event.message.is_echo)) {
           const sender = event.sender.id
           const pageId = event.recipient.id
-          logger.serverLog(TAG, `getfbmsg ${JSON.stringify(event)}`)
           // get accesstoken of page
           Pages.findOne({pageId: pageId, connected: true})
             .populate('userId')
@@ -108,7 +105,7 @@ exports.getfbMessage = function (req, res) {
               if (page === null) {
                 return
               }
-              logger.serverLog(TAG, `page got ${page.pageName}`)
+              logger.serverLog(TAG, `page got for which webhook is ${page.pageName}`)
               const options = {
                 url: `https://graph.facebook.com/v2.6/${sender}?access_token=${page.accessToken}`,
                 qs: {access_token: page.accessToken},
@@ -171,7 +168,6 @@ exports.getfbMessage = function (req, res) {
 
         // if event.post, the response will be of survey or poll. writing a logic to save response of poll
         if (event.postback) {
-          logger.serverLog(TAG, `Heelo ${JSON.stringify(event.postback)}`)
           let resp = JSON.parse(event.postback.payload)
           if (resp.poll_id) {
             savepoll(event)
@@ -275,7 +271,7 @@ exports.getfbMessage = function (req, res) {
                               }),
                               'message': JSON.stringify({
                                 'text': event.value.message,
-                                'metadata': 'This is a meta data for tweet'
+                                'metadata': 'This is a meta data for fb post'
                               })
                             }
                             request(
@@ -396,7 +392,6 @@ function addAdminAsSubscriber (payload) {
 }
 
 function updateseenstatus (req) {
-  logger.serverLog(TAG, `Inside update seen status ${JSON.stringify(req)}`)
   BroadcastPage.update(
     {pageId: req.recipient.id, subscriberId: req.sender.id},
     {seen: true},
@@ -480,7 +475,6 @@ function sendReply (req) {
 }
 function savepoll (req) {
   // find subscriber from sender id
-  logger.serverLog(TAG, `Inside savepoll ${JSON.stringify(req)}`)
   var resp = JSON.parse(req.postback.payload)
   var temp = true
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
@@ -491,12 +485,7 @@ function savepoll (req) {
     }
     if (array.length > 0) {
       for (var i = 0; i < array.length; i++) {
-        console.log('responses from polls', array[i].subscriberId)
-        console.log('responses from polls', subscriber._id)
-        console.log('responses from polls', array[i].pollId)
-        console.log('responses from polls', resp.poll_id)
         if (mongoose.Types.ObjectId(array[i].pollId) === mongoose.Types.ObjectId(resp.poll_id) && mongoose.Types.ObjectId(array[i].subscriberId) === mongoose.Types.ObjectId(subscriber._id)) {
-          console.log('condition true')
           temp = false
           break
         }
@@ -508,13 +497,12 @@ function savepoll (req) {
       subscriberId: subscriber._id
 
     }
-    console.log('temp', temp)
     if (temp === true) {
       PollResponse.create(pollbody, (err, pollresponse) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         } else {
-          logger.serverLog(TAG, `Poll created ${JSON.stringify(pollresponse)}`)
+          logger.serverLog(TAG, `Poll response saved ${JSON.stringify(pollresponse)}`)
           array.push(pollbody)
         }
       })
@@ -523,7 +511,6 @@ function savepoll (req) {
 }
 
 function sendautomatedmsg (req, page) {
-  logger.serverLog(TAG, 'send_automated_msg called')
   Workflows.find({userId: page.userId._id, isActive: true})
     .populate('userId')
     .exec((err, workflows) => {
@@ -580,12 +567,9 @@ function sendautomatedmsg (req, page) {
               logger.serverLog(TAG,
                 `Page token error from graph api ${JSON.stringify(err3)}`)
             }
-
-            logger.serverLog(TAG, `value of index is ${index}`)
             index++
             if (index) {
               index--
-              logger.serverLog(TAG, `value of index is ${index}`)
               let messageData = {}
               if (index === -101) {
                 messageData = {
@@ -598,8 +582,6 @@ function sendautomatedmsg (req, page) {
                         `Subscribers update subscription: ${JSON.stringify(
                           err)}`)
                     }
-                    logger.serverLog(TAG,
-                      `subscription removed for ${req.sender.id}`)
                   })
               } else if (index === -111) {
                 messageData = {
@@ -612,8 +594,6 @@ function sendautomatedmsg (req, page) {
                         `Subscribers update subscription: ${JSON.stringify(
                           err)}`)
                     }
-                    logger.serverLog(TAG,
-                      `subscription renewed for ${req.sender.id}`)
                   })
               } else if (index > -1) {
                 logger.serverLog(TAG,
@@ -712,7 +692,7 @@ function savesurvey (req) {
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
       logger.serverLog(TAG,
-        `survey response create ${JSON.stringify(resp.survey_id)}`)
+        `survey response saved ${JSON.stringify(resp.survey_id)}`)
       SurveyQuestions.find({
         surveyId: resp.survey_id,
         _id: {$gt: resp.question_id}
@@ -721,8 +701,6 @@ function savesurvey (req) {
           logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
             err2)}`)
         }
-        logger.serverLog(TAG,
-          `Questions are ${JSON.stringify(questions)}`)
         if (questions.length > 0) {
           let firstQuestion = questions[0]
           // create buttons
@@ -745,8 +723,6 @@ function savesurvey (req) {
               })
             })
           }
-          logger.serverLog(TAG,
-              `buttons created${JSON.stringify(buttons)}`)
           needle.get(
             `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
             (err3, response) => {
@@ -755,10 +731,6 @@ function savesurvey (req) {
                   `Page accesstoken from graph api Error${JSON.stringify(
                     err3)}`)
               }
-
-              logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(
-                  response.body)}`)
               const messageData = {
                 attachment: {
                   type: 'template',
@@ -838,16 +810,12 @@ function savesurvey (req) {
                 `Error occurred in finding subscriber${JSON.stringify(
                   err)}`)
             }
-            logger.serverLog(TAG,
-              `updated${JSON.stringify(subscriber)}`)
             Surveys.find({}, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG,
                   `Error occurred in finding subscriber${JSON.stringify(
                     err)}`)
               }
-              logger.serverLog(TAG,
-                `all surveys with particular id${JSON.stringify(subscriber)}`)
             })
           })
           needle.get(
@@ -858,10 +826,6 @@ function savesurvey (req) {
                   `Page accesstoken from graph api Error${JSON.stringify(
                     err3)}`)
               }
-
-              logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(
-                  response.body)}`)
               const messageData = {
                 text: 'Thank you. Response submitted successfully.'
               }
@@ -869,7 +833,6 @@ function savesurvey (req) {
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
-              logger.serverLog(TAG, messageData)
               needle.post(
                 `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
                 data, (err4, respp) => {

@@ -10,7 +10,6 @@ let _ = require('lodash')
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Poll get api is working')
   Polls.find({userId: req.user._id}, (err, polls) => {
     if (err) {
       logger.serverLog(TAG, `Error: ${err}`)
@@ -93,8 +92,6 @@ exports.create = function (req, res) {
 }
 
 exports.submitresponses = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside submitresponses of Poll ${JSON.stringify(req.body)}`)
   /*
    Expected body
    {
@@ -116,7 +113,6 @@ exports.submitresponses = function (req, res) {
 }
 
 exports.getresponses = function (req, res) {
-  logger.serverLog(TAG, 'Inside getresponses of Poll')
 
   PollResponse.find({pollId: req.params.id})
     .populate('pollId subscriberId')
