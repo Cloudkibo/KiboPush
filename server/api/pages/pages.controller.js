@@ -58,9 +58,6 @@ exports.allpages = function (req, res) {
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
