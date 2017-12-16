@@ -199,7 +199,8 @@ class Menu extends React.Component {
   }
   handleClick (event) {
     console.log('Handle Click Was Called')
-    this.props.saveCurrentMenuItem(this.state.itemMenus)
+    var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
+    this.props.saveCurrentMenuItem(currentState)
     // this.props.history.push({
     //   pathname: `/CreateMessage`,
     //   state: {pageId: this.state.pageValue, menuItemType: this.state.itemType, title: this.state.itemName}
