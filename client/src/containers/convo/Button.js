@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Popover from 'react-simple-popover'
+import { isWebURL } from './../../utility/utils'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -14,7 +15,8 @@ class Button extends React.Component {
     this.state = {
       openPopover: false,
       title: '',
-      url: ''
+      url: '',
+      disabled: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -49,6 +51,9 @@ class Button extends React.Component {
   }
 
   changeUrl (event) {
+    if (isWebURL(event.target.value)) {
+      this.setState({disabled: false})
+    }
     this.setState({url: event.target.value})
   }
 
@@ -70,7 +75,7 @@ class Button extends React.Component {
               <h7 className='card-text'> Open this website when user press this button: </h7>
               <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
-              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right'> Done </button>
+              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
             </div>
           </div>
