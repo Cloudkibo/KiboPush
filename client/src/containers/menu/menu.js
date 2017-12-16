@@ -43,6 +43,7 @@ class Menu extends React.Component {
 
     this.target = ''
     this.clickIndex = ''
+    this.clickedValue = ''
     this.pageChange = this.pageChange.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.onSelectItem = this.onSelectItem.bind(this)
@@ -52,7 +53,7 @@ class Menu extends React.Component {
     this.setCreateMessage = this.setCreateMessage.bind(this)
     this.handleIndexByPage = this.handleIndexByPage.bind(this)
     this.initializeItemMenus = this.initializeItemMenus.bind(this)
-
+    this.handleSaveMenu = this.handleSaveMenu.bind(this)
     props.fetchMenu()
     if (this.props.pages) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -73,6 +74,7 @@ class Menu extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Menu'
   }
+
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
@@ -87,14 +89,11 @@ class Menu extends React.Component {
       if (this.state.pageValue === '') {
         this.setState({pageValue: nextProps.pages[0].pageId})
       }
-    }
-
-    if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
-      this.setState({itemMenus: nextProps.indexByPage[0].jsonStructure})
-      console.log('MenuItem', this.state.pageValue, nextProps.indexByPage[0].jsonStructure)
-    }
-    if (nextProps.currentMenuItem) {
-      console.log('Current MenuItem' :nextProps.currentMenuItem)
+      if (nextProps.currentMenuItem && nextProps.currentMenuItem.itemMenus) {
+        this.setState({itemMenus: nextProps.currentMenuItem.itemMenus})
+        this.setState({pageValue: nextProps.currentMenuItem.currentPage})
+        this.clickedIndex = nextProps.currentMenuItem.clickedIndex
+      }
     }
   }
 
@@ -133,16 +132,19 @@ class Menu extends React.Component {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
         temp[index[1]].type = 'postback'
+        temp[index[1]].title = this.clickedValue
         temp[index[1]].payload = ''
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
         temp[index[1]].submenu[index[2]].type = 'postback'
+        temp[index[1]].submenu[index[2]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].url = ''
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].submenu[index[3]].url = ''
         break
 
@@ -153,7 +155,7 @@ class Menu extends React.Component {
 
     this.setState({itemMenus: temp})
     console.log('Saving menu item..', this.state.itemMenus)
-    var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex }
+    var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     this.props.saveCurrentMenuItem(currentState)
   }
   addSubmenu () {
@@ -192,6 +194,7 @@ class Menu extends React.Component {
     console.log('Page Value', this.state.pageValue)
     this.setState({pageValue: event.target.value})
     this.initializeItemMenus()
+    this.props.saveCurrentMenuItem({})
     this.props.getIndexBypage(event.target.value, this.handleIndexByPage)
   }
   handleClick (event) {
@@ -232,6 +235,7 @@ class Menu extends React.Component {
 
   changeLabel (event, type, indexObject) {
     var temp = this.state.itemMenus
+    this.clickedValue = event.target.value
     console.log('Type is: ', type)
     switch (type) {
       case 'item':
@@ -309,7 +313,7 @@ class Menu extends React.Component {
   save () {
     console.log('Current Item', this.props.currentMenuItem)
     this.setState({
-      itemMenus: this.props.currentMenuItem
+      itemMenus: this.props.currentMenuItem.itemMenus
     })
     var data = {}
     if (this.state.pageValue === '') {
@@ -317,13 +321,15 @@ class Menu extends React.Component {
       this.msg.error('Please select a page')
       return
     }
-    data.payload = transformData(this.props.currentMenuItem)
+    data.payload = transformData(this.props.currentMenuItem.itemMenus)
     data.pageId = this.state.pageValue
     data.userId = this.props.user._id
-    data.jsonStructure = this.props.currentMenuItem
-    this.props.saveMenu(data)
+    data.jsonStructure = this.props.currentMenuItem.itemMenus
+    this.props.saveMenu(data, this.handleSaveMenu)
   }
-
+  handleSaveMenu () {
+    this.props.getIndexBypage(this.state.pageValue, this.handleIndexByPage)
+  }
   setWebUrl () {
     this.setState({setWebUrl: !this.state.setWebUrl})
   }
@@ -331,6 +337,7 @@ class Menu extends React.Component {
     console.log('This transform data', this.state.itemMenus)
   //  console.log('This transform data', transformData(this.state.itemMenus))
     console.log('Page options', this.state.pageOptions)
+    console.log('Page value', this.state.pageValue)
 
     var alertOptions = {
       offset: 14,
@@ -418,7 +425,7 @@ class Menu extends React.Component {
                             (
                               page.connected &&
                               <option
-                                value={page.pageId} key={page.pageId}>{page.pageName}</option>
+                                value={page.pageId} key={page.pageId} selected={page.pageId === this.state.pageValue}>{page.pageName}</option>
                             )
                           ))
                           }
@@ -435,7 +442,7 @@ class Menu extends React.Component {
                       <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
                       <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
                         {
-                this.state.itemMenus.map((itm, index) => {
+                this.state.itemMenus && this.state.itemMenus.map((itm, index) => {
                   // This condition limits the number of main menu to three items only
                   if (this.state.itemMenus[index + 1] || index === 1) {
                     return (<li className='nav-item m-tabs__item'>
@@ -445,8 +452,8 @@ class Menu extends React.Component {
                             <div className='form-group m-form__group'>
                               <div className='input-group m-input-group'>
                                 <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                                  placeholder={itm.title} className='form-control m-input'
-                                  onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                  value={itm.title} className='form-control m-input'
+                                  onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
                                 <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
                                   <i className='fa fa-times' aria-hidden='true' />
                                 </span>
@@ -463,8 +470,8 @@ class Menu extends React.Component {
                               <div className='m-portlet__body'>
                                 <div className='form-group m-form__group'>
                                   <div className='input-group m-input-group'>
-                                    <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} placeholder={sub.title}
-                                      onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
+                                    <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} value={sub.title}
+                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
                                       className='form-control m-input' style={{width: '350px'}} />
                                     <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
                                       <i className='fa fa-times' aria-hidden='true' />
