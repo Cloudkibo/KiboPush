@@ -369,7 +369,7 @@ class CreateConvo extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: false
+      multiple: true
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
