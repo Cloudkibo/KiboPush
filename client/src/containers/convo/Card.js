@@ -63,6 +63,7 @@ class Card extends React.Component {
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
       type: file.type,
+      image_url: '',
       size: file.size}, this.updateImageUrl)
   }
 

@@ -33,10 +33,11 @@ function validateInput (body) {
       if (body.payload[i].componentType === 'card') {
         if (body.payload[i].title === undefined) return false
         if (body.payload[i].fileurl === undefined) return false
+        if (body.payload[i].image_url === undefined) return false
         if (body.payload[i].description === undefined) return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
-        if (!utility.validateUrl(body.payload[i].fileurl)) return false
+        if (!utility.validateUrl(body.payload[i].image_url)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(body.payload[i].buttons[j].url)) return false
@@ -141,7 +142,7 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
             'elements': [
               {
                 'title': body.title,
-                'image_url': body.fileurl,
+                'image_url': body.image_url,
                 'subtitle': body.description,
                 'buttons': body.buttons
               }

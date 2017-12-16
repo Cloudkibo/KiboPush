@@ -60,6 +60,7 @@ class Image extends React.Component {
       componentType: 'image',
       fileName: file.name,
       fileurl: '',
+      image_url: '',
       type: file.type, // jpg, png, gif
       size: file.size
     }, this.props.handleImage)
