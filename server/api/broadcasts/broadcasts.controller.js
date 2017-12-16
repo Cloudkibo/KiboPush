@@ -399,9 +399,6 @@ function updateseenstatus (req) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `Broadcast seen updated : ${JSON.stringify(
-          updated)}`)
     })
   PollPage.update(
     {pageId: req.recipient.id, subscriberId: req.sender.id},
@@ -410,9 +407,6 @@ function updateseenstatus (req) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `Poll seen updated : ${JSON.stringify(
-          updated)}`)
     })
   SurveyPage.update(
     {pageId: req.recipient.id, subscriberId: req.sender.id},
@@ -421,9 +415,6 @@ function updateseenstatus (req) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `Survey seen updated : ${JSON.stringify(
-          updated)}`)
     })
   LiveChat.update(
     {sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id},
@@ -432,9 +423,6 @@ function updateseenstatus (req) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `LiveChat seen updated : ${JSON.stringify(
-          updated)}`)
     })
 }
 
