@@ -8,7 +8,7 @@
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
-const validUrl = require('valid-url')
+const utility = require('../../components/utility')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -25,7 +25,7 @@ function validateInput (body) {
         if (body.payload[i].buttons) {
           for (let j = 0; j < body.payload[i].buttons.length; j++) {
             if (body.payload[i].buttons[j].type === 'web_url') {
-              if (!validUrl.isWebUri(body.payload[i].buttons[j].url)) return false
+              if (!utility.validateUrl(body.payload[i].buttons[j].url)) return false
             }
           }
         }
@@ -36,10 +36,10 @@ function validateInput (body) {
         if (body.payload[i].description === undefined) return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
-        if (!validUrl.isWebUri(body.payload[i].fileurl)) return false
+        if (!utility.validateUrl(body.payload[i].fileurl)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
-            if (!validUrl.isWebUri(body.payload[i].buttons[j].url)) return false
+            if (!utility.validateUrl(body.payload[i].buttons[j].url)) return false
           }
         }
       }
@@ -52,10 +52,10 @@ function validateInput (body) {
           if (body.payload[i].cards[j].subtitle === undefined) return false
           if (body.payload[i].cards[j].buttons === undefined) return false
           if (body.payload[i].cards[j].buttons.length === 0) return false
-          if (!validUrl.isWebUri(body.payload[i].cards[j].image_url)) return false
+          if (!utility.validateUrl(body.payload[i].cards[j].image_url)) return false
           for (let k = 0; k < body.payload[i].cards[j].buttons.length; k++) {
             if (body.payload[i].cards[j].buttons[k].type === 'web_url') {
-              if (!validUrl.isWebUri(body.payload[i].cards[j].buttons[k].url)) return false
+              if (!utility.validateUrl(body.payload[i].cards[j].buttons[k].url)) return false
             }
           }
         }
