@@ -28,7 +28,8 @@ class Card extends React.Component {
       fileurl: '',
       fileName: '',
       type: '',
-      size: ''
+      size: '',
+      image_url: ''
     }
   }
 
@@ -71,6 +72,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -86,6 +88,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -104,6 +107,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -124,6 +128,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -139,6 +144,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -152,12 +158,14 @@ class Card extends React.Component {
     console.log(data)
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
+      image_url: data.image_url,
       type: data.type,
       size: data.size })
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
