@@ -294,7 +294,7 @@ class CreateConvo extends React.Component {
           return this.msg.error('Card must have at least one button.')
         }
       }
-      if (body.payload[i].componentType === 'gallery') {
+      if (this.state.broadcast[i].componentType === 'gallery') {
         for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
           if (!this.state.broadcast[i].cards[j].buttons) {
             return this.msg.error('Card in gallery must have at least one button.')
