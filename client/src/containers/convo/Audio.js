@@ -105,7 +105,7 @@ class Audio extends React.Component {
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
-              accepts={['audio']}
+              accepts={['audio/*']}
               maxFileSize={25000000}
               minFileSize={0}
               clickable
