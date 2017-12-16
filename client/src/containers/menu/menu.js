@@ -215,7 +215,8 @@ class Menu extends React.Component {
     }
     this.setState({openPopover: false, setWebUrl: false})
   }
-  onSelectItem (index) {
+  onSelectItem (e, index) {
+    this.clickedValue = e.target.value
     this.setState({indexClicked: index})
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
@@ -386,7 +387,7 @@ class Menu extends React.Component {
               (this.state.setWebUrl) && <div id='popover-option3' className='container'>
                 <div id='popover-option3-row' className='row'>
                   <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-                  <input id='popover-website-input' style={{marginBottom: '20px'}} placeholder={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+                  <input id='popover-website-input' style={{marginBottom: '20px'}} value={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
                 </div>
               </div>
             }
@@ -453,7 +454,7 @@ class Menu extends React.Component {
                               <div className='input-group m-input-group'>
                                 <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
                                   value={itm.title} className='form-control m-input'
-                                  onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                  onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
                                 <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
                                   <i className='fa fa-times' aria-hidden='true' />
                                 </span>
@@ -471,7 +472,7 @@ class Menu extends React.Component {
                                 <div className='form-group m-form__group'>
                                   <div className='input-group m-input-group'>
                                     <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} value={sub.title}
-                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
+                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
                                       className='form-control m-input' style={{width: '350px'}} />
                                     <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
                                       <i className='fa fa-times' aria-hidden='true' />
@@ -490,8 +491,8 @@ class Menu extends React.Component {
                                   <div className='m-portlet__body'>
                                     <div className='form-group m-form__group'>
                                       <div className='input-group m-input-group'>
-                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title} className='form-control m-input'
-                                          onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title} className='form-control m-input'
+                                          onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
                                         <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
                                           <i className='fa fa-times' aria-hidden='true' />
                                         </span>
@@ -515,7 +516,7 @@ class Menu extends React.Component {
                             <div className='form-group m-form__group'>
                               <div className='input-group m-input-group'>
                                 <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                                  placeholder={itm.title} onClick={() => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                  value={itm.title} onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
                                 <span className='input-group-addon' id='basic-addon1' onClick={this.addItem.bind(this)}>
                                   <i className='fa fa-plus' aria-hidden='true' />
                                 </span>
@@ -536,8 +537,8 @@ class Menu extends React.Component {
                                 <div className='form-group m-form__group'>
                                   <div className='input-group m-input-group'>
                                     <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
-                                      placeholder={sub.title}
-                                      onClick={() => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(index) }}
+                                      value={sub.title}
+                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
                                       style={{width: '350px'}} />
                                     <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
                                       <i className='fa fa-times' aria-hidden='true' />
@@ -555,7 +556,7 @@ class Menu extends React.Component {
                                   <div className='m-portlet__body'>
                                     <div className='form-group m-form__group'>
                                       <div className='input-group m-input-group'>
-                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} placeholder={nested.title}
+                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title}
                                           className='form-control m-input' onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
                                         <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
                                           <i className='fa fa-times' aria-hidden='true' />
