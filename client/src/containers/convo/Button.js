@@ -16,7 +16,7 @@ class Button extends React.Component {
       openPopover: false,
       title: '',
       url: '',
-      disabled: false
+      disabled: true
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -53,6 +53,8 @@ class Button extends React.Component {
   changeUrl (event) {
     if (isWebURL(event.target.value)) {
       this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
     }
     this.setState({url: event.target.value})
   }

@@ -16,7 +16,7 @@ class EditButton extends React.Component {
       openPopover: false,
       title: this.props.data.title,
       url: this.props.data.url,
-      disabled: true
+      disabled: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -52,6 +52,8 @@ class EditButton extends React.Component {
   changeUrl (event) {
     if (isWebURL(event.target.value)) {
       this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
     }
     this.setState({url: event.target.value})
   }
