@@ -334,7 +334,7 @@ class Menu extends React.Component {
 
   save () {
     console.log('Current Item', this.props.currentMenuItem)
-    if (this.props.currentMenuItem && this.props.currentMenuItem.length > 0) {
+    if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus.length > 0) {
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
