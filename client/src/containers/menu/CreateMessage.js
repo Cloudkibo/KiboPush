@@ -51,6 +51,16 @@ class CreateMessage extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
+    if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
+      if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
+        var payload = this.props.currentMenuItem.itemMenus[0].payload
+        if (payload.componentType === 'text') {
+          var temp = this.state.list
+          this.setState({list: [...temp,
+            {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload.text} />)}]})
+        }
+      }
+    }
     // let options = []
     // this.setState({ page: { options: options } })
   }
@@ -192,6 +202,16 @@ class CreateMessage extends React.Component {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.message.filter((component) => { return (component.id !== obj.id) })
     this.setState({ list: temp, message: temp2 })
+    if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
+      if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
+        var payload = this.props.currentMenuItem.itemMenus[0].payload
+        if (payload.componentType === 'text') {
+          var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, '')
+          var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+          this.props.saveCurrentMenuItem(currentState)
+        }
+      }
+    }
   }
 
   setCreateMessage (clickedIndex, payload) {
@@ -259,7 +279,7 @@ class CreateMessage extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>
@@ -333,6 +353,9 @@ class CreateMessage extends React.Component {
                       <div style={{padding: '5px'}}>
                         <h3>Message</h3>
                       </div>
+                      {
+                        JSON.stringify(this.props.currentMenuItem.menuitems)
+                      }
                     </div>
                   </StickyDiv>
 
