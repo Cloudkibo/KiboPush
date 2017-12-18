@@ -9,6 +9,7 @@ import Popover from 'react-simple-popover'
 import { transformData, getUrl } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { isWebURL } from './../../utility/utils'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
 //  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
@@ -34,6 +35,7 @@ class Menu extends React.Component {
       indexClicked: '',
       level: '',
       optionSelected: '',
+      disabled: true,
       selecteditem: null
     }
 
@@ -95,6 +97,11 @@ class Menu extends React.Component {
         this.setState({pageValue: nextProps.currentMenuItem.currentPage})
         this.clickedIndex = nextProps.currentMenuItem.clickedIndex
       }
+    }
+    if (nextProps.successMessage) {
+      console.log('success', JSON.stringify(nextProps.successMessage))
+    } else if (nextProps.errorMessage) {
+      console.log('failure', JSON.stringify(nextProps.errorMessage))
     }
   }
 
@@ -268,8 +275,16 @@ class Menu extends React.Component {
     var temp = this.state.itemMenus
     switch (type) {
       case 'item':
-        if (temp.length <= 1) return
+        if (temp.length <= 1) {
+          temp = [{
+            title: 'First Menu',
+            submenu: []
+          }]
+          break
+        }
         temp = temp.filter(function (x, i) {
+          console.log('temp filter', x, i)
+          console.log(i !== indexObject.itemIndex)
           return i !== indexObject.itemIndex
         })
         break
@@ -312,26 +327,31 @@ class Menu extends React.Component {
     console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
-    switch (index[0]) {
-      case 'item':
-        console.log('An Item was Clicked position ', index[1])
-        temp[index[1]].type = 'web_url'
-        temp[index[1]].url = event.target.value
-        break
-      case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
-        temp[index[1]].submenu[index[2]].type = 'web_url'
-        temp[index[1]].submenu[index[2]].url = event.target.value
-        break
-      case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
-        temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
-        break
+    if (isWebURL(event.target.value)) {
+      switch (index[0]) {
+        case 'item':
+          console.log('An Item was Clicked position ', index[1])
+          temp[index[1]].type = 'web_url'
+          temp[index[1]].url = event.target.value
+          break
+        case 'submenu':
+          console.log('A Submenu was Clicked position ', index[1], index[2])
+          temp[index[1]].submenu[index[2]].type = 'web_url'
+          temp[index[1]].submenu[index[2]].url = event.target.value
+          break
+        case 'nested':
+          console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+          temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
+          temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
+          break
 
-      default:
-        console.log('In switch', index[0])
-        break
+        default:
+          console.log('In switch', index[0])
+          break
+      }
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
     }
 
     this.setState({itemMenus: temp})
@@ -339,20 +359,24 @@ class Menu extends React.Component {
 
   save () {
     console.log('Current Item', this.props.currentMenuItem)
-    this.setState({
-      itemMenus: this.props.currentMenuItem.itemMenus
-    })
-    var data = {}
-    if (this.state.pageValue === '') {
-      console.log('empty')
-      this.msg.error('Please select a page')
-      return
+    if (this.props.currentMenuItem && this.props.currentMenuItem.length > 0) {
+      this.setState({
+        itemMenus: this.props.currentMenuItem.itemMenus
+      })
+      var data = {}
+      if (this.state.pageValue === '') {
+        console.log('empty')
+        this.msg.error('Please select a page')
+        return
+      }
+      data.payload = transformData(this.props.currentMenuItem.itemMenus)
+      data.pageId = this.state.pageValue
+      data.userId = this.props.user._id
+      data.jsonStructure = this.props.currentMenuItem.itemMenus
+      this.props.saveMenu(data, this.handleSaveMenu, this.msg)
+    } else {
+      this.msg.error('Please select the type of the menu')
     }
-    data.payload = transformData(this.props.currentMenuItem.itemMenus)
-    data.pageId = this.state.pageValue
-    data.userId = this.props.user._id
-    data.jsonStructure = this.props.currentMenuItem.itemMenus
-    this.props.saveMenu(data, this.handleSaveMenu)
   }
   handleSaveMenu () {
     this.props.getIndexBypage(this.state.pageValue, this.handleIndexByPage)
@@ -411,7 +435,7 @@ class Menu extends React.Component {
         }
         </div>
         {
-          !getUrl(this.state.itemMenus, this.clickIndex).nested &&
+          getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
           <div className='container' id='popover-option3'>
             <div className='row'>
               <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>Set Web Url</button>
@@ -422,18 +446,18 @@ class Menu extends React.Component {
                   <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
                   <input id='popover-website-input' style={{marginBottom: '20px'}} value={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
                 </div>
+                <button onClick={this.handleClick} className='btn btn-primary pull-right' disabled={(this.state.disabled)}> Done </button>
+                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
               </div>
             }
 
           </div>
         }
-
-        <button onClick={this.handleClick} className='btn btn-primary btn-sm pull-right'> Done </button>
-        <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
       </div>
     </Popover>
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -644,7 +668,9 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     indexByPage: (state.indexByPage.menuitems),
-    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
+    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem),
+    successMessage: (state.menuInfo.successMessage),
+    errorMessage: (state.menuInfo.errorMessage)
     //  items: (state.menuInfo.menuitems)
   }
 }

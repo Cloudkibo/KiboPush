@@ -32,22 +32,28 @@ export function getUrl (data, str) {
   var index = str.split('-')
   switch (index[0]) {
     case 'item':
-      if (temp[index[1]].submenu && temp[index[1]].submenu.length === 0) {
-        return {placeholder: temp[index[1]].url, nested: false}
-      } else {
-        return {placeholder: '', nested: true}
+      if (temp[index[1]]) {
+        if (temp[index[1]].submenu && temp[index[1]].submenu.length === 0) {
+          return {placeholder: temp[index[1]].url, nested: false}
+        } else {
+          return {placeholder: '', nested: true}
+        }
       }
       break
     case 'submenu':
-      if (temp[index[1]].submenu[index[2]].submenu && temp[index[1]].submenu[index[2]].submenu.length === 0) {
-        return {placeholder: temp[index[1]].submenu[index[2]].url, nested: false}
-      } else {
-        return {placeholder: '', nested: true}
+      if (temp[index[1]] && temp[index[1]].submenu[index[2]]) {
+        if (temp[index[1]].submenu[index[2]].submenu && temp[index[1]].submenu[index[2]].submenu.length === 0) {
+          return {placeholder: temp[index[1]].submenu[index[2]].url, nested: false}
+        } else {
+          return {placeholder: '', nested: true}
+        }
       }
       break
     case 'nested':
-      if (temp[index[1]].submenu[index[2]].submenu[index[3]]) {
-        return {placeholder: temp[index[1]].submenu[index[2]].submenu[index[3]].url, nested: false}
+      if (temp[index[1]]) {
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]]) {
+          return {placeholder: temp[index[1]].submenu[index[2]].submenu[index[3]].url, nested: false}
+        }
       }
       break
 

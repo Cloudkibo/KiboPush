@@ -17,7 +17,7 @@ import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { SendMessage, saveCurrentMenuItem } from '../../redux/actions/menu.actions'
+import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
 import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -162,20 +162,19 @@ class CreateMessage extends React.Component {
   }
 
   handleImage (obj) {
-    // var temp = this.state.message
-    // var isPresent = false
-    // temp.map((data) => {
-    //   if (data.id === obj.id) {
-    //     data = obj
-    //     isPresent = true
-    //   }
-    // })
-    //
-    // if (!isPresent) {
-    //   temp.push(obj)
-    // }
-    //  var temp = obj
-    this.setState({ message: obj })
+    var temp = this.state.message
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data = obj
+        isPresent = true
+      }
+    })
+
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({ message: temp })
     console.log('Image Uploaded', this.state.message)
   }
 
@@ -401,7 +400,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      SendMessage: SendMessage,
       saveCurrentMenuItem: saveCurrentMenuItem
     },
         dispatch)
