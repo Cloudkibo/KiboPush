@@ -35,8 +35,8 @@ class Menu extends React.Component {
       indexClicked: '',
       level: '',
       optionSelected: '',
-      disabled: true
-
+      disabled: true,
+      selecteditem: null
     }
 
     this.option1 = 'Add submenu'
@@ -56,6 +56,7 @@ class Menu extends React.Component {
     this.handleIndexByPage = this.handleIndexByPage.bind(this)
     this.initializeItemMenus = this.initializeItemMenus.bind(this)
     this.handleSaveMenu = this.handleSaveMenu.bind(this)
+    this.getItemClicked = this.getItemClicked.bind(this)
     props.fetchMenu()
     if (this.props.pages) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -132,27 +133,31 @@ class Menu extends React.Component {
     }
   }
   setCreateMessage (event) {
-    console.log('In setCreateMessage ', event.target.value, this.clickIndex)
+    console.log('In setCreateMessage ', event.target.value, this.clickIndex, this.props.currentMenuItem)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
+    var payload = ''
+    if (temp[0].payload && temp[0].payload !== '') {
+      payload = JSON.parse(temp[0].payload)
+    }
     switch (index[0]) {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
         temp[index[1]].type = 'postback'
         temp[index[1]].title = this.clickedValue
-        temp[index[1]].payload = ''
+        temp[index[1]].payload = payload
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
         temp[index[1]].submenu[index[2]].type = 'postback'
         temp[index[1]].submenu[index[2]].title = this.clickedValue
-        temp[index[1]].submenu[index[2]].url = ''
+        temp[index[1]].submenu[index[2]].payload = payload
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
         temp[index[1]].submenu[index[2]].submenu[index[3]].title = this.clickedValue
-        temp[index[1]].submenu[index[2]].submenu[index[3]].url = ''
+        temp[index[1]].submenu[index[2]].submenu[index[3]].payload = payload
         break
 
       default:
@@ -229,6 +234,8 @@ class Menu extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
     this.setState({itemselected: true, backgroundColor: '#f2f2f2', text: 'Menu Item'})
     this.setState({openPopover: !this.state.openPopover, setWebUrl: false})
+    var selecteditem = this.getItemClicked()
+    this.setState({selecteditem: selecteditem})
   }
   addItem () {
     var temp = this.state.itemMenus
@@ -297,7 +304,25 @@ class Menu extends React.Component {
 
     this.setState({itemMenus: temp})
   }
-
+  getItemClicked () {
+    console.log('In get clicked Item ', this.clickIndex)
+    var temp = this.state.itemMenus
+    var index = this.clickIndex.split('-')
+    switch (index[0]) {
+      case 'item':
+        console.log('An Item was Clicked position ', index[1])
+        return temp[index[1]]
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        return temp[index[1]].submenu[index[2]]
+      case 'nested':
+        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        return temp[index[1]].submenu[index[2]].submenu[index[3]]
+      default:
+        console.log('In switch', index[0])
+        return null
+    }
+  }
   setUrl (event) {
     console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
@@ -396,11 +421,18 @@ class Menu extends React.Component {
         }
 
         <div id='popover-option2' className='container'>
-          <Link to='CreateMessage'>
+          { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'postback')
+          ? <Link to='CreateMessage'>
             <div className='row'>
-              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create New Message</button>
+              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Edit New Message</button>
             </div>
           </Link>
+          : <Link to='CreateMessage'>
+            <div className='row'>
+              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create Your Message</button>
+            </div>
+          </Link>
+        }
         </div>
         {
           getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
