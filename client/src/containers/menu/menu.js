@@ -36,6 +36,7 @@ class Menu extends React.Component {
       level: '',
       optionSelected: '',
       disabled: true,
+      savedisabled: true,
       selecteditem: null
     }
 
@@ -96,6 +97,7 @@ class Menu extends React.Component {
         this.setState({itemMenus: nextProps.currentMenuItem.itemMenus})
         this.setState({pageValue: nextProps.currentMenuItem.currentPage})
         this.clickedIndex = nextProps.currentMenuItem.clickedIndex
+        this.setState({savedisabled: false})
       }
     }
     if (nextProps.successMessage) {
@@ -328,38 +330,37 @@ class Menu extends React.Component {
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     if (isWebURL(event.target.value)) {
-      switch (index[0]) {
-        case 'item':
-          console.log('An Item was Clicked position ', index[1])
-          temp[index[1]].type = 'web_url'
-          temp[index[1]].url = event.target.value
-          break
-        case 'submenu':
-          console.log('A Submenu was Clicked position ', index[1], index[2])
-          temp[index[1]].submenu[index[2]].type = 'web_url'
-          temp[index[1]].submenu[index[2]].url = event.target.value
-          break
-        case 'nested':
-          console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-          temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
-          temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
-          break
-
-        default:
-          console.log('In switch', index[0])
-          break
-      }
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
     }
+    switch (index[0]) {
+      case 'item':
+        console.log('An Item was Clicked position ', index[1])
+        temp[index[1]].type = 'web_url'
+        temp[index[1]].url = event.target.value
+        break
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        temp[index[1]].submenu[index[2]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].url = event.target.value
+        break
+      case 'nested':
+        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
+        break
 
+      default:
+        console.log('In switch', index[0])
+        break
+    }
     this.setState({itemMenus: temp})
   }
 
   save () {
     console.log('Current Item', this.props.currentMenuItem)
-    if (this.props.currentMenuItem && this.props.currentMenuItem.length > 0) {
+    if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
@@ -647,7 +648,7 @@ class Menu extends React.Component {
                           </div>
                         </li>
                         <p><b>Note: </b>Only three menu items can be added.</p>
-                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
+                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right' disabled={(this.state.savedisabled)}>
                 Save Menu
               </button>
                       </ul>
