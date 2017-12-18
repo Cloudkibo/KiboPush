@@ -330,7 +330,7 @@ class Menu extends React.Component {
         console.log('In switch', index[0])
         break
     }
-  this.setState({itemMenus: temp})
+    this.setState({itemMenus: temp})
   }
 
   save () {
