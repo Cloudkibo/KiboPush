@@ -152,19 +152,20 @@ class CreateMessage extends React.Component {
   }
 
   handleImage (obj) {
-    var temp = this.state.message
-    var isPresent = false
-    temp.map((data) => {
-      if (data.id === obj.id) {
-        data = obj
-        isPresent = true
-      }
-    })
-
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({ message: temp })
+    // var temp = this.state.message
+    // var isPresent = false
+    // temp.map((data) => {
+    //   if (data.id === obj.id) {
+    //     data = obj
+    //     isPresent = true
+    //   }
+    // })
+    //
+    // if (!isPresent) {
+    //   temp.push(obj)
+    // }
+    //  var temp = obj
+    this.setState({ message: obj })
     console.log('Image Uploaded', this.state.message)
   }
 
