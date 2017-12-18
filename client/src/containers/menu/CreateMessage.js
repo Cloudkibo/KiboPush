@@ -17,7 +17,7 @@ import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { SendMessage, saveCurrentMenuItem } from '../../redux/actions/menu.actions'
+import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
 import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -378,7 +378,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      SendMessage: SendMessage,
       saveCurrentMenuItem: saveCurrentMenuItem
     },
         dispatch)

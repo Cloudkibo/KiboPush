@@ -17,29 +17,17 @@ export function addMenuItem (data) {
       })
   }
 }
-export function sendMessageSuccess () {
+export function saveMenuSuccess (res) {
   return {
-    type: ActionTypes.SEND_MESSAGE_SUCCESS
+    type: ActionTypes.SAVE_MENU_SUCCESS,
+    data: res
   }
 }
 
-export function sendMessageFailure () {
+export function saveMenuFailure (res) {
   return {
-    type: ActionTypes.SEND_MESSAGE_FAILURE
-  }
-}
-
-export function SendMessage (message) {
-  console.log('Sending message', message)
-  return (dispatch) => {
-    callApi('menu/createReplyMenu', 'post', message).then(res => {
-      if (res.status === 'success') {
-        dispatch(sendMessageSuccess())
-      } else {
-        dispatch(sendMessageFailure())
-      }
-      console.log('Send Message Response', res)
-    })
+    type: ActionTypes.SAVE_MENU_FAILURE,
+    data: res
   }
 }
 
@@ -76,15 +64,17 @@ export function getIndexBypage (pageId, handleIndexByPage) {
   }
 }
 
-export function saveMenu (data, handleSaveMenu) {
+export function saveMenu (data, handleSaveMenu, msg) {
   console.log('Saving Menu', data)
   return (dispatch) => {
     callApi('menu/create', 'post', data).then(res => {
       if (res.status === 'success') {
         console.log('Menu saved successfully', res)
+        msg.success('Menu saved successfully')
         handleSaveMenu()
       } else {
-        console.log('Menu saved failed', res)
+        dispatch(saveMenuFailure(res))
+        msg.error('Failed to save Menu')
       }
     })
   }
