@@ -263,6 +263,7 @@ class CreateMessage extends React.Component {
     this.props.saveCurrentMenuItem(currentState)
     console.log('Current Menu Items', this.props.currentMenuItem.menuitems)
     console.log('Payload', this.state.message)
+    this.msg.success('Message Saved Successfully')
   }
 
   render () {
@@ -357,7 +358,7 @@ class CreateMessage extends React.Component {
                     <div className='row'>
                       <br />
                       <br />
-                      <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary'> Save </button>
+                      <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
                       <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
                     </div>
                   </div>
