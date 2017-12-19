@@ -63,7 +63,7 @@ class CreateMessage extends React.Component {
         if (payload[0].componentType === 'image') {
           temp = this.state.list
           this.setState({list: [...temp,
-            {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload.image_url} />)}]})
+            {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[0].image_url} />)}]})
         }
       }
     }
