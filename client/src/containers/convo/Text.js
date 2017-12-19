@@ -87,6 +87,7 @@ class Text extends React.Component {
       return elm
     })
     this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   removeButton (obj) {
     console.log(obj)
