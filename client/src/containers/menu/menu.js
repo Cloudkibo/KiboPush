@@ -352,21 +352,21 @@ class Menu extends React.Component {
   }
 
   save () {
-    console.log('Current Item', this.props.currentMenuItem)
-    if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
-      this.setState({
-        itemMenus: this.props.currentMenuItem.itemMenus
-      })
+    console.log('Current Item', this.state.itemMenus)
+    if (this.state.itemMenus && this.state.itemMenus.length > 0) {
+      // this.setState({
+      //   itemMenus: this.props.currentMenuItem.itemMenus
+      // })
       var data = {}
       if (this.state.pageValue === '') {
         console.log('empty')
         this.msg.error('Please select a page')
         return
       }
-      data.payload = transformData(this.props.currentMenuItem.itemMenus)
+      data.payload = transformData(this.state.itemMenus)
       data.pageId = this.state.pageValue
       data.userId = this.props.user._id
-      data.jsonStructure = this.props.currentMenuItem.itemMenus
+      data.jsonStructure = this.state.itemMenus
       this.props.saveMenu(data, this.handleSaveMenu, this.msg)
     } else {
       this.msg.error('Please select the type of the menu')
