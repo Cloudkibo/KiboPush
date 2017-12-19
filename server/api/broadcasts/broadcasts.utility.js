@@ -2,8 +2,8 @@
  * Created by sojharo on 19/09/2017.
  */
 
-// const logger = require('../../components/logger')
-// const TAG = 'api/broadcast/broadcasts.controller.js'
+const logger = require('../../components/logger')
+const TAG = 'api/broadcast/broadcasts.controller.js'
 
 const fs = require('fs')
 const path = require('path')
@@ -68,6 +68,13 @@ function validateInput (body) {
 }
 
 function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
+  logger.serverLog(TAG,
+    `subscriberId: ${body}`)
+  logger.serverLog(TAG,
+    `body: ${JSON.stringify(
+      body)}`)
+  logger.serverLog(TAG,
+    `body: ${body}`)
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
     payload = {
