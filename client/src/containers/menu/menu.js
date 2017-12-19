@@ -145,18 +145,27 @@ class Menu extends React.Component {
     switch (index[0]) {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
+        if (temp[index[1]].url) {
+          delete temp[index[1]].url
+        }
         temp[index[1]].type = 'postback'
         temp[index[1]].title = this.clickedValue
         temp[index[1]].payload = payload
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
+        if (temp[index[1]].submenu[index[2]].url) {
+          delete temp[index[1]].submenu[index[2]].url
+        }
         temp[index[1]].submenu[index[2]].type = 'postback'
         temp[index[1]].submenu[index[2]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].payload = payload
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].url) {
+          delete temp[index[1]].submenu[index[2]].submenu[index[3]].url
+        }
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
         temp[index[1]].submenu[index[2]].submenu[index[3]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = payload
@@ -337,16 +346,25 @@ class Menu extends React.Component {
     switch (index[0]) {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
+        if (temp[index[1]].payload) {
+          delete temp[index[1]].payload
+        }
         temp[index[1]].type = 'web_url'
         temp[index[1]].url = event.target.value
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
+        if (temp[index[1]].submenu[index[2]].payload) {
+          delete temp[index[1]].submenu[index[2]].payload
+        }
         temp[index[1]].submenu[index[2]].type = 'web_url'
         temp[index[1]].submenu[index[2]].url = event.target.value
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].paylaod) {
+          delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
+        }
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
         temp[index[1]].submenu[index[2]].submenu[index[3]].url = event.target.value
         break
