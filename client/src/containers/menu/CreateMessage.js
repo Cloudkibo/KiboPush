@@ -220,6 +220,7 @@ class CreateMessage extends React.Component {
 
   setCreateMessage (clickedIndex, payload) {
     console.log('In set Create Message ', this.clickIndex)
+    console.log('In set Create Message ', payload)
     var temp = this.props.currentMenuItem.itemMenus
     var index = clickedIndex.split('-')
     switch (index[0]) {
@@ -229,11 +230,11 @@ class CreateMessage extends React.Component {
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
-        temp[index[1]].submenu[index[2]].url = JSON.stringify(payload)
+        temp[index[1]].submenu[index[2]].payload = JSON.stringify(payload)
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        temp[index[1]].submenu[index[2]].submenu[index[3]].url = JSON.stringify(payload)
+        temp[index[1]].submenu[index[2]].submenu[index[3]].payload = JSON.stringify(payload)
         break
       default:
         console.log('In switch', index[0])

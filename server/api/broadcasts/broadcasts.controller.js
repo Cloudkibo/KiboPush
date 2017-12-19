@@ -432,36 +432,36 @@ function sendReply (req) {
   logger.serverLog(TAG, `parsedData ${JSON.stringify(parsedData)}`)
   logger.serverLog(TAG, `parsedData1 ${JSON.stringify(parsedData[0])}`)
   parsedData.forEach(payloadItem => {
-  let messageData = utility.prepareSendAPIPayload(
-    req.sender.id, payloadItem)
-  logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
-  Pages.find({pageId: req.recipient.id}, (err, pages) => {
-    if (err) {
-      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-    }
-    logger.serverLog(TAG,
-      `page found ${JSON.stringify(pages)}`)
-    request(
-      {
-        'method': 'POST',
-        'json': true,
-        'formData': messageData,
-        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-        pages[0].accessToken
-      },
-      function (err, res) {
-        if (err) {
-          return logger.serverLog(TAG,
-            `At send test message broadcast ${JSON.stringify(err)}`)
-        } else {
-          logger.serverLog(TAG,
-            `At send reply response ${JSON.stringify(
-              res)}`)
-        }
+    let messageData = utility.prepareSendAPIPayload(
+      req.sender.id, payloadItem)
+    logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
+    Pages.find({pageId: req.recipient.id}, (err, pages) => {
+      if (err) {
+        return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+        `page found ${JSON.stringify(pages)}`)
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+          pages[0].accessToken
+        },
+        function (err, res) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At send test message broadcast ${JSON.stringify(err)}`)
+          } else {
+            logger.serverLog(TAG,
+              `At send reply response ${JSON.stringify(
+                res)}`)
+          }
 
-        logger.serverLog(TAG,
-          'Sent broadcast to subscriber to self for test')
-      })
+          logger.serverLog(TAG,
+            'Sent broadcast to subscriber to self for test')
+        })
     })
   })
 }
