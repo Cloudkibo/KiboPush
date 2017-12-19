@@ -283,29 +283,26 @@ class Menu extends React.Component {
 
   removeItem (type, indexObject) {
     console.log('Remove Item', type)
-    var temp = this.state.itemMenus
+    var temp = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     switch (type) {
       case 'item':
-        if (temp.length <= 1) {
-          temp = [{
-            title: 'First Menu',
-            submenu: []
-          }]
+        if (temp.itemMenus.length <= 1) {
+          temp = { itemMenus: [{title: 'First Menu', submenu: []}], clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
           break
         }
-        temp = temp.filter(function (x, i) {
+        temp.itemMenus = temp.itemMenus.filter(function (x, i) {
           console.log('temp filter', x, i)
           console.log(i !== indexObject.itemIndex)
           return i !== indexObject.itemIndex
         })
         break
       case 'submenu':
-        temp[indexObject.itemIndex].submenu = temp[indexObject.itemIndex].submenu.filter(function (x, i) {
+        temp.itemMenus[indexObject.itemIndex].submenu = temp.itemMenus[indexObject.itemIndex].submenu.filter(function (x, i) {
           return i !== indexObject.subIndex
         })
         break
       case 'nested':
-        temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu = temp[indexObject.itemIndex].submenu[indexObject.subIndex].submenu.filter(function (x, i) {
+        temp.itemMenus[indexObject.itemIndex].submenu[indexObject.subIndex].submenu = temp.itemMenus[indexObject.itemIndex].submenu[indexObject.subIndex].submenu.filter(function (x, i) {
           return i !== indexObject.nestedIndex
         })
         break
@@ -313,7 +310,7 @@ class Menu extends React.Component {
         break
     }
     this.props.saveCurrentMenuItem(temp)
-    this.setState({itemMenus: temp})
+    this.setState({itemMenus: temp.itemMenus})
   }
   getItemClicked () {
     console.log('In get clicked Item ', this.clickIndex)
