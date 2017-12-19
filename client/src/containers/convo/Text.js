@@ -43,9 +43,11 @@ class Text extends React.Component {
       this.setState({text: this.props.message})
     }
     if (this.props.buttons && this.props.buttons.length > 0) {
-      this.setState({
-        button: this.props.buttons
-      })
+      if (this.state.button.length < 1) {
+        this.setState({
+          button: this.props.buttons
+        })
+      }
     }
   }
 
@@ -91,6 +93,7 @@ class Text extends React.Component {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     console.log('Filter', temp)
     this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {
