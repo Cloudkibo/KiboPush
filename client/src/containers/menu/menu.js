@@ -666,7 +666,7 @@ class Menu extends React.Component {
                           </div>
                         </li>
                         <p><b>Note: </b>Only three menu items can be added.</p>
-                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right' disabled={(this.state.savedisabled)}>
+                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>
                       </ul>
