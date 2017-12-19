@@ -91,41 +91,39 @@ class CreateMessage extends React.Component {
   }
 
   handleText (obj) {
-    var payload = {}
-    if (obj.button.length < 1) {
-      payload = {
-        componentType: 'text',
-        text: obj.text
-      }
-    } else {
-      payload = {
-        componentType: 'text',
-        text: obj.text,
-        buttons: obj.button
-      }
-    }
-    this.setState({message: payload})
-    // var temp = this.state.message
-    // var isPresent = false
-    // temp.map((data) => {
-    //   if (data.id === obj.id) {
-    //     data.text = obj.text
-    //     if (obj.button.length > 0) {
-    //       data.buttons = obj.button
-    //     }
-    //     isPresent = true
+    // var payload = {}
+    // if (obj.button.length < 1) {
+    //   payload = {
+    //     componentType: 'text',
+    //     text: obj.text
     //   }
-    // })
-    //
-    // if (!isPresent) {
-    //   if (obj.button.length > 0) {
-    //     temp.push({ id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button })
-    //   } else {
-    //     temp.push({ id: obj.id, text: obj.text, componentType: 'text' })
+    // } else {
+    //   payload = {
+    //     componentType: 'text',
+    //     text: obj.text,
+    //     buttons: obj.button
     //   }
     // }
-    //
-    // this.setState({ message: temp })
+    // this.setState({message: payload})
+    var temp = this.state.message
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.text = obj.text
+        if (obj.button.length > 0) {
+          data.buttons = obj.button
+        }
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      if (obj.button.length > 0) {
+        temp.push({ id: obj.id, text: obj.text, componentType: 'text', buttons: obj.button })
+      } else {
+        temp.push({ id: obj.id, text: obj.text, componentType: 'text' })
+      }
+    }
+    this.setState({ message: temp })
   }
 
   handleCard (obj) {
@@ -230,6 +228,7 @@ class CreateMessage extends React.Component {
         for (var i = 0; i < payload.length; i++) {
           temp1.push(payload[i])
         }
+        console.log('temp1', temp1)
         temp[index[1]].payload = JSON.stringify(temp1)
         break
       case 'submenu':
