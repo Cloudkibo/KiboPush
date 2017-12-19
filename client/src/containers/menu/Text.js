@@ -39,6 +39,16 @@ class Text extends React.Component {
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
   }
   componentDidMount () {
+    if (this.props.message && this.props.message !== '') {
+      this.setState({text: this.props.message})
+    }
+    if (this.props.buttons && this.props.buttons.length > 0) {
+      if (this.state.button.length < 1) {
+        this.setState({
+          button: this.props.buttons
+        })
+      }
+    }
   }
 
   showEmojiPicker () {
@@ -77,18 +87,20 @@ class Text extends React.Component {
       return elm
     })
     this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   removeButton (obj) {
     console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
     console.log('Filter', temp)
     this.setState({button: temp})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {
     return (
       <div>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: '2', marginTop: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id, component: this.props.component}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: '2', marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -111,6 +123,7 @@ class Text extends React.Component {
               }} className='fa fa-smile-o' />
             </i>
           </div>
+
           <Popover
             style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
             placement='bottom'
@@ -118,6 +131,7 @@ class Text extends React.Component {
             show={this.state.showEmojiPicker}
             onHide={this.closeEmojiPicker}
         >
+
                <div>
               <Picker
                 style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
@@ -131,6 +145,7 @@ class Text extends React.Component {
                 onClick={(emoji, event) => this.setEmoji(emoji)}
             />
             </div>
+
           </Popover>
           */}
         </div>
