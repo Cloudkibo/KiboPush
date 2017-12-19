@@ -54,10 +54,16 @@ class CreateMessage extends React.Component {
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
         var payload = this.props.currentMenuItem.itemMenus[0].payload
+        var temp = ''
         if (payload.componentType === 'text') {
-          var temp = this.state.list
+          temp = this.state.list
           this.setState({list: [...temp,
             {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload.text} buttons={payload.buttons} />)}]})
+        }
+        if (payload.componentType === 'image') {
+          temp = this.state.list
+          this.setState({list: [...temp,
+            {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload.image_url} />)}]})
         }
       }
     }

@@ -39,6 +39,9 @@ class Image extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    if (this.props.image && this.props.image !== '') {
+      this.setState({imgSrc: this.props.image})
+    }
   }
 
   _onChange (images) {
