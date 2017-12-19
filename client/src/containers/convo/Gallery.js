@@ -58,7 +58,7 @@ class Gallery extends React.Component {
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
-        data.image_url = obj.fileurl
+        data.image_url = obj.image_url
         data.title = obj.title
         data.buttons = obj.buttons
         data.subtitle = obj.description

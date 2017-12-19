@@ -15,8 +15,6 @@ export function showbroadcasts (data) {
     broadcasts[j].sent = pagebroadcast.length// total sent
     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
-    console.log('updated broadcast')
-    console.log(broadcasts[j])
   }
   var newBroadcast = broadcasts.reverse()
   return {
