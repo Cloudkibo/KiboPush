@@ -257,7 +257,7 @@ exports.upload = function (req, res) {
   serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
     today.getSeconds()
   let fext = req.files.file.name.split('.')
-  serverPath += '.' + fext[fext.length - 1]
+  serverPath += '.' + fext[fext.length - 1].toLowerCase()
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
 
