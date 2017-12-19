@@ -428,9 +428,10 @@ function updateseenstatus (req) {
 
 function sendReply (req) {
   logger.serverLog(TAG, `Inside sendReply ${JSON.stringify(req)}`)
+  parsedData = JSON.parse(req.postback.payload)
+  req.postback.parsedData.forEach(payloadItem => {
   let messageData = utility.prepareSendAPIPayload(
-    req.sender.id,
-    JSON.parse(req.postback.payload))
+    req.sender.id, parsedData)
   logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
   Pages.find({pageId: req.recipient.id}, (err, pages) => {
     if (err) {
