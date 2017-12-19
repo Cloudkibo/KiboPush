@@ -430,7 +430,7 @@ function sendReply (req) {
   logger.serverLog(TAG, `Inside sendReply ${JSON.stringify(req)}`)
   let parsedData = JSON.parse(req.postback.payload)
   logger.serverLog(TAG, `parsedData ${JSON.stringify(parsedData)}`)
-  req.postback.parsedData.forEach(payloadItem => {
+  parsedData.forEach(payloadItem => {
   let messageData = utility.prepareSendAPIPayload(
     req.sender.id, payloadItem)
   logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
