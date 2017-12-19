@@ -173,7 +173,7 @@ exports.getfbMessage = function (req, res) {
             savepoll(event)
           } else if (resp.survey_id) {
             savesurvey(event)
-          } else if (resp.componentType) {
+          } else {
             sendReply(event)
           }
         }
