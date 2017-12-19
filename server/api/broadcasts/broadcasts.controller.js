@@ -460,6 +460,7 @@ function sendReply (req) {
         logger.serverLog(TAG,
           'Sent broadcast to subscriber to self for test')
       })
+    })
   })
 }
 function savepoll (req) {
