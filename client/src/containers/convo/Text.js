@@ -42,6 +42,11 @@ class Text extends React.Component {
     if (this.props.message && this.props.message !== '') {
       this.setState({text: this.props.message})
     }
+    if (this.props.buttons && this.props.buttons.length > 0) {
+      this.setState({
+        button: this.props.buttons
+      })
+    }
   }
 
   showEmojiPicker () {
