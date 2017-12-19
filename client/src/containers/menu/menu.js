@@ -138,7 +138,7 @@ class Menu extends React.Component {
     console.log('In setCreateMessage ', event.target.value, this.clickIndex, this.props.currentMenuItem)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
-    var payload = ''
+    var payload = []
     if (temp[0].payload && temp[0].payload !== '') {
       payload = JSON.parse(temp[0].payload)
     }
