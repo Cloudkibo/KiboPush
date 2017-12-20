@@ -51,7 +51,7 @@ class File extends React.Component {
       var fileInfo = {
         id: this.props.id,
         componentType: 'audio',
-        fileName: this.props.file.fileName,
+        name: this.props.file.fileName,
         type: this.props.file.type,
         size: this.props.file.size
       }
