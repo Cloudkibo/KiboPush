@@ -255,8 +255,27 @@ class CreateMessage extends React.Component {
   }
 
   saveMessage () {
+    console.log('this.state.message', this.state.message)
     if (this.state.message.length === 0) {
       return
+    }
+    for (let i = 0; i < this.state.message.length; i++) {
+      if (this.state.message[i].componentType === 'card') {
+        if (!this.state.message[i].buttons) {
+          return this.msg.error('Card must have at least one button.')
+        } else if (this.state.message[i].buttons.length === 0) {
+          return this.msg.error('Card must have at least one button.')
+        }
+      }
+      if (this.state.message[i].componentType === 'gallery') {
+        for (let j = 0; j < this.state.message[i].cards.length; j++) {
+          if (!this.state.message[i].cards[j].buttons) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          } else if (this.state.message[i].cards[j].buttons.length === 0) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          }
+        }
+      }
     }
     var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message)
     var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
