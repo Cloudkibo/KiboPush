@@ -140,7 +140,7 @@ class Menu extends React.Component {
     var index = this.clickIndex.split('-')
     var payload = []
     if (temp[0].payload && temp[0].payload !== '') {
-      payload = JSON.parse(temp[0].payload)
+      payload = temp[0].payload
     }
     switch (index[0]) {
       case 'item':

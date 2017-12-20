@@ -55,7 +55,7 @@ class CreateMessage extends React.Component {
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
         var payload = this.props.currentMenuItem.itemMenus[0].payload
-        this.setEditComponents(payload)
+        this.setEditComponents(JSON.parse(payload))
       }
     }
     // let options = []
@@ -63,28 +63,43 @@ class CreateMessage extends React.Component {
   }
   setEditComponents (payload) {
     var temp = []
+    var message = []
     for (var i = 0; i < payload.length; i++) {
       if (payload[i].componentType === 'text') {
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'image') {
         temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'audio') {
         temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'video') {
         temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'file') {
         temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'card') {
         temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       } else if (payload[i].componentType === 'gallery') {
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
         this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
       }
     }
   }
@@ -222,16 +237,9 @@ class CreateMessage extends React.Component {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.message.filter((component) => { return (component.id !== obj.id) })
     this.setState({ list: temp, message: temp2 })
-    if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
-      if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
-        var payload = this.props.currentMenuItem.itemMenus[0].payload
-        if (payload.componentType === 'text') {
-          var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, '')
-          var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
-          this.props.saveCurrentMenuItem(currentState)
-        }
-      }
-    }
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, temp2)
+    var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+    this.props.saveCurrentMenuItem(currentState)
   }
 
   setCreateMessage (clickedIndex, payload) {
