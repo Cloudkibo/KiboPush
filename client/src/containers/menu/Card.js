@@ -45,8 +45,16 @@ class Card extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if (this.props.cardDetais && this.props.cardDetais !== '') {
-      console.log(this.props.cardDetais)
+    if (this.props.cardDetails && this.props.cardDetails !== '') {
+      console.log(this.props.cardDetails)
+      this.setState({
+        id: this.props.id,
+        componentType: 'card',
+        title: this.props.cardDetails.title,
+        subtitle: this.props.cardDetails.description,
+        imgSrc: this.props.cardDetails.image_url,
+        button: this.props.cardDetails.buttons
+      })
     }
   }
 
