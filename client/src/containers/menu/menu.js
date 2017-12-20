@@ -59,7 +59,7 @@ class Menu extends React.Component {
     this.handleSaveMenu = this.handleSaveMenu.bind(this)
     this.getItemClicked = this.getItemClicked.bind(this)
     props.fetchMenu()
-    if (this.props.pages) {
+    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
     }
   }
@@ -93,12 +93,12 @@ class Menu extends React.Component {
       if (this.state.pageValue === '') {
         this.setState({pageValue: nextProps.pages[0].pageId})
       }
-      if (nextProps.currentMenuItem && nextProps.currentMenuItem.itemMenus) {
-        this.setState({itemMenus: nextProps.currentMenuItem.itemMenus})
-        this.setState({pageValue: nextProps.currentMenuItem.currentPage})
-        this.clickedIndex = nextProps.currentMenuItem.clickedIndex
-        this.setState({savedisabled: false})
-      }
+    }
+    if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) {
+      this.setState({pageValue: this.props.currentMenuItem.currentPage})
+      this.props.getIndexBypage(this.props.currentMenuItem.currentPage, this.handleIndexByPage)
+      this.clickedIndex = this.props.currentMenuItem.clickedIndex
+      this.setState({savedisabled: false})
     }
     if (nextProps.successMessage) {
       console.log('success', JSON.stringify(nextProps.successMessage))
@@ -460,23 +460,6 @@ class Menu extends React.Component {
         }
         </div>
         {
-          getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
-          <div className='container' id='popover-option3'>
-            <div className='row'>
-              <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>Set Web Url</button>
-            </div>
-            {
-              (this.state.setWebUrl) && <div id='popover-option3' className='container'>
-                <div id='popover-option3-row' className='row'>
-                  <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-                  <input id='popover-website-input' style={{marginBottom: '20px'}} value={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
-                </div>
-                <button onClick={this.handleClick} className='btn btn-primary pull-right' disabled={(this.state.disabled)}> Done </button>
-                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
-              </div>
-            }
-
-          </div>
         }
       </div>
     </Popover>
