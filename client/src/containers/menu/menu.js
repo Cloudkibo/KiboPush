@@ -279,6 +279,8 @@ class Menu extends React.Component {
         break
     }
     this.setState({itemMenus: temp})
+    var currentState = { itemMenus: temp, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
+    this.props.saveCurrentMenuItem(currentState)
   }
 
   removeItem (type, indexObject) {
@@ -309,8 +311,9 @@ class Menu extends React.Component {
       default:
         break
     }
-    this.props.saveCurrentMenuItem(temp)
     this.setState({itemMenus: temp.itemMenus})
+    var currentState = { itemMenus: temp.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
+    this.props.saveCurrentMenuItem(currentState)
   }
   getItemClicked () {
     console.log('In get clicked Item ', this.clickIndex)
