@@ -261,9 +261,6 @@ class CreateMessage extends React.Component {
     }
     for (let i = 0; i < this.state.message.length; i++) {
       if (this.state.message[i].componentType === 'card') {
-        if (!this.state.message[i].fileName) {
-          return this.msg.error('Card must have an image')
-        }
         if (!this.state.message[i].title) {
           return this.msg.error('Card must have a title')
         }
@@ -278,9 +275,6 @@ class CreateMessage extends React.Component {
       }
       if (this.state.message[i].componentType === 'gallery') {
         for (let j = 0; j < this.state.message[i].cards.length; j++) {
-          if (!this.state.message[i].cards[j].fileName) {
-            return this.msg.error('Card in gallery must have an image')
-          }
           if (!this.state.message[i].cards[j].title) {
             return this.msg.error('Card in gallery must have a title')
           }
