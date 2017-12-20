@@ -76,17 +76,17 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'audio') {
-        temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'video') {
-        temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'file') {
-        temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})

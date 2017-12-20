@@ -48,7 +48,14 @@ class File extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     if (this.props.file && this.props.file !== '') {
-      this.setState({file: this.props.file})
+      var fileInfo = {
+        id: this.props.id,
+        componentType: 'audio',
+        fileName: this.props.file.fileName,
+        type: this.props.file.type,
+        size: this.props.file.size
+      }
+      this.setState({file: fileInfo})
     }
   }
 
