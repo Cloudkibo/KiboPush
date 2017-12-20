@@ -18,7 +18,7 @@ import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
 
-class Audio extends React.Component {
+class Video extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
@@ -52,6 +52,13 @@ class Audio extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.loading) {
+      this.setState({loading: false})
+      this.props.setLoading()
+    }
+  }
+
   showDialog (page) {
     this.setState({showDialog: true})
   }
@@ -76,7 +83,7 @@ class Audio extends React.Component {
       fileData.append('filesize', file.size)
       var fileInfo = {
         id: this.props.id,
-        componentType: 'audio',
+        componentType: 'video',
         fileName: file.name,
         type: file.type,
         size: file.size
@@ -108,14 +115,14 @@ class Audio extends React.Component {
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
-              accepts={['audio/*']}
+              accepts={['video/*']}
               maxFileSize={25000000}
               minFileSize={0}
               clickable
             >
               <div className='align-center'>
-                <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+                <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                <h4>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
               </div>
             </Files>
           }
@@ -156,4 +163,4 @@ function mapDispatchToProps (dispatch) {
     uploadFile: uploadFile
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Audio)
+export default connect(mapStateToProps, mapDispatchToProps)(Video)

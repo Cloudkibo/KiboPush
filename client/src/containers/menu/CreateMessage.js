@@ -8,12 +8,12 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Image from '../menu/Image'
-import Video from '../convo/Video'
+import Video from '../menu/Video'
 import Audio from '../menu/Audio'
-import File from '../convo/File'
+import File from '../menu/File'
 import Text from '../menu/Text'
-import Card from '../convo/Card'
-import Gallery from '../convo/Gallery'
+import Card from '../menu/Card'
+import Gallery from '../menu/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -48,27 +48,45 @@ class CreateMessage extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.saveMessage = this.saveMessage.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
+    this.setEditComponents = this.setEditComponents.bind(this)
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
         var payload = this.props.currentMenuItem.itemMenus[0].payload
-        var temp = ''
-        if (payload.componentType === 'text') {
-          temp = this.state.list
-          this.setState({list: [...temp,
-            {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload.text} buttons={payload.buttons} />)}]})
-        }
-        if (payload[0].componentType === 'image') {
-          temp = this.state.list
-          this.setState({list: [...temp,
-            {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[0].image_url} />)}]})
-        }
+        this.setEditComponents(payload)
       }
     }
     // let options = []
     // this.setState({ page: { options: options } })
+  }
+  setEditComponents (payload) {
+    var temp = []
+    for (var i = 0; i < payload.length; i++) {
+      if (payload[i].componentType === 'text') {
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'image') {
+        temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'audio') {
+        temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'video') {
+        temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'file') {
+        temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i].fileurl} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'card') {
+        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
+        this.setState({list: temp})
+      } else if (payload[i].componentType === 'gallery') {
+        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
+        this.setState({list: temp})
+      }
+    }
   }
   componentWillReceiveProps (nextProps) {
     console.log('next props', nextProps)

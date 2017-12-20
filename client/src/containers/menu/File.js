@@ -18,7 +18,7 @@ import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
 
-class Audio extends React.Component {
+class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
@@ -76,7 +76,7 @@ class Audio extends React.Component {
       fileData.append('filesize', file.size)
       var fileInfo = {
         id: this.props.id,
-        componentType: 'audio',
+        componentType: 'file',
         fileName: file.name,
         type: file.type,
         size: file.size
@@ -108,27 +108,27 @@ class Audio extends React.Component {
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
-              accepts={['audio/*']}
+              accepts={['image/*', 'text/*', 'audio/*', 'video/*', 'application/*']}
               maxFileSize={25000000}
               minFileSize={0}
               clickable
-            >
+          >
               <div className='align-center'>
-                <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+                <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
           }
           {
           this.state.showDialog &&
-            <ModalContainer style={{width: '300px'}}
+          <ModalContainer style={{width: '300px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '300px'}}
               onClose={this.closeDialog}>
-              <ModalDialog style={{width: '300px'}}
-                onClose={this.closeDialog}>
-                <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
-                <p>{this.state.errorMsg}</p>
-              </ModalDialog>
-            </ModalContainer>
+              <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error</h3>
+              <p>{this.state.errorMsg}</p>
+            </ModalDialog>
+          </ModalContainer>
         }
         </div>
       </div>
@@ -156,4 +156,4 @@ function mapDispatchToProps (dispatch) {
     uploadFile: uploadFile
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Audio)
+export default connect(mapStateToProps, mapDispatchToProps)(File)
