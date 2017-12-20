@@ -385,7 +385,13 @@ class Menu extends React.Component {
         this.msg.error('Please select a page')
         return
       }
-      data.payload = transformData(this.props.currentMenuItem.itemMenus)
+      var temp = []
+      for (var i = 0; i < this.props.currentMenuItem.itemMenus.length; i++) {
+        temp.push(this.props.currentMenuItem.itemMenus[i])
+      }
+      temp.push({title: 'Powered By KiboPush', type: 'web_url', url: 'http://kibopush.com/', submenu: []})
+      console.log('temp', temp)
+      data.payload = transformData(temp)
       data.pageId = this.state.pageValue
       data.userId = this.props.user._id
       data.jsonStructure = this.props.currentMenuItem.itemMenus
