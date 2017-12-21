@@ -91,12 +91,12 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
+        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} cardDetais={payload[i]} />)})
+        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
