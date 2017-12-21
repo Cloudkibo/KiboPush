@@ -36,8 +36,20 @@ class Gallery extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if (this.props.cardDetais && this.props.cardDetais !== '') {
-      console.log(this.props.cardDetais)
+    if (this.props.galleryDetails && this.props.galleryDetails !== '') {
+      console.log(this.props.galleryDetails)
+      var cards = this.props.galleryDetails.cards
+      var card = {}
+      var temp = []
+      var cardMessage = []
+      for (var i = 0; i < cards.length; i++) {
+        card = {element: <Card id={i} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        cardMessage.push(cards[i])
+        temp.push(card)
+      }
+      this.setState({cards: temp})
+      this.setState({showPlus: true})
+      this.setState({broadcast: cardMessage})
     }
   }
 

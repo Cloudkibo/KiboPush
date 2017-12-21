@@ -96,7 +96,7 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
+        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -304,7 +304,7 @@ class CreateMessage extends React.Component {
           if (!this.state.message[i].cards[j].title) {
             return this.msg.error('Card in gallery must have a title')
           }
-          if (!this.state.message[i].cards[j].description) {
+          if (!this.state.message[i].cards[j].subtitle) {
             return this.msg.error('Card in gallery must have a subtitle')
           }
           if (!this.state.message[i].cards[j].buttons) {
