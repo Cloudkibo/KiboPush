@@ -379,6 +379,11 @@ class Menu extends React.Component {
   save () {
     console.log('Current Item', this.props.currentMenuItem)
     if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
+      for (var j = 0; j < this.props.currentMenuItem.itemMenus.length; j++) {
+        if (!this.props.currentMenuItem.itemMenus[j].type) {
+          return this.msg.error('Please select the type of the menu')
+        }
+      }
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
