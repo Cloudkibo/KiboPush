@@ -20,6 +20,7 @@ class Card extends React.Component {
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
+    this.updateCardDetails = this.updateCardDetails.bind(this)
     this.state = {
       imgSrc: '',
       title: '',
@@ -32,7 +33,26 @@ class Card extends React.Component {
       image_url: ''
     }
   }
-
+  componentWillReceiveProps (nextProps) {
+    this.updateCardDetails(nextProps)
+  }
+  updateCardDetails (cardProps) {
+    if (cardProps.cardDetails && cardProps.cardDetails !== '') {
+      console.log(cardProps.cardDetails)
+      this.setState({
+        id: cardProps.id,
+        componentType: 'card',
+        title: cardProps.cardDetails.title,
+        imgSrc: cardProps.cardDetails.image_url,
+        button: cardProps.cardDetails.buttons
+      })
+      if (cardProps.cardDetails.subtitle) {
+        this.setState({ subtitle: cardProps.cardDetails.subtitle })
+      } else if (cardProps.cardDetails.description) {
+        this.setState({ subtitle: cardProps.cardDetails.description })
+      }
+    }
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -45,17 +65,7 @@ class Card extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    if (this.props.cardDetails && this.props.cardDetails !== '') {
-      console.log(this.props.cardDetails)
-      this.setState({
-        id: this.props.id,
-        componentType: 'card',
-        title: this.props.cardDetails.title,
-        subtitle: this.props.cardDetails.description,
-        imgSrc: this.props.cardDetails.image_url,
-        button: this.props.cardDetails.buttons
-      })
-    }
+    this.updateCardDetails(this.props)
   }
 
   _onChange () {
@@ -211,8 +221,8 @@ class Card extends React.Component {
 
           </div>
           <div>
-            <input onChange={this.handleChange} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
