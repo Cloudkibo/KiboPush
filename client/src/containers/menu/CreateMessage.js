@@ -66,6 +66,7 @@ class CreateMessage extends React.Component {
     var temp = []
     var message = []
     for (var i = 0; i < payload.length; i++) {
+      payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
         this.setState({list: temp})
