@@ -53,8 +53,9 @@ class CreateMessage extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Menu'
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
-      if (this.props.currentMenuItem.itemMenus[0].payload !== '') {
-        var payload = this.props.currentMenuItem.itemMenus[0].payload
+      var index = this.props.currentMenuItem.clickedIndex.split('-')
+      if (this.props.currentMenuItem.itemMenus[index[1]].payload !== '') {
+        var payload = this.props.currentMenuItem.itemMenus[index[1]].payload
         this.setEditComponents(JSON.parse(payload))
       }
     }
