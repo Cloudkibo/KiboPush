@@ -139,8 +139,8 @@ class Menu extends React.Component {
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     var payload = []
-    if (temp[0].payload && temp[0].payload !== '') {
-      payload = temp[0].payload
+    if (temp[index[1]].payload && temp[index[1]].payload !== '') {
+      payload = temp[index[1]].payload
     }
     switch (index[0]) {
       case 'item':
