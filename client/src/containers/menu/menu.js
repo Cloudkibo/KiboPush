@@ -380,7 +380,7 @@ class Menu extends React.Component {
     console.log('Current Item', this.props.currentMenuItem)
     if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       for (var j = 0; j < this.props.currentMenuItem.itemMenus.length; j++) {
-        if (!this.props.currentMenuItem.itemMenus[j].type) {
+        if (!this.props.currentMenuItem.itemMenus[j].type && this.props.currentMenuItem.itemMenus[j].submenu.length === 0) {
           return this.msg.error('Please select the type of the menu')
         }
       }
