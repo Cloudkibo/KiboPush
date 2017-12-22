@@ -49,14 +49,43 @@ class CreateMessage extends React.Component {
     this.saveMessage = this.saveMessage.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
+    this.getPayloadByIndex = this.getPayloadByIndex.bind(this)
+  }
+  getPayloadByIndex (index) {
+    var payload = []
+    var currentMenuItem = this.props.currentMenuItem
+    switch (index[0]) {
+      case 'item':
+        console.log('An Item was Clicked position ', index[1])
+        if (currentMenuItem.itemMenus[index[1]].payload && currentMenuItem.itemMenus[index[1]].payload !== '') {
+          payload = currentMenuItem.itemMenus[index[1]].payload
+        }
+        break
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload !== '') {
+          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
+        }
+        break
+      case 'nested':
+        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
+          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
+        }
+        break
+      default:
+        console.log('In switch', index[0])
+        break
+    }
+    return JSON.parse(payload)
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
     if (this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       var index = this.props.currentMenuItem.clickedIndex.split('-')
-      if (this.props.currentMenuItem.itemMenus[index[1]].payload !== '') {
-        var payload = this.props.currentMenuItem.itemMenus[index[1]].payload
-        this.setEditComponents(JSON.parse(payload))
+      var payload = this.getPayloadByIndex(index)
+      if (payload && payload.length > 0) {
+        this.setEditComponents(payload)
       }
     }
     // let options = []

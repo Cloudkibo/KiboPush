@@ -139,12 +139,12 @@ class Menu extends React.Component {
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     var payload = []
-    if (temp[index[1]].payload && temp[index[1]].payload !== '') {
-      payload = temp[index[1]].payload
-    }
     switch (index[0]) {
       case 'item':
         console.log('An Item was Clicked position ', index[1])
+        if (temp[index[1]].payload && temp[index[1]].payload !== '') {
+          payload = temp[index[1]].payload
+        }
         if (temp[index[1]].url) {
           delete temp[index[1]].url
         }
@@ -154,6 +154,9 @@ class Menu extends React.Component {
         break
       case 'submenu':
         console.log('A Submenu was Clicked position ', index[1], index[2])
+        if (temp[index[1]].submenu[index[2]].payload && temp[index[1]].submenu[index[2]].payload !== '') {
+          payload = temp[index[1]].submenu[index[2]].payload
+        }
         if (temp[index[1]].submenu[index[2]].url) {
           delete temp[index[1]].submenu[index[2]].url
         }
@@ -163,6 +166,9 @@ class Menu extends React.Component {
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload && temp[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
+          payload = temp[index[1]].submenu[index[2]].payload
+        }
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].url) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].url
         }
