@@ -331,6 +331,27 @@ class Menu extends React.Component {
         return null
     }
   }
+  isSubmenu () {
+    var index = this.clickIndex.split('-')
+    var temp = this.state.itemMenus
+    switch (index[0]) {
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        return temp[index[1]].submenu[index[2]]
+      default:
+        return false
+    }
+  }
+  isNested () {
+    var index = this.clickIndex.split('-')
+    switch (index[0]) {
+      case 'nested':
+        return true
+      default:
+        return false
+    }
+  }
+
   setUrl (event) {
     console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
@@ -441,14 +462,20 @@ class Menu extends React.Component {
           <p>Please select one of the following </p>
         </form>
         {
-          (!this.target.includes('nested')) ? <div id='popover-option1' className='container'>
+          (!this.target.includes('nested'))
+          ? <div id='popover-option1' className='container'>
             <div className='row'>
-              <button id='popover-option1-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}} onClick={() => this.addSubmenu()}> Add Submenu </button>
+              { this.isSubmenu()
+              ? <button id='popover-option1-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}} onClick={() => this.addSubmenu()}> Add Nested Menu </button>
+              : <button id='popover-option1-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}} onClick={() => this.addSubmenu()}> Add Sub Menu </button>
+            }
             </div>
           </div> : ''
         }
         <br />
-        <div id='popover-option2' className='container'>
+        {console.log('isNested', this.getItemClicked())}
+        {(this.getItemClicked() && this.getItemClicked().submenu && this.getItemClicked().submenu.length === 0) || this.isNested()
+        ? <div id='popover-option2' className='container'>
           { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'postback')
           ? <Link to='CreateMessage'>
             <div className='row'>
@@ -462,6 +489,8 @@ class Menu extends React.Component {
           </Link>
         }
         </div>
+        : ''
+        }
         <br />
         {
           getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
