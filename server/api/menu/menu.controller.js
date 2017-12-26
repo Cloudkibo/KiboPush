@@ -77,7 +77,6 @@ exports.create = function (req, res) {
         const menu = new Menu({
           pageId: req.body.pageId,
           userId: req.body.userId,
-          payload: req.body.payload,
           jsonStructure: req.body.jsonStructure})
 
         // save model to MongoDB
@@ -115,7 +114,7 @@ exports.create = function (req, res) {
           }
         })
       } else {
-        Menu.update({pageId: req.body.pageId}, {payload: req.body.payload, jsonStructure: req.body.jsonStructure}, (err, updated) => {
+        Menu.update({pageId: req.body.pageId}, {jsonStructure: req.body.jsonStructure}, (err, updated) => {
           if (err) {
             logger.serverLog(TAG,
               `Error occurred in finding subscriber${JSON.stringify(
