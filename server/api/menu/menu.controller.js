@@ -42,7 +42,7 @@ exports.create = function (req, res) {
 
   if (!_.has(req.body, 'pageId')) parametersMissing = true
   if (!_.has(req.body, 'userId')) parametersMissing = true
-  if (!_.has(req.body, 'payload')) parametersMissing = true
+  if (!_.has(req.body, 'jsonStructure')) parametersMissing = true
 
   if (parametersMissing) {
     return res.status(400)
