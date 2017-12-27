@@ -2,6 +2,7 @@ const logger = require('../../components/logger')
 const TemplatePolls = require('./pollTemplate.model')
 const TemplateSurveys = require('./surveyTemplate.model')
 const SurveyQuestions = require('./surveyQuestion.model')
+const Category = require('./category.model')
 
 const TAG = 'api/polls/polls.controller.js'
 
@@ -30,20 +31,19 @@ exports.allSurveys = function (req, res) {
         description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
-    SurveyQuestions.aggregate([{
-      $group: {
-        _id: {surveyId: '$surveyId', statement: '$statement', options: '$options'}
-      }},
-      { $project: { statement: 1, options: 1, surveyId: 1 } }
-    ], (err2, questions) => {
-      if (err2) {
-        return res.status(404)
-        .json({status: 'failed', description: 'Surveys not found'})
-      }
-      res.status(200).json({
-        status: 'success',
-        payload: {surveys: surveys, surveyQuestions: questions}
-      })
+    // SurveyQuestions.aggregate([{
+    //   $group: {
+    //     _id: {surveyId: '$surveyId', statement: '$statement', options: '$options'}
+    //   }},
+    //   { $project: { statement: 1, options: 1, surveyId: 1 } }
+    // ], (err2, questions) => {
+    //   if (err2) {
+    //     return res.status(404)
+    //     .json({status: 'failed', description: 'Surveys not found'})
+    //   }
+    res.status(200).json({
+      status: 'success',
+      payload: surveys
     })
   })
 }
@@ -103,5 +103,80 @@ exports.createSurvey = function (req, res) {
       })
     }
     return res.status(201).json({status: 'success', payload: survey})
+  })
+}
+exports.allCategories = function (req, res) {
+  Category.find({}, (err, categories) => {
+    if (err) {
+      logger.serverLog(TAG, `Error: ${err}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: categories
+    })
+  })
+}
+
+exports.createCategory = function (req, res) {
+  let categoryPayload = {
+    name: req.body.name
+  }
+  const category = new Category(categoryPayload)
+
+  // save model to MongoDB
+  category.save((err, categoryCreated) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        description: 'Failed to insert record'
+      })
+    } else {
+      res.status(201).json({status: 'success', payload: categoryCreated})
+    }
+  })
+}
+exports.surveyDetails = function (req, res) {
+  TemplateSurveys.find({_id: req.params.surveyid}, (err, survey) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    // find questions
+    SurveyQuestions.find({surveyId: req.params.surveyid})
+      .populate('surveyId')
+      .exec((err2, questions) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
+        }
+        return res.status(200).json({status: 'success', payload: {survey, questions}})
+      })
+  })
+}
+
+exports.pollDetails = function (req, res) {
+  TemplatePolls.findOne({_id: req.params.pollid}, (err, poll) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    if (!poll) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Poll not found.`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {poll}})
   })
 }
