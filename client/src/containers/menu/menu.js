@@ -260,7 +260,7 @@ class Menu extends React.Component {
       return
     }
     temp.push({
-      title: 'Menu Name',
+      title: 'Second Menu',
       submenu: []
     })
     this.setState({itemMenus: temp})
@@ -340,6 +340,27 @@ class Menu extends React.Component {
         return null
     }
   }
+  isSubmenu () {
+    var index = this.clickIndex.split('-')
+    var temp = this.state.itemMenus
+    switch (index[0]) {
+      case 'submenu':
+        console.log('A Submenu was Clicked position ', index[1], index[2])
+        return temp[index[1]].submenu[index[2]]
+      default:
+        return false
+    }
+  }
+  isNested () {
+    var index = this.clickIndex.split('-')
+    switch (index[0]) {
+      case 'nested':
+        return true
+      default:
+        return false
+    }
+  }
+
   setUrl (event) {
     console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
@@ -385,6 +406,11 @@ class Menu extends React.Component {
   save () {
     console.log('Current Item', this.props.currentMenuItem)
     if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
+      for (var j = 0; j < this.props.currentMenuItem.itemMenus.length; j++) {
+        if (!this.props.currentMenuItem.itemMenus[j].type && this.props.currentMenuItem.itemMenus[j].submenu.length === 0) {
+          return this.msg.error('Please select the type of the menu')
+        }
+      }
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
@@ -425,7 +451,7 @@ class Menu extends React.Component {
 
     let popup = <Popover
       id='popup'
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '400px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '410px', marginTop: '40px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
@@ -436,35 +462,49 @@ class Menu extends React.Component {
         </div>
         <form id='popover-form' style={{marginBottom: '20px'}}>
           <h5 id='popover-heading2' >When Pressed:</h5>
+          <p>Please select one of the following </p>
         </form>
         {
-          (!this.target.includes('nested')) ? <div id='popover-option1' className='container'>
+          (!this.target.includes('nested'))
+          ? <div id='popover-option1' className='container'>
             <div className='row'>
-              <button id='popover-option1-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block' onClick={() => this.addSubmenu()}> Add Submenu </button>
+              { this.isSubmenu()
+              ? <button id='popover-option1-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}} onClick={() => this.addSubmenu()}> Add Nested Menu </button>
+              : <button id='popover-option1-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}} onClick={() => this.addSubmenu()}> Add Sub Menu </button>
+            }
             </div>
           </div> : ''
         }
-
-        <div id='popover-option2' className='container'>
+        <br />
+        {console.log('isNested', this.getItemClicked())}
+        {(this.getItemClicked() && this.getItemClicked().submenu && this.getItemClicked().submenu.length === 0) || this.isNested()
+        ? <div id='popover-option2' className='container'>
           { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'postback')
           ? <Link to='CreateMessage'>
             <div className='row'>
-              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Edit New Message</button>
+              <button onClick={(e) => { this.setCreateMessage(e) }} className='btn m-btn--pill btn-primary' style={{width: '400px'}}> Edit Message</button>
             </div>
           </Link>
           : <Link to='CreateMessage'>
             <div className='row'>
-              <button onClick={(e) => { this.setCreateMessage(e) }} style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>+ Create Your Message</button>
+              <button onClick={(e) => { this.setCreateMessage(e) }} className='btn m-btn--pill btn-secondary' style={{width: '400px'}}>+ Create New Message</button>
             </div>
           </Link>
         }
         </div>
+        : ''
+        }
+        <br />
         {
           getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
           <div className='container' id='popover-option3'>
             <div className='row'>
-              <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' style={{margin: 'auto', marginBottom: '20px', color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn btn-block'>Set Web Url</button>
+              { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'web_url')
+              ? <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-primary' style={{width: '400px'}}>Set Web Url</button>
+              : <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}}>Set Web Url</button>
+              }
             </div>
+            <br />
             {
               (this.state.setWebUrl) && <div id='popover-option3' className='container'>
                 <div id='popover-option3-row' className='row'>
@@ -494,7 +534,7 @@ class Menu extends React.Component {
                   <div className='m-portlet__head'>
                     <div className='m-portlet__head-caption' style={{width: '400px'}}>
                       <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>Select a page to setup its Main Menu </h3>
+                        <h3 className='m-portlet__head-text'>Select a page to setup its Menu </h3>
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
@@ -671,7 +711,7 @@ class Menu extends React.Component {
                             </form>
                           </div>
                         </li>
-                        <p><b>Note: </b>Only three menu items can be added.</p>
+                        <p><b>Note: </b>Only two menu items can be added.</p>
                         <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>

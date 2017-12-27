@@ -34,6 +34,7 @@ module.exports = function (app) {
   app.use('/api/sessions', require('./api/sessions'))
   app.use('/api/menu', require('./api/menu'))
   app.use('/api/api_settings', require('./api/api_settings'))
+  app.use('/api/templates', require('./api/templates'))
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {
