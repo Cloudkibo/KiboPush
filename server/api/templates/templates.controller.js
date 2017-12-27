@@ -31,20 +31,19 @@ exports.allSurveys = function (req, res) {
         description: `Internal Server Error${JSON.stringify(err)}`
       })
     }
-    SurveyQuestions.aggregate([{
-      $group: {
-        _id: {surveyId: '$surveyId', statement: '$statement', options: '$options'}
-      }},
-      { $project: { statement: 1, options: 1, surveyId: 1 } }
-    ], (err2, questions) => {
-      if (err2) {
-        return res.status(404)
-        .json({status: 'failed', description: 'Surveys not found'})
-      }
-      res.status(200).json({
-        status: 'success',
-        payload: {surveys: surveys, surveyQuestions: questions}
-      })
+    // SurveyQuestions.aggregate([{
+    //   $group: {
+    //     _id: {surveyId: '$surveyId', statement: '$statement', options: '$options'}
+    //   }},
+    //   { $project: { statement: 1, options: 1, surveyId: 1 } }
+    // ], (err2, questions) => {
+    //   if (err2) {
+    //     return res.status(404)
+    //     .json({status: 'failed', description: 'Surveys not found'})
+    //   }
+    res.status(200).json({
+      status: 'success',
+      payload: surveys
     })
   })
 }
@@ -138,5 +137,46 @@ exports.createCategory = function (req, res) {
     } else {
       res.status(201).json({status: 'success', payload: categoryCreated})
     }
+  })
+}
+exports.surveyDetails = function (req, res) {
+  TemplateSurveys.find({_id: req.params.surveyid}, (err, survey) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    // find questions
+    SurveyQuestions.find({surveyId: req.params.surveyid})
+      .populate('surveyId')
+      .exec((err2, questions) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
+        }
+        return res.status(200).json({status: 'success', payload: {survey, questions}})
+      })
+  })
+}
+
+exports.pollDetails = function (req, res) {
+  TemplatePolls.findOne({_id: req.params.pollid}, (err, poll) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    if (!poll) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Poll not found.`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {poll}})
   })
 }

@@ -81,7 +81,7 @@ class top10pages extends React.Component {
                 </div>
               </div>
               <div className='pull-left' style={{display: 'inline-block', paddingTop: '40px'}}>
-                <Link to={'/createSurvey'} style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                <Link to={'/templates'} style={{display: 'inline-block', verticalAlign: 'middle'}}>
                   <label>Templates</label>
                 </Link>
               </div>
