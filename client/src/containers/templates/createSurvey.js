@@ -87,6 +87,8 @@ class createSurvey extends React.Component {
       let payload = {name: this.refs.newCategory.value}
       this.props.addCategory(payload, this.msg)
       this.props.loadCategoriesList()
+    } else {
+      this.msg.error('Please enter a category')
     }
   }
   createSurvey (e) {

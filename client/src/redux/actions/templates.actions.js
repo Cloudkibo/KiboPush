@@ -9,6 +9,22 @@ export function createsurvey (survey) {
   }
 }
 
+export function addPoll (data, msg) {
+  console.log('response from createpoll', data)
+  return {
+    type: ActionTypes.ADD_TEMPLATE_POLL,
+    data
+  }
+}
+export function createpoll (poll) {
+  console.log('Creating survey')
+  console.log(poll)
+  return (dispatch) => {
+    callApi('templates/createPoll', 'post', poll)
+      .then(res => dispatch(addPoll(res)))
+  }
+}
+
 export function addSurvey (data, msg) {
   console.log('response from createsurvey', data)
   if (data.status === 'success') {
@@ -54,6 +70,19 @@ export function loadSurveysList () {
   console.log('loadSurveysList called')
   return (dispatch) => {
     callApi('templates/allSurveys').then(res => dispatch(showSurveys(res.payload)))
+  }
+}
+export function showPolls (data) {
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST,
+    data
+  }
+}
+export function loadPollsList () {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsList called')
+  return (dispatch) => {
+    callApi('templates/allPolls').then(res => dispatch(showPolls(res.payload)))
   }
 }
 export function updateSurveyDetails (data) {
