@@ -4,6 +4,13 @@ let Schema = mongoose.Schema
 const userSchema = new Schema({
   name: String,
   email: String,
+  domain: String,
+  domain_email: String,
+  facebookInfo: Schema.Types.Mixed,
+  role: String,
+  hashedPassword: String,
+  salt: String,
+  emailVerified: String,
   locale: String,
   gender: String,
   provider: String, // facebook
