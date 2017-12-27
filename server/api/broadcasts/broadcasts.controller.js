@@ -192,7 +192,7 @@ exports.getfbMessage = function (req, res) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {
           if (event.value.verb === 'add' && event.value.item === 'status') {
-            AutoPosting.find({accountUniqueName: event.value.sender_id})
+            AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
               .populate('userId')
               .exec((err, autopostings) => {
                 if (err) {
