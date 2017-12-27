@@ -2,6 +2,7 @@ const logger = require('../../components/logger')
 const TemplatePolls = require('./pollTemplate.model')
 const TemplateSurveys = require('./surveyTemplate.model')
 const SurveyQuestions = require('./surveyQuestion.model')
+const Category = require('./category.model')
 
 const TAG = 'api/polls/polls.controller.js'
 
@@ -103,5 +104,39 @@ exports.createSurvey = function (req, res) {
       })
     }
     return res.status(201).json({status: 'success', payload: survey})
+  })
+}
+exports.allCategories = function (req, res) {
+  Category.find({}, (err, categories) => {
+    if (err) {
+      logger.serverLog(TAG, `Error: ${err}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: categories
+    })
+  })
+}
+
+exports.createCategory = function (req, res) {
+  let categoryPayload = {
+    name: req.body.name
+  }
+  const category = new Category(categoryPayload)
+
+  // save model to MongoDB
+  category.save((err, categoryCreated) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        description: 'Failed to insert record'
+      })
+    } else {
+      res.status(201).json({status: 'success', payload: categoryCreated})
+    }
   })
 }
