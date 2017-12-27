@@ -17,7 +17,7 @@ exports.allPolls = function (req, res) {
     }
     res.status(200).json({
       status: 'success',
-      payload: {polls}
+      payload: polls
     })
   })
 }
@@ -50,6 +50,7 @@ exports.allSurveys = function (req, res) {
 
 exports.createPoll = function (req, res) {
   let pollPayload = {
+    title: req.body.title,
     statement: req.body.statement,
     options: req.body.options,
     category: req.body.category
@@ -177,6 +178,6 @@ exports.pollDetails = function (req, res) {
       })
     }
     return res.status(200)
-    .json({status: 'success', payload: {poll}})
+    .json({status: 'success', payload: poll})
   })
 }

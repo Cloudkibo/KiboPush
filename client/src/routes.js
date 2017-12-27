@@ -52,10 +52,12 @@ import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
 import Settings from './containers/settings/settings'
 import CreateSurvey from './containers/templates/createSurvey'
+import CreateTemplatePoll from './containers/templates/createPoll'
 import Template from './containers/templates/templates'
 import TemplatePoll from './containers/templates/templatePolls'
 import TemplateSurvey from './containers/templates/templateSurveys'
 import ViewTemplateSurvey from './containers/templates/viewSurvey'
+import ViewTemplatePoll from './containers/templates/viewPoll'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -129,10 +131,12 @@ const routes = (
     <Route path='/surveyDetails' component={SurveyDetails} onEnter={requireAuth} />
     <Route path='/settings' component={Settings} onEnter={requireAuth} />
     <Route path='/createSurvey' component={CreateSurvey} onEnter={requireAuth} />
+    <Route path='/createTemplatePoll' component={CreateTemplatePoll} onEnter={requireAuth} />
     <Route path='/templates' component={Template} onEnter={requireAuth} />
     <Route path='/templatePolls' component={TemplatePoll} onEnter={requireAuth} />
     <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
   </Route>
 
 )
