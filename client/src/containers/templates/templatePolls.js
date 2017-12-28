@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadPollsList, loadCategoriesList } from '../../redux/actions/templates.actions'
+import { loadPollsList, loadCategoriesList, deletePoll } from '../../redux/actions/templates.actions'
 import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import { Link } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class templatePolls extends React.Component {
   constructor (props, context) {
@@ -16,13 +17,17 @@ class templatePolls extends React.Component {
       pollsData: [],
       pollsDataAll: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPoll = this.searchPoll.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.onPollClick = this.onPollClick.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
@@ -111,7 +116,14 @@ class templatePolls extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
 
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
   render () {
     return (
       <div className='row'>
@@ -141,7 +153,29 @@ class templatePolls extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.polls && this.props.polls.length > 0
+                <div className='col-xl-8 order-2 order-xl-1' />
+                <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                  {
+                    this.state.isShowingModalDelete &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialogDelete}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialogDelete}>
+                        <h3>Delete Poll</h3>
+                        <p>Are you sure you want to delete this poll?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.props.deletePoll(this.state.deleteid)
+                            this.closeDialogDelete()
+                          }}>Delete
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                </div>
+              </div>
+              { this.props.polls && this.props.polls.length > 0
               ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
@@ -192,7 +226,7 @@ class templatePolls extends React.Component {
                           </th>
                           <th data-field='seemore'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}} />
+                            <span style={{width: '170px'}}>Actions</span>
                           </th>
                         </tr>
                       </thead>
@@ -217,10 +251,19 @@ class templatePolls extends React.Component {
                                   style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}><Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View Poll
-                                </Link></span></td>
+                                <span style={{width: '170px'}}>
+                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    View
+                                  </Link>
+                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    Edit
+                                  </Link>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.showDialogDelete(poll._id)}>
+                                  Delete
+                                </button>
+                                </span></td>
                             </tr>
                           ))
                         }
@@ -245,7 +288,6 @@ class templatePolls extends React.Component {
                 <p> No data to display </p>
               </div>
             }
-              </div>
             </div>
           </div>
         </div>
@@ -265,6 +307,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {loadPollsList: loadPollsList,
       loadCategoriesList: loadCategoriesList,
-      saveCurrentPoll}, dispatch)
+      deletePoll: deletePoll,
+      saveCurrentPoll
+    }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(templatePolls)

@@ -15,5 +15,9 @@ router.post('/createCategory', auth.isAuthorizedSuperUser(), controller.createCa
 router.get('/allCategories', auth.isAuthenticated(), controller.allCategories)
 router.get('/surveyDetails/:surveyid', auth.isAuthorizedSuperUser(), controller.surveyDetails)
 router.get('/pollDetails/:pollid', auth.isAuthorizedSuperUser(), controller.pollDetails)
+router.delete('/deletePoll/:id', auth.isAuthorizedSuperUser(), controller.deletePoll)
+router.delete('/deleteSurvey/:id', auth.isAuthorizedSuperUser(), controller.deleteSurvey)
+router.post('/editPoll', auth.isAuthorizedSuperUser(), controller.editPoll)
+router.post('/editSurvey', auth.isAuthorizedSuperUser(), controller.editSurvey)
 
 module.exports = router

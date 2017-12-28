@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadSurveysList, loadCategoriesList } from '../../redux/actions/templates.actions'
+import { loadSurveysList, loadCategoriesList, deleteSurvey } from '../../redux/actions/templates.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import { Link } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class templateSurveys extends React.Component {
   constructor (props, context) {
@@ -16,13 +17,17 @@ class templateSurveys extends React.Component {
       surveysData: [],
       surveysDataAll: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSurvey = this.searchSurvey.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.onSurveyClick = this.onSurveyClick.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
   componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail')
@@ -112,6 +117,14 @@ class templateSurveys extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
 
   render () {
     console.log('surevys')
@@ -143,7 +156,29 @@ class templateSurveys extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.surveys && this.props.surveys.length > 0
+                <div className='col-xl-8 order-2 order-xl-1' />
+                <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                  {
+                    this.state.isShowingModalDelete &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialogDelete}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialogDelete}>
+                        <h3>Delete Survey</h3>
+                        <p>Are you sure you want to delete this survey?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.props.deleteSurvey(this.state.deleteid)
+                            this.closeDialogDelete()
+                          }}>Delete
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                </div>
+              </div>
+              { this.props.surveys && this.props.surveys.length > 0
               ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
@@ -198,7 +233,7 @@ class templateSurveys extends React.Component {
                           </th>
                           <th data-field='seemore'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}} />
+                            <span style={{width: '170px'}} />
                           </th>
                         </tr>
                       </thead>
@@ -227,9 +262,18 @@ class templateSurveys extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '150px'}}><Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View Survey
-                                </Link></span></td>
+                                  style={{width: '170px'}}><Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  View
+                                </Link>
+                                  <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    Edit
+                                  </Link>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.showDialogDelete(survey._id)}>
+                                  Delete
+                              </button>
+                                </span></td>
                             </tr>
                           ))
                         }
@@ -254,7 +298,6 @@ class templateSurveys extends React.Component {
                 <p> No data to display </p>
               </div>
             }
-              </div>
             </div>
           </div>
         </div>
@@ -274,6 +317,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {loadSurveysList: loadSurveysList,
       loadCategoriesList: loadCategoriesList,
+      deleteSurvey: deleteSurvey,
       saveSurveyInformation}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(templateSurveys)
