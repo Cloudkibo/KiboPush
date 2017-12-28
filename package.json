@@ -74,6 +74,7 @@
     "passport": "~0.2.0",
     "passport-facebook": "latest",
     "passport-facebook-extension": "0.0.7",
+    "passport-local": "^0.1.6",
     "pubsubhubbub": "^0.4.1",
     "react": "^15.6.1",
     "react-addons-pure-render-mixin": "^15.6.0",

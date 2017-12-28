@@ -100,7 +100,7 @@ exports.sendConversation = function (req, res) {
       if (req.body.segmentationPageIds.length > 0) {
         if (req.body.segmentationPageIds[0].length > 0) {
           let pageCriteria = req.body.segmentationPageIds
-          if (typeof(req.body.segmentationPageIds) === 'object') {
+          if (typeof (req.body.segmentationPageIds) === 'object') {
             pageCriteria = req.body.segmentationPageIds[0]
           }
           pagesFindCriteria = _.merge(pagesFindCriteria, {

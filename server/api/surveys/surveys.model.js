@@ -9,6 +9,7 @@ const surveySchema = new Schema({
   description: String, // description of survey
   image: String, // image url
   userId: { type: Schema.ObjectId, ref: 'users' },
+  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
   isSegmented: { type: Boolean, default: false },
   segmentationPageIds: [String],

@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+  Schema = mongoose.Schema
 
 var InviteagenttokenSchema = new Schema({
-  email : String,
-  token : {type: String, required: true},
-  companyId : String,
-  createdAt : {type: Date, required: true, default: Date.now, expires: '120h'},
+  email: String,
+  token: {type: String, required: true},
+  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
+  createdAt: {type: Date, required: true, default: Date.now, expires: '120h'},
   companyName: String,
-  website:String,
-});
+  domain: String
+})
 
-module.exports = mongoose.model('inviteagenttoken', InviteagenttokenSchema);
+module.exports = mongoose.model('inviteagenttoken', InviteagenttokenSchema)

@@ -24,9 +24,7 @@ const pageSchema = new Schema({
     type: Boolean
   },
   userId: {type: Schema.ObjectId, ref: 'users'},
-  adminSubscriberId: {
-    type: String
-  }
+  companyId: {type: Schema.ObjectId, ref: 'companyprofile'}
 
 })
 
