@@ -33,6 +33,7 @@ class createPoll extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
+    this.exists = this.exists.bind(this)
   }
 
   componentDidMount () {
@@ -84,11 +85,23 @@ class createPoll extends React.Component {
       console.log('change category', selected)
     })
   }
+  exists (newCategory) {
+    for (let i = 0; i < this.props.categories.length; i++) {
+      if (this.props.categories[i].name.toLowerCase().includes(newCategory.toLowerCase())) {
+        return true
+      }
+    }
+    return false
+  }
   saveCategory () {
     if (this.refs.newCategory.value) {
-      let payload = {name: this.refs.newCategory.value}
-      this.props.addCategory(payload, this.msg)
-      this.props.loadCategoriesList()
+      if (this.exists(this.refs.newCategory.value) === false) {
+        let payload = {name: this.refs.newCategory.value}
+        this.props.addCategory(payload, this.msg)
+        this.props.loadCategoriesList()
+      } else {
+        this.msg.error('Category already exists')
+      }
     } else {
       this.msg.error('Please enter a category')
     }
@@ -151,6 +164,7 @@ class createPoll extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('renderrrrr')
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

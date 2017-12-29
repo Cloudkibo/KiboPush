@@ -40,6 +40,7 @@ class EditPoll extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
     this.exists = this.exists.bind(this)
+    this.categoryExists = this.categoryExists.bind(this)
   }
 
   componentDidMount () {
@@ -114,11 +115,23 @@ class EditPoll extends React.Component {
       console.log('change category', selected)
     })
   }
+  categoryExists (newCategory) {
+    for (let i = 0; i < this.props.categories.length; i++) {
+      if (this.props.categories[i].name.toLowerCase().includes(newCategory.toLowerCase())) {
+        return true
+      }
+    }
+    return false
+  }
   saveCategory () {
     if (this.refs.newCategory.value) {
-      let payload = {name: this.refs.newCategory.value}
-      this.props.addCategory(payload, this.msg)
-      this.props.loadCategoriesList()
+      if (this.categoryExists(this.refs.newCategory.value) === false) {
+        let payload = {name: this.refs.newCategory.value}
+        this.props.addCategory(payload, this.msg)
+        this.props.loadCategoriesList()
+      } else {
+        this.msg.error('Category already exists')
+      }
     } else {
       this.msg.error('Please enter a category')
     }
@@ -191,7 +204,7 @@ class EditPoll extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Template Poll</h3>
+                  <h3 className='m-subheader__title'>Edit Template Poll</h3>
                 </div>
               </div>
             </div>
@@ -246,6 +259,9 @@ class EditPoll extends React.Component {
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectcategory' />
+                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                               Add category
+                             </button>
                             </div>
                           </div>
                         </div>
