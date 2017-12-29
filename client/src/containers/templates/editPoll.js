@@ -246,9 +246,6 @@ class EditPoll extends React.Component {
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectcategory' />
-                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               + Add category
-                             </button>
                             </div>
                           </div>
                         </div>

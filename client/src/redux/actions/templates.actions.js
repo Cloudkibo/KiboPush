@@ -128,6 +128,12 @@ export function deleteSurvey (id) {
       .then(res => dispatch(loadSurveysList()))
   }
 }
+export function deleteCategory (id) {
+  return (dispatch) => {
+    callApi(`templates/deleteCategory/${id}`, 'delete')
+      .then(res => dispatch(loadCategoriesList()))
+  }
+}
 export function editPoll (data, msg) {
   console.log(data)
   return (dispatch) => {

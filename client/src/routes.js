@@ -60,6 +60,12 @@ import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
 import EditPoll from './containers/templates/editPoll'
 import EditSurvey from './containers/templates/editSurvey'
+import ShowTemplateSurveys from './containers/survey/showTemplates'
+import EditTemplateSurvey from './containers/survey/editTemplate'
+import ShowTemplatePolls from './containers/polls/showTemplates'
+import EditTemplatePoll from './containers/polls/editTemplate'
+import ViewTemplatePollUser from './containers/polls/viewTemplate'
+import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
 
 import auth from './utility/auth.service'
 
@@ -142,6 +148,12 @@ const routes = (
     <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
     <Route path='/editPoll' component={EditPoll} onEnter={requireAuth} />
     <Route path='/editSurvey' component={EditSurvey} onEnter={requireAuth} />
+    <Route path='/showTemplatePolls' component={ShowTemplatePolls} onEnter={requireAuth} />
+    <Route path='/showTemplateSurveys' component={ShowTemplateSurveys} onEnter={requireAuth} />
+    <Route path='/editTemplatePoll' component={EditTemplatePoll} onEnter={requireAuth} />
+    <Route path='/editTemplateSurvey' component={EditTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
+    <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
 
   </Route>
 

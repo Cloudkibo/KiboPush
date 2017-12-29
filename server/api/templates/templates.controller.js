@@ -202,6 +202,27 @@ exports.deletePoll = function (req, res) {
     })
   })
 }
+exports.deleteCategory = function (req, res) {
+  logger.serverLog(TAG,
+    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
+  Category.findById(req.params.id, (err, category) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!category) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    category.remove((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'category update failed'})
+      }
+      return res.status(204).end()
+    })
+  })
+}
 exports.deleteSurvey = function (req, res) {
   logger.serverLog(TAG,
     `This is body in delete survey ${JSON.stringify(req.params)}`)
