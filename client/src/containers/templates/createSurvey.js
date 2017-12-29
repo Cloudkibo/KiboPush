@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
-import { createsurvey, loadCategoriesList, addCategory } from '../../redux/actions/templates.actions'
+import { createsurvey, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -20,6 +20,7 @@ class createSurvey extends React.Component {
     props.loadCategoriesList()
     this.state = {
       isShowingModal: false,
+      isShowingModalDelete: false,
       questionType: 'multichoice',
       surveyQuestions: [],
       alertMessage: '',
@@ -30,7 +31,10 @@ class createSurvey extends React.Component {
     this.initializeCategorySelect = this.initializeCategorySelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
+    this.removeCategory = this.removeCategory.bind(this)
   }
 
   componentDidMount () {
@@ -47,12 +51,19 @@ class createSurvey extends React.Component {
     }
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  showDialogDelete () {
+    console.log('in showDialog')
+    this.setState({isShowingModalDelete: true})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
   initializeCategorySelect (categoryOptions) {
     console.log('asd', categoryOptions)
@@ -90,6 +101,11 @@ class createSurvey extends React.Component {
     } else {
       this.msg.error('Please enter a category')
     }
+  }
+  removeCategory (c) {
+    this.setState({isShowingModalDelete: false})
+    this.props.deleteCategory(c._id, this.msg)
+    this.props.loadCategoriesList()
   }
   createSurvey (e) {
     e.preventDefault()
@@ -438,6 +454,29 @@ class createSurvey extends React.Component {
                           </ModalDialog>
                         </ModalContainer>
                       }
+                      {
+                        this.state.isShowingModalDelete &&
+                        <ModalContainer style={{width: '500px', marginTop: '100px'}}
+                          onClose={this.closeDialogDelete}>
+                          <ModalDialog style={{width: '500px', marginTop: '100px'}}
+                            onClose={this.closeDialogDelete}>
+                            {this.props.categories.map((d) => (
+                              <div className='form-group m-form__group'>
+                                { console.log('removeCategory', d._id)
+}
+                                <div className='m-input-icon m-input-icon--left m-input-icon--right'>
+                                  <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
+                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
+                                    <span>
+                                      <i className='fa fa-times' />
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                  ))}
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
                       <div
                         className='m-separator m-separator--dashed d-xl-none' />
                     </div>
@@ -469,10 +508,13 @@ class createSurvey extends React.Component {
                           <label className='control-label'><h5>Category</h5></label>
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
-                              <select id='selectcategory' />
+                              <select id='selectcategory' style={{width: '50px'}} />
                               <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               + Add category
+                               Add category
                              </button>
+                              <button onClick={this.showDialogDelete} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary pull-right' style={{marginRigh: '79px'}}>
+                                Delete category
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -546,7 +588,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     loadCategoriesList: loadCategoriesList,
-    addCategory: addCategory
+    addCategory: addCategory,
+    deleteCategory: deleteCategory
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(createSurvey)

@@ -116,13 +116,13 @@ class Survey extends React.Component {
 
   render () {
     console.log('render method survey')
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'light',
-      time: 5000,
-      transition: 'scale'
-    }
+    // var alertOptions = {
+    //   offset: 14,
+    //   position: 'bottom right',
+    //   theme: 'light',
+    //   time: 5000,
+    //   transition: 'scale'
+    // }
     return (
       <div>
         { /* <AlertContainer ref={a => { this.msg = a }} {...alertOptions} /> */ }
@@ -180,7 +180,7 @@ class Survey extends React.Component {
                               </span>
                             </button>
                           </a>
-                          : <Link to='addsurvey' >
+                          : <Link to='/showTemplateSurveys' >
                             <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>
                                 <i className='la la-plus' />

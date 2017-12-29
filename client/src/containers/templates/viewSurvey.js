@@ -37,10 +37,10 @@ class viewSurvey extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.questions) {
-     console.log('Survey details Updated', nextProps.questions)
-     this.displayData(0, nextProps.questions)
-     this.setState({ totalLength: nextProps.questions.length })
-   }
+      console.log('Survey details Updated', nextProps.questions)
+      this.displayData(0, nextProps.questions)
+      this.setState({ totalLength: nextProps.questions.length })
+    }
   }
 
   backToUserDetails () {
