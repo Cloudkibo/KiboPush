@@ -9,103 +9,171 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
-import { createsurvey, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
+import { loadSurveyDetails } from '../../redux/actions/templates.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { createsurvey } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
-class createSurvey extends React.Component {
+class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadCategoriesList()
+    props.getuserdetails()
+    if (this.props.currentSurvey) {
+      const id = this.props.currentSurvey._id
+      console.log('id', id)
+      props.loadSurveyDetails(id)
+    }
     this.state = {
       isShowingModal: false,
-      isShowingModalDelete: false,
       questionType: 'multichoice',
       surveyQuestions: [],
       alertMessage: '',
       alertType: '',
-      categoryValue: []
+      categoryValue: [],
+      title: '',
+      description: '',
+      page: {
+        options: []
+      },
+      Gender: {
+        options: [{id: 'male', text: 'male'},
+                  {id: 'female', text: 'female'},
+                  {id: 'other', text: 'other'}
+        ]
+      },
+      Locale: {
+        options: [{id: 'en_US', text: 'en_US'},
+                  {id: 'af_ZA', text: 'af_ZA'},
+                  {id: 'ar_AR', text: 'ar_AR'},
+                  {id: 'az_AZ', text: 'az_AZ'},
+                  {id: 'pa_IN', text: 'pa_IN'}
+        ]
+      },
+      stayOpen: false,
+      disabled: false,
+      pageValue: [],
+      genderValue: [],
+      localeValue: [],
+      steps: [],
+      showDropDown: false
     }
     this.createSurvey = this.createSurvey.bind(this)
-    this.initializeCategorySelect = this.initializeCategorySelect.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
-    this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
-    this.saveCategory = this.saveCategory.bind(this)
-    this.removeCategory = this.removeCategory.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
-
   componentDidMount () {
-    document.title = 'KiboPush | Create Survey'
+    document.title = 'KiboPush | Add Survey'
+    let options = []
+    for (var i = 0; i < this.props.pages.length; i++) {
+      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+    }
+    console.log('gender options', this.state.Gender.options)
+    console.log('locale', this.state.Locale.options)
+    this.setState({page: {options: options}})
+    this.initializeGenderSelect(this.state.Gender.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializePageSelect(options)
   }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
-      let options = []
-      for (var i = 0; i < nextprops.categories.length; i++) {
-        options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
-      }
-      this.initializeCategorySelect(options)
+    if (nextprops.survey) {
+      console.log('details', nextprops.survey)
+      this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
+    }
+    if (nextprops.questions) {
+      console.log('details', nextprops.questions)
+      this.setState({surveyQuestions: nextprops.questions})
     }
   }
-  showDialog () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-  showDialogDelete () {
-    console.log('in showDialog')
-    this.setState({isShowingModalDelete: true})
-  }
-
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
-  }
-  initializeCategorySelect (categoryOptions) {
-    console.log('asd', categoryOptions)
+  initializePageSelect (pageOptions) {
+    console.log('asd', pageOptions)
     var self = this
     /* eslint-disable */
-    $('#selectcategory').select2({
+    $('#selectPage').select2({
       /* eslint-enable */
-      data: categoryOptions,
-      placeholder: 'Select Category',
+
+      data: pageOptions,
+      placeholder: 'Select Pages',
       allowClear: true,
       multiple: true
     })
     /* eslint-disable */
-    $('#selectcategory').on('change', function (e) {
-      /* eslint-enable */
+    $('#selectPage').on('change', function (e) {
+        /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].label
+          var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ categoryValue: selected })
+        self.setState({ pageValue: selected })
       }
-      console.log('change category', selected)
+      console.log('change Page', selected)
     })
   }
-  saveCategory () {
-    if (this.refs.newCategory.value) {
-      let payload = {name: this.refs.newCategory.value}
-      this.props.addCategory(payload, this.msg)
-      this.props.loadCategoriesList()
-    } else {
-      this.msg.error('Please enter a category')
-    }
+
+  initializeGenderSelect (genderOptions) {
+    var self = this
+    /* eslint-disable */
+    $('#selectGender').select2({
+        /* eslint-enable */
+      data: genderOptions,
+      placeholder: 'Select Gender',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectGender').on('change', function (e) {
+        /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ genderValue: selected })
+      }
+      console.log('change Gender', selected)
+    })
   }
-  removeCategory (c) {
-    this.setState({isShowingModalDelete: false})
-    this.props.deleteCategory(c._id, this.msg)
-    this.props.loadCategoriesList()
+
+  initializeLocaleSelect (localeOptions) {
+    var self = this
+    /* eslint-disable */
+    $('#selectLocale').select2({
+        /* eslint-enable */
+      data: localeOptions,
+      placeholder: 'Select Locale',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectLocale').on('change', function (e) {
+        /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ localeValue: selected })
+      }
+      console.log('change Locale', selected)
+    })
+  }
+
+  updateDescription (e) {
+    this.setState({description: e.target.value})
+  }
+  updateTitle (e) {
+    this.setState({title: e.target.value})
   }
   createSurvey (e) {
     e.preventDefault()
@@ -148,7 +216,7 @@ class createSurvey extends React.Component {
       }
       // Checking if Description or Title is empty, and highlighting it
 
-      if (this.refs.description.value === '') {
+      if (this.state.description === '') {
         flag = 1
         let incompleteDesc = document.getElementById('desc')
         incompleteDesc.classList.add('has-error')
@@ -157,7 +225,7 @@ class createSurvey extends React.Component {
         completeDesc.classList.remove('has-error')
       }
 
-      if (this.refs.title.value === '') {
+      if (this.state.title === '') {
         flag = 1
         let incompleteTitle = document.getElementById('titl')
         incompleteTitle.classList.add('has-error')
@@ -165,20 +233,32 @@ class createSurvey extends React.Component {
         let completeTitle = document.getElementById('titl')
         completeTitle.classList.remove('has-error')
       }
-      if (flag === 0 && this.refs.title.value !== '' &&
-        this.refs.description.value !== '') {
-        console.log('category', this.state.categoryValue)
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      if (flag === 0 && this.state.title !== '' &&
+        this.state.description !== '') {
+        var send = []
+        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
+          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
+        }
         var surveybody = {
           survey: {
-            title: this.refs.title.value, // title of survey
-            description: this.refs.description.value,
-            category: this.state.categoryValue
+            title: this.state.title, // title of survey
+            description: this.state.description,
+            image: '' // image url
           },
-          questions: this.state.surveyQuestions
+          questions: send,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue
         }
         this.props.createsurvey(surveybody)
         this.props.history.push({
-          pathname: '/templates'
+          pathname: '/surveys'
         })
       } else {
         this.setState({
@@ -299,7 +379,7 @@ class createSurvey extends React.Component {
   createOptionsList (qindex) {
     console.log('qindex' + qindex)
     let choiceItems = []
-    var choiceCount = this.state.surveyQuestions[qindex].choiceCount
+    var choiceCount = this.state.surveyQuestions[qindex].options.length
     console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
@@ -322,6 +402,7 @@ class createSurvey extends React.Component {
 
   createUI () {
     let uiItems = []
+    console.log('createUI', this.state.surveyQuestions)
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
       if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
@@ -366,7 +447,6 @@ class createSurvey extends React.Component {
               <div className='panel-body'>
                 <div className='form-group' id={'question' + i}>
                   <input className='form-control'
-                    placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
                 </div>
@@ -402,7 +482,6 @@ class createSurvey extends React.Component {
     }
     return uiItems || null
   }
-
   render () {
     var alertOptions = {
       offset: 14,
@@ -429,68 +508,14 @@ class createSurvey extends React.Component {
 
               <div className='row'>
                 <div
-                  className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div
-                      className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Add Category</h3>
-                            <input className='form-control'
-                              placeholder='Enter category' ref='newCategory' />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialog()
-                                this.saveCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px', marginTop: '100px'}}
-                          onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px', marginTop: '100px'}}
-                            onClose={this.closeDialogDelete}>
-                            {this.props.categories.map((d) => (
-                              <div className='form-group m-form__group'>
-                                { console.log('removeCategory', d._id)
-}
-                                <div className='m-input-icon m-input-icon--left m-input-icon--right'>
-                                  <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
-                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
-                                    <span>
-                                      <i className='fa fa-times' />
-                                    </span>
-                                  </span>
-                                </div>
-                              </div>
-                  ))}
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      <div
-                        className='m-separator m-separator--dashed d-xl-none' />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--mobile'>
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
                         <div className='form-group' id='titl'>
                           <label className='control-label'><h5>Title</h5></label>
                           <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
+                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                         </div>
                       </div>
                       <br />
@@ -499,24 +524,7 @@ class createSurvey extends React.Component {
                           <label className='control-label'><h5>Description</h5></label>
                           <textarea className='form-control'
                             placeholder='Enter form description here'
-                            rows='3' ref='description' />
-                        </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Category</h5></label>
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectcategory' style={{width: '50px'}} />
-                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               Add category
-                             </button>
-                              <button onClick={this.showDialogDelete} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary pull-right' style={{marginRight: '79px'}}>
-                                Delete category
-                              </button>
-                            </div>
-                          </div>
+                            rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
                         </div>
                       </div>
                       <br />
@@ -550,7 +558,7 @@ class createSurvey extends React.Component {
                           onClick={this.createSurvey}> Create Survey
                       </button>
                         <Link
-                          to='/templates'
+                          to='/showTemplateSurveys'
                           style={{float: 'right', margin: 2}}
                           className='btn btn-border-think btn-transparent c-grey pull-right'>
                         Cancel
@@ -568,6 +576,35 @@ class createSurvey extends React.Component {
                     </div>
                   </div>
                 </div>
+                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Targeting
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='alert m-alert m-alert--default' role='alert'>
+                        <p>Select the type of customer you want to send survey to</p>
+                      </div>
+                      <div className='m-form'>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectGender' />
+                        </div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectLocale' />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -580,16 +617,19 @@ class createSurvey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    categories: (state.templatesInfo.categories)
+    survey: (state.templatesInfo.survey),
+    questions: (state.templatesInfo.questions),
+    currentSurvey: (state.getCurrentSurvey.currentSurvey),
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
-    loadCategoriesList: loadCategoriesList,
-    addCategory: addCategory,
-    deleteCategory: deleteCategory
+    loadSurveyDetails: loadSurveyDetails,
+    getuserdetails: getuserdetails
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(createSurvey)
+export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)
