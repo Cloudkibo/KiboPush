@@ -162,7 +162,7 @@ class Poll extends React.Component {
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
                           ? <span />
-                          : <Link to='createpoll'>
+                          : <Link to='showTemplatePolls'>
                             <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>
                                 <i className='la la-plus' />
