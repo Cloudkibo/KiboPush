@@ -35,6 +35,7 @@ class createSurvey extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
     this.removeCategory = this.removeCategory.bind(this)
+    this.exists = this.exists.bind(this)
   }
 
   componentDidMount () {
@@ -93,11 +94,23 @@ class createSurvey extends React.Component {
       console.log('change category', selected)
     })
   }
+  exists (newCategory) {
+    for (let i = 0; i < this.props.categories.length; i++) {
+      if (this.props.categories[i].name.toLowerCase().includes(newCategory.toLowerCase())) {
+        return true
+      }
+    }
+    return false
+  }
   saveCategory () {
     if (this.refs.newCategory.value) {
-      let payload = {name: this.refs.newCategory.value}
-      this.props.addCategory(payload, this.msg)
-      this.props.loadCategoriesList()
+      if (this.exists(this.refs.newCategory.value) === false) {
+        let payload = {name: this.refs.newCategory.value}
+        this.props.addCategory(payload, this.msg)
+        this.props.loadCategoriesList()
+      } else {
+        this.msg.error('Category already exists')
+      }
     } else {
       this.msg.error('Please enter a category')
     }
@@ -512,9 +525,6 @@ class createSurvey extends React.Component {
                               <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
                                Add category
                              </button>
-                              <button onClick={this.showDialogDelete} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary pull-right' style={{marginRight: '79px'}}>
-                                Delete category
-                              </button>
                             </div>
                           </div>
                         </div>
