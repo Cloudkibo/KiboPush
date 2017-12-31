@@ -17,6 +17,7 @@ const Workflows = require('../workflows/Workflows.model')
 const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const utility = require('./broadcasts.utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
@@ -27,19 +28,33 @@ const request = require('request')
 var array = []
 
 exports.index = function (req, res) {
-  Broadcasts.find({userId: req.user._id}, (err, broadcasts) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      return res.status(404)
-        .json({status: 'failed', description: 'Broadcasts not found'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
-    BroadcastPage.find({userId: req.user._id}, (err, broadcastpages) => {
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Broadcasts.find({companyId: companyUser.companyId}, (err, broadcasts) => {
       if (err) {
         return res.status(404)
-          .json({status: 'failed', description: 'Broadcasts not found'})
+        .json({status: 'failed', description: 'Broadcasts not found'})
       }
-      res.status(200).json({
-        status: 'success',
-        payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+      BroadcastPage.find({companyId: companyUser.companyId}, (err, broadcastpages) => {
+        if (err) {
+          return res.status(404)
+          .json({status: 'failed', description: 'Broadcasts not found'})
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+        })
       })
     })
   })
@@ -70,6 +85,8 @@ exports.verifyhook = function (req, res) {
   }
 }
 
+// TODO This is very important to do
+// See SEGMENTATION WORK EVERYWHERE AS PART OF CHANGE
 // webhook for facebook
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}

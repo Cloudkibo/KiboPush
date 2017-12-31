@@ -6,6 +6,7 @@ const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
 const TAG = 'api/autoposting/autopostings.controller.js'
 const TwitterUtility = require('../../config/integrations/twitter')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const Page = require('./../pages/Pages.model')
 
 const urllib = require('url')
@@ -14,14 +15,28 @@ const config = require('../../config/environment/index')
 const _ = require('lodash')
 
 exports.index = function (req, res) {
-  AutoPosting.find({userId: req.user._id}, (err, autoposting) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      return res.status(500)
-        .json({status: 'failed', description: 'Autoposting query failed'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
-    res.status(200).json({
-      status: 'success',
-      payload: autoposting
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    AutoPosting.find({companyId: companyUser.companyId}, (err, autoposting) => {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Autoposting query failed'})
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: autoposting
+      })
     })
   })
 }
@@ -38,105 +53,163 @@ exports.create = function (req, res) {
     .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  AutoPosting.find(
-    {userId: req.user._id, subscriptionUrl: req.body.subscriptionUrl},
-    (error, gotData) => {
-      if (error) {
-        res.status(500).json({
-          status: 'failed',
-          description: 'Internal Server Error'
-        })
-      }
-      if (gotData.length > 0) {
-        res.status(403).json({
-          status: 'Failed',
-          description: 'Cannot add duplicate accounts.'
-        })
-      } else {
-        let autoPostingPayload = {
-          userId: req.user._id,
-          subscriptionUrl: req.body.subscriptionUrl,
-          subscriptionType: req.body.subscriptionType,
-          accountTitle: req.body.accountTitle
-        }
-        if (req.body.isSegmented) {
-          autoPostingPayload.isSegmented = true
-          autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-            ? req.body.pageIds
-            : null
-          autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-            ? req.body.segmentationGender
-            : null
-          autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-            ? req.body.segmentationLocale
-            : null
-        }
-        if (req.body.subscriptionType === 'twitter') {
-          let url = req.body.subscriptionUrl
-          let urlAfterDot = url.substring(url.indexOf('.') + 1)
-          let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
-          TwitterUtility.findUser(screenName, (err, data) => {
-            if (err) {
-              logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
-              return res.status(403).json({
-                status: 'Failed',
-                description: err
-              })
-            }
-            logger.serverLog(TAG, `Twitter user found ${data.screen_name}`)
-            autoPostingPayload.accountUniqueName = data.screen_name
-            let payload = {
-              id: data.id,
-              name: data.name,
-              screen_name: data.screen_name,
-              profile_image_url: data.profile_image_url_https
-            }
-            autoPostingPayload.payload = payload
-            const autoPosting = new AutoPosting(autoPostingPayload)
-            autoPosting.save((err, createdRecord) => {
-              if (err) {
-                res.status(500).json({
-                  status: 'Failed',
-                  error: err,
-                  description: 'Failed to insert record'
-                })
-              } else {
-                TwitterUtility.restart()
-                res.status(201)
-                  .json({status: 'success', payload: createdRecord})
-              }
-            })
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    AutoPosting.find(
+      {companyId: companyUser.companyId, subscriptionUrl: req.body.subscriptionUrl},
+      (error, gotData) => {
+        if (error) {
+          res.status(500).json({
+            status: 'failed',
+            description: 'Internal Server Error'
           })
-        } else if (req.body.subscriptionType === 'facebook') {
-          let url = req.body.subscriptionUrl
-          let urlAfterDot = url.substring(url.indexOf('.') + 1)
-          let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
-          logger.serverLog(TAG, `the parse got as ${screenName}`)
-          Page.findOne({
+        }
+        if (gotData.length > 0) {
+          res.status(403).json({
+            status: 'Failed',
+            description: 'Cannot add duplicate accounts.'
+          })
+        } else {
+          let autoPostingPayload = {
             userId: req.user._id,
-            $or: [{pageId: screenName}, {pageUserName: screenName}]
-          }, (err, pageInfo) => {
-            if (err) {
-              logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
-              return res.status(403).json({
-                status: 'Failed',
-                description: err
+            companyId: companyUser.companyId,
+            subscriptionUrl: req.body.subscriptionUrl,
+            subscriptionType: req.body.subscriptionType,
+            accountTitle: req.body.accountTitle
+          }
+          if (req.body.isSegmented) {
+            autoPostingPayload.isSegmented = true
+            autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+              ? req.body.pageIds
+              : null
+            autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+              ? req.body.segmentationGender
+              : null
+            autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+              ? req.body.segmentationLocale
+              : null
+          }
+          if (req.body.subscriptionType === 'twitter') {
+            let url = req.body.subscriptionUrl
+            let urlAfterDot = url.substring(url.indexOf('.') + 1)
+            let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+            if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
+            TwitterUtility.findUser(screenName, (err, data) => {
+              if (err) {
+                logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
+                return res.status(403).json({
+                  status: 'Failed',
+                  description: err
+                })
+              }
+              logger.serverLog(TAG, `Twitter user found ${data.screen_name}`)
+              autoPostingPayload.accountUniqueName = data.screen_name
+              let payload = {
+                id: data.id,
+                name: data.name,
+                screen_name: data.screen_name,
+                profile_image_url: data.profile_image_url_https
+              }
+              autoPostingPayload.payload = payload
+              const autoPosting = new AutoPosting(autoPostingPayload)
+              autoPosting.save((err, createdRecord) => {
+                if (err) {
+                  res.status(500).json({
+                    status: 'Failed',
+                    error: err,
+                    description: 'Failed to insert record'
+                  })
+                } else {
+                  TwitterUtility.restart()
+                  res.status(201)
+                  .json({status: 'success', payload: createdRecord})
+                }
               })
-            }
-            if (!pageInfo) {
-              return res.status(404).json({
-                status: 'Failed',
-                description: 'Cannot add this page or page not found'
+            })
+          } else if (req.body.subscriptionType === 'facebook') {
+            let url = req.body.subscriptionUrl
+            let urlAfterDot = url.substring(url.indexOf('.') + 1)
+            let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+            if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
+            logger.serverLog(TAG, `the parse got as ${screenName}`)
+            Page.findOne({
+              userId: req.user._id,
+              $or: [{pageId: screenName}, {pageUserName: screenName}]
+            }, (err, pageInfo) => {
+              if (err) {
+                logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
+                return res.status(403).json({
+                  status: 'Failed',
+                  description: err
+                })
+              }
+              if (!pageInfo) {
+                return res.status(404).json({
+                  status: 'Failed',
+                  description: 'Cannot add this page or page not found'
+                })
+              }
+              let autoPostingPayload = {
+                userId: req.user._id,
+                companyId: companyUser.companyId,
+                subscriptionUrl: req.body.subscriptionUrl,
+                subscriptionType: req.body.subscriptionType,
+                accountTitle: req.body.accountTitle,
+                accountUniqueName: pageInfo.pageId
+              }
+              if (req.body.isSegmented) {
+                autoPostingPayload.isSegmented = true
+                autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                  ? req.body.pageIds
+                  : null
+                autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                  ? req.body.segmentationGender
+                  : null
+                autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                  ? req.body.segmentationLocale
+                  : null
+              }
+              const autoPosting = new AutoPosting(autoPostingPayload)
+              autoPosting.save((err, createdRecord) => {
+                if (err) {
+                  res.status(500).json({
+                    status: 'Failed',
+                    error: err,
+                    description: 'Failed to insert record'
+                  })
+                } else {
+                  logger.serverLog(TAG,
+                    `FB Page added ${JSON.stringify(createdRecord)}`)
+                  res.status(201)
+                  .json({status: 'success', payload: createdRecord})
+                }
               })
-            }
+            })
+          } else if (req.body.subscriptionType === 'youtube') {
+            // URL https://www.youtube.com/channel/UCcQnaQ0sHD9A0GXKcXBVE-Q
+            let url = req.body.subscriptionUrl
+            let urlAfterDot = url.substring(url.indexOf('.') + 1)
+            let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+            let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
+            logger.serverLog(TAG, `the parse got as ${channelName}`)
             let autoPostingPayload = {
               userId: req.user._id,
+              companyId: companyUser.companyId,
               subscriptionUrl: req.body.subscriptionUrl,
               subscriptionType: req.body.subscriptionType,
               accountTitle: req.body.accountTitle,
-              accountUniqueName: pageInfo.pageId
+              accountUniqueName: channelName
             }
             if (req.body.isSegmented) {
               autoPostingPayload.isSegmented = true
@@ -155,59 +228,18 @@ exports.create = function (req, res) {
               if (err) {
                 res.status(500).json({
                   status: 'Failed',
-                  error: err,
                   description: 'Failed to insert record'
                 })
               } else {
                 logger.serverLog(TAG,
-                  `FB Page added ${JSON.stringify(createdRecord)}`)
-                res.status(201)
-                  .json({status: 'success', payload: createdRecord})
+                  `Youtube added ${JSON.stringify(createdRecord)}`)
+                res.status(201).json({status: 'success', payload: createdRecord})
               }
             })
-          })
-        } else if (req.body.subscriptionType === 'youtube') {
-          // URL https://www.youtube.com/channel/UCcQnaQ0sHD9A0GXKcXBVE-Q
-          let url = req.body.subscriptionUrl
-          let urlAfterDot = url.substring(url.indexOf('.') + 1)
-          let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-          let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
-          logger.serverLog(TAG, `the parse got as ${channelName}`)
-          let autoPostingPayload = {
-            userId: req.user._id,
-            subscriptionUrl: req.body.subscriptionUrl,
-            subscriptionType: req.body.subscriptionType,
-            accountTitle: req.body.accountTitle,
-            accountUniqueName: channelName
           }
-          if (req.body.isSegmented) {
-            autoPostingPayload.isSegmented = true
-            autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-              ? req.body.pageIds
-              : null
-            autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-              ? req.body.segmentationGender
-              : null
-            autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-              ? req.body.segmentationLocale
-              : null
-          }
-          const autoPosting = new AutoPosting(autoPostingPayload)
-          autoPosting.save((err, createdRecord) => {
-            if (err) {
-              res.status(500).json({
-                status: 'Failed',
-                description: 'Failed to insert record'
-              })
-            } else {
-              logger.serverLog(TAG,
-                `Youtube added ${JSON.stringify(createdRecord)}`)
-              res.status(201).json({status: 'success', payload: createdRecord})
-            }
-          })
         }
-      }
-    })
+      })
+  })
 }
 
 exports.edit = function (req, res) {

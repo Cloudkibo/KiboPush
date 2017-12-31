@@ -4,18 +4,33 @@
 
 const logger = require('../../components/logger')
 const Workflows = require('./Workflows.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/workflows/workflows.controller.js'
 const _ = require('lodash')
 
 exports.index = function (req, res) {
-  Workflows.find({userId: req.user._id}, (err, workflows) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({status: 'success', payload: workflows})
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Workflows.find({companyId: companyUser.companyId}, (err, workflows) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({status: 'success', payload: workflows})
+    })
   })
 }
 
@@ -34,27 +49,42 @@ exports.create = function (req, res) {
     .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  const workflow = new Workflows({
-    condition: req.body.condition,
-    keywords: req.body.keywords,
-    reply: req.body.reply,
-    isActive: (req.body.isActive === 'Yes'),
-    userId: req.user._id,
-    sent: 0
-  })
-
-  // save model to MongoDB
-  workflow.save((err, workflow) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        error: err,
-        description: 'Failed to insert record'
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
-    } else {
-      logger.serverLog(TAG, 'Workflows created successfully ' + JSON.stringify(req.workflow))
-      res.status(201).json({status: 'success', payload: workflow})
     }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    const workflow = new Workflows({
+      condition: req.body.condition,
+      keywords: req.body.keywords,
+      reply: req.body.reply,
+      isActive: (req.body.isActive === 'Yes'),
+      userId: req.user._id,
+      companyId: companyUser.companyId,
+      sent: 0
+    })
+
+    // save model to MongoDB
+    workflow.save((err, workflow) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          error: err,
+          description: 'Failed to insert record'
+        })
+      } else {
+        logger.serverLog(TAG, 'Workflows created successfully ' + JSON.stringify(req.workflow))
+        res.status(201).json({status: 'success', payload: workflow})
+      }
+    })
   })
 }
 
