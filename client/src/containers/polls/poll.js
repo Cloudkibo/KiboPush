@@ -194,7 +194,7 @@ class Poll extends React.Component {
                               onClose={this.closeDialog}>
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialog}>
-                                <h3>Create Survey</h3>
+                                <h3>Create Poll</h3>
                                 <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
