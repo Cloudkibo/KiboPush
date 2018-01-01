@@ -16,6 +16,7 @@ import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { Alert } from 'react-bs-notifier'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -26,10 +27,13 @@ class Survey extends React.Component {
       alertType: '',
       surveysData: [],
       totalLength: 0,
-      sent: false
+      sent: false,
+      isShowingModal: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentDidMount () {
@@ -37,6 +41,14 @@ class Survey extends React.Component {
   }
   componentWillMount () {
     this.props.loadSurveysList()
+  }
+  showDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   displayData (n, surveys) {
     console.log(surveys)
@@ -180,22 +192,47 @@ class Survey extends React.Component {
                               </span>
                             </button>
                           </a>
-                          : <Link to='/showTemplateSurveys' >
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                            <span>
+                              <i className='la la-plus' />
                               <span>
-                                <i className='la la-plus' />
-                                <span>
-                                  Create Survey
-                                </span>
+                                Create Survey
                               </span>
-                            </button>
-                          </Link>
-                        }
+                            </span>
+                          </button>
+                          }
                       </div>
                     </div>
 
                     <div className='m-portlet__body'>
-                      {console.log('surveysData', this.props.surveys)}
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <h3>Create Survey</h3>
+                                <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/addsurvey' className='btn btn-primary'>
+                                      Create New Survey
+                                    </Link>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                                      Use Template
+                                    </Link>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       { this.state.surveysData && this.state.surveysData.length > 0
                       ? <div className='table-responsive'>
                         <table className='table table-striped'>
