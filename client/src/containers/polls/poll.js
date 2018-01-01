@@ -18,6 +18,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -27,12 +28,22 @@ class Poll extends React.Component {
       alertMessage: '',
       alertType: '',
       pollsData: [],
-      totalLength: 0
+      totalLength: 0,
+      isShowingModal: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+  showDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModal: true})
   }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentWillMount () {
    // this.props.loadSubscribersList()
   //  document.title('KiboPush | Poll')
@@ -162,20 +173,46 @@ class Poll extends React.Component {
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
                           ? <span />
-                          : <Link to='showTemplatePolls'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                            <span>
+                              <i className='la la-plus' />
                               <span>
-                                <i className='la la-plus' />
-                                <span>
-                                  Create Poll
-                                </span>
+                                Create Poll
                               </span>
-                            </button>
-                          </Link>
+                            </span>
+                          </button>
                         }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <h3>Create Survey</h3>
+                                <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/createpoll' className='btn btn-primary'>
+                                      Create New Poll
+                                    </Link>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                      Use Template
+                                    </Link>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       { this.state.pollsData && this.state.pollsData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>

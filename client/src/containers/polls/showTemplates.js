@@ -23,6 +23,7 @@ class ShowTemplates extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.onFilter = this.onFilter.bind(this)
+    this.gotoView = this.gotoView.bind(this)
   }
   onPollClick (e, poll) {
     console.log('Page Click', poll)
@@ -41,6 +42,11 @@ class ShowTemplates extends React.Component {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
     }
+  }
+  gotoView () {
+    this.props.history.push({
+      pathname: `/poll`
+    })
   }
   displayData (n, polls) {
     console.log(polls)
@@ -174,6 +180,12 @@ class ShowTemplates extends React.Component {
                             </div>
                           </div>
                         </div>
+                        <div className='add-options-message'>
+                          <button className='btn btn-primary pull-right'
+                            onClick={() => this.gotoView()}>Back
+                          </button>
+                        </div>
+                        <br />
                       </div>
                     </div>
                   </div>
