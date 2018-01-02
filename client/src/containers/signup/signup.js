@@ -129,7 +129,7 @@ class Signup extends React.Component {
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Domain' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                        <input className='form-control m-input' type='text' placeholder='Domain e.g. "wwww.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                           onChange={this.check} />
                         { this.state.domain && this.state.isurl === false &&
                         <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
