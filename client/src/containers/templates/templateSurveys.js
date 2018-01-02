@@ -221,7 +221,7 @@ class templateSurveys extends React.Component {
                           </th>
                           <th data-field='description'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Description</span>
+                            <span style={{width: '200px'}}>Description</span>
                           </th>
                           <th data-field='category'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -249,8 +249,14 @@ class templateSurveys extends React.Component {
                                   style={{width: '150px'}}>{survey.title}</span></td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>{survey.description}</span></td>
+                                {console.log('length', survey.description.length)}
+                                { survey.description.length > 50
+                                ? <span
+                                  style={{width: '200px'}}>{survey.description.slice(0, 50)}...</span>
+                                : <span
+                                  style={{width: '200px'}}>{survey.description}</span>
+                                }
+                              </td>
                               <td data-field='category' className='m-datatable__cell'>
                                 <span style={{width: '150px'}}>{survey.category.join(
                             ',')}</span>
