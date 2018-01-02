@@ -33,7 +33,7 @@ const all = {
   domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
 
   // List of user roles
-  userRoles: ['buyer', 'admin', 'agent'],
+  userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
   mongo: {
     options: {

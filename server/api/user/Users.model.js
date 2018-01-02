@@ -8,10 +8,11 @@ const UserSchema = new Schema({
   domain: String,
   domain_email: String,
   facebookInfo: Schema.Types.Mixed,
+  phone: String,
   role: String,
   hashedPassword: String,
   salt: String,
-  emailVerified: String,
+  emailVerified: {type: Boolean, default: false},
   locale: String,
   gender: String,
   provider: String, // facebook
@@ -76,11 +77,6 @@ UserSchema.path('email').validate(function (email) {
 UserSchema.path('domain').validate(function (domain) {
   return domain.length
 }, 'Domain name cannot be blank')
-
-// Validate empty company name
-UserSchema.path('companyName').validate(function (companyName) {
-  return companyName.length
-}, 'Company name cannot be blank')
 
 // Validate empty password
 UserSchema.path('hashedPassword').validate(function (hashedPassword) {

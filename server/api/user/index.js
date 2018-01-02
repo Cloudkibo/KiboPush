@@ -13,5 +13,6 @@ const controller = require('./user.controller')
 
 router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/updateChecks', auth.isAuthenticated(), controller.updateChecks)
+router.post('/signup', controller.create)
 
 module.exports = router

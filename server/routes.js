@@ -35,6 +35,13 @@ module.exports = function (app) {
   app.use('/api/menu', require('./api/menu'))
   app.use('/api/api_settings', require('./api/api_settings'))
   app.use('/api/templates', require('./api/templates'))
+  app.use('/api/company', require('./api/companyprofile'))
+  app.use('/api/reset_password', require('./api/passwordresettoken'))
+  app.use('/api/email_verification', require('./api/verificationtoken'))
+  app.use('/api/invite_verification', require('./api/inviteagenttoken'))
+  app.use('/api/invitations', require('./api/invitations'))
+  app.use('/api/company_user', require('./api/companyuser'))
+
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {
