@@ -127,9 +127,6 @@ class Signup extends React.Component {
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                        { !this.state.name &&
-                          <div id='email-error' style={{color: 'red'}}>This field is required.</div>
-                        }
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Domain' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
@@ -140,21 +137,12 @@ class Signup extends React.Component {
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                        { !this.state.companyName &&
-                          <div id='email-error' style={{color: 'red'}}>This field is required.</div>
-                        }
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Description' required ref='companyDescription' style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                        { !this.state.companyDescription &&
-                          <div id='email-error' style={{color: 'red'}}>This field is required.</div>
-                        }
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                        { !this.state.email &&
-                          <div id='email-error' style={{color: 'red'}}>This field is required.</div>
-                        }
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
@@ -164,9 +152,9 @@ class Signup extends React.Component {
                         }
                         { this.state.password &&
                           <div>
-                        <div> Strength: {this.state.strength}</div>
-                        <div> <Progress completed={this.state.pwdBar} color={this.state.pwd_color} /> </div>
-                        </div>
+                            <div> Strength: {this.state.strength}</div>
+                            <div> <Progress completed={this.state.pwdBar} color={this.state.pwd_color} /> </div>
+                            </div>
                         }
                       </div>
                       <div className='form-group m-form__group'>
