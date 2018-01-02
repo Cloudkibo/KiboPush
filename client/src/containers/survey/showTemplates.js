@@ -45,20 +45,8 @@ class ShowTemplates extends React.Component {
   }
   displayData (n, surveys) {
     console.log(surveys)
-    let offset = n * 5
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 5) > surveys.length) {
-      limit = surveys.length
-    } else {
-      limit = offset + 5
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = surveys[i]
-      index++
-    }
-    this.setState({surveysData: data})
+    this.setState({surveysData: surveys})
+    console.log('surveysDatainside', this.state.surveysData)
   }
   onFilter (e) {
     console.log(e.target.value)
