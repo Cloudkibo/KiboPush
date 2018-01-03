@@ -89,7 +89,7 @@ exports.create = function (req, res, next) {
     .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  let accountData = new User({
+  let accountData = new Users({
     name: req.body.name,
     email: req.body.email,
     domain: req.body.domain,
@@ -109,7 +109,7 @@ exports.create = function (req, res, next) {
 
     let companyprofileData = new CompanyProfile({
       companyName: req.body.company_name,
-      companyDescription: req.body.company_description,
+      companyDetail: req.body.company_description,
       ownerId: user._id
     })
 
@@ -127,7 +127,7 @@ exports.create = function (req, res, next) {
       let tokenString = crypto.randomBytes(16).toString('base64')
 
       let newToken = new VerificationToken({
-        user: user._id,
+        userId: user._id,
         token: tokenString
       })
 
