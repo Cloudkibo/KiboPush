@@ -9,7 +9,7 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
-
+import ResetPassword from './resetPassword'
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -22,15 +22,25 @@ class Settings extends React.Component {
       buttonState: '',
       count: 1,
       count1: 0,
-      firstTime: true
+      firstTime: true,
+      resetPassword: false,
+      showAPI: true
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.setReset = this.setReset.bind(this)
+    this.setResetPass = this.setResetPass.bind(this)
+    this.setAPI = this.setAPI.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
+  }
+  setAPI () {
+    this.setState({showAPI: true, resetPassword: false})
+  }
+  setResetPass () {
+    this.setState({showAPI: false, resetPassword: true})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -143,7 +153,7 @@ class Settings extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <div className='row'>
+              <div className='row' style={{height: 80 + 'vh'}}>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height'>
                     <div className='m-portlet__body'>
@@ -168,15 +178,22 @@ class Settings extends React.Component {
                           <span className='m-nav__section-text'>Section</span>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link'>
+                          <a className='m-nav__link' onClick={this.setAPI}>
                             <i className='m-nav__link-icon flaticon-share' />
                             <span className='m-nav__link-text'>API</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setResetPass} >
+                            <i className='m-nav__link-icon flaticon-lock-1' />
+                            <span className='m-nav__link-text'>Reset Password</span>
                           </a>
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
+                { this.state.showAPI &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -246,6 +263,10 @@ class Settings extends React.Component {
                     </div>
                   </div>
                 </div>
+                }
+                { this.state.resetPassword &&
+                  <ResetPassword />
+                }
               </div>
             </div>
           </div>
