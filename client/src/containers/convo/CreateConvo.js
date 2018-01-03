@@ -390,8 +390,8 @@ class CreateConvo extends React.Component {
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
+      // if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions[0].value
         // var selected = []
         // for (var i = 0; i < selectedOptions.length; i++) {
         //   var selectedOption = selectedOptions[i].value
@@ -399,7 +399,7 @@ class CreateConvo extends React.Component {
         // }
         console.log('Setting a new pageValue', selectedOptions)
         self.setState({ pageValue: selectedOptions })
-      }
+      // }
       console.log('change Page', selectedOptions)
     })
   }
