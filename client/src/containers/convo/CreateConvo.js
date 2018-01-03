@@ -604,7 +604,7 @@ class CreateConvo extends React.Component {
                     onClose={() => { this.setState({showMessengerModal: false}) }}>
                     <h3>Connect to Messenger:</h3>
                     <MessengerPlugin
-                      appId='1429073230510150'
+                      appId='132767517443810'
                       pageId={this.state.pageValue}
                       passthroughParams={this.props.user._id}
                       onClick={() => { this.setState({showMessengerModal: false}) }}
