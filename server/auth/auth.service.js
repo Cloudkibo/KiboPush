@@ -35,7 +35,7 @@ function isAuthenticated () {
     })
     // Attach user to request
     .use((req, res, next) => {
-      Users.findOne({_id: req.user._id}, (err, user) => {
+      Users.findOne({fbId: req.user._id}, (err, user) => {
         if (err) {
           return res.status(500)
             .json({status: 'failed', description: 'Internal Server Error'})
@@ -67,24 +67,6 @@ function isAuthorizedSuperUser () {
 }
 
 /**
- * Checks if the user role meets the minimum requirements of the route
- */
-function hasRole (roleRequired) {
-  if (!roleRequired) throw new Error('Required role needs to be set')
-
-  return compose()
-    .use(isAuthenticated())
-    .use(function meetsRequirements (req, res, next) {
-      if (config.userRoles.indexOf(req.user.role) >=
-        config.userRoles.indexOf(roleRequired)) {
-        next()
-      } else {
-        res.send(403)
-      }
-    })
-}
-
-/**
  * Returns a jwt token signed by the app secret
  */
 function signToken (id) {
@@ -102,33 +84,35 @@ function validateApiKeys (req, res, next) {
       (err, setting) => {
         if (err) return next(err)
         if (setting) {
-          // todo this is for now buyer user id but it should be company id as thought
           Users.findOne({_id: setting.company_id}, (err, user) => {
             if (err) {
               return res.status(500)
                 .json({status: 'failed', description: 'Internal Server Error'})
             }
             if (!user) {
-              return res.status(401).json({
-                status: 'failed',
-                description: 'User not found for the API keys'
-              })
+              return res.status(401)
+                .json({
+                  status: 'failed',
+                  description: 'User not found for the API keys'
+                })
             }
-            req.user = {_id: user._id}
+            req.user = {_id: user.fbId}
             next()
           })
         } else {
-          return res.status(401).json({
-            status: 'failed',
-            description: 'Unauthorized. No such API credentials found.'
-          })
+          return res.status(401)
+            .json({
+              status: 'failed',
+              description: 'Unauthorized. No such API credentials found.'
+            })
         }
       })
   } else {
-    return res.status(401).json({
-      status: 'failed',
-      description: 'Unauthorized. Please provide both app_id and app_secret in headers.'
-    })
+    return res.status(401)
+      .json({
+        status: 'failed',
+        description: 'Unauthorized. Please provide both app_id and app_secret in headers.'
+      })
   }
 }
 
@@ -142,7 +126,7 @@ function setTokenCookie (req, res) {
       description: 'Something went wrong, please try again.'
     })
   }
-  const token = signToken(req.user._id)
+  const token = signToken(req.user.fbId)
   res.cookie('token', token)
   res.redirect('/')
 }
@@ -165,6 +149,5 @@ exports.isAuthenticated = isAuthenticated
 exports.signToken = signToken
 exports.setTokenCookie = setTokenCookie
 exports.isAuthorizedSuperUser = isAuthorizedSuperUser
-exports.hasRole = hasRole
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;

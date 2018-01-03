@@ -36,7 +36,10 @@ const subscriberSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'pages'
   },
-  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
+  userId: {
+    type: Schema.ObjectId,
+    ref: 'users'
+  },
   isSubscribed: {
     type: Boolean,
     default: true

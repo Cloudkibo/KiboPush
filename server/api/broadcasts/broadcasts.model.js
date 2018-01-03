@@ -21,7 +21,6 @@ let broadcastSchema = new Schema({
   segmentationGender: [String],
   segmentationTimeZone: String,
   userId: { type: Schema.ObjectId, ref: 'users' },
-  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now }
 })
 

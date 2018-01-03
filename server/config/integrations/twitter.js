@@ -42,7 +42,7 @@ function connect () {
         stream.on('tweet', tweet => {
           logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
           AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
-            .populate('userId companyId')
+            .populate('userId')
             .exec((err, autopostings) => {
               if (err) {
                 return logger.serverLog(TAG, 'Internal Server Error on connect')
@@ -51,7 +51,7 @@ function connect () {
                 `Autoposting records got for tweet : ${autopostings.length}`)
               autopostings.forEach(postingItem => {
                 let pagesFindCriteria = {
-                  companyId: postingItem.companyId._id,
+                  userId: postingItem.userId._id,
                   connected: true
                 }
 

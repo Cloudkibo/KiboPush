@@ -8,7 +8,6 @@ const Surveys = require('./surveys.model')
 const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const SurveyPage = require('../page_survey/page_survey.model')
-const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/surveys/surveys.controller.js'
 const mongoose = require('mongoose')
 
@@ -19,40 +18,26 @@ const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  Surveys.find({userId: req.user._id}, (err, surveys) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    if (!companyUser) {
-      return res.status(404).json({
-        status: 'failed',
-        description: 'The user account does not belong to any company. Please contact support'
-      })
-    }
-    Surveys.find({companyId: companyUser.companyId}, (err, surveys) => {
+    SurveyPage.find({userId: req.user._id}, (err, surveypages) => {
       if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
+        return res.status(404)
+        .json({status: 'failed', description: 'Surveys not found'})
       }
-      SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
-        if (err) {
+      Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+        if (err2) {
           return res.status(404)
-          .json({status: 'failed', description: 'Surveys not found'})
+          .json({status: 'failed', description: 'responses count not found'})
         }
-        Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-          if (err2) {
-            return res.status(404)
-            .json({status: 'failed', description: 'responses count not found'})
-          }
-          res.status(200).json({
-            status: 'success',
-            payload: {surveys, surveypages, responsesCount}
-          })
+        res.status(200).json({
+          status: 'success',
+          payload: {surveys, surveypages, responsesCount}
         })
       })
     })
@@ -62,68 +47,66 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   logger.serverLog(TAG,
     `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  /* expected request body{
+   survey:{
+   title: String, // title of survey
+   description: String, // description of survey
+   image: String, //image url
+   userId: {type: Schema.ObjectId, ref: 'users'},
+   },
+   questions:[{
+   statement: String
+   options: Array of String,
+   type: String,
+   },...]
+   } */
+  let surveyPayload = {
+    title: req.body.survey.title,
+    description: req.body.survey.description,
+    userId: req.user._id,
+    isresponded: 0
+  }
+  if (req.body.isSegmented) {
+    surveyPayload.isSegmented = true
+    surveyPayload.segmentationPageIds = (req.body.segmentationPageIds)
+      ? req.body.segmentationPageIds
+      : null
+    surveyPayload.segmentationGender = (req.body.segmentationGender)
+      ? req.body.segmentationGender
+      : null
+    surveyPayload.segmentationLocale = (req.body.segmentationLocale)
+      ? req.body.segmentationLocale
+      : null
+  }
+  const survey = new Surveys(surveyPayload)
+
+  Surveys.create(survey, (err, survey) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    if (!companyUser) {
-      return res.status(404).json({
-        status: 'failed',
-        description: 'The user account does not belong to any company. Please contact support'
+    // after survey is created, create survey questions
+    for (let question in req.body.questions) {
+      let options = []
+      if (req.body.questions[question].type === 'multichoice') {
+        options = req.body.questions[question].options
+      }
+      const surveyQuestion = new SurveyQuestions({
+        statement: req.body.questions[question].statement, // question statement
+        options, // array of question options
+        type: req.body.questions[question].type, // type can be text/multichoice
+        surveyId: survey._id
+      })
+
+      surveyQuestion.save((err2, question1) => {
+        if (err2) {
+          // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
+        }
       })
     }
-    let surveyPayload = {
-      title: req.body.survey.title,
-      description: req.body.survey.description,
-      userId: req.user._id,
-      companyId: companyUser.companyId,
-      isresponded: 0
-    }
-    if (req.body.isSegmented) {
-      surveyPayload.isSegmented = true
-      surveyPayload.segmentationPageIds = (req.body.segmentationPageIds)
-        ? req.body.segmentationPageIds
-        : null
-      surveyPayload.segmentationGender = (req.body.segmentationGender)
-        ? req.body.segmentationGender
-        : null
-      surveyPayload.segmentationLocale = (req.body.segmentationLocale)
-        ? req.body.segmentationLocale
-        : null
-    }
-    const survey = new Surveys(surveyPayload)
-
-    Surveys.create(survey, (err, survey) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      // after survey is created, create survey questions
-      for (let question in req.body.questions) {
-        let options = []
-        if (req.body.questions[question].type === 'multichoice') {
-          options = req.body.questions[question].options
-        }
-        const surveyQuestion = new SurveyQuestions({
-          statement: req.body.questions[question].statement, // question statement
-          options, // array of question options
-          type: req.body.questions[question].type, // type can be text/multichoice
-          surveyId: survey._id
-        })
-
-        surveyQuestion.save((err2, question1) => {
-          if (err2) {
-            // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
-          }
-        })
-      }
-      return res.status(201).json({status: 'success', payload: survey})
-    })
+    return res.status(201).json({status: 'success', payload: survey})
   })
 }
 
