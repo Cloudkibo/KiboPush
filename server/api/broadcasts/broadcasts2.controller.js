@@ -13,6 +13,7 @@ const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const Session = require('../sessions/sessions.model')
+const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
 // const needle = require('needle')
 const path = require('path')
@@ -33,58 +34,80 @@ exports.sendConversation = function (req, res) {
   }
 
   if (req.body.self) {
-    let pagesFindCriteria = {userId: req.user._id, connected: true}
 
-    if (req.body.isSegmented) {
-      if (req.body.pageIds) {
-        pagesFindCriteria = _.merge(pagesFindCriteria, {
-          pageId: {
-            $in: req.body.pageIds
-          }
+    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-    }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
-    Pages.find(pagesFindCriteria, (err, pages) => {
-      if (err) {
-        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        return res.status(404)
-          .json({status: 'failed', description: 'Pages not found'})
+      if (req.body.isSegmented) {
+        if (req.body.pageIds) {
+          pagesFindCriteria = _.merge(pagesFindCriteria, {
+            pageId: {
+              $in: req.body.pageIds
+            }
+          })
+        }
       }
 
-      pages.forEach(page => {
-        req.body.payload.forEach(payloadItem => {
-          let messageData = utility.prepareSendAPIPayload(
-            page.adminSubscriberId,
-            payloadItem, false)
+      Pages.find(pagesFindCriteria, (err, pages) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(404)
+          .json({status: 'failed', description: 'Pages not found'})
+        }
 
-          logger.serverLog(TAG,
-            `Payload for Messenger Send API for test: ${JSON.stringify(
-              messageData)}`)
-
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-            },
-            function (err, res) {
+        pages.forEach(page => {
+          req.body.payload.forEach(payloadItem => {
+            PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
               if (err) {
-                return logger.serverLog(TAG,
-                  `At send test message broadcast ${JSON.stringify(err)}`)
-              } else {
-                logger.serverLog(TAG,
-                  `At send test message broadcast response ${JSON.stringify(
-                    res)}`)
+                logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                return res.status(404)
+                .json({status: 'failed', description: 'Pages subscription id not found'})
               }
+              let messageData = utility.prepareSendAPIPayload(
+                subscriptionUser.subscriberId,
+                payloadItem, false)
+
+              logger.serverLog(TAG,
+                `Payload for Messenger Send API for test: ${JSON.stringify(
+                  messageData)}`)
+
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                  page.accessToken
+                },
+                function (err, res) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At send test message broadcast ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At send test message broadcast response ${JSON.stringify(
+                        res)}`)
+                  }
+                })
             })
+          })
         })
       })
-    })
-    return res.status(200)
+      return res.status(200)
       .json({status: 'success', payload: {broadcast: req.body}})
+    })
   }
 
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {

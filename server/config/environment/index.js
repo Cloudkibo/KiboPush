@@ -30,6 +30,11 @@ const all = {
   process.env.IP ||
   undefined,
 
+  sendgrid : {
+    username: 'cloudkibo',
+    password: 'cl0udk1b0'
+  },
+
   domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
 
   // List of user roles

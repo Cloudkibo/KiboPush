@@ -3,7 +3,7 @@
 let express = require('express')
 let passport = require('passport')
 let auth = require('../auth.service')
-let User = require('./../../api/user/user.model.js')
+let User = require('./../../api/user/Users.model.js')
 
 let router = express.Router()
 
