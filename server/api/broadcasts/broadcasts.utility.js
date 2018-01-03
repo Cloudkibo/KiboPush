@@ -170,11 +170,12 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
   return payload
 }
 
-function prepareBroadCastPayload (req) {
+function prepareBroadCastPayload (req, companyId) {
   let broadcastPayload = {
     platform: req.body.platform,
     payload: req.body.payload,
     userId: req.user._id,
+    companyId,
     title: req.body.title
   }
   if (req.body.isSegmented) {

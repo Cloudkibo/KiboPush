@@ -4,18 +4,33 @@
 
 const logger = require('../../components/logger')
 const PageSurveys = require('./page_survey.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 const TAG = 'api/page_survey/page_survey.controller.js'
 
 exports.index = function (req, res) {
-  PageSurveys.find({ userId: req.user._id }, (err, surveys) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
-        description: `Internal Server Error${JSON.stringify(err)}`
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({ status: 'success', payload: surveys })
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    PageSurveys.find({ companyId: companyUser.companyId }, (err, surveys) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({ status: 'success', payload: surveys })
+    })
   })
 }
 

@@ -13,6 +13,7 @@ const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const Session = require('../sessions/sessions.model')
+const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
 // const needle = require('needle')
 const path = require('path')
@@ -21,6 +22,7 @@ const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
 let config = require('./../../config/environment')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG,
@@ -32,167 +34,55 @@ exports.sendConversation = function (req, res) {
   }
 
   if (req.body.self) {
-    let pagesFindCriteria = {userId: req.user._id, connected: true}
 
-    if (req.body.isSegmented) {
-      if (req.body.pageIds) {
-        pagesFindCriteria = _.merge(pagesFindCriteria, {
-          pageId: {
-            $in: req.body.pageIds
-          }
-        })
-      }
-    }
-
-    Pages.find(pagesFindCriteria, (err, pages) => {
+    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
       if (err) {
-        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        return res.status(404)
-          .json({status: 'failed', description: 'Pages not found'})
-      }
-
-      pages.forEach(page => {
-        req.body.payload.forEach(payloadItem => {
-          let messageData = utility.prepareSendAPIPayload(
-            page.adminSubscriberId,
-            payloadItem, false)
-
-          logger.serverLog(TAG,
-            `Payload for Messenger Send API for test: ${JSON.stringify(
-              messageData)}`)
-
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-            },
-            function (err, res) {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send test message broadcast ${JSON.stringify(err)}`)
-              } else {
-                logger.serverLog(TAG,
-                  `At send test message broadcast response ${JSON.stringify(
-                    res)}`)
-              }
-            })
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      })
-    })
-    return res.status(200)
-      .json({status: 'success', payload: {broadcast: req.body}})
-  }
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
-  const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req))
-
-  broadcast.save((err, broadcast) => {
-    if (err) {
-      return res.status(500)
-        .json({status: 'failed', description: 'Broadcasts not created'})
-    }
-
-    let pagesFindCriteria = {userId: req.user._id, connected: true}
-
-    if (req.body.isSegmented) {
-      if (req.body.segmentationPageIds.length > 0) {
-        if (req.body.segmentationPageIds[0].length > 0) {
-          let pageCriteria = req.body.segmentationPageIds
-          if (typeof(req.body.segmentationPageIds) === 'object') {
-            pageCriteria = req.body.segmentationPageIds[0]
-          }
+      if (req.body.isSegmented) {
+        if (req.body.pageIds) {
           pagesFindCriteria = _.merge(pagesFindCriteria, {
             pageId: {
-              $in: pageCriteria
+              $in: req.body.pageIds
             }
           })
         }
       }
-    }
 
-    logger.serverLog(TAG,
-      `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
-
-    Pages.find(pagesFindCriteria, (err, pages) => {
-      if (err) {
-        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        return res.status(404)
+      Pages.find(pagesFindCriteria, (err, pages) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(404)
           .json({status: 'failed', description: 'Pages not found'})
-      }
-
-      pages.forEach(page => {
-        logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
-
-        let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
-
-        if (req.body.isSegmented) {
-          if (req.body.segmentationGender.length > 0) {
-            subscriberFindCriteria = _.merge(subscriberFindCriteria,
-              {
-                gender: {
-                  $in: req.body.segmentationGender
-                }
-              })
-          }
-          if (req.body.segmentationLocale.length > 0) {
-            subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-              locale: {
-                $in: req.body.segmentationLocale
-              }
-            })
-          }
         }
 
-        logger.serverLog(TAG,
-          `Subscribers Criteria for segmentation ${JSON.stringify(
-            subscriberFindCriteria)}`)
-
-        Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-          if (err) {
-            return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-          }
-
-          logger.serverLog(TAG,
-            `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
-
+        pages.forEach(page => {
           req.body.payload.forEach(payloadItem => {
-            subscribers.forEach(subscriber => {
-              logger.serverLog(TAG,
-                `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
-
-              Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                if (err) {
-                  return logger.serverLog(TAG,
-                    `At get session ${JSON.stringify(err)}`)
-                }
-                if (!session) {
-                  return logger.serverLog(TAG,
-                    `No chat session was found for broadcast`)
-                }
-                const chatMessage = new LiveChat({
-                  sender_id: page._id, // this is the page id: _id of Pageid
-                  recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                  sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                  recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                  session_id: session._id,
-                  company_id: req.user._id, // this is admin id till we have companies
-                  payload: payloadItem, // this where message content will go
-                  status: 'unseen' // seen or unseen
-                })
-                chatMessage.save((err, chatMessageSaved) => {
-                  if (err) {
-                    return logger.serverLog(TAG,
-                      `At get session ${JSON.stringify(err)}`)
-                  }
-                  logger.serverLog(TAG, 'Chat message saved for broadcast sent')
-                })
-              })
-
+            PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
+              if (err) {
+                logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                return res.status(404)
+                .json({status: 'failed', description: 'Pages subscription id not found'})
+              }
               let messageData = utility.prepareSendAPIPayload(
-                subscriber.senderId,
-                payloadItem)
+                subscriptionUser.subscriberId,
+                payloadItem, false)
+
+              logger.serverLog(TAG,
+                `Payload for Messenger Send API for test: ${JSON.stringify(
+                  messageData)}`)
+
               request(
                 {
                   'method': 'POST',
@@ -201,48 +91,196 @@ exports.sendConversation = function (req, res) {
                   'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
                   page.accessToken
                 },
-                function (err, resp) {
+                function (err, res) {
                   if (err) {
                     return logger.serverLog(TAG,
-                      `At send message broadcast ${JSON.stringify(err)}`)
+                      `At send test message broadcast ${JSON.stringify(err)}`)
                   } else {
-                    if (resp.statusCode !== 200) {
-                      logger.serverLog(TAG,
-                        `At send message broadcast response ${JSON.stringify(
-                          resp.body.error)}`)
-                    } else {
-                      logger.serverLog(TAG,
-                        `At send message broadcast response ${JSON.stringify(
-                          resp.body.message_id)}`)
-                    }
+                    logger.serverLog(TAG,
+                      `At send test message broadcast response ${JSON.stringify(
+                        res)}`)
                   }
-
-                  // update broadcast sent field
-                  let pagebroadcast = new BroadcastPage({
-                    pageId: page.pageId,
-                    userId: req.user._id,
-                    subscriberId: subscriber.senderId,
-                    broadcastId: broadcast._id,
-                    seen: false
-                  })
-
-                  pagebroadcast.save((err2) => {
-                    if (err2) {
-                      logger.serverLog(TAG, {
-                        status: 'failed',
-                        description: 'PageBroadcast create failed',
-                        err2
-                      })
-                    }
-                  })
                 })
             })
           })
         })
       })
+      return res.status(200)
+      .json({status: 'success', payload: {broadcast: req.body}})
     })
-    return res.status(200)
+  }
+
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req, companyUser.companyId))
+
+    broadcast.save((err, broadcast) => {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Broadcasts not created'})
+      }
+
+      let pagesFindCriteria = {userId: req.user._id, connected: true}
+
+      if (req.body.isSegmented) {
+        if (req.body.segmentationPageIds.length > 0) {
+          if (req.body.segmentationPageIds[0].length > 0) {
+            let pageCriteria = req.body.segmentationPageIds
+            if (typeof (req.body.segmentationPageIds) === 'object') {
+              pageCriteria = req.body.segmentationPageIds[0]
+            }
+            pagesFindCriteria = _.merge(pagesFindCriteria, {
+              pageId: {
+                $in: pageCriteria
+              }
+            })
+          }
+        }
+      }
+
+      logger.serverLog(TAG,
+        `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
+
+      Pages.find(pagesFindCriteria, (err, pages) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(404)
+          .json({status: 'failed', description: 'Pages not found'})
+        }
+
+        pages.forEach(page => {
+          logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
+
+          let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
+
+          if (req.body.isSegmented) {
+            if (req.body.segmentationGender.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                {
+                  gender: {
+                    $in: req.body.segmentationGender
+                  }
+                })
+            }
+            if (req.body.segmentationLocale.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                locale: {
+                  $in: req.body.segmentationLocale
+                }
+              })
+            }
+          }
+
+          logger.serverLog(TAG,
+            `Subscribers Criteria for segmentation ${JSON.stringify(
+              subscriberFindCriteria)}`)
+
+          Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+            if (err) {
+              return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            }
+
+            logger.serverLog(TAG,
+              `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+            req.body.payload.forEach(payloadItem => {
+              subscribers.forEach(subscriber => {
+                logger.serverLog(TAG,
+                  `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
+
+                Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At get session ${JSON.stringify(err)}`)
+                  }
+                  if (!session) {
+                    return logger.serverLog(TAG,
+                      `No chat session was found for broadcast`)
+                  }
+                  const chatMessage = new LiveChat({
+                    sender_id: page._id, // this is the page id: _id of Pageid
+                    recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                    sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                    recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                    session_id: session._id,
+                    company_id: req.user._id, // this is admin id till we have companies
+                    payload: payloadItem, // this where message content will go
+                    status: 'unseen' // seen or unseen
+                  })
+                  chatMessage.save((err, chatMessageSaved) => {
+                    if (err) {
+                      return logger.serverLog(TAG,
+                        `At get session ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG, 'Chat message saved for broadcast sent')
+                  })
+                })
+
+                let messageData = utility.prepareSendAPIPayload(
+                  subscriber.senderId,
+                  payloadItem)
+                request(
+                  {
+                    'method': 'POST',
+                    'json': true,
+                    'formData': messageData,
+                    'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                    page.accessToken
+                  },
+                  function (err, resp) {
+                    if (err) {
+                      return logger.serverLog(TAG,
+                        `At send message broadcast ${JSON.stringify(err)}`)
+                    } else {
+                      if (resp.statusCode !== 200) {
+                        logger.serverLog(TAG,
+                          `At send message broadcast response ${JSON.stringify(
+                            resp.body.error)}`)
+                      } else {
+                        logger.serverLog(TAG,
+                          `At send message broadcast response ${JSON.stringify(
+                            resp.body.message_id)}`)
+                      }
+                    }
+
+                    // update broadcast sent field
+                    let pagebroadcast = new BroadcastPage({
+                      pageId: page.pageId,
+                      userId: req.user._id,
+                      subscriberId: subscriber.senderId,
+                      broadcastId: broadcast._id,
+                      seen: false
+                    })
+
+                    pagebroadcast.save((err2) => {
+                      if (err2) {
+                        logger.serverLog(TAG, {
+                          status: 'failed',
+                          description: 'PageBroadcast create failed',
+                          err2
+                        })
+                      }
+                    })
+                  })
+              })
+            })
+          })
+        })
+      })
+      return res.status(200)
       .json({status: 'success', payload: {broadcast: broadcast}})
+    })
   })
 }
 
