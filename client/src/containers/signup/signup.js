@@ -3,6 +3,9 @@
  */
 
 import React from 'react'
+import { signUp } from '../../redux/actions/signup.actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 import { Link } from 'react-router'
@@ -86,14 +89,16 @@ class Signup extends React.Component {
   }
   onSubmit (event) {
     event.preventDefault()
-    if (this.refs.password.value !== this.refs.rpassword.value) {
-      //  console.log('Password donot match!.Retype password')
-      //  this.refs.password.value = this.refs.rpassword.value = ''
-    }
-    if (this.refs.password.value.length <= 6) {
-      console.log('Length of password should be greater than 6')
-      //  this.setState({pwdlength: false})
-      //  this.refs.password.value = this.refs.rpassword.value = ''
+    if (this.refs.password.value.length > 6 && this.refs.password.value === this.refs.rpassword.value) {
+      let data = {
+        name: this.refs.name.value,
+        email: this.refs.email.value,
+        domain: this.refs.domain.value,
+        password: this.refs.password.value,
+        company_name: this.refs.companyName.value,
+        company_description: this.refs.companyDescription.value
+      }
+      this.props.signUp(data)
     }
   }
   equal () {
@@ -192,5 +197,10 @@ class Signup extends React.Component {
     )
   }
 }
-
-export default Signup
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    signUp: signUp
+  },
+    dispatch)
+}
+export default connect(null, mapDispatchToProps)(Signup)
