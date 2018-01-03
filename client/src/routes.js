@@ -3,7 +3,10 @@ import { Route, IndexRoute } from 'react-router'
 import React from 'react'
 import App from './sub.app.js'
 import Home from './containers/home'
-import Login from './containers/login/login'
+//  import Login from './containers/login/login'
+import Login from './containers/login/new'
+import Signup from './containers/signup/signup'
+import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
@@ -70,18 +73,20 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
-  if (auth.loggedIn()) {
-    console.log('you are logged in. You cant go here.', nextState)
-    replace({
-      pathname: '/dashboard',
-      state: { nextPathname: nextState.location.pathname }
-    })
-  }
+  // if (auth.loggedIn()) {
+  //   console.log('you are logged in. You cant go here.', nextState)
+  //   replace({
+  //     pathname: '/dashboard',
+  //     state: { nextPathname: nextState.location.pathname }
+  //   })
+  // }
 }
 
 const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Login} onEnter={redirectAuthUsers} />
+    <Route path='/signup' component={Signup} />
+    <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
