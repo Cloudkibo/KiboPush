@@ -321,10 +321,8 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    if (this.state.pageValue.length <= 0) return;
-    
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageId === this.state.pageValue[0]) {
+      if (this.props.pages[i].pageId === this.state.pageValue) {
         if (!this.props.pages[i].adminSubscriberId) {
           this.setState({showMessengerModal: true})
           console.log('Setting Messenger Modal to True')
@@ -389,21 +387,20 @@ class CreateConvo extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: true
     })
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        console.log('Setting a new pageValue', selected)
-        self.setState({ pageValue: selected })
+        // var selected = []
+        // for (var i = 0; i < selectedOptions.length; i++) {
+        //   var selectedOption = selectedOptions[i].value
+        //   selected.push(selectedOption)
+        // }
+        console.log('Setting a new pageValue', selectedOptions)
+        self.setState({ pageValue: selectedOptions })
       }
-      console.log('change Page', selected)
+      console.log('change Page', selectedOptions)
     })
   }
 
@@ -607,7 +604,7 @@ class CreateConvo extends React.Component {
                     <h3>Connect to Messenger:</h3>
                     <MessengerPlugin
                       appId='132767517443810'
-                      pageId={(this.state.pageValue.length > 0) ? this.state.pageValue[0]:''}
+                      pageId={this.state.pageValue}
                       passthroughParams={this.props.user._id}
                       onClick={() => { this.setState({showMessengerModal: false}) }}
                     />
