@@ -73,13 +73,13 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
-  // if (auth.loggedIn()) {
-  //   console.log('you are logged in. You cant go here.', nextState)
-  //   replace({
-  //     pathname: '/dashboard',
-  //     state: { nextPathname: nextState.location.pathname }
-  //   })
-  // }
+  if (auth.loggedIn()) {
+    console.log('you are logged in. You cant go here.', nextState)
+    replace({
+      pathname: '/dashboard',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
 }
 
 const routes = (

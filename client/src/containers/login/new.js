@@ -4,6 +4,9 @@
 
 import React from 'react'
 import { Link } from 'react-router'
+import { logIn } from '../../redux/actions/login.actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 const TAG = 'containers/login/login'
@@ -14,21 +17,27 @@ class Login extends React.Component {
     this.state = {
       domain: false,
       password: false,
-      isurl: false
+      isurl: false,
+      redirect: true,
+      error: false,
+      success: false
     }
     this.check = this.check.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
   }
   onSubmit (event) {
     event.preventDefault()
-    if (this.refs.password.value !== this.refs.rpassword.value) {
-      //  console.log('Password donot match!.Retype password')
-      //  this.refs.password.value = this.refs.rpassword.value = ''
+    let data = {
+      email: this.refs.email.value,
+      domain: this.refs.domain.value,
+      password: this.refs.password.value
     }
-    if (this.refs.password.value.length <= 6) {
-      console.log('Length of password should be greater than 6')
-      //  this.setState({pwdlength: false})
-      //  this.refs.password.value = this.refs.rpassword.value = ''
+    this.props.logIn(data)
+    if (this.state.success) {
+      this.props.history.push({
+        pathname: '/dashboard'
+
+      })
     }
   }
   check () {
@@ -39,6 +48,18 @@ class Login extends React.Component {
   }
   componentDidMount () {
     log(TAG, 'Login Container Mounted')
+  }
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.errorMessage) {
+      this.setState({error: true})
+    } else if (nextprops.successMessage) {
+      console.log('succes', nextprops.successMessage)
+      this.setState({success: true})
+      this.props.history.push({
+        pathname: '/dashboard'
+
+      })
+    }
   }
   render () {
     console.log('In Login JS')
@@ -59,6 +80,9 @@ class Login extends React.Component {
                       <h3 className='m-login__title'>Sign In To KiboPush</h3>
                     </div>
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
+                      {this.state.error &&
+                        <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
+                      }
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                           onChange={this.check} />
@@ -115,5 +139,18 @@ class Login extends React.Component {
     )
   }
 }
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    errorMessage: (state.loginInfo.errorMessage),
+    successMessage: (state.loginInfo.successMessage)
+  }
+}
 
-export default Login
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    logIn: logIn
+  },
+    dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
