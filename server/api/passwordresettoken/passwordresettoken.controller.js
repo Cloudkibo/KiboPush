@@ -1,59 +1,24 @@
 'use strict'
 
-var _ = require('lodash')
-var Passwordresettoken = require('./passwordresettoken.model')
+let _ = require('lodash')
+let Passwordresettoken = require('./passwordresettoken.model')
+let User = require('./../user/Users.model')
 
 // Get list of passwordresettokens
-exports.index = function (req, res) {
-  Passwordresettoken.find(function (err, passwordresettokens) {
-    if (err) { return handleError(res, err) }
-    return res.json(200, passwordresettokens)
-  })
-}
+exports.change = function (req, res) {
+  let userId = req.user._id
+  let oldPass = String(req.body.password)
+  let newPass = String(req.body.newpassword)
 
-// Get a single passwordresettoken
-exports.show = function (req, res) {
-  Passwordresettoken.findOne({token: req.params.id}, function (err, passwordresettoken) {
-    if (err) { console.log(err); return handleError(res, err) }
-    if (!passwordresettoken) { return res.send(404) }
-    return res.json(passwordresettoken)
+  User.findById(userId, function (err, user) {
+    if (user.authenticate(oldPass)) {
+      user.password = newPass
+      user.save(function (err) {
+        if (err) return validationError(res, err)
+        res.status(200).json({status: 'success', description: 'Password changed successfully.'})
+      })
+    } else {
+      res.status(403).json({status: 'failed', description: 'Wrong current password.'})
+    }
   })
-}
-
-// Creates a new passwordresettoken in the DB.
-exports.create = function (req, res) {
-  Passwordresettoken.create(req.body, function (err, passwordresettoken) {
-    if (err) { return handleError(res, err) }
-    return res.json(201, passwordresettoken)
-  })
-}
-
-// Updates an existing passwordresettoken in the DB.
-exports.update = function (req, res) {
-  if (req.body._id) { delete req.body._id }
-  Passwordresettoken.findById(req.params.id, function (err, passwordresettoken) {
-    if (err) { return handleError(res, err) }
-    if (!passwordresettoken) { return res.send(404) }
-    var updated = _.merge(passwordresettoken, req.body)
-    updated.save(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.json(200, passwordresettoken)
-    })
-  })
-}
-
-// Deletes a passwordresettoken from the DB.
-exports.destroy = function (req, res) {
-  Passwordresettoken.findById(req.params.id, function (err, passwordresettoken) {
-    if (err) { return handleError(res, err) }
-    if (!passwordresettoken) { return res.send(404) }
-    passwordresettoken.remove(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.send(204)
-    })
-  })
-}
-
-function handleError (res, err) {
-  return res.send(500, err)
 }

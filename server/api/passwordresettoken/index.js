@@ -1,15 +1,11 @@
 'use strict'
 
-var express = require('express')
-var controller = require('./passwordresettoken.controller')
+let express = require('express')
+let controller = require('./passwordresettoken.controller')
+let auth = require('../../auth/auth.service')
 
-var router = express.Router()
+let router = express.Router()
 
-// router.get('/', controller.index);
-// router.get('/:id', controller.show);
-// router.post('/', controller.create);
-// router.put('/:id', controller.update);
-// router.patch('/:id', controller.update);
-// router.delete('/:id', controller.destroy);
+router.post('/change', auth.isAuthenticated(), controller.change)
 
 module.exports = router
