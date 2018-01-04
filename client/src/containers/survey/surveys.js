@@ -4,6 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
+import AlertContainer from 'react-alert'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -15,7 +16,6 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
-import { Alert } from 'react-bs-notifier'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Survey extends React.Component {
@@ -128,16 +128,16 @@ class Survey extends React.Component {
 
   render () {
     console.log('render method survey')
-    // var alertOptions = {
-    //   offset: 14,
-    //   position: 'bottom right',
-    //   theme: 'light',
-    //   time: 5000,
-    //   transition: 'scale'
-    // }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
-        { /* <AlertContainer ref={a => { this.msg = a }} {...alertOptions} /> */ }
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -286,7 +286,7 @@ class Survey extends React.Component {
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
                                   onClick={() => {
-                                    this.props.sendsurvey(survey)
+                                    this.props.sendsurvey(survey, this.msg)
                                   }}>
                                   Send
                               </button>
@@ -315,14 +315,6 @@ class Survey extends React.Component {
                     <p> No data to display </p>
                   </div>
                 }
-                      {
-                  this.state.alertMessage !== '' &&
-                  <center>
-                    <Alert type={this.state.alertType} >
-                      {this.state.alertMessage}
-                    </Alert>
-                  </center>
-                  }
                     </div>
                   </div>
                 </div>
