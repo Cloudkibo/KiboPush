@@ -13,6 +13,14 @@ export function loginInfo (state = initialState, action) {
       return Object.assign({}, state, {
         successMessage: action.successMessage
       })
+    case ActionTypes.FORGOT_FAILURE:
+      return Object.assign({}, state, {
+        errorMessage: action.errorMessage
+      })
+    case ActionTypes.FORGOT_SUCCESS:
+      return Object.assign({}, state, {
+        successMessage: action.successMessage
+      })
     default:
       return state
   }

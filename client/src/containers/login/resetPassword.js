@@ -5,13 +5,33 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { log } from './../../utility/socketio'
+import { isWebURL } from './../../utility/utils'
+import { forgotPass } from '../../redux/actions/login.actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 const TAG = 'containers/login/login'
 class ResetPassword extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      domain: false,
+      isurl: false
+    }
+    this.onSubmit = this.onSubmit.bind(this)
+    this.check = this.check.bind(this)
+  }
+  check () {
+    this.setState({domain: true})
+    if (isWebURL(this.refs.domain.value)) {
+      this.setState({isurl: true})
+    }
   }
   componentDidMount () {
     log(TAG, 'Login Container Mounted')
+  }
+  onSubmit (event) {
+    event.preventDefault()
+    this.props.forgotPass({email: this.refs.email.value, domain: this.refs.domain.value})
   }
   render () {
     console.log('In Login JS')
@@ -33,9 +53,15 @@ class ResetPassword extends React.Component {
                     </div>
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
                       <label style={{fontWeight: 'normal'}}>
-                        Please enter your email address. We'll send you an email with a link to reset your password.
+                        Please enter the details below. We'll send you an email with a link to reset your password.
                       </label>
                       <br /><br />
+                      <div className='form-group m-form__group'>
+                        <input className='form-control m-input' type='text' placeholder='Domain e.g www.kibopush.com' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.check} />
+                        { this.state.domain && this.state.isurl === false &&
+                        <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
+                         }
+                      </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
@@ -72,4 +98,10 @@ class ResetPassword extends React.Component {
   }
 }
 
-export default ResetPassword
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    forgotPass: forgotPass
+  },
+    dispatch)
+}
+export default connect(null, mapDispatchToProps)(ResetPassword)

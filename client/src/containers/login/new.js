@@ -33,12 +33,6 @@ class Login extends React.Component {
       password: this.refs.password.value
     }
     this.props.logIn(data)
-    if (this.state.success) {
-      this.props.history.push({
-        pathname: '/dashboard'
-
-      })
-    }
   }
   check () {
     this.setState({domain: true})

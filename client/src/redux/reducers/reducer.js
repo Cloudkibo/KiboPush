@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import {basicInfo} from './basicinfo.reducer'
 import {loginInfo} from './login.reducer.js'
+import {signupInfo} from './signup.reducer.js'
 import {APIInfo} from './settings.reducer'
 import {pagesInfo} from './pages.reducer'
 import {subscribersInfo} from './subscribers.reducer'
@@ -21,6 +22,7 @@ import {UsersInfo, PagesInfo, BroadcastsInfo, PageSubscribersInfo, PollsInfo, Su
 const appReducer = combineReducers({
   basicInfo,
   loginInfo,
+  signupInfo,
   pagesInfo,
   subscribersInfo,
   surveysInfo,
