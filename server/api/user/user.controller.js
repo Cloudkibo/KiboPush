@@ -74,7 +74,6 @@ exports.updateChecks = function (req, res) {
  * Creates a new user
  */
 exports.create = function (req, res, next) {
-
   let parametersMissing = false
 
   if (!_.has(req.body, 'email')) parametersMissing = true
@@ -132,7 +131,10 @@ exports.create = function (req, res, next) {
       })
 
       newToken.save(function (err) {
-        if (err) return console.log(err)
+        if (err) {
+          logger.serverLog(TAG, `New Token save : ${JSON.stringify(
+            err)}`)
+        }
       })
 
       let sendgrid = require('sendgrid')(config.sendgrid.username, config.sendgrid.password)
@@ -155,10 +157,13 @@ exports.create = function (req, res, next) {
         '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
         '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
 
-      //email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
+      // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
 
       sendgrid.send(email, function (err, json) {
-        if (err) { return console.log(err) }
+        if (err) {
+          logger.serverLog(TAG, `Internal Server Error on sending email : ${JSON.stringify(
+            err)}`)
+        }
         // console.log(json);
       })
 
@@ -184,7 +189,10 @@ exports.create = function (req, res, next) {
         '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
 
       sendgrid.send(email2, function (err, json) {
-        if (err) { return console.log(err) }
+        if (err) {
+          logger.serverLog(TAG, `Internal Server Error on sending email : ${JSON.stringify(
+          err)}`)
+        }
         // console.log(json);
       })
     })
