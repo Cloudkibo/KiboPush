@@ -17,6 +17,10 @@ const auth = {
     cookie.save('next', val)
   },
 
+  putCookie (val) {
+    cookie.save('token', val)
+  },
+
   getNext () {
     return cookie.load('next')
   },
