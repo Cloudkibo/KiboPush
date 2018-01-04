@@ -4,13 +4,9 @@ var express = require('express')
 var controller = require('./verificationtoken.controller')
 
 var router = express.Router()
+const auth = require('../../auth/auth.service')
 
-// router.get('/', controller.index);
-// router.get('/:id', controller.show);
-// router.get('/kiboengage/:id',controller.showKiboEngage);
-// router.post('/', controller.create);
-// router.put('/:id', controller.update);
-// router.patch('/:id', controller.update);
-// router.delete('/:id', controller.destroy);
+router.get('/verify/:id', controller.verify)
+router.get('/resend', auth.isAuthenticated(), controller.resend)
 
 module.exports = router
