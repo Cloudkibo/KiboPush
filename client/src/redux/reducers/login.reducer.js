@@ -15,11 +15,11 @@ export function loginInfo (state = initialState, action) {
       })
     case ActionTypes.FORGOT_FAILURE:
       return Object.assign({}, state, {
-        errorMessage: action.errorMessage
+        errorForgot: action.errorMessage
       })
     case ActionTypes.FORGOT_SUCCESS:
       return Object.assign({}, state, {
-        successMessage: action.successMessage
+        successForgot: action.successMessage
       })
     default:
       return state

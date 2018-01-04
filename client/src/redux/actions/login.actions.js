@@ -58,7 +58,7 @@ export function forgotPass (data) {
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success') {
-          dispatch(forgotSuccess(res.description))
+          dispatch(forgotSuccess())
         } else {
           dispatch(forgotFailure())
         }

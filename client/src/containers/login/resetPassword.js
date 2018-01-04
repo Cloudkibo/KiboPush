@@ -65,6 +65,12 @@ class ResetPassword extends React.Component {
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
+                      {this.props.successForgot &&
+                        <div className='form-group m-form__group'>
+                          <label>A password reset link has been sent to your email. Please check your email</label>
+                        </div>
+                      }
+                      <br />
                       <div className='m-login__form-action'>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Submit
@@ -97,11 +103,17 @@ class ResetPassword extends React.Component {
     )
   }
 }
-
+function mapStateToProps (state) {
+ // console.log(state)
+  return {
+    errorForgot: (state.loginInfo.errorForgot),
+    successForgot: (state.loginInfo.successForgot)
+  }
+}
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     forgotPass: forgotPass
   },
     dispatch)
 }
-export default connect(null, mapDispatchToProps)(ResetPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)

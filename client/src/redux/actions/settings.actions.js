@@ -88,3 +88,17 @@ export function getAPIFailure (data) {
     data
   }
 }
+export function changePass (data, msg) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('reset_password/change', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('reset', res.payload)
+          msg.success('Password changed successfully')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
