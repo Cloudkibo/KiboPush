@@ -1,242 +1,146 @@
 'use strict'
 
-var _ = require('lodash')
-var Companyprofile = require('./companyprofile.model')
+const _ = require('lodash')
+const Companyprofile = require('./companyprofile.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
+const Invitations = require('./../invitations/invitations.model')
+const Users = require('./../user/Users.model')
+const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
+const config = require('./../../config/environment/index')
 
 const logger = require('../../components/logger')
-const TAG = 'api/user/companyprofile.controller.js'
+const TAG = 'api/companyprofile/companyprofile.controller.js'
 
-// Get list of companyprofiles
-// exports.index = function (req, res) {
-//   Companyprofile.find(function (err, companyprofiles) {
-//     if (err) { return handleError(res, err) }
-//     return res.json(200, companyprofiles)
-//   })
-// }
-//
-// // Get specific company's profile
-// exports.fetch = function (req, res) {
-//   if (req.user.isOwner == 'Yes') {
-//     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {
-//       if (clientUser == null) return res.json(200, {})
-//       Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, companyprofile) {
-//         if (err) { return handleError(res, err) }
-//         return res.json(200, companyprofile)
-//       })
-//     })
-//   } else {
-//     Companyprofile.findOne({companyid: req.user.uniqueid}, function (err, companyprofile) {
-//       if (err) { return handleError(res, err) }
-//       return res.json(200, companyprofile)
-//     })
-//   }
-// }
-
-// Update the company profile and settings
-// exports.updatecompanyprofile = function (req, res) {
-//   logger.serverLog('info', 'This is body in companyprofile ' + JSON.stringify(req.body))
-//
-//   if (req.user.isOwner == 'Yes') {
-//     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {
-//       Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, gotSaveChangedCompanySettingsData) {
-//         configuration.findOne({}, function (err, gotConfig) {
-//           if (err) return console.log(err)
-//
-//         /*  if(req.body.maxnumberofdepartment > gotConfig.maxnumberofdepartment){
-//             res.send({status: 'danger', msg: 'Max number of Groups cannot exceed '+ gotConfig.maxnumberofdepartment});
-//           }
-//           else if(req.body.allowChat === 'Yes' && gotConfig.allowChat === 'No'){
-//             res.send({status: 'danger', msg: 'Cannot allow Chat. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           else if(req.body.showsummary === 'Yes' && gotConfig.showsummary === 'No'){
-//             res.send({status: 'danger', msg: 'Cannot allow Summary. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           else if(req.body.allowCompletingOfCalls === 'Yes' && gotConfig.allowCompletingOfCalls === 'No'){
-//             res.send({status: 'danger', msg: 'Completing of calls by system is disabled. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           else if(req.body.isdomainemail === 'Yes' && gotConfig.isdomainemail === 'No'){
-//             res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           else if(req.body.allowemailnotification === 'Yes' && gotConfig.allowemailnotification === 'No'){
-//             res.send({status: 'danger', msg: 'Email notification cannot be allowed. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           //else if(req.body.notificationemailaddress === 'Yes' && gotConfig.notificationemailaddress === 'No'){
-//           //  res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//           //}
-//           //else if(req.body.smsphonenumber === 'Yes' && gotConfig.smsphonenumber === 'No'){
-//           //  res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//           //}
-//           else if(req.body.allowsmsnotification === 'Yes' && gotConfig.allowsmsnotification === 'No'){
-//             res.send({status: 'danger', msg: 'SMS notification cannot be allowed. Please contact Kibosupport owner to enable the feature'});
-//           }
-//           */
-//          /* else {
-//             department.count({companyid: clientUser.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
-//
-//               if (gotCount > req.body.maxnumberofdepartment) {
-//                 res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
-//               }
-//               else { */
-//
-//           gotSaveChangedCompanySettingsData.showsummary = req.body.showsummary
-//           gotSaveChangedCompanySettingsData.allowChat = req.body.allowChat
-//           gotSaveChangedCompanySettingsData.isdomainemail = req.body.isdomainemail
-//           gotSaveChangedCompanySettingsData.notificationemailaddress = req.body.notificationemailaddress
-//           gotSaveChangedCompanySettingsData.allowemailnotification = req.body.allowemailnotification
-//           gotSaveChangedCompanySettingsData.smsphonenumber = req.body.smsphonenumber
-//           gotSaveChangedCompanySettingsData.allowsmsnotification = req.body.allowsmsnotification
-//           gotSaveChangedCompanySettingsData.abandonedscheduleemail1 = req.body.abandonedscheduleemail1
-//           gotSaveChangedCompanySettingsData.abandonedscheduleemail2 = req.body.abandonedscheduleemail2
-//           gotSaveChangedCompanySettingsData.abandonedscheduleemail3 = req.body.abandonedscheduleemail3
-//           gotSaveChangedCompanySettingsData.completedscheduleemail1 = req.body.completedscheduleemail1
-//           gotSaveChangedCompanySettingsData.completedscheduleemail2 = req.body.completedscheduleemail2
-//           gotSaveChangedCompanySettingsData.completedscheduleemail3 = req.body.completedscheduleemail3
-//           gotSaveChangedCompanySettingsData.invitedscheduleemail1 = req.body.invitedscheduleemail1
-//           gotSaveChangedCompanySettingsData.invitedscheduleemail2 = req.body.invitedscheduleemail2
-//           gotSaveChangedCompanySettingsData.invitedscheduleemail3 = req.body.invitedscheduleemail3
-//           gotSaveChangedCompanySettingsData.maxnumberofdepartment = req.body.maxnumberofdepartment
-//           gotSaveChangedCompanySettingsData.maxnumberofchannels = req.body.maxnumberofchannels
-//           gotSaveChangedCompanySettingsData.allowCompletingOfCalls = req.body.allowCompletingOfCalls
-//           gotSaveChangedCompanySettingsData.completeCallTime = req.body.completeCallTime
-//           gotSaveChangedCompanySettingsData.widgetwindowtab = req.body.widgetwindowtab
-//           gotSaveChangedCompanySettingsData.enableFacebook = req.body.enableFacebook
-//           gotSaveChangedCompanySettingsData.widgetlogoURL = req.body.widgetlogoURL
-//
-//           gotSaveChangedCompanySettingsData.save(function (err) {
-//             if (err) console.log(err)
-//
-//             Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, gotCompanyData) {
-//               res.send({status: 'success', msg: gotCompanyData})
-//             })
-//           })
-//             // }
-//            // });
-//          // }
-//         })
-//       })
-//     })
-//   } else if (req.user.isAdmin == 'Yes') {
-//     Companyprofile.findOne({companyid: req.user.uniqueid}, function (err, gotSaveChangedCompanySettingsData) {
-//       configuration.findOne({}, function (err, gotConfig) {
-//         if (err) return console.log(err)
-//
-//        /* if(req.body.maxnumberofdepartment > gotConfig.maxnumberofdepartment){
-//           res.send({status: 'danger', msg: 'Max number of Groups cannot exceed '+ gotConfig.maxnumberofdepartment});
-//         }
-//         else if(req.body.allowChat === 'Yes' && gotConfig.allowChat === 'No'){
-//           res.send({status: 'danger', msg: 'Cannot allow Chat. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         else if(req.body.showsummary === 'Yes' && gotConfig.showsummary === 'No'){
-//           res.send({status: 'danger', msg: 'Cannot allow Summary. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         else if(req.body.allowCompletingOfCalls === 'Yes' && gotConfig.allowCompletingOfCalls === 'No'){
-//           res.send({status: 'danger', msg: 'Completing of calls by system is disabled. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         else if(req.body.isdomainemail === 'Yes' && gotConfig.isdomainemail === 'No'){
-//           res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         else if(req.body.allowemailnotification === 'Yes' && gotConfig.allowemailnotification === 'No'){
-//           res.send({status: 'danger', msg: 'Email notification cannot be allowed. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         //else if(req.body.notificationemailaddress === 'Yes' && gotConfig.notificationemailaddress === 'No'){
-//         //  res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//         //}
-//         //else if(req.body.smsphonenumber === 'Yes' && gotConfig.smsphonenumber === 'No'){
-//         //  res.send({status: 'danger', msg: 'Domain emails cannot be changed. Please contact Kibosupport owner to enable the feature'});
-//         //}
-//         else if(req.body.allowsmsnotification === 'Yes' && gotConfig.allowsmsnotification === 'No'){
-//           res.send({status: 'danger', msg: 'SMS notification cannot be allowed. Please contact Kibosupport owner to enable the feature'});
-//         }
-//         else {
-//           department.count({companyid: req.user.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
-//
-//             if (gotCount > req.body.maxnumberofdepartment) {
-//               res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
-//             }
-//             else {
-//             */
-//         gotSaveChangedCompanySettingsData.showsummary = req.body.showsummary
-//         gotSaveChangedCompanySettingsData.allowChat = req.body.allowChat
-//         gotSaveChangedCompanySettingsData.isdomainemail = req.body.isdomainemail
-//         gotSaveChangedCompanySettingsData.notificationemailaddress = req.body.notificationemailaddress
-//         gotSaveChangedCompanySettingsData.allowemailnotification = req.body.allowemailnotification
-//         gotSaveChangedCompanySettingsData.smsphonenumber = req.body.smsphonenumber
-//         gotSaveChangedCompanySettingsData.allowsmsnotification = req.body.allowsmsnotification
-//         gotSaveChangedCompanySettingsData.abandonedscheduleemail1 = req.body.abandonedscheduleemail1
-//         gotSaveChangedCompanySettingsData.abandonedscheduleemail2 = req.body.abandonedscheduleemail2
-//         gotSaveChangedCompanySettingsData.abandonedscheduleemail3 = req.body.abandonedscheduleemail3
-//         gotSaveChangedCompanySettingsData.completedscheduleemail1 = req.body.completedscheduleemail1
-//         gotSaveChangedCompanySettingsData.completedscheduleemail2 = req.body.completedscheduleemail2
-//         gotSaveChangedCompanySettingsData.completedscheduleemail3 = req.body.completedscheduleemail3
-//         gotSaveChangedCompanySettingsData.invitedscheduleemail1 = req.body.invitedscheduleemail1
-//         gotSaveChangedCompanySettingsData.invitedscheduleemail2 = req.body.invitedscheduleemail2
-//         gotSaveChangedCompanySettingsData.invitedscheduleemail3 = req.body.invitedscheduleemail3
-//         gotSaveChangedCompanySettingsData.maxnumberofdepartment = req.body.maxnumberofdepartment
-//         gotSaveChangedCompanySettingsData.maxnumberofchannels = req.body.maxnumberofchannels
-//         gotSaveChangedCompanySettingsData.allowCompletingOfCalls = req.body.allowCompletingOfCalls
-//         gotSaveChangedCompanySettingsData.completeCallTime = req.body.completeCallTime
-//         gotSaveChangedCompanySettingsData.widgetwindowtab = req.body.widgetwindowtab
-//         gotSaveChangedCompanySettingsData.enableFacebook = req.body.enableFacebook
-//         gotSaveChangedCompanySettingsData.widgetlogoURL = req.body.widgetlogoURL
-//
-//         gotSaveChangedCompanySettingsData.save(function (err) {
-//           if (err) console.log(err)
-//
-//           Companyprofile.findOne({companyid: req.user.uniqueid}, function (err, gotCompanyData) {
-//             res.send({status: 'success', msg: gotCompanyData})
-//           })
-//         })
-//             // }
-//          // })
-//        // }
-//       })
-//     })
-//   }
-// }
-
-// Get a single companyprofile
-exports.show = function (req, res) {
-  Companyprofile.findById(req.params.id, function (err, companyprofile) {
-    if (err) { return handleError(res, err) }
-    if (!companyprofile) { return res.send(404) }
-    return res.json(companyprofile)
-  })
-}
-
-// Creates a new companyprofile in the DB.
-exports.create = function (req, res) {
-  Companyprofile.create(req.body, function (err, companyprofile) {
-    if (err) { return handleError(res, err) }
-    return res.json(201, companyprofile)
-  })
-}
-
-// Updates an existing companyprofile in the DB.
-exports.update = function (req, res) {
-  if (req.body._id) { delete req.body._id }
-  Companyprofile.findById(req.params.id, function (err, companyprofile) {
-    if (err) { return handleError(res, err) }
-    if (!companyprofile) { return res.send(404) }
-    var updated = _.merge(companyprofile, req.body)
-    updated.save(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.json(200, companyprofile)
+exports.index = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Companyprofile.findOne({_id: companyUser.companyId}, function (err, company) {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({status: 'success', payload: company})
     })
   })
 }
 
-// Deletes a companyprofile from the DB.
-exports.destroy = function (req, res) {
-  Companyprofile.findById(req.params.id, function (err, companyprofile) {
-    if (err) { return handleError(res, err) }
-    if (!companyprofile) { return res.send(404) }
-    companyprofile.remove(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.send(204)
+exports.invite = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'email')) parametersMissing = true
+  if (!_.has(req.body, 'name')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}).populate('companyId').exec((err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Invitations.count({email: req.body.email, companyId: companyUser.companyId._id}, function (err, gotCount) {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+
+      if (gotCount > 0) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `${req.body.name} is already invited.`
+        })
+      } else {
+        Users.count({email: req.body.email, domain: req.user.domain}, function (err, gotCountAgent) {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+
+          if (gotCountAgent > 0) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `${req.body.name} is already a member.`
+            })
+          } else {
+            let today = new Date()
+            let uid = Math.random().toString(36).substring(7)
+            let uniqueToken_id = 'k' + uid + '' + today.getFullYear() + '' + (today.getMonth() + 1) + '' + today.getDate() + '' + today.getHours() + '' + today.getMinutes() + '' + today.getSeconds()
+
+            let inviteeData = new inviteagenttoken({
+              email: req.body.email,
+              token: uniqueToken_id,
+              companyId:  companyUser.companyId._id,
+              domain: req.user.domain,
+              companyName: companyUser.companyId.companyName
+            })
+
+            inviteeData.save(function (err) {
+              if (err) logger.serverLog(TAG, `At invite token save ${err}`)
+            })
+
+            let inviteeTempData = new Invitations({
+              name: req.body.name,
+              email: req.body.email,
+              companyId: companyUser.companyId._id
+            })
+
+            inviteeTempData.save(function (err) {
+              if (err) logger.serverLog(TAG, `At invitation data save ${err}`)
+            })
+
+            let sendgrid = require('sendgrid')(config.sendgrid.username, config.sendgrid.password)
+
+            var email = new sendgrid.Email({
+              to: req.body.email,
+              from: 'support@cloudkibo.com',
+              subject: 'KiboPush: Invitation',
+              text: 'Welcome to KiboPush'
+            })
+            email.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+              '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+              '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+              '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+              '<p style="color: #ffffff">Inviting you as support agent</p> </td></tr> </table> </td> </tr> </table> ' +
+              '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+              '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+              '<tr> <td class="wrapper last"> <p> Hello, <br> ' + req.user.name + ' has invited you to join ' + companyUser.companyId.companyName + ' as a Support Agent.</p> <p> <ul> <li>Company Name: ' + companyUser.companyId.companyName + '</li> ' +
+              '<li>Company Domain: ' + req.user.domain + ' </li> </ul> </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+              '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="https://api.kibosupport.com/joincompany/' + uniqueToken_id + '">https://api.kibosupport.com/joincompany/' + uniqueToken_id + '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+              '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+            sendgrid.send(email, function (err, json) {
+              if (err) { return console.log(err) }
+
+              return res.send({status: 'success', msg: 'Email has been sent'})
+            })
+          }
+        })
+      }
     })
   })
-}
-
-function handleError (res, err) {
-  return res.send(500, err)
 }
