@@ -24,7 +24,8 @@ class Settings extends React.Component {
       count1: 0,
       firstTime: true,
       resetPassword: false,
-      showAPI: true
+      showAPI: true,
+      saveState: null
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -58,6 +59,10 @@ class Settings extends React.Component {
     // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
+    console.log('componentDidMount')
+    if (this.state.saveState === true || this.state.saveState === false) {
+      this.initializeSwitch(this.state.saveState)
+    }
   }
   changeType (e) {
     if (this.state.type === 'password') {
@@ -126,6 +131,7 @@ class Settings extends React.Component {
         if (this.state.count1 !== 1) {
           console.log('apisuccess')
           this.initializeSwitch(nextProps.apiSuccess.enabled)
+          this.setState({saveState: nextProps.apiSuccess.enabled})
         }
         this.setState({count: 2})
       }
@@ -134,6 +140,7 @@ class Settings extends React.Component {
       if (this.state.firstTime === true) {
         this.initializeSwitch(false)
         this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
+        this.setState({saveState: false})
       }
     }
   }

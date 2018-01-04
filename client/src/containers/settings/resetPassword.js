@@ -3,17 +3,23 @@
  */
 
 import React from 'react'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { changePass } from '../../redux/actions/settings.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
-
+import AlertContainer from 'react-alert'
+import Progress from 'react-progressbar'
+var taiPasswordStrength = require('tai-password-strength')
+var strengthTester = new taiPasswordStrength.PasswordStrength()
 class ResetPassword extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      password: false,
+      strength: '',
+      pwdBar: 0,
+      pwd_color: 'red',
       ismatch: false,
-      password: false
+      pwdlength: true
     }
     this.save = this.save.bind(this)
     this.equal = this.equal.bind(this)
@@ -26,10 +32,58 @@ class ResetPassword extends React.Component {
       this.setState({ismatch: false})
     }
   }
-  handlePwdChange () {
+  handlePwdChange (event) {
     this.setState({password: true})
+    if (event.target.value.length <= 6) {
+      this.setState({pwdlength: false})
+    } else if (event.target.value.length > 6) {
+      this.setState({pwdlength: true})
+    }
+    var result = strengthTester.check(event.target.value)
+    var text = ''
+    var bar = 0
+    var color = 'red'
+    switch (result.strengthCode) {
+      case 'VERY_WEAK':
+        text = 'WEAK'
+        bar = 25
+        color = 'red'
+        break
+      case 'WEAK':
+        text = 'REASONABLE'
+        bar = 50
+        color = 'orange'
+        break
+      case 'REASONABLE':
+        text = 'GOOD'
+        bar = 75
+        color = 'yellow'
+        break
+      case 'STRONG':
+        text = 'STRONG'
+        bar = 100
+        color = 'green'
+        break
+      case 'VERY_STRONG':
+        text = 'STRONG'
+        bar = 100
+        color = 'green'
+        break
+      default:
+        text = ''
+        bar = 0
+        color = 'red'
+    }
+    this.setState({strength: text})
+    this.setState({pwdBar: bar})
+    this.setState({pwd_color: color})
   }
-  save () {
+  save (event) {
+    event.preventDefault()
+    console.log('ismatch', this.state.ismatch)
+    if (this.state.ismatch) {
+      this.props.changePass({old_password: this.refs.current.value, new_password: this.refs.new.value}, this.msg)
+    }
   }
   componentWillMount () {
   }
@@ -53,8 +107,16 @@ class ResetPassword extends React.Component {
   componentWillReceiveProps (nextProps) {
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -90,6 +152,15 @@ class ResetPassword extends React.Component {
                     </label>
                     <div className='col-7 input-group'>
                       <input className='form-control m-input' required type='password' ref='new' onChange={this.handlePwdChange} />
+                      { this.state.password && this.state.pwdlength === false &&
+                        <div id='email-error' style={{color: 'red'}}>Length of password should be greater than 6</div>
+                      }
+                      { this.state.password &&
+                        <div>
+                          <div> Strength: {this.state.strength}</div>
+                          <div> <Progress completed={this.state.pwdBar} color={this.state.pwd_color} /> </div>
+                        </div>
+                        }
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -120,22 +191,14 @@ class ResetPassword extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    user: (state.basicInfo.user),
-    apiEnable: (state.APIInfo.apiEnable),
-    apiDisable: (state.APIInfo.apiDisable),
-    resetData: (state.APIInfo.resetData),
-    apiSuccess: (state.APIInfo.apiSuccess),
-    apiFailure: (state.APIInfo.apiFailure)
+    // changeSuccess: (state.APIInfo.changeSuccess),
+    // changeFailure: (state.APIInfo.changeFailure)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
-    enable: enable,
-    disable: disable,
-    reset: reset,
-    getAPI: getAPI
+    changePass: changePass
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)

@@ -41,6 +41,15 @@ class Signup extends React.Component {
   componentDidMount () {
     log(TAG, 'signup Container Mounted')
   }
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.successSignup) {
+      console.log('i am called')
+      this.props.history.push({
+        pathname: '/dashboard'
+
+      })
+    }
+  }
   handlePwdChange (event) {
     this.setState({password: true})
     if (event.target.value.length <= 6) {
@@ -197,10 +206,19 @@ class Signup extends React.Component {
     )
   }
 }
+function mapStateToProps (state) {
+ // console.log(state)
+  return {
+    errorMessage: (state.signupInfo.errorMessage),
+    successMessage: (state.signupInfo.successMessage),
+    successSignup: (state.signupInfo.successSignup),
+    errorSignup: (state.signupInfo.errorSignup)
+  }
+}
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     signUp: signUp
   },
     dispatch)
 }
-export default connect(null, mapDispatchToProps)(Signup)
+export default connect(mapStateToProps, mapDispatchToProps)(Signup)
