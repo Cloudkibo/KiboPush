@@ -1,25 +1,27 @@
 import * as ActionTypes from '../constants/constants'
 const initialState = {
   errorMessage: null,
-  successMessage: null
+  successMessage: null,
+  errorSignup: null,
+  successSignup: null
 }
-export function loginInfo (state = initialState, action) {
+export function signupInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.LOGIN_FAILURE:
+    case ActionTypes.RESEND_FAILURE:
       return Object.assign({}, state, {
         errorMessage: action.errorMessage
       })
-    case ActionTypes.LOGIN_SUCCESS:
+    case ActionTypes.RESEND_SUCCESS:
       return Object.assign({}, state, {
         successMessage: action.successMessage
       })
-    case ActionTypes.FORGOT_FAILURE:
+    case ActionTypes.SIGNUP_FAILURE:
       return Object.assign({}, state, {
-        errorForgot: action.errorMessage
+        errorSignup: action.errorMessage
       })
-    case ActionTypes.FORGOT_SUCCESS:
+    case ActionTypes.SIGNUP_SUCCESS:
       return Object.assign({}, state, {
-        successForgot: action.successMessage
+        successSignup: action.successMessage
       })
     default:
       return state
