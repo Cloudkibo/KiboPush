@@ -1,59 +1,29 @@
 'use strict'
 
-var _ = require('lodash')
-var Inviteagenttoken = require('./inviteagenttoken.model')
+let _ = require('lodash')
+let Inviteagenttoken = require('./inviteagenttoken.model')
+let config = require('./../../config/environment/index')
+let path = require('path')
 
-// Get list of inviteagenttokens
-exports.index = function (req, res) {
-  Inviteagenttoken.find(function (err, inviteagenttokens) {
-    if (err) { return handleError(res, err) }
-    return res.json(200, inviteagenttokens)
+const logger = require('../../components/logger')
+
+const TAG = 'api/inviteagenttoken/inviteagenttoken.controller.js'
+
+exports.verify = function (req, res) {
+  logger.serverLog(TAG, req.params)
+  Inviteagenttoken.findOne({token: req.params.id}, function (err, verificationtoken) {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!verificationtoken) {
+      return res.sendFile(path.join(config.root, 'client/pages/join_company_failed.html'))
+    } else {
+      res.cookie('email', verificationtoken.email, { expires: new Date(Date.now() + 900000) })
+      res.cookie('companyId', verificationtoken.companyId, { expires: new Date(Date.now() + 900000) })
+      res.cookie('companyName', verificationtoken.companyName, { expires: new Date(Date.now() + 900000) })
+      res.cookie('domain', verificationtoken.domain, { expires: new Date(Date.now() + 900000) })
+      return res.sendFile(path.join(config.root, 'client/pages/join_company_success.html'))
+    }
   })
-}
-
-// Get a single inviteagenttoken
-exports.show = function (req, res) {
-  Inviteagenttoken.findOne({token: req.params.id}, function (err, inviteagenttoken) {
-    if (err) { return handleError(res, err) }
-    if (!inviteagenttoken) { return res.send(404) }
-    return res.json(inviteagenttoken)
-  })
-}
-
-// Creates a new inviteagenttoken in the DB.
-exports.create = function (req, res) {
-  Inviteagenttoken.create(req.body, function (err, inviteagenttoken) {
-    if (err) { return handleError(res, err) }
-    return res.json(201, inviteagenttoken)
-  })
-}
-
-// Updates an existing inviteagenttoken in the DB.
-exports.update = function (req, res) {
-  if (req.body._id) { delete req.body._id }
-  Inviteagenttoken.findById(req.params.id, function (err, inviteagenttoken) {
-    if (err) { return handleError(res, err) }
-    if (!inviteagenttoken) { return res.send(404) }
-    var updated = _.merge(inviteagenttoken, req.body)
-    updated.save(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.json(200, inviteagenttoken)
-    })
-  })
-}
-
-// Deletes a inviteagenttoken from the DB.
-exports.destroy = function (req, res) {
-  Inviteagenttoken.findById(req.params.id, function (err, inviteagenttoken) {
-    if (err) { return handleError(res, err) }
-    if (!inviteagenttoken) { return res.send(404) }
-    inviteagenttoken.remove(function (err) {
-      if (err) { return handleError(res, err) }
-      return res.send(204)
-    })
-  })
-}
-
-function handleError (res, err) {
-  return res.send(500, err)
 }

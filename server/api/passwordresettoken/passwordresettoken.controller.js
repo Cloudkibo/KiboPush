@@ -5,6 +5,7 @@ let Passwordresettoken = require('./passwordresettoken.model')
 let User = require('./../user/Users.model')
 const config = require('./../../config/environment/index')
 let crypto = require('crypto')
+let path = require('path')
 
 exports.forgot = function (req, res) {
   User.findOne({email: req.body.email, domain: req.body.domain},
@@ -124,10 +125,14 @@ exports.reset = function (req, res) {
   })
 }
 
+exports.verify = function (req, res) {
+  return res.sendFile(path.join(config.root, 'client/pages/change_password.html'))
+}
+
 exports.change = function (req, res) {
   let userId = req.user._id
-  let oldPass = String(req.body.password)
-  let newPass = String(req.body.newpassword)
+  let oldPass = String(req.body.old_password)
+  let newPass = String(req.body.new_password)
 
   User.findById(userId, function (err, user) {
     if (err) {

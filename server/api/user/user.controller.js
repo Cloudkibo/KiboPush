@@ -4,6 +4,7 @@
 
 const Users = require('./Users.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const VerificationToken = require('./../verificationtoken/verificationtoken.model')
 const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
@@ -112,16 +113,32 @@ exports.create = function (req, res, next) {
       ownerId: user._id
     })
 
-    companyprofileData.save(function (err) {
+    companyprofileData.save(function (err, companySaved) {
       if (err) {
         return res.status(422).json({
           status: 'failed',
-          description: 'validation error: ' + JSON.stringify(err)
+          description: 'profile save error: ' + JSON.stringify(err)
         })
       }
 
-      let token = auth.signToken(user._id)
-      res.status(201).json({ status: 'success', token: token })
+      let companyUserData = new CompanyUsers({
+        companyId: companySaved._id,
+        userId: user._id,
+        domain_email: user.domain_email,
+        role: 'buyer'
+      })
+
+      companyUserData.save(function (err, companyUserSaved) {
+        if (err) {
+          return res.status(422).json({
+            status: 'failed',
+            description: 'profile user save error: ' + JSON.stringify(err)
+          })
+        }
+
+        let token = auth.signToken(user._id)
+        res.status(201).json({ status: 'success', token: token })
+      })
 
       let tokenString = crypto.randomBytes(16).toString('base64')
 
