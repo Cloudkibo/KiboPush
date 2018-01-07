@@ -122,6 +122,18 @@ exports.create = function (req, res) {
           }
         })
       }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'survey_created',
+          payload: {
+            survey_id: survey._id,
+            user_id: req.user._id,
+            user_name: req.user.name,
+            company_id: companyUser.companyId
+          }
+        }
+      })
       return res.status(201).json({status: 'success', payload: survey})
     })
   })

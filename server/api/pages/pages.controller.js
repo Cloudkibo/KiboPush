@@ -173,6 +173,18 @@ exports.enable = function (req, res) {
                       .json(
                         {status: 'failed', description: JSON.stringify(error)})
                     }
+                    require('./../../config/socketio').sendMessageToClient({
+                      room_id: companyUser.companyId,
+                      body: {
+                        action: 'page_connect',
+                        payload: {
+                          page_id: req.body.pageId,
+                          user_id: req.user._id,
+                          user_name: req.user.name,
+                          company_id: companyUser.companyId
+                        }
+                      }
+                    })
                     res.status(200)
                     .json({status: 'success', payload: {pages: pages}})
                   })
@@ -248,6 +260,18 @@ exports.disable = function (req, res) {
                   return res.status(500)
                   .json({status: 'failed', description: JSON.stringify(error)})
                 }
+                require('./../../config/socketio').sendMessageToClient({
+                  room_id: companyUser.companyId,
+                  body: {
+                    action: 'page_disconnect',
+                    payload: {
+                      page_id: req.body.pageId,
+                      user_id: req.user._id,
+                      user_name: req.user.name,
+                      company_id: companyUser.companyId
+                    }
+                  }
+                })
                 res.status(200).json({status: 'success', payload: pages})
               })
             })

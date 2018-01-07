@@ -115,6 +115,18 @@ exports.create = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'poll_created',
+            payload: {
+              poll_id: pollCreated._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
         res.status(201).json({status: 'success', payload: pollCreated})
       }
     })

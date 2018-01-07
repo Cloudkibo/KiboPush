@@ -82,6 +82,18 @@ exports.create = function (req, res) {
         })
       } else {
         logger.serverLog(TAG, 'Workflows created successfully ' + JSON.stringify(req.workflow))
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'workflow_created',
+            payload: {
+              workflow_id: workflow._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
         res.status(201).json({status: 'success', payload: workflow})
       }
     })
@@ -108,6 +120,18 @@ exports.edit = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err2)}`
         })
       }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: req.body.companyId,
+        body: {
+          action: 'workflow_updated',
+          payload: {
+            workflow_id: workflow._id,
+            user_id: req.user._id,
+            user_name: req.user.name,
+            company_id: req.body.companyId
+          }
+        }
+      })
       return res.status(200).json({status: 'success', payload: req.body})
     })
   })

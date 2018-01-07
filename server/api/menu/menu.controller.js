@@ -133,6 +133,18 @@ exports.create = function (req, res) {
               })
               logger.serverLog(TAG, JSON.stringify(err))
             } else {
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'menu_updated',
+                  payload: {
+                    page_id: req.body.pageId,
+                    user_id: req.user._id,
+                    user_name: req.user.name,
+                    payload: savedMenu
+                  }
+                }
+              })
               const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
 
               needle.request('post', requestUrl, req.body.payload, {json: true},
@@ -165,23 +177,20 @@ exports.create = function (req, res) {
                   err)}`)
             } else {
               const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
-              // var valueForMenu = {
-              //   'persistent_menu': [
-              //     {
-              //       'locale': 'default',
-              //       'call_to_actions': [
-              //         {
-              //           'title': 'heeeee',
-              //           'type': 'postback',
-              //           'payload': JSON.stringify({
-              //             'componentType': 'text',
-              //             'text': 'welcome'
-              //           })
-              //         }
-              //       ]
-              //     }
-              //   ]
-              // }
+
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'menu_updated',
+                  payload: {
+                    page_id: req.body.pageId,
+                    user_id: req.user._id,
+                    user_name: req.user.name,
+                    payload: updated
+                  }
+                }
+              })
+
               needle.request('post', requestUrl, req.body.payload, {json: true},
                 (err, resp) => {
                   if (!err) {

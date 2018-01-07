@@ -134,6 +134,18 @@ exports.create = function (req, res) {
                   TwitterUtility.restart()
                   res.status(201)
                   .json({status: 'success', payload: createdRecord})
+                  require('./../../config/socketio').sendMessageToClient({
+                    room_id: companyUser.companyId,
+                    body: {
+                      action: 'autoposting_created',
+                      payload: {
+                        autoposting_id: createdRecord._id,
+                        user_id: req.user._id,
+                        user_name: req.user.name,
+                        payload: createdRecord
+                      }
+                    }
+                  })
                 }
               })
             })
@@ -193,6 +205,18 @@ exports.create = function (req, res) {
                     `FB Page added ${JSON.stringify(createdRecord)}`)
                   res.status(201)
                   .json({status: 'success', payload: createdRecord})
+                  require('./../../config/socketio').sendMessageToClient({
+                    room_id: companyUser.companyId,
+                    body: {
+                      action: 'autoposting_created',
+                      payload: {
+                        autoposting_id: createdRecord._id,
+                        user_id: req.user._id,
+                        user_name: req.user.name,
+                        payload: createdRecord
+                      }
+                    }
+                  })
                 }
               })
             })
@@ -266,7 +290,19 @@ exports.edit = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'AutoPosting update failed'})
       }
-      return res.status(200).json({status: 'success', payload: autoposting})
+      res.status(200).json({status: 'success', payload: autoposting})
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'autoposting_updated',
+          payload: {
+            autoposting_id: autoposting._id,
+            user_id: req.user._id,
+            user_name: req.user.name,
+            payload: autoposting
+          }
+        }
+      })
     })
   })
 }
@@ -289,6 +325,17 @@ exports.destroy = function (req, res) {
           .json({status: 'failed', description: 'AutoPosting update failed'})
       }
       TwitterUtility.restart()
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: autoposting.companyId,
+        body: {
+          action: 'autoposting_removed',
+          payload: {
+            autoposting_id: autoposting._id,
+            user_id: req.user._id,
+            user_name: req.user.name
+          }
+        }
+      })
       return res.status(204).end()
     })
   })

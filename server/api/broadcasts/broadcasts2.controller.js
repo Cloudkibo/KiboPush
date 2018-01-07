@@ -131,6 +131,18 @@ exports.sendConversation = function (req, res) {
         .json({status: 'failed', description: 'Broadcasts not created'})
       }
 
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'new_broadcast',
+          payload: {
+            broadcast_id: broadcast._id,
+            user_id: req.user._id,
+            user_name: req.user.name
+          }
+        }
+      })
+
       let pagesFindCriteria = {userId: req.user._id, connected: true}
 
       if (req.body.isSegmented) {

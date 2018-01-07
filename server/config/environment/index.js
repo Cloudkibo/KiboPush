@@ -37,7 +37,7 @@ const all = {
 
   domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
 
-  // List of user roles
+  // List of user roles, NOTE: don't change the order
   userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
   mongo: {

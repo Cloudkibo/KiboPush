@@ -8,9 +8,10 @@ var express = require('express')
 var controller = require('./invitations.controller')
 
 var router = express.Router()
+const auth = require('../../auth/auth.service')
 
-// router.get('/', controller.index)
-// router.get('/:id', controller.show)
+router.get('/', auth.isAuthenticated(), controller.index)
+router.post('/cancel', controller.cancel)
 // router.post('/', controller.create)
 // router.put('/:id', controller.update)
 // router.patch('/:id', controller.update)

@@ -22,9 +22,11 @@ function onConnect (socket) {
     logger.clientLog(data.tag, data.data)
   })
 
-  socket.on('join', (data) => {
+  socket.on('message', (data) => {
     logger.serverLog(TAG, `Joining room for ${JSON.stringify(data)}`)
-    socket.join(data._id)
+    if (data.action === 'join_room') {
+      socket.join(data.room_id)
+    }
   })
 
   // Insert sockets below
@@ -66,4 +68,8 @@ exports.setup = function (socketio) {
 exports.sendChatToAgents = function (data) {
   logger.serverLog(TAG, `Sending new chat payload to client using socket.io`)
   globalSocket.to(data.room_id).emit('new_chat', data.payload)
+}
+
+exports.sendMessageToClient = function (data) {
+  globalSocket.to(data.room_id).emit('message', data.body)
 }

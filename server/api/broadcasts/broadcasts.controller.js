@@ -379,14 +379,17 @@ function saveChatInDb (page, session, chatPayload, subscriber) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
-    require('./../../config/socketio').sendChatToAgents({
-      room_id: page.userId._id,
-      payload: {
-        session_id: session._id,
-        chat_id: chat._id,
-        text: chatPayload.payload.text,
-        name: subscriber.firstName + ' ' + subscriber.lastName,
-        subscriber: subscriber
+    require('./../../config/socketio').sendMessageToClient({
+      room_id: page.companyId,
+      body: {
+        action: 'new_chat',
+        payload: {
+          session_id: session._id,
+          chat_id: chat._id,
+          text: chatPayload.payload.text,
+          name: subscriber.firstName + ' ' + subscriber.lastName,
+          subscriber: subscriber
+        }
       }
     })
     logger.serverLog(TAG, 'new chat message saved')
