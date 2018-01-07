@@ -75,7 +75,6 @@ class CreateConvo extends React.Component {
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
-    this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -88,7 +87,9 @@ class CreateConvo extends React.Component {
 //  sddsdfas
   componentWillMount () {
     // this.props.loadMyPagesList();
-
+    if(this.props.pages.length > 0){
+      this.setState({pageValue: this.props.pages[0].pageId})  
+    }
   }
 
   componentDidMount () {
@@ -158,10 +159,6 @@ class CreateConvo extends React.Component {
     })
   }
 
-  handlePageChange (value) {
-    var temp = value.split(',')
-    this.setState({ pageValue: temp })
-  }
 
   handleGenderChange (value) {
     var temp = value.split(',')
