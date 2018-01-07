@@ -19,6 +19,7 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -35,6 +36,7 @@ class Poll extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.props.clearAlertMessage()
   }
   showDialog () {
     console.log('in showDialog')
@@ -83,11 +85,13 @@ class Poll extends React.Component {
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
+      this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage || nextProps.errorMessage) {
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
       })
+      this.msg.error(nextProps.errorMessage)
     } else {
       this.setState({
         alertMessage: '',
@@ -127,8 +131,17 @@ class Poll extends React.Component {
   }
 
   render () {
+
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -313,14 +326,6 @@ class Poll extends React.Component {
                         <p> No data to display </p>
                       </span>
                     }
-                      {
-                        this.state.alertMessage !== '' &&
-                        <center>
-                          <Alert type={this.state.alertType} >
-                            {this.state.alertMessage}
-                          </Alert>
-                        </center>
-                      }
                     </div>
                   </div>
                 </div>
