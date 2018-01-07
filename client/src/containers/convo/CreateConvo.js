@@ -87,10 +87,10 @@ class CreateConvo extends React.Component {
 //  sddsdfas
   componentWillMount () {
     // this.props.loadMyPagesList();
-    if(this.props.pages.length > 0){
-      console.log("componentDidMount pageValue set")
-      this.setState({pageValue: this.props.pages[0].pageId})  
-    }
+    // if(this.props.pages.length > 0){
+    //   console.log("componentDidMount pageValue set")
+    //   this.setState({pageValue: this.props.pages[0].pageId})  
+    // }
   }
 
   componentDidMount () {
@@ -136,10 +136,10 @@ class CreateConvo extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
-    if(nextProps.pages.length > 0){
-      console.log("componentWillReceiveProps pageValue set")
-      this.setState({pageValue: nextProps.pages[0].pageId})  
-    }
+    // if(nextProps.pages.length > 0){
+    //   console.log("componentWillReceiveProps pageValue set")
+    //   this.setState({pageValue: nextProps.pages[0].pageId})  
+    // }
   }
 
   showDialog () {
@@ -578,7 +578,7 @@ class CreateConvo extends React.Component {
                       <br />
                       <br />
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
                       <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
 
                     </div>
