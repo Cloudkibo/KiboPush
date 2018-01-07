@@ -231,7 +231,6 @@ class Convo extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <form>
                         <div className='form-row'>
                           <div style={{display: 'inline-block'}} className='form-group col-md-8'>
                             <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
@@ -251,7 +250,6 @@ class Convo extends React.Component {
                             </select>
                           </div>
                         </div>
-                      </form>
                       <div>
 
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
