@@ -88,6 +88,7 @@ class CreateConvo extends React.Component {
   componentWillMount () {
     // this.props.loadMyPagesList();
     if(this.props.pages.length > 0){
+      console.log("componentDidMount pageValue set")
       this.setState({pageValue: this.props.pages[0].pageId})  
     }
   }
@@ -104,6 +105,7 @@ class CreateConvo extends React.Component {
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     if(this.props.pages.length > 0){
+      console.log("componentDidMount pageValue set")
       this.setState({pageValue: this.props.pages[0].pageId})  
     }
     
@@ -133,6 +135,10 @@ class CreateConvo extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
+    }
+    if(nextProps.pages.length > 0){
+      console.log("componentWillReceiveProps pageValue set")
+      this.setState({pageValue: nextProps.pages[0].pageId})  
     }
   }
 
