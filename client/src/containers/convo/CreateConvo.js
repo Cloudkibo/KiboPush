@@ -102,7 +102,10 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-
+    if(this.props.pages.length > 0){
+      this.setState({pageValue: this.props.pages[0].pageId})  
+    }
+    
     this.addSteps([{
       title: 'Component',
       text: 'You can add components to your broadcast using these button',
@@ -613,7 +616,8 @@ class CreateConvo extends React.Component {
               }
                   <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                    {this.state.list}
+                    // <DragSortableList items= dropBackTransitionDuration={0.3} type='vertical' />
 
                   </div>
 
