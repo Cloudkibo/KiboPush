@@ -394,6 +394,8 @@ class CreateConvo extends React.Component {
       placeholder: 'Select Pages',
       allowClear: true,
     })
+    this.setState({pageValue: pageOptions[0].id})
+    console.log("Setting pageValue in InitPage Select", this.state.pageValue)
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
