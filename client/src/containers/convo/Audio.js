@@ -66,21 +66,25 @@ class Audio extends React.Component {
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      var fileInfo = {
-        id: this.props.id,
-        componentType: 'audio',
-        fileName: file.name,
-        type: file.type,
-        size: file.size
+      if (file.size > 25000000) {
+        this.msg.error('File size is too large. Maximum size is 25MB')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        var fileInfo = {
+          id: this.props.id,
+          componentType: 'audio',
+          fileName: file.name,
+          type: file.type,
+          size: file.size
+        }
+        console.log(fileInfo)
+        this.setState({loading: true})
+        this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
-      console.log(fileInfo)
-      this.setState({loading: true})
-      this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
 
