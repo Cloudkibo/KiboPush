@@ -411,9 +411,9 @@ class AddSurvey extends React.Component {
             value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
-            <button className='btn btn-secondary' type='button'
+            <button className='btn btn-secondary' type='button' style={{background: #e74c3c}}
               onClick={this.removeChoices.bind(this, j, qindex)}>
-              <span className='fa fa-times' />
+              <span className='fa fa-times fa-inverse' />
             </button>
           </span>
         </div>
@@ -502,6 +502,7 @@ class AddSurvey extends React.Component {
                     placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
+                    <span>Max Length for each choice is 20 characters</span>
                 </div>
 
                 <div className='form-group field field-array'>
@@ -509,7 +510,6 @@ class AddSurvey extends React.Component {
                     <legend className='scheduler-border'>
                       Choices
                     </legend>
-                    <span>Max Length for each choice is 20 characters</span>
                     <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                       <div className='col-xs-10'>
                         <div className='form-group field field-string'>
