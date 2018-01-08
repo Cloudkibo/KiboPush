@@ -1896,10 +1896,10 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/Survey"
+                                    "$ref": "#/definitions/createSurvey"
                                 },
                                 {
-                                    "$ref": "#/definitions/Survey_Question"
+                                    "$ref": "#/definitions/Create_Survey_Question"
                                 }
                             ]
                         }
@@ -1954,7 +1954,7 @@
                                     "$ref": "#/definitions/EditSurvey"
                                 },
                                 {
-                                    "$ref": "#/definitions/Survey_Question"
+                                    "$ref": "#/definitions/Create_Survey_Question"
                                 }
                             ]
                         }
@@ -3444,24 +3444,29 @@
             "type": "object",
             "description": "The table contains information for editing a survey",
             "required": [
-                "id"
+                "survey"
             ],
             "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "the unique id of the record"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Title of the survey"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Detailed description of the survey"
-                },
-                "image": {
-                    "type": "string",
-                    "description": "Image attached to survey"
+                "survey": {
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "type": "string",
+                            "description": "Unique id of the record"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Title of the survey"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Detailed description of the survey"
+                        },
+                        "image": {
+                            "type": "string",
+                            "description": "Image attached to survey"
+                        }
+                    }
                 }
             }
         },
@@ -3541,6 +3546,83 @@
                     "type": "string",
                     "description": "Date of creation",
                     "readOnly": true
+                }
+            }
+        },
+        "createSurvey": {
+            "type": "object",
+            "description": "The record of the survey created by user. This is main table for survey. Other linked tables are Survey_Questions and Survey_Response",
+            "required": [
+                "survey"
+            ],
+            "properties": {
+                "survey": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": "Title of the survey"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Detailed description of the survey"
+                        }
+                    }
+                },
+                "isSegmented": {
+                    "type": "boolean",
+                    "description": "Whether this survey is segmented or not",
+                    "default": false
+                },
+                "segmentationPageIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The ids of the pages to send survey from"
+                    }
+                },
+                "segmentationLocale": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The locale of the subscribers to send survey to"
+                    }
+                },
+                "segmentationGender": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The genders of the subscribers to send survey to"
+                    }
+                }
+            }
+        },
+        "Create_Survey_Question": {
+            "type": "object",
+            "description": "Here we store the questions which belong to a survey. This table is associated with Survey table.",
+            "required": [
+                "questions"
+            ],
+            "properties": {
+                "questions": {
+                    "type": "object",
+                    "properties": {
+                        "statement": {
+                            "description": "This is the statement of the question",
+                            "type": "string"
+                        },
+                        "options": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "Answer options given for a question"
+                            }
+                        },
+                        "type": {
+                            "type": "string",
+                            "description": "Type of question, possible values are 'text', 'multichoice'"
+                        }
+                    }
                 }
             }
         },

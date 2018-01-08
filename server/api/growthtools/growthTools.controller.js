@@ -12,6 +12,7 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
 let request = require('request')
+let _ = require('lodash')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG,
@@ -56,7 +57,7 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
-          if (data.phone_numbers && data.name) {
+          if (data.phone_numbers && data.names) {
             var result = data.phone_numbers.replace(/[- )(]/g, '')
             // var savePhoneNumber = new PhoneNumber({
             //   name: data.name,
@@ -76,6 +77,15 @@ exports.upload = function (req, res) {
               }
             })
             let pagesFindCriteria = {userId: req.user._id, connected: true}
+            if (req.body.isSegmented) {
+              if (req.body.segmentationPageIds.length > 0) {
+                pagesFindCriteria = _.merge(pagesFindCriteria, {
+                  pageId: {
+                    $in: req.body.segmentationPageIds
+                  }
+                })
+              }
+            }
             Pages.find(pagesFindCriteria, (err, pages) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
