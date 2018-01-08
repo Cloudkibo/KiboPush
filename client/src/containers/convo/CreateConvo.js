@@ -622,7 +622,7 @@ class CreateConvo extends React.Component {
                   </ModalDialog>
                 </ModalContainer>
               }
-                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75,  borderRadius: '0px', border: '1px solid #ccc'}}>
+                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30,  borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                     
                   <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />   
