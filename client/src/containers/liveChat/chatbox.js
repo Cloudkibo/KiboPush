@@ -369,14 +369,20 @@ class ChatBox extends React.Component {
         attachmentType: file.type
       })
       this.setComponentType(file)
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      fileData.append('componentType', this.state.componentType)
-      this.setState({uploadDescription: 'File is uploading..'})
-      this.props.uploadAttachment(fileData, this.handleUpload)
+      if (file.type === 'text/javascript' || file.type === 'text/exe') {
+        this.msg.error('Cannot add js or exe files. Please select another file')
+      } else if (file.size > 25000000) {
+        this.msg.error('File size is too large. Maximum size is 25MB')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', this.state.componentType)
+        this.setState({uploadDescription: 'File is uploading..'})
+        this.props.uploadAttachment(fileData, this.handleUpload)
+      }
     }
   }
   handleUpload (res) {
