@@ -269,6 +269,7 @@ class CreateWorkflow extends React.Component {
                           <textarea className='form-control m-input'
                             onChange={this.changeReply}
                             value={this.state.reply} rows='5'
+                            placeholder='Your reply here'
                             id='exampleInputReply' />
                         </div>
                       </div>
