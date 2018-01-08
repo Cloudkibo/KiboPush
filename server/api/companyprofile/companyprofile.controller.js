@@ -188,14 +188,13 @@ exports.updateRole = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  if (config.roles.indexOf(req.user.role) > -1 &&
-    config.roles.indexOf(req.user.role) < 2) {
+  if (config.userRoles.indexOf(req.user.role) > 1) {
     return res.status(401).json(
       {status: 'failed', description: 'Unauthorised to perform this action.'})
   }
 
-  if (config.roles.indexOf(req.body.role) < 0) {
-    return res.status(401)
+  if (config.userRoles.indexOf(req.body.role) < 0) {
+    return res.status(404)
       .json({status: 'failed', description: 'Invalid role.'})
   }
 
@@ -290,7 +289,7 @@ exports.members = function (req, res) {
         })
       }
       CompanyUsers.find({companyId: companyUser.companyId})
-        .populate(userId)
+        .populate('userId')
         .exec((err, members) => {
           if (err) {
             return res.status(500).json({

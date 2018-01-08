@@ -11,7 +11,7 @@ var router = express.Router()
 const auth = require('../../auth/auth.service')
 
 router.get('/', auth.isAuthenticated(), controller.index)
-router.post('/cancel', controller.cancel)
+router.post('/cancel', auth.isAuthenticated(), controller.cancel)
 // router.post('/', controller.create)
 // router.put('/:id', controller.update)
 // router.patch('/:id', controller.update)

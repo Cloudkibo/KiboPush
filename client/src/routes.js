@@ -61,6 +61,9 @@ import TemplatePoll from './containers/templates/templatePolls'
 import TemplateSurvey from './containers/templates/templateSurveys'
 import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
+import Invitations from './containers/invitations/invitations'
+import InviteMembers from './containers/invitations/inviteMember'
+import Members from './containers/members/members'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -143,6 +146,9 @@ const routes = (
     <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
+    <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
+    <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
+    <Route path='/members' component={Members} onEnter={requireAuth} />
   </Route>
 
 )
