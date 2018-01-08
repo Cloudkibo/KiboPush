@@ -406,7 +406,7 @@ class AddSurvey extends React.Component {
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
-          <input type='text' placeholder={'Choice ' + (j + 1)}
+          <input type='text' maxLength={20} placeholder={'Choice ' + (j + 1)}
             className='form-control input-sm'
             value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
@@ -509,6 +509,7 @@ class AddSurvey extends React.Component {
                     <legend className='scheduler-border'>
                       Choices
                     </legend>
+                    <span>Max Length for each choice is 20 characters</span>
                     <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                       <div className='col-xs-10'>
                         <div className='form-group field field-string'>
