@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import AlertContainer from 'react-alert'
 import {
   fetchUserChats,
   uploadAttachment,
@@ -500,8 +501,16 @@ class ChatBox extends React.Component {
       nextArrow: <RightArrow />,
       prevArrow: <LeftArrow />
     }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='col-xl-5'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Popover
           style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
