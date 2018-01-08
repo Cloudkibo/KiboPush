@@ -69,6 +69,8 @@ class File extends React.Component {
       this.setState({file: file})
       if (file.type === 'text/javascript' || file.type === 'text/exe') {
         this.msg.error('Cannot add js or exe files. Please select another file')
+      } else if (file.size > 25000000) {
+        this.msg.error('File size is too large. Maximum size is 25MB')
       } else {
         var fileData = new FormData()
         fileData.append('file', file)
