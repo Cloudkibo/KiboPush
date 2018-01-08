@@ -319,6 +319,7 @@ class CreatePoll extends React.Component {
                           <label className='control-label'>Ask something...</label>
                           <textarea className='form-control'
                             value={this.state.statement}
+                            placeholder='Enter Question'
                             onChange={(e) => this.updateStatment(e)} />
                         </div>
                         <div style={{top: '10px'}}>
