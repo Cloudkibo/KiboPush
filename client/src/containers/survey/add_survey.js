@@ -411,7 +411,7 @@ class AddSurvey extends React.Component {
             value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
-            <button className='btn btn-secondary' type='button' style={{background: #e74c3c}}
+            <button className='btn btn-secondary' type='button' style={{background: '#e74c3c'}}
               onClick={this.removeChoices.bind(this, j, qindex)}>
               <span className='fa fa-times fa-inverse' />
             </button>
