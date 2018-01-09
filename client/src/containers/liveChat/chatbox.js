@@ -116,7 +116,7 @@ class ChatBox extends React.Component {
   }
 
   scrollToBottom () {
-    this.messagesEnd.scrollIntoView({behavior: 'smooth'})
+    this.messagesEnd.scrollIntoView({behavior: 'instant'})
   }
 
   removeAttachment () {
