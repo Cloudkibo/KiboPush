@@ -5,7 +5,6 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import Select from 'react-select'
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 const moment = extendMoment(Moment)
@@ -21,7 +20,7 @@ class PollsInfo extends React.Component {
       filterOptions: [
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
-      selectedFilterValue: 0
+      selectedFilterValue: 10
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -62,6 +61,7 @@ class PollsInfo extends React.Component {
       data[index] = poll[i]
       index++
     }
+    console.log('data', data)
     this.setState({PollData: data})
     console.log('in displayData of userPolls', this.state.PollData)
   }
@@ -90,18 +90,18 @@ class PollsInfo extends React.Component {
   }
 
   onFilter (val) {
-    console.log('Selected: ' + JSON.stringify(val))
+    //  console.log('Selected: ' + JSON.stringify(val))
     if (!val) {
       this.setState({selectedFilterValue: null})
       this.displayData(0, this.props.polls)
       this.setState({ totalLength: this.props.polls.length })
-    } else if (val.value === 10) {
+    } else if (val === 10) {
       console.log('Selected:', val.value)
       this.filterByDays(10)
-      this.setState({ selectedFilterValue: val.value })
-    } else if (val.value === 30) {
+      this.setState({ selectedFilterValue: val })
+    } else if (val === 30) {
       this.filterByDays(30)
-      this.setState({ selectedFilterValue: val.value })
+      this.setState({ selectedFilterValue: val })
     }
   }
 
@@ -130,56 +130,96 @@ class PollsInfo extends React.Component {
   render () {
     return (
       <div className='row'>
-        <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-          <div className='ui-block'>
-            <div className='birthday-item inline-items badges'>
-              <h4>Polls</h4><br />
-              { this.props.polls && this.props.polls.length > 0
-              ? <div className='table-responsive'>
-                <form>
-                  <div className='form-row' style={{display: 'flex'}}>
-                    <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                      <label> Search </label>
-                      <input type='text' placeholder='Search Polls' className='form-control' onChange={this.searchPolls} />
-                    </div>
-                    <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                      <label> Filter </label>
-                      <Select
-                        name='form-field-name'
-                        options={this.state.filterOptions}
-                        onChange={this.onFilter}
-                        placeholder='Filter by last:'
-                        value={this.state.selectedFilterValue}
-                        clearValueText='Filter by:'
-                      />
-                    </div>
+        <div
+          className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+          <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    Polls
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-portlet__body'>
+              <div className='row align-items-center'>
+                { this.props.polls && this.props.polls.length > 0
+              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                <div className='form-group m-form__group row align-items-center'>
+                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                    <input type='text' placeholder='Search by Descripton...' className='form-control m-input m-input--solid' onChange={this.searchPolls} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                      <span><i className='la la-search' /></span>
+                    </span>
                   </div>
-                </form>
+                  <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                  <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                    <div className='m-form__label'>
+                      <label>Filter by Last:&nbsp;&nbsp;</label>
+                    </div>
+                    <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedFilterValue} onChange={this.onFilter}>
+                      {
+                        this.state.filterOptions.map((locale, i) => (
+                          <option value={locale.value}>{locale.label}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                </div>
                 {
                   this.state.PollData && this.state.PollData.length > 0
-                  ? <div>
-                    <table className='table table-striped'>
-                      <thead>
-                        <tr>
-                          <th>Platform</th>
-                          <th>Descripton</th>
-                          <th>Created at</th>
-                          <th />
+                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                    <table className='m-datatable__table'
+                      id='m-datatable--27866229129' style={{
+                        display: 'block',
+                        height: 'auto',
+                        overflowX: 'auto'
+                      }}>
+                      <thead className='m-datatable__head'>
+                        <tr className='m-datatable__row'
+                          style={{height: '53px'}}>
+                          <th data-field='platform'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Platform</span></th>
+                          <th data-field='description'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Descripton</span></th>
+                          <th data-field='created'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Created at</span></th>
+                          <th data-field='more'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}} /></th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                         {
                           this.state.PollData.map((poll, i) => (
-                            <tr>
-                              <td>{poll.platform}</td>
-                              <td>{poll.statement}</td>
-                              <td>{handleDate(poll.datetime)}</td>
-                              <td> <Link className='btn btn-primary btn-sm'
-                                to='/viewPollDetail'
-                                style={{float: 'left', margin: 2}}
-                                onClick={() => this.gotoViewPoll(poll)}>
-                              View
-                              </Link></td>
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{height: '55px'}} key={i}>
+                              <td data-field='platform'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>{poll.platform}</span></td>
+                              <td data-field='description'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>{poll.statement}</span></td>
+                              <td data-field='created'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
+                              <td data-field='more'
+                                className='m-datatable__cell'>
+                                <span style={{width: '150px'}}>
+                                  <Link className='btn btn-primary btn-sm'
+                                    to='/viewPollDetail'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.gotoViewPoll(poll)}>
+                              View Poll
+                            </Link></span></td>
                             </tr>
                           ))
                         }
@@ -204,9 +244,10 @@ class PollsInfo extends React.Component {
                 <p> No data to display </p>
               </div>
             }
+              </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     )
   }

@@ -10,15 +10,49 @@
   color: #ccc;
 }
 
+
+@media only screen and (min-height: 1025px) {
+    [data-reactroot] {
+        height: 180vh !important;
+      }
+
+      [data-reactroot] > div{
+        height: 180vh !important;
+      }
+
+
+      div.m-body{
+        height: 100% !important; 
+      }
+}
+
+
+
+
+
+/*#root > [data-reactroot] { height: 100% }*/
+
+.select2 {
+    min-width: 80% !important;
+}
+
 @media only screen and (min-width: 1025px) {
     .fixed {
         position: fixed;
     }
 }
 
+
 .slick-prev:hover:before,
 .slick-next:hover:before {
-  color: #FF5E3A;
+  color: #337AB7;
+}
+
+.ui-block{
+  background: white;
+  margin: 5px;
+  text-align: center;
+  padding-top: 10px; 
 }
 
 .cardimageblock{
@@ -37,30 +71,30 @@
 }
 
 .hoverborder:hover{
-  border-color: #FF5E3A;
+  border-color: #337AB7;
   cursor: pointer;
 }
 
 .hoverborder:hover h6, .hoverborder:hover h4{
-  color: #FF5E3A;
+  color: #337AB7;
 }
 
 .hoverbordercomponent{
-  border-color: #FF5E3A !important;
+  border-color: #337AB7 !important;
   border-style: dotted !important;
   border-width: 2px !important;
 }
 
 .hoverbordercomponent:hover{
-  border-color: #FF5E3A;
+  border-color: #337AB7;
   border-style: solid !important;
   border-width: 2px;
-  color: #FF5E3A;
+  color: #337AB7;
   cursor: pointer;
 }
 
 .hoverbordercomponent:hover > div > h6{
-  color: #FF5E3A;
+  color: #337AB7;
 }
 
 .hoverbordersolid{
@@ -77,7 +111,7 @@ textarea.hoverbordersolid{
 }
 
 .hoverbordersolid:hover{
-  border-color: #FF5E3A;
+  border-color: #337AB7;
   cursor: pointer;
 }
 

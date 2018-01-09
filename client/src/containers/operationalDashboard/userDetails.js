@@ -1,8 +1,6 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import PagesInfo from './userPages'
 import BroadcastsInfo from './userBroadcasts'
 import SurveysInfo from './userSurveys'
@@ -74,17 +72,17 @@ class UserDetails extends React.Component {
     }
   }
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/material.min.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/main.js')
+    // document.body.appendChild(addScript)
   }
 
   componentDidUpdate () {
@@ -95,16 +93,24 @@ class UserDetails extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <h3>{this.props.location.state.name}</h3>
-          <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
-          <BroadcastsInfo userID={this.props.location.state._id} />
-          <SurveysInfo userID={this.props.location.state._id} />
-          <PollsInfo userID={this.props.location.state._id} />
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
+              <BroadcastsInfo userID={this.props.location.state._id} />
+              <SurveysInfo userID={this.props.location.state._id} />
+              <PollsInfo userID={this.props.location.state._id} />
+            </div>
+          </div>
         </div>
       </div>
     )

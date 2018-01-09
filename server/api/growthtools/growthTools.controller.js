@@ -12,6 +12,7 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
 let request = require('request')
+let _ = require('lodash')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG,
@@ -25,11 +26,6 @@ exports.index = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-  logger.serverLog(TAG,
-    `upload file route called. req.files: ${JSON.stringify(req.files)}`)
-  logger.serverLog(TAG,
-    `upload file route called. req.files.text: ${JSON.stringify(
-      req.files.text)}`)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -47,13 +43,6 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-  logger.serverLog(TAG, JSON.stringify(req.body.text))
-  logger.serverLog(TAG,
-    `upload file route called. req.files.file.path: ${JSON.stringify(
-      req.files.file.path)}`)
-  logger.serverLog(TAG,
-    `upload file route called. req.files.file: ${JSON.stringify(
-      req.files.file)}`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles' + serverPath,
@@ -68,9 +57,8 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
-          if (data.phone_numbers && data.name) {
+          if (data.phone_numbers && data.names) {
             var result = data.phone_numbers.replace(/[- )(]/g, '')
-            logger.serverLog(TAG, JSON.stringify(data))
             // var savePhoneNumber = new PhoneNumber({
             //   name: data.name,
             //   number: result,
@@ -87,10 +75,17 @@ exports.upload = function (req, res) {
                   description: 'phone number create failed'
                 })
               }
-              logger.serverLog(TAG,
-                'PhoneNumber saved' + JSON.stringify(phonenumbersaved))
             })
             let pagesFindCriteria = {userId: req.user._id, connected: true}
+            if (req.body.isSegmented) {
+              if (req.body.segmentationPageIds.length > 0) {
+                pagesFindCriteria = _.merge(pagesFindCriteria, {
+                  pageId: {
+                    $in: req.body.segmentationPageIds
+                  }
+                })
+              }
+            }
             Pages.find(pagesFindCriteria, (err, pages) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)

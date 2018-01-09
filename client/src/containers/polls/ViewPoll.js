@@ -18,17 +18,17 @@ class ViewPoll extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | View Poll'
   }
 
@@ -36,56 +36,52 @@ class ViewPoll extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-
-        <div className='container'>
-          <br />
-          <br />
-          <br />
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <h2 className='presentation-margin'>View Poll</h2>
-            <div className='ui-block'>
-              <div className='container'>
-                <div className='news-feed-form'>
-
-                  <div className='tab-content'>
-                    <div className='tab-pane active' id='home-1' role='tabpanel'
-                      aria-expanded='true'>
-                      <br />
-
-                      <div className='form-group'>
-                        <label>Q. {this.props.location.state.statement}</label>
-                        <ol className='table-bordered'>
-                          <div className='container'>
-                            <li>{this.props.location.state.options[0]}</li>
-                            <li>{this.props.location.state.options[1]}</li>
-                            <li>{this.props.location.state.options[2]}</li>
-                          </div>
-                        </ol>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>View Poll</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Q. {this.props.location.state.statement}
+                          </h3>
+                        </div>
                       </div>
-                      <br />
-
-                      <div className='add-options-message'>
-                        <Link
-                          to='/poll'
-                          style={{ float: 'right', margin: 2 }}
-                          className='btn btn-sm btn-border-think btn-transparent c-grey'>
-                          Back
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='container'>
+                        <li>{this.props.location.state.options[0]}</li>
+                        <li>{this.props.location.state.options[1]}</li>
+                        <li>{this.props.location.state.options[2]}</li>
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <Link
+                        to='/poll'
+                        style={{ float: 'right', margin: '20px' }}
+                        className='btn btn-secondary'>
+                        Back
                       </Link>
-                      </div>
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
     )
   }
 }

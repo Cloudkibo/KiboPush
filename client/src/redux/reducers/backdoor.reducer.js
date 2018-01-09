@@ -15,7 +15,8 @@ const initialState = {
   pollDetails: null,
   broadcastsGraphInfo: [],
   surveysGraphInfo: [],
-  pollsGraphInfo: []
+  pollsGraphInfo: [],
+  sessionsGraphInfo: []
 }
 
 export function UsersInfo (state = initialState, action) {
@@ -207,6 +208,17 @@ export function broadcastsGraphInfo (state = initialState, action) {
     case ActionTypes.UPDATE_BROADCASTS_GRAPH:
       return Object.assign({}, state, {
         broadcastsGraphInfo: action.data
+      })
+
+    default:
+      return state
+  }
+}
+export function sessionsGraphInfo (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_SESSIONS_GRAPH:
+      return Object.assign({}, state, {
+        sessionsGraphInfo: action.data
       })
 
     default:

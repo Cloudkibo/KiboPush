@@ -11,6 +11,7 @@ const Page = require('./../pages/Pages.model')
 const urllib = require('url')
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
+const _ = require('lodash')
 
 exports.index = function (req, res) {
   AutoPosting.find({userId: req.user._id}, (err, autoposting) => {
@@ -26,16 +27,23 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  // todo check for individual content creator services validity
-  logger.serverLog(TAG,
-    `Inside Create Autoposting, req body = ${JSON.stringify(req.body)}`)
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'subscriptionUrl')) parametersMissing = true
+  if (!_.has(req.body, 'subscriptionType')) parametersMissing = true
+  if (!_.has(req.body, 'accountTitle')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
   AutoPosting.find(
     {userId: req.user._id, subscriptionUrl: req.body.subscriptionUrl},
     (error, gotData) => {
       if (error) {
         res.status(500).json({
           status: 'failed',
-          error: error,
           description: 'Internal Server Error'
         })
       }
@@ -67,6 +75,7 @@ exports.create = function (req, res) {
           let url = req.body.subscriptionUrl
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
           TwitterUtility.findUser(screenName, (err, data) => {
             if (err) {
               logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
@@ -103,6 +112,7 @@ exports.create = function (req, res) {
           let url = req.body.subscriptionUrl
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
           logger.serverLog(TAG, `the parse got as ${screenName}`)
           Page.findOne({
             userId: req.user._id,
@@ -187,7 +197,6 @@ exports.create = function (req, res) {
             if (err) {
               res.status(500).json({
                 status: 'Failed',
-                error: err,
                 description: 'Failed to insert record'
               })
             } else {

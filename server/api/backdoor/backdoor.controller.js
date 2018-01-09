@@ -15,14 +15,14 @@ const PollResponse = require('../polls/pollresponse.model')
 const PollPages = require('../page_poll/page_poll.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const SurveyResponses = require('../surveys/surveyresponse.model')
+const Sessions = require('../sessions/sessions.model')
 const sortBy = require('sort-array')
 const mongoose = require('mongoose')
-const csvdata = require('csvdata')
-const path = require('path')
+var json2csv = require('json2csv')
+
 let _ = require('lodash')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all users api is working')
   Users.find({}, (err, users) => {
     if (err) {
       return res.status(404).json({
@@ -30,7 +30,6 @@ exports.index = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total users ${users.length}`)
     res.status(200).json({
       status: 'success',
       payload: users
@@ -39,7 +38,6 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -47,7 +45,6 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Initially Total pages ${pages.length}`)
     Subscribers.aggregate([
       {
         $match: {
@@ -80,7 +77,6 @@ exports.allpages = function (req, res) {
           subscribers: 0
         })
       }
-      logger.serverLog(TAG, `Total pages in payload ${pagesPayload.length}`)
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
@@ -104,7 +100,6 @@ exports.allpages = function (req, res) {
 }
 
 exports.allsubscribers = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all subscribers api is working')
   Subscribers.find({pageId: req.params.pageid}, (err, subscribers) => {
     if (err) {
       return res.status(404).json({
@@ -121,7 +116,6 @@ exports.allsubscribers = function (req, res) {
 }
 
 exports.allbroadcasts = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all broadcasts api is working')
   // todo put pagination for scaling
   Broadcasts.find({userId: req.params.userid}, (err, broadcasts) => {
     if (err) {
@@ -139,7 +133,6 @@ exports.allbroadcasts = function (req, res) {
 }
 
 exports.allpolls = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all polls api is working')
   // todo put pagination for scaling
   Polls.find({userId: req.params.userid}, (err, polls) => {
     if (err) {
@@ -148,7 +141,6 @@ exports.allpolls = function (req, res) {
         description: `Error in getting polls ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total polls ${polls.length}`)
     res.status(200).json({
       status: 'success',
       payload: polls
@@ -157,16 +149,14 @@ exports.allpolls = function (req, res) {
 }
 
 exports.allsurveys = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor get all surveys api is working')
   // todo put pagination for scaling
-  Surveys.find({}, (err, surveys) => {
+  Surveys.find({userId: req.params.userid}, (err, surveys) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
         description: `Error in getting surveys ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total surveys ${surveys.length}`)
     res.status(200).json({
       status: 'success',
       payload: surveys
@@ -174,7 +164,6 @@ exports.allsurveys = function (req, res) {
   })
 }
 exports.surveyDetails = function (req, res) {
-  logger.serverLog(TAG, 'Backdoor surveyDetails api is working')
   Surveys.find({_id: req.params.surveyid}, (err, survey) => {
     if (err) {
       return res.status(500).json({
@@ -209,7 +198,6 @@ exports.surveyDetails = function (req, res) {
 }
 
 exports.toppages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({connected: true}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -217,7 +205,6 @@ exports.toppages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
     Subscribers.aggregate([
       {
         $group: {
@@ -250,10 +237,6 @@ exports.toppages = function (req, res) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
             gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG,
-              `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
@@ -261,7 +244,7 @@ exports.toppages = function (req, res) {
       let sorted = sortBy(pagesPayload, 'subscribers')
       let top10 = _.takeRight(sorted, 10)
       top10 = top10.reverse()
-      logger.serverLog(TAG, `top10 ${JSON.stringify(top10)}`)
+      logger.serverLog(TAG, `top10 pages ${JSON.stringify(top10)}`)
       res.status(200).json({
         status: 'success',
         payload: top10
@@ -270,8 +253,6 @@ exports.toppages = function (req, res) {
   })
 }
 exports.datacount = function (req, res) {
-  logger.serverLog(TAG,
-    `req.params.userid ${JSON.stringify(req.params.userid)}`)
   var days = 0
   if (req.params.userid === '10') {
     days = 10
@@ -345,19 +326,32 @@ exports.datacount = function (req, res) {
                                   err2)}`
                   })
                 }
-                let datacounts = {
-                  UsersCount: gotUsersCount,
-                  SubscribersCount: gotSubscribersCount,
-                  PagesCount: gotPagesCount,
-                  BroadcastsCount: gotBroadcastsCount,
-                  PollsCount: gotPollsCount,
-                  SurveysCount: gotSurveysCount
-                }
-                logger.serverLog(TAG,
-                              `counts ${JSON.stringify(datacounts)}`)
-                res.status(200).json({
-                  status: 'success',
-                  payload: datacounts
+                Pages.aggregate(
+                  [
+                        {$group: {_id: null, count: {$sum: 1}}}
+                  ], (err2, gotAllPagesCount) => {
+                  if (err2) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages count ${JSON.stringify(
+                              err2)}`
+                    })
+                  }
+                  let datacounts = {
+                    UsersCount: gotUsersCount,
+                    SubscribersCount: gotSubscribersCount,
+                    PagesCount: gotPagesCount,
+                    AllPagesCount: gotAllPagesCount,
+                    BroadcastsCount: gotBroadcastsCount,
+                    PollsCount: gotPollsCount,
+                    SurveysCount: gotSurveysCount
+                  }
+                  logger.serverLog(TAG,
+                                `counts ${JSON.stringify(datacounts)}`)
+                  res.status(200).json({
+                    status: 'success',
+                    payload: datacounts
+                  })
                 })
               })
             })
@@ -464,19 +458,32 @@ exports.datacount = function (req, res) {
                                   err2)}`
                   })
                 }
-                let datacounts = {
-                  UsersCount: gotUsersCount,
-                  SubscribersCount: gotSubscribersCount,
-                  PagesCount: gotPagesCount,
-                  BroadcastsCount: gotBroadcastsCount,
-                  PollsCount: gotPollsCount,
-                  SurveysCount: gotSurveysCount
-                }
-                logger.serverLog(TAG,
-                              `counts ${JSON.stringify(datacounts)}`)
-                res.status(200).json({
-                  status: 'success',
-                  payload: datacounts
+                Pages.aggregate(
+                  [
+                        {$group: {_id: null, count: {$sum: 1}}}
+                  ], (err2, gotAllPagesCount) => {
+                  if (err2) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages count ${JSON.stringify(
+                              err2)}`
+                    })
+                  }
+                  let datacounts = {
+                    UsersCount: gotUsersCount,
+                    SubscribersCount: gotSubscribersCount,
+                    PagesCount: gotPagesCount,
+                    BroadcastsCount: gotBroadcastsCount,
+                    AllPagesCount: gotAllPagesCount,
+                    PollsCount: gotPollsCount,
+                    SurveysCount: gotSurveysCount
+                  }
+                  logger.serverLog(TAG,
+                                `counts ${JSON.stringify(datacounts)}`)
+                  res.status(200).json({
+                    status: 'success',
+                    payload: datacounts
+                  })
                 })
               })
             })
@@ -495,7 +502,6 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total users ${users.length}`)
     let usersPayload = []
     for (let i = 0; i < users.length; i++) {
       usersPayload.push({
@@ -506,25 +512,49 @@ exports.uploadFile = function (req, res) {
         Timezone: users[i].timezone
       })
     }
-    let dir = path.resolve(__dirname, './my-file.csv')
-    csvdata.write(dir, usersPayload,
-      {header: 'Name,Gender,Email,Locale,Timezone'})
-    logger.serverLog(TAG, 'created file')
-    try {
-      res.sendfile(dir)
-    } catch (err) {
-      logger.serverLog(TAG,
-        `Inside Download file, err = ${JSON.stringify(err)}`)
-      res.status(201)
-        .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
-    }
+    //  let dir = path.resolve(__dirname, './my-file.csv')
+    // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
+    // csvdata.write(dir, usersPayload,
+    //   {header: 'Name,Gender,Email,Locale,Timezone'})
+    // logger.serverLog(TAG, 'created file')
+    // try {
+    //   return res.status(201).json({
+    //     status: 'success',
+    //     payload: {
+    //       url: `${config.domain}/api/broadcasts/download/users.csv`
+    //     }
+    //   })
+    // try {
+    //   res.set({
+    //     'Content-Disposition': 'attachment; filename=users.csv',
+    //     'Content-Type': 'text/csv'
+    //   })
+    //   res.send(dir)
+    // } catch (err) {
+    //   logger.serverLog(TAG,
+    //     `Inside Download file, err = ${JSON.stringify(err)}`)
+    //   res.status(201)
+    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    // }
     // fs.unlinkSync(dir)
 
-    // res.status(200).json({
-    //   status: 'success',
-    //   payload: dir
-    // })
-    //  fs.unlinkSync(dir)
+    var info = usersPayload
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+        console.log(err)
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: csv
+      })
+    })
   })
 }
 
@@ -657,5 +687,38 @@ exports.surveysGraph = function (req, res) {
     }
     return res.status(200)
     .json({status: 'success', payload: {surveysgraphdata}})
+  })
+}
+exports.sessionsGraph = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Sessions.aggregate([
+    {
+      $match: {
+        'request_time': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
+        count: {$sum: 1}}
+    }], (err, sessionsgraphdata) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting sessions count ${JSON.stringify(err)}`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: {sessionsgraphdata}})
   })
 }

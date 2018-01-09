@@ -4,9 +4,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   getsurveyform,
@@ -27,18 +25,6 @@ class ViewSurveyDetail extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
 
@@ -73,31 +59,34 @@ class ViewSurveyDetail extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br />
-          <br />
-          <br />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
           {this.props.survey && this.props.questions &&
-          <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
 
-            <h2 className='presentation-margin'>{this.props.survey.title}</h2>
-            <p>{this.props.survey.description}</p>
-            <div className='ui-block'>
-              <div className='ui-block-content'>
-                <div className='row'>
-                  <div
-                    className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                    {this.props.questions.map((question, i) => (
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center' style={{marginLeft: '20px'}}>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>{this.props.survey.title}</h3><br />
+                  <p><b>Description: </b>{this.props.survey.description}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='m-content'>
+              <div
+                className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet m-portlet--mobile'>
+                  <div className='m-portlet__body'>
+                    <div className='col-xl-12'>
+                      {this.props.questions.map((question, i) => (
                       question.type === 'text'
                         ? <div className='form-group'>
                           <label >Q. {question.statement}</label>
 
                         </div>
                         : <div className='form-group'>
-                          <label for='sel1'>Q. {question.statement}</label>
+                          <label for='sel1'><b>Q. {question.statement}</b></label>
                           <ol className='table-bordered' id='sel1'
                             ref={question._id}>
                             <div className='container'>
@@ -113,21 +102,21 @@ class ViewSurveyDetail extends React.Component {
 
                     ))
                     }
-
-                    <div className='add-options-message'>
-                      <button className='btn btn-primary btn-sm'
-                        onClick={() => this.gotoView()}>Back
-                      </button>
+                      <div className='add-options-message'>
+                        <button className='btn btn-primary btn-sm pull-right'
+                          onClick={() => this.gotoView()}>Back
+                        </button>
+                      </div>
+                      <br />
                     </div>
+
                   </div>
-
                 </div>
+
               </div>
-
             </div>
-          </div>
+            </div>
           }
-
         </div>
       </div>
     )

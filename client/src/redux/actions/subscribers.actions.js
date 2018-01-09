@@ -3,15 +3,20 @@ import callApi from '../../utility/api.caller.service'
 
 export function updateSubscribersList (data) {
   console.log('Data Fetched From Subscribers', data)
-  if (data.length > 0) {
-    var locale = [data[0].locale]
-    for (var i = 1; i < data.length; i++) {
-      if (locale.indexOf(data[i].locale) === -1) {
-        locale.push(data[i].locale)
-      }
+  if (!data[0]) {
+    return {
+      type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
+      data: [],
+      locale: []
     }
   }
-  console.log('localeData', locale)
+  var locale = [data[0].locale]
+  for (var i = 1; i < data.length; i++) {
+    if (locale.indexOf(data[i].locale) === -1) {
+      locale.push(data[i].locale)
+    }
+  }
+  // console.log('localeData', locale)
   return {
     type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
     data,

@@ -1,17 +1,21 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 class ListItem extends React.Component {
   render () {
-    let icon, color
+    let icon, color, image
     if (this.props.type === 'facebook') {
       icon = 'fa fa-facebook'
       color = '#365899'
+      image = '/assets/app/media/img//logos/fb-art.png'
     } else if (this.props.type === 'youtube') {
       icon = 'fa fa-youtube'
       color = '#cc181e'
+      image = '/assets/app/media/img//logos/youtube.png'
     } else if (this.props.type === 'twitter') {
       icon = 'fa fa-twitter'
       color = '#00aced'
+      image = this.props.item.payload.profile_image_url
     }
     const item = {
       title: this.props.title,
@@ -20,28 +24,58 @@ class ListItem extends React.Component {
       item: this.props.item
     }
     return (
-      <div style={{cursor: 'pointer', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', margin: '10px', borderRadius: '5px', border: '1px solid #ccc'}} className='card'>
-        <div>
-          <i style={{padding: '10px'}} onClick={() => this.props.updateDeleteID(this.props.item._id)} className='fa fa-times pull-right' aria-hidden='true' />
-          <div onClick={() => this.props.openSettings(item)} style={{width: '100%'}} className='card-block'>
-            <div style={{display: 'inline-block', padding: '20px'}}>
-              <h4 className='card-title'><i style={{color: color}} className={icon} aria-hidden='true' /> {this.props.title}</h4>
-              <h6 className='card-subtitle mb-2 text-muted'>Account: {this.props.username}</h6>
+      <div>
+        <div className='m-widget5__item'>
+          <div className='m-widget5__pic'>
+            <img className='m-widget7__img' src={image} alt='' />
+          </div>
+          <div className='m-widget5__content'>
+            <h4 className='m-widget5__title'>
+              {this.props.title}
+            </h4>
+            <span className='m-widget5__desc'>
+              {this.props.type}
+            </span>
+            <div className='m-widget5__info'>
+              <span className='m-widget5__info-label'>
+                Subscription URL:&nbsp;
+              </span>
+              <span className='m-widget5__info-date m--font-info'>
+                {this.props.item.subscriptionUrl}
+              </span>
+              <br />
+              <span className='m-widget5__info-date m--font-info'>
+                <Link onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                  <i className='la la-remove' />&nbsp;&nbsp;
+                </Link>
+              </span>
+              <span className='m-widget5__info-date m--font-info'>
+                &nbsp;&nbsp;
+              </span>
+              <span className='m-widget5__info-date m--font-info'>
+                <Link onClick={() => this.props.openSettings(item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                  <i className='la la-gear' />
+                </Link>
+              </span>
             </div>
-            <div className='pull-right' style={{display: 'inline-block', padding: '10px'}}>
-              <div style={{width: '100%', textAlign: 'center'}}>
-                <div style={{display: 'inline-block', padding: '10px'}}>
-                  <p className='card-text'>{this.props.item.isActive ? 'Active' : 'Disabled'}</p>
-                </div>
-                <div style={{display: 'inline-block', padding: '10px'}}>
-                  <p className='card-text'>
-                    <i className='fa fa-filter' aria-hidden='true' />
-                    <br />{this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
-                  </p>
-                </div>
-                <div style={{display: 'inline-block', padding: '10px'}} />
-              </div>
-            </div>
+          </div>
+          <div className='m-widget5__stats1'>
+            <span className='m-widget5__number'>
+              Status
+            </span>
+            <br />
+            <span className='m-widget5__sales'>
+              {this.props.item.isActive ? 'Active' : 'Disabled'}
+            </span>
+          </div>
+          <div className='m-widget5__stats2'>
+            <span className='m-widget5__number'>
+              Filter
+            </span>
+            <br />
+            <span className='m-widget5__votes'>
+              {this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
+            </span>
           </div>
         </div>
       </div>

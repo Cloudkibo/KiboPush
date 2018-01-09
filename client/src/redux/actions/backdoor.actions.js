@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import fileDownload from 'js-file-download'
 export const API_URL = '/api'
 
 export function updateUsersList (data) {
@@ -111,6 +112,22 @@ export function loadBroadcastsGraphData (days) {
   return (dispatch) => {
     callApi(`backdoor/broadcastsGraph/${days}`)
       .then(res => dispatch(updateBroadcastsGraphData(res.payload)))
+  }
+}
+export function updateSessionsGraphData (data) {
+  console.log('Sessions Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_SESSIONS_GRAPH,
+    data
+  }
+}
+
+export function loadSessionsGraphData (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadSessionsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/sessionsGraph/${days}`)
+      .then(res => dispatch(updateSessionsGraphData(res.payload)))
   }
 }
 export function loadPagesList (id) {
@@ -250,16 +267,20 @@ export function saveCurrentPoll (poll) {
   }
 }
 export function fileStatus (data) {
-  console.log('fileStatus1', data)
+  //  console.log('fileStatus1', JSONdata)
+  return {
+    type: ActionTypes.DOWNLOAD_FILE,
+    data
+  }
 }
 export function downloadFile () {
   console.log('downloadFile called')
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
-        .then(res => {
-          dispatch(fileStatus(res))
-          console.log('res', res)
-        })
+    .then(function (data) {
+      console.log('in', data)
+      fileDownload(data.payload, 'users.csv')
+    })
   }
 
   // return (dispatch) => {

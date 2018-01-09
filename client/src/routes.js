@@ -10,6 +10,7 @@ import StackedBar from './containers/dashboard/stackedBar'
 import MainMenu from './containers/menu/menu'
 import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
+import ShareOptions from './containers/GrowthTools/ShareOptions'
 import CustomerMatching from './containers/GrowthTools/customerMatchingUsingPhNum'
 import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
@@ -49,6 +50,23 @@ import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
+import Settings from './containers/settings/settings'
+import CreateSurvey from './containers/templates/createSurvey'
+import CreateTemplatePoll from './containers/templates/createPoll'
+import Template from './containers/templates/templates'
+import TemplatePoll from './containers/templates/templatePolls'
+import TemplateSurvey from './containers/templates/templateSurveys'
+import ViewTemplateSurvey from './containers/templates/viewSurvey'
+import ViewTemplatePoll from './containers/templates/viewPoll'
+import EditPoll from './containers/templates/editPoll'
+import EditSurvey from './containers/templates/editSurvey'
+import ShowTemplateSurveys from './containers/survey/showTemplates'
+import EditTemplateSurvey from './containers/survey/editTemplate'
+import ShowTemplatePolls from './containers/polls/showTemplates'
+import EditTemplatePoll from './containers/polls/editTemplate'
+import ViewTemplatePollUser from './containers/polls/viewTemplate'
+import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
+
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -113,12 +131,29 @@ const routes = (
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
+    <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/live' component={LiveChat} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />
     <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
     <Route path='/surveyDetails' component={SurveyDetails} onEnter={requireAuth} />
+    <Route path='/settings' component={Settings} onEnter={requireAuth} />
+    <Route path='/createSurvey' component={CreateSurvey} onEnter={requireAuth} />
+    <Route path='/createTemplatePoll' component={CreateTemplatePoll} onEnter={requireAuth} />
+    <Route path='/templates' component={Template} onEnter={requireAuth} />
+    <Route path='/templatePolls' component={TemplatePoll} onEnter={requireAuth} />
+    <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
+    <Route path='/editPoll' component={EditPoll} onEnter={requireAuth} />
+    <Route path='/editSurvey' component={EditSurvey} onEnter={requireAuth} />
+    <Route path='/showTemplatePolls' component={ShowTemplatePolls} onEnter={requireAuth} />
+    <Route path='/showTemplateSurveys' component={ShowTemplateSurveys} onEnter={requireAuth} />
+    <Route path='/editTemplatePoll' component={EditTemplatePoll} onEnter={requireAuth} />
+    <Route path='/editTemplateSurvey' component={EditTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
+    <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
 
   </Route>
 

@@ -58,7 +58,7 @@ class Gallery extends React.Component {
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
-        data.image_url = obj.fileurl
+        data.image_url = obj.image_url
         data.title = obj.title
         data.buttons = obj.buttons
         data.subtitle = obj.description
@@ -90,18 +90,13 @@ class Gallery extends React.Component {
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-            <i className='fa fa-times fa-stack-1x fa-inverse' />
+            <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
 
         {
-          this.state.showPlus &&
-          <div onClick={this.addSlide} style={{position: 'absolute', float: 'left', top: '-5px', left: '-10px', zIndex: '2', marginTop: '-5px'}}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-              <i className='fa fa-plus fa-stack-1x fa-inverse' />
-            </span>
+          <div onClick={this.addSlide} style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
+            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer'}}>Add</span>
           </div>
         }
         <div>

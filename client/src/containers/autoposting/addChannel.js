@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { createautoposting } from '../../redux/actions/autoposting.actions'
+import { createautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -9,7 +9,10 @@ class AddChannel extends React.Component {
     this.state = {
       facebookColor: '#ff5e3a',
       twitterColor: '',
-      youtubeColor: ''
+      youtubeColor: '',
+      facebookForeGroundColor: 'white',
+      twitterForeGroundColor: 'black',
+      youtubeForeGroundColor: 'black'
     }
     this.onSelectItem = this.onSelectItem.bind(this)
     this.createAutoposting = this.createAutoposting.bind(this)
@@ -53,6 +56,7 @@ class AddChannel extends React.Component {
         }
         break
     }
+    this.props.clearAlertMessages()
     this.props.createautoposting(autopostingData)
     this.props.onClose()
   }
@@ -63,21 +67,30 @@ class AddChannel extends React.Component {
         this.setState({
           facebookColor: '#ff5e3a',
           twitterColor: '',
-          youtubeColor: ''
+          youtubeColor: '',
+          facebookForeGroundColor: 'white',
+          twitterForeGroundColor: 'black',
+          youtubeForeGroundColor: 'black'
         })
         break
       case 'twitter':
         this.setState({
           facebookColor: '',
           twitterColor: '#ff5e3a',
-          youtubeColor: ''
+          youtubeColor: '',
+          facebookForeGroundColor: 'black',
+          twitterForeGroundColor: 'white',
+          youtubeForeGroundColor: 'black'
         })
         break
       case 'youtube':
         this.setState({
           facebookColor: '',
           twitterColor: '',
-          youtubeColor: '#ff5e3a'
+          youtubeColor: '#ff5e3a',
+          facebookForeGroundColor: 'black',
+          twitterForeGroundColor: 'black',
+          youtubeForeGroundColor: 'white'
         })
         break
     }
@@ -87,28 +100,31 @@ class AddChannel extends React.Component {
     let facebookColor = this.state.facebookColor
     let twitterColor = this.state.twitterColor
     let youtubeColor = this.state.youtubeColor
+    let facebookForeGroundColor = this.state.facebookForeGroundColor
+    let twitterForeGroundColor = this.state.twitterForeGroundColor
+    let youtubeForeGroundColor = this.state.youtubeForeGroundColor
     return (
       <div>
         <h3>Add Source Channel</h3>
         <div style={{width: '100%', textAlign: 'center'}}>
           <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('facebook')} style={{backgroundColor: facebookColor, color: 'white'}} className='btn'>
+            <button onClick={() => this.onSelectItem('facebook')} style={{backgroundColor: facebookColor, color: facebookForeGroundColor}} className='btn'>
               <i className='fa fa-facebook fa-2x' aria-hidden='true' />
               <br />Facebook
             </button>
           </div>
           <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('twitter')} style={{backgroundColor: twitterColor, color: 'white'}} className='btn'>
+            <button onClick={() => this.onSelectItem('twitter')} style={{backgroundColor: twitterColor, color: twitterForeGroundColor}} className='btn'>
               <i className='fa fa-twitter fa-2x' aria-hidden='true' />
               <br />Twitter
             </button>
           </div>
-          <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('youtube')} style={{backgroundColor: youtubeColor, color: 'white'}} className='btn'>
-              <i className='fa fa-youtube fa-2x' aria-hidden='true' />
-              <br />YouTube
-            </button>
-          </div>
+          {/* <div style={{display: 'inline-block', padding: '5px'}}> */}
+          {/* <button onClick={() => this.onSelectItem('youtube')} style={{backgroundColor: youtubeColor, color: youtubeForeGroundColor}} className='btn'> */}
+          {/* <i className='fa fa-youtube fa-2x' aria-hidden='true' /> */}
+          {/* <br />YouTube */}
+          {/* </button> */}
+          {/* </div> */}
         </div>
         { facebookColor !== '' &&
         <div>
@@ -160,7 +176,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createautoposting: createautoposting
+    createautoposting: createautoposting,
+    clearAlertMessages: clearAlertMessages
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddChannel)

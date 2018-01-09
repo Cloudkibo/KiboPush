@@ -13,7 +13,7 @@ export function updateWorkFlowList (data) {
   console.log('Data Fetched From Workflows', data)
   return {
     type: ActionTypes.LOAD_WORKFLOW_LIST,
-    data
+    data: data.payload
   }
 }
 
@@ -27,13 +27,50 @@ export function updateWorkFlow (data) {
 export function addWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/create', 'post', data)
-      .then(res => dispatch(updateWorkFlow(res.payload)))
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(workFlowSuccess('Workflow Created Successfully!'))
+          dispatch(updateWorkFlow(res.payload))
+        } else {
+          dispatch(editWorkFlowFailure(res.description))
+        }
+      })
   }
 }
+
+export function workFlowSuccess (msg) {
+  return {
+    type: ActionTypes.WORKFLOW_SUCCESS,
+    successMessage: msg
+  }
+}
+
+export function editWorkFlowFailure (message) {
+  return {
+    type: ActionTypes.EDIT_WORKFLOW_FAILURE,
+    errorMessage: message
+  }
+}
+
+export function clearAlertMessages () {
+  return {
+    type: ActionTypes.CLEAR_WORKFLOW_ALERT_MESSAGES
+  }
+}
+
 export function editWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/edit', 'post', data)
-      .then(res => dispatch(loadWorkFlowList()))
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(workFlowSuccess('Changes Saved Successfully!'))
+          dispatch(loadWorkFlowList())
+        } else {
+          dispatch(editWorkFlowFailure(res.description))
+        }
+      })
   }
 }
 export function disableworkflow (data) {

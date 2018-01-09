@@ -10,7 +10,6 @@ const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Get pages API called')
   Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error: ${err}`)
@@ -23,7 +22,6 @@ exports.index = function (req, res) {
   })
 }
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, `Backdoor get all pages ${JSON.stringify(req.params)}`)
   Pages.find({connected: true, userId: req.user._id}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -31,7 +29,6 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total pages ${pages.length}`)
     Subscribers.aggregate([{
       $group: {
         _id: {pageId: '$pageId'},
@@ -61,9 +58,6 @@ exports.allpages = function (req, res) {
       for (let i = 0; i < pagesPayload.length; i++) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG, `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
@@ -86,7 +80,6 @@ exports.enable = function (req, res) {
       if (err) {
         res.status(500).json({
           status: 'Failed',
-          error: err,
           description: 'Failed to update record'
         })
       }
@@ -115,7 +108,23 @@ exports.enable = function (req, res) {
                   method: 'POST'
 
                 }
+                var valueForMenu = {
+                  'get_started': {
+                    'payload': '<GET_STARTED_PAYLOAD>'
+                  }
+                }
+                const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
 
+                needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+                  if (!err) {
+                    logger.serverLog(TAG,
+                      `Menu added to page ${req.body.pageName}`)
+                  }
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error ${JSON.stringify(err)}`)
+                  }
+                })
                 needle.post(options.url, options, (error, response) => {
                   if (error) {
                     return res.status(500)
@@ -200,13 +209,11 @@ exports.otherPages = function (req, res) {
           err)}`
       })
     }
-    logger.serverLog(TAG, pages)
     return res.status(200).json({status: 'success', payload: pages})
   })
 }
 
 exports.addPages = function (req, res) {
-  logger.serverLog(TAG, 'Add Pages called ')
   Users.findOne({fbId: req.user.fbId}, (err, user) => {
     if (err) {
       return res.status(500).json({status: 'failed', description: err})

@@ -426,7 +426,7 @@ console.log('Main Executed');
       $body.removeClass('overlay-enable')
       $('.profile-menu').removeClass('expanded-menu')
       $('.popup-chat-responsive').removeClass('open-chat')
-      $('.profile-settings-responsive').removeClass('open')
+      $('.profile-api_settings-responsive').removeClass('open')
     }
   })
 
@@ -455,8 +455,8 @@ console.log('Main Executed');
     return false
   })
 
-  $('.profile-settings-open').on('click', function () {
-    $('.profile-settings-responsive').toggleClass('open')
+  $('.profile-api_settings-open').on('click', function () {
+    $('.profile-api_settings-responsive').toggleClass('open')
     return false
   })
 

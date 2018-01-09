@@ -4,11 +4,8 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
-import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -41,17 +38,17 @@ class Convo extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Broadcast'
   }
 
@@ -163,61 +160,83 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
-        <HeaderResponsive />
-        <Sidebar />
-        <Responsive />
-        <div className='container'>
-          <br /><br /><br /><br /><br /><br />
-          <div className='row'>
-            <main
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='ui-block'>
-
-                {
-                  this.props.subscribers &&
-                  this.props.subscribers.length === 0 &&
-                  <div style={{padding: '10px'}}>
-                    <center>
-                      <Alert type='info' headline='0 Subscribers'>
-                        Your connected pages have zero subscribers. Unless you
-                        do not have any subscriber, you will not be able to
-                        broadcast message, polls and surveys.
-                        To invite subscribers click <Link
-                          to='/invitesubscribers'
-                          style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
-                      </Alert>
-                    </center>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Broadcasts</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              {
+                this.props.subscribers &&
+                this.props.subscribers.length === 0 &&
+                <div style={{padding: '10px'}}>
+                  <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
+                    <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
+                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
+                        to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                      </div>
+                    </div>
                   </div>
-                }
-                <br />
-
-                <div className='birthday-item inline-items badges'>
-                  <h3>Broadcasts</h3>
-                  {
-                    this.props.subscribers && this.props.subscribers.length === 0
-
-                      ? <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-sm btn-primary'> New
-                        Broadcast
-                      </button>
-                      </Link>
-                      : <Link to='createconvo' className='pull-right'>
-                        <button className='btn btn-primary btn-sm'> New
-                        Broadcast
-                      </button>
-                      </Link>
-                  }
-                  { this.props.broadcasts && this.props.broadcasts.length > 0
-                    ? <div className='table-responsive'>
-                      <form>
+                </div>
+              }
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding broadcasts? <a href='http://kibopush.com/broadcast/' target='_blank'>Click Here </a>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Broadcasts
+                          </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        {
+                          this.props.subscribers && this.props.subscribers.length === 0
+                            ? <a href='#'>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Create New Broadcast
+                                  </span>
+                                </span>
+                              </button>
+                            </a>
+                            : <Link to='createconvo'>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Create New Broadcast
+                                  </span>
+                                </span>
+                              </button>
+                            </Link>
+                        }
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
                         <div className='form-row'>
                           <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                            <label> Search </label>
                             <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
                           </div>
                           <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                            <label> Filter </label>
-                            <select className='input-sm' value={this.state.filterValue} onChange={this.onFilter} >
+                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
                               <option value='' disabled>Filter by type...</option>
                               <option value='text'>text</option>
                               <option value='image'>image</option>
@@ -231,67 +250,86 @@ class Convo extends React.Component {
                             </select>
                           </div>
                         </div>
-                      </form>
-                      { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                        ? <div>
-                          <table className='table table-striped'>
-                            <thead>
-                              <tr>
-                                <th>Title</th>
-                                <th>Type</th>
-                                <th>Created At</th>
-                                <th>Sent</th>
-                                <th>Seen</th>
+                      <div>
+
+                        { this.state.broadcastsData && this.state.broadcastsData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Title</span>
+                              </th>
+                              <th data-field='statement' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Type</span>
+                              </th>
+                              <th data-field='datetime' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Created At</span>
+                              </th>
+                              <th data-field='sent' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Sent</span>
+                              </th>
+                              <th data-field='seen' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Seen</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {
+                            this.state.broadcastsData.map((broadcast, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
+                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
+                                <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
+                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                                  <span >
+                                    {broadcast.seen}
+
+                                  </span>
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {
-                                this.state.broadcastsData.map((broadcast, i) => (
-                                  <tr>
-                                    <td>{broadcast.title}</td>
-                                    <td>{(broadcast.payload.length > 1) ? 'Miscellaneous' : (broadcast.payload[0]) ? broadcast.payload[0].componentType : ''}</td>
-                                    <td>{handleDate(broadcast.datetime)}</td>
-                                    <td>{broadcast.sent}</td>
-                                    <td>{broadcast.seen}</td>
-                                  </tr>
-                                ))
-                              }
-                            </tbody>
-                          </table>
-                          <ReactPaginate previousLabel={'previous'}
+                            ))
+                          }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate
+                            previousLabel={'previous'}
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 4)}
-                            marginPagesDisplayed={1}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'} />
                         </div>
-                        : <p> No search results found. </p>
-                      }
-                    </div>
-                  : <div className='table-responsive'>
-                    <p> No data to display </p>
-                  </div>
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
                     }
-                  {
-                this.state.alertMessage !== '' &&
-                <center>
-                  <Alert type={this.state.type}>
-                    {this.state.alertMessage}
-                  </Alert>
-                </center>
-                  }
+
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </main>
+            </div>
           </div>
         </div>
       </div>
-
     )
   }
 }

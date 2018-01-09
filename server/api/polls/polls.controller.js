@@ -10,7 +10,6 @@ let _ = require('lodash')
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Poll get api is working')
   Polls.find({userId: req.user._id}, (err, polls) => {
     if (err) {
       logger.serverLog(TAG, `Error: ${err}`)
@@ -24,12 +23,29 @@ exports.index = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Polls not found'})
       }
-      PollResponse.aggregate([
-        {$group: {_id: '$pollId', count: {$sum: 1}}}
-      ], (err2, responsesCount) => {
+      PollResponse.aggregate([{
+        $group: {
+          _id: {pollId: '$pollId'},
+          count: {$sum: 1}
+        }}
+      ], (err2, responsesCount1) => {
         if (err2) {
           return res.status(404)
           .json({status: 'failed', description: 'Polls not found'})
+        }
+        let responsesCount = []
+        for (let i = 0; i < polls.length; i++) {
+          responsesCount.push({
+            _id: polls[i]._id,
+            count: 0
+          })
+        }
+        for (let i = 0; i < polls.length; i++) {
+          for (let j = 0; j < responsesCount1.length; j++) {
+            if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+              responsesCount[i].count = responsesCount1[j].count
+            }
+          }
         }
         res.status(200).json({
           status: 'success',
@@ -76,8 +92,6 @@ exports.create = function (req, res) {
 }
 
 exports.submitresponses = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside submitresponses of Poll ${JSON.stringify(req.body)}`)
   /*
    Expected body
    {
@@ -99,8 +113,6 @@ exports.submitresponses = function (req, res) {
 }
 
 exports.getresponses = function (req, res) {
-  logger.serverLog(TAG, 'Inside getresponses of Poll')
-
   PollResponse.find({pollId: req.params.id})
     .populate('pollId subscriberId')
     .exec((err, pollresponses) => {
@@ -165,7 +177,7 @@ exports.send = function (req, res) {
       })
     }
   }
-  Pages.find(pagesFindCriteria, (err, pages) => {
+  Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       return res.status(500).json({
@@ -213,10 +225,6 @@ exports.send = function (req, res) {
                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
 
-              logger.serverLog(TAG,
-                `Page accesstoken from graph api ${JSON.stringify(
-                  resp.body.access_token)}`)
-
               for (let j = 0; j < subscribers.length; j++) {
                 logger.serverLog(TAG,
                   `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
@@ -254,6 +262,42 @@ exports.send = function (req, res) {
                           err2
                         })
                       }
+                      // not using now
+                      // Sessions.findOne({
+                      //   subscriber_id: subscribers[j]._id,
+                      //   page_id: pages[z]._id,
+                      //   company_id: pages[z].userId._id
+                      // }, (err, session) => {
+                      //   if (err) {
+                      //     return logger.serverLog(TAG,
+                      //       `At get session ${JSON.stringify(err)}`)
+                      //   }
+                      //   if (!session) {
+                      //     return logger.serverLog(TAG,
+                      //       `No chat session was found for polls`)
+                      //   }
+                      //   const chatMessage = new LiveChat({
+                      //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                      //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                      //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                      //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                      //     session_id: session._id,
+                      //     company_id: pages[z].userId._id, // this is admin id till we have companies
+                      //     payload: {
+                      //       componentType: 'poll',
+                      //       payload: messageData
+                      //     }, // this where message content will go
+                      //     status: 'unseen' // seen or unseen
+                      //   })
+                      //   chatMessage.save((err, chatMessageSaved) => {
+                      //     if (err) {
+                      //       return logger.serverLog(TAG,
+                      //         `At save chat${JSON.stringify(err)}`)
+                      //     }
+                      //     logger.serverLog(TAG,
+                      //       'Chat message saved for poll sent')
+                      //   })
+                      // })
                     })
                   })
               }
@@ -261,5 +305,7 @@ exports.send = function (req, res) {
         }
       })
     }
+    return res.status(200)
+      .json({status: 'success', payload: 'Polls sent successfully.'})
   })
 }

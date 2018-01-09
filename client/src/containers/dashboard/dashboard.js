@@ -5,9 +5,11 @@
 
 import React from 'react'
 import Joyride from 'react-joyride'
-import StackedBar from './stackedBar'
-import { browserHistory, Link } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
+import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
+import CardBoxes from '../../components/Dashboard/CardBoxes'
+import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -18,53 +20,41 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-
-    props.loadSubscribersList()
-    props.loadDashboardData()
     props.loadMyPagesList()
+    props.loadDashboardData()
     props.getuserdetails()
     props.sentVsSeen()
+    props.loadSubscribersList()
 
     this.state = {
       isShowingModal: false,
       steps: [],
-      sentseendata1: [],
-      chartData: [
-      {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
-      {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
-      {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
-      {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
-      {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
-      {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
-      {name: 'Page G', uv: 3490, pv: 4300, amt: 2100}
-      ]
+      sentseendata1: []
     }
-
-    console.log('anishachhatwani')
-    this.closeDialog = this.closeDialog.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
-    // this.dataPrepForChart = this.dataPrepForChart(this)
   }
 
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
     if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-      browserHistory.push('/addPages')
+      browserHistory.push({
+        pathname: '/addPages',
+        state: {showMsg: true}
+      })
     } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
       // this means more than 0 subscribers
       console.log('More than 0 subscribers')
       this.setState({isShowingModal: false})
-    } else if (nextprops.pages && nextprops.pages.length === 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
       // this means 0 subscribers
       console.log('0 subscribers')
       this.setState({isShowingModal: true})
@@ -81,52 +71,21 @@ class Dashboard extends React.Component {
       this.setState({sentseendata1: nextprops.sentseendata})
       console.log('sentseendata1', this.state.sentseendata1)
     }
-
-    this.setState({chartData: []})
-
-    let temp_array = []
-
-    for (let page of nextprops.pages) {
-      // console.log('Pages', page)
-      // console.log(typeof (chartData))
-      let temp_page = {
-        'Page': page.pageName,
-        'Subscribers': page.subscribers,
-        'Likes': page.likes
-      }
-      temp_array.push(temp_page)
-    }
-
-    this.setState({
-      chartData: temp_array
-    })
-
-    console.log('Temp_Page', temp_array)
-
-    // for (var i = 0; nextprops.pages.length > i; i++) {
-    //   this.setState({chartData: [...this.state.chartData, {
-    //     'Page': nextprops.pages[i].pageName,
-    //     'Subscribers': nextprops.pages[i].subscribers,
-    //     'Likes': nextprops.pages[i].likes
-    //   }]
-    //   })
-    // }
-    console.log('ChartData', this.state.chartData)
-    // dataPrepForChart(nextprops.pages)
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    // require('../../../public/js/jquery-3.2.0.min.js')
+    // require('../../../public/js/jquery.min.js')
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Dashboard'
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
@@ -177,22 +136,6 @@ class Dashboard extends React.Component {
     ])
   }
 
-  // dataPrepForChart (pages) {
-  //   this.setState({chartData: {}})
-  //   for (var i = 0; pages.length > i; i++) {
-  //     this.setState({chartData: [...this.state.chartData, {
-  //       'Page': pages.pageName,
-  //       'Subscribers': pages.subscribers,
-  //       'Likes': pages.likes
-  //     }]
-  //     })
-  //   }
-  // }
-
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
-
   tourFinished (data) {
     console.log('Next Tour Step')
     if (data.type === 'finished') {
@@ -234,181 +177,38 @@ class Dashboard extends React.Component {
     }
     console.log('props', this.props)
     return (
-      <div className='container'>
-        {
-          !(this.props.user && this.props.user.dashboardTourSeen) &&
-          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-        }
-        <br /><br /><br /><br /><br /><br />
-        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-        {
-          this.state.isShowingModal && this.props.user && !this.props.user.gettingStartedSeen &&
-          <ModalContainer style={{width: '1000px'}} onClose={this.closeDialog}>
-            <ModalDialog style={{width: '1000px'}} onClose={this.closeDialog}>
-              <GettingStarted pages={this.props.pages} />
-            </ModalDialog>
-          </ModalContainer>
-        }
-        <h3>Dashboard</h3>
-        <div className='ui-block'>
-          <div className='ui-block-content'>
-            <div className='row'>
-              <div id='pages' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-primary'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-facebook fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.pages}</div>
-                        <div>Pages!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/pages'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='subscribers' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-green'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-users fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.subscribers}</div>
-                        <div>Subscribers!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/subscribers'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='newMessages' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-yellow'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-comments fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.unreadCount}</div>
-                        <div>New Messages!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/live'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className='row'>
-              <div id='broadcasts' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-purple'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-bullhorn fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.messages}</div>
-                        <div>Broadcasts!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/convos'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='polls' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-red'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-list fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.polls}</div>
-                        <div>Polls!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/poll'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div id='surveys' className='col-lg-4 col-md-12'>
-                <div className='dashboard-panel dashboard-panel-grey'>
-                  <div className='dashboard-panel-heading'>
-                    <div className='row'>
-                      <div className='dashboard-col-xs-4'>
-                        <i className='fa fa-list-alt fa-5x' />
-                      </div>
-                      <div className='dashboard-col-xs-8 text-right'>
-                        <div className='dashboard-huge'>{this.props.dashboard.activityChart.surveys}</div>
-                        <div>Surveys!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to='/surveys'>
-                    <div className='panel-footer'>
-                      <span className='pull-left'>View Details</span>
-                      <span className='pull-right'><i className='fa fa-arrow-circle-right' /></span>
-                      <div className='clearfix' />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className='row'>
-              <main className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='ui-block'>
-                  <div className='birthday-item inline-items badges'>
-                    <StackedBar sentseendata={this.state.sentseendata1} />
-                  </div>
-                  <div className='birthday-item inline-items badges'>
-                    <BarChart width={600} height={300} data={this.state.chartData} margin={{top: 5, right: 20, left: 20, bottom: 5}}>
-                      <XAxis dataKey='Page' />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray='3 3' />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey='Likes' fill='#8884d8' />
-                      <Bar dataKey='Subscribers' fill='#82ca9d' />
-                    </BarChart>
-                  </div>
-                </div>
-              </main>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Dashboard</h3>
             </div>
           </div>
+        </div>
+        <div className='m-content'>
+          {
+            !(this.props.user && this.props.user.dashboardTourSeen) &&
+            <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+          }
+          <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+          {
+            this.state.isShowingModal &&
+            <GettingStarted pages={this.props.pages} />
+          }
+          <div className='row'>
+            {
+              this.props.pages && this.props.pages.length > 0 &&
+              <PageLikesSubscribers connectedPages={this.props.pages} />
+            }
+            {
+              this.props.dashboard &&
+              <CardBoxes data={this.props.dashboard} />
+            }
+          </div>
+          {
+            this.props.sentseendata &&
+            <CardsWithProgress data={this.props.sentseendata} />
+          }
         </div>
       </div>
     )

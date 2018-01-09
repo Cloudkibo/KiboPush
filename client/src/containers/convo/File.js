@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
+import AlertContainer from 'react-alert'
 
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -66,21 +67,27 @@ class File extends React.Component {
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      var fileInfo = {
-        id: this.props.id,
-        componentType: 'file',
-        fileName: file.name,
-        type: file.type,
-        size: file.size
+      if (file.type === 'text/javascript' || file.type === 'text/exe') {
+        this.msg.error('Cannot add js or exe files. Please select another file')
+      } else if (file.size > 25000000) {
+        this.msg.error('File size is too large. Maximum size is 25MB')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        var fileInfo = {
+          id: this.props.id,
+          componentType: 'file',
+          fileName: file.name,
+          type: file.type,
+          size: file.size
+        }
+        console.log(fileInfo)
+        this.setState({loading: true})
+        this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
-      console.log(fileInfo)
-      this.setState({loading: true})
-      this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
 
@@ -90,12 +97,19 @@ class File extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-            <i className='fa fa-times fa-stack-1x fa-inverse' />
+            <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>

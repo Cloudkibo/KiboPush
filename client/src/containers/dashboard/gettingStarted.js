@@ -1,37 +1,54 @@
 /* eslint-disable no-return-assign */
 /**
- * Created by sojharo on 20/07/2017.
+ * Created by imran on 11/11/2017.
  */
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadDashboardData } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { AlertList } from 'react-bs-notifier'
 
-class Dashboard extends React.Component {
+class GettingStarted extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       inviteUrl: props.pages[0].pageUserName ? `https://m.me/${props.pages[0].pageUserName}` : `https://m.me/${props.pages[0].pageId}`,
-      alerts: []
+      alerts: [],
+      step: 0
     }
+    console.log('constructor in getting started')
     this.selectPage = this.selectPage.bind(this)
-    this.sendBroadcast = this.sendBroadcast.bind(this)
-    this.onAlertDismissed = this.onAlertDismissed.bind(this)
+    this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
+    this.nextStep = this.nextStep.bind(this)
+    this.previousStep = this.previousStep.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
   }
 
+  componentDidMount () {
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // document.body.appendChild(addScript)
+    // addScript = document.createElement('script')
+    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // document.body.appendChild(addScript)
+    document.title = 'KiboPush | Getting Started'
+    var addScript = document.createElement('script')
+    addScript.setAttribute('type', 'text/javascript')
+    addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    addScript.type = 'text/javascript'
+    document.body.appendChild(addScript)
+    /* eslint-disable */
+    $('#gettingStarted').click()
+    /* eslint-enable */
+  }
+
   componentWillReceiveProps (nextprops) {
-    if (nextprops.successMessage) {
+    if (nextprops.successMessage && this.state.step !== 0) {
       this.generateAlert('success', nextprops.successMessage)
-    } else if (nextprops.errorMessage) {
+    } else if (nextprops.errorMessage && this.state.step !== 0) {
       this.generateAlert('danger', nextprops.errorMessage)
     }
   }
@@ -51,107 +68,207 @@ class Dashboard extends React.Component {
     }
   }
 
-  sendBroadcast () {
+  sendTestBroadcast () {
     this.props.clearAlertMessage()
     this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'})
   }
 
+/* eslint-disable */
   generateAlert (type, message) {
-    const newAlert = {
-      id: (new Date()).getTime(),
-      type: type,
-      message: message
+    toastr.options = {
+      'closeButton': true,
+      'debug': false,
+      'newestOnTop': false,
+      'progressBar': false,
+      'positionClass': 'toast-bottom-right',
+      'preventDuplicates': false,
+      'showDuration': '300',
+      'hideDuration': '1000',
+      'timeOut': '5000',
+      'extendedTimeOut': '1000',
+      'showEasing': 'swing',
+      'hideEasing': 'linear',
+      'showMethod': 'fadeIn',
+      'hideMethod': 'fadeOut'
     }
+    if (type === 'success') {
+      toastr.success(message, 'Success!')
+    } else {
+      toastr.error(message, 'Failed!')
+    }
+  }
+/* eslint-enable */
 
-    this.setState({
-      alerts: [...this.state.alerts, newAlert]
-    })
+  nextStep () {
+    this.setState({step: this.state.step + 1})
   }
 
-  onAlertDismissed (alert) {
-    const alerts = this.state.alerts
-
-    // find the index of the alert that was dismissed
-    const idx = alerts.indexOf(alert)
-
-    if (idx >= 0) {
-      this.setState({
-        // remove the alert from the array
-        alerts: [...alerts.slice(0, idx), ...alerts.slice(idx + 1)]
-      })
-    }
+  previousStep () {
+    this.setState({step: this.state.step - 1})
   }
 
   render () {
+    console.log('In Getting Started', this.state.step)
     return (
-      <div className='row'>
-        <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-          <AlertList
-            position='top-right'
-            alerts={this.state.alerts}
-            timeout={3000}
-            dismissTitle='Dismiss'
-            onDismiss={this.onAlertDismissed}
-          />
-          <h2>Getting Started</h2>
-          <p>Your connected pages have zero subscribers. Unless you do not
-          have any subscriber, you will not be able to broadcast
-          message, polls and surveys. Please follow the steps given below to invite subscribers.
-          </p>
-          <div className='row'>
-            <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-              <div className='card-block' style={{height: 220, boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', borderRadius: '5px', border: '1px solid #ccc'}}>
-                <h5 className='card-title'>Step 1:</h5>
-                <p className='card-text'>Select A Page From The Drop Down</p>
-                <br />
-                <div className='col-xl-12 align-center'>
-                  <select onChange={this.selectPage}>
+      <div>
+        <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden >
+          Launch Modal
+        </button>
+        <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div className='modal-dialog' role='document'>
+            {
+              this.state.step === 0
+              ? <div style={{top: '60px'}} className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Getting Started
+                  </h5>
+                  <button style={{marginLeft: '300px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div className='modal-body'>
+                  <p>
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast messages, polls and surveys.
+                    Please click on <strong>Start</strong> and follow the steps to invite subscribers.
+                  </p>
+                </div>
+                <div className='modal-footer'>
+                  <button type='button' className='btn btn-secondary' data-dismiss='modal'>
+                    Close
+                  </button>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
+                    Start
+                  </button>
+                </div>
+              </div>
+              : this.state.step === 1
+              ? <div style={{top: '60px'}} className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Step 1:
+                  </h5>
+                  <button style={{marginLeft: '370px'}} type='button' id='m_modal_1_2' className='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div className='modal-body'>
+                  <p>
+                    Select a page from the drop down.
+                  </p>
+                  <select onChange={this.selectPage} className='form-control m-input' id='exampleSelect1'>
                     {
-                              (this.props.pages) ? this.props.pages.map((page) => {
-                                return <option value={page.pageId}>{page.pageName}</option>
-                              }) : <p> No Pages Found </p>
-                            }
+                      this.props.pages.map((page, i) => (
+                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                      ))
+                    }
                   </select>
                 </div>
-              </div>
-            </div>
-            <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-              <div className='card-block' style={{height: 220, boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', borderRadius: '5px', border: '1px solid #ccc'}}>
-                <h5 className='card-title'>Step 2:</h5>
-                <p className='card-text'>Become a subscriber of the page. Make sure you send a message to you page in order to subscribe</p>
-                <div className='col-xl-12 align-center'>
-                  <a href={this.state.inviteUrl} target='_blank' className='btn btn-primary btn-sm'> Subscribe Now </a>
+                <div className='modal-footer'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
+                    Back
+                  </button>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
+                    Next
+                  </button>
                 </div>
               </div>
-            </div>
-            <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-              <div className='card-block' style={{height: 220, boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', borderRadius: '5px', border: '1px solid #ccc'}}>
-                <h5 className='card-title'>Step 3:</h5>
-                <p className='card-text'>Try to send a test broadcast to see how it works</p>
-                <div style={{paddingTop: '40px'}} className='col-xl-12 align-center'>
-                  <button onClick={this.sendBroadcast} className='btn btn-primary btn-sm'> Send Test Broadcast </button>
+              : this.state.step === 2
+              ? <div style={{top: '60px'}} className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Step 2:
+                  </h5>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div className='modal-body'>
+                  <p>
+                    Become a subscriber of your page.
+                    You need to send a message to your page in order to subscribe it.
+                  </p>
+                  <a href={this.state.inviteUrl} target='_blank' className='btn btn-success'>
+                    Subscribe Now
+                  </a>
+                </div>
+                <div className='modal-footer'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
+                    Back
+                  </button>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
+                    Next
+                  </button>
                 </div>
               </div>
-            </div>
-            <div className='col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3'>
-              <div className='card-block' style={{height: 220, boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', borderRadius: '5px', border: '1px solid #ccc'}}>
-                <h5 className='card-title'>Step 4:</h5>
-                <p className='card-text'>Invite other people to subscribe by sharing this link: <a href={this.state.inviteUrl}>{this.state.inviteUrl}</a></p>
-                <div style={{paddingTop: '17px'}} className='col-xl-12 align-center'>
-                  <CopyToClipboard text={this.state.inviteUrl}
-                    onCopy={() => this.msg.info('Link is copied')}>
-                    <button className='btn btn-primary btn-sm'> Copy Link </button>
+              : this.state.step === 3
+              ? <div style={{top: '60px'}} className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Step 3:
+                  </h5>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div className='modal-body'>
+                  <p>
+                    Send a test broadcast to see how it works.
+                  </p>
+                  <button onClick={this.sendTestBroadcast} type='button' className='btn btn-success'>
+                    Send Test Broadcast
+                  </button>
+                </div>
+                <div className='modal-footer'>
+                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
+                    Back
+                  </button>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
+                    Next
+                  </button>
+                </div>
+              </div>
+              : <div style={{top: '60px'}} className='modal-content'>
+                <div className='modal-header'>
+                  <h5 className='modal-title' id='exampleModalLabel'>
+                    Step 4:
+                  </h5>
+                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div className='modal-body'>
+                  <p>
+                    Invite other people to subscribe your page by sharing this link:
+                    <a href={this.state.inviteUrl} target='_blank'> {this.state.inviteUrl}</a>
+                  </p>
+                  <CopyToClipboard text={this.state.inviteUrl} onCopy={() => this.generateAlert('success', 'Link copied successfully!')}>
+                    <button href={this.state.inviteUrl} className='btn btn-success'>
+                      Copy Link
+                    </button>
                   </CopyToClipboard>
                 </div>
+                <div className='modal-footer'>
+                  <button type='button' className='btn btn-secondary' data-dismiss='modal'>
+                    Close
+                  </button>
+                  <button type='button' className='btn btn-primary' data-dismiss='modal'>
+                    Done
+                  </button>
+                </div>
               </div>
-            </div>
+            }
           </div>
-          <br />
-          <p>Subscribe to our messenger page for help and promotional messages:
-            <a className='btn' href='https://www.messenger.com/t/kibopush' style={{marginTop: '12px', marginLeft: '7px', background: 'blue', color: 'white', borderColor: 'white'}} >
-              <i className='fa fa-facebook fa-lg' /> Subscribe
-            </a>
-          </p>
         </div>
       </div>
     )
@@ -162,8 +279,6 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
-    pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage)
   }
@@ -171,7 +286,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {clearAlertMessage: clearAlertMessage, loadDashboardData: loadDashboardData, loadMyPagesList: loadMyPagesList, loadSubscribersList: loadSubscribersList, createbroadcast: createbroadcast},
+    {clearAlertMessage: clearAlertMessage, createbroadcast: createbroadcast},
     dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+
+export default connect(mapStateToProps, mapDispatchToProps)(GettingStarted)

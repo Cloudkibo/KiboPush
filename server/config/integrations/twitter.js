@@ -41,7 +41,7 @@ function connect () {
 
         stream.on('tweet', tweet => {
           logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
-          AutoPosting.find({accountUniqueName: tweet.user.screen_name})
+          AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
             .populate('userId')
             .exec((err, autopostings) => {
               if (err) {

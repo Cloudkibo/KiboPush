@@ -13,6 +13,7 @@ export function sendresp (data) {
 export function saveFileForPhoneNumbers (filedata) {
   return (dispatch) => {
     console.log('In dispatch', filedata.get('file'))
+    console.log('In dispatch', filedata.get('pageId'))
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
@@ -28,4 +29,7 @@ export function saveFileForPhoneNumbers (filedata) {
       dispatch(sendresp(data))
     })
   }
+}
+export function downloadSampleFile () {
+  console.log('download Sample File called')
 }

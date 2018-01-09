@@ -18,7 +18,6 @@ const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, 'Surveys get api is working')
   Surveys.find({userId: req.user._id}, (err, surveys) => {
     if (err) {
       return res.status(500).json({
@@ -105,8 +104,6 @@ exports.create = function (req, res) {
         if (err2) {
           // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
         }
-        logger.serverLog(TAG,
-          `This is the question created ${JSON.stringify(question1)}`)
       })
     }
     return res.status(201).json({status: 'success', payload: survey})
@@ -330,7 +327,7 @@ exports.send = function (req, res) {
             })
           }
         }
-        Pages.find(pagesFindCriteria, (err, pages) => {
+        Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
@@ -419,6 +416,42 @@ exports.send = function (req, res) {
                               err2
                             })
                           }
+                          // not using now
+                          // Sessions.findOne({
+                          //   subscriber_id: subscribers[j]._id,
+                          //   page_id: pages[z]._id,
+                          //   company_id: pages[z].userId._id
+                          // }, (err, session) => {
+                          //   if (err) {
+                          //     return logger.serverLog(TAG,
+                          //       `At get session ${JSON.stringify(err)}`)
+                          //   }
+                          //   if (!session) {
+                          //     return logger.serverLog(TAG,
+                          //       `No chat session was found for surveys`)
+                          //   }
+                          //   const chatMessage = new LiveChat({
+                          //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                          //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                          //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                          //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                          //     session_id: session._id,
+                          //     company_id: pages[z].userId._id, // this is admin id till we have companies
+                          //     payload: {
+                          //       componentType: 'survey',
+                          //       payload: messageData
+                          //     }, // this where message content will go
+                          //     status: 'unseen' // seen or unseen
+                          //   })
+                          //   chatMessage.save((err, chatMessageSaved) => {
+                          //     if (err) {
+                          //       return logger.serverLog(TAG,
+                          //         `At save chat${JSON.stringify(err)}`)
+                          //     }
+                          //     logger.serverLog(TAG,
+                          //       'Chat message saved for surveys sent')
+                          //   })
+                          // })
                         })
                       })
                   }

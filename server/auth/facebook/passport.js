@@ -48,12 +48,10 @@ exports.setup = function (User, config) {
           logger.serverLog(TAG, `Permissions check error: ${e}`)
         })
 
-      logger.serverLog(TAG, `Short-lived Token: ${accessToken}`)
       FBExtension.extendShortToken(accessToken).then((error) => {
         logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
         return done(error)
       }).fail((response) => {
-        logger.serverLog(TAG, `Long-lived Token: ${response.access_token}`)
         accessToken = response.access_token
         needle.get(`${'https://graph.facebook.com/me?fields=' +
         'id,name,locale,email,timezone,gender,picture' +
@@ -62,7 +60,6 @@ exports.setup = function (User, config) {
             logger.serverLog(TAG, 'error from graph api to get user data: ')
             logger.serverLog(TAG, JSON.stringify(err))
           }
-          logger.serverLog(TAG, 'resp from graph api to get user data: ')
           logger.serverLog(TAG, JSON.stringify(resp.body))
 
           if (err) return done(err)
@@ -91,6 +88,7 @@ exports.setup = function (User, config) {
               //   `previous fb token before login: ${user.fbToken}`)
               user.updatedAt = Date.now()
               user.fbToken = accessToken
+              user.profilePic = resp.body.picture.data.url
               // logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
               user.save((err, userpaylaod) => {
                 if (err) {
@@ -143,7 +141,9 @@ function fetchPages (url, user) {
     const cursor = resp.body.paging
 
     data.forEach((item) => {
-      createMenuForPage(item)
+      // logger.serverLog(TAG,
+      //   `foreach ${JSON.stringify(item.name)}`)
+      //  createMenuForPage(item)
       const options2 = {
         url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
         qs: {access_token: item.access_token},
@@ -161,8 +161,6 @@ function fetchPages (url, user) {
                 `Internal Server Error ${JSON.stringify(err)}`)
             }
             if (!page) {
-              logger.serverLog(TAG,
-                `Page ${item.name} not found. Creating a page`)
               let payloadPage = {
                 pageId: item.id,
                 pageName: item.name,
@@ -188,6 +186,7 @@ function fetchPages (url, user) {
             } else {
               page.likes = fanCount.body.fan_count
               page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+              page.accessToken = item.access_token
               if (fanCount.body.username) page.pageUserName = fanCount.body.username
               page.save((err) => {
                 if (err) {
@@ -207,32 +206,52 @@ function fetchPages (url, user) {
   })
 }
 
-function createMenuForPage (page) {
-  var valueForMenu = {
-    'persistent_menu': [
-      {
-        'locale': 'default',
-        'call_to_actions': [
-          {
-            'type': 'web_url',
-            'title': 'Powered by KiboPush',
-            'url': 'https://www.messenger.com/t/151990922046256',
-            'webview_height_ratio': 'full'
-          }
-        ]
-      }
-    ]
-  }
-  const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
-
-  needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
-    if (!err) {
-      logger.serverLog(TAG,
-        `Menu added to page ${page.pageName}`)
-    }
-    if (err) {
-      logger.serverLog(TAG,
-        `Internal Server Error ${JSON.stringify(err)}`)
-    }
-  })
-}
+// function createMenuForPage (page) {
+//   logger.serverLog(TAG,
+//     `PageAnisha ${page.pageName}`)
+//   var valueForMenu = {
+//     'get_started': {
+//       'payload': '<GET_STARTED_PAYLOAD>'
+//     }
+//   }
+//   const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
+//
+//   needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+//     if (!err) {
+//       logger.serverLog(TAG,
+//         `Menu added to page ${page.pageName}`)
+//     }
+//     if (err) {
+//       logger.serverLog(TAG,
+//         `Internal Server Error ${JSON.stringify(err)}`)
+//     }
+//   })
+//
+//   // var valueForMenu = {
+//   //   'persistent_menu': [
+//   //     {
+//   //       'locale': 'default',
+//   //       'call_to_actions': [
+//   //         {
+//   //           'type': 'web_url',
+//   //           'title': 'Powered by KiboPush',
+//   //           'url': 'https://www.messenger.com/t/151990922046256',
+//   //           'webview_height_ratio': 'full'
+//   //         }
+//   //       ]
+//   //     }
+//   //   ]
+//   // }
+//   // const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.access_token}`
+//   //
+//   // needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+//   //   if (!err) {
+//   //     logger.serverLog(TAG,
+//   //       `Menu added to page ${page.pageName}`)
+//   //   }
+//   //   if (err) {
+//   //     logger.serverLog(TAG,
+//   //       `Internal Server Error ${JSON.stringify(err)}`)
+//   //   }
+//   // })
+// }

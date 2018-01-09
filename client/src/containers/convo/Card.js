@@ -28,7 +28,8 @@ class Card extends React.Component {
       fileurl: '',
       fileName: '',
       type: '',
-      size: ''
+      size: '',
+      image_url: ''
     }
   }
 
@@ -63,6 +64,7 @@ class Card extends React.Component {
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
       type: file.type,
+      image_url: '',
       size: file.size}, this.updateImageUrl)
   }
 
@@ -70,6 +72,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -85,6 +88,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -103,6 +107,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -123,6 +128,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -138,6 +144,7 @@ class Card extends React.Component {
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -148,14 +155,17 @@ class Card extends React.Component {
 
   updateImageUrl (data) {
     console.log('Update Card Image Url')
-    this.setState({ fileurl: 'https://app.kibopush.com/api/broadcasts/download/' + data.fileurl,
+    console.log(data)
+    this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
+      image_url: data.image_url,
       type: data.type,
       size: data.size })
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -170,12 +180,11 @@ class Card extends React.Component {
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-            <i className='fa fa-times fa-stack-1x fa-inverse' />
+            <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', minHeight: 170}} className='cardimageblock'>
+          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
             <input
               ref='file'
               type='file'
@@ -186,13 +195,13 @@ class Card extends React.Component {
             {
           (this.state.imgSrc === '')
           ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxWidth: 375, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+          : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
          }
 
           </div>
           <div>
-            <input onChange={this.handleChange} style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} style={{borderStyle: 'none', width: 100 + '%'}} rows='2' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
+            <textarea onChange={this.handleSubtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
