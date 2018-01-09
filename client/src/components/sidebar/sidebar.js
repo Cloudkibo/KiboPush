@@ -237,7 +237,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               }
-              {this.state.livechat && this.props.user && this.props.isSuperUser &&
+              {this.state.livechat && this.props.user && this.props.user.isSuperUser &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/live' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-chat-1' />
