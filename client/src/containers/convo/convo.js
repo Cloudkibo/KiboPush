@@ -206,7 +206,7 @@ class Convo extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {
-                          this.props.subscribers && this.props.subscribers.length === 0
+                          this.props.subscribers && this.props.subscribers.length !== 0
                             ? <a href='#'>
                               <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                                 <span>
