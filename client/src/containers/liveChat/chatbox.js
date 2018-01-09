@@ -373,7 +373,7 @@ class ChatBox extends React.Component {
       if (file.type === 'text/javascript' || file.type === 'text/exe') {
         this.msg.error('Cannot add js or exe files. Please select another file')
       } else if (file.size > 25000000) {
-        this.msg.error('File size is too large. Maximum size is 25MB')
+        this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
         fileData.append('file', file)
