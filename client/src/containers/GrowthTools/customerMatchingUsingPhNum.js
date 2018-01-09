@@ -109,13 +109,8 @@ class CustomerMatching extends React.Component {
       fileData.append('filetype', file[0].type)
       fileData.append('filesize', file[0].size)
       fileData.append('text', this.state.textAreaValue)
-      if (this.state.selectPage.pageUserName) {
-        fileData.append('pageId', this.state.selectPage.pageUserName)
-      } else {
-        fileData.append('pageId', this.state.selectPage.pageId)
-      }
+      fileData.append('pageId', this.state.selectPage.pageId)
     }
-
     if (this.validate()) {
       this.props.saveFileForPhoneNumbers(fileData)
     }
