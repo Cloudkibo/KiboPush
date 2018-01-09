@@ -112,11 +112,16 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
+    this.scrollToTop()
     // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
+  }
+
+  scrollToTop () {
+    this.top.scrollIntoView({behavior: 'instant'})
   }
 
   removeAttachment () {
@@ -425,6 +430,7 @@ class ChatBox extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in chatbox')
     this.scrollToBottom()
+    this.scrollToTop()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -447,6 +453,7 @@ class ChatBox extends React.Component {
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate in chatbox')
     this.scrollToBottom()
+    this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -511,6 +518,8 @@ class ChatBox extends React.Component {
     return (
       <div className='col-xl-5'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <Popover
           style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
