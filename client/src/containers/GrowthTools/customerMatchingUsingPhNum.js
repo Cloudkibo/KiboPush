@@ -309,7 +309,7 @@ class CustomerMatching extends React.Component {
                                 </h3>
                                 <span className='m-dropzone__msg-desc'>
                                 Please upload the CSV type file.
-                                <h3>
+                                <h3 className='m-dropzone__msg-title' style={{lineHeight: '40px'}}>
                                   {this.state.file !== ''
                                          ? `Selected File : ${this.state.file[0].name}`
                                          : ''}
@@ -368,7 +368,7 @@ class CustomerMatching extends React.Component {
                             </div>
                           </div>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
-                            <div className='m-form__actions m-form__actions' style={{'paddingleft': '0px !important'}}>
+                            <div className='m-form__actions m-form__actions' style={{paddingleft: '0px !important'}}>
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
