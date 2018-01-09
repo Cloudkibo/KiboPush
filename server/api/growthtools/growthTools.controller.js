@@ -12,8 +12,6 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
 let request = require('request')
-let _ = require('lodash')
-
 exports.index = function (req, res) {
   logger.serverLog(TAG,
     'Index route is called')
@@ -76,20 +74,12 @@ exports.upload = function (req, res) {
                 })
               }
             })
-            let pagesFindCriteria = {userId: req.user._id, connected: true}
-            if (req.body.isSegmented) {
-              if (req.body.segmentationPageIds.length > 0) {
-                pagesFindCriteria = _.merge(pagesFindCriteria, {
-                  pageId: {
-                    $in: req.body.segmentationPageIds
-                  }
-                })
-              }
-            }
+            let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
             Pages.find(pagesFindCriteria, (err, pages) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
               }
+              logger.serverLog(TAG, `Pages ${JSON.stringify(pages)}`)
               pages.forEach(page => {
                 let messageData = {
                   'recipient': JSON.stringify({
