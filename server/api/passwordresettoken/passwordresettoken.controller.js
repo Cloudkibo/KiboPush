@@ -1,5 +1,6 @@
 'use strict'
-
+const logger = require('../../components/logger')
+const TAG = 'api/passwordresettoken/passwordresettoken.controller.js'
 let _ = require('lodash')
 let Passwordresettoken = require('./passwordresettoken.model')
 let User = require('./../user/Users.model')
@@ -76,6 +77,7 @@ exports.forgot = function (req, res) {
 }
 
 exports.reset = function (req, res) {
+  logger.serverLog(TAG, `body ${JSON.stringify(req.body)}`)
   let token = req.body.token
 
   Passwordresettoken.findOne({token: token}, function (err, doc) {
