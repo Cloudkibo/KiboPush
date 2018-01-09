@@ -309,7 +309,12 @@ class CustomerMatching extends React.Component {
                                 </h3>
                                 <span className='m-dropzone__msg-desc'>
                                 Please upload the CSV type file.
-                              </span>
+                                <h3>
+                                  {this.state.file !== ''
+                                         ? `Selected File : ${this.state.file[0].name}`
+                                         : ''}
+                                </h3>
+                                </span>
                               </div>
                             </Files>
                           </div>
@@ -337,7 +342,7 @@ class CustomerMatching extends React.Component {
                                 <span className='m-form__help'>
                                   {
                                     this.state.fileErrors.map(
-                                      f => <span>{f.errorMsg}</span>)
+                                      f => <span style={{color: 'red'}}>{f.errorMsg}</span>)
                                   }
                                 </span>
                               </div>
@@ -356,14 +361,14 @@ class CustomerMatching extends React.Component {
                                 <span className='m-form__help'>
                                   {
                                     this.state.messageErrors.map(
-                                      m => <span>{m.errorMsg}</span>)
+                                      m => <span style={{color: 'red'}}>{m.errorMsg}</span>)
                                   }
                                 </span>
                               </div>
                             </div>
                           </div>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
-                            <div className='m-form__actions m-form__actions' style={{'paddingLeft': '0px !important'}}>
+                            <div className='m-form__actions m-form__actions' style={{'paddingleft': '0px !important'}}>
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
@@ -375,13 +380,13 @@ class CustomerMatching extends React.Component {
                                   Submit
                                 </button>
                               }
-                            </div>
-                            <div className='pull-right' style={{display: 'inline-block'}} onClick={this.getSampleFile}>
-                              <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                                <label>Download Sample CSV file: </label>
-                              </div>
-                              <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                                <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
+                              <div className='pull-right' style={{display: 'inline-block'}} onClick={this.getSampleFile}>
+                                <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                                  <label>Download Sample CSV file: </label>
+                                </div>
+                                <div style={{display: 'inline-block', marginLeft: '10px'}}>
+                                  <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
+                                </div>
                               </div>
                             </div>
                             {
