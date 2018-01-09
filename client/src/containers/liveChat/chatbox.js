@@ -594,7 +594,7 @@ class ChatBox extends React.Component {
                                   <div className='m-messenger__message-body'>
                                     <div className='m-messenger__message-arrow' />
                                     {
-                                      msg.payload.attachments
+                                      msg.payload.attachments && !msg.url_meta
                                       ? (
                                         <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
