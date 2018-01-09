@@ -1,6 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import fileDownload from 'js-file-download'
 export const API_URL = '/api'
+var json2csv = require('json2csv')
 
 export function sendresp (data) {
   console.log('sendresp', data)
@@ -32,4 +34,26 @@ export function saveFileForPhoneNumbers (filedata) {
 }
 export function downloadSampleFile () {
   console.log('download Sample File called')
+  let users = []
+  let user1 = {'names': 'Sania Siddiqui', 'phone_numbers': '+923312443100'}
+  let user2 = {'names': 'Anisha Chatwani', 'phone_numbers': '+923322846897'}
+  let user3 = {'names': 'Sojharo Mangi', 'phone_numbers': '+923323800399'}
+  users.push(user1)
+  users.push(user2)
+  users.push(user3)
+  var info = users
+  var keys = []
+  var val = info[0]
+
+  for (var j in val) {
+    var subKey = j
+    keys.push(subKey)
+  }
+  json2csv({ data: info, fields: keys }, function (err, csv) {
+    if (err) {
+      console.log(err)
+    } else {
+      fileDownload(csv, 'sampleFile.csv')
+    }
+  })
 }
