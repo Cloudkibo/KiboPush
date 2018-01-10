@@ -25,6 +25,7 @@ class CreateWorkflow extends React.Component {
   constructor (props) {
     super(props)
     props.getuserdetails()
+    props.clearAlertMessages()
     this.gotoWorkflow = this.gotoWorkflow.bind(this)
     this.changeCondition = this.changeCondition.bind(this)
     this.changeKeywords = this.changeKeywords.bind(this)
@@ -190,6 +191,7 @@ class CreateWorkflow extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('Alert Message:', this.state.alertMessage)
     return (
 
       <div>
@@ -298,7 +300,7 @@ class CreateWorkflow extends React.Component {
                           <span>&nbsp;&nbsp;</span>
                           <Link to='workflows'>
                             <button className='btn btn-secondary'>
-                              Cancel
+                              { this.state.alertMessage !== '' ? 'Back' : 'Cancel'}
                             </button>
                           </Link>
                         </div>
