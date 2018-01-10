@@ -110,8 +110,13 @@ exports.create = function (req, res) {
           })
         } else if (req.body.subscriptionType === 'facebook') {
           let url = req.body.subscriptionUrl
+          logger.serverLog(TAG, `req.body.subscriptionUrl ${req.body.subscriptionUrl}`)
           let urlAfterDot = url.substring(url.indexOf('.') + 1)
+          logger.serverLog(TAG, `urlAfterDot ${urlAfterDot}`)
           let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+          logger.serverLog(TAG, `screenName ${screenName}`)
+          while (screenName.indexOf('-') > -1) screenName = screenName.substring(screenName.indexOf('-') + 1)
+          logger.serverLog(TAG, `screenName ${screenName}`)
           if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
           logger.serverLog(TAG, `the parse got as ${screenName}`)
           Page.findOne({
