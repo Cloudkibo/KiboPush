@@ -19,7 +19,8 @@ class CustomerMatching extends React.Component {
       type: '',
       disabled: false,
       selectPage: {},
-      fblink: ''
+      fblink: '',
+      manually: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -30,10 +31,21 @@ class CustomerMatching extends React.Component {
     this.clickAlert = this.clickAlert.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
     this.getSampleFile = this.getSampleFile.bind(this)
+    this.enterPhoneNoManually = this.enterPhoneNoManually.bind(this)
+    this.removeFile = this.removeFile.bind(this)
   }
   getSampleFile () {
     this.props.downloadSampleFile()
   }
+
+  enterPhoneNoManually () {
+    this.setState({manually: true})
+  }
+
+  removeFile () {
+    this.setState({file: ''})
+  }
+
   onChangeValue (event) {
     if (event.target.value !== -1) {
       let page
@@ -260,7 +272,7 @@ class CustomerMatching extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Upload CSV
+                            Invite people using phone number
                           </h3>
                         </div>
                       </div>
@@ -282,98 +294,78 @@ class CustomerMatching extends React.Component {
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
-                        <label className='col-form-label col-lg-3 col-sm-12'>
-                          Upload your file
-                        </label>
-                        <div className='col-lg-4 col-md-9 col-sm-12'>
-                          <div className='m-dropzone dropzone dz-clickable'
-                            id='m-dropzone-one'>
-                            <Files
-                              className='file-upload-area'
-                              onChange={this.onFilesChange}
-                              onError={this.onFilesError}
-                              accepts={[
-                                'text/comma-separated-values',
-                                'text/csv',
-                                'application/csv',
-                                '.csv',
-                                'application/vnd.ms-excel']}
-                              multiple={false}
-                              maxFileSize={25000000}
-                              minFileSize={0}
-                              clickable>
-                              <div
-                                className='m-dropzone__msg dz-message needsclick'>
-                                <h3 className='m-dropzone__msg-title'>
-                                  Drop file here or click to upload.
-                                </h3>
-                                <span className='m-dropzone__msg-desc'>
-                                Please upload the CSV type file.
+                        <label className='col-2 col-form-label' />
+                        <div className='col-lg-6 col-md-9 col-sm-12'>
+                          {
+                            this.state.file !== ''
+                            ? <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
+                              <div style={{marginTop: '10%'}}>
+                                <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
+                                  <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
+                                </span>
+                                <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
+                              </div>
+                            </div>
+                            : <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
+                              {
+                                this.state.manually
+                                ? <input type='text' className='form-control m-input m-input--square' placeholder='Enter phone number separated by semi colon {;}' />
+                                : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
+                              }
+                              <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
+                              <Files
+                                className='file-upload-area'
+                                onChange={this.onFilesChange}
+                                onError={this.onFilesError}
+                                accepts={[
+                                  'text/comma-separated-values',
+                                  'text/csv',
+                                  'application/csv',
+                                  '.csv',
+                                  'application/vnd.ms-excel']}
+                                multiple={false}
+                                maxFileSize={25000000}
+                                minFileSize={0}
+                                clickable>
+                                <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
                                 <h3 className='m-dropzone__msg-title' style={{lineHeight: '40px'}}>
                                   {this.state.file !== ''
-                                         ? `Selected File : ${this.state.file[0].name}`
-                                         : ''}
+                                          ? `Selected File : ${this.state.file[0].name}`
+                                          : ''}
                                 </h3>
-                                </span>
-                              </div>
-                            </Files>
-                          </div>
+                              </Files>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Invitation Message
+                        </label>
+                        <div className='col-lg-6'>
+                          <textarea
+                            className='form-control m-input m-input--solid'
+                            id='exampleTextarea' rows='3'
+                            placeholder='Enter Invitation Message'
+                            value={this.state.textAreaValue}
+                            onChange={this.onTextChange} />
+                          <span className='m-form__help'>
+                            {
+                              this.state.messageErrors.map(
+                                m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                              )
+                            }
+                          </span>
                         </div>
                       </div>
                       <div className='m-form'>
                         <div className='m-portlet__body'>
-                          <div
-                            className='m-form__section m-form__section--first'>
-                            <div className='m-form__heading'>
-                              <h3 className='m-form__heading-title'>
-                                File Info and Invite Message:
-                              </h3>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-lg-2 col-form-label'>
-                                File Selected:
-                              </label>
-                              <div className='col-lg-6'>
-                                <input type='text' disabled='true'
-                                  className='form-control m-input'
-                                  value={this.state.file !== ''
-                                         ? this.state.file[0].name
-                                         : ''} />
-                                <span className='m-form__help'>
-                                  {
-                                    this.state.fileErrors.map(
-                                      f => <span style={{color: 'red'}}>{f.errorMsg}</span>)
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-lg-2 col-form-label'>
-                                Invitation Message
-                              </label>
-                              <div className='col-lg-6'>
-                                <textarea
-                                  className='form-control m-input m-input--solid'
-                                  id='exampleTextarea' rows='3'
-                                  placeholder='Enter Invitation Message'
-                                  value={this.state.textAreaValue}
-                                  onChange={this.onTextChange} />
-                                <span className='m-form__help'>
-                                  {
-                                    this.state.messageErrors.map(
-                                      m => <span style={{color: 'red'}}>{m.errorMsg}</span>)
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                          </div>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
                             <div className='m-form__actions m-form__actions' style={{paddingleft: '0px !important'}}>
-                              <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
-                                Reset
-                              </button>
                               { this.state.disabled
-                                ? <button type='submit' className='btn btn-primary' disabled='disabled'>
+                                ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
                                 : <button onClick={this.handleSubmit} type='submit' className='btn btn-primary'>
