@@ -1328,8 +1328,31 @@ paths:
                description: success
               payload:
                 type: object
-                $ref: '#/definitions/Survey'
-                description: The newly created Survey
+                properties:
+                  title:
+                    type: string
+                  userId:
+                    type: string
+                  _id:
+                    type: string
+                  isresponded:
+                    type: number
+                  segmentationGender:
+                    type: array
+                    items:
+                      type: string
+                  segmentationLocale:
+                    type: array
+                    items:
+                      type: string
+                  segmentationPageIds:
+                    type: array
+                    items:
+                      type: string
+                  isSegmented:
+                    type: boolean
+                  datetime:
+                    type: string
         '500':
           description: failed
           schema:
@@ -1363,7 +1386,7 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Autoposting'
-                description: The newly created autopost
+                description: The edited survey
         '500':
           description: failed
           schema:
@@ -2367,9 +2390,6 @@ definitions:
       description:
         type: string
         description: Detailed description of the survey
-      image:
-        type: string
-        description: Image attached to survey
       userId:
         type: string
         description: User Id of the admin of that page.
