@@ -46,7 +46,9 @@ class Sidebar extends Component {
       messengerLink: true,
       phoneNumber: true,
       settings: true,
-      userGuide: true
+      userGuide: true,
+      inviteMembers: true,
+      members: true,
     }
     // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
@@ -284,6 +286,23 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Subscribe to Messenger</span>
                 </Link>
               </li>
+              }
+              { this.state.inviteMembers &&
+
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-add' />
+                    <span className='m-menu__link-text'>Invite Members</span>
+                  </Link>
+                </li>
+              }
+              { this.state.members &&
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/members' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-add' />
+                    <span className='m-menu__link-text'>Members</span>
+                  </Link>
+                </li>
               }
               {this.state.messengerLink &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
