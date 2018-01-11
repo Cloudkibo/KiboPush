@@ -20,6 +20,18 @@ import Halogen from 'halogen'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
+const styles = {
+  sessionStyle: {
+    cursor: 'pointer',
+    padding: '1rem'
+  },
+  activeSessionStyle: {
+    cursor: 'pointer',
+    backgroundColor: '#f0f1f4',
+    padding: '1rem'
+  }
+}
+
 class LiveChat extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -277,13 +289,6 @@ class LiveChat extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Live Chat</h3>
-                </div>
-              </div>
-            </div>
             <div className='m-content'>
               {
                 this.state.loading
@@ -400,14 +405,14 @@ class LiveChat extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div style={{height: '525px', overflowY: 'scroll'}} className='m-portlet__body'>
+                      <div style={{height: '525px', overflowY: 'scroll', padding: '2.2rem 0rem'}} className='m-portlet__body'>
                         <div className='tab-content'>
                           <div className='tab-pane active' id='m_widget4_tab1_content'>
                             <div className='m-widget4'>
                               {
                                 this.state.sessionsData.map((session) => (
                                   session.subscriber_id !== null &&
-                                  <div key={session._id} style={{cursor: 'pointer'}} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                  <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
                                       <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                     </div>

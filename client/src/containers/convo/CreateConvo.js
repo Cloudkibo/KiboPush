@@ -75,7 +75,6 @@ class CreateConvo extends React.Component {
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
-    this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -88,7 +87,10 @@ class CreateConvo extends React.Component {
 //  sddsdfas
   componentWillMount () {
     // this.props.loadMyPagesList();
-
+    // if(this.props.pages.length > 0){
+    //   console.log("componentDidMount pageValue set")
+    //   this.setState({pageValue: this.props.pages[0].pageId})  
+    // }
   }
 
   componentDidMount () {
@@ -102,7 +104,11 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-
+    if(this.props.pages.length > 0){
+      console.log("componentDidMount pageValue set")
+      this.setState({pageValue: this.props.pages[0].pageId})  
+    }
+    
     this.addSteps([{
       title: 'Component',
       text: 'You can add components to your broadcast using these button',
@@ -130,6 +136,10 @@ class CreateConvo extends React.Component {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
     }
+    // if(nextProps.pages.length > 0){
+    //   console.log("componentWillReceiveProps pageValue set")
+    //   this.setState({pageValue: nextProps.pages[0].pageId})  
+    // }
   }
 
   showDialog () {
@@ -155,10 +165,6 @@ class CreateConvo extends React.Component {
     })
   }
 
-  handlePageChange (value) {
-    var temp = value.split(',')
-    this.setState({ pageValue: temp })
-  }
 
   handleGenderChange (value) {
     var temp = value.split(',')
@@ -387,21 +393,25 @@ class CreateConvo extends React.Component {
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
-      multiple: true
     })
+    
+    console.log("In initializePageSelect")
+    // this.setState({pageValue: pageOptions[0].id})
+    // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
+
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        console.log('Setting a new pageValue', selected)
-        self.setState({ pageValue: selected })
-      }
-      console.log('change Page', selected)
+      // if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions[0].value
+        // var selected = []
+        // for (var i = 0; i < selectedOptions.length; i++) {
+        //   var selectedOption = selectedOptions[i].value
+        //   selected.push(selectedOption)
+        // }
+        console.log('Setting a new pageValue', selectedOptions)
+        self.setState({ pageValue: selectedOptions })
+      // }
+      console.log('change Page', selectedOptions)
     })
   }
 
@@ -568,8 +578,8 @@ class CreateConvo extends React.Component {
                       <br />
                       <br />
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '')} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
 
                     </div>
                   </div>
@@ -604,7 +614,7 @@ class CreateConvo extends React.Component {
                     onClose={() => { this.setState({showMessengerModal: false}) }}>
                     <h3>Connect to Messenger:</h3>
                     <MessengerPlugin
-                      appId='1429073230510150'
+                      appId='132767517443810'
                       pageId={this.state.pageValue}
                       passthroughParams={this.props.user._id}
                       onClick={() => { this.setState({showMessengerModal: false}) }}
@@ -612,9 +622,10 @@ class CreateConvo extends React.Component {
                   </ModalDialog>
                 </ModalContainer>
               }
-                  <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc'}}>
+                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30,  borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                    
+                  <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />   
 
                   </div>
 
