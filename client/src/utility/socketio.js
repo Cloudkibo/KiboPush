@@ -29,6 +29,7 @@ export function registerAction(callback){
 }
 
 export function initiateSocket (storeObj) {
+  console.log("Initiating Socket")
   store = storeObj
   socket.connect()
 }
