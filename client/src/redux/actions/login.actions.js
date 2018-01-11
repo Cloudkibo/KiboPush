@@ -42,7 +42,7 @@ export function logIn (data) {
 export function forgotFailure (message) {
   return {
     type: ActionTypes.FORGOT_FAILURE,
-    errorMessage: 'error'
+    errorMessage: message
   }
 }
 export function forgotSuccess () {
@@ -51,16 +51,18 @@ export function forgotSuccess () {
     successMessage: 'success'
   }
 }
-export function forgotPass (data) {
+export function forgotPass (data, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('reset_password/forgot', 'post', data)
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success') {
+          msg.success('A password reset link has been sent to your email.')
           dispatch(forgotSuccess())
         } else {
-          dispatch(forgotFailure())
+          msg.error(res.description)
+          dispatch(forgotFailure(res.description))
         }
       })
   }
