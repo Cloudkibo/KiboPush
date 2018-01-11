@@ -12,6 +12,7 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
 let request = require('request')
+const _ = require('lodash')
 
 exports.index = function (req, res) {
   logger.serverLog(TAG,
@@ -132,4 +133,61 @@ exports.upload = function (req, res) {
       //  return res.status(201).json({status: 'success', payload: serverPath})
     }
   )
+}
+
+exports.sendNumbers = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'numbers')) parametersMissing = true
+  if (!_.has(req.body, 'text')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing. Put both numbers and text fields in payload.'})
+  }
+
+  for (let i = 0; i < req.body.numbers.length; i++) {
+    var result = req.body.numbers[i].replace(/[- )(]/g, '')
+    let pagesFindCriteria = {userId: req.user._id, connected: true}
+    Pages.find(pagesFindCriteria, (err, pages) => {
+      if (err) {
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      }
+      pages.forEach(page => {
+        let messageData = {
+          'recipient': JSON.stringify({
+            'phone_number': result
+          }),
+          'message': JSON.stringify({
+            'text': req.body.text,
+            'metadata': 'This is a meta data'
+          })
+        }
+        request(
+          {
+            'method': 'POST',
+            'json': true,
+            'formData': messageData,
+            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+            page.accessToken
+          },
+          function (err, res) {
+            if (err) {
+              return logger.serverLog(TAG,
+                `Error At invite to messenger using phone ${JSON.stringify(
+                  err)}`)
+            } else {
+              logger.serverLog(TAG,
+                `At invite to messenger using phone ${JSON.stringify(
+                  res)}`)
+            }
+          })
+      })
+    })
+  }
+  return res.status(201)
+  .json({
+    status: 'success',
+    description: 'Contacts were invited to your messenger'
+  })
 }

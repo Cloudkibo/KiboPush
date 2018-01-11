@@ -12,5 +12,6 @@ const multipartyMiddleware = multiparty()
 
 router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/upload', auth.isAuthenticated(), multipartyMiddleware, controller.upload)
+router.post('/sendNumbers', auth.isAuthenticated(), controller.sendNumbers)
 
 module.exports = router
