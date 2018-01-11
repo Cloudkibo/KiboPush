@@ -9,13 +9,17 @@ import { isWebURL } from './../../utility/utils'
 import { forgotPass } from '../../redux/actions/login.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
+
 const TAG = 'containers/login/login'
 class ResetPassword extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       domain: false,
-      isurl: false
+      isurl: false,
+      success: false,
+      fail: false
     }
     this.onSubmit = this.onSubmit.bind(this)
     this.check = this.check.bind(this)
@@ -31,12 +35,30 @@ class ResetPassword extends React.Component {
   }
   onSubmit (event) {
     event.preventDefault()
-    this.props.forgotPass({email: this.refs.email.value, domain: this.refs.domain.value})
+    this.props.forgotPass({email: this.refs.email.value, domain: this.refs.domain.value}, this.msg)
+  }
+  componentWillReceiveProps (nextprops) {
+    console.log(nextprops)
+    if (nextprops.successForgot) {
+      this.setState({fail: false})
+      this.setState({success: true})
+    } if (nextprops.errorForgot) {
+      console.log('errorForgot', nextprops.errorForgot)
+      this.setState({success: false})
+      this.setState({fail: true})
+    }
   }
   render () {
-    console.log('In Login JS')
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom left',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div style={{height: 100 + 'vh'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
@@ -65,10 +87,16 @@ class ResetPassword extends React.Component {
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
-                      {this.props.successForgot &&
+                      <br />
+                      {/* this.state.success &&
                         <div className='form-group m-form__group'>
                           <label>A password reset link has been sent to your email. Please check your email</label>
-                        </div>
+                        </div> */
+                      }
+                      { /* this.state.fail &&
+                        <div className='form-group m-form__group'>
+                          <label style={{color: 'red'}}>{this.props.errorForgot}</label>
+                        </div> */
                       }
                       <br />
                       <div className='m-login__form-action'>
@@ -81,12 +109,6 @@ class ResetPassword extends React.Component {
                       </div>
                     </form>
                   </div>
-                </div>
-              </div>
-              <div className='m-stack__item m-stack__item--center'>
-                <div className='m-login__account'>
-                  <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
-                  <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
                 </div>
               </div>
             </div>
