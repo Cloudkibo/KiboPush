@@ -35,6 +35,7 @@ export function initiateSocket (storeObj) {
 }
 
 socket.on('connect', () => {
+  console.log("Setting Socket Status to true")
   store.dispatch(setSocketStatus(true))
 })
 
