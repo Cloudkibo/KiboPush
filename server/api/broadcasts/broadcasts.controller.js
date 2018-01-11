@@ -108,7 +108,7 @@ exports.getfbMessage = function (req, res) {
       for (let i = 0; i < messagingEvents.length; i++) {
         let itIsMessage = false
         const event = req.body.entry[0].messaging[i]
-        if (event.event.sender && event.recipient && event.postback && event.postback.payload
+        if (event.sender && event.recipient && event.postback && event.postback.payload
           && event.postback.payload === '<GET_STARTED_PAYLOAD>') {
           itIsMessage = true
         }
