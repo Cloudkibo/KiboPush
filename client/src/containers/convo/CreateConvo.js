@@ -40,16 +40,16 @@ class CreateConvo extends React.Component {
       },
       Gender: {
         options: [{id: 'male', text: 'male'},
-                  {id: 'female', text: 'female'},
-                  {id: 'other', text: 'other'}
+          {id: 'female', text: 'female'},
+          {id: 'other', text: 'other'}
         ]
       },
       Locale: {
         options: [{id: 'en_US', text: 'en_US'},
-                  {id: 'af_ZA', text: 'af_ZA'},
-                  {id: 'ar_AR', text: 'ar_AR'},
-                  {id: 'az_AZ', text: 'az_AZ'},
-                  {id: 'pa_IN', text: 'pa_IN'}
+          {id: 'af_ZA', text: 'af_ZA'},
+          {id: 'ar_AR', text: 'ar_AR'},
+          {id: 'az_AZ', text: 'az_AZ'},
+          {id: 'pa_IN', text: 'pa_IN'}
         ]
       },
       stayOpen: false,
@@ -89,7 +89,7 @@ class CreateConvo extends React.Component {
     // this.props.loadMyPagesList();
     // if(this.props.pages.length > 0){
     //   console.log("componentDidMount pageValue set")
-    //   this.setState({pageValue: this.props.pages[0].pageId})  
+    //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
 
@@ -106,9 +106,9 @@ class CreateConvo extends React.Component {
     this.initializePageSelect(options)
     if(this.props.pages.length > 0){
       console.log("componentDidMount pageValue set")
-      this.setState({pageValue: this.props.pages[0].pageId})  
+      this.setState({pageValue: this.props.pages[0].pageId})
     }
-    
+
     this.addSteps([{
       title: 'Component',
       text: 'You can add components to your broadcast using these button',
@@ -116,20 +116,20 @@ class CreateConvo extends React.Component {
       position: 'bottom-left',
       type: 'hover',
       isFixed: true},
-    {
-      title: 'Edit Title',
-      text: 'You can edit the title of your broadcast by clicking the pencil icon',
-      selector: 'i#convoTitle',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Send broadcast',
-      text: 'You can send your broadcast using these buttons',
-      selector: 'button#send',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}])
+      {
+        title: 'Edit Title',
+        text: 'You can edit the title of your broadcast by clicking the pencil icon',
+        selector: 'i#convoTitle',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true},
+      {
+        title: 'Send broadcast',
+        text: 'You can send your broadcast using these buttons',
+        selector: 'button#send',
+        position: 'bottom-left',
+        type: 'hover',
+        isFixed: true}])
   }
 
   componentWillReceiveProps (nextProps) {
@@ -138,7 +138,7 @@ class CreateConvo extends React.Component {
     }
     // if(nextProps.pages.length > 0){
     //   console.log("componentWillReceiveProps pageValue set")
-    //   this.setState({pageValue: nextProps.pages[0].pageId})  
+    //   this.setState({pageValue: nextProps.pages[0].pageId})
     // }
   }
 
@@ -394,7 +394,7 @@ class CreateConvo extends React.Component {
       placeholder: 'Select Pages',
       allowClear: true,
     })
-    
+
     console.log("In initializePageSelect")
     // this.setState({pageValue: pageOptions[0].id})
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
@@ -402,14 +402,14 @@ class CreateConvo extends React.Component {
     $('#selectPage').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions[0].value
-        // var selected = []
-        // for (var i = 0; i < selectedOptions.length; i++) {
-        //   var selectedOption = selectedOptions[i].value
-        //   selected.push(selectedOption)
-        // }
-        console.log('Setting a new pageValue', selectedOptions)
-        self.setState({ pageValue: selectedOptions })
+      var selectedOptions = e.target.selectedOptions[0].value
+      // var selected = []
+      // for (var i = 0; i < selectedOptions.length; i++) {
+      //   var selectedOption = selectedOptions[i].value
+      //   selected.push(selectedOption)
+      // }
+      console.log('Setting a new pageValue', selectedOptions)
+      self.setState({ pageValue: selectedOptions })
       // }
       console.log('change Page', selectedOptions)
     })
@@ -480,11 +480,11 @@ class CreateConvo extends React.Component {
       <div>
         {
           /*
-        !(this.props.user && this.props.user.convoTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
+           !(this.props.user && this.props.user.convoTourSeen) &&
+           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
 
-        */
-    }
+           */
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -594,38 +594,38 @@ class CreateConvo extends React.Component {
                     </div>
                   </StickyDiv>
                   {
-                this.state.isShowingModal &&
-                <ModalContainer style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <ModalDialog style={{width: '500px'}}
-                    onClose={this.closeDialog}>
-                    <h3>Rename:</h3>
-                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                    <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                  </ModalDialog>
-                </ModalContainer>
-              }
+                    this.state.isShowingModal &&
+                    <ModalContainer style={{width: '500px'}}
+                                    onClose={this.closeDialog}>
+                      <ModalDialog style={{width: '500px'}}
+                                   onClose={this.closeDialog}>
+                        <h3>Rename:</h3>
+                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
 
                   {
-                this.state.showMessengerModal &&
-                <ModalContainer style={{width: '500px'}}
-                  onClose={() => { this.setState({showMessengerModal: false}) }}>
-                  <ModalDialog style={{width: '500px'}}
-                    onClose={() => { this.setState({showMessengerModal: false}) }}>
-                    <h3>Connect to Messenger:</h3>
-                    <MessengerPlugin
-                      appId='132767517443810'
-                      pageId={this.state.pageValue}
-                      passthroughParams={this.props.user._id}
-                      onClick={() => { this.setState({showMessengerModal: false}) }}
-                    />
-                  </ModalDialog>
-                </ModalContainer>
-              }
-                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30,  borderRadius: '0px', border: '1px solid #ccc'}}>
+                    this.state.showMessengerModal &&
+                    <ModalContainer style={{width: '500px'}}
+                                    onClose={() => { this.setState({showMessengerModal: false}) }}>
+                      <ModalDialog style={{width: '500px'}}
+                                   onClose={() => { this.setState({showMessengerModal: false}) }}>
+                        <h3>Connect to Messenger:</h3>
+                        <MessengerPlugin
+                          appId='132767517443810'
+                          pageId={this.state.pageValue}
+                          passthroughParams={this.props.user._id}
+                          onClick={() => { this.setState({showMessengerModal: false}) }}
+                        />
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30,  borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    
-                  <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />   
+
+                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
                   </div>
 
