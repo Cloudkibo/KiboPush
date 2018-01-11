@@ -53,7 +53,7 @@ socket.on('new_chat', (data) => {
 socket.on('message', (data) => {
   console.log('New socket event occured ', data)
   if(callbacks[data.action]){
-    callbacks[data.action](data);
+    callbacks[data.action](data.payload);
   }
 
 })
