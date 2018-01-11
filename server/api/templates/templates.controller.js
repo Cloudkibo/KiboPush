@@ -404,7 +404,8 @@ exports.editBroadcast = function (req, res) {
   })
 }
 exports.broadcastDetails = function (req, res) {
-  TemplatePolls.findOne({_id: req.params.broadcastid}, (err, broadcast) => {
+  // 
+  TemplateBroadcasts.findOne({_id: req.params.broadcastid}, (err, broadcast) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',

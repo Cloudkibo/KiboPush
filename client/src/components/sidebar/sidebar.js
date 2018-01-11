@@ -31,7 +31,22 @@ class Sidebar extends Component {
       activeSession: '',
       currentProfile: {},
       loading: true,
-      ignore: true
+      ignore: true,
+      dashboard: true,
+      broadcasts: true,
+      surveys: true,
+      polls: true,
+      workflows: true,
+      livechat: true,
+      autoposting: true,
+      persistentMenu: true,
+      pages: true,
+      subscribers: true,
+      subscribeToMessenger: true,
+      messengerLink: true,
+      phoneNumber: true,
+      settings: true,
+      userGuide: true
     }
     // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
@@ -190,102 +205,118 @@ class Sidebar extends Component {
                   <span className='m-menu__link-text'>Dashboard</span>
                 </Link>
               </li>
+              {this.state.broadcasts &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/convos' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-paper-plane' />
                   <span className='m-menu__link-text'>Broadcasts</span>
                 </Link>
               </li>
+              }
+              {this.state.surveys &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/surveys' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-list-1' />
                   <span className='m-menu__link-text'>Surveys</span>
                 </Link>
               </li>
+              }
+              {this.state.polls &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/poll' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-multimedia-2' />
                   <span className='m-menu__link-text'>Polls</span>
                 </Link>
               </li>
+              }
+              {this.state.workflows &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/workflows' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-interface-8' />
                   <span className='m-menu__link-text'>Workflows</span>
                 </Link>
               </li>
+              }
+              {this.state.livechat && this.props.user && this.props.user.isSuperUser &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/live' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-chat-1' />
                   <span className='m-menu__link-text'>Live Chat</span>
                 </Link>
               </li>
+              }
+              {this.state.autoposting &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-signs-2' />
                   <span className='m-menu__link-text'>Auto Posting</span>
                 </Link>
               </li>
+              }
+              {this.state.persistentMenu &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/menu' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-network' />
                   <span className='m-menu__link-text'>Persistent Menu</span>
                 </Link>
               </li>
+              }
+              {this.state.pages &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/pages' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-add' />
                   <span className='m-menu__link-text'>Manage Pages</span>
                 </Link>
               </li>
+              }
+              {this.state.subscribers &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-users' />
                   <span className='m-menu__link-text'>Manage Subscriptions</span>
                 </Link>
               </li>
+              }
+              {this.state.subscribeToMessenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-alarm' />
                   <span className='m-menu__link-text'>Subscribe to Messenger</span>
                 </Link>
               </li>
+              }
+              {this.state.messengerLink &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-share' />
                   <span className='m-menu__link-text'>Messenger Link</span>
                 </Link>
               </li>
+              }
+              {this.state.phoneNumber &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-file' />
                   <span className='m-menu__link-text'>Invite using phone number</span>
                 </Link>
               </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-add' />
-                  <span className='m-menu__link-text'>Invite Members</span>
-                </Link>
-              </li>
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/members' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-add' />
-                  <span className='m-menu__link-text'>Members</span>
-                </Link>
-              </li>
+              }
+              {this.state.settings &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/settings' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-cogwheel' />
                   <span className='m-menu__link-text'>Settings</span>
                 </Link>
               </li>
+              }
+              {this.state.settings &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-info' />
                   <span className='m-menu__link-text'>User Guide</span>
                 </a>
               </li>
+              }
             </ul>
           </div>
 
