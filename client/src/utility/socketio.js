@@ -4,7 +4,7 @@
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 import { socketUpdate } from './../redux/actions/livechat.actions'
-const socket = io('')
+const socket = io('https://staging.kibopush.com/')
 let store
 
 var joined = false

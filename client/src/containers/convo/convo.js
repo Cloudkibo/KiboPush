@@ -18,6 +18,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { registerAction } from '../../utility/socketio'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -49,6 +50,12 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    registerAction({
+      event: 'new_broadcast',
+      action: function(data){
+        this.props.loadBroadcastsList();
+      }
+    })
     document.title = 'KiboPush | Broadcast'
   }
 
