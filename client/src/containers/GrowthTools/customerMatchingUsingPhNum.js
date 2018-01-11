@@ -4,7 +4,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CustomerMatching extends React.Component {
@@ -17,10 +17,12 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false,
+      disabled: true,
       selectPage: {},
       fblink: '',
-      manually: false
+      manually: false,
+      phoneNumbers: [],
+      numbersError: []
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -40,6 +42,7 @@ class CustomerMatching extends React.Component {
 
   enterPhoneNoManually () {
     this.setState({manually: true})
+    this.inputPhoneNumbers.focus()
   }
 
   removeFile () {
@@ -122,14 +125,29 @@ class CustomerMatching extends React.Component {
       fileData.append('filesize', file[0].size)
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
+
+      if (this.validate('file')) {
+        this.props.saveFileForPhoneNumbers(fileData)
+      }
+    } else if (this.inputPhoneNumbers.value !== '') {
+      this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
+      if (this.validate('numbers')) {
+        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue})
+      }
     }
-    if (this.validate()) {
-      this.props.saveFileForPhoneNumbers(fileData)
+  }
+
+  onPhoneNumbersChange (e) {
+    if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
+      this.setState({disabled: false})
     }
   }
 
   onTextChange (e) {
     this.setState({textAreaValue: e.target.value})
+    if (e.target.value !== '' && ((this.state.file && this.state.file !== '') || this.inputPhoneNumbers.value !== '')) {
+      this.setState({disabled: false})
+    }
     if (e.target.value) {
       this.setState({messageErrors: []})
     } else {
@@ -139,21 +157,33 @@ class CustomerMatching extends React.Component {
     }
   }
 
-  validate () {
+  validate (type) {
     var errors = false
     console.log('validate', this.state)
-    if (this.state.file === '') {
-      this.setState({
-        fileErrors: [{errorMsg: 'Upload a file'}]
-      })
-      errors = true
-    }
-    if (this.state.textAreaValue === '' &&
-      this.state.textAreaValue.length < 1) {
-      this.setState({
-        messageErrors: [{errorMsg: 'Enter an invitation message'}]
-      })
-      errors = true
+    if (type === 'file') {
+      if (this.state.file === '') {
+        this.setState({
+          fileErrors: [{errorMsg: 'Upload a file'}]
+        })
+        errors = true
+      }
+      if (this.state.textAreaValue === '' &&
+        this.state.textAreaValue.length < 1) {
+        this.setState({
+          messageErrors: [{errorMsg: 'Enter an invitation message'}]
+        })
+        errors = true
+      }
+    } else if (type === 'numbers') {
+      const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+      console.log('phoneNumbers:', this.state.phoneNumbers)
+      let errors = []
+      for (var i = 0; i < this.state.phoneNumbers.length; i++) {
+        if (!regex.test(this.state.phoneNumbers[i])) {
+          errors.push(this.state.phoneNumbers[i])
+        }
+      }
+      this.setState({numbersError: errors})
     }
     return !errors
   }
@@ -311,7 +341,20 @@ class CustomerMatching extends React.Component {
                               id='m-dropzone-one'>
                               {
                                 this.state.manually
-                                ? <input type='text' className='form-control m-input m-input--square' placeholder='Enter phone number separated by semi colon {;}' />
+                                ? <div>
+                                  <label>{'Enter phone number separated by semi colon {;}'}</label>
+                                  <input ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  <span className='m-form__help'>
+                                    <span style={{color: 'red'}}>One or more numbers are incorrect.</span>
+                                    <span style={{color: 'red'}}>InCorrect numbers:</span>
+                                    {
+                                      this.state.numbersError.map(
+                                        m => <span style={{color: 'red'}}>{m}</span>
+                                      )
+                                    }
+                                    <span style={{color: 'red'}}>Please make sure that all numbers must start with + sign.</span>
+                                  </span>
+                                </div>
                                 : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
                               }
                               <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
@@ -330,11 +373,6 @@ class CustomerMatching extends React.Component {
                                 minFileSize={0}
                                 clickable>
                                 <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
-                                <h3 className='m-dropzone__msg-title' style={{lineHeight: '40px'}}>
-                                  {this.state.file !== ''
-                                          ? `Selected File : ${this.state.file[0].name}`
-                                          : ''}
-                                </h3>
                               </Files>
                             </div>
                           }
@@ -417,7 +455,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     saveFileForPhoneNumbers: saveFileForPhoneNumbers,
     loadMyPagesList: loadMyPagesList,
-    downloadSampleFile: downloadSampleFile},
+    downloadSampleFile: downloadSampleFile,
+    sendPhoneNumbers: sendPhoneNumbers
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerMatching)
