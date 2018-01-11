@@ -153,6 +153,8 @@ exports.create = function (req, res) {
             let url = req.body.subscriptionUrl
             let urlAfterDot = url.substring(url.indexOf('.') + 1)
             let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+            while (screenName.indexOf('-') > -1) screenName = screenName.substring(screenName.indexOf('-') + 1)
+            logger.serverLog(TAG, `screenName ${screenName}`)
             if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
             logger.serverLog(TAG, `the parse got as ${screenName}`)
             Page.findOne({
