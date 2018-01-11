@@ -106,9 +106,17 @@ exports.getfbMessage = function (req, res) {
       const messagingEvents = payload.messaging
 
       for (let i = 0; i < messagingEvents.length; i++) {
+        let itIsMessage = false
         const event = req.body.entry[0].messaging[i]
+        if (event.event.sender && event.recipient && event.postback && event.postback.payload
+          && event.postback.payload === '<GET_STARTED_PAYLOAD>') {
+          itIsMessage = true
+        }
         if (event.message &&
           (event.message.is_echo === false || !event.message.is_echo)) {
+          itIsMessage = true
+        }
+        if (itIsMessage) {
           const sender = event.sender.id
           const pageId = event.recipient.id
           // get accesstoken of page
