@@ -18,6 +18,28 @@
       }
     });
   </script>
+  <style>
+    img.normal {
+      width: 250px;
+    }
+    #d1 {
+      color: red;
+    }
+    #one {
+      font-weight: bold;
+    }
+    #two {
+      color: red;
+    }
+    .myStyle {
+      color: red;
+    }
+    #m_login_signup_submit{
+      margin: auto;
+      display: block;
+      align: right;
+    }
+  </style>
   <!--end::Web font -->
   <!--begin::Base Styles -->
   <link href="/assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
@@ -38,7 +60,7 @@
           <div class="m-login__wrapper">
             <div class="m-login__logo">
               <a href="/">
-                <img src="/img/logo.png">
+                <img src="/img/logo.png" class="normal" >
               </a>
             </div>
             <div class="m-login__signin">
@@ -55,7 +77,7 @@
                   <input id="name" class="form-control m-input" type="text" placeholder="Fullname" name="name">
                 </div>
                 <div class="form-group m-form__group">
-                  <input id="email" class="form-control m-input" type="text" placeholder="Email" name="email" autocomplete="off">
+                  <input id="email" class="form-control m-input" type="text" placeholder="Email" name="email" autocomplete="off" disabled>
                 </div>
                 <div class="form-group m-form__group">
                   <input id="password" class="form-control m-input" type="password" placeholder="Password" name="password">
@@ -63,20 +85,9 @@
                 <div class="form-group m-form__group">
                   <input id="rpassword" class="form-control m-input m-login__form-input--last" type="password" placeholder="Confirm Password" name="rpassword">
                 </div>
-                <!--<div class="row form-group m-form__group m-login__form-sub">-->
-                  <!--<div class="col m&#45;&#45;align-left">-->
-                    <!--<label class="m-checkbox m-checkbox&#45;&#45;focus">-->
-                      <!--<input type="checkbox" name="agree">-->
-                      <!--I Agree the-->
-                      <!--<a href="http://kibopush.com/privacy-policy/" class="m-link m-link&#45;&#45;focus">-->
-                        <!--terms and conditions-->
-                      <!--</a>-->
-                      <!--.-->
-                      <!--<span></span>-->
-                    <!--</label>-->
-                    <!--<span class="m-form__help"></span>-->
-                  <!--</div>-->
-                <!--</div>-->
+                <div class="form-group m-form__group">
+                  <div id='alertMsg' style="color: red;"></div>
+                </div>
                 <div class="m-login__form-action">
                   <button id="applyBtn" type="button" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air">
                     Sign Up

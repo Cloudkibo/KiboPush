@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 
 export function setBrowserName (data) {
   return {
@@ -8,6 +9,8 @@ export function setBrowserName (data) {
   }
 }
 export function showuserdetails (data) {
+  // NOTE: don't remove following auth method call
+  auth.putUserId(data._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
     data

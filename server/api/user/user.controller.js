@@ -141,7 +141,7 @@ exports.create = function (req, res) {
         }
 
         let token = auth.signToken(user._id)
-        res.status(201).json({status: 'success', token: token})
+        res.status(201).json({status: 'success', token: token, userid: user._id})
       })
 
       let tokenString = crypto.randomBytes(16).toString('base64')
@@ -295,6 +295,8 @@ exports.joinCompany = function (req, res) {
           res.clearCookie('companyId')
           res.clearCookie('companyName')
           res.clearCookie('domain')
+          res.cookie('token', token)
+          res.cookie('userid', user._id)
           res.status(201).json({status: 'success', token: token})
         })
 

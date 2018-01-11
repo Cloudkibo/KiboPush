@@ -24,6 +24,7 @@ export function signUp (data) {
         console.log('response from server', res)
         if (res.status === 'success') {
           auth.putCookie(res.token)
+          auth.putUserId(res.userid)
           dispatch(Success())
         } else {
           dispatch(Failure())

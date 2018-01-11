@@ -64,6 +64,7 @@ import ViewTemplatePoll from './containers/templates/viewPoll'
 import Invitations from './containers/invitations/invitations'
 import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
+import Connect from './containers/facebookConnect/connect'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -77,6 +78,13 @@ function requireAuth (nextState, replace) {
 
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
+    if (auth.getNext() === 'addPages'){
+      auth.removeNext()
+      return replace({
+        pathname: '/addPages',
+        state: { nextPathname: nextState.location.pathname }
+      })
+    }
     console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
@@ -149,6 +157,7 @@ const routes = (
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />
+    <Route path='/connectFb' component={Connect} onEnter={requireAuth} />
   </Route>
 
 )

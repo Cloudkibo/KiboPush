@@ -10,6 +10,10 @@ const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
 const ApiSettings = require('../api/api_settings/api_settings.model')
 const validateJwt = expressJwt({secret: config.secrets.session})
+const needle = require('needle')
+const Pages = require('../api/pages/Pages.model')
+const CompanyUsers = require('../api/companyuser/companyuser.model')
+const _ = require('lodash')
 
 const logger = require('../components/logger')
 
@@ -147,6 +151,46 @@ function setTokenCookie (req, res) {
   res.redirect('/')
 }
 
+/**
+ * Set token cookie directly for oAuth strategies
+ */
+function fbConnectDone (req, res) {
+  let fbPayload = req.user
+  let token = req.cookies.token
+  let userid = req.cookies.userid
+  if (!req.user) {
+    return res.status(404).json({
+      status: 'failed',
+      description: 'Something went wrong, please try again.'
+    })
+  }
+
+  Users.findOne({_id: userid}, (err, user) => {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!user) {
+      return res.status(401)
+      .json({status: 'failed', description: 'Unauthorized'})
+    }
+
+    req.user = user
+    user.facebookInfo = fbPayload
+    user.save((err) => {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      fetchPages(`https://graph.facebook.com/v2.10/${
+        fbPayload.fbId}/accounts?access_token=${
+        fbPayload.fbToken}`, user)
+      res.cookie('next', 'addPages', { expires: new Date(Date.now() + 60000) })
+      res.redirect('/')
+    })
+  })
+}
+
 // eslint-disable-next-line no-unused-vars
 function isAuthorizedWebHookTrigger () {
   return compose().use((req, res, next) => {
@@ -166,5 +210,107 @@ exports.signToken = signToken
 exports.setTokenCookie = setTokenCookie
 exports.isAuthorizedSuperUser = isAuthorizedSuperUser
 exports.hasRole = hasRole
+exports.fbConnectDone = fbConnectDone
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
+
+function fetchPages (url, user) {
+  const options = {
+    headers: {
+      'X-Custom-Header': 'CloudKibo Web Application'
+    },
+    json: true
+
+  }
+  needle.get(url, options, (err, resp) => {
+    if (err !== null) {
+      logger.serverLog(TAG, 'error from graph api to get pages list data: ')
+      logger.serverLog(TAG, JSON.stringify(err))
+      return
+    }
+    // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
+    // logger.serverLog(TAG, JSON.stringify(resp.body))
+
+    const data = resp.body.data
+    const cursor = resp.body.paging
+
+    data.forEach((item) => {
+      // logger.serverLog(TAG,
+      //   `foreach ${JSON.stringify(item.name)}`)
+      //  createMenuForPage(item)
+      const options2 = {
+        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
+        qs: {access_token: item.access_token},
+        method: 'GET'
+      }
+      needle.get(options2.url, options2, (error, fanCount) => {
+        if (error !== null) {
+          return logger.serverLog(TAG, `Error occurred ${error}`)
+        } else {
+          // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
+          //   fanCount.body.fan_count)}`)
+          CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyUser) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!companyUser) {
+              return res.status(404).json({
+                status: 'failed',
+                description: 'The user account does not belong to any company. Please contact support'
+              })
+            }
+            Pages.findOne({pageId: item.id, userId: user._id, companyId: companyUser.companyId}, (err, page) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Internal Server Error ${JSON.stringify(err)}`)
+              }
+              if (!page) {
+                let payloadPage = {
+                  pageId: item.id,
+                  pageName: item.name,
+                  accessToken: item.access_token,
+                  userId: user._id,
+                  companyId: companyUser.companyId,
+                  likes: fanCount.body.fan_count,
+                  pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
+                  connected: false
+                }
+                if (fanCount.body.username) {
+                  payloadPage = _.merge(payloadPage,
+                    {pageUserName: fanCount.body.username})
+                }
+                var pageItem = new Pages(payloadPage)
+                // save model to MongoDB
+                pageItem.save((err, page) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error occurred ${err}`)
+                  }
+                  logger.serverLog(TAG,
+                    `Page ${item.name} created with id ${page.pageId}`)
+                })
+              } else {
+                page.likes = fanCount.body.fan_count
+                page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+                page.accessToken = item.access_token
+                if (fanCount.body.username) page.pageUserName = fanCount.body.username
+                page.save((err) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error ${JSON.stringify(err)}`)
+                  }
+                  // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+                })
+              }
+            })
+          })
+        }
+      })
+    })
+    if (cursor.next) {
+      fetchPages(cursor.next, user)
+    }
+  })
+}

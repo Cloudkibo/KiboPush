@@ -45,7 +45,7 @@ class Signup extends React.Component {
     if (nextprops.successSignup) {
       console.log('i am called')
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: '/connectFb'
 
       })
     }

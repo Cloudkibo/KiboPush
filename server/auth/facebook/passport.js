@@ -7,8 +7,7 @@ const FacebookStrategy = require('passport-facebook').Strategy
 const PassportFacebookExtension = require('passport-facebook-extension')
 const needle = require('needle')
 const _ = require('lodash')
-const Pages = require('../../api/pages/Pages.model')
-const Users = require('../../api/user/Users.model')
+
 
 const logger = require('../../components/logger')
 const TAG = 'api/auth/facebook/passport'
@@ -64,7 +63,7 @@ exports.setup = function (User, config) {
 
           if (err) return done(err)
 
-          let payload = new Users({
+          let payload = {
             name: resp.body.name,
             locale: resp.body.locale,
             gender: resp.body.gender,
@@ -73,137 +72,17 @@ exports.setup = function (User, config) {
             profilePic: resp.body.picture.data.url,
             fbToken: accessToken,
             fbId: resp.body.id
-          })
+          }
 
           if (resp.body.email) {
             payload = _.merge(payload, {email: resp.body.email})
           }
 
-          Users.findOne({fbId: resp.body.id}, (err, user) => {
-            if (err) {
-              return done(err)
-            }
-            if (!err && user !== null) {
-              // logger.serverLog(TAG,
-              //   `previous fb token before login: ${user.fbToken}`)
-              user.updatedAt = Date.now()
-              user.fbToken = accessToken
-              user.profilePic = resp.body.picture.data.url
-              // logger.serverLog(TAG, `new fb token after login: ${accessToken}`)
-              user.save((err, userpaylaod) => {
-                if (err) {
-                  logger.serverLog(TAG, JSON.stringify(err))
-                  return done(err)
-                }
-                // logger.serverLog(TAG,
-                //   `user is updated : ${JSON.stringify(userpaylaod)}`)
-                done(null, user)
-                fetchPages(`https://graph.facebook.com/v2.10/${
-                  user.fbId}/accounts?access_token=${
-                  user.fbToken}`, user)
-              })
-            } else {
-              payload.save((error, newUser) => {
-                if (error) {
-                  return done(error)
-                }
-                done(null, newUser)
-                fetchPages(`https://graph.facebook.com/v2.10/${
-                  payload.fbId}/accounts?access_token=${
-                  payload.fbToken}`, newUser)
-              })
-            }
-          })
+          done(null, payload)
         })
       })
     }
   ))
-}
-
-function fetchPages (url, user) {
-  const options = {
-    headers: {
-      'X-Custom-Header': 'CloudKibo Web Application'
-    },
-    json: true
-
-  }
-  needle.get(url, options, (err, resp) => {
-    if (err !== null) {
-      logger.serverLog(TAG, 'error from graph api to get pages list data: ')
-      logger.serverLog(TAG, JSON.stringify(err))
-      return
-    }
-    // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
-    // logger.serverLog(TAG, JSON.stringify(resp.body))
-
-    const data = resp.body.data
-    const cursor = resp.body.paging
-
-    data.forEach((item) => {
-      // logger.serverLog(TAG,
-      //   `foreach ${JSON.stringify(item.name)}`)
-      //  createMenuForPage(item)
-      const options2 = {
-        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
-        qs: {access_token: item.access_token},
-        method: 'GET'
-      }
-      needle.get(options2.url, options2, (error, fanCount) => {
-        if (error !== null) {
-          return logger.serverLog(TAG, `Error occurred ${error}`)
-        } else {
-          // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
-          //   fanCount.body.fan_count)}`)
-          Pages.findOne({pageId: item.id, userId: user._id}, (err, page) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Internal Server Error ${JSON.stringify(err)}`)
-            }
-            if (!page) {
-              let payloadPage = {
-                pageId: item.id,
-                pageName: item.name,
-                accessToken: item.access_token,
-                userId: user._id,
-                likes: fanCount.body.fan_count,
-                pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
-                connected: false
-              }
-              if (fanCount.body.username) {
-                payloadPage = _.merge(payloadPage,
-                  {pageUserName: fanCount.body.username})
-              }
-              var pageItem = new Pages(payloadPage)
-              // save model to MongoDB
-              pageItem.save((err, page) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error occurred ${err}`)
-                }
-                logger.serverLog(TAG,
-                  `Page ${item.name} created with id ${page.pageId}`)
-              })
-            } else {
-              page.likes = fanCount.body.fan_count
-              page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
-              page.accessToken = item.access_token
-              if (fanCount.body.username) page.pageUserName = fanCount.body.username
-              page.save((err) => {
-                if (err) {
-                  logger.serverLog(TAG,
-                    `Internal Server Error ${JSON.stringify(err)}`)
-                }
-                // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
-              })
-            }
-          })
-        }
-      })
-    })
-    if (cursor.next) {
-      fetchPages(cursor.next, user)
-    }
-  })
 }
 
 // function createMenuForPage (page) {
