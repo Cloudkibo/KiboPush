@@ -69,7 +69,7 @@ export function joinRoom (data) {
     return
   }
   socket.emit('message', {
-    action: 'join_room'
+    action: 'join_room',
     room_id: data
   })
   joined = true
