@@ -192,13 +192,17 @@ exports.getfbMessage = function (req, res) {
 
         // if event.post, the response will be of survey or poll. writing a logic to save response of poll
         if (event.postback) {
-          let resp = JSON.parse(event.postback.payload)
-          if (resp.poll_id) {
-            savepoll(event)
-          } else if (resp.survey_id) {
-            savesurvey(event)
-          } else {
-            sendReply(event)
+          try {
+            let resp = JSON.parse(event.postback.payload)
+            if (resp.poll_id) {
+              savepoll(event)
+            } else if (resp.survey_id) {
+              savesurvey(event)
+            } else {
+              sendReply(event)
+            }
+          } catch (e) {
+            logger.serverLog(TAG, 'Parse Error: ' + JSON.stringify(event.postback))
           }
         }
 
@@ -556,7 +560,7 @@ function sendautomatedmsg (req, page) {
       //  'message_is'
       //  'message_contains'
       //  'message_begins'
-      if (req.message.text) {
+      if (req.message && req.message.text) {
         var index = -3
         for (let i = 0; i < workflows.length; i++) {
           var userMsg = req.message.text
