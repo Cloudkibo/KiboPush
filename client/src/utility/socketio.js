@@ -51,7 +51,7 @@ socket.on('new_chat', (data) => {
 socket.on('message', (data) => {
   console.log('New socket event occured ', data)
   if(callbacks[data.action]){
-    callbacks[data.action]();
+    callbacks[data.action](data);
   }
 
 })
@@ -65,9 +65,12 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
+  console.log("Trying to join room socket")
   if (joined) {
+    console.log("Socket Already Joined")
     return
   }
+  console.log("Joining Socket")
   socket.emit('message', {
     action: 'join_room',
     room_id: data
