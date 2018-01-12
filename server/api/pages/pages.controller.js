@@ -137,56 +137,64 @@ exports.enable = function (req, res) {
                   description: 'Failed to update record'
                 })
               } else {
-                Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
-                  if (err2) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: `Internal Server Error${JSON.stringify(err)}`
+                Subscribers.update({pageId: req.body._id}, {isEnabledByPage: true}, function (err) {
+                  if (err) {
+                    res.status(500).json({
+                      status: 'Failed',
+                      description: 'Failed to update record'
                     })
                   }
-                  const options = {
-                    url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
-                    qs: {access_token: req.body.accessToken},
-                    method: 'POST'
+                  Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
+                    if (err2) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: `Internal Server Error${JSON.stringify(err)}`
+                      })
+                    }
+                    const options = {
+                      url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                      qs: {access_token: req.body.accessToken},
+                      method: 'POST'
 
-                  }
-                  var valueForMenu = {
-                    'get_started': {
-                      'payload': '<GET_STARTED_PAYLOAD>'
                     }
-                  }
-                  const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
+                    var valueForMenu = {
+                      'get_started': {
+                        'payload': '<GET_STARTED_PAYLOAD>'
+                      }
+                    }
+                    const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
 
-                  needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
-                    if (!err) {
-                      logger.serverLog(TAG,
-                        `Menu added to page ${req.body.pageName}`)
-                    }
-                    if (err) {
-                      logger.serverLog(TAG,
-                        `Internal Server Error ${JSON.stringify(err)}`)
-                    }
-                  })
-                  needle.post(options.url, options, (error, response) => {
-                    if (error) {
-                      return res.status(500)
-                      .json(
-                        {status: 'failed', description: JSON.stringify(error)})
-                    }
-                    require('./../../config/socketio').sendMessageToClient({
-                      room_id: companyUser.companyId,
-                      body: {
-                        action: 'page_connect',
-                        payload: {
-                          page_id: req.body.pageId,
-                          user_id: req.user._id,
-                          user_name: req.user.name,
-                          company_id: companyUser.companyId
-                        }
+                    needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+                      if (!err) {
+                        logger.serverLog(TAG,
+                          `Menu added to page ${req.body.pageName}`)
+                      }
+                      if (err) {
+                        logger.serverLog(TAG,
+                          `Internal Server Error ${JSON.stringify(err)}`)
                       }
                     })
-                    res.status(200)
-                    .json({status: 'success', payload: {pages: pages}})
+                    needle.post(options.url, options, (error, response) => {
+                      if (error) {
+                        return res.status(500)
+                        .json(
+                          {status: 'failed', description: JSON.stringify(error)})
+                      }
+                      require('./../../config/socketio').sendMessageToClient({
+                        room_id: companyUser.companyId,
+                        body: {
+                          action: 'page_connect',
+                          payload: {
+                            page_id: req.body.pageId,
+                            user_id: req.user._id,
+                            user_name: req.user.name,
+                            company_id: companyUser.companyId
+                          }
+                        }
+                      })
+                      res.status(200)
+                      .json({status: 'success', payload: {pages: pages}})
+                    })
                   })
                 })
               }
@@ -240,7 +248,7 @@ exports.disable = function (req, res) {
           })
         } else {
           // remove subscribers of the page
-          Subscribers.remove({pageId: req.body._id}, function () {
+          Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, function () {
             Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
               if (err2) {
                 return res.status(500).json({

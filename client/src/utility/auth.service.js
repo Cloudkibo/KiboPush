@@ -30,6 +30,7 @@ const auth = {
   },
 
   logout (cb) {
+    cookie.remove('userid')
     cookie.remove('token', { path: '/' })
     if (cb) cb()
     this.onChange(false)

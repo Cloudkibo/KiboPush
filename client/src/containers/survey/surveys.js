@@ -17,6 +17,7 @@ import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { registerAction } from '../../utility/socketio'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -37,6 +38,13 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
+
+      registerAction({
+      event: 'survey_created',
+      action: function(data){
+        this.props.loadSurveysList();
+      }
+    })
     document.title = 'KiboPush | Survey'
   }
   componentWillMount () {

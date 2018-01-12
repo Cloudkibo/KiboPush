@@ -10,35 +10,28 @@ import Card from './Card'
 import Slider from 'react-slick'
 import RightArrow from './RightArrow'
 import LeftArrow from './LeftArrow'
+import AlertContainer from 'react-alert'
 
 class Gallery extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.handleChange = this.handleChange.bind(this)
     this.addSlide = this.addSlide.bind(this)
+    this.removeSlide = this.removeSlide.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.state = {
       broadcast: [],
       cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} handleCard={this.handleCard} />, key: 2}],
-      showPlus: false
+      showPlus: false,
+      pageNumber: 1,
     }
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   handleChange (index) {
+    this.setState({pageNumber: index + 1})
     if (index === this.state.cards.length - 1) {
       this.setState({showPlus: true})
     } else {
@@ -46,7 +39,18 @@ class Gallery extends React.Component {
     }
   }
 
+  removeSlide(){
+    var temp = this.state.cards;
+    console.log("Cards Before Removing",  temp)
+    temp.splice(this.state.pageNumber - 1, 1);
+    console.log("Cards After Removing",  temp)
+    this.setState({cards: temp}) 
+  }
+
   addSlide () {
+    if(this.state.cards.length >= 10){
+      return this.msg.error('You cant add more than 10 cards.');
+    }
     var temp = this.state.cards
     this.setState({cards: [...temp, {element: <Card id={temp.length + 1} handleCard={this.handleCard} />, key: temp.length + 1}]})
     this.slider.slickNext()
@@ -74,7 +78,13 @@ class Gallery extends React.Component {
 
   render () {
     console.log('Gallary State', this.state)
-
+     var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     var settings = {
       arrows: true,
       dots: true,
@@ -88,20 +98,23 @@ class Gallery extends React.Component {
     }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
 
+
         {
-          this.state.showPlus &&
-          <div onClick={this.addSlide} style={{position: 'absolute', float: 'left', top: '-5px', left: '-10px', zIndex: '2', marginTop: '-5px'}}>
-            <span style={{cursor: 'pointer'}} className='fa-stack'>
-              <i className='fa fa-plus fa-stack-2x' />
-            </span>
+          <div  style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
+
+        
         <div>
           <Slider ref={(c) => { this.slider = c }} {...settings}>
             {
