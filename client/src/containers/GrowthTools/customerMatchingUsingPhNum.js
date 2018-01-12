@@ -181,7 +181,7 @@ class CustomerMatching extends React.Component {
       console.log('phoneNumbers:', this.state.phoneNumbers)
       let err = []
       for (var i = 0; i < this.state.phoneNumbers.length; i++) {
-        if (!regex.test(this.state.phoneNumbers[i])) {
+        if (!this.state.phoneNumbers[i].match(regex)) {
           err.push(this.state.phoneNumbers[i])
           errors = true
         }
