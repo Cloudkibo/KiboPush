@@ -35,6 +35,7 @@ class CustomerMatching extends React.Component {
     this.getSampleFile = this.getSampleFile.bind(this)
     this.enterPhoneNoManually = this.enterPhoneNoManually.bind(this)
     this.removeFile = this.removeFile.bind(this)
+    this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
   }
   getSampleFile () {
     this.props.downloadSampleFile()
@@ -138,6 +139,7 @@ class CustomerMatching extends React.Component {
   }
 
   onPhoneNumbersChange (e) {
+    console.log('onPhoneNumbersChange')
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
     }
@@ -198,11 +200,19 @@ class CustomerMatching extends React.Component {
         disabled: true
       })
     } else if (res.status === 'success') {
-      this.setState({
-        alertMessage: ('Your file has been uploaded successfully.'),
-        type: 'success',
-        disabled: true
-      })
+      if (this.state.file && this.state.file !== '') {
+        this.setState({
+          alertMessage: ('Your file has been uploaded successfully.'),
+          type: 'success',
+          disabled: true
+        })
+      } else {
+        this.setState({
+          alertMessage: (res.description),
+          type: 'success',
+          disabled: true
+        })
+      }
     } else {
       this.setState({
         alertMessage: '',
@@ -241,6 +251,7 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    console.log(this.state)
     return (
       <div>
         <Header />
@@ -344,16 +355,12 @@ class CustomerMatching extends React.Component {
                                 ? <div>
                                   <label>{'Enter phone number separated by semi colon {;}'}</label>
                                   <input ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
-                                  <span className='m-form__help'>
-                                    <span style={{color: 'red'}}>One or more numbers are incorrect.</span>
-                                    <span style={{color: 'red'}}>InCorrect numbers:</span>
-                                    {
-                                      this.state.numbersError.map(
-                                        m => <span style={{color: 'red'}}>{m}</span>
-                                      )
-                                    }
-                                    <span style={{color: 'red'}}>Please make sure that all numbers must start with + sign.</span>
-                                  </span>
+                                  {
+                                    this.state.numbersError.length > 0 &&
+                                    <span className='m-form__help'>
+                                      <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
+                                    </span>
+                                  }
                                 </div>
                                 : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
                               }
