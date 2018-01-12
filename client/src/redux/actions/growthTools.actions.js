@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 export function sendresp (data) {
@@ -27,5 +28,16 @@ export function saveFileForPhoneNumbers (filedata) {
       console.log(data)
       dispatch(sendresp(data))
     })
+  }
+}
+
+export function sendPhoneNumbers (data) {
+  return (dispatch) => {
+    callApi('growthTools/sendNumbers', 'post', data)
+      .then(res => {
+        console.log('Response', res)
+        dispatch(sendresp(res))
+      }
+    )
   }
 }

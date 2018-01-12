@@ -20,6 +20,7 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { registerAction } from '../../utility/socketio'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -112,6 +113,12 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+      registerAction({
+      event: 'poll_created',
+      action: function(data){
+        this.props.loadPollsList()();
+      }
+    })
   }
 
   gotoView (poll) {
