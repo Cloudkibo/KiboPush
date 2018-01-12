@@ -131,7 +131,6 @@ class CustomerMatching extends React.Component {
         this.props.saveFileForPhoneNumbers(fileData)
       }
     } else if (this.inputPhoneNumbers.value !== '') {
-      this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
       if (this.validate('numbers')) {
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue})
       }
@@ -140,6 +139,7 @@ class CustomerMatching extends React.Component {
 
   onPhoneNumbersChange (e) {
     console.log('onPhoneNumbersChange')
+    this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
     }
