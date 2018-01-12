@@ -43,7 +43,7 @@ class CustomerMatching extends React.Component {
 
   enterPhoneNoManually () {
     this.setState({manually: true})
-    this.inputPhoneNumbers.focus()
+    this.inputPhoneNumbers.getDOMNode().focus()
   }
 
   removeFile () {
