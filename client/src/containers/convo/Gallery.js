@@ -108,8 +108,9 @@ class Gallery extends React.Component {
 
         {
           <div  style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
-            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '15px'}}>Add</span>
-            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.removeSlide} style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
 
