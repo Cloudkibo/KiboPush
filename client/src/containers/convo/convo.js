@@ -31,6 +31,7 @@ class Convo extends React.Component {
       totalLength: 0,
       filterValue: '',
       isShowingModal: false
+
     }
     props.loadBroadcastsList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
@@ -38,10 +39,15 @@ class Convo extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onFilter = this.onFilter.bind(this)
-    this.showDialog = this.showDialog.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
+  }
+  showDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModal: true})
   }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
@@ -54,22 +60,9 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-    registerAction({
-      event: 'new_broadcast',
-      action: function(data){
-        this.props.loadBroadcastsList();
-      }
-    })
     document.title = 'KiboPush | Broadcast'
   }
-  showDialog () {
-    console.log('in showDialog')
-    this.setState({isShowingModal: true})
-  }
 
-  closeDialog () {
-    this.setState({isShowingModal: false})
-  }
   displayData (n, broadcasts) {
     console.log(broadcasts)
     let offset = n * 4
@@ -226,7 +219,7 @@ class Convo extends React.Component {
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
                             ? <a href='#'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                                 <span>
                                   <i className='la la-plus' />
                                   <span>
@@ -257,7 +250,7 @@ class Convo extends React.Component {
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialog}>
                                 <h3>Create Poll</h3>
-                                <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
+                                <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <Link to='/createconvo' className='btn btn-primary'>
@@ -275,25 +268,6 @@ class Convo extends React.Component {
                           }
                         </div>
                       </div>
-                      <form>
-                        <div className='form-row'>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                            <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
-                          </div>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
-                              <option value='' disabled>Filter by type...</option>
-                              <option value='text'>text</option>
-                              <option value='image'>image</option>
-                              <option value='card'>card</option>
-                              <option value='gallery'>gallery</option>
-                              <option value='audio'>audio</option>
-                              <option value='video'>video</option>
-                              <option value='file'>file</option>
-                              <option value='miscellaneous'>miscellaneous</option>
-                              <option value=''>all</option>
-                            </select>
-                          </div>
                       <div className='form-row'>
                         <div style={{display: 'inline-block'}} className='form-group col-md-8'>
                           <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
@@ -316,73 +290,73 @@ class Convo extends React.Component {
                       <div>
 
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                            <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                              <thead className='m-datatable__head'>
-                              <tr className='m-datatable__row'
-                                  style={{height: '53px'}}>
-                                <th data-field='platform' style={{width: 100}}
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span >Title</span>
-                                </th>
-                                <th data-field='statement' style={{width: 100}}
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Type</span>
-                                </th>
-                                <th data-field='datetime' style={{width: 100}}
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Created At</span>
-                                </th>
-                                <th data-field='sent' style={{width: 100}}
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span >Sent</span>
-                                </th>
-                                <th data-field='seen' style={{width: 100}}
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span>Seen</span>
-                                </th>
-                              </tr>
-                              </thead>
-                              <tbody className='m-datatable__body'>
-                              {
-                                this.state.broadcastsData.map((broadcast, i) => (
-                                  <tr data-row={i}
-                                      className='m-datatable__row m-datatable__row--even'
-                                      style={{height: '55px'}} key={i}>
-                                    <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                                    <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                                    <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
-                                    <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
-                                    <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Title</span>
+                              </th>
+                              <th data-field='statement' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Type</span>
+                              </th>
+                              <th data-field='datetime' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Created At</span>
+                              </th>
+                              <th data-field='sent' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Sent</span>
+                              </th>
+                              <th data-field='seen' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Seen</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {
+                            this.state.broadcastsData.map((broadcast, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
+                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
+                                <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
+                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span >
                                     {broadcast.seen}
 
                                   </span>
-                                    </td>
-                                  </tr>
-                                ))
-                              }
-                              </tbody>
-                            </table>
-                            <div className='pagination'>
-                              <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={<a>...</a>}
-                                breakClassName={'break-me'}
-                                pageCount={Math.ceil(this.state.totalLength / 5)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={3}
-                                onPageChange={this.handlePageClick}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'} />
-                            </div>
-                          </div>
-                          : <span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+                        </div>
+                      </div>
+                      : <span>
                         <p> No data to display </p>
                       </span>
-                        }
+                    }
 
                       </div>
                     </div>
