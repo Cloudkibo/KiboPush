@@ -18,6 +18,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { registerAction } from '../../utility/socketio'
 
 class Convo extends React.Component {
@@ -28,7 +29,8 @@ class Convo extends React.Component {
       type: '',
       broadcastsData: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      isShowingModal: false
     }
     props.loadBroadcastsList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
@@ -36,6 +38,8 @@ class Convo extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onFilter = this.onFilter.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentDidMount () {
@@ -58,7 +62,14 @@ class Convo extends React.Component {
     })
     document.title = 'KiboPush | Broadcast'
   }
+  showDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModal: true})
+  }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   displayData (n, broadcasts) {
     console.log(broadcasts)
     let offset = n * 4
@@ -222,22 +233,67 @@ class Convo extends React.Component {
                                     Create New Broadcast
                                   </span>
                                 </span>
-                            </button>
-                          </a>
-                            : <Link to='createconvo'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                              </button>
+                            </a>
+                            : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                              <span>
+                                <i className='la la-plus' />
                                 <span>
-                                  <i className='la la-plus' />
-                                  <span>
-                                    Create New Broadcast
-                                  </span>
+                                  Create New Broadcast
                                 </span>
+                              </span>
                             </button>
-                          </Link>
                         }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <h3>Create Poll</h3>
+                                <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/createconvo' className='btn btn-primary'>
+                                      Create New Broadcast
+                                    </Link>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
+                                      Use Template
+                                    </Link>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
+                      <form>
+                        <div className='form-row'>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                            <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                          </div>
+                          <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
+                              <option value='' disabled>Filter by type...</option>
+                              <option value='text'>text</option>
+                              <option value='image'>image</option>
+                              <option value='card'>card</option>
+                              <option value='gallery'>gallery</option>
+                              <option value='audio'>audio</option>
+                              <option value='video'>video</option>
+                              <option value='file'>file</option>
+                              <option value='miscellaneous'>miscellaneous</option>
+                              <option value=''>all</option>
+                            </select>
+                          </div>
                       <div className='form-row'>
                         <div style={{display: 'inline-block'}} className='form-group col-md-8'>
                           <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />

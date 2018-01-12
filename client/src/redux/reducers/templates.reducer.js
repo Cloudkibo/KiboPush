@@ -38,6 +38,19 @@ export function templatesInfo (state = {}, action) {
       return Object.assign({}, state, {
         pollDetails: action.data
       })
+    case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST:
+      return Object.assign({}, state, {
+        broadcasts: action.data
+      })
+    case ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS:
+      return Object.assign({}, state, {
+        broadcastDetails: action.data
+      })
+    case ActionTypes.SAVE_BROADCAST_INFORMATION:
+      console.log('getCurrentBroadcast', action.data)
+      return Object.assign({}, state, {
+        currentBroadcast: action.data
+      })
     default:
       return state
   }
