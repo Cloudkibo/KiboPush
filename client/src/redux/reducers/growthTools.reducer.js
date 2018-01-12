@@ -12,10 +12,7 @@ export function getFileUploadResponse (state = initialState, action) {
       return Object.assign({}, state, {
         fileUploadResponse: action.data
       })
-    case ActionTypes.CLEAR_ALERT_FILERESPONSE:
-      return Object.assign({}, state, {
-        fileUploadResponse: ''
-      })
+
     default:
       return state
   }
