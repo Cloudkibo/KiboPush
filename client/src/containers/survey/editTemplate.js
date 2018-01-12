@@ -4,25 +4,35 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { createsurvey } from '../../redux/actions/surveys.actions'
-import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
+import { loadSurveyDetails } from '../../redux/actions/templates.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { createsurvey } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router'
-class AddSurvey extends React.Component {
+import AlertContainer from 'react-alert'
+
+class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
+    if (this.props.currentSurvey) {
+      const id = this.props.currentSurvey._id
+      console.log('id', id)
+      props.loadSurveyDetails(id)
+    }
     this.state = {
+      isShowingModal: false,
       questionType: 'multichoice',
       surveyQuestions: [],
       alertMessage: '',
       alertType: '',
-      timeout: 2000,
+      categoryValue: [],
+      title: '',
+      description: '',
       page: {
         options: []
       },
@@ -48,36 +58,12 @@ class AddSurvey extends React.Component {
       steps: [],
       showDropDown: false
     }
-    // surveyQuestions will be an array of json object
-    // each json object will have following keys:
-    // statement : //value of question
-    // type: //text or multichoice
-    // choiceCount: //no of options
-    // options: [] array of choice values
     this.createSurvey = this.createSurvey.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
   }
-
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Survey'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
@@ -89,48 +75,32 @@ class AddSurvey extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    this.addSteps([
-      {
-        title: 'Surveys',
-        text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
-        selector: 'div#survey',
-        position: 'top-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Title and Description',
-        text: `Give your survey a title and description for easy identification`,
-        selector: 'div#identity',
-        position: 'right',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Add Questions',
-        text: 'Add questions, and create a set of responses for your subscriber to reply with',
-        selector: 'button#questions',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Targetting',
-        text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
-        selector: 'div#target',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-    ])
   }
-
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.survey) {
+      console.log('details', nextprops.survey)
+      this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
+    }
+    if (nextprops.questions) {
+      console.log('details', nextprops.questions)
+      this.setState({surveyQuestions: nextprops.questions})
+    }
+  }
   initializePageSelect (pageOptions) {
     console.log('asd', pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+      /* eslint-enable */
+
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+        /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -147,13 +117,17 @@ class AddSurvey extends React.Component {
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+        /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+        /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -170,13 +144,17 @@ class AddSurvey extends React.Component {
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+        /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+        /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -191,14 +169,11 @@ class AddSurvey extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextprops) {
-    if (nextprops.createwarning) {
-      console.log('i am called')
-      this.props.history.push({
-        pathname: '/surveys'
-
-      })
-    }
+  updateDescription (e) {
+    this.setState({description: e.target.value})
+  }
+  updateTitle (e) {
+    this.setState({title: e.target.value})
   }
   createSurvey (e) {
     e.preventDefault()
@@ -241,7 +216,7 @@ class AddSurvey extends React.Component {
       }
       // Checking if Description or Title is empty, and highlighting it
 
-      if (this.refs.description.value === '') {
+      if (this.state.description === '') {
         flag = 1
         let incompleteDesc = document.getElementById('desc')
         incompleteDesc.classList.add('has-error')
@@ -250,7 +225,7 @@ class AddSurvey extends React.Component {
         completeDesc.classList.remove('has-error')
       }
 
-      if (this.refs.title.value === '') {
+      if (this.state.title === '') {
         flag = 1
         let incompleteTitle = document.getElementById('titl')
         incompleteTitle.classList.add('has-error')
@@ -263,15 +238,19 @@ class AddSurvey extends React.Component {
                     this.state.localeValue.length > 0) {
         isSegmentedValue = true
       }
-      if (flag === 0 && this.refs.title.value !== '' &&
-        this.refs.description.value !== '') {
+      if (flag === 0 && this.state.title !== '' &&
+        this.state.description !== '') {
+        var send = []
+        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
+          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
+        }
         var surveybody = {
           survey: {
-            title: this.refs.title.value, // title of survey
-            description: this.refs.description.value, // description of survey
+            title: this.state.title, // title of survey
+            description: this.state.description,
             image: '' // image url
           },
-          questions: this.state.surveyQuestions,
+          questions: send,
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
@@ -289,7 +268,6 @@ class AddSurvey extends React.Component {
       }
     }
   }
-
   addClick () {
     let surveyQuestions = this.state.surveyQuestions
     let choiceCount = 0
@@ -401,19 +379,19 @@ class AddSurvey extends React.Component {
   createOptionsList (qindex) {
     console.log('qindex' + qindex)
     let choiceItems = []
-    var choiceCount = this.state.surveyQuestions[qindex].choiceCount
+    var choiceCount = this.state.surveyQuestions[qindex].options.length
     console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
-          <input type='text' maxLength={20} placeholder={'Choice ' + (j + 1)}
+          <input type='text' placeholder={'Choice ' + (j + 1)}
             className='form-control input-sm'
             value={this.state.surveyQuestions[qindex].options[j]}
             onChange={this.onhandleChoiceChange.bind(this, qindex, j)} />
           <span className='input-group-btn'>
-            <button className='btn btn-secondary' type='button' style={{background: '#e74c3c'}}
+            <button className='btn btn-secondary' type='button'
               onClick={this.removeChoices.bind(this, j, qindex)}>
-              <span className='fa fa-times fa-inverse' />
+              <span className='fa fa-times' />
             </button>
           </span>
         </div>
@@ -422,39 +400,9 @@ class AddSurvey extends React.Component {
     return choiceItems || null
   }
 
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      this.props.surveyTourCompleted({
-        'surveyTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
   createUI () {
     let uiItems = []
+    console.log('createUI', this.state.surveyQuestions)
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
       if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
@@ -499,10 +447,8 @@ class AddSurvey extends React.Component {
               <div className='panel-body'>
                 <div className='form-group' id={'question' + i}>
                   <input className='form-control'
-                    placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
-                    <span>Max Length for each choice is 20 characters</span>
                 </div>
 
                 <div className='form-group field field-array'>
@@ -536,15 +482,17 @@ class AddSurvey extends React.Component {
     }
     return uiItems || null
   }
-
   render () {
-    const { disabled, stayOpen } = this.state
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
-        {
-      !(this.props.user && this.props.user.surveyTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-      }
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -552,11 +500,12 @@ class AddSurvey extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Survey Form</h3>
+                  <h3 className='m-subheader__title'>Create Template Survey</h3>
                 </div>
               </div>
             </div>
             <div className='m-content'>
+
               <div className='row'>
                 <div
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
@@ -566,7 +515,7 @@ class AddSurvey extends React.Component {
                         <div className='form-group' id='titl'>
                           <label className='control-label'><h5>Title</h5></label>
                           <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
+                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                         </div>
                       </div>
                       <br />
@@ -575,7 +524,7 @@ class AddSurvey extends React.Component {
                           <label className='control-label'><h5>Description</h5></label>
                           <textarea className='form-control'
                             placeholder='Enter form description here'
-                            rows='3' ref='description' />
+                            rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
                         </div>
                       </div>
                       <br />
@@ -609,7 +558,7 @@ class AddSurvey extends React.Component {
                           onClick={this.createSurvey}> Create Survey
                       </button>
                         <Link
-                          to='/surveys'
+                          to='/showTemplateSurveys'
                           style={{float: 'right', margin: 2}}
                           className='btn btn-border-think btn-transparent c-grey pull-right'>
                         Cancel
@@ -668,7 +617,9 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    surveys: (state.surveysInfo.surveys),
+    survey: (state.templatesInfo.survey),
+    questions: (state.templatesInfo.questions),
+    currentSurvey: (state.getCurrentSurvey.currentSurvey),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user)
   }
@@ -677,8 +628,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
-    getuserdetails: getuserdetails,
-    surveyTourCompleted: surveyTourCompleted
+    loadSurveyDetails: loadSurveyDetails,
+    getuserdetails: getuserdetails
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
+export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)

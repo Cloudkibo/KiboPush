@@ -9,14 +9,19 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
-import { createpoll, loadCategoriesList, addCategory } from '../../redux/actions/templates.actions'
+import { loadCategoriesList, addCategory, loadPollDetails, editPoll } from '../../redux/actions/templates.actions'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
-class createPoll extends React.Component {
+class EditPoll extends React.Component {
   constructor (props, context) {
     super(props, context)
+    if (this.props.currentPoll) {
+      const id = this.props.currentPoll._id
+      console.log('id', id)
+      props.loadPollDetails(id)
+    }
     props.loadCategoriesList()
     this.state = {
       isShowingModal: false,
@@ -26,7 +31,8 @@ class createPoll extends React.Component {
       statement: '',
       option1: '',
       option2: '',
-      option3: ''
+      option3: '',
+      title: ''
     }
     this.createPoll = this.createPoll.bind(this)
     this.initializeCategorySelect = this.initializeCategorySelect.bind(this)
@@ -34,20 +40,42 @@ class createPoll extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
     this.exists = this.exists.bind(this)
+    this.categoryExists = this.categoryExists.bind(this)
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Create Poll'
+    document.title = 'KiboPush | Edit Poll'
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
       console.log('categories', nextprops.categories)
       let options = []
-      for (var i = 0; i < nextprops.categories.length; i++) {
-        options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
+      for (var j = 0; j < nextprops.pollDetails.category.length; j++) {
+        for (var i = 0; i < nextprops.categories.length; i++) {
+          if (nextprops.categories[i].name === nextprops.pollDetails.category[j]) {
+            options.push({id: nextprops.categories[i]._id, text: nextprops.categories[i].name, selected: true})
+          }
+        }
+      }
+      for (var k = 0; k < nextprops.categories.length; k++) {
+        if (this.exists(options, nextprops.categories[k]) === false) {
+          options.push({id: nextprops.categories[k]._id, text: nextprops.categories[k].name})
+        }
       }
       this.initializeCategorySelect(options)
     }
+    if (nextprops.pollDetails) {
+      console.log('details', nextprops.pollDetails)
+      this.setState({title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category})
+    }
+  }
+  exists (options, category) {
+    for (var i = 0; i < options.length; i++) {
+      if (options[i].text === category.name) {
+        return true
+      }
+    }
+    return false
   }
   showDialog () {
     console.log('in showDialog')
@@ -66,7 +94,9 @@ class createPoll extends React.Component {
       data: categoryOptions,
       placeholder: 'Select Category',
       allowClear: true,
-      multiple: true
+      multiple: true,
+      tags: 'true',
+      selected: this.state.categoryValue[0]
     })
     /* eslint-disable */
     $('#selectcategory').on('change', function (e) {
@@ -85,7 +115,7 @@ class createPoll extends React.Component {
       console.log('change category', selected)
     })
   }
-  exists (newCategory) {
+  categoryExists (newCategory) {
     for (let i = 0; i < this.props.categories.length; i++) {
       if (this.props.categories[i].name.toLowerCase().includes(newCategory.toLowerCase())) {
         return true
@@ -95,7 +125,7 @@ class createPoll extends React.Component {
   }
   saveCategory () {
     if (this.refs.newCategory.value) {
-      if (this.exists(this.refs.newCategory.value) === false) {
+      if (this.categoryExists(this.refs.newCategory.value) === false) {
         let payload = {name: this.refs.newCategory.value}
         this.props.addCategory(payload, this.msg)
         this.props.loadCategoriesList()
@@ -108,7 +138,7 @@ class createPoll extends React.Component {
   }
   createPoll () {
     var options = []
-    if (this.refs.title.value === '' || this.state.categoryValue.length === 0 || this.state.option1 === '' || this.state.option2 === '' ||
+    if (this.state.title === '' || this.state.categoryValue.length === 0 || this.state.option1 === '' || this.state.option2 === '' ||
       this.state.option3 === '' || this.state.statement === '') {
       this.setState({alert: true})
     } else {
@@ -122,23 +152,23 @@ class createPoll extends React.Component {
         options.push(this.state.option3)
       }
       console.log('categoryvalue', this.state.categoryValue)
-      this.props.createpoll({
-        title: this.refs.title.value,
+      this.props.editPoll({
+        _id: this.props.currentPoll._id,
+        title: this.state.title,
         category: this.state.categoryValue,
         statement: this.state.statement,
         options: options
-      })
+      }, this.msg)
       console.log('Poll added')
-      this.props.history.push({
-        pathname: '/templates'
-      })
     }
   }
 
   updateStatment (e) {
     this.setState({statement: e.target.value})
   }
-
+  updateTitle (e) {
+    this.setState({title: e.target.value})
+  }
   updateOptions (e, opt) {
     switch (opt) {
       case 1:
@@ -164,7 +194,6 @@ class createPoll extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('renderrrrr')
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -175,7 +204,7 @@ class createPoll extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Template Poll</h3>
+                  <h3 className='m-subheader__title'>Edit Template Poll</h3>
                 </div>
               </div>
             </div>
@@ -213,6 +242,9 @@ class createPoll extends React.Component {
                     </div>
                   </div>
                 </div>
+                {console.log('category', this.state.categoryValue)}
+                {console.log('category', this.state.title)}
+
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                   <div className='m-portlet' style={{height: '100%'}}>
                     <div className='m-portlet__body'>
@@ -220,7 +252,7 @@ class createPoll extends React.Component {
                         <div className='form-group m-form__group' id='titl'>
                           <label className='control-label'>Title</label>
                           <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
+                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                         </div>
                         <div className='form-group m-form__group' id='desc'>
                           <label className='control-label'>Category</label>
@@ -228,7 +260,7 @@ class createPoll extends React.Component {
                             <div className='form-group m-form__group'>
                               <select id='selectcategory' />
                               <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               + Add category
+                               Add category
                              </button>
                             </div>
                           </div>
@@ -279,12 +311,12 @@ class createPoll extends React.Component {
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                         <button className='btn btn-primary'
-                          onClick={this.createPoll}> Create Poll
+                          onClick={this.createPoll}> Save
                         </button>
                         <Link
                           to='/templates'
                           className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Cancel
+                          Back
                         </Link>
                       </div>
                     </div>
@@ -302,15 +334,18 @@ class createPoll extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    categories: (state.templatesInfo.categories)
+    categories: (state.templatesInfo.categories),
+    pollDetails: (state.templatesInfo.pollDetails),
+    currentPoll: (state.getCurrentPoll.currentPoll)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createpoll: createpoll,
+    editPoll: editPoll,
     loadCategoriesList: loadCategoriesList,
-    addCategory: addCategory
+    addCategory: addCategory,
+    loadPollDetails: loadPollDetails
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(createPoll)
+export default connect(mapStateToProps, mapDispatchToProps)(EditPoll)
