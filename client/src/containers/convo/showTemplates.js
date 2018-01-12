@@ -3,8 +3,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { loadSurveysList, loadCategoriesList } from '../../redux/actions/templates.actions'
-import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
+import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 class ShowTemplates extends React.Component {
@@ -12,22 +11,22 @@ class ShowTemplates extends React.Component {
     super(props, context)
     this.state = {
       showDropDown: false,
-      surveysData: [],
+      broadcastsData: [],
       totalLength: 0,
       filterValue: ''
     }
     props.loadCategoriesList()
-    props.loadSurveysList()
-    this.onSurveyClick = this.onSurveyClick.bind(this)
+    props.loadBroadcastsList()
+    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.displayData = this.displayData.bind(this)
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.gotoView = this.gotoView.bind(this)
   }
-  onSurveyClick (e, page) {
+  onBroadcastClick (e, page) {
     console.log('Page Click', page)
-    this.props.saveSurveyInformation(page)
+    this.props.saveBroadcastInformation(page)
   }
   showDropDown () {
     this.setState({showDropDown: true})
@@ -38,43 +37,43 @@ class ShowTemplates extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps called')
-    if (nextProps.surveys) {
-      this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+    if (nextProps.broadcasts) {
+      this.displayData(0, nextProps.broadcasts)
+      this.setState({ totalLength: nextProps.broadcasts.length })
     }
   }
-  displayData (n, surveys) {
-    console.log(surveys)
-    this.setState({surveysData: surveys})
-    console.log('surveysDatainside', this.state.surveysData)
+  displayData (n, broadcasts) {
+    console.log(broadcasts)
+    this.setState({broadcastsData: broadcasts})
+    console.log('broadcastsDatainside', this.state.broadcastsData)
   }
   onFilter (e) {
     console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
+      for (let i = 0; i < this.props.broadcasts.length; i++) {
         if (e.target.value === 'all') {
-          if (this.props.surveys[i].category.length > 1) {
-            filtered.push(this.props.surveys[i])
+          if (this.props.broadcasts[i].category.length > 1) {
+            filtered.push(this.props.broadcasts[i])
           }
         } else {
-          for (let j = 0; j < this.props.surveys[i].category.length; j++) {
-            if (this.props.surveys[i].category[j] === e.target.value) {
-              filtered.push(this.props.surveys[i])
+          for (let j = 0; j < this.props.broadcasts[i].category.length; j++) {
+            if (this.props.broadcasts[i].category[j] === e.target.value) {
+              filtered.push(this.props.broadcasts[i])
             }
           }
         }
       }
     } else {
-      filtered = this.props.surveys
+      filtered = this.props.broadcasts
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
   gotoView () {
     this.props.history.push({
-      pathname: `/surveys`
+      pathname: `/broadcasts`
     })
   }
 
@@ -93,7 +92,7 @@ class ShowTemplates extends React.Component {
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>Template Surveys</h3>
+                          <h3 className='m-portlet__head-text'>Template Broadcasts</h3>
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
@@ -112,8 +111,8 @@ class ShowTemplates extends React.Component {
                           }
                           </li>
                           <li className='nav-item m-tabs__item' style={{marginLeft: '50px', marginTop: '5px'}}>
-                            <Link to='/addsurvey' className='nav-link m-tabs__link active'>
-                            Create New Survey
+                            <Link to='/addbroadcast' className='nav-link m-tabs__link active'>
+                            Create New Broadcast
                             </Link>
                           </li>
                         </ul>
@@ -129,31 +128,27 @@ class ShowTemplates extends React.Component {
 
                                   <div className='tab-pane active' id='m_widget4_tab1_content'>
                                     {
-                                      this.state.surveysData && this.state.surveysData.length > 0
+                                      this.state.broadcastsData && this.state.broadcastsData.length > 0
                                     ? <div className='m-widget4' >
                                       {
-                                       this.state.surveysData.map((survey, i) => (
+                                       this.state.broadcastsData.map((broadcast, i) => (
                                          <div className='m-widget4__item' key={i}>
                                            <div className='m-widget4__info'>
                                              <span className='m-widget4__title'>
-                                               {survey.title}
+                                               {broadcast.title}
                                              </span>
                                              <br />
                                              <span className='m-widget4__sub'>
-                                              Category: {survey.category.join(', ')}
-                                             </span>
-                                             <br />
-                                             <span className='m-widget4__sub'>
-                                            Description: {survey.description}
+                                              Category: {broadcast.category.join(', ')}
                                              </span>
                                            </div>
                                            <div className='m-widget4__ext'>
-                                             <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editTemplateSurvey'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/editTemplateBroadcast'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                               Edit Template
                                             </Link>
                                            </div>
                                            <div className='m-widget4__ext'>
-                                             <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewTemplateSurveyUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/viewTemplateBroadcastUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                              View Template
                                             </Link>
                                            </div>
@@ -188,14 +183,14 @@ class ShowTemplates extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    surveys: state.templatesInfo.surveys,
+    broadcasts: state.templatesInfo.broadcasts,
     categories: state.templatesInfo.categories
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadSurveysList: loadSurveysList,
-    saveSurveyInformation: saveSurveyInformation,
+    loadBroadcastsList: loadBroadcastsList,
+    saveBroadcastInformation: saveBroadcastInformation,
     loadCategoriesList: loadCategoriesList
   }, dispatch)
 }
