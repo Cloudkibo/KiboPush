@@ -17,6 +17,7 @@ class Gallery extends React.Component {
     super(props, context)
     this.handleChange = this.handleChange.bind(this)
     this.addSlide = this.addSlide.bind(this)
+    this.removeSlide = this.removeSlide.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.state = {
       broadcast: [],
@@ -27,17 +28,6 @@ class Gallery extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   handleChange (index) {
@@ -47,6 +37,14 @@ class Gallery extends React.Component {
     } else {
       this.setState({showPlus: false})
     }
+  }
+
+  removeSlide(){
+    var temp = this.state.cards;
+    console.log("Cards Before Removing",  temp)
+    temp.splice(this.state.pageNumber - 1, 1);
+    console.log("Cards After Removing",  temp)
+    this.setState({cards: temp}) 
   }
 
   addSlide () {
@@ -109,9 +107,9 @@ class Gallery extends React.Component {
 
 
         {
-          <div onClick={this.addSlide} style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
-            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer', marginRight: '15px'}}>Add</span>
-            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
+          <div  style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '15px'}}>Add</span>
+            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.removeSlide} style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
 
