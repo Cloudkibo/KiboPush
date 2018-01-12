@@ -12,6 +12,8 @@ import {
   loadBroadcastsList,
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
+import AlertContainer from 'react-alert'
+
 import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
@@ -73,21 +75,25 @@ class Video extends React.Component {
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      var fileInfo = {
-        id: this.props.id,
-        componentType: 'video',
-        fileName: file.name,
-        type: file.type,
-        size: file.size
+      if (file.size > 25000000) {
+        this.msg.error('Files greater than 25MB not allowed')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        var fileInfo = {
+          id: this.props.id,
+          componentType: 'video',
+          fileName: file.name,
+          type: file.type,
+          size: file.size
+        }
+        console.log(fileInfo)
+        this.setState({loading: true})
+        this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
-      console.log(fileInfo)
-      this.setState({loading: true})
-      this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
 
@@ -97,8 +103,16 @@ class Video extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

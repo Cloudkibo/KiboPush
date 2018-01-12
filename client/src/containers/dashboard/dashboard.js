@@ -8,7 +8,6 @@ import Joyride from 'react-joyride'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
-import ResendEmail from '../../containers/signup/resendEmail'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
 import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
 import { loadDashboardData, sentVsSeen } from '../../redux/actions/dashboard.actions'
@@ -27,11 +26,11 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // props.loadMyPagesList()
-    // props.loadDashboardData()
-    // props.getuserdetails()
-    // props.sentVsSeen()
-    // props.loadSubscribersList()
+    props.loadMyPagesList()
+    props.loadDashboardData()
+    props.getuserdetails()
+    props.sentVsSeen()
+    props.loadSubscribersList()
 
     this.state = {
       isShowingModal: false,
@@ -45,21 +44,21 @@ class Dashboard extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
-    // if (nextprops.pages && nextprops.pages.length === 0) {
-    //   // this means connected pages in 0
-    //   browserHistory.push({
-    //     pathname: '/addPages',
-    //     state: {showMsg: true}
-    //   })
-    // } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
-    //   // this means more than 0 subscribers
-    //   console.log('More than 0 subscribers')
-    //   this.setState({isShowingModal: false})
-    // } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
-    //   // this means 0 subscribers
-    //   console.log('0 subscribers')
-    //   this.setState({isShowingModal: true})
-    // }
+    if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+      browserHistory.push({
+        pathname: '/addPages',
+        state: {showMsg: true}
+      })
+    } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+      // this means more than 0 subscribers
+      console.log('More than 0 subscribers')
+      this.setState({isShowingModal: false})
+    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      // this means 0 subscribers
+      console.log('0 subscribers')
+      this.setState({isShowingModal: true})
+    }
     if (nextprops.user) {
       console.log('fetchSession in dashboard')
       joinRoom(nextprops.user._id)
@@ -177,7 +176,6 @@ class Dashboard extends React.Component {
       transition: 'scale'
     }
     console.log('props', this.props)
-    if (this.props.user && this.props.user.emailVerified === true) {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -214,9 +212,6 @@ class Dashboard extends React.Component {
         </div>
       </div>
     )
-  } else {
-    return(<ResendEmail />)
-  }
   }
 }
 

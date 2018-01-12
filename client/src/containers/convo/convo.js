@@ -18,6 +18,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { registerAction } from '../../utility/socketio'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -49,6 +50,12 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    registerAction({
+      event: 'new_broadcast',
+      action: function(data){
+        this.props.loadBroadcastsList();
+      }
+    })
     document.title = 'KiboPush | Broadcast'
   }
 
@@ -208,120 +215,118 @@ class Convo extends React.Component {
                         {
                           this.props.subscribers && this.props.subscribers.length === 0
                             ? <a href='#'>
-                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                                 <span>
                                   <i className='la la-plus' />
                                   <span>
                                     Create New Broadcast
                                   </span>
                                 </span>
-                              </button>
-                            </a>
+                            </button>
+                          </a>
                             : <Link to='createconvo'>
-                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                                 <span>
                                   <i className='la la-plus' />
                                   <span>
                                     Create New Broadcast
                                   </span>
                                 </span>
-                              </button>
-                            </Link>
+                            </button>
+                          </Link>
                         }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <form>
-                        <div className='form-row'>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                            <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
-                          </div>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
-                              <option value='' disabled>Filter by type...</option>
-                              <option value='text'>text</option>
-                              <option value='image'>image</option>
-                              <option value='card'>card</option>
-                              <option value='gallery'>gallery</option>
-                              <option value='audio'>audio</option>
-                              <option value='video'>video</option>
-                              <option value='file'>file</option>
-                              <option value='miscellaneous'>miscellaneous</option>
-                              <option value=''>all</option>
-                            </select>
-                          </div>
+                      <div className='form-row'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
                         </div>
-                      </form>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
+                            <option value='' disabled>Filter by type...</option>
+                            <option value='text'>text</option>
+                            <option value='image'>image</option>
+                            <option value='card'>card</option>
+                            <option value='gallery'>gallery</option>
+                            <option value='audio'>audio</option>
+                            <option value='video'>video</option>
+                            <option value='file'>file</option>
+                            <option value='miscellaneous'>miscellaneous</option>
+                            <option value=''>all</option>
+                          </select>
+                        </div>
+                      </div>
                       <div>
 
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                          <thead className='m-datatable__head'>
-                            <tr className='m-datatable__row'
-                              style={{height: '53px'}}>
-                              <th data-field='platform' style={{width: 100}}
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span >Title</span>
-                              </th>
-                              <th data-field='statement' style={{width: 100}}
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span>Type</span>
-                              </th>
-                              <th data-field='datetime' style={{width: 100}}
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span>Created At</span>
-                              </th>
-                              <th data-field='sent' style={{width: 100}}
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span >Sent</span>
-                              </th>
-                              <th data-field='seen' style={{width: 100}}
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span>Seen</span>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className='m-datatable__body'>
-                            {
-                            this.state.broadcastsData.map((broadcast, i) => (
-                              <tr data-row={i}
-                                className='m-datatable__row m-datatable__row--even'
-                                style={{height: '55px'}} key={i}>
-                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
-                                <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
-                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                            <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                              <thead className='m-datatable__head'>
+                              <tr className='m-datatable__row'
+                                  style={{height: '53px'}}>
+                                <th data-field='platform' style={{width: 100}}
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span >Title</span>
+                                </th>
+                                <th data-field='statement' style={{width: 100}}
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span>Type</span>
+                                </th>
+                                <th data-field='datetime' style={{width: 100}}
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span>Created At</span>
+                                </th>
+                                <th data-field='sent' style={{width: 100}}
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span >Sent</span>
+                                </th>
+                                <th data-field='seen' style={{width: 100}}
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span>Seen</span>
+                                </th>
+                              </tr>
+                              </thead>
+                              <tbody className='m-datatable__body'>
+                              {
+                                this.state.broadcastsData.map((broadcast, i) => (
+                                  <tr data-row={i}
+                                      className='m-datatable__row m-datatable__row--even'
+                                      style={{height: '55px'}} key={i}>
+                                    <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
+                                    <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                    <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
+                                    <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
+                                    <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span >
                                     {broadcast.seen}
 
                                   </span>
-                                </td>
-                              </tr>
-                            ))
-                          }
-                          </tbody>
-                        </table>
-                        <div className='pagination'>
-                          <ReactPaginate
-                            previousLabel={'previous'}
-                            nextLabel={'next'}
-                            breakLabel={<a>...</a>}
-                            breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
-                        </div>
-                      </div>
-                      : <span>
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                              </tbody>
+                            </table>
+                            <div className='pagination'>
+                              <ReactPaginate
+                                previousLabel={'previous'}
+                                nextLabel={'next'}
+                                breakLabel={<a>...</a>}
+                                breakClassName={'break-me'}
+                                pageCount={Math.ceil(this.state.totalLength / 5)}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={this.handlePageClick}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'} />
+                            </div>
+                          </div>
+                          : <span>
                         <p> No data to display </p>
                       </span>
-                    }
+                        }
 
                       </div>
                     </div>
