@@ -102,7 +102,8 @@ class CustomerMatching extends React.Component {
       }
       this.setState({
         file: files,
-        fileErrors: []
+        fileErrors: [],
+        disabled: false
       })
       console.log(this.state.file[0])
     }
@@ -430,7 +431,10 @@ class CustomerMatching extends React.Component {
                               this.state.alertMessage !== '' &&
                               <div className='alert alert-success' role='alert'>
                                 {this.state.alertMessage} <br />
-                                <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                {
+                                  this.state.file && this.state.file !== '' &&
+                                  <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                }
                               </div>
                             }
                           </div>
