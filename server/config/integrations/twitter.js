@@ -40,15 +40,13 @@ function connect () {
           {follow: arrUsers})
 
         stream.on('tweet', tweet => {
-          logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
+          logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet)}`)
           AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
             .populate('userId companyId')
             .exec((err, autopostings) => {
               if (err) {
                 return logger.serverLog(TAG, 'Internal Server Error on connect')
               }
-              logger.serverLog(TAG,
-                `Autoposting records got for tweet : ${autopostings.length}`)
               autopostings.forEach(postingItem => {
                 let pagesFindCriteria = {
                   companyId: postingItem.companyId._id,
@@ -158,7 +156,7 @@ function connect () {
 }
 
 function restart () {
-  stream.stop()
+  if (stream) stream.stop()
   connect()
 }
 
