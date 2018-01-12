@@ -179,10 +179,11 @@ class CustomerMatching extends React.Component {
     } else if (type === 'numbers') {
       const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
       console.log('phoneNumbers:', this.state.phoneNumbers)
-      let errors = []
+      let err = []
       for (var i = 0; i < this.state.phoneNumbers.length; i++) {
         if (!regex.test(this.state.phoneNumbers[i])) {
-          errors.push(this.state.phoneNumbers[i])
+          err.push(this.state.phoneNumbers[i])
+          errors = true
         }
       }
       this.setState({numbersError: errors})
