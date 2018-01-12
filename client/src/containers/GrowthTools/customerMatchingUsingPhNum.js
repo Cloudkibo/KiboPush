@@ -186,7 +186,7 @@ class CustomerMatching extends React.Component {
           errors = true
         }
       }
-      this.setState({numbersError: errors})
+      this.setState({numbersError: err})
     }
     return !errors
   }
