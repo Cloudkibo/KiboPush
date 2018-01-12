@@ -230,7 +230,7 @@ class CustomerMatching extends React.Component {
       })
     } else {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageId}`,
+        textAreaValue: `Enter an invitation message for subscribers of your page: https://m.me/${this.props.pages[0].pageId}`,
         selectPage: this.props.pages[0]
       })
     }
