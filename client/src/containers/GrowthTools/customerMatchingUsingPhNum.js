@@ -43,7 +43,6 @@ class CustomerMatching extends React.Component {
 
   enterPhoneNoManually () {
     this.setState({manually: true})
-    this.inputPhoneNumbers.getDOMNode().focus()
   }
 
   removeFile () {
@@ -355,7 +354,7 @@ class CustomerMatching extends React.Component {
                                 this.state.manually
                                 ? <div>
                                   <label>{'Enter phone number separated by semi colon {;}'}</label>
-                                  <input ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  <input autoFocus type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
                                   {
                                     this.state.numbersError.length > 0 &&
                                     <span className='m-form__help'>
