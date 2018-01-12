@@ -414,13 +414,19 @@ class Menu extends React.Component {
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
+      console.log('this.props.currentMenuItem.itemMenus', this.props.currentMenuItem.itemMenus)
+      var temp = []
+      for (var k = 0; k < this.props.currentMenuItem.itemMenus.length; k++) {
+        temp.push(this.props.currentMenuItem.itemMenus[k])
+      }
+      temp.push({url: 'www.kibopush.com', type: 'web_url', submenu: [], title: 'Powered by KiboPush'})
       var data = {}
       if (this.state.pageValue === '') {
         console.log('empty')
         this.msg.error('Please select a page')
         return
       }
-      data.payload = transformData(this.props.currentMenuItem.itemMenus)
+      data.payload = transformData(temp)
       data.pageId = this.state.pageValue
       data.userId = this.props.user._id
       data.jsonStructure = this.props.currentMenuItem.itemMenus

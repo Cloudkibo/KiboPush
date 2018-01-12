@@ -73,7 +73,7 @@ class ShowTemplates extends React.Component {
   }
   gotoView () {
     this.props.history.push({
-      pathname: `/broadcasts`
+      pathname: `/convos`
     })
   }
 
@@ -111,7 +111,7 @@ class ShowTemplates extends React.Component {
                           }
                           </li>
                           <li className='nav-item m-tabs__item' style={{marginLeft: '50px', marginTop: '5px'}}>
-                            <Link to='/addbroadcast' className='nav-link m-tabs__link active'>
+                            <Link to='/createconvo' className='nav-link m-tabs__link active'>
                             Create New Broadcast
                             </Link>
                           </li>

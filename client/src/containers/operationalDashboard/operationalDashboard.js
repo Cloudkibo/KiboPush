@@ -67,8 +67,6 @@ class OperationalDashboard extends React.Component {
     this.searchUser = this.searchUser.bind(this)
     this.getFile = this.getFile.bind(this)
     this.logChange = this.logChange.bind(this)
-    this.showContent = this.showContent.bind(this)
-    this.hideContent = this.hideContent.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
@@ -371,44 +369,27 @@ class OperationalDashboard extends React.Component {
     this.props.downloadFile()
   }
 
-  logChange (val) {
-    console.log('Selected: ' + JSON.stringify(val))
-    if (!val) {
+  logChange (e) {
+    if (!e.target.value) {
       this.setState({selectedValue: null})
       this.props.loadDataObjectsCount(0)
-    } else if (val.value === 10) {
-      console.log('Selected:', val.value)
-      this.setState({selectedValue: val.value})
-      this.props.loadDataObjectsCount(val.value)
-    } else if (val.value === 30) {
-      this.setState({ selectedValue: val.value })
-      this.props.loadDataObjectsCount(val.value)
+    } else if (e.target.value === '10') {
+      console.log('Selected:', e.target.value)
+      this.setState({selectedValue: e.target.value})
+      this.props.loadDataObjectsCount(10)
+    } else if (e.target.value === '30') {
+      this.setState({ selectedValue: e.target.value })
+      this.props.loadDataObjectsCount(30)
+    } else if (e.target.value === 'all') {
+      this.setState({ selectedValue: e.target.value })
+      this.props.loadDataObjectsCount(0)
     }
   }
-
-  showContent (title) {
-    if (title === 'Top Ten Pages') {
-      this.setState({showTopTenPages: true})
-    } else if (title === 'Reports') {
-      this.setState({showReports: true})
-    } else {
-      this.setState({showUsers: true})
-    }
-  }
-
-  hideContent (title) {
-    if (title === 'Top Ten Pages') {
-      this.setState({showTopTenPages: false})
-    } else if (title === 'Reports') {
-      this.setState({showReports: false})
-    } else {
-      this.setState({showUsers: false})
-    }
-  }
-
-  onFilterByGender (data) {
+  onFilterByGender (e) {
+    console.log('event', e.target.value)
     var filtered = []
-    if (!data) {
+    if (!e.target.value) {
+      console.log('!e')
       if (this.state.localeValue !== '') {
         for (var a = 0; a < this.props.users.length; a++) {
           if (this.props.users[a].locale === this.state.localeValue) {
@@ -420,20 +401,23 @@ class OperationalDashboard extends React.Component {
       }
       this.setState({genderValue: ''})
     } else {
+      console.log('here')
       if (this.state.localeValue !== '') {
         for (var i = 0; i < this.props.users.length; i++) {
-          if (this.props.users[i].gender === data.value && this.props.users[i].locale === this.state.localeValue) {
+          if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
             filtered.push(this.props.users[i])
           }
         }
+      } else if (e.target.value === 'all') {
+        filtered = this.props.users
       } else {
         for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.users[j].gender === data.value) {
+          if (this.props.users[j].gender.toString() === e.target.value.toString()) {
             filtered.push(this.props.users[j])
           }
         }
       }
-      this.setState({genderValue: data.value})
+      this.setState({genderValue: e.target.value})
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
@@ -523,13 +507,15 @@ class OperationalDashboard extends React.Component {
                                 target={this.target}
                                 show={this.state.openPopover}
                                 onHide={this.handleClose} >
-                                <Select
-                                  name='form-field-name'
-                                  options={this.state.genders}
-                                  onChange={this.onFilterByGender}
-                                  placeholder='Filter by gender...'
-                                  value={this.state.genderValue}
-                                />
+                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                  <option value='' disabled>Filter by gender...</option>
+                                  <option value=''>All</option>
+                                  {
+                                    this.state.genders.map((gender, i) => (
+                                      <option value={gender.value}>{gender.label}</option>
+                                    ))
+                                  }
+                                </select>
                                 <br />
                                 <Select
                                   name='form-field-name'
