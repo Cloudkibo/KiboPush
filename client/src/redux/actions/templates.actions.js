@@ -116,3 +116,37 @@ export function loadPollDetails (id) {
       .then(res => dispatch(updatePollDetails(res)))
   }
 }
+export function loadBroadcastDetails (id) {
+  console.log('loadBroadcastDetails called: ', id)
+  return (dispatch) => {
+    callApi(`templates/broadcastDetails/${id}`)
+      .then(res => dispatch(updateBroadcastDetails(res)))
+  }
+}
+export function updateBroadcastDetails (data) {
+  console.log('updateBroadcastDetails', data.payload)
+
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS,
+    data: data.payload
+  }
+}
+export function showBroadcasts (data) {
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST,
+    data
+  }
+}
+export function loadBroadcastsList () {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadBroadcastsList called')
+  return (dispatch) => {
+    callApi('templates/allBroadcasts').then(res => dispatch(showBroadcasts(res.payload)))
+  }
+}
+export function saveBroadcastInformation (broadcast) {
+  return {
+    type: ActionTypes.SAVE_BROADCAST_INFORMATION,
+    data: broadcast
+  }
+}

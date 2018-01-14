@@ -40,6 +40,10 @@ const subscriberSchema = new Schema({
   isSubscribed: {
     type: Boolean,
     default: true
+  },
+  isEnabledByPage: {
+    type: Boolean,
+    default: true
   }
 })
 

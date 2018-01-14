@@ -61,6 +61,17 @@ import TemplatePoll from './containers/templates/templatePolls'
 import TemplateSurvey from './containers/templates/templateSurveys'
 import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
+import EditPoll from './containers/templates/editPoll'
+import EditSurvey from './containers/templates/editSurvey'
+import ShowTemplateSurveys from './containers/survey/showTemplates'
+import EditTemplateSurvey from './containers/survey/editTemplate'
+import ShowTemplatePolls from './containers/polls/showTemplates'
+import EditTemplatePoll from './containers/polls/editTemplate'
+import ViewTemplatePollUser from './containers/polls/viewTemplate'
+import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
+import ShowTemplateBroadcasts from './containers/convo/showTemplates'
+import EditTemplateBroadcast from './containers/convo/editTemplate'
+import ViewTemplateBroadcastUser from './containers/convo/viewTemplate'
 import Invitations from './containers/invitations/invitations'
 import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
@@ -78,7 +89,7 @@ function requireAuth (nextState, replace) {
 
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
-    if (auth.getNext() === 'addPages'){
+    if (auth.getNext() === 'addPages') {
       auth.removeNext()
       return replace({
         pathname: '/addPages',
@@ -154,6 +165,17 @@ const routes = (
     <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
+    <Route path='/editPoll' component={EditPoll} onEnter={requireAuth} />
+    <Route path='/editSurvey' component={EditSurvey} onEnter={requireAuth} />
+    <Route path='/showTemplatePolls' component={ShowTemplatePolls} onEnter={requireAuth} />
+    <Route path='/showTemplateSurveys' component={ShowTemplateSurveys} onEnter={requireAuth} />
+    <Route path='/editTemplatePoll' component={EditTemplatePoll} onEnter={requireAuth} />
+    <Route path='/editTemplateSurvey' component={EditTemplateSurvey} onEnter={requireAuth} />
+    <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
+    <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
+    <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
+    <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
+    <Route path='/viewTemplateBroadcastUser' component={ViewTemplateBroadcastUser} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />

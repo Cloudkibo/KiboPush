@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import Select from 'react-select'
 
 class dataObjectsCount extends React.Component {
   constructor (props, context) {
@@ -121,14 +120,12 @@ class dataObjectsCount extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools' style={{textAlign: 'left'}}>
-                <Select
-                  name='form-field-name'
-                  options={this.props.options}
-                  onChange={this.props.logChange}
-                  placeholder='Filter by last:'
-                  value={this.props.selectedValue}
-                  clearValueText='Filter by:'
-                  />
+                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.props.selectedValue} onChange={this.props.logChange}>
+                  <option value='' disabled>Filter by last</option>
+                  <option value='all'>All</option>
+                  <option value='10'>10 days</option>
+                  <option value='30'>30 days</option>
+                </select>
               </div>
             </div>
           </div>

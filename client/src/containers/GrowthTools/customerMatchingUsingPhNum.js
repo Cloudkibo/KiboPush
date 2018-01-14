@@ -3,8 +3,10 @@ import Files from 'react-files'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
+import Halogen from 'halogen'
+import { ModalContainer } from 'react-modal-dialog'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CustomerMatching extends React.Component {
@@ -22,7 +24,8 @@ class CustomerMatching extends React.Component {
       fblink: '',
       manually: false,
       phoneNumbers: [],
-      numbersError: []
+      numbersError: [],
+      loading: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -35,6 +38,9 @@ class CustomerMatching extends React.Component {
     this.getSampleFile = this.getSampleFile.bind(this)
     this.enterPhoneNoManually = this.enterPhoneNoManually.bind(this)
     this.removeFile = this.removeFile.bind(this)
+    this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+    this.props.clearAlertMessage()
   }
   getSampleFile () {
     this.props.downloadSampleFile()
@@ -42,7 +48,6 @@ class CustomerMatching extends React.Component {
 
   enterPhoneNoManually () {
     this.setState({manually: true})
-    this.inputPhoneNumbers.focus()
   }
 
   removeFile () {
@@ -85,8 +90,10 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false
+      disabled: false,
+      loading: false
     })
+    this.props.clearAlertMessage()
     this.selectPage()
   }
 
@@ -101,7 +108,8 @@ class CustomerMatching extends React.Component {
       }
       this.setState({
         file: files,
-        fileErrors: []
+        fileErrors: [],
+        disabled: false
       })
       console.log(this.state.file[0])
     }
@@ -127,17 +135,27 @@ class CustomerMatching extends React.Component {
       fileData.append('pageId', this.state.selectPage.pageId)
 
       if (this.validate('file')) {
-        this.props.saveFileForPhoneNumbers(fileData)
+        this.setState({
+          loading: true,
+          disabled: true
+        })
+        this.props.saveFileForPhoneNumbers(fileData, this.handleResponse)
       }
     } else if (this.inputPhoneNumbers.value !== '') {
-      this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
       if (this.validate('numbers')) {
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue})
       }
     }
   }
+  handleResponse () {
+    this.setState({
+      loading: false
+    })
+  }
 
   onPhoneNumbersChange (e) {
+    console.log('onPhoneNumbersChange')
+    this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
     }
@@ -177,13 +195,14 @@ class CustomerMatching extends React.Component {
     } else if (type === 'numbers') {
       const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
       console.log('phoneNumbers:', this.state.phoneNumbers)
-      let errors = []
+      let err = []
       for (var i = 0; i < this.state.phoneNumbers.length; i++) {
-        if (!regex.test(this.state.phoneNumbers[i])) {
-          errors.push(this.state.phoneNumbers[i])
+        if (!this.state.phoneNumbers[i].match(regex)) {
+          err.push(this.state.phoneNumbers[i])
+          errors = true
         }
       }
-      this.setState({numbersError: errors})
+      this.setState({numbersError: err})
     }
     return !errors
   }
@@ -198,11 +217,19 @@ class CustomerMatching extends React.Component {
         disabled: true
       })
     } else if (res.status === 'success') {
-      this.setState({
-        alertMessage: ('Your file has been uploaded successfully.'),
-        type: 'success',
-        disabled: true
-      })
+      if (this.state.file && this.state.file !== '') {
+        this.setState({
+          alertMessage: ('Your file has been uploaded successfully.'),
+          type: 'success',
+          disabled: true
+        })
+      } else {
+        this.setState({
+          alertMessage: (res.description),
+          type: 'success',
+          disabled: true
+        })
+      }
     } else {
       this.setState({
         alertMessage: '',
@@ -219,7 +246,7 @@ class CustomerMatching extends React.Component {
       })
     } else {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageId}`,
+        textAreaValue: `Enter an invitation message for subscribers of your page: https://m.me/${this.props.pages[0].pageId}`,
         selectPage: this.props.pages[0]
       })
     }
@@ -241,6 +268,7 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    console.log(this.state)
     return (
       <div>
         <Header />
@@ -279,10 +307,7 @@ class CustomerMatching extends React.Component {
                   specific
                   for pages that belong to United States of America (One of the
                   page admins should be from USA). There is a one time fee for for each page that you have connected.
-                  For further Details on how to make the payment, please contact us
-                  <a href='https://www.messenger.com/t/kibopush' target='_blank'>
-                    here
-                  </a>
+                  For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
                 </div>
               </div>
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -343,17 +368,13 @@ class CustomerMatching extends React.Component {
                                 this.state.manually
                                 ? <div>
                                   <label>{'Enter phone number separated by semi colon {;}'}</label>
-                                  <input ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
-                                  <span className='m-form__help'>
-                                    <span style={{color: 'red'}}>One or more numbers are incorrect.</span>
-                                    <span style={{color: 'red'}}>InCorrect numbers:</span>
-                                    {
-                                      this.state.numbersError.map(
-                                        m => <span style={{color: 'red'}}>{m}</span>
-                                      )
-                                    }
-                                    <span style={{color: 'red'}}>Please make sure that all numbers must start with + sign.</span>
-                                  </span>
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  {
+                                    this.state.numbersError.length > 0 &&
+                                    <span className='m-form__help'>
+                                      <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
+                                    </span>
+                                  }
                                 </div>
                                 : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
                               }
@@ -402,6 +423,9 @@ class CustomerMatching extends React.Component {
                         <div className='m-portlet__body'>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
                             <div className='m-form__actions m-form__actions' style={{paddingleft: '0px !important'}}>
+                              <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
+                                Reset
+                              </button>
                               { this.state.disabled
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
@@ -420,10 +444,23 @@ class CustomerMatching extends React.Component {
                               </div>
                             </div>
                             {
+                              this.state.loading
+                              ? <ModalContainer>
+                                <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                                  className='align-center'>
+                                  <center><Halogen.RingLoader color='#716aca' /></center>
+                                </div>
+                              </ModalContainer>
+                              : <span />
+                            }
+                            {
                               this.state.alertMessage !== '' &&
                               <div className='alert alert-success' role='alert'>
                                 {this.state.alertMessage} <br />
-                                <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                {
+                                  this.state.file && this.state.file !== '' &&
+                                  <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                }
                               </div>
                             }
                           </div>
@@ -456,7 +493,8 @@ function mapDispatchToProps (dispatch) {
     saveFileForPhoneNumbers: saveFileForPhoneNumbers,
     loadMyPagesList: loadMyPagesList,
     downloadSampleFile: downloadSampleFile,
-    sendPhoneNumbers: sendPhoneNumbers
+    sendPhoneNumbers: sendPhoneNumbers,
+    clearAlertMessage: clearAlertMessage
   },
     dispatch)
 }

@@ -57,7 +57,7 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
-          if (data.phone_numbers && data.name) {
+          if (data.phone_numbers && data.names) {
             var result = data.phone_numbers.replace(/[- )(]/g, '')
             // var savePhoneNumber = new PhoneNumber({
             //   name: data.name,
@@ -76,11 +76,12 @@ exports.upload = function (req, res) {
                 })
               }
             })
-            let pagesFindCriteria = {userId: req.user._id, connected: true}
+            let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
             Pages.find(pagesFindCriteria, (err, pages) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
               }
+              logger.serverLog(TAG, `Pages ${JSON.stringify(pages)}`)
               pages.forEach(page => {
                 let messageData = {
                   'recipient': JSON.stringify({
