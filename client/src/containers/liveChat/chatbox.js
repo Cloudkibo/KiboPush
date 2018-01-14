@@ -18,7 +18,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import Popover from 'react-simple-popover'
+// import Popover from 'react-simple-popover'
+import Popover from '../../components/Popover/popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import {
@@ -521,8 +522,9 @@ class ChatBox extends React.Component {
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <Popover
-          style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='390px'
           target={this.target}
           show={this.state.showEmojiPicker}
           onHide={this.closeEmojiPicker}
@@ -542,8 +544,9 @@ class ChatBox extends React.Component {
           </div>
         </Popover>
         <Popover
-          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          style={{width: '305px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='360px'
           target={this.stickers}
           show={this.state.showStickers}
           onHide={this.hideStickers}
@@ -555,8 +558,9 @@ class ChatBox extends React.Component {
           />
         </Popover>
         <Popover
-          style={{ width: '232px', height: '400px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          style={{width: '232px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='400px'
           target={this.gifs}
           show={this.state.showGifPicker}
           onHide={this.closeGif}
