@@ -73,7 +73,7 @@ class Button extends React.Component {
             <h5 className='card-header'> Add Button </h5>
             <div className='card-block' style={{padding: 5}}>
               <h7 className='card-text'> Button Title: </h7>
-              <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Button Title' />
+              <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Enter Title' />
               <h7 className='card-text'> Open this website when user press this button: </h7>
               <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter a link...' />
               <br />
