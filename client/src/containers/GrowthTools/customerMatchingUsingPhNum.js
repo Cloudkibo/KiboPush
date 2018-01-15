@@ -66,12 +66,12 @@ class CustomerMatching extends React.Component {
       }
       if (page.pageUserName) {
         this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageUserName}`,
+          textAreaValue: `Please subscribe to my page https://m.me/${page.pageUserName} by typing Yes`,
           selectPage: page
         })
       } else {
         this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageId}`,
+          textAreaValue: `Please subscribe to my page https://m.me/${page.pageId} by typing Yes`,
           selectPage: page
         })
       }
@@ -242,15 +242,22 @@ class CustomerMatching extends React.Component {
     }
   }
   selectPage () {
-    if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
-      this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageUserName}`,
-        selectPage: this.props.pages[0]
-      })
+    if (this.props.pages && this.props.pages.length > 0) {
+      if (this.props.pages[0].pageUserName) {
+        this.setState({
+          textAreaValue: `Please subscribe to my page https://m.me/${this.props.pages[0].pageUserName} by typing Yes`,
+          selectPage: this.props.pages[0]
+        })
+      } else {
+        this.setState({
+          textAreaValue: `Please subscribe to my page https://m.me/${this.props.pages[0].pageId} by typing Yes`,
+          selectPage: this.props.pages[0]
+        })
+      }
     } else {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscribers of your page: https://m.me/${this.props.pages[0].pageId}`,
-        selectPage: this.props.pages[0]
+        textAreaValue: '',
+        selectPage: {}
       })
     }
   }
