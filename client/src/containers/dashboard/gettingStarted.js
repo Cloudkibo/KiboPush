@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
-  createbroadcast, clearAlertMessage
+  sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
@@ -70,7 +70,17 @@ class GettingStarted extends React.Component {
 
   sendTestBroadcast () {
     this.props.clearAlertMessage()
-    this.props.createbroadcast({platform: 'Facebook', type: 'text', text: 'Hello! This is a test broadcast'})
+    var data = {
+      platform: 'facebook',
+      payload: [{ text: 'Hello! this is a test broadcast.', componentType: 'text' }],
+      isSegmented: false,
+      segmentationPageIds: [],
+      segmentationLocale: '',
+      segmentationGender: '',
+      segmentationTimeZone: '',
+      title: 'Test Broadcast'
+    }
+    this.props.sendBroadcast(data)
   }
 
 /* eslint-disable */
@@ -286,7 +296,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {clearAlertMessage: clearAlertMessage, createbroadcast: createbroadcast},
+    {clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast},
     dispatch)
 }
 

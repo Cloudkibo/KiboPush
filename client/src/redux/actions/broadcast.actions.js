@@ -167,12 +167,20 @@ export function sendBroadcast (data, msg) {
     callApi('broadcasts/sendConversation', 'post', data)
       .then(res => {
         console.log('Response got from sendConversation', res)
-        if (res.status === 'success') {
-          msg.success('Conversation successfully sent')
-          // dispatch(sendBroadcastSuccess())
+        if (msg) {
+          if (res.status === 'success') {
+            msg.success('Conversation successfully sent')
+            // dispatch(sendBroadcastSuccess())
+          } else {
+            msg.error('Failed to send conversation')
+            // dispatch(sendBroadcastFailure())
+          }
         } else {
-          msg.error('Failed to send conversation')
-          // dispatch(sendBroadcastFailure())
+          if (res.status === 'success') {
+            dispatch(sendBroadcastSuccess())
+          } else {
+            dispatch(sendBroadcastFailure())
+          }
         }
         dispatch(loadBroadcastsList())
       })
