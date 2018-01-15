@@ -6,6 +6,7 @@ import Home from './containers/home'
 //  import Login from './containers/login/login'
 import Login from './containers/login/new'
 import Signup from './containers/signup/signup'
+import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
@@ -88,14 +89,15 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
+  console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
-    if (auth.getNext() === 'addPages') {
-      auth.removeNext()
-      return replace({
-        pathname: '/addPages',
-        state: { nextPathname: nextState.location.pathname }
-      })
-    }
+    // if (auth.getNext() === 'addPages') {
+    //   auth.removeNext()
+    //   return replace({
+    //     pathname: '/addPages',
+    //     state: { nextPathname: nextState.location.pathname }
+    //   })
+    // }
     console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
@@ -108,6 +110,7 @@ const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
+    <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
