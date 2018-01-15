@@ -110,15 +110,7 @@ function connect () {
                           `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
                         subscribers.forEach(subscriber => {
-                          let messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'text': tweet.text,
-                              'metadata': 'This is a meta data for tweet'
-                            })
-                          }
+                          let messageData = createFbPayload(subscriber, tweet)
                           request(
                             {
                               'method': 'POST',
@@ -173,6 +165,51 @@ function findUser (screenName, fn) {
       }
       fn(null, data)
     })
+}
+
+function createFbPayload (subscriber, tweet) {
+  let messageData = {}
+  if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
+    messageData = {
+      'recipient': JSON.stringify({
+        'id': subscriber.senderId
+      }),
+      'message': JSON.stringify({
+        'text': tweet.text,
+        'metadata': 'This is a meta data for tweet'
+      })
+    }
+  } else {
+    messageData = {
+      'recipient': JSON.stringify({
+        'id': subscriber.senderId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': tweet.text,
+                'image_url': tweet.entities.media[0].media_url,
+                'subtitle': 'kibopush.com',
+                'buttons': [
+                  {
+                    'type': 'web_url',
+                    'url': tweet.entities.media[0].url,
+                    'title': 'View Tweet'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      })
+    }
+  }
+  logger.serverLog(TAG, `payload to send ${JSON.stringify(messageData)}`)
+  return messageData
 }
 
 exports.connect = connect
