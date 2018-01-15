@@ -63,7 +63,8 @@ class EditTemplate extends React.Component {
       showMessengerModal: false
     }
     props.getuserdetails()
-    if (this.props.currentBroadcast) {
+    console.log('props.templatesInfo', props.currentBroadcast)
+    if (props.currentBroadcast) {
       const id = this.props.currentBroadcast._id
       console.log('id', id)
       props.loadBroadcastDetails(id)
@@ -97,6 +98,7 @@ class EditTemplate extends React.Component {
     // }
   }
   componentWillReceiveProps (nextprops) {
+    console.log('nextprops in', nextprops)
     if (nextprops.broadcastDetails) {
       console.log('details', nextprops.broadcastDetails)
       this.setState({convoTitle: nextprops.broadcastDetails.title})
@@ -109,6 +111,7 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
+        console.log('paload[i].text', payload[i].text)
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
         this.setState({list: temp})
         message.push(payload[i])
@@ -638,7 +641,7 @@ function mapStateToProps (state) {
     fileInfo: (state.convosInfo.fileInfo),
     user: (state.basicInfo.user),
     broadcastDetails: (state.templatesInfo.broadcastDetails),
-    currentBroadcast: (state.templatesInfo.broadcastDetails)
+    currentBroadcast: (state.templatesInfo.currentBroadcast)
   }
 }
 

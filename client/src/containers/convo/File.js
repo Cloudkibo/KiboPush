@@ -48,6 +48,16 @@ class File extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    if (this.props.file && this.props.file !== '') {
+      var fileInfo = {
+        id: this.props.id,
+        componentType: 'audio',
+        name: this.props.file.fileName,
+        type: this.props.file.type,
+        size: this.props.file.size
+      }
+      this.setState({file: fileInfo})
+    }
   }
 
   showDialog (page) {

@@ -147,11 +147,6 @@ class ShowTemplates extends React.Component {
                                               Edit Template
                                             </Link>
                                            </div>
-                                           <div className='m-widget4__ext'>
-                                             <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/viewTemplateBroadcastUser'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                             View Template
-                                            </Link>
-                                           </div>
                                          </div>
                                       ))}
                                     </div>

@@ -17,10 +17,17 @@
         sessionStorage.fonts = true;
       }
     });
+    function redirect()
+      {
+        window.location.href = "/";
+      }
   </script>
   <style>
     img.normal {
     width: 250px;
+  }
+  .m-login__form-action {
+      text-align: center;
   }
   </style>
   <!--end::Web font -->
@@ -57,6 +64,12 @@
             <label class="m-login__account-msg">
               It seems that email verification link is invalid or has been expired. Please login again to resend email verification link.
 						</label>
+            <br /><br />
+            <div class="m-login__form-action" id="btn">
+              <button id="m_login_signup_submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air" onClick="redirect()">
+                Login
+              </button>
+          </div>
           </div>
         </div>
       </div>
