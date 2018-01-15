@@ -4,6 +4,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
+import { Link } from 'react-router'
 import { ModalContainer } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
@@ -90,8 +91,11 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false,
-      loading: false
+      disabled: true,
+      loading: false,
+      manually: false,
+      phoneNumbers: [],
+      numbersError: []
     })
     this.props.clearAlertMessage()
     this.selectPage()
@@ -233,8 +237,7 @@ class CustomerMatching extends React.Component {
     } else {
       this.setState({
         alertMessage: '',
-        type: '',
-        disabled: false
+        type: ''
       })
     }
   }
@@ -285,6 +288,14 @@ class CustomerMatching extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                  this.props.pages &&
+                  this.props.pages.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Pages Connected</h4>
+                    You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+                  </div>
+            }
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
                 role='alert'>
@@ -426,7 +437,7 @@ class CustomerMatching extends React.Component {
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { this.state.disabled
+                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
