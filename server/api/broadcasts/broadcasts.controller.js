@@ -219,7 +219,7 @@ exports.getfbMessage = function (req, res) {
       for (let i = 0; i < changeEvents.length; i++) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {
-          if (event.value.verb === 'add' && event.value.item === 'status') {
+          if (event.value.verb === 'add' && (['status', 'photo', 'video'].indexOf(event.value.item) > -1)) {
             AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
               .populate('userId')
               .exec((err, autopostings) => {
@@ -293,14 +293,60 @@ exports.getfbMessage = function (req, res) {
                             `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
                           subscribers.forEach(subscriber => {
-                            let messageData = {
-                              'recipient': JSON.stringify({
-                                'id': subscriber.senderId
-                              }),
-                              'message': JSON.stringify({
-                                'text': event.value.message,
-                                'metadata': 'This is a meta data for fb post'
-                              })
+                            let messageData = {}
+                            if (event.value.item === 'status') {
+                              messageData = {
+                                'recipient': JSON.stringify({
+                                  'id': subscriber.senderId
+                                }),
+                                'message': JSON.stringify({
+                                  'text': event.value.message,
+                                  'metadata': 'This is a meta data for fb post'
+                                })
+                              }
+                            } else if (event.value.item === 'photo') {
+                              messageData = {
+                                'recipient': JSON.stringify({
+                                  'id': subscriber.senderId
+                                }),
+                                'message': JSON.stringify({
+                                  'attachment': {
+                                    'type': 'template',
+                                    'payload': {
+                                      'template_type': 'generic',
+                                      'elements': [
+                                        {
+                                          'title': event.value.sender_name,
+                                          'image_url': event.value.link,
+                                          'subtitle': 'kibopush.com',
+                                          'buttons': [
+                                            {
+                                              'type': 'web_url',
+                                              'url': 'https://www.facebook.com/' + event.value.sender_id,
+                                              'title': 'View Page'
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                })
+                              }
+                            } else if (event.value.item === 'video') {
+                              messageData = {
+                                'recipient': JSON.stringify({
+                                  'id': subscriber.senderId
+                                }),
+                                'message': JSON.stringify({
+                                  'attachment': {
+                                    'type': 'video',
+                                    'payload': {
+                                      'url': event.value.link,
+                                      'is_reusable': false
+                                    }
+                                  }
+                                })
+                              }
                             }
                             request(
                               {

@@ -7,7 +7,18 @@ console.log(token)
 $(document).ready(function() {
   var emailString = readCookie("email").split('%40');
   emailString = emailString[0] + '@' + emailString[1];
+  var nameString = readCookie("name").split('%20');
+  if (nameString.length > 1) {
+    var temp = nameString
+    nameString = ''
+    for(var i = 0; i < temp.length; i++)
+      nameString += temp[i] + ' ';
+  } else {
+    nameString = nameString[0]
+  }
+  nameString = nameString.trim()
   $("#email").val(emailString)
+  $("#name").val(nameString)
   $("#applyBtn").click(function () {
     document.getElementById("alertMsg").innerHTML = ""
     var name = $("#name").val()

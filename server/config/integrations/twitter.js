@@ -40,7 +40,7 @@ function connect () {
           {follow: arrUsers})
 
         stream.on('tweet', tweet => {
-          logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet)}`)
+          // logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet)}`)
           AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
             .populate('userId companyId')
             .exec((err, autopostings) => {

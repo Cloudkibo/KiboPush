@@ -301,6 +301,7 @@ exports.joinCompany = function (req, res) {
           res.clearCookie('companyId')
           res.clearCookie('companyName')
           res.clearCookie('domain')
+          res.clearCookie('name')
           res.cookie('token', token)
           res.cookie('userid', user._id)
           res.status(201).json({status: 'success', token: token})
