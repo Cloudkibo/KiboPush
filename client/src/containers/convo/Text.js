@@ -39,6 +39,16 @@ class Text extends React.Component {
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
   }
   componentDidMount () {
+    if (this.props.message && this.props.message !== '') {
+      this.setState({text: this.props.message})
+    }
+    if (this.props.buttons && this.props.buttons.length > 0) {
+      if (this.state.button.length < 1) {
+        this.setState({
+          button: this.props.buttons
+        })
+      }
+    }
   }
 
   showEmojiPicker () {

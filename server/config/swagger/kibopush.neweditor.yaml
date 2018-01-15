@@ -1993,6 +1993,54 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /templates/allBroadcasts:
+    get:
+      description: Gives all the template surveys
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#/definitions/BroadcastTemplate'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /templates/allCategories:
+    get:
+      description: Gives all the categories
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
 ################################################################################
 #                                 Definitions                                  #
@@ -2762,6 +2810,9 @@ definitions:
     type: object
     description: This table is used to store the template polls
     properties:
+      _id:
+        type: string
+        description: unique id of the record
       title:
         type: string
         description: The title of the poll
@@ -2783,6 +2834,9 @@ definitions:
     type: object
     description: This table is used to store the template surveys
     properties:
+      _id:
+        type: string
+        description: unique id of the record
       title:
         type: string
         description: The title of the survey
@@ -2814,7 +2868,27 @@ definitions:
           surveyId:
             type: string
             description: The id of the survey
-
+  BroadcastTemplate:
+    type: object
+    description: This table is used to store the template broadcasts
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+      title:
+        type: string
+        description: The title of the broadcast
+      category:
+        type: string
+        description: The ctategory of the broadcast
+      payload:
+        type: array
+        items:
+          type: object
+          description: the content of the broadcast
+      datetime:
+        type: object
+        description: The date and time at which the broadcast is created
   Graph:
     type: object
     description: gives the number of broadcasts, surveys or polls made along with the date

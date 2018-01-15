@@ -218,7 +218,7 @@ class Convo extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        {/*
+                        {
                           this.props.subscribers && this.props.subscribers.length === 0
                             ? <a href='#'>
                               <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
@@ -238,15 +238,7 @@ class Convo extends React.Component {
                                 </span>
                               </span>
                             </button>
-                      */ }
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New Broadcast
-                          </span>
-                        </span>
-                      </button>
+                      }
                       </div>
                     </div>
                     <div className='m-portlet__body'>

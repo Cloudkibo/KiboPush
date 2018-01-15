@@ -91,13 +91,6 @@ class Login extends React.Component {
                         <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                           onChange={this.handlePwdChange} />
                       </div>
-                      <div className='row m-login__form-sub'>
-                        <div className='col m--align-left'>
-                          <Link to='/forgotPassword' href='javascript:;' id='m_login_forget_password' className='m-link'>
-                            Forgot Password ?
-                          </Link>
-                        </div>
-                      </div>
                       <div className='m-login__form-action'>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Sign In
@@ -109,6 +102,11 @@ class Login extends React.Component {
               </div>
               <div className='m-stack__item m-stack__item--center'>
 
+                <div className='m-login__account'>
+                  <span className='m-login__account-msg'>Forgot Password ?</span>&nbsp;&nbsp;
+                  <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
+                </div>
+                <br />
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
                   <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
