@@ -72,7 +72,6 @@ import ViewTemplatePollUser from './containers/polls/viewTemplate'
 import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
 import ShowTemplateBroadcasts from './containers/convo/showTemplates'
 import EditTemplateBroadcast from './containers/convo/editTemplate'
-import ViewTemplateBroadcastUser from './containers/convo/viewTemplate'
 import Invitations from './containers/invitations/invitations'
 import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
@@ -178,7 +177,6 @@ const routes = (
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
-    <Route path='/viewTemplateBroadcastUser' component={ViewTemplateBroadcastUser} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />
