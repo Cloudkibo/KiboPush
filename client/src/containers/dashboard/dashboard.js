@@ -26,9 +26,9 @@ import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.getuserdetails()
     props.loadMyPagesList()
     props.loadDashboardData()
-    props.getuserdetails()
     props.sentVsSeen()
     props.loadSubscribersList()
 
@@ -44,32 +44,39 @@ class Dashboard extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
-    if (nextprops.pages && nextprops.pages.length === 0) {
-      // this means connected pages in 0
+    if (nextprops.user && nextprops.user.emailVerified === false) {
       browserHistory.push({
-        pathname: '/addPages',
-        state: {showMsg: true}
+        pathname: '/resendVerificationEmail'
       })
-    } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
-      // this means more than 0 subscribers
-      console.log('More than 0 subscribers')
-      this.setState({isShowingModal: false})
-    } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
-      // this means 0 subscribers
-      console.log('0 subscribers')
-      this.setState({isShowingModal: true})
     }
-    if (nextprops.user) {
-      console.log('fetchSession in dashboard')
-      joinRoom(nextprops.user._id)
-    }
-    if (nextprops.sentseendata) {
-      console.log('sentseendata', nextprops.sentseendata)
-      var temp = []
-      temp.push(nextprops.sentseendata)
-      console.log('temp', temp)
-      this.setState({sentseendata1: nextprops.sentseendata})
-      console.log('sentseendata1', this.state.sentseendata1)
+    if (nextprops.user && nextprops.user.emailVerified === true) {
+      if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+        browserHistory.push({
+          pathname: '/addPages',
+          state: {showMsg: true}
+        })
+      } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
+        // this means more than 0 subscribers
+        console.log('More than 0 subscribers')
+        this.setState({isShowingModal: false})
+      } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+        // this means 0 subscribers
+        console.log('0 subscribers')
+        this.setState({isShowingModal: true})
+      }
+      if (nextprops.user) {
+        console.log('fetchSession in dashboard')
+        joinRoom(nextprops.user._id)
+      }
+      if (nextprops.sentseendata) {
+        console.log('sentseendata', nextprops.sentseendata)
+        var temp = []
+        temp.push(nextprops.sentseendata)
+        console.log('temp', temp)
+        this.setState({sentseendata1: nextprops.sentseendata})
+        console.log('sentseendata1', this.state.sentseendata1)
+      }
     }
   }
 
@@ -213,16 +220,16 @@ class Dashboard extends React.Component {
       </div>
     )
   }
-}
+  }
 
 function mapStateToProps (state) {
- // console.log(state)
+  console.log('state', state)
   return {
+    user: (state.basicInfo.user),
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.sentSeenInfo.sentseendata),
     pages: (state.pagesInfo.pages),
-    subscribers: (state.subscribersInfo.subscribers),
-    user: (state.basicInfo.user)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
