@@ -23,11 +23,26 @@ class Gallery extends React.Component {
       broadcast: [],
       cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} handleCard={this.handleCard} />, key: 2}],
       showPlus: false,
-      pageNumber: 1,
+      pageNumber: 1
     }
   }
 
   componentDidMount () {
+    if (this.props.galleryDetails && this.props.galleryDetails !== '') {
+      console.log(this.props.galleryDetails)
+      var cards = this.props.galleryDetails.cards
+      var card = {}
+      var temp = []
+      var cardMessage = []
+      for (var i = 0; i < cards.length; i++) {
+        card = {element: <Card id={i} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        cardMessage.push(cards[i])
+        temp.push(card)
+      }
+      this.setState({cards: temp})
+      this.setState({showPlus: true})
+      this.setState({broadcast: cardMessage})
+    }
   }
 
   handleChange (index) {
@@ -39,17 +54,17 @@ class Gallery extends React.Component {
     }
   }
 
-  removeSlide(){
-    var temp = this.state.cards;
-    console.log("Cards Before Removing",  temp)
-    temp.splice(this.state.pageNumber - 1, 1);
-    console.log("Cards After Removing",  temp)
-    this.setState({cards: temp}) 
+  removeSlide () {
+    var temp = this.state.cards
+    console.log('Cards Before Removing', temp)
+    temp.splice(this.state.pageNumber - 1, 1)
+    console.log('Cards After Removing', temp)
+    this.setState({cards: temp})
   }
 
   addSlide () {
-    if(this.state.cards.length >= 10){
-      return this.msg.error('You cant add more than 10 cards.');
+    if (this.state.cards.length >= 10) {
+      return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
     this.setState({cards: [...temp, {element: <Card id={temp.length + 1} handleCard={this.handleCard} />, key: temp.length + 1}]})
@@ -78,7 +93,7 @@ class Gallery extends React.Component {
 
   render () {
     console.log('Gallary State', this.state)
-     var alertOptions = {
+    var alertOptions = {
       offset: 14,
       position: 'bottom right',
       theme: 'dark',
@@ -104,17 +119,13 @@ class Gallery extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-
-
         {
-          <div  style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
-            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
-            <span className="m-badge m-badge--brand m-badge--wide" onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
-            <span className="m-badge m-badge--brand m-badge--wide" style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
+          <div style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
+            <span className='m-badge m-badge--brand m-badge--wide' onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
+            <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
-
-        
         <div>
           <Slider ref={(c) => { this.slider = c }} {...settings}>
             {

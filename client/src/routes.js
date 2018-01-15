@@ -6,6 +6,7 @@ import Home from './containers/home'
 //  import Login from './containers/login/login'
 import Login from './containers/login/new'
 import Signup from './containers/signup/signup'
+import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
@@ -71,7 +72,6 @@ import ViewTemplatePollUser from './containers/polls/viewTemplate'
 import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
 import ShowTemplateBroadcasts from './containers/convo/showTemplates'
 import EditTemplateBroadcast from './containers/convo/editTemplate'
-import ViewTemplateBroadcastUser from './containers/convo/viewTemplate'
 import Invitations from './containers/invitations/invitations'
 import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
@@ -88,14 +88,15 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
+  console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
-    if (auth.getNext() === 'addPages') {
-      auth.removeNext()
-      return replace({
-        pathname: '/addPages',
-        state: { nextPathname: nextState.location.pathname }
-      })
-    }
+    // if (auth.getNext() === 'addPages') {
+    //   auth.removeNext()
+    //   return replace({
+    //     pathname: '/addPages',
+    //     state: { nextPathname: nextState.location.pathname }
+    //   })
+    // }
     console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
@@ -108,6 +109,7 @@ const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
+    <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
@@ -175,7 +177,6 @@ const routes = (
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
-    <Route path='/viewTemplateBroadcastUser' component={ViewTemplateBroadcastUser} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />

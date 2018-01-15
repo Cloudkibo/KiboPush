@@ -32,16 +32,17 @@ class ResendEmail extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='m-container m-container--fluid m-container--full-height'>
+        <br /><br /><br />
+        <center>
+          <div className='m-login__logo'>
+            <a href='#'>
+              <img src='img/logo.png' style={{maxWidth: 250}} />
+            </a>
+          </div>
+        </center>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Email Verification</h3>
-                </div>
-              </div>
-            </div>
             <div className='m-content'>
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
@@ -65,7 +66,6 @@ class ResendEmail extends React.Component {
           </div>
         </div>
       </div>
-
     )
   }
 }

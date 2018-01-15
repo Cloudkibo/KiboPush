@@ -4,6 +4,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
+import { Link } from 'react-router'
 import { ModalContainer } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
@@ -65,12 +66,12 @@ class CustomerMatching extends React.Component {
       }
       if (page.pageUserName) {
         this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageUserName}`,
+          textAreaValue: `Please subscribe to my page https://m.me/${page.pageUserName} by typing Yes`,
           selectPage: page
         })
       } else {
         this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageId}`,
+          textAreaValue: `Please subscribe to my page https://m.me/${page.pageId} by typing Yes`,
           selectPage: page
         })
       }
@@ -90,8 +91,11 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false,
-      loading: false
+      disabled: true,
+      loading: false,
+      manually: false,
+      phoneNumbers: [],
+      numbersError: []
     })
     this.props.clearAlertMessage()
     this.selectPage()
@@ -233,21 +237,27 @@ class CustomerMatching extends React.Component {
     } else {
       this.setState({
         alertMessage: '',
-        type: '',
-        disabled: false
+        type: ''
       })
     }
   }
   selectPage () {
-    if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
-      this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageUserName}`,
-        selectPage: this.props.pages[0]
-      })
+    if (this.props.pages && this.props.pages.length > 0) {
+      if (this.props.pages[0].pageUserName) {
+        this.setState({
+          textAreaValue: `Please subscribe to my page https://m.me/${this.props.pages[0].pageUserName} by typing Yes`,
+          selectPage: this.props.pages[0]
+        })
+      } else {
+        this.setState({
+          textAreaValue: `Please subscribe to my page https://m.me/${this.props.pages[0].pageId} by typing Yes`,
+          selectPage: this.props.pages[0]
+        })
+      }
     } else {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscribers of your page: https://m.me/${this.props.pages[0].pageId}`,
-        selectPage: this.props.pages[0]
+        textAreaValue: '',
+        selectPage: {}
       })
     }
   }
@@ -285,6 +295,14 @@ class CustomerMatching extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                  this.props.pages &&
+                  this.props.pages.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Pages Connected</h4>
+                    You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+                  </div>
+            }
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
                 role='alert'>
@@ -426,7 +444,7 @@ class CustomerMatching extends React.Component {
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { this.state.disabled
+                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>

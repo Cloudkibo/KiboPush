@@ -17,14 +17,19 @@
         sessionStorage.fonts = true;
       }
     });
-    function myFunction() {
-    document.getElementById("demo").innerHTML = "hi";
-  }
+    function redirect()
+      {
+        window.location.href = "/";
+      }
   </script>
   <style>
     img.normal {
     width: 250px;
 }
+.m-login__form-action {
+    text-align: center;
+}
+
 </style>
   <!--end::Web font -->
   <!--begin::Base Styles -->
@@ -52,15 +57,22 @@
             <div class="m-login__signin">
               <div class="m-login__head">
                 <h3 class="m-login__title">
-                  KiboPush - Email Verification Successfull
+                  KiboPush - Email Verification Successful
                 </h3>
               </div>
+              <br />
+              <form className='m-login__form m-form'>
+              <label class="m-login__account-msg">
+                You have successfully verified you email address. Please login to continue.
+              </label>
+              <br /> <br />
+              <div class="m-login__form-action" id="btn">
+                <button id="m_login_signup_submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air" onClick="redirect()">
+                  Login
+                </button>
             </div>
-            <br /><br />
-            <label class="m-login__account-msg">
-              You have successfully verified you email address. Please login to continue.
-						</label>
-          </div>
+          </form>
+            </div>
         </div>
       </div>
     </div>
