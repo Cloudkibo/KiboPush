@@ -89,14 +89,15 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
+  console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
-    if (auth.getNext() === 'addPages') {
-      auth.removeNext()
-      return replace({
-        pathname: '/addPages',
-        state: { nextPathname: nextState.location.pathname }
-      })
-    }
+    // if (auth.getNext() === 'addPages') {
+    //   auth.removeNext()
+    //   return replace({
+    //     pathname: '/addPages',
+    //     state: { nextPathname: nextState.location.pathname }
+    //   })
+    // }
     console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
