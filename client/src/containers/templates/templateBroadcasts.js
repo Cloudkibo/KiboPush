@@ -169,12 +169,12 @@ class TemplateBroadcasts extends React.Component {
                       onClose={this.closeDialogDelete}>
                       <ModalDialog style={{width: '500px'}}
                         onClose={this.closeDialogDelete}>
-                        <h3>Delete Survey</h3>
-                        <p>Are you sure you want to delete this survey?</p>
+                        <h3>Delete Broadcast</h3>
+                        <p>Are you sure you want to delete this broadcast?</p>
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deleteSurvey(this.state.deleteid)
+                            this.props.deleteBroadcast(this.state.deleteid)
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
