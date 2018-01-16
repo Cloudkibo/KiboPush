@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
+import ConnectFb from './connectFb'
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -32,6 +33,7 @@ class Settings extends React.Component {
     this.setReset = this.setReset.bind(this)
     this.setResetPass = this.setResetPass.bind(this)
     this.setAPI = this.setAPI.bind(this)
+    this.setConnectFb = this.setConnectFb.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -42,6 +44,9 @@ class Settings extends React.Component {
   }
   setResetPass () {
     this.setState({showAPI: false, resetPassword: true})
+  }
+  setConnectFb () {
+    this.setState({showAPI: false, resetPassword: false, connectFb: true})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -196,6 +201,14 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>Reset Password</span>
                           </a>
                         </li>
+                        { this.props.user && this.props.user.facebookInfo === false && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setConnectFb} >
+                            <i className='m-nav__link-icon fa fa-facebook' />
+                            <span className='m-nav__link-text'>Connect with Facebook</span>
+                          </a>
+                        </li>
+                      }
                       </ul>
                     </div>
                   </div>
@@ -273,6 +286,9 @@ class Settings extends React.Component {
                 }
                 { this.state.resetPassword &&
                   <ResetPassword />
+                }
+                { this.state.connectFb &&
+                  <ConnectFb />
                 }
               </div>
             </div>

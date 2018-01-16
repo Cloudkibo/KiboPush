@@ -341,7 +341,7 @@ exports.send = function (req, res) {
               option: first_question.options[x],
               question_id: first_question._id,
               next_question_id,
-              userToken: req.user.fbToken
+              userToken: req.user.facebookInfo.fbToken
             })
           })
         }
@@ -392,7 +392,7 @@ exports.send = function (req, res) {
               }
               // get accesstoken of page
               needle.get(
-                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`,
+                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG,
@@ -429,23 +429,37 @@ exports.send = function (req, res) {
                         logger.serverLog(TAG,
                           `Sending survey to subscriber response ${JSON.stringify(
                             resp.body)}`)
-                        let surveyPage = new SurveyPage({
-                          pageId: pages[z].pageId,
-                          userId: req.user._id,
-                          subscriberId: subscribers[j].senderId,
-                          surveyId: req.body._id,
-                          seen: false
-                        })
-
-                        surveyPage.save((err2) => {
-                          if (err2) {
-                            logger.serverLog(TAG, {
+                        CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+                          if (err) {
+                            return res.status(500).json({
                               status: 'failed',
-                              description: 'PollBroadcast create failed',
-                              err2
+                              description: `Internal Server Error ${JSON.stringify(err)}`
                             })
                           }
-                          // not using now
+                          if (!companyUser) {
+                            return res.status(404).json({
+                              status: 'failed',
+                              description: 'The user account does not belong to any company. Please contact support'
+                            })
+                          }
+                          let surveyPage = new SurveyPage({
+                            pageId: pages[z].pageId,
+                            userId: req.user._id,
+                            subscriberId: subscribers[j].senderId,
+                            surveyId: req.body._id,
+                            seen: false,
+                            companyId: companyUser.companyId
+                          })
+
+                          surveyPage.save((err2) => {
+                            if (err2) {
+                              logger.serverLog(TAG, {
+                                status: 'failed',
+                                description: 'PollBroadcast create failed',
+                                err2
+                              })
+                            }
+                            // not using now
                           // Sessions.findOne({
                           //   subscriber_id: subscribers[j]._id,
                           //   page_id: pages[z]._id,
@@ -480,7 +494,8 @@ exports.send = function (req, res) {
                           //     logger.serverLog(TAG,
                           //       'Chat message saved for surveys sent')
                           //   })
-                          // })
+                            // })
+                          })
                         })
                       })
                   }

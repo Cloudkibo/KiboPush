@@ -16,6 +16,7 @@ const TAG = 'api/pages/pages.controller.js'
 const PollResponse = require('../polls/pollresponse.model')
 const PollPage = require('../page_poll/page_poll.model')
 const mongoose = require('mongoose')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.index = function (req, res) {
   const data = {}
@@ -213,6 +214,8 @@ exports.likesVsSubscribers = function (req, res) {
             err2)}`
         })
       }
+      logger.serverLog(TAG,
+                    `counts for dashboard ${JSON.stringify(gotSubscribersCount)}`)
       let pagesPayload = []
       for (let i = 0; i < pages.length; i++) {
         pagesPayload.push({
@@ -273,6 +276,7 @@ exports.stats = function (req, res) {
     scheduledBroadcast: 0,
     username: req.user.name
   }
+  logger.serverLog(TAG, `req: ${JSON.stringify(req.body)}`)
   Pages.count({connected: true, userId: req.user._id}, (err, pagesCount) => {
     if (err) {
       return res.status(500)
@@ -285,13 +289,27 @@ exports.stats = function (req, res) {
           .json({status: 'failed', description: JSON.stringify(err)})
       }
       payload.totalPages = allPagesCount
-      Subscribers.count({userId: req.user._id}, (err2, subscribersCount) => {
-        if (err2) {
-          return res.status(500)
-          .json({status: 'failed', description: JSON.stringify(err2)})
+      CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
         }
-        payload.subscribers = subscribersCount
-        Broadcasts.find({userId: req.user._id}).sort('datetime').limit(10).exec(
+        if (!companyUser) {
+          return res.status(404).json({
+            status: 'failed',
+            description: 'The user account does not belong to any company. Please contact support'
+          })
+        }
+        Subscribers.count({companyId: companyUser.companyId}, (err2, subscribersCount) => {
+          if (err2) {
+            return res.status(500)
+            .json({status: 'failed', description: JSON.stringify(err2)})
+          }
+          logger.serverLog(TAG, `subscribersCOunt: ${subscribersCount}`)
+          payload.subscribers = subscribersCount
+          Broadcasts.find({userId: req.user._id}).sort('datetime').limit(10).exec(
           (err3, recentBroadcasts) => {
             if (err3) {
               return res.status(500)
@@ -324,7 +342,7 @@ exports.stats = function (req, res) {
                   }
 
                   LiveChat.count({
-                    company_id: req.user._id,
+                    company_id: companyUser.companyId,
                     status: 'unseen',
                     format: 'facebook'
                   }, (err7, unreadCount) => {
@@ -343,7 +361,8 @@ exports.stats = function (req, res) {
                 })
               })
             })
-          }
+          })
+        }
         )
       })
     })
