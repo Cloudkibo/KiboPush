@@ -410,7 +410,8 @@ class LiveChat extends React.Component {
                           <div className='tab-pane active' id='m_widget4_tab1_content'>
                             <div className='m-widget4'>
                               {
-                                this.state.sessionsData.map((session) => (
+                                this.state.sessionsData && this.state.sessionsData.length > 0
+                                ? (this.state.sessionsData.map((session) => (
                                   session.subscriber_id !== null &&
                                   <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                     <div className='m-widget4__img m-widget4__img--pic'>
@@ -434,7 +435,8 @@ class LiveChat extends React.Component {
                                       }
                                     </div>
                                   </div>
-                                ))
+                                )))
+                                : <p>No data to display</p>
                               }
                             </div>
                           </div>
