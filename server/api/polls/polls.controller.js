@@ -217,35 +217,6 @@ exports.send = function (req, res) {
       ]
     }
 
-    // {
-    //   attachment: {
-    //     type: 'template',
-    //     payload: {
-    //       template_type: 'button',
-    //       text: req.body.statement,
-    //       buttons: [
-    //         {
-    //           type: 'postback',
-    //           title: req.body.options[0],
-    //           payload: JSON.stringify(
-    //             {poll_id: req.body._id, option: req.body.options[0]})
-    //         },
-    //         {
-    //           type: 'postback',
-    //           title: req.body.options[1],
-    //           payload: JSON.stringify(
-    //             {poll_id: req.body._id, option: req.body.options[1]})
-    //         },
-    //         {
-    //           type: 'postback',
-    //           title: req.body.options[2],
-    //           payload: JSON.stringify(
-    //             {poll_id: req.body._id, option: req.body.options[2]})
-    //         }
-    //       ]
-    //     }
-    //   }
-    // }
     logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
     let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
     if (req.body.isSegmented) {
