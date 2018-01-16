@@ -1,9 +1,9 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-//  import templatePolls from './templatePolls'
 import TemplateSurveys from './templateSurveys'
 import TemplatePolls from './templatePolls'
+import TemplateBroadcasts from './templateBroadcasts'
 
 class templates extends React.Component {
   render () {
@@ -22,6 +22,7 @@ class templates extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              <TemplateBroadcasts />
               <TemplateSurveys />
               <TemplatePolls />
             </div>

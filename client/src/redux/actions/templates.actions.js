@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+
 export function createsurvey (survey) {
   console.log('Creating survey')
   console.log(survey)
@@ -39,10 +40,11 @@ export function addCategory (data, msg) {
   return (dispatch) => {
     callApi('templates/createCategory', 'post', data)
       .then(res => {
+        console.log('response from addCategory', res)
         if (res.status === 'success') {
           msg.success('Category added successfully')
         } else {
-          msg.success('Please enter a category')
+          msg.danger('Please enter a category')
         }
       })
   }
@@ -116,6 +118,8 @@ export function loadPollDetails (id) {
       .then(res => dispatch(updatePollDetails(res)))
   }
 }
+
+// ********* Broadcast Templates ************** //
 export function loadBroadcastDetails (id) {
   console.log('loadBroadcastDetails called: ', id)
   return (dispatch) => {
@@ -123,6 +127,7 @@ export function loadBroadcastDetails (id) {
       .then(res => dispatch(updateBroadcastDetails(res)))
   }
 }
+
 export function updateBroadcastDetails (data) {
   console.log('updateBroadcastDetails', data.payload)
 
@@ -131,22 +136,69 @@ export function updateBroadcastDetails (data) {
     data: data.payload
   }
 }
+
 export function showBroadcasts (data) {
   return {
     type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST,
     data
   }
 }
+
 export function loadBroadcastsList () {
-  // here we will fetch list of subscribers from endpoint
   console.log('loadBroadcastsList called')
   return (dispatch) => {
     callApi('templates/allBroadcasts').then(res => dispatch(showBroadcasts(res.payload)))
   }
 }
+
 export function saveBroadcastInformation (broadcast) {
   return {
     type: ActionTypes.SAVE_BROADCAST_INFORMATION,
     data: broadcast
+  }
+}
+
+export function createBroadcast (broadcast, msg) {
+  console.log('Creating broadcast')
+  console.log(broadcast)
+  return (dispatch) => {
+    callApi('templates/createBroadcast', 'post', broadcast)
+      .then(res => dispatch(addConvoTemplate(res, msg)))
+  }
+}
+
+export function addConvoTemplate (data, msg) {
+  console.log('response from createBroadcast', data)
+  if (data.status === 'success') {
+    msg.success('Broadcast created successfully')
+  } else {
+    msg.danger('Broadcast creation failed.')
+  }
+  return {
+    type: ActionTypes.ADD_TEMPLATE_BROADCAST,
+    data
+  }
+}
+
+export function deleteBroadcast (id) {
+  return (dispatch) => {
+    callApi(`templates/deleteBroadcast/${id}`, 'delete')
+      .then(res => dispatch(loadBroadcastsList()))
+  }
+}
+
+export function editBroadcast (data) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('templates/editBroadcast', 'post', data)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          // dispatch(editAutopostingSuccess())
+          dispatch(loadBroadcastsList())
+        } else {
+          // dispatch(editAutopostingFailure(res.description))
+        }
+      })
   }
 }
