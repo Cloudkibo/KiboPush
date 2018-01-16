@@ -67,6 +67,7 @@ class CreateBroadcastTemplate extends React.Component {
 
   initializeCategorySelect (categoryOptions) {
     console.log('Category options', categoryOptions)
+    var self = this
     /* eslint-disable */
     $('#selectCategory').select2({
       /* eslint-enable */
@@ -87,7 +88,7 @@ class CreateBroadcastTemplate extends React.Component {
           var selectedOption = selectedOptions[i].label
           selected.push(selectedOption)
         }
-        this.setState({ categoryValue: selected })
+        self.setState({ categoryValue: selected })
       }
       console.log('change category', selected)
     })
