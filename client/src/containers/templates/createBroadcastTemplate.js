@@ -252,14 +252,18 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
-    var broadcastTemplate = {
-      title: this.state.convoTitle,
-      category: this.state.convoTitle,
-      payload: this.state.broadcast
-    }
+    if (this.state.category.length > 0) {
+      var broadcastTemplate = {
+        title: this.state.convoTitle,
+        category: this.state.categoryValue,
+        payload: this.state.broadcast
+      }
 
-    this.props.createBroadcast(broadcastTemplate, this.msg)
-    this.setState({broadcast: [], list: []})
+      this.props.createBroadcast(broadcastTemplate, this.msg)
+      this.setState({broadcast: [], list: []})
+    } else {
+      this.msg.error('Please select a category')
+    }
   }
 
   render () {

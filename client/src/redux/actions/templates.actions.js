@@ -44,7 +44,7 @@ export function addCategory (data, msg) {
         if (res.status === 'success') {
           msg.success('Category added successfully')
         } else {
-          msg.danger('Please enter a category')
+          msg.error('Please enter a category')
         }
       })
   }
@@ -172,7 +172,7 @@ export function addConvoTemplate (data, msg) {
   if (data.status === 'success') {
     msg.success('Broadcast created successfully')
   } else {
-    msg.danger('Broadcast creation failed.')
+    msg.error('Broadcast creation failed.')
   }
   return {
     type: ActionTypes.ADD_TEMPLATE_BROADCAST,
