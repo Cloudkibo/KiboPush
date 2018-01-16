@@ -16,6 +16,10 @@ export function templatesInfo (state = {}, action) {
         createwarning: action.data.status
 
       })
+    case ActionTypes.ADD_TEMPLATE_BROADCAST:
+      return Object.assign({}, state, {
+        broadcasts: action.data.payload
+      })
     case ActionTypes.ADD_TEMPLATE_POLL:
       return Object.assign({}, state, {
         surveys: [...state.polls, action.data.payload],
