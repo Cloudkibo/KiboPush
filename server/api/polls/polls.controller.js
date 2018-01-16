@@ -287,7 +287,27 @@ exports.send = function (req, res) {
 
                   const data = {
                     recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                    message: messageData
+                    // message: messageData,
+                    message: {
+                          text: "Here's a quick reply!",
+                          quick_replies:[
+                            {
+                              "content_type":"text",
+                              "title":"Option 1",
+                              "payload":"test",
+                            },
+                            {
+                              "content_type":"text",
+                              "title":"Option 2",
+                              "payload":"test",
+                            },
+                            {
+                              "content_type":"text",
+                              "title":"Option 3",
+                              "payload":"test",
+                            }
+                          ]
+                        }
                   }
 
                   needle.post(
