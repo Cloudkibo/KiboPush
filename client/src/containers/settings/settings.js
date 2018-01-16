@@ -173,11 +173,11 @@ class Settings extends React.Component {
                         <div className='m-card-profile__title m--hide'>
                           Your Profile
                         </div>
-                        <div className='m-card-profile__pic'>
+                        {/* <div className='m-card-profile__pic'>
                           <div className='m-card-profile__pic-wrapper'>
                             <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
                           </div>
-                        </div>
+                        </div> */}
                         <div className='m-card-profile__details'>
                           <span className='m-card-profile__name'>
                             {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
@@ -201,7 +201,7 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>Reset Password</span>
                           </a>
                         </li>
-                        { this.props.user && this.props.user.facebookInfo === false && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                        { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setConnectFb} >
                             <i className='m-nav__link-icon fa fa-facebook' />
