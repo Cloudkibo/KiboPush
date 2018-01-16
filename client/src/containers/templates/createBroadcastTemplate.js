@@ -252,7 +252,7 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
-    if (this.state.category.length > 0) {
+    if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
         title: this.state.convoTitle,
         category: this.state.categoryValue,
