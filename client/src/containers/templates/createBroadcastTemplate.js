@@ -24,6 +24,7 @@ import StickyDiv from 'react-stickydiv'
 class CreateBroadcastTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadCategoriesList()
     this.state = {
       list: [],
       broadcast: [],
