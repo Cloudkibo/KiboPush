@@ -500,6 +500,8 @@ function updateseenstatus (req) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
+  logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.recipient)}`)
+  logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.sender)}`)
   SurveyPage.update(
     {pageId: req.recipient.id, subscriberId: req.sender.id},
     {seen: true},
@@ -807,6 +809,8 @@ function savesurvey (req) {
               })
             })
           }
+          logger.serverLog(TAG,
+            `next question ${JSON.stringify(resp)}`)
           needle.get(
             `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
             (err3, response) => {
@@ -902,6 +906,10 @@ function savesurvey (req) {
               }
             })
           })
+          logger.serverLog(TAG,
+            `req.recipient.id ${JSON.stringify(req.recipient.id)}`)
+          logger.serverLog(TAG,
+            `thankyou response ${JSON.stringify(resp)}`)
           needle.get(
             `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
             (err3, response) => {

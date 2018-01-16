@@ -281,7 +281,7 @@ class Survey extends React.Component {
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
                                         onClick={() => this.props.sendsurvey(
-                                            survey)} disabled> Send
+                                            survey, this.msg)} disabled> Send
                                       </button>
                                     </span>
                               : <span>
@@ -294,7 +294,7 @@ class Survey extends React.Component {
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
                                   onClick={() => {
-                                    this.props.sendsurvey(survey, this.msg)
+                                    this.props.sendsurvey(survey, this.msg, this.msg)
                                   }}>
                                   Send
                               </button>

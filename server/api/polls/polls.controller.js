@@ -274,7 +274,7 @@ exports.send = function (req, res) {
             // get accesstoken of page
             // -- Page tokens get expired therefore we need to fetch it from Graph api
             needle.get(
-              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.fbToken}`,
+              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
               (err, resp) => {
                 if (err) {
                   logger.serverLog(TAG,
