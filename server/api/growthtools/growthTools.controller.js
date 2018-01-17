@@ -141,15 +141,16 @@ exports.sendNumbers = function (req, res) {
 
   if (!_.has(req.body, 'numbers')) parametersMissing = true
   if (!_.has(req.body, 'text')) parametersMissing = true
-
+  if (!_.has(req.body, 'pageId')) parametersMissing = true
+  console.log('phonenumebrs', req.body.numbers)
   if (parametersMissing) {
     return res.status(400)
-    .json({status: 'failed', description: 'Parameters are missing. Put both numbers and text fields in payload.'})
+    .json({status: 'failed', description: 'Parameters are missing. Put numbers, text fields and pageId in payload.'})
   }
 
   for (let i = 0; i < req.body.numbers.length; i++) {
     var result = req.body.numbers[i].replace(/[- )(]/g, '')
-    let pagesFindCriteria = {userId: req.user._id, connected: true}
+    let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
     Pages.find(pagesFindCriteria, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
