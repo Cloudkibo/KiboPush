@@ -67,6 +67,7 @@ class CreateBroadcastTemplate extends React.Component {
 
   initializeCategorySelect (categoryOptions) {
     console.log('Category options', categoryOptions)
+    var self = this
     /* eslint-disable */
     $('#selectCategory').select2({
       /* eslint-enable */
@@ -87,7 +88,7 @@ class CreateBroadcastTemplate extends React.Component {
           var selectedOption = selectedOptions[i].label
           selected.push(selectedOption)
         }
-        this.setState({ categoryValue: selected })
+        self.setState({ categoryValue: selected })
       }
       console.log('change category', selected)
     })
@@ -252,14 +253,18 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
-    var broadcastTemplate = {
-      title: this.state.convoTitle,
-      category: this.state.convoTitle,
-      payload: this.state.broadcast
-    }
+    if (this.state.categoryValue.length > 0) {
+      var broadcastTemplate = {
+        title: this.state.convoTitle,
+        category: this.state.categoryValue,
+        payload: this.state.broadcast
+      }
 
-    this.props.createBroadcast(broadcastTemplate, this.msg)
-    this.setState({broadcast: [], list: []})
+      this.props.createBroadcast(broadcastTemplate, this.msg)
+      this.setState({broadcast: [], list: []})
+    } else {
+      this.msg.error('Please select a category')
+    }
   }
 
   render () {
