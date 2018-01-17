@@ -52,10 +52,12 @@ exports.setup = function (socketio) {
   // }));
 
   socketio.on('connection', function (socket) {
+    logger.serverLog(TAG, 'On Connect Called Server Side')
     socket.connectedAt = new Date()
 
     // Call onDisconnect.
     socket.on('disconnect', function () {
+      logger.serverLog(TAG, 'On Disconnect Called Server Side')
       onDisconnect(socket)
       // logger.serverLog(TAG, `SOCKET ${socket.id} DISCONNECTED AT ${new Date()}`)
     })
