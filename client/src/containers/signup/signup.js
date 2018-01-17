@@ -25,7 +25,8 @@ class Signup extends React.Component {
       pwd_color: 'red',
       ismatch: false,
       isurl: false,
-      pwdlength: true
+      pwdlength: true,
+      error: false
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
@@ -42,12 +43,17 @@ class Signup extends React.Component {
     log(TAG, 'signup Container Mounted')
   }
   componentWillReceiveProps (nextprops) {
+    console.log('props', nextprops)
+    this.setState({error: false})
     if (nextprops.successSignup) {
       console.log('i am called')
       this.props.history.push({
         pathname: '/connectFb'
 
       })
+    } else if (nextprops.errorSignup) {
+      console.log('nextprops.errorSignup', nextprops.errorSignup.errors)
+      this.setState({error: true})
     }
   }
   handlePwdChange (event) {
@@ -141,6 +147,9 @@ class Signup extends React.Component {
                       </div>
                     </div>
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
+                      {this.state.error &&
+                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>The specified email address is already in use with this domain name</bold></div>
+                      }
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
@@ -207,7 +216,7 @@ class Signup extends React.Component {
   }
 }
 function mapStateToProps (state) {
- // console.log(state)
+  console.log('state', state)
   return {
     errorMessage: (state.signupInfo.errorMessage),
     successMessage: (state.signupInfo.successMessage),

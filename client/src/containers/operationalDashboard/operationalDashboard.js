@@ -99,21 +99,7 @@ class OperationalDashboard extends React.Component {
     this.setState({openPopover: false})
   }
   displayData (n, users) {
-    console.log('one', users)
-    let data = []
-    let offset = n * 5
-    let limit
-    let index = 0
-    if ((offset + 5) > users.length) {
-      limit = users.length
-    } else {
-      limit = offset + 5
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = users[i]
-      index++
-    }
-    this.setState({usersData: data, usersDataAll: users})
+    this.setState({usersData: users, usersDataAll: users})
     console.log('in displayData', this.state.usersData)
   }
 

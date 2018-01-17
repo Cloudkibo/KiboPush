@@ -12,7 +12,7 @@ export function Success () {
 export function Failure (message) {
   return {
     type: ActionTypes.SIGNUP_FAILURE,
-    errorMessage: 'error'
+    errorMessage: message
   }
 }
 
@@ -27,7 +27,7 @@ export function signUp (data) {
           auth.putUserId(res.userid)
           dispatch(Success())
         } else {
-          dispatch(Failure())
+          dispatch(Failure(res.description))
         }
       })
   }
