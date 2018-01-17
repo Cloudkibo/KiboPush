@@ -74,6 +74,6 @@ exports.sendChatToAgents = function (data) {
 }
 
 exports.sendMessageToClient = function (data) {
-  logger.serverLog(TAG, `Sending message to client using webhooks`)
+  logger.serverLog(TAG, `Sending message to client using webhooks ${JSON.stringify(data)}`)
   globalSocket.to(data.room_id).emit('message', data.body)
 }
