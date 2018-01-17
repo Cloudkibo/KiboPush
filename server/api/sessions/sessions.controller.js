@@ -29,6 +29,13 @@ exports.index = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
       }
+      let tempSessions = []
+      for (var i = 0; i < sessions.length; i++) {
+        if (sessions[i].page_id.connected) {
+          tempSessions.push(sessions[i])
+        }
+      }
+      sessions = tempSessions
       if (sessions.length > 0) {
         LiveChat.aggregate([
           {$match: {status: 'unseen', format: 'facebook'}},

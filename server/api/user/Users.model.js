@@ -90,7 +90,7 @@ var validatePresenceOf = function (value) {
 // Validate email is not taken
 UserSchema.path('domain_email').validate(function (value, respond) {
   var self = this
-  this.constructor.findOne({domain: value},
+  this.constructor.findOne({domain_email: value},
     function (err, user) {
       if (err) throw err
       if (user) {
@@ -99,7 +99,7 @@ UserSchema.path('domain_email').validate(function (value, respond) {
       }
       respond(true)
     })
-}, 'The specified email address is already in use with this company.')
+}, 'The specified email address is already in use with this domain name.')
 
 /**
  * Pre-save hook

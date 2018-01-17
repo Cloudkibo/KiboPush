@@ -95,10 +95,10 @@ exports.create = function (req, res) {
 
   let accountData = new Users({
     name: req.body.name,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     domain: req.body.domain,
     password: req.body.password,
-    domain_email: req.body.domain + '' + req.body.email,
+    domain_email: req.body.domain + '' + req.body.email.toLowerCase(),
     role: 'buyer'
   })
 
