@@ -147,60 +147,57 @@ class createSurvey extends React.Component {
   createSurvey (e) {
     e.preventDefault()
     let flag = 0
-    if (this.state.surveyQuestions.length === 0) {
-      this.setState({
-        alertMessage: 'A survey form requires atleast one question',
-        alertType: 'danger'
-      })
+    // Checking if Description or Title is empty, and highlighting it
+    if (this.state.title === '') {
+      let incompleteTitle = document.getElementById('titl')
+      incompleteTitle.classList.add('has-error')
+      this.msg.error('Please add a title')
+    } else if (this.state.description === '') {
+      let completeTitle = document.getElementById('titl')
+      completeTitle.classList.remove('has-error')
+      let incompleteDesc = document.getElementById('desc')
+      incompleteDesc.classList.add('has-error')
+      this.msg.error('Please add a description')
+    } else if (this.state.categoryValue.length === 0) {
+      let completeTitle = document.getElementById('titl')
+      completeTitle.classList.remove('has-error')
+      let completeDesc = document.getElementById('desc')
+      completeDesc.classList.remove('has-error')
+      this.msg.error('Please select a category')
+    } else if (this.state.surveyQuestions.length === 0) {
+      let completeTitle = document.getElementById('titl')
+      completeTitle.classList.remove('has-error')
+      let completeDesc = document.getElementById('desc')
+      completeDesc.classList.remove('has-error')
+      this.msg.error('A survey form requires ateast one question')
     } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
       for (let j = 0; j < this.state.surveyQuestions.length; j++) {
         if (this.state.surveyQuestions[j].options.length > 0) {
           for (let k = 0; k <
           this.state.surveyQuestions[j].options.length; k++) {
-            if (this.state.surveyQuestions[j].options[k] === '') {
+            if (this.state.surveyQuestions[j].statement === '') {
+              let incompleteQuestion = document.getElementById('question' + j)
+              incompleteQuestion.classList.add('has-error')
+              flag = 1
+              console.log('empty')
+              this.msg.error('Please add a statement')
+              break
+            } else if (this.state.surveyQuestions[j].options[k] === '') {
+              let completeChoice = document.getElementById('question' + j)
+              completeChoice.classList.remove('has-error')
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
               console.log('empty')
+              this.msg.error('Please add all the choices')
+              break
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
+              flag = 0
             }
           }
         }
-        // Checking if any Question statement is empty.
-        if (this.state.surveyQuestions[j].statement === '') {
-          let incompleteQuestion = document.getElementById('question' + j)
-          incompleteQuestion.classList.add('has-error')
-          flag = 1
-          console.log('empty')
-        } else {
-          let completeChoice = document.getElementById('question' + j)
-          completeChoice.classList.remove('has-error')
-        }
-      }
-      // Checking if Description or Title is empty, and highlighting it
-
-      if (this.state.description === '') {
-        flag = 1
-        let incompleteDesc = document.getElementById('desc')
-        incompleteDesc.classList.add('has-error')
-      } else {
-        let completeDesc = document.getElementById('desc')
-        completeDesc.classList.remove('has-error')
-      }
-
-      if (this.state.title === '') {
-        flag = 1
-        let incompleteTitle = document.getElementById('titl')
-        incompleteTitle.classList.add('has-error')
-      } else {
-        let completeTitle = document.getElementById('titl')
-        completeTitle.classList.remove('has-error')
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
@@ -215,11 +212,6 @@ class createSurvey extends React.Component {
           questions: this.state.surveyQuestions
         }
         this.props.editSurvey(surveybody, this.msg)
-      } else {
-        this.setState({
-          alertMessage: 'Please fill all the fields.',
-          alertType: 'danger'
-        })
       }
     }
   }
@@ -269,11 +261,10 @@ class createSurvey extends React.Component {
     console.log(
       'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
-    if (surveyQuestions[qindex].choiceCount === 2) {
-      this.setState({
-        alertMessage: 'Atleast 2 options are required for each question',
-        alertType: 'danger'
-      })
+    console.log('surveyQuestions', surveyQuestions)
+    console.log('surveyQuestions[qindex].choiceCount', surveyQuestions[qindex].choiceCount)
+    if (surveyQuestions[qindex].options.length <= 2) {
+      this.msg.error('Atleast 2 options are required for each question')
     } else {
       let choices = surveyQuestions[qindex].options.slice()
       console.log('choices before')
@@ -291,10 +282,7 @@ class createSurvey extends React.Component {
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
       console.log('A survey form requires atleast one question')
-      this.setState({
-        alertMessage: 'A survey form requires atleast one question',
-        alertType: 'danger'
-      })
+      this.msg.error('A survey form requires atleast one question')
     } else {
       console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
@@ -417,7 +405,7 @@ class createSurvey extends React.Component {
                           {this.createOptionsList(i)}
                         </div>
                       </div>
-                      {this.state.surveyQuestions[i].choiceCount < 3 &&
+                      {this.state.surveyQuestions[i].options.length < 3 &&
                       <div className='col-sm-6 col-md-4'>
                         <button className='btn btn-secondary btn-sm'
                           onClick={this.addChoices.bind(this, i)}> Add
