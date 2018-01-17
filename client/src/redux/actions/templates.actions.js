@@ -118,6 +118,54 @@ export function loadPollDetails (id) {
       .then(res => dispatch(updatePollDetails(res)))
   }
 }
+export function deletePoll (id) {
+  return (dispatch) => {
+    callApi(`templates/deletePoll/${id}`, 'delete')
+      .then(res => dispatch(loadPollsList()))
+  }
+}
+export function deleteSurvey (id) {
+  return (dispatch) => {
+    callApi(`templates/deleteSurvey/${id}`, 'delete')
+      .then(res => dispatch(loadSurveysList()))
+  }
+}
+export function deleteCategory (id) {
+  return (dispatch) => {
+    callApi(`templates/deleteCategory/${id}`, 'delete')
+      .then(res => dispatch(loadCategoriesList()))
+  }
+}
+export function editPoll (data, msg) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('templates/editPoll', 'post', data)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          msg.success('Poll saved successfully')
+          dispatch(loadPollsList())
+        } else {
+          msg.error('Poll edit failure')
+        }
+      })
+  }
+}
+export function editSurvey (data, msg) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('templates/editSurvey', 'post', data)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          msg.success('Survey edited successfully')
+          dispatch(loadPollsList())
+        } else {
+          msg.error('Survey edit failure')
+        }
+      })
+  }
+}
 
 // ********* Broadcast Templates ************** //
 export function loadBroadcastDetails (id) {

@@ -26,7 +26,8 @@ class createPoll extends React.Component {
       statement: '',
       option1: '',
       option2: '',
-      option3: ''
+      option3: '',
+      alertMessage: ''
     }
     this.createPoll = this.createPoll.bind(this)
     this.initializeCategorySelect = this.initializeCategorySelect.bind(this)
@@ -108,9 +109,15 @@ class createPoll extends React.Component {
   }
   createPoll () {
     var options = []
-    if (this.refs.title.value === '' || this.state.categoryValue.length === 0 || this.state.option1 === '' || this.state.option2 === '' ||
-      this.state.option3 === '' || this.state.statement === '') {
-      this.setState({alert: true})
+    if (this.refs.title.value === '') {
+      this.msg.error('Please add a title')
+    } else if (this.state.categoryValue.length === 0) {
+      this.msg.error('Please select a category')
+    } else if (this.state.statement === '') {
+      this.msg.error('Please add a statement')
+    } else if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '') {
+      this.msg.error('Please add all the responses')
     } else {
       if (this.state.option1 !== '') {
         options.push(this.state.option1)
@@ -266,9 +273,10 @@ class createPoll extends React.Component {
                           </fieldset>
                         </div>
                       </div>
-                      { this.state.alert &&
+                      <br />
+                      { this.state.alertMessage !== '' &&
                         <center>
-                          <Alert type='danger' style={{marginTop: '30px'}}>
+                          <Alert type='danger' style={{marginTop: '30px'}}>{this.state.alertMessage}
                             You have either left one or more responses empty or you
                             have not asked anything. Please ask something and fill all
                             three responses in order to create the poll.
