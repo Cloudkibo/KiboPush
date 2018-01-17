@@ -4,7 +4,7 @@
 
 const logger = require('../../components/logger')
 const TAG = 'api/backdoor/backdoor.controller.js'
-
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
@@ -38,6 +38,7 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
+  //  5a584c3729a3150272d8c007
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -45,55 +46,69 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    Subscribers.aggregate([
-      {
-        $match: {
-          userId: mongoose.Types.ObjectId(req.params.userid)
-        }
-      }, {
-        $group: {
-          _id: {pageId: '$pageId'},
-          count: {$sum: 1}
-        }
-      }], (err2, gotSubscribersCount) => {
-      if (err2) {
+    CompanyUsers.findOne({userId: req.params.userid}, (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting pages subscriber count ${JSON.stringify(
-            err2)}`
+          description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      let pagesPayload = []
-      for (let i = 0; i < pages.length; i++) {
-        pagesPayload.push({
-          _id: pages[i]._id,
-          pageId: pages[i].pageId,
-          pageName: pages[i].pageName,
-          userId: pages[i].userId,
-          pagePic: pages[i].pagePic,
-          connected: pages[i].connected,
-          pageUserName: pages[i].pageUserName,
-          likes: pages[i].likes,
-          subscribers: 0
-        })
-      }
-      for (let i = 0; i < pagesPayload.length; i++) {
-        for (let j = 0; j < gotSubscribersCount.length; j++) {
-          if (pagesPayload[i]._id.toString() ===
-            gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG,
-              `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
-            pagesPayload[i].subscribers = gotSubscribersCount[j].count
+      Subscribers.aggregate([
+        {
+          $match: {
+            companyId: companyUser.companyId
+          }
+        }, {
+          $group: {
+            _id: {pageId: '$pageId'},
+            count: {$sum: 1}
+          }
+        }], (err2, gotSubscribersCount) => {
+        if (err2) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages subscriber count ${JSON.stringify(
+              err2)}`
+          })
+        }
+        let pagesPayload = []
+        for (let i = 0; i < pages.length; i++) {
+          pagesPayload.push({
+            _id: pages[i]._id,
+            pageId: pages[i].pageId,
+            pageName: pages[i].pageName,
+            userId: pages[i].userId,
+            pagePic: pages[i].pagePic,
+            connected: pages[i].connected,
+            pageUserName: pages[i].pageUserName,
+            likes: pages[i].likes,
+            subscribers: 0
+          })
+        }
+        for (let i = 0; i < pagesPayload.length; i++) {
+          for (let j = 0; j < gotSubscribersCount.length; j++) {
+            if (pagesPayload[i]._id.toString() ===
+              gotSubscribersCount[j]._id.pageId.toString()) {
+              logger.serverLog(TAG,
+                `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
+              logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
+              logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
+              pagesPayload[i].subscribers = gotSubscribersCount[j].count
+            }
           }
         }
-      }
-      logger.serverLog(TAG,
-        `Total pages in after double loop ${pagesPayload.length}`)
-      res.status(200).json({
-        status: 'success',
-        payload: pagesPayload
+        logger.serverLog(TAG,
+          `Total pages in after double loop ${pagesPayload.length}`)
+        res.status(200).json({
+          status: 'success',
+          payload: pagesPayload
+        })
       })
     })
   })
