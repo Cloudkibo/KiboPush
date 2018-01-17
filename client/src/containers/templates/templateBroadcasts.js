@@ -24,7 +24,7 @@ class TemplateBroadcasts extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onFilter = this.onFilter.bind(this)
-    this.onBroadcastClick = this.onBroadcastClick.bind(this)
+    this.gotoEditBroadcast = this.gotoEditBroadcast.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
@@ -44,9 +44,12 @@ class TemplateBroadcasts extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  onBroadcastClick (e, broadcast) {
-    console.log('Survey Click', broadcast)
-    this.props.saveBroadcastInformation(broadcast)
+  gotoEditBroadcast (broadcast) {
+    console.log('Broadcast', broadcast)
+    // this.props.history.push({
+    //  pathname: `/editBroadcastTemplate`,
+    //  state: broadcast
+    // })
   }
 
   displayData (n, broadcasts) {
@@ -268,10 +271,10 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  style={{width: '170px'}}><Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                   View
                                 </Link>
-                                  <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  <Link onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
                                   </Link>
                                   <button className='btn btn-primary btn-sm'
