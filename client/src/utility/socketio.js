@@ -68,10 +68,10 @@ export function log (tag, data) {
 
 export function joinRoom (data) {
   console.log("Trying to join room socket", data)
-  // if (joined) {
-  //   console.log("Socket Already Joined")
-  //   return
-  // }
+  if (joined) {
+    console.log("Socket Already Joined")
+    return
+  }
 
   console.log("Joining Socket")
   socket.emit('message', {

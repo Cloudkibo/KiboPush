@@ -62,6 +62,7 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    
     document.title = 'KiboPush | Broadcast'
   }
 
