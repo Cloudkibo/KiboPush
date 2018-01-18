@@ -60,7 +60,8 @@ class EditTemplate extends React.Component {
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       steps: [],
-      showMessengerModal: false
+      showMessengerModal: false,
+      stay: false
     }
     props.getuserdetails()
     console.log('props.templatesInfo', props.currentBroadcast)
@@ -100,9 +101,11 @@ class EditTemplate extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
     if (nextprops.broadcastDetails) {
-      console.log('details', nextprops.broadcastDetails)
-      this.setState({convoTitle: nextprops.broadcastDetails.title})
-      this.setEditComponents(nextprops.broadcastDetails.payload)
+      if (nextprops.stay === false) {
+        console.log('details', nextprops.broadcastDetails)
+        this.setState({convoTitle: nextprops.broadcastDetails.title})
+        this.setEditComponents(nextprops.broadcastDetails.payload)
+      }
     }
   }
   setEditComponents (payload) {
@@ -343,7 +346,8 @@ class EditTemplate extends React.Component {
     }
     console.log('Data sent: ', data)
     this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
+    //  this.setState({broadcast: [], list: []})
+    this.setState({stay: true})
   }
 
   testConvo () {
