@@ -147,7 +147,7 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue})
+        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId})
       }
     }
   }
