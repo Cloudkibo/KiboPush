@@ -199,11 +199,11 @@ class EditTemplate extends React.Component {
   handleText (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.text = obj.text
+        temp[i].text = obj.text
         if (obj.button.length > 0) {
-          data.buttons = obj.button
+          temp[i].buttons = obj.button
         }
         isPresent = true
       }
@@ -225,15 +225,15 @@ class EditTemplate extends React.Component {
     console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.fileName = obj.fileName
-        data.fileurl = obj.fileurl
-        data.size = obj.size
-        data.type = obj.type
-        data.title = obj.title
-        data.buttons = obj.buttons
-        data.description = obj.description
+        temp[i].fileName = obj.fileName
+        temp[i].fileurl = obj.fileurl
+        temp[i].size = obj.size
+        temp[i].type = obj.type
+        temp[i].title = obj.title
+        temp[i].buttons = obj.buttons
+        temp[i].description = obj.description
         isPresent = true
       }
     })
@@ -249,9 +249,9 @@ class EditTemplate extends React.Component {
     obj.cards.forEach((d) => {
       delete d.id
     })
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.cards = obj.cards
+        temp[i].cards = obj.cards
         isPresent = true
       }
     })
@@ -264,9 +264,9 @@ class EditTemplate extends React.Component {
   handleImage (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data = obj
+        temp[i] = obj
         isPresent = true
       }
     })
@@ -276,15 +276,15 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
+    console.log('Image Uploaded', this.state.broadcast)
   }
 
   handleFile (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data = obj
+        temp[i] = obj
         isPresent = true
       }
     })
