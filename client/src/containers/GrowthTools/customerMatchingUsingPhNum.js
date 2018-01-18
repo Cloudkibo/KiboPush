@@ -71,7 +71,7 @@ class CustomerMatching extends React.Component {
         })
       } else {
         this.setState({
-          textAreaValue: `Please subscribe to my page ${page.pageName} by typing Yes`,
+          textAreaValue: `Please subscribe to my page *${page.pageName}* by typing Yes`,
           selectPage: page
         })
       }
@@ -250,7 +250,7 @@ class CustomerMatching extends React.Component {
         })
       } else {
         this.setState({
-          textAreaValue: `Please subscribe to my page ${this.props.pages[0].pageName} by typing Yes`,
+          textAreaValue: `Please subscribe to my page *${this.props.pages[0].pageName}* by typing Yes`,
           selectPage: this.props.pages[0]
         })
       }
