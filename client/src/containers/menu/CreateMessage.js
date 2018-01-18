@@ -188,6 +188,9 @@ class CreateMessage extends React.Component {
       }
     }
     this.setState({ message: temp })
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, temp)
+    var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+    this.props.saveCurrentMenuItem(currentState)
   }
 
   handleCard (obj) {
@@ -244,6 +247,9 @@ class CreateMessage extends React.Component {
     //  var temp = obj
     this.setState({ message: temp })
     console.log('Image Uploaded', this.state.message)
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, temp)
+    var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+    this.props.saveCurrentMenuItem(currentState)
   }
 
   handleFile (obj) {
