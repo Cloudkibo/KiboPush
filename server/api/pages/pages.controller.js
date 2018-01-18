@@ -129,7 +129,7 @@ exports.enable = function (req, res) {
           `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
         if (pagesbyOther.length === 0) {
           Pages.update({_id: req.body._id},
-            {connected: true}, (err) => {
+            {connected: true}, {multi: true}, (err) => {
               if (err) {
                 res.status(500).json({
                   status: 'Failed',
@@ -137,7 +137,7 @@ exports.enable = function (req, res) {
                   description: 'Failed to update record'
                 })
               } else {
-                Subscribers.update({pageId: req.body._id}, {isEnabledByPage: true}, function (err) {
+                Subscribers.update({pageId: req.body._id}, {isEnabledByPage: true}, {multi: true}, function (err) {
                   if (err) {
                     res.status(500).json({
                       status: 'Failed',
