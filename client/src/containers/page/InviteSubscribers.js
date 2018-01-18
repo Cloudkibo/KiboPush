@@ -40,8 +40,7 @@ class InviteSubscribers extends React.Component {
         fblink: `https://m.me/${this.props.location.state.pageId}`,
         selectPage: this.props.location.state
       })
-    }
-    if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
+    } else if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
       this.setState({
         fblink: `https://m.me/${this.props.pages[0].pageUserName}`,
         selectPage: this.props.pages[0]
