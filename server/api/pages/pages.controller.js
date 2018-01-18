@@ -239,7 +239,7 @@ exports.disable = function (req, res) {
       })
     }
     Pages.update({_id: req.body._id},
-      {connected: false}, (err) => {
+      {connected: false}, {multi: true}, (err) => {
         if (err) {
           res.status(500).json({
             status: 'Failed',
@@ -249,7 +249,7 @@ exports.disable = function (req, res) {
         } else {
           // remove subscribers of the page
           logger.serverLog(TAG, `pageId coming: ${req.body._id}`)
-          Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, (err) => {
+          Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, {multi: true}, (err) => {
             Subscribers.find({ pageId: req.body._id }, (err, subscribers) => {
               if (err) {
                 logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
@@ -257,7 +257,7 @@ exports.disable = function (req, res) {
                 .json({status: 'failed', description: 'Subscribers not found'})
               }
               logger.serverLog(TAG, `fetching subscribers: ${subscribers}`)
-
+            })
             Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
               if (err2) {
                 return res.status(500).json({
@@ -330,7 +330,6 @@ exports.disable = function (req, res) {
                 //  res.status(200).json({status: 'success', payload: pages})
               })
             })
-          })
           })
         }
       })
