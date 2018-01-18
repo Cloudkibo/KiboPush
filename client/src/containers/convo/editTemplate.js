@@ -101,7 +101,7 @@ class EditTemplate extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
     if (nextprops.broadcastDetails) {
-      if (nextprops.stay === false) {
+      if (this.state.stay === false) {
         console.log('details', nextprops.broadcastDetails)
         this.setState({convoTitle: nextprops.broadcastDetails.title})
         this.setEditComponents(nextprops.broadcastDetails.payload)
