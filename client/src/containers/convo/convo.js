@@ -65,7 +65,8 @@ class Convo extends React.Component {
     registerAction({
       event: 'new_broadcast',
       action: function(data){
-        this.props.loadBroadcastsList()();
+        console.log('New socket event occured: In Callback')
+        this.props.loadBroadcastsList();
       }
     })
     
