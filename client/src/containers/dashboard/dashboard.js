@@ -67,7 +67,7 @@ class Dashboard extends React.Component {
       }
       if (nextprops.user) {
         console.log('fetchSession in dashboard')
-        joinRoom(nextprops.user._id)
+        joinRoom(nextprops.user.companyId)
       }
       if (nextprops.sentseendata) {
         console.log('sentseendata', nextprops.sentseendata)
