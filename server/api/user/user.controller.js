@@ -13,6 +13,7 @@ const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
 const _ = require('lodash')
 let crypto = require('crypto')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 const logger = require('../../components/logger')
 
@@ -32,6 +33,22 @@ exports.index = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'User not found'})
     }
+
+      CompanyUsers.findOne({userId: req.user._id}, (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+
+    user.companyId = companyUser.companyId
     res.status(200).json({status: 'success', payload: user})
   })
 }
