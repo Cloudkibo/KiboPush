@@ -41,6 +41,7 @@ module.exports = function (app) {
   app.use('/api/invite_verification', require('./api/inviteagenttoken'))
   app.use('/api/invitations', require('./api/invitations'))
   app.use('/api/company_user', require('./api/companyuser'))
+  app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
 
   app.use('/auth', require('./auth'))
 

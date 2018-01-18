@@ -54,6 +54,10 @@ exports.index = function (req, res) {
   })
 }
 
+exports.fbAppId = function (req, res) {
+  res.status(200).json({status: 'success', payload: config.facebook.clientID})
+}
+
 exports.updateChecks = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {

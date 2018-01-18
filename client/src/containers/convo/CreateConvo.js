@@ -26,7 +26,7 @@ import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, convoTourCompleted, getFbAppId } from '../../redux/actions/basicinfo.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -63,6 +63,7 @@ class CreateConvo extends React.Component {
       showMessengerModal: false
     }
     props.getuserdetails()
+    props.getFbAppId()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -613,7 +614,7 @@ class CreateConvo extends React.Component {
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
                         <h3>Connect to Messenger:</h3>
                         <MessengerPlugin
-                          appId='132767517443810'
+                          appId={this.props.fbAppId}
                           pageId={this.state.pageValue}
                           passthroughParams={this.props.user._id}
                           onClick={() => { this.setState({showMessengerModal: false}) }}
@@ -646,7 +647,8 @@ function mapStateToProps (state) {
     showFileUploading: (state.broadcastsInfo.showFileUploading),
     pages: (state.pagesInfo.pages),
     fileInfo: (state.convosInfo.fileInfo),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    fbAppId: state.basicInfo.fbAppId
   }
 }
 
@@ -661,8 +663,8 @@ function mapDispatchToProps (dispatch) {
       addPages: addPages,
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
-      convoTourCompleted: convoTourCompleted
-
+      convoTourCompleted: convoTourCompleted,
+      getFbAppId: getFbAppId
     },
     dispatch)
 }

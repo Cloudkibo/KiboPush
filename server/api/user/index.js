@@ -15,5 +15,6 @@ router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/updateChecks', auth.isAuthenticated(), controller.updateChecks)
 router.post('/signup', controller.create)
 router.post('/joinCompany', controller.joinCompany)
+router.get('/fbAppId', auth.isAuthenticated(), controller.fbAppId)
 
 module.exports = router
