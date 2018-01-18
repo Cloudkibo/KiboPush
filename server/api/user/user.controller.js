@@ -51,6 +51,7 @@ exports.index = function (req, res) {
     user.companyId = companyUser.companyId
     res.status(200).json({status: 'success', payload: user})
   })
+  })
 }
 
 exports.updateChecks = function (req, res) {
