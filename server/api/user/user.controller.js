@@ -33,8 +33,7 @@ exports.index = function (req, res) {
     }
 
     CompanyUsers.findOne({userId: req.user._id}, (err, companyUser) => {
-      logger.serverLog(TAG,
-        'Company Users Found ' + JSON.stringify(err) + JSON.stringify(companyUser))
+      
       if (err) {
         return res.status(500).json({
           status: 'failed',
@@ -48,6 +47,8 @@ exports.index = function (req, res) {
         })
       }
       user.companyId = companyUser.companyId
+      logger.serverLog(TAG,
+        'Company Users Found ' + JSON.stringify(err) + JSON.stringify(companyUser) + JSON.stringify(user))
     })
 
     res.status(200).json({status: 'success', payload: user})
