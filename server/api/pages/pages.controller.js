@@ -249,6 +249,14 @@ exports.disable = function (req, res) {
         } else {
           // remove subscribers of the page
           Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, function () {
+            Subscribers.find({ pageId: req.body._id }).populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                return res.status(404)
+                .json({status: 'failed', description: 'Subscribers not found'})
+              }
+              logger.serverLog(TAG, `fetching subscribers: ${subscribers}`)
+            })
             Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
               if (err2) {
                 return res.status(500).json({
@@ -280,7 +288,45 @@ exports.disable = function (req, res) {
                     }
                   }
                 })
-                res.status(200).json({status: 'success', payload: pages})
+                Subscribers.aggregate([{
+                  $group: {
+                    _id: {pageId: '$pageId'},
+                    count: {$sum: 1}
+                  }
+                }], (err2, gotSubscribersCount) => {
+                  if (err2) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+                    })
+                  }
+                  let pagesPayload = []
+                  for (let i = 0; i < pages.length; i++) {
+                    pagesPayload.push({
+                      _id: pages[i]._id,
+                      pageId: pages[i].pageId,
+                      pageName: pages[i].pageName,
+                      userId: pages[i].userId,
+                      pagePic: pages[i].pagePic,
+                      connected: pages[i].connected,
+                      pageUserName: pages[i].pageUserName,
+                      likes: pages[i].likes,
+                      subscribers: 0
+                    })
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: pagesPayload
+                  })
+                })
+                //  res.status(200).json({status: 'success', payload: pages})
               })
             })
           })
