@@ -62,6 +62,7 @@ import TemplatePoll from './containers/templates/templatePolls'
 import TemplateSurvey from './containers/templates/templateSurveys'
 import TemplateBroadcasts from './containers/templates/templateBroadcasts'
 import CreateBroadcastTemplate from './containers/templates/createBroadcastTemplate'
+import EditBroadcastTemplate from './containers/templates/editBroadcastTemplate'
 import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
 import EditPoll from './containers/templates/editPoll'
@@ -169,6 +170,7 @@ const routes = (
     <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
     <Route path='/templateBroadcasts' component={TemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/createBroadcastTemplate' component={CreateBroadcastTemplate} onEnter={requireAuth} />
+    <Route path='/editBroadcastTemplate' component={EditBroadcastTemplate} onEnter={requireAuth} />
     <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
     <Route path='/editPoll' component={EditPoll} onEnter={requireAuth} />
