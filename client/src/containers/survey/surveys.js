@@ -38,11 +38,10 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
-
-      registerAction({
+    registerAction({
       event: 'survey_created',
-      action: function(data){
-        this.props.loadSurveysList();
+      action: function (data) {
+        this.props.loadSurveysList()
       }
     })
     document.title = 'KiboPush | Survey'

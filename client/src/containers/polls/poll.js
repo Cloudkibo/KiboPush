@@ -113,10 +113,10 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-      registerAction({
+    registerAction({
       event: 'poll_created',
-      action: function(data){
-        this.props.loadPollsList()();
+      action: function (data) {
+        this.props.loadPollsList()()
       }
     })
   }
@@ -138,7 +138,6 @@ class Poll extends React.Component {
   }
 
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',

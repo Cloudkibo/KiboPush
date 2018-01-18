@@ -8,7 +8,6 @@ const PassportFacebookExtension = require('passport-facebook-extension')
 const needle = require('needle')
 const _ = require('lodash')
 
-
 const logger = require('../../components/logger')
 const TAG = 'api/auth/facebook/passport'
 

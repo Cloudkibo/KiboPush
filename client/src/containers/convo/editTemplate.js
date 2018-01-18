@@ -383,10 +383,10 @@ class EditTemplate extends React.Component {
     $('#selectPage').select2({
       data: pageOptions,
       placeholder: 'Select Pages',
-      allowClear: true,
+      allowClear: true
     })
 
-    console.log("In initializePageSelect")
+    console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
 
@@ -588,9 +588,9 @@ class EditTemplate extends React.Component {
                   {
                     this.state.isShowingModal &&
                     <ModalContainer style={{width: '500px'}}
-                                    onClose={this.closeDialog}>
+                      onClose={this.closeDialog}>
                       <ModalDialog style={{width: '500px'}}
-                                   onClose={this.closeDialog}>
+                        onClose={this.closeDialog}>
                         <h3>Rename:</h3>
                         <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
                         <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
@@ -601,9 +601,9 @@ class EditTemplate extends React.Component {
                   {
                     this.state.showMessengerModal &&
                     <ModalContainer style={{width: '500px'}}
-                                    onClose={() => { this.setState({showMessengerModal: false}) }}>
+                      onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
-                                   onClose={() => { this.setState({showMessengerModal: false}) }}>
+                        onClose={() => { this.setState({showMessengerModal: false}) }}>
                         <h3>Connect to Messenger:</h3>
                         <MessengerPlugin
                           appId='132767517443810'
@@ -614,7 +614,7 @@ class EditTemplate extends React.Component {
                       </ModalDialog>
                     </ModalContainer>
                   }
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30,  borderRadius: '0px', border: '1px solid #ccc'}}>
+                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
 
                     <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />

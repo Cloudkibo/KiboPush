@@ -34,7 +34,6 @@ exports.sendConversation = function (req, res) {
   }
 
   if (req.body.self) {
-
     CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
       if (err) {
         return res.status(500).json({

@@ -30,7 +30,7 @@ const all = {
   process.env.IP ||
   undefined,
 
-  sendgrid : {
+  sendgrid: {
     username: 'cloudkibo',
     password: 'cl0udk1b0'
   },

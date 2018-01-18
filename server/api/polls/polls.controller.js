@@ -195,23 +195,23 @@ exports.send = function (req, res) {
      */
     const messageData = {
       text: req.body.statement,
-      quick_replies:[
+      quick_replies: [
         {
-          "content_type":"text",
-          "title": req.body.options[0],
-          "payload":JSON.stringify(
+          'content_type': 'text',
+          'title': req.body.options[0],
+          'payload': JSON.stringify(
                 {poll_id: req.body._id, option: req.body.options[0]})
         },
         {
-          "content_type":"text",
-          "title": req.body.options[1],
-          "payload": JSON.stringify(
+          'content_type': 'text',
+          'title': req.body.options[1],
+          'payload': JSON.stringify(
                 {poll_id: req.body._id, option: req.body.options[1]})
         },
         {
-          "content_type":"text",
-          "title": req.body.options[2],
-          "payload": JSON.stringify(
+          'content_type': 'text',
+          'title': req.body.options[2],
+          'payload': JSON.stringify(
                 {poll_id: req.body._id, option: req.body.options[2]})
         }
       ]
@@ -282,7 +282,7 @@ exports.send = function (req, res) {
 
                   const data = {
                     recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                    message: messageData,
+                    message: messageData
                   }
 
                   needle.post(

@@ -65,12 +65,12 @@ class Convo extends React.Component {
     var compProp = this.props
     registerAction({
       event: 'new_broadcast',
-      action: function(data){
+      action: function (data) {
         console.log('New socket event occured: In Callback')
-        compProp.loadBroadcastsList();
+        compProp.loadBroadcastsList()
       }
     })
-    
+
     document.title = 'KiboPush | Broadcast'
   }
 

@@ -502,7 +502,7 @@ class AddSurvey extends React.Component {
                     placeholder='Enter question here...'
                     value={this.state.surveyQuestions[i].statement}
                     onChange={this.handleChange.bind(this, i)} />
-                    <span>Max Length for each choice is 20 characters</span>
+                  <span>Max Length for each choice is 20 characters</span>
                 </div>
 
                 <div className='form-group field field-array'>

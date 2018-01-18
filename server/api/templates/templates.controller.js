@@ -404,7 +404,7 @@ exports.editBroadcast = function (req, res) {
   })
 }
 exports.broadcastDetails = function (req, res) {
-  // 
+  //
   TemplateBroadcasts.findOne({_id: req.params.broadcastid}, (err, broadcast) => {
     if (err) {
       return res.status(500).json({

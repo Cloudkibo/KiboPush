@@ -48,7 +48,7 @@ class Sidebar extends Component {
       settings: true,
       userGuide: true,
       inviteMembers: true,
-      members: true,
+      members: true
     }
     // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)

@@ -85,7 +85,7 @@ class Members extends React.Component {
     })
   }
 
-  updateRole(member, role) {
+  updateRole (member, role) {
     this.props.updateMember({
       userId: member.userId._id,
       companyId: member.companyId,
@@ -203,97 +203,97 @@ class Members extends React.Component {
                   {
                     this.props.members && this.props.members.length > 0
                       ? <div>
-                      {
+                        {
                         this.state.membersData &&
                         this.state.membersData.length > 0
                           ? <div
-                          className='m_datatable m-datatable m-datatable--default m-datatable--loaded'
-                          id='ajax_data'>
-                          <table className='m-datatable__table'
-                                 id='m-datatable--27866229129' style={{
-                            display: 'block',
-                            height: 'auto',
-                            overflowX: 'auto'
-                          }}>
-                            <thead className='m-datatable__head'>
-                            <tr className='m-datatable__row'
-                                style={{height: '53px'}}>
-                              <th data-field='Condition'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Name</span>
-                              </th>
-                              <th data-field='KeyWords'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            className='m_datatable m-datatable m-datatable--default m-datatable--loaded'
+                            id='ajax_data'>
+                            <table className='m-datatable__table'
+                              id='m-datatable--27866229129' style={{
+                                display: 'block',
+                                height: 'auto',
+                                overflowX: 'auto'
+                              }}>
+                              <thead className='m-datatable__head'>
+                                <tr className='m-datatable__row'
+                                  style={{height: '53px'}}>
+                                  <th data-field='Condition'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Name</span>
+                                  </th>
+                                  <th data-field='KeyWords'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span
                                       style={{width: '150px'}}>Email Address</span>
-                              </th>
-                              <th data-field='KeyWords'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  </th>
+                                  <th data-field='KeyWords'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span
                                       style={{width: '150px'}}>Role</span>
-                              </th>
-                              <th data-field='Action'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Actions</span>
-                              </th>
-                            </tr>
-                            </thead>
-                            <tbody className='m-datatable__body'
-                                   style={{textAlign: 'center'}}>
-                            {
+                                  </th>
+                                  <th data-field='Action'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '150px'}}>Actions</span>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className='m-datatable__body'
+                                style={{textAlign: 'center'}}>
+                                {
                               this.state.membersData.map(
                                 (member, i) => (
                                   <tr data-row={i}
-                                      className='m-datatable__row m-datatable__row--even'
-                                      style={{height: '55px'}} key={i}>
+                                    className='m-datatable__row m-datatable__row--even'
+                                    style={{height: '55px'}} key={i}>
                                     <td data-field='Condition'
-                                        className='m-datatable__cell'>
+                                      className='m-datatable__cell'>
                                       <span
                                         style={{width: '150px'}}>{member.userId.name}</span>
                                     </td>
                                     <td data-field='KeyWords'
-                                        className='m-datatable__cell'>
+                                      className='m-datatable__cell'>
                                       <span
                                         style={{width: '150px'}}>{member.userId.email}</span>
                                     </td>
                                     <td data-field='KeyWords'
-                                        className='m-datatable__cell'>
+                                      className='m-datatable__cell'>
                                       <span
                                         style={{width: '150px'}}>{member.userId.role}</span>
                                     </td>
                                     <td data-field='Action'
-                                        className='m-datatable__cell'>
+                                      className='m-datatable__cell'>
                                       <span style={{width: '150px'}}>
                                         {
-                                          member.role !== 'buyer'
-                                          && <span>
+                                          member.role !== 'buyer' &&
+                                          <span>
                                             {
                                             member.role === 'admin'
                                             ? <button className='btn btn-primary'
-                                                      style={{
-                                                        float: 'left',
-                                                        margin: 2
-                                                      }}
-                                                      onClick={() => this.updateRole(
+                                              style={{
+                                                float: 'left',
+                                                margin: 2
+                                              }}
+                                              onClick={() => this.updateRole(
                                                         member, 'agent')}>Make Agent
                                             </button>
                                             : <button className='btn btn-primary'
-                                                      style={{
-                                                        float: 'left',
-                                                        margin: 2
-                                                      }}
-                                                      onClick={() => this.updateRole(
+                                              style={{
+                                                float: 'left',
+                                                margin: 2
+                                              }}
+                                              onClick={() => this.updateRole(
                                                         member, 'admin')}>Make Admin
                                             </button>
                                           }
                                           </span>
                                         }
                                         <button className='btn btn-primary'
-                                                style={{
-                                                  float: 'left',
-                                                  margin: 2
-                                                }}
-                                                onClick={() => this.removeMember(
+                                          style={{
+                                            float: 'left',
+                                            margin: 2
+                                          }}
+                                          onClick={() => this.removeMember(
                                                   member)}>Delete
                                         </button>
                                       </span>
@@ -301,24 +301,24 @@ class Members extends React.Component {
                                   </tr>
                                 ))
                             }
-                            </tbody>
-                          </table>
-                          <ReactPaginate previousLabel={'previous'}
-                                         nextLabel={'next'}
-                                         breakLabel={<a>...</a>}
-                                         breakClassName={'break-me'}
-                                         pageCount={Math.ceil(
+                              </tbody>
+                            </table>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(
                                            this.state.totalLength / 4)}
-                                         marginPagesDisplayed={1}
-                                         pageRangeDisplayed={3}
-                                         onPageChange={this.handlePageClick}
-                                         containerClassName={'pagination'}
-                                         subContainerClassName={'pages pagination'}
-                                         activeClassName={'active'} />
-                        </div>
+                              marginPagesDisplayed={1}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'} />
+                          </div>
                           : <p> No search results found. </p>
                       }
-                    </div>
+                      </div>
                       : <p> No data to display </p>
                   }
                 </div>

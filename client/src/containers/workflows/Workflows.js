@@ -107,15 +107,15 @@ class Workflows extends React.Component {
     // document.body.appendChild(addScript)
     registerAction({
       event: 'workflow_created',
-      action: function(data){
-        this.props.loadWorkFlowList()();
+      action: function (data) {
+        this.props.loadWorkFlowList()()
       }
     })
 
     registerAction({
       event: 'workflow_updated',
-      action: function(data){
-        this.props.loadWorkFlowList()();
+      action: function (data) {
+        this.props.loadWorkFlowList()()
       }
     })
     document.title = 'KiboPush | Workflows'

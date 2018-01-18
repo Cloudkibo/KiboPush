@@ -21,21 +21,21 @@ var callbacks = {
   poll_created: false,
   survey_created: false,
   workflow_created: false,
-  workflow_updated: false,
+  workflow_updated: false
 }
 
-export function registerAction(callback){
-  callbacks[callback.event] = callback.action;
+export function registerAction (callback) {
+  callbacks[callback.event] = callback.action
 }
 
 export function initiateSocket (storeObj) {
-  console.log("Initiating Socket")
+  console.log('Initiating Socket')
   store = storeObj
   socket.connect()
 }
 
 socket.on('connect', () => {
-  console.log("Setting Socket Status to true")
+  console.log('Setting Socket Status to true')
   store.dispatch(setSocketStatus(true))
 })
 
@@ -52,11 +52,10 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('New socket event occured ', data)
-  if(callbacks[data.action]){
+  if (callbacks[data.action]) {
     console.log('New socket event occured: Executing Callback')
-    callbacks[data.action](data.payload);
+    callbacks[data.action](data.payload)
   }
-
 })
 
 export function log (tag, data) {
@@ -68,13 +67,13 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
-  console.log("Trying to join room socket", data)
+  console.log('Trying to join room socket', data)
   if (joined) {
-    console.log("Socket Already Joined")
+    console.log('Socket Already Joined')
     return
   }
 
-  console.log("Joining Socket")
+  console.log('Joining Socket')
   socket.emit('message', {
     action: 'join_room',
     room_id: data
