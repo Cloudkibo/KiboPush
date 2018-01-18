@@ -302,7 +302,7 @@ exports.stats = function (req, res) {
             description: 'The user account does not belong to any company. Please contact support'
           })
         }
-        Subscribers.count({companyId: companyUser.companyId}, (err2, subscribersCount) => {
+        Subscribers.count({companyId: companyUser.companyId, isEnabledByPage: true}, (err2, subscribersCount) => {
           if (err2) {
             return res.status(500)
             .json({status: 'failed', description: JSON.stringify(err2)})
