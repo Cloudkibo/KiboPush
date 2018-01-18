@@ -13,8 +13,6 @@ const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
 const _ = require('lodash')
 let crypto = require('crypto')
-const CompanyUsers = require('./../companyuser/companyuser.model')
-
 const logger = require('../../components/logger')
 
 const TAG = 'api/user/user.controller.js'
@@ -36,7 +34,7 @@ exports.index = function (req, res) {
 
     CompanyUsers.findOne({userId: req.user._id}, (err, companyUser) => {
       logger.serverLog(TAG,
-        'uCompany Users Found ' + JSON.stringify(err) + JSON.stringify(companyUser))
+        'Company Users Found ' + JSON.stringify(err) + JSON.stringify(companyUser))
     })
 
     res.status(200).json({status: 'success', payload: user})
