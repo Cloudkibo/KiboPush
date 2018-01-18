@@ -52,6 +52,34 @@ class CreateBroadcastTemplate extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast Template'
+    var temp
+    if (this.props.template) {
+      for (var i = 0; i < this.props.template.payload.length; i++) {
+        if (this.props.template.payload[i].componentType === 'text') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'image') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'card') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'gallery') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'audio') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'video') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+        } else if (this.props.template.payload[i].componentType === 'file') {
+          temp = this.state.list
+          this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+        }
+      }
+      this.setState({broadcast: this.props.template.payload})
+    }
   }
 
   componentWillReceiveProps (nextprops) {

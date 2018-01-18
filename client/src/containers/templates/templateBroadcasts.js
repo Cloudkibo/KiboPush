@@ -46,10 +46,10 @@ class TemplateBroadcasts extends React.Component {
 
   gotoEditBroadcast (broadcast) {
     console.log('Broadcast', broadcast)
-    // this.props.history.push({
-    //  pathname: `/editBroadcastTemplate`,
-    //  state: broadcast
-    // })
+    this.props.history.push({
+      pathname: `/editBroadcastTemplate`,
+      state: broadcast
+    })
   }
 
   displayData (n, broadcasts) {
@@ -274,7 +274,7 @@ class TemplateBroadcasts extends React.Component {
                                   style={{width: '170px'}}><Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                   View
                                 </Link>
-                                  <Link onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  <Link onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                     Edit
                                   </Link>
                                   <button className='btn btn-primary btn-sm'
