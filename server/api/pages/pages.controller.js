@@ -248,7 +248,7 @@ exports.disable = function (req, res) {
           })
         } else {
           // remove subscribers of the page
-          Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, function () {
+          Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, (err) => {
             Subscribers.find({ pageId: req.body._id }).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
