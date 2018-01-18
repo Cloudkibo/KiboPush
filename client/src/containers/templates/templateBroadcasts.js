@@ -4,7 +4,7 @@ import { loadBroadcastsList, loadCategoriesList, deleteBroadcast, saveBroadcastI
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class TemplateBroadcasts extends React.Component {
@@ -46,7 +46,7 @@ class TemplateBroadcasts extends React.Component {
 
   gotoEditBroadcast (broadcast) {
     console.log('Broadcast', broadcast)
-    this.props.history.push({
+    browserHistory.push({
       pathname: `/editBroadcastTemplate`,
       state: broadcast
     })
