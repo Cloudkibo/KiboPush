@@ -52,33 +52,31 @@ class CreateBroadcastTemplate extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast Template'
-    var temp
     if (this.props.template) {
+      var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'video') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
-          temp = this.state.list
-          this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]})
+          temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         }
       }
-      this.setState({broadcast: this.props.template.payload})
+      var options = this.state.categoryValue
+      for (var j = 0; j < this.props.template.category.length; j++) {
+        options.push({id: j, text: this.props.template.category[0], selected: true})
+      }
+      this.setState({broadcast: this.props.template.payload, list: temp})
+      this.initializeCategorySelect(options)
     }
   }
 
