@@ -191,7 +191,7 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
       title: this.state.title,
-      description: event.target.value,
+      description: this.state.subtitle,
       buttons: this.state.button})
   }
 
