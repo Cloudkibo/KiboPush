@@ -46,7 +46,31 @@ class Card extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
   }
-
+  componentWillReceiveProps (nextProps) {
+    this.updateCardDetails(nextProps)
+  }
+  updateCardDetails (cardProps) {
+    if (cardProps.cardDetails && cardProps.cardDetails !== '') {
+      console.log(cardProps.cardDetails)
+      this.setState({
+        id: cardProps.id,
+        componentType: 'card',
+        title: cardProps.cardDetails.title,
+        imgSrc: cardProps.cardDetails.image_url,
+        button: cardProps.cardDetails.buttons,
+        fileurl: cardProps.cardDetails.fileurl,
+        fileName: cardProps.cardDetails.fileName,
+        image_url: cardProps.cardDetails.image_url,
+        type: cardProps.cardDetails.type,
+        size: cardProps.cardDetails.size
+      })
+      if (cardProps.cardDetails.subtitle) {
+        this.setState({ subtitle: cardProps.cardDetails.subtitle })
+      } else if (cardProps.cardDetails.description) {
+        this.setState({ subtitle: cardProps.cardDetails.description })
+      }
+    }
+  }
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]

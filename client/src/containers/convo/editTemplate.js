@@ -231,6 +231,7 @@ class EditTemplate extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         temp[i].fileName = obj.fileName
+        temp[i].image_url = obj.image_url
         temp[i].fileurl = obj.fileurl
         temp[i].size = obj.size
         temp[i].type = obj.type
