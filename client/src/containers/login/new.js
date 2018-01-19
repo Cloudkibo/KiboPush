@@ -23,6 +23,7 @@ class Login extends React.Component {
       success: false
     }
     this.check = this.check.bind(this)
+    this.edit = this.edit.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
   }
   onSubmit (event) {
@@ -35,10 +36,13 @@ class Login extends React.Component {
     this.props.logIn(data)
   }
   check () {
-    this.setState({domain: true})
+    this.setState({domain: true, error: false})
     if (isWebURL(this.refs.domain.value)) {
       this.setState({isurl: true})
     }
+  }
+  edit () {
+    this.setState({error: false})
   }
   componentDidMount () {
     log(TAG, 'Login Container Mounted')
@@ -46,9 +50,10 @@ class Login extends React.Component {
   componentWillReceiveProps (nextprops) {
     if (nextprops.errorMessage) {
       this.setState({error: true})
-    } else if (nextprops.successMessage) {
+    }
+    if (nextprops.successMessage) {
       console.log('succes', nextprops.successMessage)
-      this.setState({success: true})
+      this.setState({success: true, error: false})
       this.props.history.push({
         pathname: '/dashboard'
 
@@ -85,11 +90,11 @@ class Login extends React.Component {
                          }
                       </div>
                       <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
+                        <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                          onChange={this.handlePwdChange} />
+                          onChange={this.edit} />
                       </div>
                       <div className='m-login__form-action'>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
