@@ -44,7 +44,12 @@ class Card extends React.Component {
         componentType: 'card',
         title: cardProps.cardDetails.title,
         imgSrc: cardProps.cardDetails.image_url,
-        button: cardProps.cardDetails.buttons
+        button: cardProps.cardDetails.buttons,
+        fileurl: cardProps.cardDetails.fileurl,
+        fileName: cardProps.cardDetails.fileName,
+        image_url: cardProps.cardDetails.image_url,
+        type: cardProps.cardDetails.type,
+        size: cardProps.cardDetails.size
       })
       if (cardProps.cardDetails.subtitle) {
         this.setState({ subtitle: cardProps.cardDetails.subtitle })
