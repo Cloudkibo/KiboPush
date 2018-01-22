@@ -16,7 +16,7 @@ export function Success () {
     successMessage: 'success'
   }
 }
-export function logIn (data) {
+export function logIn (data, msg) {
   let headers1 = {
     'content-type': 'application/json'
   }
@@ -33,6 +33,7 @@ export function logIn (data) {
         auth.putCookie(res.token)
         dispatch(Success())
       } else {
+        msg.error(res.description)
         dispatch(Failure(res.description))
       }
     })
