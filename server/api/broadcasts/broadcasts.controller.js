@@ -100,10 +100,10 @@ exports.getfbMessage = function (req, res) {
    if(req.body.entry[0].messaging[0].message.quick_reply){
           let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
           logger.serverLog(TAG, "Got a response to quick reply")
-          // if(resp.poll_id){
-            // logger.serverLog(TAG, `Saving the poll response`)
+          if(resp.poll_id){
+            logger.serverLog(TAG, "Saving the poll response")
             // savepoll(resp)
-          // }
+          }
         }
 
   if (req.body.object && req.body.object === 'page') {
