@@ -392,7 +392,7 @@ class CreateConvo extends React.Component {
     $('#selectPage').select2({
       data: pageOptions,
       placeholder: 'Select Pages',
-      allowClear: true
+      allowClear: false,
     })
 
     console.log('In initializePageSelect')
