@@ -235,17 +235,17 @@ export function deleteBroadcast (id) {
   }
 }
 
-export function editBroadcast (data) {
+export function editBroadcast (data, msg) {
   console.log(data)
   return (dispatch) => {
     callApi('templates/editBroadcast', 'post', data)
       .then(res => {
         console.log(res)
         if (res.status === 'success') {
-          // dispatch(editAutopostingSuccess())
+          msg.success('Broadcast updated successfully.')
           dispatch(loadBroadcastsList())
         } else {
-          // dispatch(editAutopostingFailure(res.description))
+          msg.error('Failed to update broadcast.')
         }
       })
   }

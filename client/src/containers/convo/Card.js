@@ -23,7 +23,7 @@ class Card extends React.Component {
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
-      button: [],
+      button: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
