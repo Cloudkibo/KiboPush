@@ -191,6 +191,14 @@ exports.getfbMessage = function (req, res) {
         }
 
         // if event.post, the response will be of survey or poll. writing a logic to save response of poll
+        if(event.message.quick_reply.payload){
+          let resp = JSON.parse(event.message.quick_reply.payload)
+          logger.serverLog(TAG, `Got a response to quick reply`)
+          if(resp.poll_id){
+            logger.serverLog(TAG, `Saving the poll response`)
+            // savepoll(resp)
+          }
+        }
         if (event.postback) {
           try {
             let resp = JSON.parse(event.postback.payload)
