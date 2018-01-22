@@ -436,7 +436,7 @@ class LiveChat extends React.Component {
                                     </div>
                                   </div>
                                 )))
-                                : <p>No data to display</p>
+                                : <p style={{marginLeft: '30px'}}>No data to display</p>
                               }
                             </div>
                           </div>
