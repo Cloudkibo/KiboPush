@@ -6,7 +6,7 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { createBroadcast, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
+import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
 import Video from '../convo/Video'
@@ -29,7 +29,7 @@ class CreateBroadcastTemplate extends React.Component {
       list: [],
       broadcast: [],
       isShowingModal: false,
-      convoTitle: 'Broadcast Title',
+      convoTitle: props.template ? props.template.title : 'Broadcast Title',
       showAddCategoryDialog: false,
       categoryValue: []
     }
@@ -48,6 +48,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.closeAddCategoryDialog = this.closeAddCategoryDialog.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
     this.createBroadcastTemplate = this.createBroadcastTemplate.bind(this)
+    this.editBroadcastTemplate = this.editBroadcastTemplate.bind(this)
   }
 
   componentDidMount () {
@@ -56,11 +57,11 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={temp.length} key={temp.length} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={temp.length} key={temp.length} img={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp.push({content: (<Card id={temp.length} key={temp.length} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Card id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
           temp.push({content: (<Gallery id={temp.length} key={temp.length} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
@@ -293,6 +294,22 @@ class CreateBroadcastTemplate extends React.Component {
     }
   }
 
+  editBroadcastTemplate () {
+    if (this.state.categoryValue.length > 0) {
+      var broadcastTemplate = {
+        broadcastId: this.props.template._id,
+        title: this.state.convoTitle,
+        category: this.state.categoryValue,
+        payload: this.state.broadcast
+      }
+
+      this.props.editBroadcast(broadcastTemplate, this.msg)
+      this.setState({broadcast: [], list: []})
+    } else {
+      this.msg.error('Please select a category')
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -399,8 +416,11 @@ class CreateBroadcastTemplate extends React.Component {
                       <br />
                       <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New </button>
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.createBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Create </button>
-
+                      {
+                        this.props.template
+                        ? <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.editBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Update </button>
+                        : <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.createBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Create </button>
+                      }
                     </div>
                   </div>
                 </div>
@@ -478,7 +498,8 @@ function mapDispatchToProps (dispatch) {
       createBroadcast: createBroadcast,
       loadCategoriesList: loadCategoriesList,
       addCategory: addCategory,
-      deleteCategory: deleteCategory
+      deleteCategory: deleteCategory,
+      editBroadcast: editBroadcast
     },
     dispatch)
 }
