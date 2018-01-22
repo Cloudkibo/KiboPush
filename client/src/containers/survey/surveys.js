@@ -260,13 +260,7 @@ class Survey extends React.Component {
                             this.state.surveysData.map((survey, i) => (
                               <tr>
                                 <td>{survey.title}</td>
-                                <td>
-                                  { survey.description.length > 50
-                                  ? <span
-                                    style={{width: '200px'}}>{survey.description.slice(0, 50)}...</span>
-                                  : <span
-                                    style={{width: '200px'}}>{survey.description}</span>
-                                  }</td>
+                                <td>{survey.description}</td>
                                 <td>{handleDate(survey.datetime)}</td>
                                 <td>{survey.sent}</td>
                                 <td>{survey.seen}</td>

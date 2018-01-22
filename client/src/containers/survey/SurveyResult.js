@@ -34,17 +34,17 @@ class SurveyResult extends React.Component {
   }
   getFile () {
     console.log('this.props.responses', this.props.responses)
-    // let usersPayload = []
-    // for (let i = 0; i < this.props.responsesfull.length; i++) {
-    //   usersPayload.push({
-    //     PollId: this.props.responsesfull[i].pollId._id,
-    //     PageId: this.props.responsesfull[i].subscriberId.pageId,
-    //     SubscriberId: this.props.responsesfull[i].subscriberId._id,
-    //     SubscriberName: this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName,
-    //     Response: this.props.responsesfull[i].response,
-    //     DateTime: this.props.responsesfull[i].datetime
-    //   })
-    // }
+    let usersPayload = []
+    for (let i = 0; i < this.props.responses.length; i++) {
+      usersPayload.push({
+        SurveyId: this.props.responses[i].surveyId._id,
+        PageId: this.props.responses[i].subscriberId.pageId,
+        SubscriberId: this.props.responses[i].subscriberId._id,
+        SubscriberName: this.props.responses[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName,
+        Q1: this.props.responsesfull[i].response,
+        DateTime: this.props.responsesfull[i].datetime
+      })
+    }
     // var info = usersPayload
     // var keys = []
     // var val = info[0]
