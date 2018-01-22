@@ -297,7 +297,7 @@ class CreateBroadcastTemplate extends React.Component {
   editBroadcastTemplate () {
     if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
-        broadcastId: this.props.template._id,
+        _id: this.props.template._id,
         title: this.state.convoTitle,
         category: this.state.categoryValue,
         payload: this.state.broadcast
