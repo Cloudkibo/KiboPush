@@ -13,6 +13,10 @@ import Response from './Response'
 class SurveyResult extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      show: false
+    }
+    this.getFile = this.getFile.bind(this)
   }
 
   componentDidMount () {
@@ -25,7 +29,34 @@ class SurveyResult extends React.Component {
       pathname: `/surveys`
     })
   }
-
+  componentWillReceiveProps (nextprops) {
+    this.setState({show: true})
+  }
+  getFile () {
+    console.log('this.props.responses', this.props.responses)
+    // let usersPayload = []
+    // for (let i = 0; i < this.props.responsesfull.length; i++) {
+    //   usersPayload.push({
+    //     PollId: this.props.responsesfull[i].pollId._id,
+    //     PageId: this.props.responsesfull[i].subscriberId.pageId,
+    //     SubscriberId: this.props.responsesfull[i].subscriberId._id,
+    //     SubscriberName: this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName,
+    //     Response: this.props.responsesfull[i].response,
+    //     DateTime: this.props.responsesfull[i].datetime
+    //   })
+    // }
+    // var info = usersPayload
+    // var keys = []
+    // var val = info[0]
+    //
+    // for (var j in val) {
+    //   var subKey = j
+    //   keys.push(subKey)
+    // }
+    // var data = json2csv({data: usersPayload, fields: keys})
+    // console.log('data', data)
+    // fileDownload(data, 'pollReport.csv')
+  }
   render () {
     return (
       <div>
@@ -77,6 +108,16 @@ class SurveyResult extends React.Component {
                           <button className='btn btn-primary btn-sm pull-right'
                             onClick={() => this.gotoView()}>Back
                           </button>
+                          {this.state.show &&
+                          <div className='pull-left' style={{display: 'inline-block', paddingTop: '40px', marginLeft: '15px'}} onClick={this.getFile}>
+                            <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                              <label>Get data in CSV file: </label>
+                            </div>
+                            <div style={{display: 'inline-block', marginLeft: '10px'}}>
+                              <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
+                            </div>
+                          </div>
+                        }
                         </div>
                         <br />
                       </div>

@@ -18,7 +18,10 @@ export function pollsInfo (state = {}, action) {
       return Object.assign({}, state, {
         responses: action.sorted
       })
-
+    case ActionTypes.ADD_POLL_RESPONSES_FULL:
+      return Object.assign({}, state, {
+        responsesfull: action.data
+      })
     case ActionTypes.SEND_POLL_SUCCESS:
       return Object.assign({}, state, {
         successMessage: 'Poll sent successfully!'

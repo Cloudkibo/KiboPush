@@ -13,6 +13,7 @@ import {
   getpollresults,
   loadPollsList
 } from '../../redux/actions/poll.actions'
+import json2csv from 'json2csv'
 import { bindActionCreators } from 'redux'
 
 class PollResult extends React.Component {
@@ -28,22 +29,35 @@ class PollResult extends React.Component {
     this.props.getpollresults(this.props.location.state._id)
   }
   getFile () {
-    // let usersPayload = []
-    // for (let i = 0; i < users.length; i++) {
-    //   usersPayload.push({
-    //     Name: users[i].name,
-    //     Gender: users[i].gender,
-    //     Email: users[i].email,
-    //     Locale: users[i].locale,
-    //     Timezone: users[i].timezone
-    //   })
-    // }
-    console.log('this.props', this.props.polls)
-    console.log('this.props', this.props.responses)
-    var data = 'one'
-    if (this.props.responses) {
-      fileDownload(data, 'users.csv')
+    let usersPayload = []
+    for (let i = 0; i < this.props.responsesfull.length; i++) {
+      usersPayload.push({
+        PollId: this.props.responsesfull[i].pollId._id,
+        PageId: this.props.responsesfull[i].subscriberId.pageId,
+        SubscriberId: this.props.responsesfull[i].subscriberId._id,
+        SubscriberName: this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName,
+        Response: this.props.responsesfull[i].response,
+        DateTime: this.props.responsesfull[i].datetime
+      })
     }
+    //  var keys = []
+    // keys.push('Subscriber Name')
+    // keys.push(this.props.responsesfull[0].pollId.statement)
+    // console.log('this.props', this.props.polls.statement)
+    var info = usersPayload
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    var data = json2csv({data: usersPayload, fields: keys})
+    console.log('data', data)
+    fileDownload(data, 'pollReport.csv')
+    //  if (this.props.responses) {
+    //  fileDownload(data, 'users.csv')
+    //  }
   }
 
   componentDidMount () {
@@ -220,7 +234,8 @@ function mapStateToProps (state) {
   console.log('mapStateToProps pollresult', state)
   return {
     polls: (state.pollsInfo.polls),
-    responses: (state.pollsInfo.responses)
+    responses: (state.pollsInfo.responses),
+    responsesfull: (state.pollsInfo.responsesfull)
   }
 }
 
