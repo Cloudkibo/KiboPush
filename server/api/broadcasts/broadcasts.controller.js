@@ -102,7 +102,7 @@ exports.getfbMessage = function (req, res) {
           logger.serverLog(TAG, "Got a response to quick reply")
           if(resp.poll_id){
             logger.serverLog(TAG, "Saving the poll response")
-            // savepoll(resp)
+            savepoll(req.body.entry[0].messaging[0], resp)
           }
         }
 
@@ -207,7 +207,8 @@ exports.getfbMessage = function (req, res) {
           try {
             let resp = JSON.parse(event.postback.payload)
             if (resp.poll_id) {
-              savepoll(event)
+              // savepoll(event)
+              logger.serverLog(TAG, "Old condition depreciated")
             } else if (resp.survey_id) {
               savesurvey(event)
             } else {
@@ -571,9 +572,9 @@ function sendReply (req) {
     })
   })
 }
-function savepoll (req) {
+function savepoll (req, resp) {
   // find subscriber from sender id
-  var resp = JSON.parse(req.postback.payload)
+  // var resp = JSON.parse(req.postback.payload)
   var temp = true
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
