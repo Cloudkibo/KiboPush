@@ -102,7 +102,7 @@ exports.getfbMessage = function (req, res) {
           logger.serverLog(TAG, "Got a response to quick reply")
           if(resp.poll_id){
             logger.serverLog(TAG, "Saving the poll response")
-            savepoll(req.body.entry[0].messaging[0], resp)
+            //  savepoll(req.body.entry[0].messaging[0], resp)
           }
         }
 
@@ -206,6 +206,7 @@ exports.getfbMessage = function (req, res) {
         if (event.postback) {
           try {
             let resp = JSON.parse(event.postback.payload)
+            logger.serverLog(TAG, `response after quick ${JSON.stringify(resp)}`)
             if (resp.poll_id) {
               // savepoll(event)
               logger.serverLog(TAG, "Old condition depreciated")

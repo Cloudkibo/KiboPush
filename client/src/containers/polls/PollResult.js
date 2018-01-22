@@ -6,7 +6,7 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link } from 'react-router'
-
+import fileDownload from 'js-file-download'
 import { connect } from 'react-redux'
 import {
   addPoll,
@@ -20,10 +20,30 @@ class PollResult extends React.Component {
     super(props, context)
     this.state = {
       totalSent: 0,
-      totalResponses: 0
+      totalResponses: 0,
+      show: false
     }
+    this.getFile = this.getFile.bind(this)
     console.log('this.props.location.state', this.props.location.state._id)
     this.props.getpollresults(this.props.location.state._id)
+  }
+  getFile () {
+    // let usersPayload = []
+    // for (let i = 0; i < users.length; i++) {
+    //   usersPayload.push({
+    //     Name: users[i].name,
+    //     Gender: users[i].gender,
+    //     Email: users[i].email,
+    //     Locale: users[i].locale,
+    //     Timezone: users[i].timezone
+    //   })
+    // }
+    console.log('this.props', this.props.polls)
+    console.log('this.props', this.props.responses)
+    var data = 'one'
+    if (this.props.responses) {
+      fileDownload(data, 'users.csv')
+    }
   }
 
   componentDidMount () {
@@ -44,6 +64,7 @@ class PollResult extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
+    this.setState({show: true})
     console.log('in componentWillReceiveProps', nextprops.responses)
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
@@ -173,6 +194,16 @@ class PollResult extends React.Component {
                         className='btn btn-secondary'>
                         Back
                       </Link>
+                      {this.state.show &&
+                      <div className='pull-left' style={{display: 'inline-block', paddingTop: '40px', marginLeft: '15px'}} onClick={this.getFile}>
+                        <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                          <label>Get data in CSV file: </label>
+                        </div>
+                        <div style={{display: 'inline-block', marginLeft: '10px'}}>
+                          <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
+                        </div>
+                      </div>
+                    }
                     </div>
                   </div>
                 </div>
