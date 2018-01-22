@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
+import { Link } from 'react-router'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -71,6 +72,7 @@ class ViewBroadcastTemplate extends React.Component {
                 <div className='col-xl-6'>
                   <h3>Title: {this.props.location.state.title}</h3>
                   <p>Ctaegory: {this.props.location.state.category.join(',')}</p>
+                  <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                 </div>
                 <div className='col-xl-6'>
                   <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: '317px', height: '635px', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
