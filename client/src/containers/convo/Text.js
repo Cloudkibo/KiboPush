@@ -32,7 +32,7 @@ class Text extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.state = {
       button: [],
-      text: '',
+      text: props.txt ? props.txt : '',
       showEmojiPicker: false
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)

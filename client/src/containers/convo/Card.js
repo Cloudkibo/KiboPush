@@ -21,10 +21,10 @@ class Card extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.state = {
-      imgSrc: '',
-      title: '',
+      imgSrc: props.img ? props.img : '',
+      title: props.title ? props.title : '',
       button: [],
-      subtitle: '',
+      subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
       type: '',

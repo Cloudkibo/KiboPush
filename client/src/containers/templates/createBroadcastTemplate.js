@@ -56,19 +56,19 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Text id={temp.length} key={temp.length} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
-          temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Image id={temp.length} key={temp.length} img={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Card id={temp.length} key={temp.length} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
-          temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Gallery id={temp.length} key={temp.length} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
-          temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Audio id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'video') {
-          temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Video id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
-          temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<File id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
