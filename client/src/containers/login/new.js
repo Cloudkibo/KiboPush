@@ -117,21 +117,12 @@ class Login extends React.Component {
                 </div>
               </div>
               <div className='m-stack__item m-stack__item--center'>
-
-                <div className='m-login__account'>
-                  <span className='m-login__account-msg'>Forgot Password ?</span>&nbsp;&nbsp;
-                  <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
-                </div>
-                <br />
-                <div className='m-login__account'>
-                  <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
-                  <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
-                </div>
-                <br />
-                <div className='m-login__account'>
+              <div className='m-login__account'>
                   <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
                   <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
-                </div>
+              </div>
+                
+
               </div>
             </div>
           </div>
@@ -162,3 +153,24 @@ function mapDispatchToProps (dispatch) {
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
+/*
+
+
+                  <div className='m-login__account'>
+                     <span className='m-login__account-msg'>Forgot Password ?</span>&nbsp;&nbsp;
+                     <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
+                   </div>
+                   <br />
+                   <div className='m-login__account'>
+                     <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
+                     <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
+                   </div>
+                   <br />
+                   <div className='m-login__account'>
+                     <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
+                     <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
+                   </div>
+               
+
+*/
