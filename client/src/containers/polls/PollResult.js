@@ -30,15 +30,23 @@ class PollResult extends React.Component {
   }
   getFile () {
     let usersPayload = []
+    console.log('pagesname', this.props.pages)
     for (let i = 0; i < this.props.responsesfull.length; i++) {
-      usersPayload.push({
+      var jsonStructure = {
         PollId: this.props.responsesfull[i].pollId._id,
-        PageId: this.props.responsesfull[i].subscriberId.pageId,
-        SubscriberId: this.props.responsesfull[i].subscriberId._id,
-        SubscriberName: this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName,
-        Response: this.props.responsesfull[i].response,
-        DateTime: this.props.responsesfull[i].datetime
-      })
+        PageId: this.props.responsesfull[i].subscriberId.pageId
+      }
+      for (let j = 0; j < this.props.pages.length; j++) {
+        if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
+          jsonStructure.PageName = this.props.pages[j].pageName
+        }
+      }
+      jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
+      jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
+      jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
+      jsonStructure['Response'] = this.props.responsesfull[i].response
+      jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
+      usersPayload.push(jsonStructure)
     }
     //  var keys = []
     // keys.push('Subscriber Name')
@@ -54,7 +62,9 @@ class PollResult extends React.Component {
     }
     var data = json2csv({data: usersPayload, fields: keys})
     console.log('data', data)
-    fileDownload(data, 'pollReport.csv')
+    console.log('data', this.props.responsesfull[0].pollId.statement)
+    console.log('data', this.props.polls)
+    fileDownload(data, this.props.responsesfull[0].pollId.statement)
     //  if (this.props.responses) {
     //  fileDownload(data, 'users.csv')
     //  }
@@ -192,6 +202,18 @@ class PollResult extends React.Component {
                           </h3>
                         </div>
                       </div>
+                      <div className='m-portlet__head-tools'>
+                        {this.state.show &&
+                        <button className='btn btn-primary m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                          <span>
+                            <i className='la la-download' />
+                            <span>
+                              Download File
+                            </span>
+                          </span>
+                        </button>
+                        }
+                      </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='ui-block-content'>
@@ -208,16 +230,6 @@ class PollResult extends React.Component {
                         className='btn btn-secondary'>
                         Back
                       </Link>
-                      {this.state.show &&
-                      <div className='pull-left' style={{display: 'inline-block', paddingTop: '40px', marginLeft: '15px'}} onClick={this.getFile}>
-                        <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                          <label>Get data in CSV file: </label>
-                        </div>
-                        <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                          <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                        </div>
-                      </div>
-                    }
                     </div>
                   </div>
                 </div>
@@ -235,7 +247,8 @@ function mapStateToProps (state) {
   return {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses),
-    responsesfull: (state.pollsInfo.responsesfull)
+    responsesfull: (state.pollsInfo.responsesfull),
+    pages: (state.pagesInfo.pages)
   }
 }
 
