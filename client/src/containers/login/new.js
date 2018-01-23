@@ -72,9 +72,10 @@ class Login extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    
     return (
       <div style={{height: 100 + 'vh'}}>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+      <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
@@ -118,12 +119,6 @@ class Login extends React.Component {
                      <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
                      <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
                    </div>
-                </div>
-              </div>
-              <div className='m-stack__item m-stack__item--center'>
-               <div className='m-login__account'>
-                  <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
-                  <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>
                 </div>
               </div>
             </div>
