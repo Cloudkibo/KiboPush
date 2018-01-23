@@ -102,7 +102,7 @@ class SurveyResult extends React.Component {
     console.log('polls', this.props.survey)
     var data = json2csv({data: usersPayload, fields: keys})
     console.log('data', data)
-    fileDownload(data, this.props.survey.title)
+    fileDownload(data, this.props.survey.title + '-report.csv')
   }
   render () {
     return (
@@ -129,9 +129,9 @@ class SurveyResult extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
                         {this.state.show &&
-                        <button className='btn btn-primary m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
                           <span>
-                            <i className='la la-download' />
+                            <i className='fa fa-download' />
                             <span>
                               Download File
                             </span>

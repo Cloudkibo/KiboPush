@@ -64,7 +64,7 @@ class PollResult extends React.Component {
     console.log('data', data)
     console.log('data', this.props.responsesfull[0].pollId.statement)
     console.log('data', this.props.polls)
-    fileDownload(data, this.props.responsesfull[0].pollId.statement)
+    fileDownload(data, this.props.responsesfull[0].pollId.statement + '-report.csv')
     //  if (this.props.responses) {
     //  fileDownload(data, 'users.csv')
     //  }
@@ -204,9 +204,9 @@ class PollResult extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {this.state.show &&
-                        <button className='btn btn-primary m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
                           <span>
-                            <i className='la la-download' />
+                            <i className='fa fa-download' />
                             <span>
                               Download File
                             </span>
