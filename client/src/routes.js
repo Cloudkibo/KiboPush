@@ -68,6 +68,7 @@ import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
 import EditPoll from './containers/templates/editPoll'
 import EditSurvey from './containers/templates/editSurvey'
+import Categories from './containers/templates/categories'
 import ShowTemplateSurveys from './containers/survey/showTemplates'
 import EditTemplateSurvey from './containers/survey/editTemplate'
 import ShowTemplatePolls from './containers/polls/showTemplates'
@@ -184,6 +185,7 @@ const routes = (
     <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
+    <Route path='/categories' component={Categories} onEnter={requireAuth} />
     <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />

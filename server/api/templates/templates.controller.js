@@ -141,6 +141,26 @@ exports.createCategory = function (req, res) {
     }
   })
 }
+exports.editCategory = function (req, res) {
+  Category.findById(req.body._id, (err, category) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!category) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    category.name = req.body.name
+    category.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Poll update failed'})
+      }
+      res.status(201).json({status: 'success', payload: category})
+    })
+  })
+}
 exports.surveyDetails = function (req, res) {
   TemplateSurveys.find({_id: req.params.surveyid}, (err, survey) => {
     if (err) {
