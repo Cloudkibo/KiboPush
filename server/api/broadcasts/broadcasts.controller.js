@@ -853,41 +853,41 @@ function savesurvey (req) {
                       return logger.serverLog(TAG,
                         `At get session ${JSON.stringify(err)}`)
                     }
-                    if (!session) {
-                      return logger.serverLog(TAG,
-                        `No chat session was found for surveys in webhook`)
-                    }
-                    Pages.findOne({_id: subscriber.pageId}, (err7, page) => {
-                      if (err7) {
-                        return logger.serverLog(TAG,
-                          `At get session ${JSON.stringify(err)}`)
-                      }
-                      if (!page) {
-                        return logger.serverLog(TAG,
-                          `No page was found for surveys in webhook`)
-                      }
-                      const chatMessage = new LiveChat({
-                        sender_id: subscriber.pageId, // this is the page id: _id of Pageid
-                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        session_id: session._id,
-                        company_id: subscriber.companyId, // this is admin id till we have companies
-                        payload: {
-                          componentType: 'survey',
-                          payload: messageData
-                        }, // this where message content will go
-                        status: 'unseen' // seen or unseen
-                      })
-                      chatMessage.save((err, chatMessageSaved) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At save chat${JSON.stringify(err)}`)
-                        }
-                        logger.serverLog(TAG,
-                          'Chat message saved for surveys sent in webhook')
-                      })
-                    })
+                    // if (!session) {
+                    //   return logger.serverLog(TAG,
+                    //     `No chat session was found for surveys in webhook`)
+                    // }
+                    // Pages.findOne({_id: subscriber.pageId}, (err7, page) => {
+                    //   if (err7) {
+                    //     return logger.serverLog(TAG,
+                    //       `At get session ${JSON.stringify(err)}`)
+                    //   }
+                    //   if (!page) {
+                    //     return logger.serverLog(TAG,
+                    //       `No page was found for surveys in webhook`)
+                    //   }
+                    //   const chatMessage = new LiveChat({
+                    //     sender_id: subscriber.pageId, // this is the page id: _id of Pageid
+                    //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                    //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                    //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                    //     session_id: session._id,
+                    //     company_id: subscriber.companyId, // this is admin id till we have companies
+                    //     payload: {
+                    //       componentType: 'survey',
+                    //       payload: messageData
+                    //     }, // this where message content will go
+                    //     status: 'unseen' // seen or unseen
+                    //   })
+                    //   chatMessage.save((err, chatMessageSaved) => {
+                    //     if (err) {
+                    //       return logger.serverLog(TAG,
+                    //         `At save chat${JSON.stringify(err)}`)
+                    //     }
+                    //     logger.serverLog(TAG,
+                    //       'Chat message saved for surveys sent in webhook')
+                    //   })
+                    // })
                   })
                 })
             })
@@ -942,41 +942,41 @@ function savesurvey (req) {
                       return logger.serverLog(TAG,
                         `At get session ${JSON.stringify(err)}`)
                     }
-                    if (!session) {
-                      return logger.serverLog(TAG,
-                        `No chat session was found for surveys in webhook`)
-                    }
-                    Pages.findOne({_id: subscriber.pageId}, (err7, page) => {
-                      if (err7) {
-                        return logger.serverLog(TAG,
-                          `At get session ${JSON.stringify(err)}`)
-                      }
-                      if (!page) {
-                        return logger.serverLog(TAG,
-                          `No page was found for surveys in webhook`)
-                      }
-                      const chatMessage = new LiveChat({
-                        sender_id: subscriber.pageId, // this is the page id: _id of Pageid
-                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        session_id: session._id,
-                        company_id: subscriber.companyId, // this is admin id till we have companies
-                        payload: {
-                          componentType: 'survey',
-                          text: messageData
-                        }, // this where message content will go
-                        status: 'unseen' // seen or unseen
-                      })
-                      chatMessage.save((err, chatMessageSaved) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At save chat${JSON.stringify(err)}`)
-                        }
-                        logger.serverLog(TAG,
-                          'Chat message saved for surveys sent in webhook')
-                      })
-                    })
+                    // if (!session) {
+                    //   return logger.serverLog(TAG,
+                    //     `No chat session was found for surveys in webhook`)
+                    // }
+                    // Pages.findOne({_id: subscriber.pageId}, (err7, page) => {
+                    //   if (err7) {
+                    //     return logger.serverLog(TAG,
+                    //       `At get session ${JSON.stringify(err)}`)
+                    //   }
+                    //   if (!page) {
+                    //     return logger.serverLog(TAG,
+                    //       `No page was found for surveys in webhook`)
+                    //   }
+                    //   const chatMessage = new LiveChat({
+                    //     sender_id: subscriber.pageId, // this is the page id: _id of Pageid
+                    //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                    //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                    //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                    //     session_id: session._id,
+                    //     company_id: subscriber.companyId, // this is admin id till we have companies
+                    //     payload: {
+                    //       componentType: 'survey',
+                    //       text: messageData
+                    //     }, // this where message content will go
+                    //     status: 'unseen' // seen or unseen
+                    //   })
+                    //   chatMessage.save((err, chatMessageSaved) => {
+                    //     if (err) {
+                    //       return logger.serverLog(TAG,
+                    //         `At save chat${JSON.stringify(err)}`)
+                    //     }
+                    //     logger.serverLog(TAG,
+                    //       'Chat message saved for surveys sent in webhook')
+                    //   })
+                    // })
                   })
                 })
             })
