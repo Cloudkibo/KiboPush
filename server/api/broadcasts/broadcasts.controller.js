@@ -791,7 +791,7 @@ function savesurvey (req) {
 
     SurveyResponse.update({ surveyId: resp.survey_id,
       questionId: resp.question_id,
-      subscriberId: subscriber._id}, {response: resp.option},{upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse) => {
+      subscriberId: subscriber._id}, {response: resp.option}, (err1, surveyresponse) => {
     // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
