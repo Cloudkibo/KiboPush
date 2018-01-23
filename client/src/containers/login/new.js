@@ -72,10 +72,9 @@ class Login extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    
+    // <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
     return (
       <div style={{height: 100 + 'vh'}}>
-      <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
