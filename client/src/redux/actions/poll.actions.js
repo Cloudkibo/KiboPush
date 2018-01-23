@@ -143,18 +143,43 @@ export function showresponses (data) {
    ,{'response': 'lmn', //response submitted by subscriber
    'pollId': '10010',
    'subscriberid':'102012'}]; */
+  console.log('res', data)
   var sorted = rank(data, 'response')
-  console.log(sorted)
+  console.log('sorted', sorted)
   return {
     type: ActionTypes.ADD_POLL_RESPONSES,
     sorted
   }
 }
-
+export function showresponsesfull (data) {
+  /* var d = [{'response': 'abc', //response submitted by subscriber
+   'pollId': '110',
+   'subscriberid':'1212'},{'response': 'abc', //response submitted by subscriber
+   'pollId': '1100',
+   'subscriberid':'12112'},{'response': 'xyz', //response submitted by subscriber
+   'pollId': '1010',
+   'subscriberid':'10212'},
+   {'response': 'lmn', //response submitted by subscriber
+   'pollId': '10190',
+   'subscriberid':'109212'},
+   {'response': 'lmn', //response submitted by subscriber
+   'pollId': '10810',
+   'subscriberid':'1212'}
+   ,{'response': 'lmn', //response submitted by subscriber
+   'pollId': '10010',
+   'subscriberid':'102012'}]; */
+  return {
+    type: ActionTypes.ADD_POLL_RESPONSES_FULL,
+    data
+  }
+}
 export function getpollresults (pollid) {
   return (dispatch) => {
     callApi(`polls/responses/${pollid}`)
-      .then(res => dispatch(showresponses(res.payload)))
+      .then(res => {
+        dispatch(showresponses(res.payload))
+        dispatch(showresponsesfull(res.payload))
+      })
   }
 }
 /* A poll should NOT be allowed to edit */

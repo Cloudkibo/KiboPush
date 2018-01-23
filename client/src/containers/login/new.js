@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 const TAG = 'containers/login/login'
+import AlertContainer from 'react-alert'
 
 class Login extends React.Component {
   constructor (props, context) {
@@ -33,7 +34,7 @@ class Login extends React.Component {
       domain: this.refs.domain.value,
       password: this.refs.password.value
     }
-    this.props.logIn(data)
+    this.props.logIn(data, this.msg)
   }
   check () {
     this.setState({domain: true, error: false})
@@ -48,8 +49,10 @@ class Login extends React.Component {
     log(TAG, 'Login Container Mounted')
   }
   componentWillReceiveProps (nextprops) {
+    console.log('componentWillReceiveProps called', nextprops)
     if (nextprops.errorMessage) {
-      this.setState({error: true})
+      console.log('nextprops.errorMessage', nextprops.errorMessage)
+      //  this.setState({error: true})
     }
     if (nextprops.successMessage) {
       console.log('succes', nextprops.successMessage)
@@ -62,9 +65,17 @@ class Login extends React.Component {
   }
   render () {
     console.log('In Login JS')
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom left',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div style={{height: 100 + 'vh'}}>
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login'>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
               <div className='m-stack__item m-stack__item--fluid'>

@@ -25,7 +25,7 @@ class Video extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: '',
+      file: props.fileName ? {name: props.fileName} : '',
       errorMsg: '',
       showErrorDialogue: false,
       loading: false

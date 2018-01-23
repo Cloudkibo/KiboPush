@@ -25,6 +25,7 @@ class TemplateBroadcasts extends React.Component {
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.gotoEditBroadcast = this.gotoEditBroadcast.bind(this)
+    this.gotoViewBroadcast = this.gotoViewBroadcast.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
@@ -48,6 +49,14 @@ class TemplateBroadcasts extends React.Component {
     console.log('Broadcast', broadcast)
     browserHistory.push({
       pathname: `/editBroadcastTemplate`,
+      state: broadcast
+    })
+  }
+
+  gotoViewBroadcast (broadcast) {
+    console.log('Broadcast', broadcast)
+    browserHistory.push({
+      pathname: `/viewBroadcastTemplate`,
       state: broadcast
     })
   }
@@ -271,7 +280,7 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><Link className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  style={{width: '170px'}}><Link onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                   View
                                 </Link>
                                   <Link onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>

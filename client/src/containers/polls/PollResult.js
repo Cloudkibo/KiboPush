@@ -6,13 +6,14 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link } from 'react-router'
-
+import fileDownload from 'js-file-download'
 import { connect } from 'react-redux'
 import {
   addPoll,
   getpollresults,
   loadPollsList
 } from '../../redux/actions/poll.actions'
+import json2csv from 'json2csv'
 import { bindActionCreators } from 'redux'
 
 class PollResult extends React.Component {
@@ -20,10 +21,53 @@ class PollResult extends React.Component {
     super(props, context)
     this.state = {
       totalSent: 0,
-      totalResponses: 0
+      totalResponses: 0,
+      show: false
     }
+    this.getFile = this.getFile.bind(this)
     console.log('this.props.location.state', this.props.location.state._id)
     this.props.getpollresults(this.props.location.state._id)
+  }
+  getFile () {
+    let usersPayload = []
+    console.log('pagesname', this.props.pages)
+    for (let i = 0; i < this.props.responsesfull.length; i++) {
+      var jsonStructure = {
+        PollId: this.props.responsesfull[i].pollId._id,
+        PageId: this.props.responsesfull[i].subscriberId.pageId
+      }
+      for (let j = 0; j < this.props.pages.length; j++) {
+        if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
+          jsonStructure.PageName = this.props.pages[j].pageName
+        }
+      }
+      jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
+      jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
+      jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
+      jsonStructure['Response'] = this.props.responsesfull[i].response
+      jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
+      usersPayload.push(jsonStructure)
+    }
+    //  var keys = []
+    // keys.push('Subscriber Name')
+    // keys.push(this.props.responsesfull[0].pollId.statement)
+    // console.log('this.props', this.props.polls.statement)
+    var info = usersPayload
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    var data = json2csv({data: usersPayload, fields: keys})
+    console.log('data', data)
+    console.log('data', this.props.responsesfull[0].pollId.statement)
+    console.log('data', this.props.polls)
+    fileDownload(data, this.props.responsesfull[0].pollId.statement + '-report.csv')
+    //  if (this.props.responses) {
+    //  fileDownload(data, 'users.csv')
+    //  }
   }
 
   componentDidMount () {
@@ -44,6 +88,7 @@ class PollResult extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
+    this.setState({show: true})
     console.log('in componentWillReceiveProps', nextprops.responses)
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
@@ -157,6 +202,18 @@ class PollResult extends React.Component {
                           </h3>
                         </div>
                       </div>
+                      <div className='m-portlet__head-tools'>
+                        {this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>
+                          </span>
+                        </button>
+                        }
+                      </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='ui-block-content'>
@@ -189,7 +246,9 @@ function mapStateToProps (state) {
   console.log('mapStateToProps pollresult', state)
   return {
     polls: (state.pollsInfo.polls),
-    responses: (state.pollsInfo.responses)
+    responses: (state.pollsInfo.responses),
+    responsesfull: (state.pollsInfo.responsesfull),
+    pages: (state.pagesInfo.pages)
   }
 }
 

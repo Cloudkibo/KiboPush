@@ -96,6 +96,16 @@ exports.getfbMessage = function (req, res) {
 
   logger.serverLog(TAG,
     `something received from facebook ${JSON.stringify(req.body)}`)
+
+   if(req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply){
+          let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
+          logger.serverLog(TAG, "Got a response to quick reply")
+          if(resp.poll_id){
+            logger.serverLog(TAG, "Saving the poll response")
+             savepoll(req.body.entry[0].messaging[0], resp)
+          }
+        }
+
   if (req.body.object && req.body.object === 'page') {
     let payload = req.body.entry[0]
     if (payload.messaging) {
@@ -108,6 +118,7 @@ exports.getfbMessage = function (req, res) {
       for (let i = 0; i < messagingEvents.length; i++) {
         let itIsMessage = false
         const event = req.body.entry[0].messaging[i]
+
         if (event.sender && event.recipient && event.postback && event.postback.payload &&
           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
           itIsMessage = true
@@ -191,11 +202,14 @@ exports.getfbMessage = function (req, res) {
         }
 
         // if event.post, the response will be of survey or poll. writing a logic to save response of poll
+
         if (event.postback) {
           try {
             let resp = JSON.parse(event.postback.payload)
+            logger.serverLog(TAG, `response after quick ${JSON.stringify(resp)}`)
             if (resp.poll_id) {
-              savepoll(event)
+              // savepoll(event)
+              logger.serverLog(TAG, "Old condition depreciated")
             } else if (resp.survey_id) {
               savesurvey(event)
             } else {
@@ -559,9 +573,9 @@ function sendReply (req) {
     })
   })
 }
-function savepoll (req) {
+function savepoll (req, resp) {
   // find subscriber from sender id
-  var resp = JSON.parse(req.postback.payload)
+  // var resp = JSON.parse(req.postback.payload)
   var temp = true
   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
     if (err) {
@@ -771,10 +785,20 @@ function savesurvey (req) {
 
     }
 
-    SurveyResponse.create(surveybody, (err1, surveyresponse) => {
+    logger.serverLog(TAG,
+        `Survey Body${JSON.stringify(
+          surveybody)}`)
+
+    SurveyResponse.update({ surveyId: resp.survey_id,
+      questionId: resp.question_id,
+      subscriberId: subscriber._id}, {response: resp.option},{upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse, raw) => {
+    // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
       }
+      logger.serverLog(TAG,
+        `Raw${JSON.stringify(
+          raw)}`)
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
       logger.serverLog(TAG,

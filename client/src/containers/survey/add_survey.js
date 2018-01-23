@@ -564,17 +564,17 @@ class AddSurvey extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
                         <div className='form-group' id='titl'>
-                          <label className='control-label'><h5>Title</h5></label>
+                          <label className='control-label'><h5>Survey Title</h5></label>
                           <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
+                            placeholder='Enter your survey form title here' ref='title' />
                         </div>
                       </div>
                       <br />
                       <div className='col-xl-12'>
                         <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Description</h5></label>
+                          <label className='control-label'><h5>Survey Introduction</h5></label>
                           <textarea className='form-control'
-                            placeholder='Enter form description here'
+                            placeholder='Enter your survey introduction here'
                             rows='3' ref='description' />
                         </div>
                       </div>
