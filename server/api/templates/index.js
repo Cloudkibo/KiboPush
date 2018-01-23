@@ -18,6 +18,7 @@ router.get('/pollDetails/:pollid', auth.isAuthenticated(), controller.pollDetail
 router.delete('/deletePoll/:id', auth.isAuthorizedSuperUser(), controller.deletePoll)
 router.delete('/deleteSurvey/:id', auth.isAuthorizedSuperUser(), controller.deleteSurvey)
 router.delete('/deleteCategory/:id', auth.isAuthorizedSuperUser(), controller.deleteCategory)
+router.post('/editCategory', auth.isAuthorizedSuperUser(), controller.editCategory)
 router.post('/editPoll', auth.isAuthorizedSuperUser(), controller.editPoll)
 router.post('/editSurvey', auth.isAuthorizedSuperUser(), controller.editSurvey)
 router.post('/createBroadcast', auth.isAuthorizedSuperUser(), controller.createBroadcast)

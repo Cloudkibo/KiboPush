@@ -43,6 +43,7 @@ export function addCategory (data, msg) {
         console.log('response from addCategory', res)
         if (res.status === 'success') {
           msg.success('Category added successfully')
+          dispatch(loadCategoriesList())
         } else {
           msg.error('Please enter a category')
         }
@@ -133,7 +134,24 @@ export function deleteSurvey (id) {
 export function deleteCategory (id) {
   return (dispatch) => {
     callApi(`templates/deleteCategory/${id}`, 'delete')
-      .then(res => dispatch(loadCategoriesList()))
+      .then(res => {
+        dispatch(loadCategoriesList())
+      })
+  }
+}
+export function editCategory (data, msg) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('templates/editCategory', 'post', data)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          msg.success('Category saved successfully')
+          dispatch(loadCategoriesList())
+        } else {
+          msg.error('Category edit failure')
+        }
+      })
   }
 }
 export function editPoll (data, msg) {
