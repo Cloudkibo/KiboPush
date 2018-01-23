@@ -6,6 +6,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { Link } from 'react-router'
+
 class Category extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -334,6 +336,10 @@ class Category extends React.Component {
                       <p> No data to display </p>
                     </div>
                   }
+                      <div style={{'overflow': 'auto'}}>
+                        <Link to='/templates' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
