@@ -17,7 +17,7 @@ class SurveyResult extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      show: false,
+      show: false
     }
     this.getFile = this.getFile.bind(this)
     this.sortData = this.sortData.bind(this)
@@ -48,20 +48,22 @@ class SurveyResult extends React.Component {
   sortData (subscriber) {
     var temp = {
       subscriberId: subscriber,
-      q1: []
+      q1: [],
+      statement: []
     }
     for (var i = 0; i < this.props.responses.length; i++) {
       if (this.props.responses[i].subscriberId._id === subscriber) {
         console.log('this.props.responses[i].response', this.props.responses[i].response)
         temp.q1.push(this.props.responses[i].response)
+        temp.statement.push(this.props.responses[i].questionId.statement)
       }
     }
     responseData.push(temp)
     return temp
   }
   getFile () {
+    console.log('this.props.pages', this.props.pages[0])
     var jsonStructure = {}
-    var quesNo = 'Q'
     console.log('this.props.responses', this.props.responses)
     console.log('this.props.questions', this.props.questions)
     let usersPayload = []
@@ -71,19 +73,18 @@ class SurveyResult extends React.Component {
         var temp = this.sortData(this.props.responses[i].subscriberId._id)
         jsonStructure = {
           SurveyId: this.props.responses[i].surveyId._id,
-          PageId: this.props.responses[i].subscriberId.pageId,
-          SubscriberId: this.props.responses[i].subscriberId._id,
-          SubscriberName: this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName,
-          Q1: temp.q1[0],
-          Q2: temp.q1[1]
+          PageId: this.props.responses[i].subscriberId.pageId
         }
-        if (temp.q1.length > 2) {
-          for (var k = 2; k < temp.q1.length; k++) {
-            quesNo = quesNo + (k + 1)
-            console.log('quesNo', quesNo)
-            jsonStructure['Q' + (k + 1)] = temp.q1[k]
-            quesNo = 'Q'
+        for (let l = 0; l < this.props.pages.length; l++) {
+          if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
+            jsonStructure.PageName = this.props.pages[l].pageName
           }
+        }
+        jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
+        jsonStructure['SubscriberName'] = this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName
+        for (var k = 0; k < temp.q1.length; k++) {
+          jsonStructure['Q' + (k + 1)] = temp.statement[k]
+          jsonStructure['Response' + (k + 1)] = temp.q1[k]
         }
         jsonStructure['DateTime'] = this.props.responses[i].datetime
         usersPayload.push(jsonStructure)
@@ -98,9 +99,10 @@ class SurveyResult extends React.Component {
       var subKey = j
       keys.push(subKey)
     }
+    console.log('polls', this.props.survey)
     var data = json2csv({data: usersPayload, fields: keys})
     console.log('data', data)
-    fileDownload(data, 'surveyReport.csv')
+    fileDownload(data, this.props.survey.title + '-report.csv')
   }
   render () {
     return (
@@ -126,7 +128,18 @@ class SurveyResult extends React.Component {
                   <div className='m-portlet m-portlet--mobile'>
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
+                        {this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>
+                          </span>
+                        </button>
+                      }
                         <h4>Survey Questions</h4>
+                        <br /><br />
                         <ul className='list-group'>
                           {
                           this.props.questions &&
@@ -153,16 +166,6 @@ class SurveyResult extends React.Component {
                           <button className='btn btn-primary btn-sm pull-right'
                             onClick={() => this.gotoView()}>Back
                           </button>
-                          {this.state.show &&
-                          <div className='pull-left' style={{display: 'inline-block', marginLeft: '15px'}} onClick={this.getFile}>
-                            <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                              <label>Get data in CSV file: </label>
-                            </div>
-                            <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                              <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                            </div>
-                          </div>
-                        }
                         </div>
                         <br />
                       </div>
@@ -181,8 +184,9 @@ class SurveyResult extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   const {responses, survey, questions} = state.surveysInfo
+  const {pages} = state.pagesInfo
   return {
-    responses, survey, questions
+    responses, survey, questions, pages
   }
 }
 

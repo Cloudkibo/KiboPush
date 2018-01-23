@@ -316,7 +316,7 @@ class EditPoll extends React.Component {
                           onClick={this.createPoll}> Save
                         </button>
                         <Link
-                          to='/templates'
+                          to='/showTemplatePolls'
                           className='btn btn-secondary' style={{'margin-left': '10px'}}>
                           Back
                         </Link>
