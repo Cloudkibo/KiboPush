@@ -6,6 +6,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { Link } from 'react-router'
+
 class Category extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -188,13 +190,6 @@ class Category extends React.Component {
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Templates</h3>
-                </div>
-              </div>
-            </div>
             <div className='m-content'>
               <div className='row'>
                 <div
@@ -341,6 +336,10 @@ class Category extends React.Component {
                       <p> No data to display </p>
                     </div>
                   }
+                      <div style={{'overflow': 'auto'}}>
+                        <Link to='/templates' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
