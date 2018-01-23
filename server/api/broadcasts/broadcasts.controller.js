@@ -785,7 +785,7 @@ function savesurvey (req) {
 
     }
 
-    SurveyResponse.update({ surveyId: resp.survey_id,
+    SurveyResponse.findOneAndUpdate({ surveyId: resp.survey_id,
       questionId: resp.question_id,
       subscriberId: subscriber._id}, {response: resp.option},{upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse) => {
     // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
