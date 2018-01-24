@@ -62,7 +62,7 @@ class Video extends React.Component {
       if (this.props.file.fileurl) {
         fileInfo.url = this.props.file.fileurl.url
       }
-      this.setState({file: fileInfo})
+      this.setState({file: fileInfo, showPreview: true})
     }
   }
   onTestURLVideo (url) {
