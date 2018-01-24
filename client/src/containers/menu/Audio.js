@@ -56,7 +56,11 @@ class Audio extends React.Component {
         componentType: 'audio',
         name: this.props.file.fileName,
         type: this.props.file.type,
-        size: this.props.file.size
+        size: this.props.file.size,
+        url: ''
+      }
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
       }
       this.setState({file: fileInfo, showPreview: true})
     }
@@ -140,11 +144,11 @@ class Audio extends React.Component {
             <div>
                Preview:
               <ReactPlayer
-                url={this.state.file.fileurl}
+                url={this.state.file.url}
                 controls
                 width='100%'
                 height='auto'
-                onPlay={this.onTestURLAudio(this.state.file.fileurl)}
+                onPlay={this.onTestURLAudio(this.state.file.url)}
               />
             </div>
           }
