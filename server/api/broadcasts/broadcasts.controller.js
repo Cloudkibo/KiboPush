@@ -97,14 +97,14 @@ exports.getfbMessage = function (req, res) {
   logger.serverLog(TAG,
     `something received from facebook ${JSON.stringify(req.body)}`)
 
-   if(req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply){
-          let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
-          logger.serverLog(TAG, "Got a response to quick reply")
-          if(resp.poll_id){
-            logger.serverLog(TAG, "Saving the poll response")
-             savepoll(req.body.entry[0].messaging[0], resp)
-          }
-        }
+  if (req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply) {
+    let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
+    logger.serverLog(TAG, 'Got a response to quick reply')
+    if (resp.poll_id) {
+      logger.serverLog(TAG, 'Saving the poll response')
+      savepoll(req.body.entry[0].messaging[0], resp)
+    }
+  }
 
   if (req.body.object && req.body.object === 'page') {
     let payload = req.body.entry[0]
@@ -185,10 +185,10 @@ exports.getfbMessage = function (req, res) {
                             logger.serverLog(TAG, err2)
                           }
                           logger.serverLog(TAG, 'new Subscriber added')
-                          createSession(page, subscriberCreated, event)
+                          if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriberCreated, event) }
                         })
                       } else {
-                        createSession(page, subscriber, event)
+                        if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriber, event) }
                       }
                     })
                   } else {
@@ -209,7 +209,7 @@ exports.getfbMessage = function (req, res) {
             logger.serverLog(TAG, `response after quick ${JSON.stringify(resp)}`)
             if (resp.poll_id) {
               // savepoll(event)
-              logger.serverLog(TAG, "Old condition depreciated")
+              logger.serverLog(TAG, 'Old condition depreciated')
             } else if (resp.survey_id) {
               savesurvey(event)
             } else {
@@ -791,51 +791,51 @@ function savesurvey (req) {
 
     SurveyResponse.update({ surveyId: resp.survey_id,
       questionId: resp.question_id,
-      subscriberId: subscriber._id}, {response: resp.option},{upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse, raw) => {
+      subscriberId: subscriber._id}, {response: resp.option}, {upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse, raw) => {
     // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
-      if (err1) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
-      }
-      logger.serverLog(TAG,
+        if (err1) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
+        }
+        logger.serverLog(TAG,
         `Raw${JSON.stringify(
           raw)}`)
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
-      logger.serverLog(TAG,
+        logger.serverLog(TAG,
         `survey response saved ${JSON.stringify(resp.survey_id)}`)
-      SurveyQuestions.find({
-        surveyId: resp.survey_id,
-        _id: {$gt: resp.question_id}
-      }).populate('surveyId').exec((err2, questions) => {
-        if (err2) {
-          logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
+        SurveyQuestions.find({
+          surveyId: resp.survey_id,
+          _id: {$gt: resp.question_id}
+        }).populate('surveyId').exec((err2, questions) => {
+          if (err2) {
+            logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
             err2)}`)
-        }
-        if (questions.length > 0) {
-          let firstQuestion = questions[0]
+          }
+          if (questions.length > 0) {
+            let firstQuestion = questions[0]
           // create buttons
-          const buttons = []
-          let nextQuestionId = 'nil'
-          if (questions.length > 1) {
-            nextQuestionId = questions[1]._id
-          }
+            const buttons = []
+            let nextQuestionId = 'nil'
+            if (questions.length > 1) {
+              nextQuestionId = questions[1]._id
+            }
 
-          for (let x = 0; x < firstQuestion.options.length; x++) {
-            buttons.push({
-              type: 'postback',
-              title: firstQuestion.options[x],
-              payload: JSON.stringify({
-                survey_id: resp.survey_id,
-                option: firstQuestion.options[x],
-                question_id: firstQuestion._id,
-                nextQuestionId,
-                userToken: resp.userToken
+            for (let x = 0; x < firstQuestion.options.length; x++) {
+              buttons.push({
+                type: 'postback',
+                title: firstQuestion.options[x],
+                payload: JSON.stringify({
+                  survey_id: resp.survey_id,
+                  option: firstQuestion.options[x],
+                  question_id: firstQuestion._id,
+                  nextQuestionId,
+                  userToken: resp.userToken
+                })
               })
-            })
-          }
-          logger.serverLog(TAG,
+            }
+            logger.serverLog(TAG,
             `next question ${JSON.stringify(resp)}`)
-          needle.get(
+            needle.get(
             `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
             (err3, response) => {
               if (err3) {
@@ -915,26 +915,26 @@ function savesurvey (req) {
                   })
                 })
             })
-        } else { // else send thank you message
-          Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Error occurred in finding subscriber${JSON.stringify(
-                  err)}`)
-            }
-            Surveys.find({}, (err, subscriber) => {
+          } else { // else send thank you message
+            Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG,
+                `Error occurred in finding subscriber${JSON.stringify(
+                  err)}`)
+              }
+              Surveys.find({}, (err, subscriber) => {
+                if (err) {
+                  logger.serverLog(TAG,
                   `Error occurred in finding subscriber${JSON.stringify(
                     err)}`)
-              }
+                }
+              })
             })
-          })
-          logger.serverLog(TAG,
+            logger.serverLog(TAG,
             `req.recipient.id ${JSON.stringify(req.recipient.id)}`)
-          logger.serverLog(TAG,
+            logger.serverLog(TAG,
             `thankyou response ${JSON.stringify(resp)}`)
-          needle.get(
+            needle.get(
             `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${resp.userToken}`,
             (err3, response) => {
               if (err3) {
@@ -1004,8 +1004,8 @@ function savesurvey (req) {
                   })
                 })
             })
-        }
+          }
+        })
       })
-    })
   })
 }
