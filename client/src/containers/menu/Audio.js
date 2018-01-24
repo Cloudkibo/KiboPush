@@ -103,7 +103,7 @@ class Audio extends React.Component {
         size: file.size
       }
       console.log(fileInfo)
-      this.setState({loading: true})
+      this.setState({loading: true, showPreview: false})
       this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
@@ -136,13 +136,12 @@ class Audio extends React.Component {
             >
               <div className='align-center'>
                 <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+                <h4 style={{wordBreak: 'breakWord'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
           }
           { this.state.showPreview &&
-            <div>
-               Preview:
+            <div style={{padding: '10px'}}>
               <ReactPlayer
                 url={this.state.file.url}
                 controls
