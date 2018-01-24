@@ -158,6 +158,28 @@ exports.getfbMessage = function (req, res) {
                   //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                   //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
+                    if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
+                      const messageData = {
+                        text: page.welcomeMessage
+                      }
+                      const data = {
+                        recipient: {id: response.body.id}, // this is the subscriber id
+                        message: messageData
+                      }
+                      logger.serverLog(TAG,
+                        `response.body.access_token${JSON.stringify(page.accessToken)}`)
+                      needle.post(
+                        `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                        data, (err4, respp) => {
+                          logger.serverLog(TAG,
+                            `Sending survey to subscriber response ${JSON.stringify(
+                              respp.body)}`)
+                          if (err4) {
+                          }
+                        })
+                    }
                     const payload = {
                       firstName: subsriber.first_name,
                       lastName: subsriber.last_name,
@@ -949,6 +971,10 @@ function savesurvey (req) {
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
+              logger.serverLog(TAG,
+                `response.body.access_token${JSON.stringify(response.body.access_token)}`)
+              logger.serverLog(TAG,
+                `req.sender.id${JSON.stringify(req.sender.id)}`)
               needle.post(
                 `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
                 data, (err4, respp) => {
