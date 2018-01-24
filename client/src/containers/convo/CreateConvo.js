@@ -389,18 +389,22 @@ class CreateConvo extends React.Component {
   initializePageSelect (pageOptions) {
     console.log(pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+      /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
-      allowClear: false,
+      allowClear: false
     })
 
     console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
 
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
-      var selectedIndex = e.target.selectedIndex
+      /* eslint-enable */
+      // var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
       var selectedOptions = e.target.selectedOptions[0].value
       // var selected = []
@@ -417,7 +421,9 @@ class CreateConvo extends React.Component {
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+      /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
@@ -425,7 +431,9 @@ class CreateConvo extends React.Component {
     })
 
     console.log('In Initialize Gender Select', genderOptions)
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+      /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -442,13 +450,18 @@ class CreateConvo extends React.Component {
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+      /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+      /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -474,7 +487,7 @@ class CreateConvo extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const { disabled, stayOpen } = this.state
+    // const { disabled, stayOpen } = this.state
 
     return (
       <div>
@@ -556,32 +569,36 @@ class CreateConvo extends React.Component {
                         </div>
                       </div>
                     </div>
-                    <fieldset>
-                      <br />
-                      <h3>Set Targeting:</h3>
-                      <br />
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                    {
+                      this.props.location.state.module === 'convo' &&
+                      <div>
+                        <fieldset>
+                          <br />
+                          <h3>Set Targeting:</h3>
+                          <br />
+                          <div className='m-form'>
+                            <div className='form-group m-form__group'>
+                              <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group'>
+                              <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group'>
+                              <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                            </div>
+                          </div>
+                          <br />
+                        </fieldset>
+                        <br />
+                        <div className='row'>
+                          <br />
+                          <br />
+                          <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
+                          <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                          <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
                         </div>
                       </div>
-                      <br />
-                    </fieldset>
-                    <br />
-                    <div className='row'>
-                      <br />
-                      <br />
-                      <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
-
-                    </div>
+                    }
                   </div>
                 </div>
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
