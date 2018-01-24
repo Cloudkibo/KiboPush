@@ -272,7 +272,7 @@ class Convo extends React.Component {
                                 <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link onClick={this.gotoCreate} className='btn btn-primary'>
+                                    <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
                                       Create New Broadcast
                                     </Link>
                                   </div>
