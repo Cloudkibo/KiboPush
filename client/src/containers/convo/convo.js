@@ -6,7 +6,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -41,6 +41,7 @@ class Convo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
   }
   showDialog () {
     console.log('in showDialog')
@@ -100,6 +101,13 @@ class Convo extends React.Component {
     this.props.history.push({
       pathname: `/editbroadcast`,
       state: broadcast._id
+    })
+  }
+
+  gotoCreate (broadcast) {
+    browserHistory.push({
+      pathname: `/createconvo`,
+      state: {module: 'convo'}
     })
   }
 
@@ -264,7 +272,7 @@ class Convo extends React.Component {
                                 <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/createconvo' className='btn btn-primary'>
+                                    <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
                                       Create New Broadcast
                                     </Link>
                                   </div>

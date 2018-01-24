@@ -18,6 +18,9 @@ const UserSchema = new Schema({
   provider: String, // facebook
   timezone: Number,
   profilePic: String,
+  plan: {type: String,
+    enum : ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
+    default: 'plan_B'},
   isSuperUser: {type: Boolean, default: false},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
