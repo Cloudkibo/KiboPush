@@ -179,11 +179,11 @@ class CreateConvo extends React.Component {
   handleText (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.text = obj.text
+        temp[i].text = obj.text
         if (obj.button.length > 0) {
-          data.buttons = obj.button
+          temp[i].buttons = obj.button
         }
         isPresent = true
       }
