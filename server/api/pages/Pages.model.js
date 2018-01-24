@@ -24,8 +24,13 @@ const pageSchema = new Schema({
     type: Boolean
   },
   userId: {type: Schema.ObjectId, ref: 'users'},
-  companyId: {type: Schema.ObjectId, ref: 'companyprofile'}
-
+  companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
+  welcomeMessage: {
+    type: String
+  },
+  isWelcomeMessageEnabled: {
+    type: Boolean, default: false
+  }
 })
 
 module.exports = mongoose.model('pages', pageSchema)

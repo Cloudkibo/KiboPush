@@ -15,7 +15,7 @@ class templates extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
             <div className='m-subheader '>
-              <Link to='/categories' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill pull-right' style={{marginRight: '60px'}}>Category
+              <Link to='/categories' className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right'>Category
               </Link>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
