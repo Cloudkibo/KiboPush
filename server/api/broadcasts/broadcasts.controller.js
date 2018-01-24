@@ -102,7 +102,7 @@ exports.getfbMessage = function (req, res) {
           logger.serverLog(TAG, "Got a response to quick reply")
           if(resp.poll_id){
             logger.serverLog(TAG, "Saving the poll response")
-             savepoll(req.body.entry[0].messaging[0], resp)
+             return savepoll(req.body.entry[0].messaging[0], resp)
           }
         }
 
@@ -146,6 +146,8 @@ exports.getfbMessage = function (req, res) {
 
                 }
                 needle.get(options.url, options, (error, response) => {
+                  logger.serverLog(TAG, `response for get_started ${JSON.stringify(response.body)}`)
+                  logger.serverLog(TAG, `response for get_started ${JSON.stringify(response.body.id)}`)
                   const subsriber = response.body
                   // const options1 = {
                   //   url: `https://graph.facebook.com/v2.10/${subsriber.id}?fields=cover}`,
@@ -158,6 +160,22 @@ exports.getfbMessage = function (req, res) {
                   //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                   //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
+                    const data = {
+                      recipient: {id: response.body.id}, // this is the subscriber id
+                      message: 'hello'
+                    }
+                    needle.post(
+                      `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                      data, (err4, respp) => {
+                        logger.serverLog(TAG,
+                          `Sending survey to subscriber response ${JSON.stringify(
+                            respp.body)}`)
+                        if (err4) {
+                          logger.serverLog(TAG,
+                            `Error ${JSON.stringify(
+                              err4)}`)
+                        }
+                      })
                     const payload = {
                       firstName: subsriber.first_name,
                       lastName: subsriber.last_name,
@@ -942,6 +960,8 @@ function savesurvey (req) {
                   `Page accesstoken from graph api Error${JSON.stringify(
                     err3)}`)
               }
+              logger.serverLog(TAG,
+                `thankyou response ${JSON.stringify(response.body)}`)
               const messageData = {
                 text: 'Thank you. Response submitted successfully.'
               }

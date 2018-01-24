@@ -17,5 +17,5 @@ router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
 router.post('/enable', auth.isAuthenticated(), controller.enable)
 router.post('/disable', auth.isAuthenticated(), controller.disable)
 router.get('/addpages', auth.isAuthenticated(), controller.addPages)
-
+router.post('/createWelcomeMessage', auth.isAuthenticated(), controller.createWelcomeMessage)
 module.exports = router
