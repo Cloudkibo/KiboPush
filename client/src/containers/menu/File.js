@@ -127,14 +127,14 @@ class File extends React.Component {
           >
               <div className='align-center'>
                 <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
+                <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
           }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
               <a href={this.state.file.url} target='_blank' download>
-                <h6><i className='fa fa-file-text-o' /><strong> {this.state.file.name} </strong></h6>
+                <h6 style={{wordBreak: 'break-word'}}><i className='fa fa-file-text-o' /><strong> {this.state.file.name} </strong></h6>
               </a>
             </div>
           }
