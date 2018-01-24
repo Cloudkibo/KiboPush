@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
+import ReactPlayer from 'react-player'
 
 class Video extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -26,13 +27,15 @@ class Video extends React.Component {
       file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
   }
 
   componentDidMount () {
@@ -50,15 +53,26 @@ class Video extends React.Component {
     if (this.props.file && this.props.file !== '') {
       var fileInfo = {
         id: this.props.id,
-        componentType: 'audio',
+        componentType: 'video',
         name: this.props.file.fileName,
         type: this.props.file.type,
-        size: this.props.file.size
+        size: this.props.file.size,
+        url: ''
+      }
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
       }
       this.setState({file: fileInfo})
     }
   }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
 
+    if (truef === false) {
+      console.log('Video File Format not supported. Please download.')
+    }
+  }
   componentWillReceiveProps (nextProps) {
     if (!nextProps.loading) {
       this.setState({loading: false})
@@ -96,7 +110,7 @@ class Video extends React.Component {
         size: file.size
       }
       console.log(fileInfo)
-      this.setState({loading: true})
+      this.setState({loading: true, showPreview: false})
       this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
@@ -132,6 +146,17 @@ class Video extends React.Component {
                 <h4>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <ReactPlayer
+                url={this.state.file.url}
+                controls
+                width='100%'
+                height='auto'
+                onPlay={this.onTestURLVideo(this.state.file.url)}
+              />
+            </div>
           }
           {
           this.state.showDialog &&
