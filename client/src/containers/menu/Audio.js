@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
+import ReactPlayer from 'react-player'
 
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -26,13 +27,15 @@ class Audio extends React.Component {
       file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.onTestURLAudio = this.onTestURLAudio.bind(this)
   }
 
   componentDidMount () {
@@ -55,10 +58,17 @@ class Audio extends React.Component {
         type: this.props.file.type,
         size: this.props.file.size
       }
-      this.setState({file: fileInfo})
+      this.setState({file: fileInfo, showPreview: true})
     }
   }
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
 
+    if (truef === false) {
+      console.log('Audio File Format not supported. Please download.')
+    }
+  }
   showDialog (page) {
     this.setState({showDialog: true})
   }
@@ -125,6 +135,18 @@ class Audio extends React.Component {
                 <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div>
+               Preview:
+              <ReactPlayer
+                url={this.state.file.fileurl}
+                controls
+                width='100%'
+                height='auto'
+                onPlay={this.onTestURLAudio(this.state.file.fileurl)}
+              />
+            </div>
           }
           {
           this.state.showDialog &&
