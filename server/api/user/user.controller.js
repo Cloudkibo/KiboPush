@@ -9,6 +9,7 @@ const VerificationToken = require(
   './../verificationtoken/verificationtoken.model')
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const Invitations = require('./../invitations/invitations.model')
+const Permissions = require('./../permissions/permissions.model')
 const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
 const _ = require('lodash')
@@ -48,7 +49,8 @@ exports.index = function (req, res) {
       user = user.toObject()
       user.companyId = companyUser.companyId
       logger.serverLog(TAG,
-        'Company Users Found ' + JSON.stringify(err) + JSON.stringify(companyUser) + JSON.stringify(user))
+        'Company Users Found ' + JSON.stringify(err) +
+        JSON.stringify(companyUser) + JSON.stringify(user))
       res.status(200).json({status: 'success', payload: user})
     })
   })
@@ -134,7 +136,8 @@ exports.create = function (req, res) {
         domain: req.body.domain,
         password: req.body.password,
         domain_email: req.body.domain + '' + req.body.email.toLowerCase(),
-        role: 'buyer'
+        role: 'buyer',
+        plan: 'plan_D'
       })
 
       // console.log(req.body)
@@ -174,9 +177,22 @@ exports.create = function (req, res) {
                 description: 'profile user save error: ' + JSON.stringify(err)
               })
             }
+            let permissions = new Permissions({
+              companyId: companySaved._id,
+              userId: user._id
+            })
 
-            let token = auth.signToken(user._id)
-            res.status(201).json({status: 'success', token: token, userid: user._id})
+            permissions.save(function (err, permissionSaved) {
+              if (err) {
+                return res.status(422).json({
+                  status: 'failed',
+                  description: 'profile user save error: ' + JSON.stringify(err)
+                })
+              }
+              let token = auth.signToken(user._id)
+              res.status(201)
+                .json({status: 'success', token: token, userid: user._id})
+            })
           })
 
           var today = new Date()
@@ -217,7 +233,8 @@ exports.create = function (req, res) {
             '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
             '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
             '<tr> <td class="wrapper last"> <p> Hello, <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-            '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/email_verification/verify/' +
+            '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
+            config.domain + '/api/email_verification/verify/' +
             tokenString +
             '"> ' + config.domain + '/api/email_verification/verify/' +
             tokenString +
@@ -272,7 +289,6 @@ exports.create = function (req, res) {
         })
       })
     }
-
   })
 }
 
@@ -318,12 +334,13 @@ exports.joinCompany = function (req, res) {
             description: 'validation error: ' + JSON.stringify(err)
           })
         }
-
+        let role = 'agent'
         let companyUserData = new CompanyUsers({
           companyId: invitationToken.companyId,
           userId: user._id,
           domain_email: user.domain_email,
-          role: 'agent'
+          role: role,
+          plan: 'plan_D'
         })
 
         companyUserData.save(function (err, companyUserSaved) {
@@ -334,15 +351,31 @@ exports.joinCompany = function (req, res) {
             })
           }
 
-          let token = auth.signToken(user._id)
-          res.clearCookie('email')
-          res.clearCookie('companyId')
-          res.clearCookie('companyName')
-          res.clearCookie('domain')
-          res.clearCookie('name')
-          res.cookie('token', token)
-          res.cookie('userid', user._id)
-          res.status(201).json({status: 'success', token: token})
+          let permissionsPayload = {
+            companyId: companySaved._id,
+            userId: user._id
+          }
+
+          let permissions = new Permissions(
+            _.merge(permissionsPayload, config.permissions[role] || {}))
+
+          permissions.save(function (err, permissionSaved) {
+            if (err) {
+              return res.status(422).json({
+                status: 'failed',
+                description: 'profile user save error: ' + JSON.stringify(err)
+              })
+            }
+            let token = auth.signToken(user._id)
+            res.clearCookie('email')
+            res.clearCookie('companyId')
+            res.clearCookie('companyName')
+            res.clearCookie('domain')
+            res.clearCookie('name')
+            res.cookie('token', token)
+            res.cookie('userid', user._id)
+            res.status(201).json({status: 'success', token: token})
+          })
         })
 
         var today = new Date()
@@ -399,7 +432,8 @@ exports.joinCompany = function (req, res) {
           '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
           '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
           '<tr> <td class="wrapper last"> <p> Hello, <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-          '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/email_verification/verify/' +
+          '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
+          config.domain + '/api/email_verification/verify/' +
           tokenString +
           '"> ' + config.domain + '/api/email_verification/verify/' +
           tokenString +
@@ -420,7 +454,8 @@ exports.joinCompany = function (req, res) {
         var email2 = new sendgrid.Email({
           to: 'sojharo@gmail.com',
           from: 'support@cloudkibo.com',
-          subject: 'KiboPush: Agent Account created by ' + invitationToken.domain,
+          subject: 'KiboPush: Agent Account created by ' +
+          invitationToken.domain,
           text: 'Welcome to KiboPush',
           cc: 'jawaid@cloudkibo.com'
         })
