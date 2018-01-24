@@ -820,7 +820,7 @@ function savesurvey (req) {
         }
         logger.serverLog(TAG,
         `Raw${JSON.stringify(
-          raw)}`)
+          surveyresponse)}`)
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
         logger.serverLog(TAG,
