@@ -813,7 +813,7 @@ function savesurvey (req) {
 
     SurveyResponse.update({ surveyId: resp.survey_id,
       questionId: resp.question_id,
-      subscriberId: subscriber._id}, {response: resp.option}, {upsert: true, passRawResult: true}, (err1, surveyresponse, raw) => {
+      subscriberId: subscriber._id}, {response: resp.option}, {upsert: true}, (err1, surveyresponse, raw) => {
     // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
         if (err1) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
