@@ -115,7 +115,8 @@ class EditTemplate extends React.Component {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
         console.log('paload[i].text', payload[i].text)
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
+        console.log('paload[i].buttons', payload[i].buttons)
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
