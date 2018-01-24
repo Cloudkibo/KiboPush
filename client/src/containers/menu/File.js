@@ -26,7 +26,8 @@ class File extends React.Component {
       file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -50,12 +51,16 @@ class File extends React.Component {
     if (this.props.file && this.props.file !== '') {
       var fileInfo = {
         id: this.props.id,
-        componentType: 'audio',
+        componentType: 'file',
         name: this.props.file.fileName,
         type: this.props.file.type,
-        size: this.props.file.size
+        size: this.props.file.size,
+        url: ''
       }
-      this.setState({file: fileInfo})
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
+      }
+      this.setState({file: fileInfo, showPreview: true})
     }
   }
 
@@ -125,6 +130,13 @@ class File extends React.Component {
                 <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <a href={this.state.file.url} target='_blank'>
+                <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>this.state.file.name</strong></h6>
+              </a>
+            </div>
           }
           {
           this.state.showDialog &&
