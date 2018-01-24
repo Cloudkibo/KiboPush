@@ -938,7 +938,7 @@ function savesurvey (req) {
                 })
             })
           } else { // else send thank you message
-            Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
+            Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1 - surveyresponse.nModified}}, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG,
                 `Error occurred in finding subscriber${JSON.stringify(
