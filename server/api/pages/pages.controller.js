@@ -80,6 +80,8 @@ exports.allpages = function (req, res) {
             connected: pages[i].connected,
             pageUserName: pages[i].pageUserName,
             likes: pages[i].likes,
+            isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+            welcomeMessage: pages[i].welcomeMessage,
             subscribers: 0
           })
         }

@@ -26,7 +26,7 @@ const pageSchema = new Schema({
   userId: {type: Schema.ObjectId, ref: 'users'},
   companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
   welcomeMessage: {
-    type: String
+    type: Schema.Types.Mixed
   },
   isWelcomeMessageEnabled: {
     type: Boolean, default: false

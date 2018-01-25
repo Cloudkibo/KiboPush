@@ -88,6 +88,13 @@ export function getAPIFailure (data) {
     data
   }
 }
+export function saveSwitchState () {
+  console.log('saveSwitchState called')
+  return {
+    type: ActionTypes.SAVE_SWITCH_STATE,
+    data: 'changed'
+  }
+}
 export function changePass (data, msg) {
   console.log(data)
   return (dispatch) => {
