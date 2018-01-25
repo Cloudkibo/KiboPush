@@ -66,7 +66,7 @@ class EditTemplate extends React.Component {
     }
     props.getuserdetails()
     console.log('props.templatesInfo', props.currentBroadcast)
-    if (this.props.location && this.props.location.state.module === 'welcome') {
+    if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (props.currentBroadcast) {
       const id = this.props.currentBroadcast._id
@@ -105,7 +105,7 @@ class EditTemplate extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
-    if (this.props.location && this.props.location.state.module === 'welcome') {
+    if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (nextprops.broadcastDetails) {
       if (this.state.stay === false) {
@@ -342,7 +342,7 @@ class EditTemplate extends React.Component {
         }
       }
     }
-    if (this.props.location && this.props.location.state.module === 'welcome') {
+    if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
       var data = {
@@ -567,7 +567,8 @@ class EditTemplate extends React.Component {
                         </div>
                       </div>
                     </div>
-                    {this.props.location && this.props.location.state.module === 'welcome'
+                    <br />
+                    {this.props.location.state && this.props.location.state.module === 'welcome'
                     ? <div className='row'>
                       <br />
                       <br />
@@ -611,7 +612,7 @@ class EditTemplate extends React.Component {
                   <StickyDiv offsetTop={70} zIndex={1}>
                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                       <div style={{padding: '5px'}}>
-                        {this.props.location && this.props.location.state.module === 'welcome'
+                        {this.props.location.state && this.props.location.state.module === 'welcome'
                           ? <h3>Welcome Message</h3>
                           : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
                         }
