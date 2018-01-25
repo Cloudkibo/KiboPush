@@ -30,22 +30,21 @@ class PollResult extends React.Component {
   }
   getFile () {
     let usersPayload = []
+    var jsonStructure = {}
     console.log('pagesname', this.props.pages)
     for (let i = 0; i < this.props.responsesfull.length; i++) {
-      var jsonStructure = {
-        PollId: this.props.responsesfull[i].pollId._id,
-        PageId: this.props.responsesfull[i].subscriberId.pageId
-      }
       for (let j = 0; j < this.props.pages.length; j++) {
         if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
           jsonStructure.PageName = this.props.pages[j].pageName
         }
       }
       jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
-      jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
       jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
       jsonStructure['Response'] = this.props.responsesfull[i].response
       jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
+      jsonStructure['PollId'] = this.props.responsesfull[i].pollId._id
+      jsonStructure['PageId'] = this.props.responsesfull[i].subscriberId.pageId
+      jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
       usersPayload.push(jsonStructure)
     }
     //  var keys = []
