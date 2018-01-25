@@ -204,6 +204,7 @@ class Menu extends React.Component {
       if (temp[this.state.indexClicked].url) {
         delete temp[this.state.indexClicked].url
       }
+      temp[this.state.indexClicked].title = 'nested'
       temp[this.state.indexClicked].submenu.push({
         title: 'Sub Menu',
         submenu: []
@@ -220,6 +221,7 @@ class Menu extends React.Component {
       if (temp[this.state.indexClicked].submenu[this.subIndex].url) {
         delete temp[this.state.indexClicked].submenu[this.subIndex].url
       }
+      temp[this.state.indexClicked].submenu[this.subIndex].title = 'nested'
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
         title: 'Nested Menu'
       })
@@ -519,7 +521,7 @@ class Menu extends React.Component {
           getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
           <div className='container' id='popover-option3'>
             <div className='row'>
-              { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'web_url')
+              { (this.getItemClicked() && this.getItemClicked().url && this.getItemClicked().url !== '')
               ? <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-primary' style={{width: '400px'}}>Set Web Url</button>
               : <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}}>Set Web Url</button>
               }
