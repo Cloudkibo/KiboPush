@@ -8,7 +8,7 @@ import Header from '../../components/header/header'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
+import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import ConnectFb from './connectFb'
 class Settings extends React.Component {
@@ -40,6 +40,7 @@ class Settings extends React.Component {
     this.props.getAPI({company_id: this.props.user._id})
   }
   setAPI () {
+    this.props.saveSwitchState()
     this.setState({showAPI: true, resetPassword: false})
   }
   setResetPass () {
@@ -306,7 +307,8 @@ function mapStateToProps (state) {
     apiDisable: (state.APIInfo.apiDisable),
     resetData: (state.APIInfo.resetData),
     apiSuccess: (state.APIInfo.apiSuccess),
-    apiFailure: (state.APIInfo.apiFailure)
+    apiFailure: (state.APIInfo.apiFailure),
+    switchState: (state.APIInfo.switchState)
   }
 }
 
@@ -316,7 +318,8 @@ function mapDispatchToProps (dispatch) {
     enable: enable,
     disable: disable,
     reset: reset,
-    getAPI: getAPI
+    getAPI: getAPI,
+    saveSwitchState: saveSwitchState
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

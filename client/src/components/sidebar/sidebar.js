@@ -48,7 +48,8 @@ class Sidebar extends Component {
       settings: true,
       userGuide: true,
       inviteMembers: true,
-      members: true
+      members: true,
+      welcomeMessage: true
     }
     // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
@@ -279,6 +280,14 @@ class Sidebar extends Component {
                 </Link>
               </li>
               }
+              {this.state.welcomeMessage &&
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/welcomeMessage' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-menu-button' />
+                  <span className='m-menu__link-text'>Welcome Message</span>
+                </Link>
+              </li>
+              }
               {this.state.subscribeToMessenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
@@ -328,7 +337,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               }
-              {this.state.settings &&
+              {this.state.userGuide &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-info' />

@@ -13,6 +13,8 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
+import { Link } from 'react-router'
+import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import Image from './Image'
@@ -84,6 +86,7 @@ class CreateConvo extends React.Component {
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 //  sddsdfas
   componentWillMount () {
@@ -310,20 +313,24 @@ class CreateConvo extends React.Component {
         }
       }
     }
-    var data = {
-      platform: 'facebook',
-      payload: this.state.broadcast,
-      isSegmented: isSegmentedValue,
-      segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue,
-      segmentationGender: this.state.genderValue,
-      segmentationTimeZone: '',
-      title: this.state.convoTitle
+    if (this.props.location.state.module === 'welcome') {
+      this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
+    } else {
+      var data = {
+        platform: 'facebook',
+        payload: this.state.broadcast,
+        isSegmented: isSegmentedValue,
+        segmentationPageIds: [this.state.pageValue],
+        segmentationLocale: this.state.localeValue,
+        segmentationGender: this.state.genderValue,
+        segmentationTimeZone: '',
+        title: this.state.convoTitle
 
+      }
+      console.log('Data sent: ', data)
+      this.props.sendBroadcast(data, this.msg)
+      this.setState({broadcast: [], list: []})
     }
-    console.log('Data sent: ', data)
-    this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
   }
 
   testConvo () {
@@ -475,7 +482,11 @@ class CreateConvo extends React.Component {
       console.log('change Locale', selected)
     })
   }
-
+  goBack () {
+    this.props.history.push({
+      pathname: `/welcomeMessage`
+    })
+  }
   render () {
     console.log('Pages ', this.props.pages)
     console.log('Page Value', this.state.pageValue)
@@ -569,6 +580,15 @@ class CreateConvo extends React.Component {
                         </div>
                       </div>
                     </div>
+                    <br />
+                    {this.props.location.state.module === 'welcome' &&
+                    <div className='row'>
+                      <br />
+                      <br />
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={() => this.goBack()}>Back</button>
+                    </div>
+                  }
                     {
                       this.props.location.state.module === 'convo' &&
                       <div>
@@ -606,7 +626,10 @@ class CreateConvo extends React.Component {
                   <StickyDiv offsetTop={70} zIndex={1}>
                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                       <div style={{padding: '5px'}}>
-                        <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                        {this.props.location.state.module === 'welcome'
+                        ? <h3>Welcome Message</h3>
+                        : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                      }
                       </div>
                     </div>
                   </StickyDiv>
@@ -681,7 +704,8 @@ function mapDispatchToProps (dispatch) {
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
       convoTourCompleted: convoTourCompleted,
-      getFbAppId: getFbAppId
+      getFbAppId: getFbAppId,
+      createWelcomeMessage: createWelcomeMessage
     },
     dispatch)
 }

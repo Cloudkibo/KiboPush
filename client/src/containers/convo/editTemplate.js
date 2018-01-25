@@ -14,6 +14,7 @@ import {
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
+import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import Image from './Image'
 import Video from './Video'
@@ -65,7 +66,9 @@ class EditTemplate extends React.Component {
     }
     props.getuserdetails()
     console.log('props.templatesInfo', props.currentBroadcast)
-    if (props.currentBroadcast) {
+    if (this.props.location && this.props.location.state.module === 'welcome') {
+      this.setEditComponents(this.props.location.state.payload)
+    } else if (props.currentBroadcast) {
       const id = this.props.currentBroadcast._id
       console.log('id', id)
       props.loadBroadcastDetails(id)
@@ -89,6 +92,8 @@ class EditTemplate extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.backToTemplates = this.backToTemplates.bind(this)
+    this.goBack = this.goBack.bind(this)
+
   }
 //  sddsdfas
   componentWillMount () {
@@ -100,7 +105,9 @@ class EditTemplate extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
-    if (nextprops.broadcastDetails) {
+    if (this.props.location && this.props.location.state.module === 'welcome') {
+      this.setEditComponents(this.props.location.state.payload)
+    } else if (nextprops.broadcastDetails) {
       if (this.state.stay === false) {
         console.log('details', nextprops.broadcastDetails)
         this.setState({convoTitle: nextprops.broadcastDetails.title})
@@ -335,20 +342,23 @@ class EditTemplate extends React.Component {
         }
       }
     }
-    var data = {
-      platform: 'facebook',
-      payload: this.state.broadcast,
-      isSegmented: isSegmentedValue,
-      segmentationPageIds: [this.state.pageValue],
-      segmentationLocale: this.state.localeValue,
-      segmentationGender: this.state.genderValue,
-      segmentationTimeZone: '',
-      title: this.state.convoTitle
-
+    if (this.props.location && this.props.location.state.module === 'welcome') {
+      this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
+    } else {
+      var data = {
+        platform: 'facebook',
+        payload: this.state.broadcast,
+        isSegmented: isSegmentedValue,
+        segmentationPageIds: [this.state.pageValue],
+        segmentationLocale: this.state.localeValue,
+        segmentationGender: this.state.genderValue,
+        segmentationTimeZone: '',
+        title: this.state.convoTitle
+      }
+      console.log('Data sent: ', data)
+      this.props.sendBroadcast(data, this.msg)
+      //  this.setState({broadcast: [], list: []})
     }
-    console.log('Data sent: ', data)
-    this.props.sendBroadcast(data, this.msg)
-    //  this.setState({broadcast: [], list: []})
     this.setState({stay: true})
   }
 
@@ -459,7 +469,11 @@ class EditTemplate extends React.Component {
       console.log('change Locale', selected)
     })
   }
-
+  goBack () {
+    this.props.history.push({
+      pathname: `/welcomeMessage`
+    })
+  }
   render () {
     console.log('Pages ', this.props.pages)
     console.log('Page Value', this.state.pageValue)
@@ -553,33 +567,43 @@ class EditTemplate extends React.Component {
                         </div>
                       </div>
                     </div>
-                    <fieldset>
-                      <br />
-                      <h3>Set Targeting:</h3>
-                      <br />
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                        </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                        </div>
-                      </div>
-                      <br />
-                    </fieldset>
-                    <br />
-                    <div className='row'>
+                    {this.props.location && this.props.location.state.module === 'welcome'
+                    ? <div className='row'>
                       <br />
                       <br />
-                      <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
-                      <button style={{float: 'left', marginLeft: 20}} onClick={this.backToTemplates} className='btn btn-primary btn-sm' >Back </button>
-
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={() => this.goBack()}>Back</button>
                     </div>
+                    : <div>
+                      <fieldset>
+                        <br />
+                        <h3>Set Targeting:</h3>
+                        <br />
+                        <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                          </div>
+                        </div>
+                        <br />
+                      </fieldset>
+                      <br />
+                      <div className='row'>
+                        <br />
+                        <br />
+                        <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
+                        <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                        <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
+                        <button style={{float: 'left', marginLeft: 20}} onClick={this.backToTemplates} className='btn btn-primary btn-sm' >Back </button>
+
+                      </div>
+                    </div>
+                  }
                   </div>
                 </div>
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
@@ -587,7 +611,10 @@ class EditTemplate extends React.Component {
                   <StickyDiv offsetTop={70} zIndex={1}>
                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                       <div style={{padding: '5px'}}>
-                        <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                        {this.props.location && this.props.location.state.module === 'welcome'
+                          ? <h3>Welcome Message</h3>
+                          : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                        }
                       </div>
                     </div>
                   </StickyDiv>
@@ -661,7 +688,8 @@ function mapDispatchToProps (dispatch) {
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
       loadBroadcastDetails: loadBroadcastDetails,
-      saveBroadcastInformation: saveBroadcastInformation
+      saveBroadcastInformation: saveBroadcastInformation,
+      createWelcomeMessage: createWelcomeMessage
 
     },
     dispatch)

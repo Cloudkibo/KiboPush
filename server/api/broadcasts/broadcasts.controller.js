@@ -161,24 +161,52 @@ exports.getfbMessage = function (req, res) {
                     if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
                       logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
                       logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
-                      const messageData = {
-                        text: page.welcomeMessage
-                      }
-                      const data = {
-                        recipient: {id: response.body.id}, // this is the subscriber id
-                        message: messageData
-                      }
-                      logger.serverLog(TAG,
-                        `response.body.access_token${JSON.stringify(page.accessToken)}`)
-                      needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
-                        data, (err4, respp) => {
-                          logger.serverLog(TAG,
-                            `Sending survey to subscriber response ${JSON.stringify(
-                              respp.body)}`)
-                          if (err4) {
-                          }
-                        })
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
+                      page.welcomeMessage.forEach(payloadItem => {
+                        let messageData = utility.prepareSendAPIPayload(
+                          response.body.id,
+                          payloadItem, false)
+
+                        logger.serverLog(TAG,
+                          `Payload for Messenger Send API for test: ${JSON.stringify(
+                            messageData)}`)
+                        request(
+                          {
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                            page.accessToken
+                          },
+                          function (err, res) {
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At send test message broadcast ${JSON.stringify(err)}`)
+                            } else {
+                              logger.serverLog(TAG,
+                                `At send test message broadcast response ${JSON.stringify(
+                                  res)}`)
+                            }
+                          })
+                      })
+                      // const messageData = {
+                      //   text: page.welcomeMessage
+                      // }
+                      // const data = {
+                      //   recipient: {id: response.body.id}, // this is the subscriber id
+                      //   message: messageData
+                      // }
+                      // logger.serverLog(TAG,
+                      //   `response.body.access_token${JSON.stringify(page.accessToken)}`)
+                      // needle.post(
+                      //   `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                      //   data, (err4, respp) => {
+                      //     logger.serverLog(TAG,
+                      //       `Sending survey to subscriber response ${JSON.stringify(
+                      //         respp.body)}`)
+                      //     if (err4) {
+                      //     }
+                      //   })
                     }
                     const payload = {
                       firstName: subsriber.first_name,
