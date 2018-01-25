@@ -317,13 +317,15 @@ exports.joinCompany = function (req, res) {
           description: 'Invitation token invalid or expired. Please contact admin to invite you again.'
         })
       }
+      let role = 'agent'
       let accountData = new Users({
         name: req.body.name,
         email: req.body.email,
         domain: invitationToken.domain,
         password: req.body.password,
         domain_email: invitationToken.domain + '' + req.body.email,
-        role: 'agent'
+        role: role,
+        plan: 'plan_D'
       })
 
       // console.log(req.body)
@@ -334,13 +336,11 @@ exports.joinCompany = function (req, res) {
             description: 'validation error: ' + JSON.stringify(err)
           })
         }
-        let role = 'agent'
         let companyUserData = new CompanyUsers({
           companyId: invitationToken.companyId,
           userId: user._id,
           domain_email: user.domain_email,
-          role: role,
-          plan: 'plan_D'
+          role: role
         })
 
         companyUserData.save(function (err, companyUserSaved) {
