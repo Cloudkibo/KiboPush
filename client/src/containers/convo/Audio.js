@@ -150,7 +150,7 @@ class Audio extends React.Component {
             >
               <div className='align-center'>
                 <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+                <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
           }
