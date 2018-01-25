@@ -204,7 +204,7 @@ class Menu extends React.Component {
       if (temp[this.state.indexClicked].url) {
         delete temp[this.state.indexClicked].url
       }
-      temp[this.state.indexClicked].title = 'nested'
+      temp[this.state.indexClicked].type = 'nested'
       temp[this.state.indexClicked].submenu.push({
         title: 'Sub Menu',
         submenu: []
@@ -221,7 +221,7 @@ class Menu extends React.Component {
       if (temp[this.state.indexClicked].submenu[this.subIndex].url) {
         delete temp[this.state.indexClicked].submenu[this.subIndex].url
       }
-      temp[this.state.indexClicked].submenu[this.subIndex].title = 'nested'
+      temp[this.state.indexClicked].submenu[this.subIndex].type = 'nested'
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
         title: 'Nested Menu'
       })
