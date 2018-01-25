@@ -70,7 +70,7 @@ class CreateMessage extends React.Component {
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
-          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
+          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         break
       default:
