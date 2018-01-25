@@ -23,7 +23,7 @@ class Image extends React.Component {
     super(props, context)
     this._onChange = this._onChange.bind(this)
     this.state = {
-      imgSrc: props.img ? props.img : '',
+      imgSrc: '',
       showPreview: false
     }
   }
