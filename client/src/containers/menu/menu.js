@@ -160,12 +160,7 @@ class Menu extends React.Component {
         if (temp[index[1]].submenu[index[2]].url) {
           delete temp[index[1]].submenu[index[2]].url
         }
-        if (temp[index[1]].payload) {
-          delete temp[index[1]].payload
-        }
-        if (temp[index[1]].url) {
-          delete temp[index[1]].url
-        }
+
         temp[index[1]].submenu[index[2]].type = 'postback'
         temp[index[1]].submenu[index[2]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].payload = payload
@@ -178,18 +173,7 @@ class Menu extends React.Component {
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].url) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].url
         }
-        if (temp[index[1]].payload) {
-          delete temp[index[1]].payload
-        }
-        if (temp[index[1]].url) {
-          delete temp[index[1]].url
-        }
-        if (temp[index[1]].submenu[index[2]].payload) {
-          delete temp[index[1]].submenu[index[2]].payload
-        }
-        if (temp[index[1]].submenu[index[2]].url) {
-          delete temp[index[1]].submenu[index[2]].url
-        }
+
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
         temp[index[1]].submenu[index[2]].submenu[index[3]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = payload
@@ -214,6 +198,12 @@ class Menu extends React.Component {
         this.msg.error('Sorry you can add more than 5 submenus')
         return
       }
+      if (temp[this.state.indexClicked].payload) {
+        delete temp[this.state.indexClicked].payload
+      }
+      if (temp[this.state.indexClicked].url) {
+        delete temp[this.state.indexClicked].url
+      }
       temp[this.state.indexClicked].submenu.push({
         title: 'Sub Menu',
         submenu: []
@@ -223,6 +213,12 @@ class Menu extends React.Component {
       if (temp[this.state.indexClicked].submenu[this.subIndex].submenu.length >= 5) {
         this.msg.error('Sorry you can add more than 5 nested menus')
         return
+      }
+      if (temp[this.state.indexClicked].submenu[this.subIndex].payload) {
+        delete temp[this.state.indexClicked].submenu[this.subIndex].payload
+      }
+      if (temp[this.state.indexClicked].submenu[this.subIndex].url) {
+        delete temp[this.state.indexClicked].submenu[this.subIndex].url
       }
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
         title: 'Nested Menu'
@@ -503,7 +499,7 @@ class Menu extends React.Component {
         {console.log('isNested', this.getItemClicked())}
         {(this.getItemClicked() && this.getItemClicked().submenu && this.getItemClicked().submenu.length === 0) || this.isNested()
         ? <div id='popover-option2' className='container'>
-          { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'postback')
+          { (this.getItemClicked() && this.getItemClicked().payload && this.getItemClicked().payload.length > 0)
           ? <Link to='CreateMessage'>
             <div className='row'>
               <button onClick={(e) => { this.setCreateMessage(e) }} className='btn m-btn--pill btn-primary' style={{width: '400px'}}> Edit Message</button>
