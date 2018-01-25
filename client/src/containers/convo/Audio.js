@@ -108,7 +108,7 @@ class Audio extends React.Component {
           size: file.size
         }
         console.log(fileInfo)
-        this.setState({loading: true})
+        this.setState({loading: true, showPreview: false})
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
     }
