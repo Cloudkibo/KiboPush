@@ -18,22 +18,25 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Halogen from 'halogen'
+import ReactPlayer from 'react-player'
 
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
     super(props, context)
     this.state = {
-      file: props.fileName ? {name: props.fileName} : '',
+      file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.onTestURLAudio = this.onTestURLAudio.bind(this)
   }
 
   componentDidMount () {
@@ -54,12 +57,24 @@ class Audio extends React.Component {
         componentType: 'audio',
         name: this.props.file.fileName,
         type: this.props.file.type,
-        size: this.props.file.size
+        size: this.props.file.size,
+        url: ''
       }
-      this.setState({file: fileInfo})
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
+      }
+      this.setState({file: fileInfo, showPreview: true})
     }
   }
 
+  onTestURLAudio (url) {
+    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
+    var truef = AUDIO_EXTENSIONS.test(url)
+
+    if (truef === false) {
+      console.log('Audio File Format not supported. Please download.')
+    }
+  }
   showDialog (page) {
     this.setState({showDialog: true})
   }
@@ -93,7 +108,7 @@ class Audio extends React.Component {
           size: file.size
         }
         console.log(fileInfo)
-        this.setState({loading: true})
+        this.setState({loading: true, showPreview: false})
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
     }
@@ -135,9 +150,20 @@ class Audio extends React.Component {
             >
               <div className='align-center'>
                 <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
+                <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <ReactPlayer
+                url={this.state.file.url}
+                controls
+                width='100%'
+                height='auto'
+                onPlay={this.onTestURLAudio(this.state.file.url)}
+              />
+            </div>
           }
           {
           this.state.showDialog &&

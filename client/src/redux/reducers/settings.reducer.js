@@ -22,6 +22,10 @@ export function APIInfo (state = {}, action) {
       return Object.assign({}, state, {
         apiFailure: action.data
       })
+    case ActionTypes.SAVE_SWITCH_STATE:
+      return Object.assign({}, state, {
+        switchState: action.data
+      })
     default:
       return state
   }

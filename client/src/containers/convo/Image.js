@@ -23,7 +23,8 @@ class Image extends React.Component {
     super(props, context)
     this._onChange = this._onChange.bind(this)
     this.state = {
-      imgSrc: props.img ? props.img : ''
+      imgSrc: '',
+      showPreview: false
     }
   }
 
@@ -40,7 +41,7 @@ class Image extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     if (this.props.image && this.props.image !== '') {
-      this.setState({imgSrc: this.props.image})
+      this.setState({imgSrc: this.props.image, showPreview: true})
     }
   }
 
@@ -58,6 +59,9 @@ class Image extends React.Component {
     console.log(url) // Would see a path?
 
     console.log('Images in OnChange', file)
+    this.setState({
+      showPreview: false
+    })
     this.props.uploadImage(file, {
       id: this.props.id,
       componentType: 'image',
@@ -95,7 +99,13 @@ class Image extends React.Component {
           </div>
           : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
         }
-
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <a href={this.state.imgSrc} target='_blank' download>
+                <h6><i className='fa fa-file-image-o' /><strong> Download Image </strong></h6>
+              </a>
+            </div>
+          }
         </div>
       </div>
     )

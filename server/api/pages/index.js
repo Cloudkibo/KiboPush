@@ -47,4 +47,16 @@ router.get('/addpages',
   auth.doesRolePermitsThisAction('pagesPermission'),
   controller.addPages)
 
+router.post('/createWelcomeMessage',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_pages'),
+  auth.doesRolePermitsThisAction('pagesPermission'),
+  controller.createWelcomeMessage)
+
+router.post('/isWelcomeMessageEnabled',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_pages'),
+  auth.doesRolePermitsThisAction('pagesPermission'),
+  controller.isWelcomeMessageEnabled)
+
 module.exports = router

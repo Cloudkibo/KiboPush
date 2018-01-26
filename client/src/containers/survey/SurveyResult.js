@@ -71,22 +71,20 @@ class SurveyResult extends React.Component {
       console.log('etes', this.exists(this.props.responses[i].subscriberId._id))
       if (this.exists(this.props.responses[i].subscriberId._id) === false) {
         var temp = this.sortData(this.props.responses[i].subscriberId._id)
-        jsonStructure = {
-          SurveyId: this.props.responses[i].surveyId._id,
-          PageId: this.props.responses[i].subscriberId.pageId
-        }
         for (let l = 0; l < this.props.pages.length; l++) {
           if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
             jsonStructure.PageName = this.props.pages[l].pageName
           }
         }
-        jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
         jsonStructure['SubscriberName'] = this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName
         for (var k = 0; k < temp.q1.length; k++) {
           jsonStructure['Q' + (k + 1)] = temp.statement[k]
           jsonStructure['Response' + (k + 1)] = temp.q1[k]
         }
         jsonStructure['DateTime'] = this.props.responses[i].datetime
+        jsonStructure['SurveyId'] = this.props.responses[i].surveyId._id
+        jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId
+        jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
         usersPayload.push(jsonStructure)
         console.log('this.sortData', usersPayload)
       }

@@ -20,10 +20,6 @@ class Category extends React.Component {
       isShowingModalCreate: false,
       isShowingModalEdit: false
     }
-    this.displayData = this.displayData.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
-    this.searchSurvey = this.searchSurvey.bind(this)
-    this.onFilter = this.onFilter.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogCreate = this.showDialogCreate.bind(this)
@@ -33,6 +29,7 @@ class Category extends React.Component {
     this.exists = this.exists.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
     this.updateCategory = this.updateCategory.bind(this)
+    this.editCategory = this.editCategory.bind(this)
   }
   componentDidMount () {
     console.log('componentDidMount called in ViewSurveyDetail')
@@ -48,75 +45,6 @@ class Category extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     console.log('componentDidMount called in ViewSurveyDetail Finished')
-  }
-  displayData (n, broadcasts) {
-    console.log('one', broadcasts)
-    let offset = n * 4
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 4) > broadcasts.length) {
-      limit = broadcasts.length
-    } else {
-      limit = offset + 4
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = broadcasts[i]
-      index++
-    }
-    console.log('data[index]', data)
-    this.setState({surveysData: data, surveysDataAll: broadcasts})
-    console.log('in displayData', this.state.surveysData)
-  }
-  handlePageClick (data) {
-    this.displayData(data.selected, this.state.surveysDataAll)
-  }
-  componentWillReceiveProps (nextProps) {
-    console.log('userbroadcasts componentWillReceiveProps is called')
-    if (nextProps.surveys) {
-      console.log('surveys Updated', nextProps.surveys)
-      this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
-    }
-  }
-  searchSurvey (event) {
-    var filtered = []
-    if (event.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        if (this.props.surveys[i].title && this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.surveys[i])
-        }
-      }
-    } else {
-      filtered = this.props.surveys
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
-  }
-
-  onFilter (e) {
-    console.log(e.target.value)
-    this.setState({filterValue: e.target.value})
-    var filtered = []
-    if (e.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.surveys[i].category.length > 1) {
-            filtered.push(this.props.surveys[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.surveys[i].category.length; j++) {
-            if (this.props.surveys[i].category[j] === e.target.value) {
-              filtered.push(this.props.surveys[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.surveys
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})

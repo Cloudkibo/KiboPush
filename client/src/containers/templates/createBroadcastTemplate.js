@@ -59,24 +59,24 @@ class CreateBroadcastTemplate extends React.Component {
         if (this.props.template.payload[i].componentType === 'text') {
           temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
-          temp.push({content: (<Image id={temp.length} key={temp.length} img={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Image id={temp.length} key={temp.length} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
           temp.push({content: (<Card id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
           temp.push({content: (<Gallery id={temp.length} key={temp.length} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
-          temp.push({content: (<Audio id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Audio id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'video') {
-          temp.push({content: (<Video id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Video id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
-          temp.push({content: (<File id={temp.length} key={temp.length} fileName={this.props.template.payload[i].fileName} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
       for (var j = 0; j < this.props.template.category.length; j++) {
         options.push({id: j, text: this.props.template.category[0], selected: true})
       }
-      this.setState({broadcast: this.props.template.payload, list: temp})
+      this.setState({broadcast: this.props.template.payload, list: temp, categoryValue: this.props.template.category})
       this.initializeCategorySelect(options)
     }
   }
@@ -304,7 +304,6 @@ class CreateBroadcastTemplate extends React.Component {
       }
 
       this.props.editBroadcast(broadcastTemplate, this.msg)
-      this.setState({broadcast: [], list: []})
     } else {
       this.msg.error('Please select a category')
     }

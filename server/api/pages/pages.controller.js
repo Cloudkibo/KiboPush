@@ -80,6 +80,8 @@ exports.allpages = function (req, res) {
             connected: pages[i].connected,
             pageUserName: pages[i].pageUserName,
             likes: pages[i].likes,
+            isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+            welcomeMessage: pages[i].welcomeMessage,
             subscribers: 0
           })
         }
@@ -391,4 +393,30 @@ exports.addPages = function (req, res) {
       //  return res.status(200).json({ status: 'success', payload: user});
     })
   })
+}
+exports.createWelcomeMessage = function (req, res) {
+  Pages.update({_id: req.body._id, connected: true},
+    {welcomeMessage: req.body.welcomeMessage}, (err) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          error: err,
+          description: 'Failed to update record'
+        })
+      }
+      res.status(201).json({status: 'success', payload: req.body})
+    })
+}
+exports.isWelcomeMessageEnabled = function (req, res) {
+  Pages.update({_id: req.body._id, connected: true},
+    {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled}, (err) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          error: err,
+          description: 'Failed to update record'
+        })
+      }
+      res.status(201).json({status: 'success', payload: req.body})
+    })
 }

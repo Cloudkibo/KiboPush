@@ -158,6 +158,56 @@ exports.getfbMessage = function (req, res) {
                   //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                   //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
+                    if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
+                      page.welcomeMessage.forEach(payloadItem => {
+                        let messageData = utility.prepareSendAPIPayload(
+                          response.body.id,
+                          payloadItem, false)
+
+                        logger.serverLog(TAG,
+                          `Payload for Messenger Send API for test: ${JSON.stringify(
+                            messageData)}`)
+                        request(
+                          {
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                            page.accessToken
+                          },
+                          function (err, res) {
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At send test message broadcast ${JSON.stringify(err)}`)
+                            } else {
+                              logger.serverLog(TAG,
+                                `At send test message broadcast response ${JSON.stringify(
+                                  res)}`)
+                            }
+                          })
+                      })
+                      // const messageData = {
+                      //   text: page.welcomeMessage
+                      // }
+                      // const data = {
+                      //   recipient: {id: response.body.id}, // this is the subscriber id
+                      //   message: messageData
+                      // }
+                      // logger.serverLog(TAG,
+                      //   `response.body.access_token${JSON.stringify(page.accessToken)}`)
+                      // needle.post(
+                      //   `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                      //   data, (err4, respp) => {
+                      //     logger.serverLog(TAG,
+                      //       `Sending survey to subscriber response ${JSON.stringify(
+                      //         respp.body)}`)
+                      //     if (err4) {
+                      //     }
+                      //   })
+                    }
                     const payload = {
                       firstName: subsriber.first_name,
                       lastName: subsriber.last_name,
@@ -791,14 +841,14 @@ function savesurvey (req) {
 
     SurveyResponse.update({ surveyId: resp.survey_id,
       questionId: resp.question_id,
-      subscriberId: subscriber._id}, {response: resp.option}, {upsert: true, setDefaultsOnInsert: true}, (err1, surveyresponse, raw) => {
+      subscriberId: subscriber._id}, {response: resp.option}, {upsert: true}, (err1, surveyresponse, raw) => {
     // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
         if (err1) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
         }
         logger.serverLog(TAG,
         `Raw${JSON.stringify(
-          raw)}`)
+          surveyresponse)}`)
       //  Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) }, { $set: { isresponded: true } })
       // send the next question
         logger.serverLog(TAG,
@@ -916,7 +966,7 @@ function savesurvey (req) {
                 })
             })
           } else { // else send thank you message
-            Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1}}, (err, subscriber) => {
+            Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)}, {$inc: {isresponded: 1 - surveyresponse.nModified}}, (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG,
                 `Error occurred in finding subscriber${JSON.stringify(
@@ -949,6 +999,10 @@ function savesurvey (req) {
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
+              logger.serverLog(TAG,
+                `response.body.access_token${JSON.stringify(response.body.access_token)}`)
+              logger.serverLog(TAG,
+                `req.sender.id${JSON.stringify(req.sender.id)}`)
               needle.post(
                 `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
                 data, (err4, respp) => {
