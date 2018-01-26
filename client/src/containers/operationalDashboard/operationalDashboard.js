@@ -532,10 +532,10 @@ class OperationalDashboard extends React.Component {
                                            this.state.usersData.map((user, i) => (
                                              <div className='m-widget4__item' key={i}>
                                                <div className='m-widget4__img m-widget4__img--pic'>
-                                                 <img alt='pic' src={(user.profilePic) ? user.profilePic : ''} />
+                                                 <img alt='pic' src={(user.facebookInfo.profilePic) ? user.facebookInfo.profilePic : ''} />
                                                </div>
                                                <div className='m-widget4__info'>
-                                                 <span className='m-widget4__title'>
+                                                 <span className='m-widget4__title'>.
                                                    {user.name}
                                                  </span>
                                                  {user.email &&
@@ -551,10 +551,10 @@ class OperationalDashboard extends React.Component {
                                                  </span>
                                                  <br />
                                                  <span className='m-widget4__sub'>
-                                                    Gender: {user.gender}
+                                                    Gender: {user.facebookInfo.gender}
                                                  </span>
                                                  <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
-                                                    Locale: {user.locale}
+                                                    Locale: {user.facebookInfo.locale}
                                                  </span>
                                                </div>
                                                <div className='m-widget4__ext'>
