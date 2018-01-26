@@ -271,7 +271,8 @@ exports.sendConversation = function (req, res) {
                       userId: req.user._id,
                       subscriberId: subscriber.senderId,
                       broadcastId: broadcast._id,
-                      seen: false
+                      seen: false,
+                      companyId: companyUser.companyId
                     })
 
                     pagebroadcast.save((err2) => {
