@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class templatePolls extends React.Component {
   constructor (props, context) {
@@ -125,8 +126,16 @@ class templatePolls extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='row'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
           <div className='m-portlet m-portlet--mobile'>
@@ -166,7 +175,7 @@ class templatePolls extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deletePoll(this.state.deleteid)
+                            this.props.deletePoll(this.state.deleteid, this.msg)
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
