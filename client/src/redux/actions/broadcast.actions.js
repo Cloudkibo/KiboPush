@@ -172,7 +172,12 @@ export function sendBroadcast (data, msg) {
             msg.success('Conversation successfully sent')
             // dispatch(sendBroadcastSuccess())
           } else {
-            msg.error('Failed to send conversation')
+            console.log(res.description)
+            if (res.description) {
+              msg.error('Failed to send conversation.', res.description)
+            } else {
+              msg.error('Failed to send conversation')
+            }
             // dispatch(sendBroadcastFailure())
           }
         } else {

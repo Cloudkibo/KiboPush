@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
@@ -144,9 +145,18 @@ class TemplateBroadcasts extends React.Component {
   }
 
   render () {
+    {
+      var alertOptions = {
+        offset: 14,
+        position: 'bottom right',
+        theme: 'dark',
+        time: 5000,
+        transition: 'scale'
+      }
     console.log('broadcasts')
     return (
       <div className='row'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
           <div className='m-portlet m-portlet--mobile'>
@@ -186,7 +196,7 @@ class TemplateBroadcasts extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deleteBroadcast(this.state.deleteid)
+                            this.props.deleteBroadcast(this.state.deleteid, this.msg)
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
