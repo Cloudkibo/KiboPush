@@ -2,6 +2,7 @@
  * Created by sojharo on 27/07/2017.
  */
 //
+const PhoneNumber = require('../growthtools/growthtools.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -96,7 +97,20 @@ exports.getfbMessage = function (req, res) {
 
   logger.serverLog(TAG,
     `something received from facebook ${JSON.stringify(req.body)}`)
-
+  logger.serverLog(TAG,
+    `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
+  if (req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].prior_message && req.body.entry[0].messaging[0].prior_message.source === 'customer_matching') {
+    PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier}, {
+      hasSubscribed: true
+    }, (err2, phonenumbersaved) => {
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'phone number create failed'
+        })
+      }
+    })
+  }
   if (req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply) {
     let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
     logger.serverLog(TAG, 'Got a response to quick reply')
