@@ -119,16 +119,40 @@ export function loadPollDetails (id) {
       .then(res => dispatch(updatePollDetails(res)))
   }
 }
-export function deletePoll (id) {
+export function deletePoll (id, msg) {
   return (dispatch) => {
     callApi(`templates/deletePoll/${id}`, 'delete')
-      .then(res => dispatch(loadPollsList()))
+      .then(res => {
+        console.log('Response Delete', res)
+        if (res.status === 'success') {
+          msg.success('Poll template deleted')
+          dispatch(loadPollsList())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete poll template. ${res.description}`)
+          } else {
+            msg.error('Failed to delete poll template')
+          }
+        }
+      })
   }
 }
-export function deleteSurvey (id) {
+export function deleteSurvey (id, msg) {
   return (dispatch) => {
     callApi(`templates/deleteSurvey/${id}`, 'delete')
-      .then(res => dispatch(loadSurveysList()))
+      .then(res => {
+        console.log('Response Delete', res)
+        if (res.status === 'success') {
+          msg.success('Survey template deleted')
+          dispatch(loadSurveysList())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete survey template. ${res.description}`)
+          } else {
+            msg.error('Failed to delete survey template')
+          }
+        }
+      })
   }
 }
 export function deleteCategory (id) {
@@ -252,13 +276,13 @@ export function deleteBroadcast (id, msg) {
       .then(res => {
         console.log('Response Delete', res)
         if (res.status === 'success') {
-          msg.success('Broadcast deleted')
+          msg.success('Broadcast template deleted')
           dispatch(loadBroadcastsList())
         } else {
-          if (res.description) {
-            msg.error('Failed to delete broadcast.', res.description)
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete broadcast template. ${res.description}`)
           } else {
-            msg.error('Failed to delete broadcast')
+            msg.error('Failed to delete broadcast template')
           }
         }
       })

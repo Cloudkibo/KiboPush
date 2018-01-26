@@ -174,7 +174,7 @@ export function sendBroadcast (data, msg) {
           } else {
             console.log(res.description)
             if (res.description) {
-              msg.error('Failed to send conversation.', res.description)
+              msg.error(`Failed to send conversation. ${res.description}`)
             } else {
               msg.error('Failed to send conversation')
             }
