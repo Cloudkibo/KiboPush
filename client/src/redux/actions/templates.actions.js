@@ -246,10 +246,22 @@ export function addConvoTemplate (data, msg) {
   }
 }
 
-export function deleteBroadcast (id) {
+export function deleteBroadcast (id, msg) {
   return (dispatch) => {
     callApi(`templates/deleteBroadcast/${id}`, 'delete')
-      .then(res => dispatch(loadBroadcastsList()))
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          msg.success('Broadcast deleted')
+          dispatch(loadBroadcastsList())
+        } else {
+          if (res.description) {
+            msg.error('Failed to delete broadcast.', res.description)
+          } else {
+            msg.error('Failed to delete broadcast')
+          }
+        }
+      })
   }
 }
 
