@@ -11,7 +11,16 @@ const router = express.Router()
 const controller = require('./page_broadcast.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/', auth.isAuthenticated(), controller.index)
-router.get('/:id', auth.isAuthenticated(), controller.show)
+router.get('/',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller.index)
+
+router.get('/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller.show)
 
 module.exports = router

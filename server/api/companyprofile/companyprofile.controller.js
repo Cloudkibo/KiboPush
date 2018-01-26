@@ -4,6 +4,7 @@ const _ = require('lodash')
 const Companyprofile = require('./companyprofile.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Invitations = require('./../invitations/invitations.model')
+const Permissions = require('./../permissions/permissions.model')
 const Users = require('./../user/Users.model')
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const config = require('./../../config/environment/index')
@@ -229,8 +230,16 @@ exports.updateRole = function (req, res) {
                 description: `Internal Server Error ${JSON.stringify(err)}`
               })
             }
-            return res.status(200)
-              .json({status: 'success', payload: {savedUser, savedUserCompany}})
+            Permissions.update(
+              {userId: user._id},
+              config.permissions[req.body.role],
+              {multi: true}, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+                return res.status(200)
+                .json({status: 'success', payload: {savedUser, savedUserCompany}})
+              })
           })
         })
       })
@@ -247,8 +256,8 @@ exports.removeMember = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  if (config.roles.indexOf(req.user.role) > -1 &&
-    config.roles.indexOf(req.user.role) < 2) {
+  if (config.userRoles.indexOf(req.user.role) > -1 &&
+    config.userRoles.indexOf(req.user.role) < 2) {
     return res.status(401).json(
       {status: 'failed', description: 'Unauthorised to perform this action.'})
   }

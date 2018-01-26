@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
+const Plans = require('../api/permissions_plan/permissions_plan.model')
+const Permissions = require('../api/permissions/permissions.model')
 const ApiSettings = require('../api/api_settings/api_settings.model')
 const validateJwt = expressJwt({secret: config.secrets.session})
 const needle = require('needle')
@@ -72,6 +74,7 @@ function isAuthorizedSuperUser () {
 
 /**
  * Checks if the user role meets the minimum requirements of the route
+ * Note: maybe we don't use it
  */
 function hasRole (roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set')
@@ -86,6 +89,68 @@ function hasRole (roleRequired) {
         res.send(403)
       }
     })
+}
+
+function hasRequiredPlan (planRequired) {
+  if (!planRequired) throw new Error('Required plan needs to be set')
+  if (!(typeof planRequired === 'object' && planRequired.length)) throw new Error('Required plan must be of type array')
+
+  return compose()
+  .use(function meetsRequirements (req, res, next) {
+    if (planRequired.indexOf(req.user.plan) > -1) {
+      next()
+    } else {
+      res.send(403)
+    }
+  })
+}
+
+function doesPlanPermitsThisAction (action) {
+  if (!action) throw new Error('Action needs to be set')
+
+  return compose()
+  .use(function meetsRequirements (req, res, next) {
+    Plans.findOne({}, (err, plan) => {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!plan) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Fatal Error. Plan not set. Please contact support.'})
+      }
+      if (plan[req.user.plan][action]) {
+        next()
+      } else {
+        res.status(403)
+        .json({status: 'failed', description: 'Your current plan does not support this action. Please upgrade or contact support.'})
+      }
+    })
+  })
+}
+
+function doesRolePermitsThisAction (action) {
+  if (!action) throw new Error('Action needs to be set')
+
+  return compose()
+  .use(function meetsRequirements (req, res, next) {
+    Permissions.findOne({userId: req.user._id}, (err, plan) => {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!plan) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Fatal Error. Permissions not set. Please contact support.'})
+      }
+      if (plan[action]) {
+        next()
+      } else {
+        res.status(403)
+        .json({status: 'failed', description: 'You do not have permissions for this action. Please contact admin.'})
+      }
+    })
+  })
 }
 
 /**
@@ -107,7 +172,7 @@ function validateApiKeys (req, res, next) {
         if (err) return next(err)
         if (setting) {
           // todo this is for now buyer user id but it should be company id as thought
-          Users.findOne({_id: setting.company_id}, (err, user) => {
+          Users.findOne({_id: setting.company_id, role: 'buyer'}, (err, user) => {
             if (err) {
               return res.status(500)
                 .json({status: 'failed', description: 'Internal Server Error'})
@@ -210,6 +275,9 @@ exports.signToken = signToken
 exports.setTokenCookie = setTokenCookie
 exports.isAuthorizedSuperUser = isAuthorizedSuperUser
 exports.hasRole = hasRole
+exports.hasRequiredPlan = hasRequiredPlan
+exports.doesPlanPermitsThisAction = doesPlanPermitsThisAction
+exports.doesRolePermitsThisAction = doesRolePermitsThisAction
 exports.fbConnectDone = fbConnectDone
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;

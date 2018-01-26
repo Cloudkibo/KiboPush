@@ -67,40 +67,56 @@ const all = {
       downgradeService: false,
       upgradeService: false,
       terminateService: false,
+      customerMatchingPermission: true,
+      dashboardPermission: true,
+      companyPermission: true,
+      companyUpdatePermission: false,
+      membersPermission: true,
       inviteAdminPermission: true,
       deleteAdminPermission: true,
       promoteToAdminPermission: true,
       inviteAgentPermission: true,
       deleteAgentPermission: true,
+      invitationsPermission: true,
       broadcastPermission: true,
       autopostingPermission: true,
       livechatPermission: true,
       menuPermission: true,
+      pagesAccessPermission: true,
       pagesPermission: true,
       pollsPermission: true,
       subscriberPermission: true,
       surveyPermission: true,
-      workflowPermission: true
+      workflowPermission: true,
+      apiPermission: false
     },
     agent: {
       billingPermission: false,
       downgradeService: false,
       upgradeService: false,
       terminateService: false,
+      customerMatchingPermission: false,
+      dashboardPermission: true,
+      companyPermission: true,
+      companyUpdatePermission: false,
+      membersPermission: true,
       inviteAdminPermission: false,
       deleteAdminPermission: false,
-      promoteToAdminPermission: false,
+      updateRolePermission: false,
       inviteAgentPermission: false,
       deleteAgentPermission: false,
+      invitationsPermission: false,
       broadcastPermission: true,
       autopostingPermission: true,
       livechatPermission: true,
       menuPermission: true,
+      pagesAccessPermission: true,
       pagesPermission: false,
       pollsPermission: true,
       subscriberPermission: true,
       surveyPermission: true,
-      workflowPermission: true
+      workflowPermission: true,
+      apiPermission: false
     }
   },
 
@@ -127,7 +143,8 @@ const all = {
       messenger_links: true,
       comment_capture: true,
       messenger_code: true,
-      analytics: true
+      analytics: true,
+      api: true
     },
     plan_B: { // individual unpaid
       customer_matching: false,
@@ -151,7 +168,8 @@ const all = {
       messenger_links: true,
       comment_capture: false,
       messenger_code: false,
-      analytics: false
+      analytics: false,
+      api: false
     },
     plan_C: { // team paid
       customer_matching: true,
@@ -175,7 +193,8 @@ const all = {
       messenger_links: true,
       comment_capture: true,
       messenger_code: true,
-      analytics: true
+      analytics: true,
+      api: true
     },
     plan_D: { // team unpaid
       customer_matching: false,
@@ -199,7 +218,8 @@ const all = {
       messenger_links: true,
       comment_capture: false,
       messenger_code: false,
-      analytics: false
+      analytics: false,
+      api: false
     }
   }
 }

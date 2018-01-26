@@ -14,17 +14,6 @@ const crypto = require('crypto')
 let request = require('request')
 const _ = require('lodash')
 
-exports.index = function (req, res) {
-  logger.serverLog(TAG,
-    'Index route is called')
-  res.send({name: 'sojharo'})
-  // fs.createReadStream('./file.csv')
-  // .pipe(csv())
-  // .on('data', function (data) {
-  //   console.log(data)
-  // })
-}
-
 exports.upload = function (req, res) {
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
