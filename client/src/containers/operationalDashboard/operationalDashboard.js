@@ -553,7 +553,7 @@ class OperationalDashboard extends React.Component {
                                                  <span className='m-widget4__sub'>
                                                     Gender: {user.facebookInfo.gender}
                                                  </span>
-                                                 <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                                                 <span className='m-widget4__sub' style={{float: 'right'}}>
                                                     Locale: {user.facebookInfo.locale}
                                                  </span>
                                                </div>
