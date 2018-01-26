@@ -145,14 +145,13 @@ class TemplateBroadcasts extends React.Component {
   }
 
   render () {
-    {
-      var alertOptions = {
-        offset: 14,
-        position: 'bottom right',
-        theme: 'dark',
-        time: 5000,
-        transition: 'scale'
-      }
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     console.log('broadcasts')
     return (
       <div className='row'>
