@@ -47,6 +47,7 @@ exports.upload = function (req, res) {
         .pipe(csv())
         .on('data', function (data) {
           if (data.phone_numbers && data.names) {
+            logger.serverLog(TAG, `data.names ${JSON.stringify(data.names)}`)
             var result = data.phone_numbers.replace(/[- )(]/g, '')
             // var savePhoneNumber = new PhoneNumber({
             //   name: data.name,
@@ -54,7 +55,7 @@ exports.upload = function (req, res) {
             //   userId: req.user._id
             // })
             PhoneNumber.update({number: result}, {
-              name: data.name,
+              name: data.names,
               number: result,
               userId: req.user._id
             }, {upsert: true}, (err2, phonenumbersaved) => {
@@ -136,7 +137,7 @@ exports.sendNumbers = function (req, res) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing. Put numbers, text fields and pageId in payload.'})
   }
-
+//
   for (let i = 0; i < req.body.numbers.length; i++) {
     var result = req.body.numbers[i].replace(/[- )(]/g, '')
     let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
@@ -144,6 +145,18 @@ exports.sendNumbers = function (req, res) {
       if (err) {
         logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
+      PhoneNumber.update({number: result}, {
+        name: '',
+        number: result,
+        userId: req.user._id
+      }, {upsert: true}, (err2, phonenumbersaved) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'phone number create failed'
+          })
+        }
+      })
       pages.forEach(page => {
         let messageData = {
           'recipient': JSON.stringify({

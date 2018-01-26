@@ -219,7 +219,8 @@ exports.deletePoll = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -240,7 +241,8 @@ exports.deleteCategory = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'category update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -261,7 +263,8 @@ exports.deleteSurvey = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'survey update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -397,7 +400,8 @@ exports.deleteBroadcast = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
