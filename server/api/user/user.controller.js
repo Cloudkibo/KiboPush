@@ -10,6 +10,7 @@ const VerificationToken = require(
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const Invitations = require('./../invitations/invitations.model')
 const Permissions = require('./../permissions/permissions.model')
+const Plans = require('./../permissions_plan/permissions_plan.model')
 const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
 const _ = require('lodash')
@@ -46,12 +47,39 @@ exports.index = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      user = user.toObject()
-      user.companyId = companyUser.companyId
-      logger.serverLog(TAG,
-        'Company Users Found ' + JSON.stringify(err) +
-        JSON.stringify(companyUser) + JSON.stringify(user))
-      res.status(200).json({status: 'success', payload: user})
+      Permissions.findOne({userId: req.user._id}, (err, permissions) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        if (!permissions) {
+          return res.status(404).json({
+            status: 'failed',
+            description: 'Permissions not set for this user. Please contact support'
+          })
+        }
+        Plans.findOne({}, (err, plan) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (!plan) {
+            return res.status(404).json({
+              status: 'failed',
+              description: 'Fatal Error, plan not set for this user. Please contact support'
+            })
+          }
+          user = user.toObject()
+          user.companyId = companyUser.companyId
+          user.permissions = permissions
+          user.plan = plan[req.user.plan]
+          res.status(200).json({status: 'success', payload: user})
+        })
+      })
     })
   })
 }
@@ -352,7 +380,7 @@ exports.joinCompany = function (req, res) {
           }
 
           let permissionsPayload = {
-            companyId: companySaved._id,
+            companyId: companyUserSaved._id,
             userId: user._id
           }
 

@@ -26,6 +26,7 @@ var PermissionsSchema = new Schema({
   autopostingPermission: { type: Boolean, default: true },
   livechatPermission: { type: Boolean, default: true },
   menuPermission: { type: Boolean, default: true },
+  pagesAccessPermission: { type: Boolean, default: true },
   pagesPermission: { type: Boolean, default: true },
   pollsPermission: { type: Boolean, default: true },
   subscriberPermission: { type: Boolean, default: true },

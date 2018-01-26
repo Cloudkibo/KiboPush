@@ -11,7 +11,16 @@ const router = express.Router()
 const controller = require('./page_survey.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/', auth.isAuthenticated(), controller.index)
-router.get('/:id', auth.isAuthenticated(), controller.show)
+router.get('/',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('surveys'),
+  auth.doesRolePermitsThisAction('surveyPermission'),
+  controller.index)
+
+router.get('/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('surveys'),
+  auth.doesRolePermitsThisAction('surveyPermission'),
+  controller.show)
 
 module.exports = router

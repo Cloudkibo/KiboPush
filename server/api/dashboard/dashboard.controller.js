@@ -103,83 +103,112 @@ exports.sentVsSeen = function (req, res) {
                                 err)}`
                 })
               }
-              Surveys.find({userId: req.user._id}, (err2, surveyResponseCount) => {
-                if (err2) {
-                  return res.status(404)
-                  .json({status: 'failed', description: 'responses count not found'})
-                }
-                Polls.find({userId: req.user._id}, (err, polls) => {
-                  if (err) {
-                    logger.serverLog(TAG, `Error: ${err}`)
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: `Internal Server Error${JSON.stringify(err)}`
-                    })
-                  }
-                  PollPage.find({userId: req.user._id}, (err, pollpages) => {
-                    if (err) {
-                      return res.status(404)
-                      .json({status: 'failed', description: 'Polls not found'})
-                    }
-                    PollResponse.aggregate(
-                      [
-                                  {$group: {_id: '$pollId', count: {$sum: 1}}}
-                      ], (err, pollResponseCount) => {
-                      if (err) {
-                        return res.status(404).json({
-                          status: 'failed',
-                          description: `Error in getting poll response count ${JSON.stringify(
+              Surveys.find({userId: req.user._id},
+                            (err2, surveyResponseCount) => {
+                              if (err2) {
+                                return res.status(404).json({
+                                  status: 'failed',
+                                  description: 'responses count not found'
+                                })
+                              }
+                              Polls.find({userId: req.user._id},
+                                (err, polls) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, `Error: ${err}`)
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: `Internal Server Error${JSON.stringify(
                                         err)}`
-                        })
-                      }
-                      var sum = 0
-                      if (pollResponseCount.length > 0) {
-                        for (var i = 0; i < pollResponseCount.length; i++) {
-                          sum = sum + pollResponseCount[i].count
-                        }
-                      }
-                      var sum1 = 0
-                      if (surveyResponseCount.length > 0) {
-                        for (var j = 0; j < surveyResponseCount.length; j++) {
-                          sum1 = sum1 + surveyResponseCount[j].isresponded
-                        }
-                      }
+                                    })
+                                  }
+                                  PollPage.find({userId: req.user._id},
+                                    (err, pollpages) => {
+                                      if (err) {
+                                        return res.status(404).json({
+                                          status: 'failed',
+                                          description: 'Polls not found'
+                                        })
+                                      }
+                                      PollResponse.aggregate(
+                                        [
+                                          {
+                                            $group: {
+                                              _id: '$pollId',
+                                              count: {$sum: 1}
+                                            }
+                                          }
+                                        ], (err, pollResponseCount) => {
+                                        if (err) {
+                                          return res.status(404).json({
+                                            status: 'failed',
+                                            description: `Error in getting poll response count ${JSON.stringify(
+                                                err)}`
+                                          })
+                                        }
+                                        var sum = 0
+                                        if (pollResponseCount.length > 0) {
+                                          for (var i = 0; i <
+                                            pollResponseCount.length; i++) {
+                                            sum = sum +
+                                                pollResponseCount[i].count
+                                          }
+                                        }
+                                        var sum1 = 0
+                                        if (surveyResponseCount.length > 0) {
+                                          for (var j = 0; j <
+                                            surveyResponseCount.length; j++) {
+                                            sum1 = sum1 +
+                                                surveyResponseCount[j].isresponded
+                                          }
+                                        }
 
-                      let datacounts = {
-                        broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
-                        survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
-                        poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0}
-                      }
-                      if (broadcastSentCount.length > 0) {
-                        datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
-                        if (broadcastSeenCount.length > 0) {
-                          datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
-                        }
-                      }
-                      if (surveySentCount.length > 0) {
-                        datacounts.survey.surveySentCount = surveySentCount[0].count
-                        if (surveySeenCount.length > 0) {
-                          datacounts.survey.surveySeenCount = surveySeenCount[0].count
-                          datacounts.survey.surveyResponseCount = sum1
-                        }
-                      }
-                      if (pollSentCount.length > 0) {
-                        datacounts.poll.pollSentCount = pollSentCount[0].count
-                        if (pollSeenCount.length > 0) {
-                          datacounts.poll.pollSeenCount = pollSeenCount[0].count
-                          datacounts.poll.pollResponseCount = sum
-                        }
-                      }
-                      logger.serverLog(TAG,
-                                    `counts for dashboard ${JSON.stringify(datacounts)}`)
-                      res.status(200).json({
-                        status: 'success',
-                        payload: datacounts
-                      })
-                    })
-                  })
-                })
-              })
+                                        let datacounts = {
+                                          broadcast: {
+                                            broadcastSentCount: 0,
+                                            broadcastSeenCount: 0
+                                          },
+                                          survey: {
+                                            surveySentCount: 0,
+                                            surveySeenCount: 0,
+                                            surveyResponseCount: 0
+                                          },
+                                          poll: {
+                                            pollSentCount: 0,
+                                            pollSeenCount: 0,
+                                            pollResponseCount: 0
+                                          }
+                                        }
+                                        if (broadcastSentCount.length > 0) {
+                                          datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
+                                          if (broadcastSeenCount.length > 0) {
+                                            datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
+                                          }
+                                        }
+                                        if (surveySentCount.length > 0) {
+                                          datacounts.survey.surveySentCount = surveySentCount[0].count
+                                          if (surveySeenCount.length > 0) {
+                                            datacounts.survey.surveySeenCount = surveySeenCount[0].count
+                                            datacounts.survey.surveyResponseCount = sum1
+                                          }
+                                        }
+                                        if (pollSentCount.length > 0) {
+                                          datacounts.poll.pollSentCount = pollSentCount[0].count
+                                          if (pollSeenCount.length > 0) {
+                                            datacounts.poll.pollSeenCount = pollSeenCount[0].count
+                                            datacounts.poll.pollResponseCount = sum
+                                          }
+                                        }
+                                        logger.serverLog(TAG,
+                                            `counts for dashboard ${JSON.stringify(
+                                              datacounts)}`)
+                                        res.status(200).json({
+                                          status: 'success',
+                                          payload: datacounts
+                                        })
+                                      })
+                                    })
+                                })
+                            })
             })
           })
         })
@@ -215,7 +244,7 @@ exports.likesVsSubscribers = function (req, res) {
         })
       }
       logger.serverLog(TAG,
-                    `counts for dashboard ${JSON.stringify(gotSubscribersCount)}`)
+        `counts for dashboard ${JSON.stringify(gotSubscribersCount)}`)
       let pagesPayload = []
       for (let i = 0; i < pages.length; i++) {
         pagesPayload.push({
@@ -276,95 +305,111 @@ exports.stats = function (req, res) {
     scheduledBroadcast: 0,
     username: req.user.name
   }
-  logger.serverLog(TAG, `req: ${JSON.stringify(req.body)}`)
-  Pages.count({connected: true, userId: req.user._id}, (err, pagesCount) => {
-    if (err) {
-      return res.status(500)
-        .json({status: 'failed', description: JSON.stringify(err)})
-    }
-    payload.pages = pagesCount
-    Pages.count({userId: req.user._id}, (err, allPagesCount) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
       if (err) {
-        return res.status(500)
-          .json({status: 'failed', description: JSON.stringify(err)})
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
       }
-      payload.totalPages = allPagesCount
-      CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        if (!companyUser) {
-          return res.status(404).json({
-            status: 'failed',
-            description: 'The user account does not belong to any company. Please contact support'
-          })
-        }
-        Subscribers.count({companyId: companyUser.companyId, isEnabledByPage: true}, (err2, subscribersCount) => {
-          if (err2) {
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      Pages.count({connected: true, companyId: companyUser.companyId},
+        (err, pagesCount) => {
+          if (err) {
             return res.status(500)
-            .json({status: 'failed', description: JSON.stringify(err2)})
+              .json({status: 'failed', description: JSON.stringify(err)})
           }
-          logger.serverLog(TAG, `subscribersCOunt: ${subscribersCount}`)
-          payload.subscribers = subscribersCount
-          Broadcasts.find({userId: req.user._id}).sort('datetime').limit(10).exec(
-          (err3, recentBroadcasts) => {
-            if (err3) {
-              return res.status(500)
-              .json({status: 'failed', description: JSON.stringify(err3)})
-            }
-            payload.recentBroadcasts = recentBroadcasts
-            Broadcasts.count({userId: req.user._id}, (err4, broadcastsCount) => {
-              if (err4) {
+          payload.pages = pagesCount
+          Pages.count({companyId: companyUser.companyId},
+            (err, allPagesCount) => {
+              if (err) {
                 return res.status(500)
-                .json({status: 'failed', description: JSON.stringify(err4)})
+                  .json({status: 'failed', description: JSON.stringify(err)})
               }
-              Polls.count({userId: req.user._id}, (err5, pollsCount) => {
-                if (err5) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: JSON.stringify(err5)
-                  })
-                }
-                Surveys.count({userId: req.user._id}, (err6, surveysCount) => {
-                  if (err6) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: JSON.stringify(err6)
-                    })
-                  }
-                  payload.activityChart = {
-                    messages: broadcastsCount,
-                    polls: pollsCount,
-                    surveys: surveysCount
-                  }
+              payload.totalPages = allPagesCount
 
-                  LiveChat.count({
-                    company_id: companyUser.companyId,
-                    status: 'unseen',
-                    format: 'facebook'
-                  }, (err7, unreadCount) => {
-                    if (err7) {
-                      return res.status(500).json({
-                        status: 'failed',
-                        description: JSON.stringify(err7)
+              Subscribers.count(
+                {companyId: companyUser.companyId, isEnabledByPage: true},
+                (err2, subscribersCount) => {
+                  if (err2) {
+                    return res.status(500).json(
+                      {status: 'failed', description: JSON.stringify(err2)})
+                  }
+                  logger.serverLog(TAG, `subscribersCOunt: ${subscribersCount}`)
+                  payload.subscribers = subscribersCount
+                  Broadcasts.find({companyId: companyUser.companyId})
+                    .sort('datetime')
+                    .limit(10)
+                    .exec(
+                      (err3, recentBroadcasts) => {
+                        if (err3) {
+                          return res.status(500).json({
+                            status: 'failed',
+                            description: JSON.stringify(err3)
+                          })
+                        }
+                        payload.recentBroadcasts = recentBroadcasts
+                        Broadcasts.count({companyId: companyUser.companyId},
+                          (err4, broadcastsCount) => {
+                            if (err4) {
+                              return res.status(500).json({
+                                status: 'failed',
+                                description: JSON.stringify(err4)
+                              })
+                            }
+                            Polls.count({companyId: companyUser.companyId},
+                              (err5, pollsCount) => {
+                                if (err5) {
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: JSON.stringify(err5)
+                                  })
+                                }
+                                Surveys.count(
+                                  {companyId: companyUser.companyId},
+                                  (err6, surveysCount) => {
+                                    if (err6) {
+                                      return res.status(500).json({
+                                        status: 'failed',
+                                        description: JSON.stringify(err6)
+                                      })
+                                    }
+                                    payload.activityChart = {
+                                      messages: broadcastsCount,
+                                      polls: pollsCount,
+                                      surveys: surveysCount
+                                    }
+
+                                    LiveChat.count({
+                                      company_id: companyUser.companyId,
+                                      status: 'unseen',
+                                      format: 'facebook'
+                                    }, (err7, unreadCount) => {
+                                      if (err7) {
+                                        return res.status(500).json({
+                                          status: 'failed',
+                                          description: JSON.stringify(err7)
+                                        })
+                                      }
+                                      payload.unreadCount = unreadCount
+                                      res.status(200).json({
+                                        status: 'success',
+                                        payload
+                                      })
+                                    })
+                                  })
+                              })
+                          })
                       })
-                    }
-                    payload.unreadCount = unreadCount
-                    res.status(200).json({
-                      status: 'success',
-                      payload
-                    })
-                  })
-                })
-              })
+                }
+              )
             })
-          })
-        }
-        )
-      })
+        })
     })
-  })
 }
