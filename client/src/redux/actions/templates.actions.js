@@ -250,7 +250,7 @@ export function deleteBroadcast (id, msg) {
   return (dispatch) => {
     callApi(`templates/deleteBroadcast/${id}`, 'delete')
       .then(res => {
-        console.log(res)
+        console.log('Response Delete', res)
         if (res.status === 'success') {
           msg.success('Broadcast deleted')
           dispatch(loadBroadcastsList())
