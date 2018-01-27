@@ -90,37 +90,21 @@ class Login extends React.Component {
                     <div className='m-login__head'>
                       <h3 className='m-login__title'>Sign In To KiboPush</h3>
                     </div>
-                    { (this.state.account_type == 'team') &&
+                    { (this.state.account_type != 'none') &&
                       <form onSubmit={this.onSubmit} className='m-login__form m-form' >
                       {this.state.error &&
                         <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
                       }
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                          onChange={this.check} />
-                        { this.state.domain && this.state.isurl === false &&
-                        <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
-                         }
-                      </div>
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
-                      </div>
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                          onChange={this.edit} />
-                      </div>
-                      <div className='m-login__form-action'>
-                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
-                          Sign In
-                        </button>
-                      </div>
-                    </form>  
-                    }
-                    { (this.state.account_type == 'individual') &&
-                      <form onSubmit={this.onSubmit} className='m-login__form m-form' >
-                      {this.state.error &&
-                        <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
+                      {
+                        (this.state.account_type == 'team') && <div className='form-group m-form__group'>
+                          <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                            onChange={this.check} />
+                          { this.state.domain && this.state.isurl === false &&
+                          <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
+                           }
+                        </div>
                       }
+                      
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
                       </div>

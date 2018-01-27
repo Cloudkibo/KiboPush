@@ -26,7 +26,8 @@ class Signup extends React.Component {
       ismatch: false,
       isurl: false,
       pwdlength: true,
-      error: false
+      error: false,
+      account_type: 'none',
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
@@ -146,6 +147,8 @@ class Signup extends React.Component {
                         Enter your details to create your account:
                       </div>
                     </div>
+                    {
+                      (this.state.account_type != 'none') && 
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
                       {this.state.error &&
                       <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>The specified email address is already in use with this domain name</bold></div>
@@ -153,19 +156,26 @@ class Signup extends React.Component {
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                          onChange={this.check} />
-                        { this.state.domain && this.state.isurl === false &&
-                        <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
-                         }
-                      </div>
+                      {
+                        (this.state.account_type == 'team') && 
+                        <div>
+                        <div className='form-group m-form__group'>
+                          <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                            onChange={this.check} />
+                          { this.state.domain && this.state.isurl === false &&
+                          <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
+                           }
+                        </div>
+
+                      
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Description' required ref='companyDescription' style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
+                      </div>
+                      }
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
@@ -198,6 +208,21 @@ class Signup extends React.Component {
                         </Link>
                       </div>
                     </form>
+                    }  
+                    { (this.state.account_type == 'none') &&
+                      
+                      <div className='m-login__form m-form' style={{marginLeft: 75}} >
+                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
+                         Create Individual Account
+                        </button>
+                        <br />
+                        <br />
+                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
+                          Create Team Account
+                        </button>
+                      </div>
+                    }
+                    
                   </div>
                 </div>
               </div>
