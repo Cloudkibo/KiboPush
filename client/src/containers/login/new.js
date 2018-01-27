@@ -21,7 +21,8 @@ class Login extends React.Component {
       isurl: false,
       redirect: true,
       error: false,
-      success: false
+      success: false,
+      account_type: 'none',
     }
     this.check = this.check.bind(this)
     this.edit = this.edit.bind(this)
@@ -89,7 +90,8 @@ class Login extends React.Component {
                     <div className='m-login__head'>
                       <h3 className='m-login__title'>Sign In To KiboPush</h3>
                     </div>
-                    <form onSubmit={this.onSubmit} className='m-login__form m-form'>
+                    { (this.state.account_type == 'team') &&
+                      <form onSubmit={this.onSubmit} className='m-login__form m-form' >
                       {this.state.error &&
                         <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
                       }
@@ -112,7 +114,42 @@ class Login extends React.Component {
                           Sign In
                         </button>
                       </div>
-                    </form>
+                    </form>  
+                    }
+                    { (this.state.account_type == 'individual') &&
+                      <form onSubmit={this.onSubmit} className='m-login__form m-form' >
+                      {this.state.error &&
+                        <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
+                      }
+                      <div className='form-group m-form__group'>
+                        <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
+                      </div>
+                      <div className='form-group m-form__group'>
+                        <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                          onChange={this.edit} />
+                      </div>
+                      <div className='m-login__form-action'>
+                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                          Sign In
+                        </button>
+                      </div>
+                    </form>  
+                    }
+
+                    { (this.state.account_type == 'none') &&
+                      
+                      <div className='m-login__form m-form' style={{marginLeft: 75}} >
+                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
+                          Individual Account
+                        </button>
+                        <br />
+                        <br />
+                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
+                          Team Account
+                        </button>
+                      </div>
+                    }
+                    
                   </div>
                 </div>
               </div>
