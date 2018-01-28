@@ -165,6 +165,8 @@ export function fetchUrlMeta (url) {
       console.log('Fetch Url Meta Response', res)
       if (res.status === 'success') {
         dispatch(urlMetaReceived(res.payload))
+      } else {
+        dispatch(urlMetaReceived({}))
       }
     })
   }

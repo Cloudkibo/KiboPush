@@ -26,7 +26,8 @@ import {
   isEmoji,
   getmetaurl,
   displayDate,
-  showDate
+  showDate,
+  validURL
 } from './utilities'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
@@ -681,7 +682,7 @@ class ChatBox extends React.Component {
                                                     <td style={{width: '70%'}}>
                                                       <div>
                                                         <a href={msg.url_meta.url} target='_blank'>
-                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                         </a>
                                                         <br />
                                                         <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
@@ -702,7 +703,7 @@ class ChatBox extends React.Component {
                                                     <td>
                                                       <div>
                                                         <a href={msg.url_meta.url} target='_blank'>
-                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                         </a>
                                                         <br />
                                                         {
@@ -731,7 +732,7 @@ class ChatBox extends React.Component {
                                         <div className='m-messenger__message-username'>
                                           {this.props.currentSession.subscriber_id.firstName} wrote
                                         </div>
-                                        <div className='m-messenger__message-text'>
+                                        <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                           {msg.payload.text}
                                         </div>
                                       </div>
@@ -845,7 +846,7 @@ class ChatBox extends React.Component {
                                       : msg.payload.componentType === 'gif'
                                       ? <div className='m-messenger__message-content'>
                                         <img
-                                          src={msg.payload.fileurl.url}
+                                          src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
                                         />
                                       </div>
@@ -884,7 +885,7 @@ class ChatBox extends React.Component {
                                                       <td style={{width: '70%'}}>
                                                         <div>
                                                           <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
                                                           <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
@@ -905,7 +906,7 @@ class ChatBox extends React.Component {
                                                       <td>
                                                         <div>
                                                           <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
                                                           {
@@ -922,11 +923,17 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                         : <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-text'>
-                                            <a href={msg.payload.text} target='_blank'>
-                                              <p>{msg.payload.text}</p>
-                                            </a>
-                                          </div>
+                                          {
+                                            validURL(msg.payload.text)
+                                            ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                <p>{msg.payload.text}</p>
+                                              </a>
+                                            </div>
+                                            : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
+                                            </div>
+                                          }
                                         </div>
                                       )
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
