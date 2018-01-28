@@ -924,7 +924,7 @@ class ChatBox extends React.Component {
                                         </div>
                                         : <div className='m-messenger__message-content'>
                                           {
-                                            validURL(msg.payload.text)
+                                            validURL(msg.payload.text) === true
                                             ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
                                                 <p>{msg.payload.text}</p>
