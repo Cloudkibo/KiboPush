@@ -49,8 +49,8 @@ class Signup extends React.Component {
     if (nextprops.successSignup) {
       console.log('i am called')
       this.props.history.push({
-        pathname: '/connectFb'
-
+        pathname: '/connectFb',
+        state: { account_type: this.state.account_type }
       })
     } else if (nextprops.errorSignup) {
       console.log('nextprops.errorSignup', nextprops.errorSignup.errors)
