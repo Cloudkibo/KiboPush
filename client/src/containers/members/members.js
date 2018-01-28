@@ -130,6 +130,7 @@ class Members extends React.Component {
                       </h3>
                     </div>
                   </div>
+                  {this.props.user.permissions.invitationsPermission &&
                   <div className='m-portlet__head-tools'>
                     <Link to='newInvitation'>
                       <button
@@ -143,6 +144,7 @@ class Members extends React.Component {
                       </button>
                     </Link>
                   </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   <div
@@ -265,7 +267,7 @@ class Members extends React.Component {
                                       className='m-datatable__cell'>
                                       <span style={{width: '150px'}}>
                                         {
-                                          member.role !== 'buyer' &&
+                                          member.role !== 'buyer' && this.props.user.permissions.updateRolePermission &&
                                           <span>
                                             {
                                             member.role === 'admin'
@@ -288,14 +290,17 @@ class Members extends React.Component {
                                           }
                                           </span>
                                         }
-                                        <button className='btn btn-primary'
-                                          style={{
-                                            float: 'left',
-                                            margin: 2
-                                          }}
-                                          onClick={() => this.removeMember(
-                                                  member)}>Delete
-                                        </button>
+                                        {
+                                          member.role !== 'buyer' &&
+                                          <button className='btn btn-primary'
+                                                  style={{
+                                                    float: 'left',
+                                                    margin: 2
+                                                  }}
+                                                  onClick={() => this.removeMember(
+                                                    member)}>Delete
+                                          </button>
+                                        }
                                       </span>
                                     </td>
                                   </tr>
@@ -334,6 +339,7 @@ class Members extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    user: (state.basicInfo.user),
     members: (state.membersInfo.members)
   }
 }
