@@ -78,7 +78,7 @@ class Invitations extends React.Component {
   }
 
   cancelInvitation (invitation) {
-    this.props.deleteMember(invitation)
+    this.props.cancelinvitation(invitation)
   }
 
   render () {
@@ -288,6 +288,7 @@ class Invitations extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    user: (state.basicInfo.user),
     invitations: (state.invitationsInfo.invitations)
   }
 }

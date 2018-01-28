@@ -77,6 +77,7 @@ const all = {
       promoteToAdminPermission: true,
       inviteAgentPermission: true,
       deleteAgentPermission: true,
+      updateRolePermission: true,
       invitationsPermission: true,
       broadcastPermission: true,
       autopostingPermission: true,
