@@ -46,7 +46,7 @@ router.post('/', function (req, res, next) {
 
       let token = auth.signToken(user._id)
       res.json({token: token})
-    })(req, res, next)g
+    })(req, res, next)
   }
 })
 
