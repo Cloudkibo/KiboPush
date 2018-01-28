@@ -25,6 +25,7 @@ import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '
 class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
+    props.getuserdetails()
     this.state = {
       isShowingModal: false,
       steps: [],
