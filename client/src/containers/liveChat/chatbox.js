@@ -944,7 +944,7 @@ class ChatBox extends React.Component {
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-text'>
+                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -992,7 +992,7 @@ class ChatBox extends React.Component {
                   <div>
                     <div style={{display: 'inline-block'}} data-tip='emoticons'>
                       <i style={styles.iconclass} onClick={() => {
-                        this.refs.selectFile.click()
+                        this.refs.selectImage.click()
                       }}>
                         <i style={{
                           fontSize: '20px',
@@ -1004,6 +1004,8 @@ class ChatBox extends React.Component {
                           textAlign: 'center'
                         }} className='fa fa-file-image-o' />
                       </i>
+                      <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+                        ref='selectImage' style={styles.inputf} />
                     </div>
                     <div style={{display: 'inline-block'}} data-tip='attachments'>
                       { this.state.uploadedId !== ''
