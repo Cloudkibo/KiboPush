@@ -845,7 +845,7 @@ class ChatBox extends React.Component {
                                       : msg.payload.componentType === 'gif'
                                       ? <div className='m-messenger__message-content'>
                                         <img
-                                          src={msg.payload.fileurl}
+                                          src={msg.payload.fileurl.url}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
                                         />
                                       </div>
@@ -923,7 +923,9 @@ class ChatBox extends React.Component {
                                         </div>
                                         : <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-text'>
-                                            {msg.payload.text}
+                                            <a href={msg.payload.text} target='_blank'>
+                                              <p>{msg.payload.text}</p>
+                                            </a>
                                           </div>
                                         </div>
                                       )
