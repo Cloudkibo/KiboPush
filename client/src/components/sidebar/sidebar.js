@@ -434,7 +434,7 @@ class Sidebar extends Component {
               {this.showPagesItem()}
               {this.showSubscribersItem()}
               {this.showWelcomeMessageItem()}
-              {this.state.subscribeToMessenger  && this.props.user.plan.subscribe_to_messenger &&
+              {this.props.user && this.state.subscribeToMessenger  && this.props.user.plan.subscribe_to_messenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-alarm' />
@@ -444,7 +444,7 @@ class Sidebar extends Component {
               }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.state.messengerLink  && this.props.user.plan.messenger_links &&
+              {this.props.user && this.state.messengerLink  && this.props.user.plan.messenger_links &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-share' />
@@ -452,7 +452,7 @@ class Sidebar extends Component {
                 </Link>
               </li>
               }
-              {this.state.phoneNumber && this.props.user.plan.customer_matching &&
+              {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-file' />
