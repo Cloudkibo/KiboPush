@@ -30,11 +30,20 @@ class Login extends React.Component {
   }
   onSubmit (event) {
     event.preventDefault()
-    let data = {
-      email: this.refs.email.value,
-      domain: this.refs.domain.value,
-      password: this.refs.password.value
+    var data = {}
+    if(this.state.account_type == 'team'){
+      data = {
+        email: this.refs.email.value,
+        domain: this.refs.domain.value,
+        password: this.refs.password.value
+      }
+    }else{
+      data = {
+        email: this.refs.email.value,
+        password: this.refs.password.value
+      }
     }
+    
     this.props.logIn(data, this.msg)
   }
   check () {
