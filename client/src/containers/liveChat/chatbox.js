@@ -924,7 +924,7 @@ class ChatBox extends React.Component {
                                         </div>
                                         : <div className='m-messenger__message-content'>
                                           {
-                                            validURL(msg.payload.text) === true
+                                            validURL(msg.payload.text)
                                             ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
                                                 <p>{msg.payload.text}</p>
@@ -943,11 +943,21 @@ class ChatBox extends React.Component {
                                         </div>
                                       </div>
                                       : <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                            {msg.payload.text}
+                                        {
+                                          validURL(msg.payload.text)
+                                          ? <div className='m-messenger__message-content'>
+                                            <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                <p>{msg.payload.text}</p>
+                                              </a>
+                                            </div>
                                           </div>
-                                        </div>
+                                          : <div className='m-messenger__message-content'>
+                                            <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
+                                            </div>
+                                          </div>
+                                        }
                                         {
                                           msg.payload.buttons && msg.payload.buttons.length > 0 &&
                                           msg.payload.buttons.map((b, i) => (
