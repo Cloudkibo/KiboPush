@@ -405,7 +405,7 @@ class Menu extends React.Component {
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        if (temp[index[1]].submenu[index[2]].submenu[index[3]].paylaod) {
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
