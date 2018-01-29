@@ -49,6 +49,7 @@ class Card extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    this.updateCardDetails(this.props)
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
