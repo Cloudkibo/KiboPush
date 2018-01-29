@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import {
@@ -19,70 +19,15 @@ class WelcomeMessage extends React.Component {
       filterValue: ''
     }
     props.loadMyPagesList()
-    this.onSurveyClick = this.onSurveyClick.bind(this)
-    this.displayData = this.displayData.bind(this)
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
-    this.onFilter = this.onFilter.bind(this)
-    this.gotoView = this.gotoView.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
   }
-  onSurveyClick (e, page) {
-    console.log('Page Click', page)
-  }
-  showDropDown () {
-    this.setState({showDropDown: true})
-  }
-
-  hideDropDown () {
-    this.setState({showDropDown: false})
-  }
-  componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps called')
-    if (nextProps.pages) {
-      // this.initializeSwitch(false)
-    }
-  }
-  displayData (n, surveys) {
-    console.log(surveys)
-    this.setState({surveysData: surveys})
-    console.log('surveysDatainside', this.state.surveysData)
-  }
-  onFilter (e) {
-    console.log(e.target.value)
-    this.setState({filterValue: e.target.value})
-    var filtered = []
-    if (e.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.surveys[i].category.length > 1) {
-            filtered.push(this.props.surveys[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.surveys[i].category.length; j++) {
-            if (this.props.surveys[i].category[j] === e.target.value) {
-              filtered.push(this.props.surveys[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.surveys
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
-  }
-  gotoView () {
-    this.props.history.push({
-      pathname: `/surveys`
-    })
-  }
-  initializeSwitch (state) {
+  initializeSwitch (state, id) {
     var self = this
+    var temp = '#' + id
     /* eslint-disable */
-    $("[name='switch']").bootstrapSwitch({
+    $(temp).bootstrapSwitch({
       /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
@@ -90,7 +35,7 @@ class WelcomeMessage extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       console.log('event', event.target.attributes.id.nodeValue)
       console.log('state', state)
@@ -156,6 +101,9 @@ class WelcomeMessage extends React.Component {
                                       {
                                        this.props.pages.map((page, i) => (
                                          <div className='m-widget4__item' key={i}>
+                                           <div className='m-widget4__img m-widget4__img--pic'>
+                                             <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} />
+                                           </div>
                                            <div className='m-widget4__info'>
                                              <span className='m-widget4__title'>
                                                {page.pageName}
@@ -167,7 +115,7 @@ class WelcomeMessage extends React.Component {
                                                    <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                                  </div>
                                                </div>
-                                               {this.initializeSwitch(page.isWelcomeMessageEnabled)}
+                                               {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
                                              </span>
                                            </div>
                                            {page.welcomeMessage && page.welcomeMessage.length > 0
