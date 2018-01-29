@@ -97,7 +97,7 @@ exports.getfbMessage = function (req, res) {
 
   logger.serverLog(TAG,
     `something received from facebook ${JSON.stringify(req.body)}`)
-  if (req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].prior_message && req.body.entry[0].messaging[0].prior_message.source === 'customer_matching') {
+  if (req.body.entry && req.body.entry[0].messaging && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].prior_message && req.body.entry[0].messaging[0].prior_message.source === 'customer_matching') {
     logger.serverLog(TAG,
       `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
     PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier}, {
