@@ -23,10 +23,11 @@ class WelcomeMessage extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
   }
-  initializeSwitch (state) {
+  initializeSwitch (state, id) {
     var self = this
+    var temp = '#' + id
     /* eslint-disable */
-    $("[name='switch']").bootstrapSwitch({
+    $(temp).bootstrapSwitch({
       /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
@@ -34,7 +35,7 @@ class WelcomeMessage extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       console.log('event', event.target.attributes.id.nodeValue)
       console.log('state', state)
@@ -114,7 +115,7 @@ class WelcomeMessage extends React.Component {
                                                    <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                                  </div>
                                                </div>
-                                               {this.initializeSwitch(page.isWelcomeMessageEnabled)}
+                                               {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
                                              </span>
                                            </div>
                                            {page.welcomeMessage && page.welcomeMessage.length > 0
