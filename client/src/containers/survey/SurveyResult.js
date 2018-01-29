@@ -63,11 +63,11 @@ class SurveyResult extends React.Component {
   }
   getFile () {
     console.log('this.props.pages', this.props.pages[0])
-    var jsonStructure = {}
     console.log('this.props.responses', this.props.responses)
     console.log('this.props.questions', this.props.questions)
     let usersPayload = []
     for (let i = 0; i < this.props.responses.length; i++) {
+      var jsonStructure = {}
       console.log('this.props.responses[i].subscriberId._id', this.props.responses[i].subscriberId.firstName)
       console.log('etes', this.exists(this.props.responses[i].subscriberId._id))
       if (this.exists(this.props.responses[i].subscriberId._id) === false) {
