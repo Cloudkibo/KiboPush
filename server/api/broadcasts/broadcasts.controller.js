@@ -206,22 +206,22 @@ exports.getfbMessage = function (req, res) {
                             })
                         })
                         // const messageData = {
-                        //   text: page.welcomeMessage
-                        // }
-                        // const data = {
-                        //   recipient: {id: response.body.id}, // this is the subscriber id
-                        //   message: messageData
-                        // }
-                        // logger.serverLog(TAG,
-                        //   `response.body.access_token${JSON.stringify(page.accessToken)}`)
-                        // needle.post(
-                        //   `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
-                        //   data, (err4, respp) => {
-                        //     logger.serverLog(TAG,
-                        //       `Sending survey to subscriber response ${JSON.stringify(
-                        //         respp.body)}`)
-                        //     if (err4) {
-                        //     }
+                      //   text: page.welcomeMessage
+                      // }
+                      // const data = {
+                      //   recipient: {id: response.body.id}, // this is the subscriber id
+                      //   message: messageData
+                      // }
+                      // logger.serverLog(TAG,
+                      //   `response.body.access_token${JSON.stringify(page.accessToken)}`)
+                      // needle.post(
+                      //   `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                      //   data, (err4, respp) => {
+                      //     logger.serverLog(TAG,
+                      //       `Sending survey to subscriber response ${JSON.stringify(
+                      //         respp.body)}`)
+                      //     if (err4) {
+                      //     }
                         //   })
                       }
                       const payload = {
@@ -260,7 +260,7 @@ exports.getfbMessage = function (req, res) {
                     } else {
                       logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
                     }
-                  //  })
+                    //  })
                     sendautomatedmsg(event, page)
                   }
                 })
