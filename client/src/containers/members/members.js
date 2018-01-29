@@ -256,7 +256,7 @@ class Members extends React.Component {
                                     <td data-field='KeyWords'
                                       className='m-datatable__cell'>
                                       <span
-                                        style={{width: '150px'}}>{member.userId.email}</span>
+                                        style={{width: '150px', overflow: 'visible'}}>{member.userId.email}</span>
                                     </td>
                                     <td data-field='KeyWords'
                                       className='m-datatable__cell'>
@@ -293,12 +293,12 @@ class Members extends React.Component {
                                         {
                                           member.role !== 'buyer' &&
                                           <button className='btn btn-primary'
-                                                  style={{
-                                                    float: 'left',
-                                                    margin: 2
-                                                  }}
-                                                  onClick={() => this.removeMember(
-                                                    member)}>Delete
+                                            style={{
+                                              float: 'left',
+                                              margin: 2
+                                            }}
+                                            onClick={() => this.removeMember(
+                                              member)}>Delete
                                           </button>
                                         }
                                       </span>

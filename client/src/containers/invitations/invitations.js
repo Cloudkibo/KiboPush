@@ -237,7 +237,7 @@ class Invitations extends React.Component {
                                     <td data-field='KeyWords'
                                       className='m-datatable__cell'>
                                       <span
-                                        style={{width: '150px'}}>{invitation.email}</span>
+                                        style={{width: '150px', overflow: 'visible'}}>{invitation.email}</span>
                                     </td>
                                     <td data-field='Action'
                                       className='m-datatable__cell'>
