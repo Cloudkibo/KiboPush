@@ -59,7 +59,7 @@ class SurveyResult extends React.Component {
       }
     }
     responseData.push(temp)
-    return temp
+    return responseData
   }
   getFile () {
     console.log('this.props.pages', this.props.pages[0])
