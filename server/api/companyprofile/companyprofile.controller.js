@@ -76,7 +76,7 @@ exports.invite = function (req, res) {
           }
 
           if (gotCount > 0) {
-            return res.status(500).json({
+            return res.status(200).json({
               status: 'failed',
               description: `${req.body.name} is already invited.`
             })
@@ -91,7 +91,7 @@ exports.invite = function (req, res) {
                 }
 
                 if (gotCountAgentWithEmail > 0) {
-                  return res.status(500).json({
+                  return res.status(200).json({
                     status: 'failed',
                     description: `${req.body.name} is already on KiboPush.`
                   })
@@ -106,7 +106,7 @@ exports.invite = function (req, res) {
                       }
 
                       if (gotCountAgent > 0) {
-                        return res.status(500).json({
+                        return res.status(200).json({
                           status: 'failed',
                           description: `${req.body.name} is already a member.`
                         })

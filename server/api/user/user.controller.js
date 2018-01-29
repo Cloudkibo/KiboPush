@@ -542,7 +542,7 @@ exports.joinCompany = function (req, res) {
           description: 'Invitation token invalid or expired. Please contact admin to invite you again.'
         })
       }
-      let role = 'agent'
+      let role = invitationToken.role
       let accountData = new Users({
         name: req.body.name,
         email: req.body.email,
