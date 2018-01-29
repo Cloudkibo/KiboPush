@@ -482,7 +482,11 @@ function createSession (page, subscriber, event) {
           saveLiveChat(page, subscriber, sessionSaved, event)
         })
       } else {
-        saveLiveChat(page, subscriber, session, event)
+        session.last_activity_time = Date.now()
+        session.save((err) => {
+          if (err) logger.serverLog(TAG, err)
+          saveLiveChat(page, subscriber, session, event)
+        })
       }
     })
 }
@@ -817,6 +821,10 @@ function sendautomatedmsg (req, page) {
                               return logger.serverLog(TAG,
                                 `At save chat${JSON.stringify(err)}`)
                             }
+                            session.last_activity_time = Date.now()
+                            session.save((err) => {
+                              if (err) logger.serverLog(TAG, err)
+                            })
                             logger.serverLog(TAG,
                               'Chat message saved for workflow sent')
                           })
