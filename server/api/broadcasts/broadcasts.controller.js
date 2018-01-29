@@ -139,7 +139,7 @@ exports.getfbMessage = function (req, res) {
         }
         if (event.message &&
           (event.message.is_echo === false || !event.message.is_echo)) {
-          itIsMessage = true
+          // itIsMessage = true
         }
         if (itIsMessage) {
           const sender = event.sender.id
