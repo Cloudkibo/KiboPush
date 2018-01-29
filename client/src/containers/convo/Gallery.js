@@ -31,7 +31,7 @@ class Gallery extends React.Component {
     if (this.props.cards && this.props.cards.length > 0) {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
-        tmp.push({element: <Card id={k} buttons={this.props.cards[k].buttons} img={this.props.cards[k].image_url} title={this.props.cards[k].title} subtitle={this.props.cards[k].subtitle} handleCard={this.handleCard} />, key: k})
+        tmp.push({element: <Card id={k} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
       }
       this.setState({cards: tmp})
     }

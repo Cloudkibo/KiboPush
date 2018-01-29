@@ -532,10 +532,10 @@ class OperationalDashboard extends React.Component {
                                            this.state.usersData.map((user, i) => (
                                              <div className='m-widget4__item' key={i}>
                                                <div className='m-widget4__img m-widget4__img--pic'>
-                                                 <img alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/user.png'} />
+                                                 <img alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} />
                                                </div>
                                                <div className='m-widget4__info'>
-                                                 <span className='m-widget4__title'>.
+                                                 <span className='m-widget4__title'>
                                                    {user.name}
                                                  </span>
                                                  {user.email &&
