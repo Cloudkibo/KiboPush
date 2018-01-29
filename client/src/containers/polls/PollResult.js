@@ -33,11 +33,13 @@ class PollResult extends React.Component {
     var jsonStructure = {}
     console.log('pagesname', this.props.pages)
     for (let i = 0; i < this.props.responsesfull.length; i++) {
+      console.log('this.props.responsesfull[i].subscriberId.firstName', this.props.responsesfull[i].subscriberId.firstName)
       for (let j = 0; j < this.props.pages.length; j++) {
         if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
           jsonStructure.PageName = this.props.pages[j].pageName
         }
       }
+      console.log('this.props.responsesfull[i].subscriberId.firstName', this.props.responsesfull[i].subscriberId.firstName)
       jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
       jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
       jsonStructure['Response'] = this.props.responsesfull[i].response
