@@ -11,7 +11,8 @@ let FacebookSessionSchema = new Schema({
   page_id: {type: Schema.ObjectId, ref: 'pages'},
   company_id: String, // this is admin id till we have companies
   status: {type: String, default: 'new'},
-  request_time: {type: Date, default: Date.now}
+  request_time: {type: Date, default: Date.now},
+  last_activity_time: {type: Date, default: Date.now}
 })
 
 module.exports = mongoose.model('sessions', FacebookSessionSchema)

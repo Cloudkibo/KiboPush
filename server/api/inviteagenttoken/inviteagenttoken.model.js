@@ -9,6 +9,7 @@ var InviteagenttokenSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   createdAt: {type: Date, required: true, default: Date.now, expires: '120h'},
   companyName: String,
+  role: String,
   domain: String
 })
 

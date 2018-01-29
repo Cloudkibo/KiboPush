@@ -33,11 +33,13 @@ class InviteMembers extends React.Component {
       email: '',
       steps: [],
       alertMessage: '',
-      alertType: ''
+      alertType: '',
+      timeout: 3000
     }
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
+    this.clearAlert = this.clearAlert.bind(this)
   }
 
   componentDidMount () {
@@ -81,11 +83,13 @@ class InviteMembers extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
+      console.log(nextProps.successMessage)
       this.setState({
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
     } else if (nextProps.errorMessage) {
+      console.log(nextProps.errorMessage)
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
@@ -121,6 +125,15 @@ class InviteMembers extends React.Component {
     // this.props.history.push({
     //   pathname: '/workflows'
     // })
+  }
+
+  clearAlert () {
+    console.log('clear Alert called')
+    this.setState({
+      alertMessage: '',
+      alertType: ''
+    })
+    this.props.clearAlertMessages()
   }
 
   changeName (event) {
@@ -268,7 +281,7 @@ class InviteMembers extends React.Component {
                           {
                             this.state.alertMessage !== '' &&
                             <center>
-                              <Alert type={this.state.alertType}>
+                              <Alert type={this.state.alertType} timeout={this.state.timeout} showIcon={this.state.alertMessage !== ''} onDismiss={this.clearAlert}>
                                 {this.state.alertMessage}
                               </Alert>
                             </center>

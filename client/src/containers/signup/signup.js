@@ -53,8 +53,8 @@ class Signup extends React.Component {
         state: { account_type: this.state.account_type }
       })
     } else if (nextprops.errorSignup) {
-      console.log('nextprops.errorSignup', nextprops.errorSignup.errors)
-      this.setState({error: true})
+      console.log('nextprops.errorSignup', nextprops.errorSignup)
+      this.setState({error: nextprops.errorSignup})
     }
   }
   handlePwdChange (event) {
@@ -104,6 +104,7 @@ class Signup extends React.Component {
     this.setState({pwd_color: color})
   }
   onSubmit (event) {
+    this.setState({error: false})
     event.preventDefault()
     if (this.refs.password.value.length > 6 && this.refs.password.value === this.refs.rpassword.value) {
       let data = {}
@@ -124,7 +125,7 @@ class Signup extends React.Component {
           password: this.refs.password.value,
         }
       }
-      
+
       this.props.signUp(data)
     }
   }
@@ -159,16 +160,16 @@ class Signup extends React.Component {
                       </div>
                     </div>
                     {
-                      (this.state.account_type != 'none') && 
+                      (this.state.account_type != 'none') &&
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
                       {this.state.error &&
-                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>The specified email address is already in use with this domain name</bold></div>
+                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>{this.state.error}</bold></div>
                       }
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       {
-                        (this.state.account_type == 'team') && 
+                        (this.state.account_type == 'team') &&
                         <div>
                         <div className='form-group m-form__group'>
                           <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
@@ -178,7 +179,7 @@ class Signup extends React.Component {
                            }
                         </div>
 
-                      
+
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
@@ -219,9 +220,9 @@ class Signup extends React.Component {
                         </Link>
                       </div>
                     </form>
-                    }  
+                    }
                     { (this.state.account_type == 'none') &&
-                      
+
                       <div className='m-login__form m-form' style={{marginLeft: 75}} >
                         <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
                          Create Individual Account
@@ -233,7 +234,7 @@ class Signup extends React.Component {
                         </button>
                       </div>
                     }
-                    
+
                   </div>
                 </div>
               </div>

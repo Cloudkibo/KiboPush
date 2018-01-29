@@ -56,7 +56,7 @@ class Invitations extends React.Component {
   }
 
   handlePageClick (data) {
-    this.displayData(data.selected, this.state.workflowsDataAll)
+    this.displayData(data.selected, this.state.invitationsDataAll)
   }
 
   componentDidMount () {
