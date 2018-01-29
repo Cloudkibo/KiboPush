@@ -172,6 +172,8 @@ exports.getfbMessage = function (req, res) {
                   //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                   //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
+                    if (event.sender && event.recipient && event.postback && event.postback.payload &&
+                      event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                     if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
                       logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
                       logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
@@ -260,6 +262,7 @@ exports.getfbMessage = function (req, res) {
                   }
                   //  })
                   sendautomatedmsg(event, page)
+                }
                 })
               })
             })
