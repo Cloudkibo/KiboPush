@@ -63,6 +63,7 @@ export function loadCategoriesList () {
   }
 }
 export function showSurveys (data) {
+  console.log('Show Surveys', data)
   data = data.reverse()
   return {
     type: ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST,
@@ -77,6 +78,7 @@ export function loadSurveysList () {
   }
 }
 export function showPolls (data) {
+  console.log('Show Polls', data)
   data = data.reverse()
   return {
     type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST,
