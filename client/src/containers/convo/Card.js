@@ -22,6 +22,7 @@ class Card extends React.Component {
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -93,7 +94,7 @@ class Card extends React.Component {
       fileName: file.name,
       type: file.type,
       image_url: '',
-      size: file.size}, this.updateImageUrl)
+      size: file.size}, this.updateImageUrl, this.setLoading)
   }
 
   handleChange (event) {
@@ -181,6 +182,9 @@ class Card extends React.Component {
       buttons: this.state.button})
   }
 
+  setLoading () {
+    this.setState({loading: false})
+  }
   updateImageUrl (data) {
     console.log('Update Card Image Url')
     console.log(data)
@@ -200,7 +204,6 @@ class Card extends React.Component {
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
-    this.setState({loading: false})
   }
 
   render () {

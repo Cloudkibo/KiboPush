@@ -23,6 +23,7 @@ class Card extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.updateCardDetails = this.updateCardDetails.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
       imgSrc: '',
       title: '',
@@ -38,6 +39,9 @@ class Card extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
+  }
+  setLoading () {
+    this.setState({loading: false})
   }
   updateCardDetails (cardProps) {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
@@ -95,7 +99,7 @@ class Card extends React.Component {
       fileName: file.name,
       type: file.type,
       image_url: '',
-      size: file.size}, this.updateImageUrl)
+      size: file.size}, this.updateImageUrl, this.setLoading)
   }
 
   handleChange (event) {
@@ -202,7 +206,6 @@ class Card extends React.Component {
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
-    this.setState({loading: false})
   }
 
   render () {
