@@ -172,40 +172,38 @@ exports.getfbMessage = function (req, res) {
                   //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
                   //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
-                    if (event.sender && event.recipient && event.postback && event.postback.payload &&
-                      event.postback.payload === '<GET_STARTED_PAYLOAD>') {
-                      if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
-                        page.welcomeMessage.forEach(payloadItem => {
-                          let messageData = utility.prepareSendAPIPayload(
-                            response.body.id,
-                            payloadItem, false)
+                    if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
+                      logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
+                      page.welcomeMessage.forEach(payloadItem => {
+                        let messageData = utility.prepareSendAPIPayload(
+                          response.body.id,
+                          payloadItem, false)
 
-                          logger.serverLog(TAG,
-                            `Payload for Messenger Send API for test: ${JSON.stringify(
-                              messageData)}`)
-                          request(
-                            {
-                              'method': 'POST',
-                              'json': true,
-                              'formData': messageData,
-                              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                              page.accessToken
-                            },
-                            function (err, res) {
-                              if (err) {
-                                return logger.serverLog(TAG,
-                                  `At send test message broadcast ${JSON.stringify(err)}`)
-                              } else {
-                                logger.serverLog(TAG,
-                                  `At send test message broadcast response ${JSON.stringify(
-                                    res)}`)
-                              }
-                            })
-                        })
-                        // const messageData = {
+                        logger.serverLog(TAG,
+                          `Payload for Messenger Send API for test: ${JSON.stringify(
+                            messageData)}`)
+                        request(
+                          {
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                            page.accessToken
+                          },
+                          function (err, res) {
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At send test message broadcast ${JSON.stringify(err)}`)
+                            } else {
+                              logger.serverLog(TAG,
+                                `At send test message broadcast response ${JSON.stringify(
+                                  res)}`)
+                            }
+                          })
+                      })
+                      // const messageData = {
                       //   text: page.welcomeMessage
                       // }
                       // const data = {
@@ -222,47 +220,46 @@ exports.getfbMessage = function (req, res) {
                       //         respp.body)}`)
                       //     if (err4) {
                       //     }
-                        //   })
-                      }
-                      const payload = {
-                        firstName: subsriber.first_name,
-                        lastName: subsriber.last_name,
-                        locale: subsriber.locale,
-                        gender: subsriber.gender,
-                        userId: page.userId,
-                        provider: 'facebook',
-                        timezone: subsriber.timezone,
-                        profilePic: subsriber.profile_pic,
-                        companyId: page.companyId,
-                        //  coverPhoto: coverphoto.source,
-                        pageScopedId: '',
-                        email: '',
-                        senderId: sender,
-                        pageId: page._id,
-                        isSubscribed: true
-                      }
-
-                      Subscribers.findOne({senderId: sender}, (err, subscriber) => {
-                        if (err) logger.serverLog(TAG, err)
-                        if (subscriber === null) {
-                          // subsriber not found, create subscriber
-                          Subscribers.create(payload, (err2, subscriberCreated) => {
-                            if (err2) {
-                              logger.serverLog(TAG, err2)
-                            }
-                            logger.serverLog(TAG, 'new Subscriber added')
-                            if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriberCreated, event) }
-                          })
-                        } else {
-                          if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriber, event) }
-                        }
-                      })
-                    } else {
-                      logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                      //   })
                     }
-                    //  })
-                    sendautomatedmsg(event, page)
+                    const payload = {
+                      firstName: subsriber.first_name,
+                      lastName: subsriber.last_name,
+                      locale: subsriber.locale,
+                      gender: subsriber.gender,
+                      userId: page.userId,
+                      provider: 'facebook',
+                      timezone: subsriber.timezone,
+                      profilePic: subsriber.profile_pic,
+                      companyId: page.companyId,
+                      //  coverPhoto: coverphoto.source,
+                      pageScopedId: '',
+                      email: '',
+                      senderId: sender,
+                      pageId: page._id,
+                      isSubscribed: true
+                    }
+
+                    Subscribers.findOne({senderId: sender}, (err, subscriber) => {
+                      if (err) logger.serverLog(TAG, err)
+                      if (subscriber === null) {
+                        // subsriber not found, create subscriber
+                        Subscribers.create(payload, (err2, subscriberCreated) => {
+                          if (err2) {
+                            logger.serverLog(TAG, err2)
+                          }
+                          logger.serverLog(TAG, 'new Subscriber added')
+                          if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriberCreated, event) }
+                        })
+                      } else {
+                        if (!(event.postback && event.postback.title === 'Get Started')) { createSession(page, subscriber, event) }
+                      }
+                    })
+                  } else {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
                   }
+                  //  })
+                  sendautomatedmsg(event, page)
                 })
               })
             })
