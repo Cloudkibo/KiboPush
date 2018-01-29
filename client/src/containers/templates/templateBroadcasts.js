@@ -19,7 +19,8 @@ class TemplateBroadcasts extends React.Component {
       totalLength: 0,
       filterValue: '',
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      filteredByCategory: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -98,13 +99,25 @@ class TemplateBroadcasts extends React.Component {
   searchBroadcast (event) {
     var filtered = []
     if (event.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.broadcasts[i])
+      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+        for (let i = 0; i < this.state.filteredByCategory.length; i++) {
+          if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+            filtered.push(this.state.filteredByCategory[i])
+          }
+        }
+      } else {
+        for (let i = 0; i < this.props.broadcasts.length; i++) {
+          if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+            filtered.push(this.props.broadcasts[i])
+          }
         }
       }
     } else {
-      filtered = this.props.broadcasts
+      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+        filtered = this.state.filteredByCategory
+      } else {
+        filtered = this.props.broadcasts
+      }
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
@@ -131,6 +144,7 @@ class TemplateBroadcasts extends React.Component {
     } else {
       filtered = this.props.broadcasts
     }
+    this.setState({filteredByCategory: filtered})
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
