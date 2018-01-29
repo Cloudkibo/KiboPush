@@ -30,9 +30,9 @@ class PollResult extends React.Component {
   }
   getFile () {
     let usersPayload = []
-    var jsonStructure = {}
     console.log('pagesname', this.props.pages)
     for (let i = 0; i < this.props.responsesfull.length; i++) {
+      var jsonStructure = {}
       console.log('this.props.responsesfull[i].subscriberId.firstName', this.props.responsesfull[i].subscriberId.firstName)
       for (let j = 0; j < this.props.pages.length; j++) {
         if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
