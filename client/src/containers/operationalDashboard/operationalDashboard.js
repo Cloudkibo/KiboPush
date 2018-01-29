@@ -535,7 +535,7 @@ class OperationalDashboard extends React.Component {
                                                  <img alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/user.png'} />
                                                </div>
                                                <div className='m-widget4__info'>
-                                                 <span className='m-widget4__title'>.
+                                                 <span className='m-widget4__title'>
                                                    {user.name}
                                                  </span>
                                                  {user.email &&
