@@ -20,7 +20,7 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
-export function uploadImage (file, data, handleUpload) {
+export function uploadImage (file, data, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
@@ -40,6 +40,7 @@ export function uploadImage (file, data, handleUpload) {
       console.log('res', res)
       data.fileurl = res.payload
       data.image_url = res.payload.url
+      setLoading()
       handleUpload(data)
     })
   }

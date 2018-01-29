@@ -23,10 +23,10 @@ class Card extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.state = {
-      imgSrc: '',
-      title: '',
-      button: [],
-      subtitle: '',
+      imgSrc: props.img ? props.img : '',
+      title: props.title ? props.title : '',
+      button: props.buttons ? props.buttons : [],
+      subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
       type: '',
@@ -48,7 +48,6 @@ class Card extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    this.updateCardDetails(this.props)
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
@@ -183,7 +182,6 @@ class Card extends React.Component {
   }
 
   updateImageUrl (data) {
-
     console.log('Update Card Image Url')
     console.log(data)
     this.setState({ fileurl: data.fileurl,

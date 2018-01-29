@@ -13,7 +13,7 @@ import {
   sendbroadcast,
   uploadRequest
 } from '../../redux/actions/broadcast.actions'
-
+import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 
@@ -22,9 +22,11 @@ class Image extends React.Component {
   constructor (props, context) {
     super(props, context)
     this._onChange = this._onChange.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
       imgSrc: '',
-      showPreview: false
+      showPreview: false,
+      loading: false
     }
   }
 
@@ -45,6 +47,10 @@ class Image extends React.Component {
     }
   }
 
+  setLoading () {
+    this.setState({loading: false})
+  }
+
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
@@ -60,7 +66,8 @@ class Image extends React.Component {
 
     console.log('Images in OnChange', file)
     this.setState({
-      showPreview: false
+      showPreview: false,
+      loading: true
     })
     this.props.uploadImage(file, {
       id: this.props.id,
@@ -70,7 +77,7 @@ class Image extends React.Component {
       image_url: '',
       type: file.type, // jpg, png, gif
       size: file.size
-    }, this.props.handleImage)
+    }, this.props.handleImage, this.setLoading)
 
   // TODO: concat files
   }
@@ -84,21 +91,26 @@ class Image extends React.Component {
           </span>
         </div>
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
-          <input
-            ref='file'
-            type='file'
-            name='user[image]'
-            multiple='true'
-            onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
           {
-
-          (this.state.imgSrc === '')
-          ? <div className='align-center'>
-            <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
-            <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
+          this.state.loading
+          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div>
+            <input
+              ref='file'
+              type='file'
+              name='user[image]'
+              multiple='true'
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+            {
+              (this.state.imgSrc === '')
+              ? <div className='align-center'>
+                <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
+              </div>
+              : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
+          }
           </div>
-          : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
-        }
+          }
           { this.state.showPreview &&
             <div style={{padding: '10px', marginTop: '40px'}}>
               <a href={this.state.imgSrc} target='_blank' download>
