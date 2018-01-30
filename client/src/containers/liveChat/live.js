@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../../components/sidebar/sidebar'
-// import Header from '../../components/header/header'
+import Header from '../../components/header/header'
 import { fetchSessions,
   fetchSingleSession,
   fetchUserChats,
@@ -285,6 +285,7 @@ class LiveChat extends React.Component {
     console.log('state: ', this.state)
     return (
       <div>
+        <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
