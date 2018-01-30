@@ -22,5 +22,10 @@ router.post('/sendNumbers',
   auth.doesPlanPermitsThisAction('customer_matching'),
   auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.sendNumbers)
+router.get('/retrievePhoneNumbers',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('customer_matching'),
+  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  controller.retrievePhoneNumbers)
 
 module.exports = router

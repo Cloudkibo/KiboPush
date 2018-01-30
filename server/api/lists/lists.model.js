@@ -1,13 +1,14 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
-let phoneNumberSchema = new Schema({
-  name: String,
-  number: String,
+const listSchema = new Schema({
+  listName: {
+    type: String
+  },
   userId: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
-  hasSubscribed: { type: Boolean }
+  content: {type: Schema.Types.Mixed}
 })
 
-module.exports = mongoose.model('phoneNumber', phoneNumberSchema)
+module.exports = mongoose.model('lists', listSchema)
