@@ -21,6 +21,7 @@ class Header extends React.Component {
   }
 
   handleNotificationOnShow () {
+    console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
   }
 
