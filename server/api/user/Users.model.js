@@ -102,7 +102,7 @@ UserSchema.path('domain_email').validate(function (value, respond) {
       }
       respond(true)
     })
-}, 'The specified email address is already in use with this domain name.')
+}, 'The specified email address is already in use with this workspace name.')
 
 /**
  * Pre-save hook
