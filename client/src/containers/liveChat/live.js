@@ -261,7 +261,7 @@ class LiveChat extends React.Component {
 
         if (isPresent) {
           console.log('Session exists ignoring the message')
-          this.props.resetSocket()
+          // this.props.resetSocket()
         } else {
           console.log('New Session Detected, initiating session fetch')
           this.props.fetchSessions({ company_id: this.props.user._id })
