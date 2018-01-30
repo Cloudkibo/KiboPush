@@ -8,7 +8,7 @@ export function showChatSessions (sessions, status) {
   console.log(sessions)
   console.log(status)
   var sorted = sessions.sort(function (a, b) {
-    return new Date(b.date) - new Date(a.date)
+    return new Date(b.last_activity_item) - new Date(a.last_activity_item)
   })
   return {
     type: ActionTypes.SHOW_CHAT_SESSIONS,
