@@ -168,7 +168,7 @@ exports.invite = function (req, res) {
                           companyUser.companyId.companyName +
                           ' as a Support Agent.</p> <p> <ul> <li>Company Name: ' +
                           companyUser.companyId.companyName + '</li> ' +
-                          '<li>Company Domain: ' + req.user.domain +
+                          '<li>Workspace name: ' + req.user.domain +
                           ' </li> </ul> </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
                           '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/invite_verification/verify/' +
                           uniqueToken_id +
