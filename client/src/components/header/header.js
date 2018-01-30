@@ -6,6 +6,7 @@ import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { browserHistory, Link } from 'react-router'
 import Notification from 'react-web-notification'
@@ -23,6 +24,7 @@ class Header extends React.Component {
   handleNotificationOnShow () {
     console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
+    this.props.resetSocket()
   }
 
   onNotificationClick () {
@@ -310,7 +312,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    resetSocket: resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
