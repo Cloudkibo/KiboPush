@@ -57,7 +57,7 @@ socket.on('new_chat', (data) => {
 socket.on('message', (data) => {
   console.log('New socket event occured ', data)
   if (data.action === 'new_chat') {
-    store.dispatch(socketUpdate(data))
+    store.dispatch(socketUpdate(data.payload))
   }
   if (callbacks[data.action]) {
     console.log('New socket event occured: Executing Callback')
