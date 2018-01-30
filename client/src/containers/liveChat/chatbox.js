@@ -939,19 +939,19 @@ class ChatBox extends React.Component {
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
                                         <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
-                                          {
-                                            validURL(msg.payload.text)
-                                            ? <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
-                                              <p>{msg.payload.text}</p>
-                                            </a>
-                                            : <p>{msg.payload.text}</p>
-                                          }
+                                          {msg.payload.text}
                                         </div>
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
                                           <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                            {msg.payload.text}
+                                            {
+                                              validURL(msg.payload.text)
+                                              ? <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                <p>{msg.payload.text}</p>
+                                              </a>
+                                              : <p>{msg.payload.text}</p>
+                                            }
                                           </div>
                                         </div>
                                         {
