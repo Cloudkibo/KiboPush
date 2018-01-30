@@ -43,7 +43,7 @@ class Login extends React.Component {
         password: this.refs.password.value
       }
     }
-    
+
     this.props.logIn(data, this.msg)
   }
   check () {
@@ -113,7 +113,7 @@ class Login extends React.Component {
                            }
                         </div>
                       }
-                      
+
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
                       </div>
@@ -122,15 +122,20 @@ class Login extends React.Component {
                           onChange={this.edit} />
                       </div>
                       <div className='m-login__form-action'>
+                        <span>
+                          <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
+                            Back
+                          </Link>
+                        </span>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Sign In
                         </button>
                       </div>
-                    </form>  
+                    </form>
                     }
 
                     { (this.state.account_type == 'none') &&
-                      
+
                       <div className='m-login__form m-form' style={{marginLeft: 75}} >
                         <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
                           Individual Account
@@ -142,7 +147,7 @@ class Login extends React.Component {
                         </button>
                       </div>
                     }
-                    
+
                   </div>
                 </div>
               </div>
