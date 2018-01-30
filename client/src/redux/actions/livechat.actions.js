@@ -4,9 +4,8 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 // import store from '../store/store'
 
-export function showChatSessions (sessions, status) {
+export function showChatSessions (sessions) {
   console.log(sessions)
-  console.log(status)
   var sorted = sessions.sort(function (a, b) {
     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
   })
@@ -44,7 +43,7 @@ export function fetchSessions (companyid) {
   console.log(companyid)
   return (dispatch) => {
     callApi('sessions', 'post', companyid)
-      .then(res => dispatch(showChatSessions(res.payload, res.status)))
+      .then(res => dispatch(showChatSessions(res.payload)))
   }
 }
 
