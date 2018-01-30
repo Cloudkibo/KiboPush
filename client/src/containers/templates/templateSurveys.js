@@ -21,7 +21,8 @@ class templateSurveys extends React.Component {
       filterValue: '',
       isShowingModalDelete: false,
       deleteid: '',
-      filteredByCategory: []
+      filteredByCategory: [],
+      searchValue: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -82,6 +83,7 @@ class templateSurveys extends React.Component {
   }
   searchSurvey (event) {
     var filtered = []
+    this.setState({searchValue: event.target.value})
     if (event.target.value !== '') {
       if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
         for (let i = 0; i < this.state.filteredByCategory.length; i++) {
@@ -109,7 +111,7 @@ class templateSurveys extends React.Component {
 
   onFilter (e) {
     console.log(e.target.value)
-    this.setState({filterValue: e.target.value})
+    this.setState({filterValue: e.target.value, searchValue: ''})
     var filtered = []
     if (e.target.value !== '') {
       for (let i = 0; i < this.props.surveys.length; i++) {
@@ -205,7 +207,7 @@ class templateSurveys extends React.Component {
               ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchSurvey(event) }} />
+                    <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchSurvey(event) }} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
