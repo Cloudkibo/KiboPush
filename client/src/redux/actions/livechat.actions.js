@@ -7,9 +7,12 @@ export const API_URL = '/api'
 export function showChatSessions (sessions, status) {
   console.log(sessions)
   console.log(status)
+  var sorted = sessions.sort(function (a, b) {
+    return new Date(b.date) - new Date(a.date)
+  })
   return {
     type: ActionTypes.SHOW_CHAT_SESSIONS,
-    sessions
+    sorted
   }
 }
 
