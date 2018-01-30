@@ -313,7 +313,7 @@ class CreateConvo extends React.Component {
         }
       }
     }
-    if (this.props.location.state.module === 'welcome') {
+    if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
       var data = {
@@ -581,7 +581,7 @@ class CreateConvo extends React.Component {
                       </div>
                     </div>
                     <br />
-                    {this.props.location.state.module === 'welcome' &&
+                    {this.props.location.state && this.props.location.state.module === 'welcome' &&
                     <div className='row'>
                       <br />
                       <br />

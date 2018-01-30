@@ -3,6 +3,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { browserHistory } from 'react-router'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -23,6 +24,7 @@ class ShowTemplates extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
   }
   onBroadcastClick (e, page) {
     console.log('Page Click', page)
@@ -76,6 +78,13 @@ class ShowTemplates extends React.Component {
       pathname: `/convos`
     })
   }
+  gotoCreate (broadcast) {
+    console.log('gotoEdit called', broadcast)
+    browserHistory.push({
+      pathname: `/createconvo`,
+      state: {module: 'convo'}
+    })
+  }
 
   render () {
     return (
@@ -111,9 +120,9 @@ class ShowTemplates extends React.Component {
                           }
                           </li>
                           <li className='nav-item m-tabs__item' style={{marginLeft: '50px', marginTop: '5px'}}>
-                            <Link to='/createconvo' className='nav-link m-tabs__link active'>
+                            <button className='nav-link m-tabs__link active' onClick={() => this.gotoCreate()}>
                             Create New Broadcast
-                            </Link>
+                          </button>
                           </li>
                         </ul>
                       </div>
