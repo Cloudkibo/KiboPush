@@ -106,10 +106,10 @@ class Login extends React.Component {
                       }
                       {
                         (this.state.account_type == 'team') && <div className='form-group m-form__group'>
-                          <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                          <input className='form-control m-input' type='text' placeholder='e.g. "mycompany-workspace"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                             onChange={this.check} />
                           { this.state.domain && this.state.isurl === false &&
-                          <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
+                          <div id='email-error' style={{color: 'red'}}>Please enter a valid workspace name</div>
                            }
                         </div>
                       }
