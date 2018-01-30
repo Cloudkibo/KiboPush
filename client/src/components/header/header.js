@@ -50,6 +50,7 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps in header called', this.state.ignore)
     if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession && this.state.ignore) {
       console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
