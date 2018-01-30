@@ -55,7 +55,7 @@ exports.verify = function (req, res) {
               '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
               '<tr> <td class="wrapper last"> <p> Hello, <br> ' + user.name + '<br> Thank you for signing up with KiboPush, your account has been verified. Following is you account information:' +
               '<p> <ul> <li>Name: ' + user.name + '</li> ' +
-              '<li>Company Domain: ' + user.domain + ' </li>' +
+              '<li>Workspace name: ' + user.domain + ' </li>' +
               ' <li>Email Address: ' + user.email + '</li></ul> </p> ' +
               '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
               '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
@@ -80,7 +80,7 @@ exports.verify = function (req, res) {
               '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
               '<tr> <td class="wrapper last"> <p> Hello <br> ' + user.name + ',<br> Thank you for joining us, your account has been verified. Following is your account information:' +
               '<p> <ul> <li>Name: ' + user.name + '</li> ' +
-              '<li>Company Domain: ' + user.domain + ' </li>' +
+              '<li>Workspace Name: ' + user.domain + ' </li>' +
               ' <li>Email Address: ' + user.email + '</li><</ul> </p> ' +
               '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
               '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +

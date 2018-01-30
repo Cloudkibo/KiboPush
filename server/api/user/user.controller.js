@@ -170,7 +170,7 @@ exports.create = function (req, res) {
           if (domainUsed) {
             return res.status(422).json({
               status: 'failed',
-              description: 'This domain name already has an account on KiboPush. Contact support for more information.'
+              description: 'This workspace name already has an account on KiboPush. Contact support for more information.'
             })
           } else {
             let accountData = new Users({

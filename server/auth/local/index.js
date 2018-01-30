@@ -21,7 +21,7 @@ router.post('/', function (req, res, next) {
         return res.status(401)
         .json({
           status: 'failed',
-          description: 'This domain is not registered with us or your account does not belong to this domain'
+          description: 'This workspace name is not registered with us or your account does not belong to this domain'
         })
       }
 
