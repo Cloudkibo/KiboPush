@@ -291,7 +291,7 @@ class Members extends React.Component {
                                           </span>
                                         }
                                         {
-                                          member.role !== 'buyer' &&
+                                          member.role !== 'buyer' && member.role === 'admin' && this.props.user.permissions.deleteAdminPermission &&
                                           <button className='btn btn-primary'
                                             style={{
                                               float: 'left',
@@ -299,6 +299,17 @@ class Members extends React.Component {
                                             }}
                                             onClick={() => this.removeMember(
                                               member)}>Delete
+                                          </button>
+                                        }
+                                        {
+                                          member.role !== 'buyer' && member.role === 'agent' && this.props.user.permissions.deleteAgentPermission &&
+                                          <button className='btn btn-primary'
+                                                  style={{
+                                                    float: 'left',
+                                                    margin: 2
+                                                  }}
+                                                  onClick={() => this.removeMember(
+                                                    member)}>Delete
                                           </button>
                                         }
                                       </span>
