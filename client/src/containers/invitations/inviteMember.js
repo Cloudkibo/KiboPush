@@ -28,9 +28,11 @@ class InviteMembers extends React.Component {
     this.createNewInvitations = this.createNewInvitations.bind(this)
     this.changeName = this.changeName.bind(this)
     this.changeEmail = this.changeEmail.bind(this)
+    this.changeRadio = this.changeRadio.bind(this)
     this.state = {
       name: '',
       email: '',
+      role: '',
       steps: [],
       alertMessage: '',
       alertType: '',
@@ -117,10 +119,18 @@ class InviteMembers extends React.Component {
       })
       return
     }
+    if (this.state.role === '') {
+      this.setState({
+        alertMessage: 'Please select the role',
+        alertType: 'danger'
+      })
+      return
+    }
 
     this.props.addInvitation({
       name: this.state.name,
-      email: this.state.email
+      email: this.state.email,
+      role: this.state.role
     })
     // this.props.history.push({
     //   pathname: '/workflows'
@@ -142,6 +152,11 @@ class InviteMembers extends React.Component {
 
   changeEmail (event) {
     this.setState({email: event.target.value})
+  }
+
+  changeRadio (event) {
+    console.log(event.target.value)
+    this.setState({role: event.target.value})
   }
 
   tourFinished (data) {
@@ -253,6 +268,27 @@ class InviteMembers extends React.Component {
                             id='exampleInputReply' />
                         </div>
                       </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Invite as
+                        </label>
+                        <div className='col-lg-6'>
+                          <div className='m-radio-list'>
+                            <label className='m-radio m-radio--bold'>
+                              <input type='radio' name='example_5_1' value='agent'
+                                     onChange={this.changeRadio} />
+                              Agent
+                              <span />
+                            </label>
+                            <label className='m-radio m-radio--bold'>
+                              <input type='radio' name='example_5_1' value='admin'
+                                onChange={this.changeRadio} />
+                              Admin
+                              <span />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit'>
@@ -281,7 +317,10 @@ class InviteMembers extends React.Component {
                           {
                             this.state.alertMessage !== '' &&
                             <center>
-                              <Alert type={this.state.alertType} timeout={this.state.timeout} showIcon={this.state.alertMessage !== ''} onDismiss={this.clearAlert}>
+                              <Alert type={this.state.alertType}
+                                timeout={this.state.timeout}
+                                showIcon={this.state.alertMessage !== ''}
+                                onDismiss={this.clearAlert}>
                                 {this.state.alertMessage}
                               </Alert>
                             </center>
@@ -295,7 +334,7 @@ class InviteMembers extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
     )
   }

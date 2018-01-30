@@ -123,7 +123,8 @@ exports.invite = function (req, res) {
                           token: uniqueToken_id,
                           companyId: companyUser.companyId._id,
                           domain: req.user.domain,
-                          companyName: companyUser.companyId.companyName
+                          companyName: companyUser.companyId.companyName,
+                          role: req.body.role
                         })
 
                         inviteeData.save(function (err) {
