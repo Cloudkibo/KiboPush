@@ -5,6 +5,7 @@
 const logger = require('../../components/logger')
 const TAG = 'api/broadcast/broadcasts2.controller.js'
 const Broadcasts = require('./broadcasts.model')
+const URL = require('./URL.model')
 const Pages = require('../pages/Pages.model')
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
@@ -237,7 +238,46 @@ exports.sendConversation = function (req, res) {
                     logger.serverLog(TAG, 'Chat message saved for broadcast sent')
                   })
                 })
+                // update broadcast sent field
+                let pagebroadcast = new BroadcastPage({
+                  pageId: page.pageId,
+                  userId: req.user._id,
+                  subscriberId: subscriber.senderId,
+                  broadcastId: broadcast._id,
+                  seen: false,
+                  companyId: companyUser.companyId
+                })
 
+                pagebroadcast.save((err2, savedpagebroadcast) => {
+                  if (err2) {
+                    logger.serverLog(TAG, {
+                      status: 'failed',
+                      description: 'PageBroadcast create failed',
+                      err2
+                    })
+                  }
+                  if (payloadItem.buttons) {
+                    for (var i = 0; i < payloadItem.buttons.length; i++) {
+                      let url = new URL({
+                        broadcastId: savedpagebroadcast._id,
+                        originalURL: payloadItem.buttons[i].url
+                      })
+                      url.save((err2, savedurl) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'url create failed',
+                            err2
+                          })
+                        }
+                        logger.serverLog(TAG,
+                          `url saved ${JSON.stringify(savedurl)}`)
+                        payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/' + savedurl._id
+                      })
+                    }
+                  }
+                logger.serverLog(TAG,
+                  `payloaditem ${JSON.stringify(payloadItem)}`)
                 let messageData = utility.prepareSendAPIPayload(
                   subscriber.senderId,
                   payloadItem)
@@ -264,26 +304,7 @@ exports.sendConversation = function (req, res) {
                             resp.body.message_id)}`)
                       }
                     }
-
-                    // update broadcast sent field
-                    let pagebroadcast = new BroadcastPage({
-                      pageId: page.pageId,
-                      userId: req.user._id,
-                      subscriberId: subscriber.senderId,
-                      broadcastId: broadcast._id,
-                      seen: false,
-                      companyId: companyUser.companyId
-                    })
-
-                    pagebroadcast.save((err2) => {
-                      if (err2) {
-                        logger.serverLog(TAG, {
-                          status: 'failed',
-                          description: 'PageBroadcast create failed',
-                          err2
-                        })
-                      }
-                    })
+                  })
                   })
               })
             })

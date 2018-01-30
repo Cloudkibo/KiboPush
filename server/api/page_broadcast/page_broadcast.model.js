@@ -13,7 +13,8 @@ const broadcastSchema = new Schema({
   subscriberId: String,
   broadcastId: { type: Schema.ObjectId, ref: 'broadcasts' },
   datetime: { type: Date, default: Date.now },
-  seen: {type: Boolean}
+  seen: {type: Boolean},
+  clicked: {type: Boolean}
 })
 
 module.exports = mongoose.model('page_broadcasts', broadcastSchema)

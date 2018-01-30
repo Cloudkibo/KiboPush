@@ -25,6 +25,7 @@ module.exports = function (app) {
   app.use('/api/subscribers', require('./api/subscribers'))
   app.use('/api/pages', require('./api/pages'))
   app.use('/api/growthtools', require('./api/growthtools'))
+  app.use('/api/lists', require('./api/lists'))
   app.use('/api/autoposting', require('./api/autoposting'))
   app.use('/api/surveys', require('./api/surveys'))
   app.use('/api/page_poll', require('./api/page_poll'))
