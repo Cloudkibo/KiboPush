@@ -88,7 +88,7 @@ class LiveChat extends React.Component {
       if (temp[i]._id === session._id && temp[i].unreadCount) {
         temp[i] = {
           company_id: temp[i].company_id,
-          last_activity_item: temp[i].last_activity_item,
+          last_activity_time: temp[i].last_activity_time,
           page_id: temp[i].page_id,
           request_time: temp[i].request_time,
           status: temp[i].status,
@@ -230,7 +230,7 @@ class LiveChat extends React.Component {
         if (sess[j]._id === nextProps.userChat[0].session_id) {
           sess[j] = {
             company_id: sess[j].company_id,
-            last_activity_item: sess[j].last_activity_item,
+            last_activity_time: sess[j].last_activity_time,
             page_id: sess[j].page_id,
             request_time: sess[j].request_time,
             status: sess[j].status,
