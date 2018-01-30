@@ -12,6 +12,7 @@ import { fetchSessions,
   fetchUserChats,
   resetSocket,
   resetUnreadSession,
+  showChatSessions,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import ChatBox from './chatbox'
@@ -248,14 +249,15 @@ class LiveChat extends React.Component {
       this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
     }
 
-    if (nextProps.socketSession && nextProps.socketSession !== '') {
+    if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.sessions) {
       console.log('New Message Received at following session id', nextProps.socketSession)
       console.log('New Message data', nextProps.socketData)
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
+        this.props.showChatSessions(nextProps.sessions)
       } else if (nextProps.socketSession !== '') {
         var isPresent = false
-        this.props.sessions.map((sess) => {
+        nextProps.sessions.map((sess) => {
           if (sess._id === nextProps.socketSession) {
             isPresent = true
           }
@@ -479,7 +481,8 @@ function mapDispatchToProps (dispatch) {
     resetSocket: resetSocket,
     fetchSingleSession: fetchSingleSession,
     resetUnreadSession: resetUnreadSession,
-    markRead: markRead
+    markRead: markRead,
+    showChatSessions: showChatSessions
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
