@@ -111,7 +111,8 @@ exports.getfbMessage = function (req, res) {
       }
     })
   }
-  if (req.body.entry && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply) {
+
+  if (req.body.entry && req.body.entry[0].messaging && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply) {
     let resp = JSON.parse(req.body.entry[0].messaging[0].message.quick_reply.payload)
     logger.serverLog(TAG, 'Got a response to quick reply')
     if (resp.poll_id) {
