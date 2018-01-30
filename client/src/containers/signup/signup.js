@@ -115,7 +115,6 @@ class Signup extends React.Component {
           domain: this.refs.domain.value,
           password: this.refs.password.value,
           company_name: this.refs.companyName.value,
-          company_description: this.refs.companyDescription.value
         }
       }
       else{
@@ -172,19 +171,16 @@ class Signup extends React.Component {
                         (this.state.account_type == 'team') &&
                         <div>
                         <div className='form-group m-form__group'>
-                          <input className='form-control m-input' type='text' placeholder='Domain e.g. "www.kibopush.com"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                          <input className='form-control m-input' type='text' placeholder=' e.g. "mycompany-workspace"' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                             onChange={this.check} />
                           { this.state.domain && this.state.isurl === false &&
-                          <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
+                          <div id='email-error' style={{color: 'red'}}>Please enter a unique workspace name</div>
                            }
                         </div>
 
 
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                      </div>
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Company Description' required ref='companyDescription' style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       </div>
                       }
