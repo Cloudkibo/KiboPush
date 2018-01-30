@@ -27,7 +27,7 @@ class Signup extends React.Component {
       isurl: false,
       pwdlength: true,
       error: false,
-      account_type: 'none',
+      account_type: 'none'
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
@@ -232,6 +232,13 @@ class Signup extends React.Component {
                         <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
                           Create Team Account
                         </button>
+                        <br />
+                        <br />
+                        <span>
+                          <Link id='m_login_signup_cancel' href='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                            Cancel
+                          </Link>
+                        </span>
                       </div>
                     }
 
