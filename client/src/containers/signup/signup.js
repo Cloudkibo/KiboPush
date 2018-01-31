@@ -171,9 +171,9 @@ class Signup extends React.Component {
                         (this.state.account_type == 'team') &&
                         <div>
                         <div className='form-group m-form__group'>
-                          <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany-workspace' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                          <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                             onChange={this.check} />
-                          { this.state.domain && this.state.isurl === false &&
+                          { this.state.domain  &&
                           <div id='email-error' style={{color: 'red'}}>Please enter a valid/unique workspace name</div>
                            }
                         </div>
