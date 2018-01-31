@@ -5,8 +5,13 @@ import Header from '../../components/header/header'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
+import {
+  loadCustomerLists
+} from '../../redux/actions/CustomerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
+
 class CustomerLists extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -16,6 +21,7 @@ class CustomerLists extends React.Component {
                       {'_id': '3', name: 'List 3'}]
     }
     props.loadMyPagesList()
+    props.loadCustomerLists()
   }
   render () {
     return (
@@ -46,19 +52,19 @@ class CustomerLists extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <Link to='/createList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
                             <i className='la la-plus' />
                             <span>
                               Add List
                             </span>
                           </span>
-                        </button>
+                        </Link>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
-                        { this.state.customerLists && this.state.customerLists.length > 0
+                        { this.props.customerLists && this.props.customerLists.length > 0
                         ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                           <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                             <table className='m-datatable__table'
@@ -82,7 +88,7 @@ class CustomerLists extends React.Component {
                               </thead>
                               <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                                 {
-                                  this.state.customerLists.map((list, i) => (
+                                  this.props.customerLists.map((list, i) => (
                                     <tr data-row={i}
                                       className='m-datatable__row m-datatable__row--even'
                                       style={{height: '55px'}} key={i}>
@@ -131,12 +137,14 @@ class CustomerLists extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    loadCustomerLists: loadCustomerLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerLists)
