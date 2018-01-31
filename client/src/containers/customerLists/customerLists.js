@@ -94,7 +94,7 @@ class CustomerLists extends React.Component {
                                       style={{height: '55px'}} key={i}>
                                       <td data-field='title'
                                         className='m-datatable__cell'>
-                                        <span style={{width: '150px'}}>{list.name}</span>
+                                        <span style={{width: '150px'}}>{list.listName}</span>
                                       </td>
                                       <td data-field='seemore'
                                         className='m-datatable__cell'>
