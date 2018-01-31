@@ -16,6 +16,7 @@ import {convosInfo} from './convos.reducer.js'
 import {getFileUploadResponse} from './growthTools.reducer.js'
 import {liveChat} from './livechat.reducer.js'
 import {templatesInfo} from './templates.reducer.js'
+import {listsInfo} from './customerLists.reducer.js'
 import {invitationsInfo} from './invitations.reducer.js'
 import {membersInfo} from './members.reducer.js'
 import {indexByPage, getCurrentMenuItem, menuInfo} from './menu.reducer.js'
@@ -61,7 +62,8 @@ const appReducer = combineReducers({
   menuInfo,
   templatesInfo,
   invitationsInfo,
-  membersInfo
+  membersInfo,
+  listsInfo
 })
 
 export default appReducer
