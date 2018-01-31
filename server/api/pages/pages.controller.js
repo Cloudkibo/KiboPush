@@ -131,7 +131,7 @@ exports.enable = function (req, res) {
           `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
         if (pagesbyOther.length === 0) {
           Pages.update({_id: req.body._id},
-            {connected: true}, {multi: true}, (err) => {
+            {connected: true, welcomeMessage: [{id: 0, componentType: 'text', text: 'Hi [Username]! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'}]}, {multi: true}, (err) => {
               if (err) {
                 res.status(500).json({
                   status: 'Failed',

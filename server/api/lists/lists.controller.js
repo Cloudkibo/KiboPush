@@ -51,3 +51,35 @@ exports.allLists = function (req, res) {
     })
   })
 }
+exports.createList = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let listPayload = {
+      companyId: companyUser.companyId,
+      userId: req.user._id,
+      listName: req.body.listName,
+      content: req.body.content
+    }
+    const list = new Lists(listPayload)
+    list.save((err, listCreated) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      return res.status(201).json({status: 'success', payload: listCreated})
+    })
+  })
+}

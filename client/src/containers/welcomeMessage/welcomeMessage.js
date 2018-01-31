@@ -118,8 +118,7 @@ class WelcomeMessage extends React.Component {
                                                {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
                                              </span>
                                            </div>
-                                           {page.welcomeMessage && page.welcomeMessage.length > 0
-                                           ? <div><div className='m-widget4__ext'>
+                                           <div className='m-widget4__ext'>
                                              <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                               View Message
                                             </button>
@@ -129,18 +128,6 @@ class WelcomeMessage extends React.Component {
                                              Edit Message
                                            </button>
                                            </div>
-                                           <div className='m-widget4__ext'>
-                                             <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                             Delete Message
-                                           </button>
-                                           </div>
-                                         </div>
-                                         : <div className='m-widget4__ext'>
-                                           <button onClick={() => this.gotoCreate(page._id)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                           Create Message
-                                         </button>
-                                         </div>
-                                         }
                                          </div>
                                       ))}
                                     </div>

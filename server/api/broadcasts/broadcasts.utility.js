@@ -169,6 +169,108 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
   }
   return payload
 }
+function prepareSendAPIPayloadList (subscriberId, body, isForLiveChat) {
+  let payload = {}
+  if (body.componentType === 'text' && !body.buttons) {
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'text': body.text,
+        'metadata': 'This is a meta data'
+      })
+    }
+    return payload
+  } else if (body.componentType === 'text' && body.buttons) {
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'button',
+            'text': body.text,
+            'buttons': body.buttons
+          }
+        }
+      })
+    }
+  } else if (['image', 'audio', 'file', 'video'].indexOf(
+      body.componentType) > -1) {
+    let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+    let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': body.componentType,
+          'payload': {}
+        }
+      }),
+      'filedata': fileReaderStream
+    }
+    // todo test this one. we are not removing as we need to keep it for live chat
+    // if (!isForLiveChat) deleteFile(body.fileurl)
+  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+      body.componentType) > -1) {
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'image',
+          'payload': {
+            'url': body.fileurl
+          }
+        }
+      })
+    }
+  } else if (body.componentType === 'card') {
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': body.title,
+                'image_url': body.image_url,
+                'subtitle': body.description,
+                'buttons': body.buttons
+              }
+            ]
+          }
+        }
+      })
+    }
+  } else if (body.componentType === 'gallery') {
+    payload = {
+      'recipient': JSON.stringify({
+        'phone_number': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': body.cards
+          }
+        }
+      })
+    }
+  }
+  return payload
+}
 
 function prepareBroadCastPayload (req, companyId) {
   let broadcastPayload = {
@@ -218,6 +320,7 @@ function parseUrl (text) {
 }
 
 exports.prepareSendAPIPayload = prepareSendAPIPayload
+exports.prepareSendAPIPayloadList = prepareSendAPIPayloadList
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
 exports.validateInput = validateInput

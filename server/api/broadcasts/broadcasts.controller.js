@@ -104,11 +104,15 @@ exports.getfbMessage = function (req, res) {
       hasSubscribed: true
     }, (err2, phonenumbersaved) => {
       if (err2) {
-        return res.status(500).json({
-          status: 'failed',
-          description: 'phone number create failed'
-        })
+        logger.serverLog(TAG, err2)
       }
+      logger.serverLog(TAG,
+        `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
+      Subscribers.update({senderId: req.body.entry[0].messaging[0].sender.id}, {phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier}, (err, subscriber) => {
+        if (err) logger.serverLog(TAG, err)
+        logger.serverLog(TAG,
+          `something received from facebook subscrber ${JSON.stringify(subscriber)}`)
+      })
     })
   }
 
@@ -182,6 +186,9 @@ exports.getfbMessage = function (req, res) {
                         logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
                         logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
                         page.welcomeMessage.forEach(payloadItem => {
+                          if (payloadItem.text.includes('[Username]')) {
+                            payloadItem.text = payloadItem.text.replace('[Username]', response.body.first_name + ' ' + response.body.last_name)
+                          }
                           let messageData = utility.prepareSendAPIPayload(
                             response.body.id,
                             payloadItem, false)

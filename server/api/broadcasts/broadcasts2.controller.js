@@ -193,7 +193,30 @@ exports.sendConversation = function (req, res) {
               })
             }
           }
-
+          if (req.body.isList) {
+            req.body.payload.forEach(payloadItem => {
+              req.body.listNumbers.forEach(listnumber => {
+                let messageData = utility.prepareSendAPIPayloadList(
+                  listnumber,
+                  payloadItem)
+                logger.serverLog(TAG,
+                  `isList ${JSON.stringify(listnumber)}`)
+                request(
+                  {
+                    'method': 'POST',
+                    'json': true,
+                    'formData': messageData,
+                    'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                    page.accessToken
+                  }, function (err, resp) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At send message broadcast ${JSON.stringify(err)}`)
+                  }
+                })
+              })
+            })
+          }
           logger.serverLog(TAG,
             `Subscribers Criteria for segmentation ${JSON.stringify(
               subscriberFindCriteria)}`)
@@ -205,7 +228,8 @@ exports.sendConversation = function (req, res) {
 
             logger.serverLog(TAG,
               `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
-
+              logger.serverLog(TAG,
+                `isList ${JSON.stringify(req.body.listNumbers)}`)
             req.body.payload.forEach(payloadItem => {
               subscribers.forEach(subscriber => {
                 logger.serverLog(TAG,
@@ -276,36 +300,36 @@ exports.sendConversation = function (req, res) {
                       })
                     }
                   }
-                logger.serverLog(TAG,
-                  `payloaditem ${JSON.stringify(payloadItem)}`)
-                let messageData = utility.prepareSendAPIPayload(
-                  subscriber.senderId,
-                  payloadItem)
-                request(
-                  {
-                    'method': 'POST',
-                    'json': true,
-                    'formData': messageData,
-                    'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                    page.accessToken
-                  },
-                  function (err, resp) {
-                    if (err) {
-                      return logger.serverLog(TAG,
-                        `At send message broadcast ${JSON.stringify(err)}`)
-                    } else {
-                      if (resp.statusCode !== 200) {
-                        logger.serverLog(TAG,
-                          `At send message broadcast response ${JSON.stringify(
-                            resp.body.error)}`)
+                  logger.serverLog(TAG,
+                    `payloaditem ${JSON.stringify(payloadItem)}`)
+                  let messageData = utility.prepareSendAPIPayload(
+                    subscriber.senderId,
+                    payloadItem)
+                  request(
+                    {
+                      'method': 'POST',
+                      'json': true,
+                      'formData': messageData,
+                      'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                      page.accessToken
+                    },
+                    function (err, resp) {
+                      if (err) {
+                        return logger.serverLog(TAG,
+                          `At send message broadcast ${JSON.stringify(err)}`)
                       } else {
-                        logger.serverLog(TAG,
-                          `At send message broadcast response ${JSON.stringify(
-                            resp.body.message_id)}`)
+                        if (resp.statusCode !== 200) {
+                          logger.serverLog(TAG,
+                            `At send message broadcast response ${JSON.stringify(
+                              resp.body.error)}`)
+                        } else {
+                          logger.serverLog(TAG,
+                            `At send message broadcast response ${JSON.stringify(
+                              resp.body.message_id)}`)
+                        }
                       }
-                    }
-                  })
-                  })
+                    })
+                })
               })
             })
           })
