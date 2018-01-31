@@ -82,6 +82,7 @@ import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
 import Connect from './containers/facebookConnect/connect'
 import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
+import CustomerLists from './containers/customerLists/customerLists'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -193,6 +194,7 @@ const routes = (
     <Route path='/members' component={Members} onEnter={requireAuth} />
     <Route path='/connectFb' component={Connect} onEnter={requireAuth} />
     <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
+    <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
 
   </Route>
 

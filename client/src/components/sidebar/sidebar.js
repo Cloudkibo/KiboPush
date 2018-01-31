@@ -49,7 +49,8 @@ class Sidebar extends Component {
       userGuide: true,
       inviteMembers: true,
       members: true,
-      welcomeMessage: true
+      welcomeMessage: true,
+      createPhoneList: true
     }
     // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
@@ -357,7 +358,22 @@ class Sidebar extends Component {
       }
     }
   }
-
+  showCreatePhoneList () {
+    if (this.props.user) {
+      if (this.state.createPhoneList && this.props.user.permissions.pagesPermission) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-list' />
+              <span className='m-menu__link-text'>Customers Lists</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
   showWelcomeMessageItem () {
     if (this.props.user) {
       if (this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
@@ -434,6 +450,7 @@ class Sidebar extends Component {
               {this.showPagesItem()}
               {this.showSubscribersItem()}
               {this.showWelcomeMessageItem()}
+              {this.showCreatePhoneList()}
               {this.props.user && this.state.subscribeToMessenger  && this.props.user.plan.subscribe_to_messenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
