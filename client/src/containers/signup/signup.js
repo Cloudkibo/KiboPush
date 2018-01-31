@@ -201,7 +201,7 @@ class Signup extends React.Component {
                         }
                       </div>
                       <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='password' required placeholder='Confirm Password' ref='rpassword' style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: 'none' }}
+                        <input className='form-control m-input' type='password' required placeholder='Confirm Password' ref='rpassword' style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
                           onChange={this.equal} />
                         { this.state.password && this.state.ismatch === false &&
                           <div id='email-error' style={{color: 'red'}}>Passwords do not match</div>
