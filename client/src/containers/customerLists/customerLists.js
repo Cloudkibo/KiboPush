@@ -7,7 +7,7 @@ import {
 } from '../../redux/actions/pages.actions'
 import {
   loadCustomerLists
-} from '../../redux/actions/CustomerLists.actions'
+} from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
