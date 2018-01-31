@@ -36,6 +36,9 @@ const subscriberSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'pages'
   },
+  phoneNumber: {
+    type: String
+  },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   isSubscribed: {
     type: Boolean,
