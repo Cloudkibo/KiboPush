@@ -14,7 +14,7 @@ const crypto = require('crypto')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
-
+const Lists = require('../lists/lists.model')
 exports.upload = function (req, res) {
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
@@ -162,6 +162,20 @@ exports.sendNumbers = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    Lists.update({initialList: true}, {
+      listName: 'All customers',
+      userId: req.user._id,
+      companyId: companyUser.companyId,
+      condition: 'initial_list',
+      initialList: true
+    }, {upsert: true}, (err2, savedList) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+    })
     for (let i = 0; i < req.body.numbers.length; i++) {
       var result = req.body.numbers[i].replace(/[- )(]/g, '')
       let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}

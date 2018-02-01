@@ -8,7 +8,9 @@ const listSchema = new Schema({
   userId: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
-  content: {type: Schema.Types.Mixed}
+  content: {type: Schema.Types.Mixed},
+  condition: String,
+  initialList: Boolean
 })
 
 module.exports = mongoose.model('lists', listSchema)
