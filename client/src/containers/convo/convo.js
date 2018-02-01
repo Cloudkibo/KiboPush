@@ -193,9 +193,9 @@ class Convo extends React.Component {
         <Header />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '640px'}}
+          <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '640px'}}
+            <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
               <YouTube
