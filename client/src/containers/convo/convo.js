@@ -191,6 +191,27 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '640px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '640px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="htqFmbTBDbk"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -387,27 +408,7 @@ class Convo extends React.Component {
             </div>
           </div>
         </div>
-        {
-          this.state.showVideo &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
-              <div>
-              <YouTube
-                videoId="htqFmbTBDbk"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
+
       </div>
     )
   }
