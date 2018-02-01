@@ -20,6 +20,7 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -220,8 +221,8 @@ class Convo extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? For documentation <a href='http://kibopush.com/broadcast/' target='_blank'>Click Here </a>
-                  <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>Click here for a video tutorial</a>
+                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -391,7 +392,16 @@ class Convo extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <ModalDialog style={{width: '500px'}}
                 onClose={() => { this.setState({showVideo: false}) }}>
-                <h3>Broadcasts</h3>
+                <YouTube
+                  videoId="htqFmbTBDbk"
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </ModalDialog>
             </ModalContainer>
           }
