@@ -17,3 +17,7 @@ export function loadCustomerLists () {
       .then(res => dispatch(showCustomerLists(res.payload)))
   }
 }
+
+export function loadPhoneNumbersLists () {
+  console.log('loadPhoneNumbersLists called')
+}
