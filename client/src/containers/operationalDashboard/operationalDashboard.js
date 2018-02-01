@@ -232,7 +232,7 @@ class OperationalDashboard extends React.Component {
         index = 0
       }
     }
-    return dataArray
+    return dataArray.reverse()
   }
   prepareLineChartData (surveys, polls, broadcasts, sessions) {
     var dataChart = []
