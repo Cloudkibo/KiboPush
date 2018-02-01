@@ -211,7 +211,7 @@ class Signup extends React.Component {
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Sign Up
                         </button>
-                        <Link id='m_login_signup_cancel' href='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                        <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                           Cancel
                         </Link>
                       </div>
@@ -231,7 +231,7 @@ class Signup extends React.Component {
                         <br />
                         <br />
                         <span>
-                          <Link id='m_login_signup_cancel' href='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                          <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                             Cancel
                           </Link>
                         </span>
