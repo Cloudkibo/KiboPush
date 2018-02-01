@@ -8,7 +8,9 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 //  import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+
 import {
   addPages,
   enablePage,
@@ -26,6 +28,7 @@ class AddPage extends React.Component {
   }
 
   componentWillMount () {
+    this.props.getuserdetails()
     this.props.addPages()
   }
 
@@ -65,6 +68,12 @@ class AddPage extends React.Component {
       this.setState({showAlert: false, alertmsg: ''})
     }
   }
+  gotoSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'addPages'}
+    })
+  }
   onDismissAlert () {
     this.setState({showAlert: false, alertmsg: ''})
   }
@@ -90,10 +99,15 @@ class AddPage extends React.Component {
                   <div className='m-alert__icon'>
                     <i className='flaticon-exclamation m--font-brand' />
                   </div>
-                  <div className='m-alert__text'>
+                  { this.props.user && !this.props.user.facebookInfo
+                    ? <div className='m-alert__text'>
+                      This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{color: 'blue', cursor: 'pointer'}}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{color: 'blue', cursor: 'pointer'}}>here</Link> to invite admins to your company.
+                    </div>
+                  : <div className='m-alert__text'>
                     This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
                     To connect the pages click on connect buttons. Click on Done button to save them.
                   </div>
+                }
                 </div>
               }
               <div className='row'>
@@ -226,6 +240,7 @@ class AddPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),
     page_connected: (state.pagesInfo.page_connected)
   }
@@ -233,6 +248,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
     addPages: addPages

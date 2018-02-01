@@ -36,15 +36,18 @@ class Settings extends React.Component {
     this.setConnectFb = this.setConnectFb.bind(this)
   }
   componentWillMount () {
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
+      this.setState({showAPI: false, resetPassword: false, connectFb: true})
+    }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false})
+    this.setState({showAPI: true, resetPassword: false, connectFb: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true})
+    this.setState({showAPI: false, resetPassword: true, connectFb: false})
   }
   setConnectFb () {
     this.setState({showAPI: false, resetPassword: false, connectFb: true})

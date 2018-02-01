@@ -24,4 +24,22 @@ router.post('/createList',
   auth.doesPlanPermitsThisAction('customer_matching'),
   auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.createList)
+
+router.post('/editList',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('customer_matching'),
+    auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.editList)
+
+router.get('/viewList/:id',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('customer_matching'),
+    auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.viewList)
+
+router.delete('/deleteList/:id', auth.isAuthorizedSuperUser(),
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('customer_matching'),
+    auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.deleteList)
 module.exports = router
