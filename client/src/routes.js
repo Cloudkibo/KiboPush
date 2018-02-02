@@ -84,6 +84,7 @@ import Connect from './containers/facebookConnect/connect'
 import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
 import CustomerLists from './containers/customerLists/customerLists'
 import PhoneList from './containers/customerLists/listDetails'
+import CreateSubList from './containers/customerLists/createSubList'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -197,6 +198,7 @@ const routes = (
     <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
     <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
+    <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
 
   </Route>
 

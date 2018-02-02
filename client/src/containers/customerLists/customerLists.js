@@ -17,18 +17,12 @@ class CustomerLists extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      customerLists: [{'_id': '1', name: 'List 1'},
-                      {'_id': '2', name: 'List 2'},
-                      {'_id': '3', name: 'List 3'}],
       isShowingModalDelete: false,
       deleteid: '',
       editid: '',
       editName: '',
-      isShowingModalEdit: false,
-      isShowingModalCreate: false
+      isShowingModalEdit: false
     }
-    this.showDialogCreate = this.showDialogCreate.bind(this)
-    this.closeDialogCreate = this.closeDialogCreate.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogEdit = this.showDialogEdit.bind(this)
@@ -36,15 +30,6 @@ class CustomerLists extends React.Component {
     this.updateListName = this.updateListName.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
-  }
-
-  showDialogCreate (id) {
-    this.setState({isShowingModalCreate: true})
-    //  this.setState({deleteid: id})
-  }
-
-  closeDialogCreate () {
-    this.setState({isShowingModalCreate: false})
   }
 
   showDialogDelete (id) {
@@ -92,47 +77,25 @@ class CustomerLists extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Customer Lists
+                            Customer Segmentation Lists
                           </h3>
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialogCreate}>
+                        <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create List
+                              Create Segmented Customers List
                             </span>
                           </span>
-                        </button>
+                        </Link>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          { this.state.isShowingModalCreate &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialogCreate}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialogCreate}>
-                                <h3>Create Customer List</h3>
-                                <p>To create a new list, click on Create New List. To create a sublist from an exisiting list, click on Create SubList</p>
-                                <div style={{width: '100%', textAlign: 'center'}}>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link style={{color: 'white'}} className='btn btn-primary'>
-                                      Create New List
-                                    </Link>
-                                  </div>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='' className='btn btn-primary'>
-                                      Create SubList
-                                    </Link>
-                                  </div>
-                                </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
                           {
                             this.state.isShowingModalEdit &&
                             <ModalContainer style={{width: '500px'}}
