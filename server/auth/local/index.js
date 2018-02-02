@@ -10,7 +10,7 @@ let router = express.Router()
 router.post('/', function (req, res, next) {
   if (req.body.domain) {
     User.findOne({
-      domain: req.body.domain,
+      domain: req.body.domain.toLowerCase(),
       email: req.body.email.toLowerCase()
     }, (err, user) => {
       if (err) {

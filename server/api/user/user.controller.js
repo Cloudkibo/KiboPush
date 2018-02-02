@@ -176,9 +176,9 @@ exports.create = function (req, res) {
             let accountData = new Users({
               name: req.body.name,
               email: req.body.email.toLowerCase(),
-              domain: req.body.domain,
+              domain: req.body.domain.toLowerCase(),
               password: req.body.password,
-              domain_email: req.body.domain + '' + req.body.email.toLowerCase(),
+              domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
               role: 'buyer',
               plan: 'plan_D'
             })
@@ -298,7 +298,7 @@ exports.create = function (req, res) {
                 var email2 = new sendgrid.Email({
                   to: 'sojharo@gmail.com',
                   from: 'support@cloudkibo.com',
-                  subject: 'KiboPush: Account created by ' + req.body.domain,
+                  subject: 'KiboPush: Account created by ' + req.body.name,
                   text: 'Welcome to KiboPush',
                   cc: 'jawaid@cloudkibo.com'
                 })
@@ -481,7 +481,7 @@ exports.create = function (req, res) {
             var email2 = new sendgrid.Email({
               to: 'sojharo@gmail.com',
               from: 'support@cloudkibo.com',
-              subject: 'KiboPush: Account created by ' + req.body.domain,
+              subject: 'KiboPush: Account created by ' + req.body.name,
               text: 'Welcome to KiboPush',
               cc: 'jawaid@cloudkibo.com'
             })
