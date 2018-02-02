@@ -44,7 +44,8 @@ class Dashboard extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
-    if (nextprops.user && nextprops.user.emailVerified === false) {
+    if (nextprops.user && nextprops.user.emailVerified === false &&
+      (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })

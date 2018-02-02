@@ -5,12 +5,14 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import ConnectFb from './connectFb'
+
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -113,6 +115,12 @@ class Settings extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('hello', nextProps)
+    if (nextProps.user && nextProps.user.emailVerified === false &&
+      (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
+      browserHistory.push({
+        pathname: '/resendVerificationEmail'
+      })
+    }
     if (nextProps.apiEnable) {
       console.log('this.state.disabled', this.state.disable)
       if (this.state.disable === false) {
