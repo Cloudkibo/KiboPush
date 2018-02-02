@@ -44,6 +44,8 @@ module.exports = function (app) {
   app.use('/api/company_user', require('./api/companyuser'))
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
 
+  app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
+
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {
