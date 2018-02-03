@@ -150,9 +150,13 @@ exports.getfbMessage = function (req, res) {
           (event.message.is_echo === false || !event.message.is_echo)) {
           itIsMessage = true
         }
+        if (event.message && event.message.app_id) {
+          itIsMessage = true
+        }
         if (itIsMessage) {
           const sender = event.sender.id
           const pageId = event.recipient.id
+          handleMessageFromSomeOtherApp(event)
           // get accesstoken of page
           Pages.find({pageId: pageId, connected: true})
             .populate('userId')
@@ -170,25 +174,12 @@ exports.getfbMessage = function (req, res) {
                 }
                 needle.get(options.url, options, (error, response) => {
                   const subsriber = response.body
-                  // const options1 = {
-                  //   url: `https://graph.facebook.com/v2.10/${subsriber.id}?fields=cover}`,
-                  //   qs: {access_token: page.accessToken},
-                  //   method: 'GET'
-                  //
-                  // }
-                  // needle.get(options1.url, options1, (error1, response1) => {
-                  //  const coverphoto = response1.body
-                  //  logger.serverLog(TAG, `data of subscriber ${JSON.stringify(subsriber)}`)
-                  //  logger.serverLog(TAG, `cover photo of subscriber ${JSON.stringify(coverphoto)}`)
                   if (!error) {
                     logger.serverLog(TAG, '!error')
 
                     if (event.sender && event.recipient && event.postback && event.postback.payload &&
                       event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                       if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body)}`)
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(response.body.id)}`)
-                        logger.serverLog(TAG, `response of get_staretd ${JSON.stringify(page.welcomeMessage)}`)
                         page.welcomeMessage.forEach(payloadItem => {
                           if (payloadItem.text.includes('[Username]')) {
                             payloadItem.text = payloadItem.text.replace('[Username]', response.body.first_name + ' ' + response.body.last_name)
@@ -219,24 +210,6 @@ exports.getfbMessage = function (req, res) {
                               }
                             })
                         })
-                        // const messageData = {
-                        //   text: page.welcomeMessage
-                        // }
-                        // const data = {
-                        //   recipient: {id: response.body.id}, // this is the subscriber id
-                        //   message: messageData
-                        // }
-                        // logger.serverLog(TAG,
-                        //   `response.body.access_token${JSON.stringify(page.accessToken)}`)
-                        // needle.post(
-                        //   `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
-                        //   data, (err4, respp) => {
-                        //     logger.serverLog(TAG,
-                        //       `Sending survey to subscriber response ${JSON.stringify(
-                        //         respp.body)}`)
-                        //     if (err4) {
-                        //     }
-                        //   })
                       }
                     }
                     const payload = {
@@ -285,8 +258,6 @@ exports.getfbMessage = function (req, res) {
                   } else {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
                   }
-                  //  })
-                //  sendautomatedmsg(event, page)
                 })
               })
             })
@@ -493,6 +464,76 @@ exports.getfbMessage = function (req, res) {
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 
+function handleMessageFromSomeOtherApp (event) {
+  logger.serverLog(TAG, 'going to save message coming from other app')
+  const pageId = event.sender.id
+  const receiverId = event.recipient.id
+  // get accesstoken of page
+  Pages.find({pageId: pageId, connected: true})
+  .populate('userId')
+  .exec((err, pages) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    pages.forEach((page) => {
+      logger.serverLog(TAG, `page got for which webhook is ${page.pageName}`)
+      const options = {
+        url: `https://graph.facebook.com/v2.6/${receiverId}?access_token=${page.accessToken}`,
+        qs: {access_token: page.accessToken},
+        method: 'GET'
+
+      }
+      needle.get(options.url, options, (error, response) => {
+        const subsriber = response.body
+        if (!error) {
+          logger.serverLog(TAG, '!error')
+          const payload = {
+            firstName: subsriber.first_name,
+            lastName: subsriber.last_name,
+            locale: subsriber.locale,
+            gender: subsriber.gender,
+            userId: page.userId,
+            provider: 'facebook',
+            timezone: subsriber.timezone,
+            profilePic: subsriber.profile_pic,
+            companyId: page.companyId,
+            //  coverPhoto: coverphoto.source,
+            pageScopedId: '',
+            email: '',
+            senderId: receiverId,
+            pageId: page._id,
+            isSubscribed: true
+          }
+          Subscribers.findOne({senderId: receiverId}, (err, subscriber) => {
+            logger.serverLog(TAG, `subscriber ${subscriber}`)
+            if (err) logger.serverLog(TAG, err)
+            if (subscriber === null) {
+              // subsriber not found, create subscriber
+              Subscribers.create(payload, (err2, subscriberCreated) => {
+                if (err2) {
+                  logger.serverLog(TAG, err2)
+                }
+                logger.serverLog(TAG, 'new Subscriber added')
+                if (!(event.postback && event.postback.title === 'Get Started')) {
+                  logger.serverLog(TAG, 'susbscriber if')
+                  createSession(page, subscriberCreated, event)
+                }
+              })
+            } else {
+              if (!(event.postback && event.postback.title === 'Get Started')) {
+                logger.serverLog(TAG, 'susbscriber else')
+                createSession(page, subscriber, event)
+              }
+            }
+          })
+        } else {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+        }
+      })
+    })
+  })
+}
+
 function createSession (page, subscriber, event) {
   Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
     (err, session) => {
@@ -535,14 +576,14 @@ function saveLiveChat (page, subscriber, session, event) {
     og(urlInText, function (err, meta) {
       if (err) return logger.serverLog(TAG, err)
       chatPayload.url_meta = meta
-      saveChatInDb(page, session, chatPayload, subscriber)
+      saveChatInDb(page, session, chatPayload, subscriber, event)
     })
   } else {
-    saveChatInDb(page, session, chatPayload, subscriber)
+    saveChatInDb(page, session, chatPayload, subscriber, event)
   }
 }
 
-function saveChatInDb (page, session, chatPayload, subscriber) {
+function saveChatInDb (page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
@@ -559,6 +600,7 @@ function saveChatInDb (page, session, chatPayload, subscriber) {
         }
       }
     })
+    sendautomatedmsg(event, page)
     logger.serverLog(TAG, 'new chat message saved')
   })
 }
@@ -609,8 +651,8 @@ function updateseenstatus (req) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
-  logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.recipient)}`)
-  logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.sender)}`)
+  //logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.recipient)}`)
+  //logger.serverLog(TAG, `updatesentseen ${JSON.stringify(req.sender)}`)
   SurveyPage.update(
     {pageId: req.recipient.id, subscriberId: req.sender.id},
     {seen: true},
@@ -668,6 +710,7 @@ function sendReply (req) {
     })
   })
 }
+
 function savepoll (req, resp) {
   // find subscriber from sender id
   // var resp = JSON.parse(req.postback.payload)
@@ -718,21 +761,19 @@ function sendautomatedmsg (req, page) {
       //  'message_contains'
       //  'message_begins'
       if (req.message && req.message.text) {
-        var index = -3
+
+        let index = -3
+        if (req.message.text.toLowerCase() === 'stop' ||
+          req.message.text.toLowerCase() === 'unsubscribe') {
+          index = -101
+        }
+        if (req.message.text.toLowerCase() === 'start' ||
+          req.message.text.toLowerCase() === 'subscribe') {
+          index = -111
+        }
         for (let i = 0; i < workflows.length; i++) {
           var userMsg = req.message.text
           var words = userMsg.trim().split(' ')
-
-          if (userMsg.toLowerCase() === 'stop' ||
-            userMsg.toLowerCase() === 'unsubscribe') {
-            index = -101
-            break
-          }
-          if (userMsg.toLowerCase() === 'start' ||
-            userMsg.toLowerCase() === 'subscribe') {
-            index = -111
-            break
-          }
 
           logger.serverLog(TAG,
             `User message is ${userMsg} compared with ${JSON.stringify(
@@ -756,109 +797,105 @@ function sendautomatedmsg (req, page) {
         // user query matched with keywords, send response
         // sending response to sender
         needle.get(
-          `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${page.userId.fbToken}`,
+          `https://graph.facebook.com/v2.10/${req.recipient.id}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
           (err3, response) => {
             if (err3) {
               logger.serverLog(TAG,
                 `Page token error from graph api ${JSON.stringify(err3)}`)
             }
-            index++
-            if (index) {
-              index--
-              let messageData = {}
-              if (index === -101) {
-                messageData = {
-                  text: 'You have unsubscribed from our broadcasts. Send "Start" to subscribe again.'
-                }
-                Subscribers.update({senderId: req.sender.id},
-                  {isSubscribed: false}, (err) => {
-                    if (err) {
-                      logger.serverLog(TAG,
-                        `Subscribers update subscription: ${JSON.stringify(
-                          err)}`)
-                    }
-                  })
-              } else if (index === -111) {
-                messageData = {
-                  text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
-                }
-                Subscribers.update({senderId: req.sender.id},
-                  {isSubscribed: true}, (err) => {
-                    if (err) {
-                      logger.serverLog(TAG,
-                        `Subscribers update subscription: ${JSON.stringify(
-                          err)}`)
-                    }
-                  })
-              } else if (index > -1) {
-                logger.serverLog(TAG,
-                  `workflow reply being sent ${workflows[index].reply}`)
-                messageData = {
-                  text: workflows[index].reply
-                }
+            let messageData = {}
+            if (index === -101) {
+              messageData = {
+                text: 'You have unsubscribed from our broadcasts. Send "Start" to subscribe again.'
               }
-
-              const data = {
-                recipient: {id: req.sender.id}, // this is the subscriber id
-                message: messageData
-              }
-              if (messageData.text !== undefined) {
-                needle.post(
-                  `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
-                  data, (err4, respp) => {
+              Subscribers.update({senderId: req.sender.id},
+                {isSubscribed: false}, (err) => {
+                  if (err) {
                     logger.serverLog(TAG,
-                      `Sending workflow response to subscriber response ${JSON.stringify(
-                        respp.body)}`)
+                      `Subscribers update subscription: ${JSON.stringify(
+                        err)}`)
+                  }
+                })
+            } else if (index === -111) {
+              messageData = {
+                text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
+              }
+              Subscribers.update({senderId: req.sender.id},
+                {isSubscribed: true}, (err) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Subscribers update subscription: ${JSON.stringify(
+                        err)}`)
+                  }
+                })
+            } else if (index > -1) {
+              logger.serverLog(TAG,
+                `workflow reply being sent ${workflows[index].reply}`)
+              messageData = {
+                text: workflows[index].reply
+              }
+            }
 
-                    Subscribers.findOne({senderId: req.sender.id},
-                      (err, subscriber) => {
-                        if (err) return logger.serverLog(TAG, err)
-                        if (!subscriber) {
+            const data = {
+              recipient: {id: req.sender.id}, // this is the subscriber id
+              message: messageData
+            }
+            if (messageData.text !== undefined) {
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                data, (err4, respp) => {
+                  logger.serverLog(TAG,
+                    `Sending workflow response to subscriber response ${JSON.stringify(
+                      respp.body)}`)
+
+                  Subscribers.findOne({senderId: req.sender.id},
+                    (err, subscriber) => {
+                      if (err) return logger.serverLog(TAG, err)
+                      if (!subscriber) {
+                        return logger.serverLog(TAG,
+                          `No subscriber was found for workflow`)
+                      }
+                      Sessions.findOne({
+                        subscriber_id: subscriber._id,
+                        page_id: page._id,
+                        company_id: page.companyId
+                      }, (err, session) => {
+                        if (err) {
                           return logger.serverLog(TAG,
-                            `No subscriber was found for workflow`)
+                            `At get session ${JSON.stringify(err)}`)
                         }
-                        Sessions.findOne({
-                          subscriber_id: subscriber._id,
-                          page_id: page._id,
-                          company_id: page.userId._id
-                        }, (err, session) => {
+                        if (!session) {
+                          return logger.serverLog(TAG,
+                            `No chat session was found for workflow`)
+                        }
+                        const chatMessage = new LiveChat({
+                          sender_id: page._id, // this is the page id: _id of Pageid
+                          recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                          sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                          recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                          session_id: session._id,
+                          company_id: page.companyId, // this is admin id till we have companies
+                          payload: {
+                            componentType: 'text',
+                            text: messageData.text
+                          }, // this where message content will go
+                          status: 'unseen' // seen or unseen
+                        })
+                        chatMessage.save((err, chatMessageSaved) => {
                           if (err) {
                             return logger.serverLog(TAG,
-                              `At get session ${JSON.stringify(err)}`)
+                              `At save chat${JSON.stringify(err)}`)
                           }
-                          if (!session) {
-                            return logger.serverLog(TAG,
-                              `No chat session was found for workflow`)
-                          }
-                          const chatMessage = new LiveChat({
-                            sender_id: page._id, // this is the page id: _id of Pageid
-                            recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                            sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                            recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                            session_id: session._id,
-                            company_id: page.companyId, // this is admin id till we have companies
-                            payload: {
-                              componentType: 'text',
-                              text: messageData.text
-                            }, // this where message content will go
-                            status: 'unseen' // seen or unseen
+                          session.last_activity_time = Date.now()
+                          session.save((err) => {
+                            if (err) logger.serverLog(TAG, err)
                           })
-                          chatMessage.save((err, chatMessageSaved) => {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At save chat${JSON.stringify(err)}`)
-                            }
-                            session.last_activity_time = Date.now()
-                            session.save((err) => {
-                              if (err) logger.serverLog(TAG, err)
-                            })
-                            logger.serverLog(TAG,
-                              'Chat message saved for workflow sent')
-                          })
+                          logger.serverLog(TAG,
+                            'Chat message saved for workflow sent')
                         })
                       })
-                  })
-              }
+                    })
+                })
             }
           })
       }
