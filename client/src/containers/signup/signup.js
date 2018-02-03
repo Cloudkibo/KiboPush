@@ -110,18 +110,18 @@ class Signup extends React.Component {
       let data = {}
       if(this.state.account_type == 'team') {
           data = {
-          name: this.refs.name.value,
-          email: this.refs.email.value,
-          domain: this.refs.domain.value,
-          password: this.refs.password.value,
-          company_name: this.refs.companyName.value,
+          name: this.refs.name.value.trim(),
+          email: this.refs.email.value.trim(),
+          domain: this.refs.domain.value.trim(),
+          password: this.refs.password.value.trim(),
+          company_name: this.refs.companyName.value.trim()
         }
       }
       else{
         data = {
-          name: this.refs.name.value,
-          email: this.refs.email.value,
-          password: this.refs.password.value,
+          name: this.refs.name.value.trim(),
+          email: this.refs.email.value.trim(),
+          password: this.refs.password.value.trim()
         }
       }
 

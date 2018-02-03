@@ -33,14 +33,14 @@ class Login extends React.Component {
     var data = {}
     if(this.state.account_type == 'team'){
       data = {
-        email: this.refs.email.value,
-        domain: this.refs.domain.value,
-        password: this.refs.password.value
+        email: this.refs.email.value.trim(),
+        domain: this.refs.domain.value.trim(),
+        password: this.refs.password.value.trim()
       }
     }else{
       data = {
-        email: this.refs.email.value,
-        password: this.refs.password.value
+        email: this.refs.email.value.trim(),
+        password: this.refs.password.value.trim()
       }
     }
 
