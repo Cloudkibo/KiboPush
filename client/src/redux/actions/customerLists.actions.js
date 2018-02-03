@@ -21,3 +21,19 @@ export function loadCustomerLists () {
 export function loadPhoneNumbersLists () {
   console.log('loadPhoneNumbersLists called')
 }
+
+export function addList (data, msg) {
+  console.log('response from createList', data)
+  return {
+    type: ActionTypes.ADD_NEW_LIST,
+    data
+  }
+}
+export function createSubList (list) {
+  console.log('Creating list')
+  console.log(list)
+  return (dispatch) => {
+    callApi('lists/createList', 'post', list)
+      .then(res => dispatch(addList(res)))
+  }
+}
