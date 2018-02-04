@@ -18,6 +18,7 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 class Survey extends React.Component {
   constructor (props, context) {

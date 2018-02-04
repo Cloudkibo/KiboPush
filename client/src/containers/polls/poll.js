@@ -21,6 +21,7 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 class Poll extends React.Component {
   constructor (props, context) {
