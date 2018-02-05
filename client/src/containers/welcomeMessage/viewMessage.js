@@ -34,11 +34,11 @@ class ViewWelcomeMessage extends React.Component {
               <div className='row'>
                 <div className='col-xl-6'>
                   <h3>View Welcome Message</h3>
-                  <p>Page: {this.props.location.state.page.payload.pageName}</p>
+                  <p>Page: {this.props.location.state.payload.pageName}</p>
                   <Link to='/welcomeMessage' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                 </div>
                 <div className='col-xl-6'>
-                  <ViewMessage payload={this.props.location.state.page.payload.welcomeMessage} />
+                  <ViewMessage payload={this.props.location.state.payload.welcomeMessage} />
                 </div>
               </div>
             </div>
