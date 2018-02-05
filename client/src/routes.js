@@ -82,6 +82,7 @@ import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
 import Connect from './containers/facebookConnect/connect'
 import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
+import ViewWelcomeMessage from './containers/welcomeMessage/viewMessage'
 import CustomerLists from './containers/customerLists/customerLists'
 import PhoneList from './containers/customerLists/listDetails'
 import CreateSubList from './containers/customerLists/createSubList'
@@ -196,6 +197,7 @@ const routes = (
     <Route path='/members' component={Members} onEnter={requireAuth} />
     <Route path='/connectFb' component={Connect} onEnter={requireAuth} />
     <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
+    <Route path='/viewWelcomeMessage' component={ViewWelcomeMessage} onEnter={requireAuth} />
     <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />

@@ -4,13 +4,7 @@ import Header from '../../components/header/header'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import { Link } from 'react-router'
 
-class ViewBroadcastTemplate extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.onTestURLVideo = this.onTestURLVideo.bind(this)
-    this.onTestURLAudio = this.onTestURLAudio.bind(this)
-  }
-
+class ViewWelcomeMessage extends React.Component {
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -28,26 +22,8 @@ class ViewBroadcastTemplate extends React.Component {
     document.body.appendChild(addScript)
   }
 
-  onTestURLVideo (url) {
-    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
-    var truef = videoEXTENSIONS.test(url)
-
-    if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
-    }
-  }
-
-  onTestURLAudio (url) {
-    var AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx|mp4)($|\?)/i
-    var truef = AUDIO_EXTENSIONS.test(url)
-
-    if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
-    }
-  }
-
   render () {
-    console.log('View broadcast template', this.props.location.state)
+    console.log('View Welcome Message', this.props.location.state)
     return (
       <div>
         <Header />
@@ -57,12 +33,12 @@ class ViewBroadcastTemplate extends React.Component {
             <div className='m-content'>
               <div className='row'>
                 <div className='col-xl-6'>
-                  <h3>Title: {this.props.location.state.title}</h3>
-                  <p>Category: {this.props.location.state.category.join(',')}</p>
-                  <Link to='/templates' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
+                  <h3>View Welcome Message</h3>
+                  <p>Page: {this.props.location.state.page.pageName}</p>
+                  <Link to='/welcomeMessage' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                 </div>
                 <div className='col-xl-6'>
-                  <ViewMessage payload={this.props.location.state.payload} />
+                  <ViewMessage payload={this.props.location.state.page.welcomeMessage} />
                 </div>
               </div>
             </div>
@@ -73,4 +49,4 @@ class ViewBroadcastTemplate extends React.Component {
   }
 }
 
-export default ViewBroadcastTemplate
+export default ViewWelcomeMessage
