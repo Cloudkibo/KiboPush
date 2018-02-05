@@ -13,6 +13,7 @@ import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../.
 import AddChannel from './addChannel'
 import ListItem from './ListItem'
 import { Alert } from 'react-bs-notifier'
+import YouTube from 'react-youtube'
 
 class Autoposting extends React.Component {
   constructor (props) {
@@ -101,6 +102,27 @@ class Autoposting extends React.Component {
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="RDOnbzldnoc"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -122,6 +144,15 @@ class Autoposting extends React.Component {
                 <div className='m-alert__text'>
                   Connect several channels and information sources to send
                   updates to your subscribers
+                </div>
+              </div>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>
