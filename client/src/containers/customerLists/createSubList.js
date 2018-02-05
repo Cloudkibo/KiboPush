@@ -11,6 +11,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -20,7 +21,8 @@ class CreateSubList extends React.Component {
       listsSelected: [],
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
-      errorMessages: []
+      errorMessages: [],
+      isSaveEnabled: true
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -32,6 +34,8 @@ class CreateSubList extends React.Component {
     this.removeCondition = this.removeCondition.bind(this)
     this.onSave = this.onSave.bind(this)
     this.validateNewList = this.validateNewList.bind(this)
+    this.handleCreateSubList = this.handleCreateSubList.bind(this)
+    this.resetPage = this.resetPage.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
   }
@@ -44,6 +48,7 @@ class CreateSubList extends React.Component {
       this.initializeListSelect(options)
     }
   }
+
   onSave () {
     var isValid = this.validateNewList()
     if (isValid) {
@@ -51,10 +56,32 @@ class CreateSubList extends React.Component {
       var listName = this.state.newListName
       var conditions = this.state.conditions
       var listPayload = {'listId': this.state.listsSelected, 'listName': listName, 'conditions': conditions}
-      this.props.createSubList(listPayload)
+      this.setState({isSaveEnabled: false})
+      this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
   }
 
+  handleCreateSubList () {
+    this.resetPage()
+    if (this.props.customerLists) {
+      let options = []
+      for (var i = 0; i < this.props.customerLists.length; i++) {
+        options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
+      }
+      this.initializeListSelect(options)
+    }
+  }
+
+  resetPage () {
+    this.setState({
+      selectedRadio: '',
+      listsSelected: [],
+      conditions: [{condition: '', criteria: '', text: ''}],
+      newListName: '',
+      errorMessages: [],
+      isSaveEnabled: true
+    })
+  }
   validateNewList () {
     var errors = false
     var errorMessages = []
@@ -201,8 +228,16 @@ class CreateSubList extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -332,7 +367,7 @@ class CreateSubList extends React.Component {
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
                                        <select className='form-control m-input' onChange={(e) => this.changeCondition(e, i)}
-                                         value={this.state.condition} >
+                                         value={condition.condition} >
                                          <option value=''>Select Condition</option>
                                          <option value='name'>Name</option>
                                          <option value='gender'>Gender</option>
@@ -353,7 +388,7 @@ class CreateSubList extends React.Component {
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
                                        <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                         value={this.state.criteria}>
+                                         value={condition.criteria}>
                                          <option value=''>Select Criteria</option>
                                          <option value='is'>is</option>
                                          <option value='contains'>Contains</option>
@@ -375,7 +410,7 @@ class CreateSubList extends React.Component {
                                        className='m-datatable__cell' style={{width: '25%'}}>
                                        <input className='form-control m-input'
                                          onChange={(e) => this.changeText(e, i)}
-                                         value={this.state.text}
+                                         value={condition.text}
                                          id='text'
                                          placeholder='Text' />
                                        <span className='m-form__help'>
@@ -416,12 +451,24 @@ class CreateSubList extends React.Component {
                     <div className='m-portlet__body' />
                     <div className='m-portlet__foot m-portlet__foot--fit'>
                       <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                        <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
-                          Back
-                        </Link>
-                        <button className='btn btn-primary' onClick={this.onSave}>
-                          Save
-                        </button>
+                        { this.state.isSaveEnabled
+                          ? <div>
+                            <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
+                             Back
+                            </Link>
+                            <button className='btn btn-primary' onClick={this.onSave}>
+                             Save
+                            </button>
+                          </div>
+                          : <div>
+                            <Link style={{marginRight: '10px'}} disabled className='btn btn-primary'>
+                             Back
+                            </Link>
+                            <button className='btn btn-primary' disabled>
+                             Save
+                            </button>
+                          </div>
+                        }
                       </div>
                     </div>
                   </div>

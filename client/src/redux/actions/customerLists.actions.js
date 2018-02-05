@@ -18,8 +18,19 @@ export function loadCustomerLists () {
   }
 }
 
-export function loadPhoneNumbersLists () {
-  console.log('loadPhoneNumbersLists called')
+export function loadListDetails (id) {
+  console.log('loadListDetails called')
+  return (dispatch) => {
+    callApi(`lists/viewList/${id}`)
+      .then(res => dispatch(showListDetails(res.payload)))
+  }
+}
+
+export function showListDetails (data) {
+  return {
+    type: ActionTypes.LOAD_LIST_DETAILS,
+    data
+  }
 }
 
 export function addList (data, msg) {
@@ -29,11 +40,49 @@ export function addList (data, msg) {
     data
   }
 }
-export function createSubList (list) {
+export function createSubList (list, msg, handleCreateSubList) {
   console.log('Creating list')
   console.log(list)
   return (dispatch) => {
     callApi('lists/createList', 'post', list)
-      .then(res => dispatch(addList(res)))
+      .then(res => {
+        console.log('response from createSubList', res)
+        if (res.status === 'success') {
+          msg.success('List created successfully')
+          dispatch(addList(res))
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to save list. ${res.description}`)
+          } else {
+            msg.error('Unable to save list')
+          }
+        }
+        handleCreateSubList()
+      })
+  }
+}
+export function saveCurrentList (list) {
+  console.log('Saving Current List', list)
+  return {
+    type: ActionTypes.CURRENT_CUSTOMER_LIST,
+    data: list
+  }
+}
+export function deleteList (id, msg) {
+  return (dispatch) => {
+    callApi(`lists/deleteList/${id}`, 'delete')
+      .then(res => {
+        console.log('Response Delete', res)
+        if (res.status === 'success') {
+          msg.success('List deleted')
+          dispatch(loadCustomerLists())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete list. ${res.description}`)
+          } else {
+            msg.error('Failed to delete list')
+          }
+        }
+      })
   }
 }

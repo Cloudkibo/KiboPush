@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadPhoneNumbersLists
+  loadListDetails
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -20,7 +20,9 @@ class ListDetails extends React.Component {
                       {'_id': '2', name: 'Sojharo', phone: '+923312443100'},
                       {'_id': '3', name: 'Anisha', phone: '+923312443100'}]
     }
-    props.loadMyPagesList()
+    if (this.props.currentList) {
+      props.loadListDetails(this.props.currentList._id)
+    }
   }
   render () {
     return (
@@ -73,17 +75,17 @@ class ListDetails extends React.Component {
                               </thead>
                               <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                                 {
-                                  this.state.phoneList.map((list, i) => (
+                                  this.props.listDetail.map((obj, i) => (
                                     <tr data-row={i}
                                       className='m-datatable__row m-datatable__row--even'
                                       style={{height: '55px'}} key={i}>
                                       <td data-field='title'
                                         className='m-datatable__cell'>
-                                        <span style={{width: '150px'}}>{list.name}</span>
+                                        <span style={{width: '150px'}}>{obj.name}</span>
                                       </td>
                                       <td data-field='title'
                                         className='m-datatable__cell'>
-                                        <span style={{width: '150px'}}>{list.phone}</span>
+                                        <span style={{width: '150px'}}>{obj.phone}</span>
                                       </td>
                                       <td data-field='seemore'
                                         className='m-datatable__cell'>
@@ -91,12 +93,12 @@ class ListDetails extends React.Component {
                                           style={{width: '170px'}}>
                                           <button className='btn btn-primary btn-sm'
                                             style={{float: 'left', margin: 2}}
-                                            onClick={() => this.showDialogEdit(list)}>
+                                            onClick={() => this.showDialogEdit(obj)}>
                                             Edit
                                           </button>
                                           <button className='btn btn-primary btn-sm'
                                             style={{float: 'left', margin: 2}}
-                                            onClick={() => this.showDialogDelete(list._id)}>
+                                            onClick={() => this.showDialogDelete(obj._id)}>
                                             Delete
                                           </button>
                                         </span>
@@ -133,13 +135,15 @@ class ListDetails extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    listDetail: (state.listsInfo.listDetails),
+    currentList: (state.listsInfo.currentList)
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    loadPhoneNumbersLists: loadPhoneNumbersLists
+    loadListDetails: loadListDetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ListDetails)
