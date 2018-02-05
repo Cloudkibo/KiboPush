@@ -114,10 +114,12 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    var compProp = this.props
     registerAction({
       event: 'poll_created',
       action: function (data) {
-        this.props.loadPollsList()()
+        console.log('New socket event occured: In Callback')
+        compProp.loadPollsList()
       }
     })
   }

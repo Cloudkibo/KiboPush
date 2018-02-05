@@ -39,12 +39,16 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
+    
+    var compProp = this.props
     registerAction({
       event: 'survey_created',
       action: function (data) {
-        this.props.loadSurveysList()
+        console.log('New socket event occured: In Callback')
+        compProp.loadSurveysList()
       }
     })
+
     document.title = 'KiboPush | Survey'
   }
   componentWillMount () {
