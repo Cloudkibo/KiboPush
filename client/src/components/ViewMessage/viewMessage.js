@@ -85,7 +85,7 @@ class ViewMessage extends React.Component {
                             <div className='m-messenger__message-pic'>
                               <img src='icons/user.png' alt='' />
                             </div>
-                            <div className='m-messenger__message-body'>
+                            <div style={{maxWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
                               <div className='m-messenger__message-content'>
                                 {
@@ -123,10 +123,10 @@ class ViewMessage extends React.Component {
                                     </a>
                                     : b.componentType === 'card'
                                     ? <div>
-                                      <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                      <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                           <a href={b.iamge_url} target='_blank'>
-                                            <img style={{maxWidth: 180, borderRadius: '5px'}} src={b.image_url} />
+                                            <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.image_url} />
                                           </a>
                                         </div>
                                         <div style={{marginTop: '10px', padding: '5px'}}>
@@ -148,10 +148,10 @@ class ViewMessage extends React.Component {
                                       {
                                         b.cards.map((card, i) => (
                                           <div key={i}>
-                                            <div id={i} style={{maxWidth: '200px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                            <div id={i} style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                               <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
                                                 <a href={card.image_url} target='_blank'>
-                                                  <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
+                                                  <img style={{maxWidth: '160px', borderRadius: '5px'}} src={card.image_url} />
                                                 </a>
                                               </div>
                                               <div style={{marginTop: '10px', padding: '5px'}}>
