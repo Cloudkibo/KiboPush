@@ -3,12 +3,15 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import ViewMessage from '../../components/ViewMessage/viewMessage'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -16,13 +19,18 @@ class WelcomeMessage extends React.Component {
       showDropDown: false,
       surveysData: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      showViewMessage: false,
+      viewMessagePayload: {}
     }
     props.loadMyPagesList()
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
+    this.openViewPopup = this.openViewPopup.bind(this)
+    this.closeViewPopup = this.closeViewPopup.bind(this)
   }
+
   initializeSwitch (state, id) {
     var self = this
     var temp = '#' + id
@@ -46,12 +54,14 @@ class WelcomeMessage extends React.Component {
       }
     })
   }
+
   gotoCreate (page) {
     browserHistory.push({
       pathname: `/createconvo`,
       state: {module: 'welcome', _id: page}
     })
   }
+
   gotoEdit (page) {
     console.log('gotoEdit called', page)
     browserHistory.push({
@@ -59,6 +69,15 @@ class WelcomeMessage extends React.Component {
       state: {module: 'welcome', _id: page._id, payload: page.welcomeMessage}
     })
   }
+
+  openViewPopup (payload) {
+    this.setState({showViewMessage: true, viewMessagePayload: payload})
+  }
+
+  closeViewPopup () {
+    this.setState({showViewMessage: false})
+  }
+
   render () {
     return (
       <div>
@@ -67,6 +86,16 @@ class WelcomeMessage extends React.Component {
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            {
+              this.state.showViewMessage &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeViewPopup}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeViewPopup}>
+                  <ViewMessage payload={this.state.viewMessagePayload} />
+                </ModalDialog>
+              </ModalContainer>
+            }
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
@@ -119,7 +148,7 @@ class WelcomeMessage extends React.Component {
                                              </span>
                                            </div>
                                            <div className='m-widget4__ext'>
-                                             <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.openViewPopup(page.welcomeMessage)}>
                                               View Message
                                             </button>
                                            </div>
