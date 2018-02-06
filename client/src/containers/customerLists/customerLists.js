@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, saveCurrentList, deleteList
+  loadCustomerLists, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -19,19 +19,14 @@ class CustomerLists extends React.Component {
     super(props, context)
     this.state = {
       isShowingModalDelete: false,
-      deleteid: '',
-      editid: '',
-      editName: '',
-      isShowingModalEdit: false
+      deleteid: ''
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
-    this.showDialogEdit = this.showDialogEdit.bind(this)
-    this.closeDialogEdit = this.closeDialogEdit.bind(this)
-    this.updateListName = this.updateListName.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
+    props.clearCurrentList()
   }
 
   showDialogDelete (id) {
@@ -41,15 +36,6 @@ class CustomerLists extends React.Component {
 
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
-  }
-
-  showDialogEdit (list) {
-    this.setState({isShowingModalEdit: true})
-    this.setState({editid: list._id, editName: list.name})
-  }
-
-  closeDialogEdit () {
-    this.setState({isShowingModalEdit: false})
   }
 
   updateListName (e) {
@@ -110,25 +96,6 @@ class CustomerLists extends React.Component {
                         <div className='col-xl-8 order-2 order-xl-1' />
                         <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                           {
-                            this.state.isShowingModalEdit &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialogEdit}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialogEdit}>
-                                <h3>Edit List Name</h3>
-                                <input className='form-control'
-                                  value={this.state.editName} onChange={(e) => this.updateListName(e)} />
-                                <br />
-                                <button style={{float: 'right'}}
-                                  className='btn btn-primary btn-sm'
-                                  onClick={() => {
-                                    this.closeDialogEdit()
-                                  }}>Save
-                                </button>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                          {
                             this.state.isShowingModalDelete &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialogDelete}>
@@ -188,11 +155,10 @@ class CustomerLists extends React.Component {
                                           style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           View
                                         </Link>
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogEdit(list)}>
+                                        <Link to='/createSubList' className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           Edit
-                                        </button>
+                                        </Link>
                                         <button className='btn btn-primary btn-sm'
                                           style={{float: 'left', margin: 2}}
                                           onClick={() => this.showDialogDelete(list._id)}>
@@ -233,7 +199,8 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     loadCustomerLists: loadCustomerLists,
     saveCurrentList: saveCurrentList,
-    deleteList: deleteList
+    deleteList: deleteList,
+    clearCurrentList: clearCurrentList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerLists)

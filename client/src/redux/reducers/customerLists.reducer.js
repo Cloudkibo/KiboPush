@@ -23,6 +23,10 @@ export function listsInfo (state = {}, action) {
       return Object.assign({}, state, {
         currentList: action.data
       })
+    case ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST:
+      return Object.assign({}, state, {
+        currentList: action.data
+      })
     default:
       return state
   }

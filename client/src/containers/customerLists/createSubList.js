@@ -22,7 +22,8 @@ class CreateSubList extends React.Component {
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
       errorMessages: [],
-      isSaveEnabled: true
+      isSaveEnabled: true,
+      isEdit: false
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -36,6 +37,7 @@ class CreateSubList extends React.Component {
     this.validateNewList = this.validateNewList.bind(this)
     this.handleCreateSubList = this.handleCreateSubList.bind(this)
     this.resetPage = this.resetPage.bind(this)
+    this.initializeList = this.initializeList.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
   }
@@ -47,8 +49,31 @@ class CreateSubList extends React.Component {
       }
       this.initializeListSelect(options)
     }
+    if (this.props.currentList) {
+      this.initializeList()
+    }
   }
 
+  initializeList () {
+    var tempConditions = []
+    /*
+    if (this.props.currentList.condition) {
+    var editCondition = JSON.parse(this.props.currentList.condition)
+    for (var i = 0; i < editCondition.length; i++) {
+      var obj
+      obj.condition = editCondition[i].condition
+      obj.criteria = editCondition[i].criteria
+      obj.text = editCondition[i].text
+      tempConditions.push(obj)
+    }
+    */
+    this.setState({
+      isEdit: true,
+      newListName: this.props.currentList.listName
+    })
+    var id = this.props.currentList._id
+    console.log(id)
+  }
   onSave () {
     var isValid = this.validateNewList()
     if (isValid) {
@@ -63,13 +88,7 @@ class CreateSubList extends React.Component {
 
   handleCreateSubList () {
     this.resetPage()
-    if (this.props.customerLists) {
-      let options = []
-      for (var i = 0; i < this.props.customerLists.length; i++) {
-        options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
-      }
-      this.initializeListSelect(options)
-    }
+    $("#selectLists").val('').trigger('change')
   }
 
   resetPage () {
@@ -86,13 +105,13 @@ class CreateSubList extends React.Component {
     var errors = false
     var errorMessages = []
     var errorMessage
-    if (this.state.selectedRadio === '') {
+    if (!this.state.isEdit && this.state.selectedRadio === '') {
       errors = true
       errorMessage = {error: 'radio', message: 'Please select an option'}
       errorMessages.push(errorMessage)
       this.setState({errorMessages: errorMessages})
     }
-    if (this.state.selectedRadio === 'segmentList') {
+    if (!this.state.isEdit && this.state.selectedRadio === 'segmentList') {
       if (this.state.listsSelected.length < 1) {
         errors = true
         errorMessage = {error: 'selection', message: 'Please select an existing list'}
@@ -250,14 +269,20 @@ class CreateSubList extends React.Component {
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
+                          { !this.state.isEdit
+                            ? <h3 className='m-portlet__head-text'>
                             Create SubList of Customers
-                          </h3>
+                            </h3>
+                            : <h3 className='m-portlet__head-text'>
+                            Edit SubList of Customers
+                            </h3>
+                          }
                         </div>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
+                        { !this.state.isEdit &&
                         <div>
                           <div className='radio-buttons' style={{marginLeft: '37px'}}>
                             <div className='radio'>
@@ -283,11 +308,13 @@ class CreateSubList extends React.Component {
                             {
                               this.state.errorMessages.map((m, i) => (
                                 m.error === 'radio' &&
-                                  <span style={{color: 'red'}}>{m.message}</span>
+                                  <span style={{color: 'red', marginLeft: '20px'}}>{m.message}</span>
                               ))
                             }
                           </span>
                         </div>
+                        }
+                        { !this.state.isEdit &&
                         <div className='form-group m-form__group col-12'>
                           <label className='col-lg-2 col-form-label'>
                             Choose Lists
@@ -309,6 +336,7 @@ class CreateSubList extends React.Component {
                             }
                           </span>
                         </div>
+                        }
                         <div className='form-group m-form__group col-12'>
                           <label className='col-lg-2 col-form-label'>
                             List Name
@@ -484,7 +512,8 @@ class CreateSubList extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    currentList: (state.listsInfo.currentList)
   }
 }
 function mapDispatchToProps (dispatch) {
