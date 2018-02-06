@@ -18,7 +18,7 @@ class CreateSubList extends React.Component {
     super(props, context)
     this.state = {
       selectedRadio: '',
-      listsSelected: [],
+      listSelected: '',
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
       errorMessages: [],
@@ -80,7 +80,7 @@ class CreateSubList extends React.Component {
       this.setState({errorMessages: []})
       var listName = this.state.newListName
       var conditions = this.state.conditions
-      var listPayload = {'listId': this.state.listsSelected, 'listName': listName, 'conditions': conditions}
+      var listPayload = {'_id': this.state.listSelected, 'listName': listName, 'conditions': conditions}
       this.setState({isSaveEnabled: false})
       this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
@@ -94,7 +94,7 @@ class CreateSubList extends React.Component {
   resetPage () {
     this.setState({
       selectedRadio: '',
-      listsSelected: [],
+      listSelected: '',
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
       errorMessages: [],
@@ -112,7 +112,7 @@ class CreateSubList extends React.Component {
       this.setState({errorMessages: errorMessages})
     }
     if (!this.state.isEdit && this.state.selectedRadio === 'segmentList') {
-      if (this.state.listsSelected.length < 1) {
+      if (this.state.listSelected === '') {
         errors = true
         errorMessage = {error: 'selection', message: 'Please select an existing list'}
         errorMessages.push(errorMessage)
@@ -191,7 +191,7 @@ class CreateSubList extends React.Component {
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
-        conditions[i].text = e.target.value
+        conditions[i].text = (e.target.value).trim()
       }
     }
     this.setState({conditions: conditions})
@@ -209,7 +209,7 @@ class CreateSubList extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'segmentList') {
-      this.setState({listsSelected: []})
+      this.setState({listSelected: ''})
     }
   }
 
@@ -226,7 +226,6 @@ class CreateSubList extends React.Component {
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
-      multiple: true,
       tags: true
     })
 
@@ -240,10 +239,11 @@ class CreateSubList extends React.Component {
           var selectedOption = selectedOptions[i].label
           selected.push(selectedOption)
         }
-        self.setState({ listsSelected: selected })
+        self.setState({ listSelected: selected })
       }
       console.log('change List Selection', selected)
     })
+      $("#selectLists").val('').trigger('change')
   }
 
   render () {
