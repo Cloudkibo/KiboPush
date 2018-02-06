@@ -143,11 +143,11 @@ exports.createList = function (req, res) {
         if (list[0].initialList === true) {
           for (let i = 0; i < req.body.conditions.length; i++) {
             let myCondition = { isSubscribedByPhoneNumber: true }
-            // myCondition = _.merge(myCondition, {
-            //   myCondition[req.body.conditions[i].condition]: req.body.conditions[i].text.toLowerCase()
-            // })
             if (req.body.conditions[i].criteria === 'is') {
-              myCondition[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+              var textTemp4 = '^' + req.body.conditions[i].text
+              var cond4 = new RegExp(textTemp4)
+              console.log('cond', cond4)
+              myCondition[req.body.conditions[i].condition] = { $regex: cond4, $options: 'i' }
               console.log('inside if')
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -180,7 +180,7 @@ exports.createList = function (req, res) {
               var textTemp = '^' + req.body.conditions[i].text
               var cond = new RegExp(textTemp)
               console.log('cond', cond)
-              myCondition[req.body.conditions[i].condition] = { $regex: cond }
+              myCondition[req.body.conditions[i].condition] = { $regex: cond, $options: 'i' }
               console.log('myCondition', myCondition)
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -189,7 +189,7 @@ exports.createList = function (req, res) {
                     description: `Internal Server Error ${JSON.stringify(err)}`
                   })
                 }
-                // console.log('subscriber', subscriber)
+                console.log('subscriber', subscriber)
                 for (let k = 0; k < subscriber.length; k++) {
                   if (subscriber[i] && exists(listCreated._id, subscriber[i]._id) === false) {
                     console.log('hi')
@@ -213,7 +213,7 @@ exports.createList = function (req, res) {
               var textTemp1 = '.*' + req.body.conditions[i].text + '.*'
               var cond1 = new RegExp(textTemp1)
               console.log('cond', cond1)
-              myCondition[req.body.conditions[i].condition] = { $regex: cond1 }
+              myCondition[req.body.conditions[i].condition] = { $regex: cond1, $options: 'i' }
               console.log('myCondition', myCondition)
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -253,7 +253,10 @@ exports.createList = function (req, res) {
               }
             })
             if (req.body.conditions[i].criteria === 'is') {
-              pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+              var textTemp5 = '^' + req.body.conditions[i].text
+              var cond5 = new RegExp(textTemp5)
+              console.log('cond', cond5)
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond5, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -285,7 +288,7 @@ exports.createList = function (req, res) {
               var textTemp2 = '^' + req.body.conditions[i].text
               var cond2 = new RegExp(textTemp2)
               console.log('cond', cond2)
-              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2 }
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -318,7 +321,7 @@ exports.createList = function (req, res) {
               var textTemp3 = '.*' + req.body.conditions[i].text + '.*'
               var cond3 = new RegExp(textTemp3)
               console.log('cond', cond3)
-              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3 }
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -350,14 +353,14 @@ exports.createList = function (req, res) {
             }
           }
         }
-        Lists.find({_id: listCreated}, (err, list) => {
+        Lists.find({_id: listCreated}, (err, newlist) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          return res.status(201).json({status: 'success', payload: list})
+          return res.status(201).json({status: 'success', payload: newlist})
         })
       })
     })
@@ -415,11 +418,11 @@ exports.editList = function (req, res) {
       if (list[0].initialList === true) {
         for (let i = 0; i < req.body.conditions.length; i++) {
           let myCondition = { isSubscribedByPhoneNumber: true }
-          // myCondition = _.merge(myCondition, {
-          //   myCondition[req.body.conditions[i].condition]: req.body.conditions[i].text.toLowerCase()
-          // })
           if (req.body.conditions[i].criteria === 'is') {
-            myCondition[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+            var textTemp4 = '^' + req.body.conditions[i].text
+            var cond4 = new RegExp(textTemp4)
+            console.log('cond', cond4)
+            myCondition[req.body.conditions[i].condition] = { $regex: cond4, $options: 'i' }
             console.log('inside if')
             Subscribers.find(myCondition, (err, subscriber) => {
               if (err) {
@@ -452,7 +455,7 @@ exports.editList = function (req, res) {
             var textTemp = '^' + req.body.conditions[i].text
             var cond = new RegExp(textTemp)
             console.log('cond', cond)
-            myCondition[req.body.conditions[i].condition] = { $regex: cond }
+            myCondition[req.body.conditions[i].condition] = { $regex: cond, $options: 'i' }
             console.log('myCondition', myCondition)
             Subscribers.find(myCondition, (err, subscriber) => {
               if (err) {
@@ -485,7 +488,7 @@ exports.editList = function (req, res) {
             var textTemp1 = '.*' + req.body.conditions[i].text + '.*'
             var cond1 = new RegExp(textTemp1)
             console.log('cond', cond1)
-            myCondition[req.body.conditions[i].condition] = { $regex: cond1 }
+            myCondition[req.body.conditions[i].condition] = { $regex: cond1, $options: 'i' }
             console.log('myCondition', myCondition)
             Subscribers.find(myCondition, (err, subscriber) => {
               if (err) {
@@ -525,6 +528,10 @@ exports.editList = function (req, res) {
             }
           })
           if (req.body.conditions[i].criteria === 'is') {
+            var textTemp6 = '^' + req.body.conditions[i].text
+            var cond6 = new RegExp(textTemp6)
+            console.log('cond', cond6)
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond6, $options: 'i' }
             pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text
             console.log('pagesFindCriteria', pagesFindCriteria)
             Subscribers.find(pagesFindCriteria, (err, subscriber) => {
@@ -557,7 +564,7 @@ exports.editList = function (req, res) {
             var textTemp2 = '^' + req.body.conditions[i].text
             var cond2 = new RegExp(textTemp2)
             console.log('cond', cond2)
-            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2 }
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2, $options: 'i' }
             console.log('pagesFindCriteria', pagesFindCriteria)
             Subscribers.find(pagesFindCriteria, (err, subscriber) => {
               if (err) {
@@ -590,7 +597,7 @@ exports.editList = function (req, res) {
             var textTemp3 = '.*' + req.body.conditions[i].text + '.*'
             var cond3 = new RegExp(textTemp3)
             console.log('cond', cond3)
-            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3 }
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3, $options: 'i' }
             console.log('pagesFindCriteria', pagesFindCriteria)
             Subscribers.find(pagesFindCriteria, (err, subscriber) => {
               if (err) {

@@ -80,7 +80,7 @@ class CreateSubList extends React.Component {
       this.setState({errorMessages: []})
       var listName = this.state.newListName
       var conditions = this.state.conditions
-      var listPayload = {'parentList': this.state.listSelected, 'listName': listName, 'conditions': conditions}
+      var listPayload = {'_id': this.state.listSelected, 'listName': listName, 'conditions': conditions}
       this.setState({isSaveEnabled: false})
       this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
