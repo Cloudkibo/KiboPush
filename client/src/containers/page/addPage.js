@@ -93,23 +93,24 @@ class AddPage extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              {
-                this.props.location.state && this.props.location.state.showMsg &&
-                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                  <div className='m-alert__icon'>
-                    <i className='flaticon-exclamation m--font-brand' />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                { this.props.user && !this.props.user.facebookInfo
+                  ? <div className='m-alert__text'>
+                    This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{color: 'blue', cursor: 'pointer'}}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{color: 'blue', cursor: 'pointer'}}>here</Link> to invite admins to your company.
                   </div>
-                  { this.props.user && !this.props.user.facebookInfo
-                    ? <div className='m-alert__text'>
-                      This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{color: 'blue', cursor: 'pointer'}}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{color: 'blue', cursor: 'pointer'}}>here</Link> to invite admins to your company.
-                    </div>
-                  : <div className='m-alert__text'>
+                : <div>
+                  { this.props.location.state && this.props.location.state.showMsg &&
+                  <div className='m-alert__text'>
                     This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
                     To connect the pages click on connect buttons. Click on Done button to save them.
                   </div>
                 }
                 </div>
               }
+              </div>
               <div className='row'>
                 <div className='col-xl-12'>
                   {this.state.showAlert === true &&
