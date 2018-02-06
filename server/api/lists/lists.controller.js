@@ -123,7 +123,8 @@ exports.createList = function (req, res) {
       companyId: companyUser.companyId,
       userId: req.user._id,
       listName: req.body.listName,
-      conditions: req.body.conditions
+      conditions: req.body.conditions,
+      parentList: req.body._id
     }
     const list = new Lists(listPayload)
     list.save((err, listCreated) => {
@@ -253,9 +254,8 @@ exports.createList = function (req, res) {
               }
             })
             if (req.body.conditions[i].criteria === 'is') {
-                pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
-                console.log('pagesFindCriteria', pagesFindCriteria)
-
+              pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+              console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
                   return res.status(500).json({
@@ -349,22 +349,20 @@ exports.createList = function (req, res) {
               })
               //  console.log('subscribersPayload', subscribersPayload)
             }
+          }
         }
-      }
-    //  console.log('subscribersPayload', subscribersPayload)
-    // const list = new Lists(listPayload)
-    // list.save((err, listCreated) => {
-    //   if (err) {
-    //     return res.status(500).json({
-    //       status: 'failed',
-    //       description: `Internal Server Error ${JSON.stringify(err)}`
-    //     })
-    //   }
-    return res.status(201).json({status: 'success', payload: subscribersPayload})
-    // })
+        Lists.find({_id: listCreated}, (err, list) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: list})
+        })
+      })
+    })
   })
-})
-})
 }
 exports.deleteList = function (req, res) {
   logger.serverLog(TAG,

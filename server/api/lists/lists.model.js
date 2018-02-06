@@ -10,7 +10,8 @@ const listSchema = new Schema({
   datetime: { type: Date, default: Date.now },
   content: {type: Schema.Types.Mixed},
   conditions: {type: Schema.Types.Mixed},
-  initialList: Boolean
+  initialList: Boolean,
+  parentList: { type: Schema.ObjectId }
 })
 
 module.exports = mongoose.model('lists', listSchema)
