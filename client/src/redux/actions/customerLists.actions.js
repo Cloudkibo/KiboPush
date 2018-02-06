@@ -86,3 +86,10 @@ export function deleteList (id, msg) {
       })
   }
 }
+export function clearCurrentList () {
+  console.log('Clear Current List')
+  return {
+    type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
+    data: null
+  }
+}
