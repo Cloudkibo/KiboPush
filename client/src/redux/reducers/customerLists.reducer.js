@@ -12,8 +12,16 @@ export function listsInfo (state = {}, action) {
       })
     case ActionTypes.ADD_NEW_LIST:
       return Object.assign({}, state, {
-        surveys: [...state.customerLists, action.data.payload],
+        customerLists: [...state.customerLists, action.data.payload],
         createwarning: action.data.status
+      })
+    case ActionTypes.LOAD_LIST_DETAILS:
+      return Object.assign({}, state, {
+        listDetails: action.data
+      })
+    case ActionTypes.CURRENT_CUSTOMER_LIST:
+      return Object.assign({}, state, {
+        currentList: action.data
       })
     default:
       return state

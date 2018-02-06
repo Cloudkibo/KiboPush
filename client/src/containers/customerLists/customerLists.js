@@ -6,12 +6,13 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists
+  loadCustomerLists, saveCurrentList, deleteList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 
 class CustomerLists extends React.Component {
   constructor (props, context) {
@@ -28,6 +29,7 @@ class CustomerLists extends React.Component {
     this.showDialogEdit = this.showDialogEdit.bind(this)
     this.closeDialogEdit = this.closeDialogEdit.bind(this)
     this.updateListName = this.updateListName.bind(this)
+    this.saveCurrentList = this.saveCurrentList.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
   }
@@ -53,9 +55,20 @@ class CustomerLists extends React.Component {
   updateListName (e) {
     this.setState({editName: e.target.value})
   }
+  saveCurrentList (list) {
+    this.props.saveCurrentList(list)
+  }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -126,6 +139,7 @@ class CustomerLists extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
+                                    this.props.deleteList(this.state.deleteid, this.msg)
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
@@ -171,7 +185,7 @@ class CustomerLists extends React.Component {
                                       <span className='pull-right'
                                         style={{width: '250px'}}>
                                         <Link to='/listDetails' className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}} >
+                                          style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           View
                                         </Link>
                                         <button className='btn btn-primary btn-sm'
@@ -217,7 +231,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    loadCustomerLists: loadCustomerLists
+    loadCustomerLists: loadCustomerLists,
+    saveCurrentList: saveCurrentList,
+    deleteList: deleteList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerLists)
