@@ -27,6 +27,7 @@ export function loadListDetails (id) {
 }
 
 export function showListDetails (data) {
+  console.log('showListDetails', data)
   return {
     type: ActionTypes.LOAD_LIST_DETAILS,
     data
