@@ -50,7 +50,7 @@ class Dashboard extends React.Component {
         pathname: '/resendVerificationEmail'
       })
     }
-    if (nextprops.user && nextprops.user.emailVerified === true) {
+    if (nextprops.user) {
       if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
         browserHistory.push({
