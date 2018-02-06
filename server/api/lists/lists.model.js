@@ -9,7 +9,7 @@ const listSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
   content: {type: Schema.Types.Mixed},
-  condition: String,
+  conditions: {type: Schema.Types.Mixed},
   initialList: Boolean
 })
 

@@ -166,7 +166,7 @@ exports.sendNumbers = function (req, res) {
       listName: 'All customers',
       userId: req.user._id,
       companyId: companyUser.companyId,
-      condition: 'initial_list',
+      conditions: 'initial_list',
       initialList: true
     }, {upsert: true}, (err2, savedList) => {
       if (err) {
