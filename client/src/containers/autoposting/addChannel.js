@@ -130,7 +130,7 @@ class AddChannel extends React.Component {
         <div>
           <div>
             <label> Facebook Page Url </label>
-            <input ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
+            <input placeholder='Enter FB url' ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
           </div>
           <button style={{float: 'right', margin: '10px'}}
             onClick={() => this.createAutoposting('facebook')}
@@ -142,7 +142,7 @@ class AddChannel extends React.Component {
         <div>
           <div>
             <label> Twitter Account Url </label>
-            <input ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
+            <input placeholder='Enter Twitter handle' ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
           </div>
           <button style={{float: 'right', margin: '10px'}}
             onClick={() => this.createAutoposting('twitter')}
