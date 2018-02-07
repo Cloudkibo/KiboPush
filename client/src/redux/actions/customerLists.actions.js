@@ -57,7 +57,7 @@ export function createSubList (list, msg, handleCreateSubList) {
             msg.error('Unable to save list')
           }
         }
-        handleCreateSubList()
+        handleCreateSubList(res)
       })
   }
 }
