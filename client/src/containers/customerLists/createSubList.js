@@ -35,7 +35,7 @@ class CreateSubList extends React.Component {
     this.changeText = this.changeText.bind(this)
     this.removeCondition = this.removeCondition.bind(this)
     this.onSave = this.onSave.bind(this)
-    this.onUpdate = this.onSave.bind(this)
+    this.onUpdate = this.onUpdate.bind(this)
     this.validateNewList = this.validateNewList.bind(this)
     this.handleCreateSubList = this.handleCreateSubList.bind(this)
     this.handleEditList = this.handleEditList.bind(this)
@@ -537,14 +537,12 @@ class CreateSubList extends React.Component {
                             <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
                              Back
                             </Link>
-                            { !this.state.isEdit &&
-                            <button className='btn btn-primary' onClick={this.onSave}>
-                             Save
-                            </button>
-                            }
-                            { this.state.isEdit &&
-                            <button className='btn btn-primary' onClick={this.onUpdate}>
-                             Save
+                            { !this.state.isEdit
+                            ? <button className='btn btn-primary' onClick={this.onSave}>
+                              Save
+                              </button>
+                            : <button className='btn btn-primary' onClick={this.onUpdate}>
+                             Update
                             </button>
                             }
                           </div>
