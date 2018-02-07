@@ -56,6 +56,7 @@ class Sidebar extends Component {
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
+    this.showBroadcastTemplates = this.showBroadcastTemplates.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
   }
@@ -208,7 +209,7 @@ class Sidebar extends Component {
 
   showBroadcastsItem () {
     if (this.props.user) {
-      if (this.state.broadcasts && this.props.user.permissions.broadcastPermission  && this.props.user.plan.broadcasts) {
+      if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/convos' className='m-menu__link m-menu__toggle'>
@@ -223,9 +224,26 @@ class Sidebar extends Component {
     }
   }
 
+  showBroadcastTemplates () {
+    if (this.props.user) {
+      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/templates' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-file-1' />
+              <span className='m-menu__link-text'>Templates</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showSurveysItem () {
     if (this.props.user) {
-      if (this.state.surveys && this.props.user.permissions.surveyPermission  && this.props.user.plan.surveys) {
+      if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/surveys' className='m-menu__link m-menu__toggle'>
@@ -242,7 +260,7 @@ class Sidebar extends Component {
 
   showPollsItem () {
     if (this.props.user) {
-      if (this.state.polls && this.props.user.permissions.pollsPermission  && this.props.user.plan.polls) {
+      if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/poll' className='m-menu__link m-menu__toggle'>
@@ -259,7 +277,7 @@ class Sidebar extends Component {
 
   showWorkflowsItem () {
     if (this.props.user) {
-      if (this.state.workflows && this.props.user.permissions.workflowPermission  && this.props.user.plan.workflows) {
+      if (this.state.workflows && this.props.user.permissions.workflowPermission && this.props.user.plan.workflows) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/workflows' className='m-menu__link m-menu__toggle'>
@@ -276,7 +294,7 @@ class Sidebar extends Component {
 
   showLiveChatItem () {
     if (this.props.user && this.props.user.isSuperUser) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission  && this.props.user.plan.live_chat) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/live' className='m-menu__link m-menu__toggle'>
@@ -327,7 +345,7 @@ class Sidebar extends Component {
 
   showPagesItem () {
     if (this.props.user) {
-      if (this.state.pages && this.props.user.permissions.pagesPermission  && this.props.user.plan.manage_pages) {
+      if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/pages' className='m-menu__link m-menu__toggle'>
@@ -344,7 +362,7 @@ class Sidebar extends Component {
 
   showSubscribersItem () {
     if (this.props.user) {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission  && this.props.user.plan.manage_subscribers) {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
@@ -393,7 +411,7 @@ class Sidebar extends Component {
 
   showInviteMembersItem () {
     if (this.props.user) {
-      if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission)  && this.props.user.plan.invite_team) {
+      if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) && this.props.user.plan.invite_team) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
@@ -410,7 +428,7 @@ class Sidebar extends Component {
 
   showMembersItem () {
     if (this.props.user) {
-      if (this.state.members && this.props.user.permissions.membersPermission  && this.props.user.plan.team_members_management) {
+      if (this.state.members && this.props.user.permissions.membersPermission && this.props.user.plan.team_members_management) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/members' className='m-menu__link m-menu__toggle'>
@@ -440,6 +458,7 @@ class Sidebar extends Component {
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
               {this.showDashboard()}
+              {this.showBroadcastTemplates()}
               {this.showBroadcastsItem()}
               {this.showSurveysItem()}
               {this.showPollsItem()}
@@ -451,7 +470,7 @@ class Sidebar extends Component {
               {this.showSubscribersItem()}
               {this.showWelcomeMessageItem()}
               {this.showCreatePhoneList()}
-              {this.props.user && this.state.subscribeToMessenger  && this.props.user.plan.subscribe_to_messenger &&
+              {this.props.user && this.state.subscribeToMessenger && this.props.user.plan.subscribe_to_messenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-alarm' />
@@ -461,7 +480,7 @@ class Sidebar extends Component {
               }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.props.user && this.state.messengerLink  && this.props.user.plan.messenger_links &&
+              {this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-share' />

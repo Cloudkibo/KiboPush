@@ -57,44 +57,67 @@ exports.allpages = function (req, res) {
           description: `Error in getting pages ${JSON.stringify(err)}`
         })
       }
-      Subscribers.aggregate([{
-        $group: {
+      Subscribers.aggregate([
+        {$match: {isSubscribed: true}},
+        { $group: {
           _id: {pageId: '$pageId'},
           count: {$sum: 1}
         }
-      }], (err2, gotSubscribersCount) => {
+        }], (err2, gotSubscribersCount) => {
         if (err2) {
           return res.status(404).json({
             status: 'failed',
             description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
           })
         }
-        let pagesPayload = []
-        for (let i = 0; i < pages.length; i++) {
-          pagesPayload.push({
-            _id: pages[i]._id,
-            pageId: pages[i].pageId,
-            pageName: pages[i].pageName,
-            userId: pages[i].userId,
-            pagePic: pages[i].pagePic,
-            connected: pages[i].connected,
-            pageUserName: pages[i].pageUserName,
-            likes: pages[i].likes,
-            isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
-            welcomeMessage: pages[i].welcomeMessage,
-            subscribers: 0
-          })
-        }
-        for (let i = 0; i < pagesPayload.length; i++) {
-          for (let j = 0; j < gotSubscribersCount.length; j++) {
-            if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-              pagesPayload[i].subscribers = gotSubscribersCount[j].count
+        Subscribers.aggregate([
+          {$match: {isSubscribed: false}},
+          { $group: {
+            _id: {pageId: '$pageId'},
+            count: {$sum: 1}
+          }
+          }], (err2, gotUnSubscribersCount) => {
+          if (err2) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
+            })
+          }
+          let pagesPayload = []
+          for (let i = 0; i < pages.length; i++) {
+            pagesPayload.push({
+              _id: pages[i]._id,
+              pageId: pages[i].pageId,
+              pageName: pages[i].pageName,
+              userId: pages[i].userId,
+              pagePic: pages[i].pagePic,
+              connected: pages[i].connected,
+              pageUserName: pages[i].pageUserName,
+              likes: pages[i].likes,
+              isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+              welcomeMessage: pages[i].welcomeMessage,
+              subscribers: 0,
+              unsubscribes: 0
+            })
+          }
+          for (let i = 0; i < pagesPayload.length; i++) {
+            for (let j = 0; j < gotSubscribersCount.length; j++) {
+              if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
+                pagesPayload[i].subscribers = gotSubscribersCount[j].count
+              }
             }
           }
-        }
-        res.status(200).json({
-          status: 'success',
-          payload: pagesPayload
+          for (let i = 0; i < pagesPayload.length; i++) {
+            for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+              if (pagesPayload[i]._id.toString() === gotUnSubscribersCount[j]._id.pageId.toString()) {
+                pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+              }
+            }
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: pagesPayload
+          })
         })
       })
     })

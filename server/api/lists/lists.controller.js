@@ -1,6 +1,5 @@
 const logger = require('../../components/logger')
 const Lists = require('./lists.model')
-const PhoneNumber = require('../growthtools/growthtools.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/surveys/surveys.controller.js'
@@ -67,21 +66,34 @@ exports.viewList = function (req, res) {
         })
       })
     } else {
-      let pagesFindCriteria = {}
-      pagesFindCriteria = _.merge(pagesFindCriteria, {
-        _id: {
-          $in: list[0].content
-        }
-      })
-      Subscribers.find(pagesFindCriteria, (err, subscriber) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        return res.status(201).json({status: 'success', payload: subscriber})
-      })
+      console.log('listcontent', list[0].content.length)
+      if (list[0].content.length !== 0) {
+        let pagesFindCriteria = {}
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
+          _id: {
+            $in: list[0].content
+          }
+        })
+        Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: subscriber})
+        })
+      } else {
+        console.log('in else')
+        list[0].remove((err2) => {
+          if (err2) {
+            return res.status(500)
+              .json({status: 'failed', description: 'list update failed'})
+          }
+          return res.status(200)
+          .json({status: 'success'})
+        })
+      }
     }
   })
 }
@@ -119,22 +131,25 @@ exports.createList = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let listPayload = {
-      companyId: companyUser.companyId,
-      userId: req.user._id,
-      listName: req.body.listName,
-      conditions: req.body.conditions,
-      parentList: req.body._id
-    }
-    const list = new Lists(listPayload)
-    list.save((err, listCreated) => {
+    Lists.find({_id: req.body._id}, (err, list) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      Lists.find({_id: req.body._id}, (err, list) => {
+      console.log('listName', list[0].listName)
+      let listPayload = {
+        companyId: companyUser.companyId,
+        userId: req.user._id,
+        listName: req.body.listName,
+        conditions: req.body.conditions,
+        parentList: req.body._id,
+        parentListName: list[0].listName
+      }
+      console.log('listsPayload', listPayload)
+      const newlist = new Lists(listPayload)
+      newlist.save((err, listCreated) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
@@ -144,11 +159,11 @@ exports.createList = function (req, res) {
         if (list[0].initialList === true) {
           for (let i = 0; i < req.body.conditions.length; i++) {
             let myCondition = { isSubscribedByPhoneNumber: true }
-            // myCondition = _.merge(myCondition, {
-            //   myCondition[req.body.conditions[i].condition]: req.body.conditions[i].text.toLowerCase()
-            // })
             if (req.body.conditions[i].criteria === 'is') {
-              myCondition[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+              var textTemp4 = '^' + req.body.conditions[i].text
+              var cond4 = new RegExp(textTemp4)
+              console.log('cond', cond4)
+              myCondition[req.body.conditions[i].condition] = { $regex: cond4, $options: 'i' }
               console.log('inside if')
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -181,7 +196,7 @@ exports.createList = function (req, res) {
               var textTemp = '^' + req.body.conditions[i].text
               var cond = new RegExp(textTemp)
               console.log('cond', cond)
-              myCondition[req.body.conditions[i].condition] = { $regex: cond }
+              myCondition[req.body.conditions[i].condition] = { $regex: cond, $options: 'i' }
               console.log('myCondition', myCondition)
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -190,7 +205,7 @@ exports.createList = function (req, res) {
                     description: `Internal Server Error ${JSON.stringify(err)}`
                   })
                 }
-                // console.log('subscriber', subscriber)
+                console.log('subscriber', subscriber)
                 for (let k = 0; k < subscriber.length; k++) {
                   if (subscriber[i] && exists(listCreated._id, subscriber[i]._id) === false) {
                     console.log('hi')
@@ -214,7 +229,7 @@ exports.createList = function (req, res) {
               var textTemp1 = '.*' + req.body.conditions[i].text + '.*'
               var cond1 = new RegExp(textTemp1)
               console.log('cond', cond1)
-              myCondition[req.body.conditions[i].condition] = { $regex: cond1 }
+              myCondition[req.body.conditions[i].condition] = { $regex: cond1, $options: 'i' }
               console.log('myCondition', myCondition)
               Subscribers.find(myCondition, (err, subscriber) => {
                 if (err) {
@@ -254,7 +269,10 @@ exports.createList = function (req, res) {
               }
             })
             if (req.body.conditions[i].criteria === 'is') {
-              pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text.toLowerCase()
+              var textTemp5 = '^' + req.body.conditions[i].text
+              var cond5 = new RegExp(textTemp5)
+              console.log('cond', cond5)
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond5, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -286,7 +304,7 @@ exports.createList = function (req, res) {
               var textTemp2 = '^' + req.body.conditions[i].text
               var cond2 = new RegExp(textTemp2)
               console.log('cond', cond2)
-              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2 }
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -319,7 +337,7 @@ exports.createList = function (req, res) {
               var textTemp3 = '.*' + req.body.conditions[i].text + '.*'
               var cond3 = new RegExp(textTemp3)
               console.log('cond', cond3)
-              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3 }
+              pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3, $options: 'i' }
               console.log('pagesFindCriteria', pagesFindCriteria)
               Subscribers.find(pagesFindCriteria, (err, subscriber) => {
                 if (err) {
@@ -351,14 +369,14 @@ exports.createList = function (req, res) {
             }
           }
         }
-        Lists.find({_id: listCreated}, (err, list) => {
+        Lists.find({_id: listCreated}, (err, newlist) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          return res.status(201).json({status: 'success', payload: list})
+          return res.status(201).json({status: 'success', payload: newlist})
         })
       })
     })
@@ -387,6 +405,7 @@ exports.deleteList = function (req, res) {
   })
 }
 exports.editList = function (req, res) {
+  let subscribersPayload = []
   Lists.findById(req.body._id, (err, list) => {
     if (err) {
       return res.status(500)
@@ -397,12 +416,244 @@ exports.editList = function (req, res) {
         .json({status: 'failed', description: 'Record not found'})
     }
     list.listName = req.body.listName
+    list.conditions = req.body.conditions
     list.save((err2) => {
       if (err2) {
         return res.status(500)
           .json({status: 'failed', description: 'Poll update failed'})
       }
       res.status(201).json({status: 'success', payload: list})
+    })
+    Lists.find({_id: list.parentList}, (err, list) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (list[0].initialList === true) {
+        for (let i = 0; i < req.body.conditions.length; i++) {
+          let myCondition = { isSubscribedByPhoneNumber: true }
+          if (req.body.conditions[i].criteria === 'is') {
+            var textTemp4 = '^' + req.body.conditions[i].text
+            var cond4 = new RegExp(textTemp4)
+            console.log('cond', cond4)
+            myCondition[req.body.conditions[i].condition] = { $regex: cond4, $options: 'i' }
+            console.log('inside if')
+            Subscribers.find(myCondition, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              //  console.log('subscriber', subscriber)
+              for (let k = 0; k < subscriber.length; k++) {
+                //  console.log('exists', exists(listCreated._id, subscriber[i]._id))
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          } else if (req.body.conditions[i].criteria === 'begins with') {
+            var textTemp = '^' + req.body.conditions[i].text
+            var cond = new RegExp(textTemp)
+            console.log('cond', cond)
+            myCondition[req.body.conditions[i].condition] = { $regex: cond, $options: 'i' }
+            console.log('myCondition', myCondition)
+            Subscribers.find(myCondition, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              // console.log('subscriber', subscriber)
+              for (let k = 0; k < subscriber.length; k++) {
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  console.log('hi')
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          } else if (req.body.conditions[i].criteria === 'contains') {
+            var textTemp1 = '.*' + req.body.conditions[i].text + '.*'
+            var cond1 = new RegExp(textTemp1)
+            console.log('cond', cond1)
+            myCondition[req.body.conditions[i].condition] = { $regex: cond1, $options: 'i' }
+            console.log('myCondition', myCondition)
+            Subscribers.find(myCondition, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              console.log('subscriber', subscriber)
+              for (let k = 0; k < subscriber.length; k++) {
+                console.log('exists', exists(req.body._id, subscriber[i]._id))
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          }
+        }
+      } else {
+        for (let i = 0; i < req.body.conditions.length; i++) {
+          let pagesFindCriteria = {}
+          pagesFindCriteria = _.merge(pagesFindCriteria, {
+            _id: {
+              $in: list[0].content
+            }
+          })
+          if (req.body.conditions[i].criteria === 'is') {
+            var textTemp6 = '^' + req.body.conditions[i].text
+            var cond6 = new RegExp(textTemp6)
+            console.log('cond', cond6)
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond6, $options: 'i' }
+            pagesFindCriteria[req.body.conditions[i].condition] = req.body.conditions[i].text
+            console.log('pagesFindCriteria', pagesFindCriteria)
+            Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              for (let k = 0; k < subscriber.length; k++) {
+                console.log('exists', exists(req.body._id, subscriber[i]._id))
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          } else if (req.body.conditions[i].criteria === 'begins with') {
+            var textTemp2 = '^' + req.body.conditions[i].text
+            var cond2 = new RegExp(textTemp2)
+            console.log('cond', cond2)
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond2, $options: 'i' }
+            console.log('pagesFindCriteria', pagesFindCriteria)
+            Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+                // console.log('subscriber', subscriber)
+              for (let k = 0; k < subscriber.length; k++) {
+                //  console.log('exists', exists(listCreated._id, subscriber[i]._id))
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          } else if (req.body.conditions[i].criteria === 'contains') {
+            var textTemp3 = '.*' + req.body.conditions[i].text + '.*'
+            var cond3 = new RegExp(textTemp3)
+            console.log('cond', cond3)
+            pagesFindCriteria[req.body.conditions[i].condition] = { $regex: cond3, $options: 'i' }
+            console.log('pagesFindCriteria', pagesFindCriteria)
+            Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              // console.log('subscriber', subscriber)
+              for (let k = 0; k < subscriber.length; k++) {
+                console.log('exists', exists(req.body._id, subscriber[i]._id))
+                if (subscriber[i] && exists(req.body._id, subscriber[i]._id) === false) {
+                  subscribersPayload.push(subscriber[i]._id)
+                }
+              }
+              //  subscribersPayload = subscriber
+              Lists.update({_id: req.body._id}, {
+                content: subscribersPayload
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+              })
+            })
+            //  console.log('subscribersPayload', subscribersPayload)
+          }
+        }
+      }
+      Lists.find({_id: req.body._id}, (err, list) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        return res.status(201).json({status: 'success', payload: list})
+      })
     })
   })
 }

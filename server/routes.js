@@ -45,6 +45,7 @@ module.exports = function (app) {
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
 
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
+  app.use('/migrations', require('./api/migrations'))
 
   app.use('/auth', require('./auth'))
 

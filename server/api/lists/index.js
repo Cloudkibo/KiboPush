@@ -37,7 +37,7 @@ router.get('/viewList/:id',
     auth.doesRolePermitsThisAction('customerMatchingPermission'),
     controller.viewList)
 
-router.delete('/deleteList/:id', auth.isAuthorizedSuperUser(),
+router.delete('/deleteList/:id',
     auth.isAuthenticated(),
     auth.doesPlanPermitsThisAction('customer_matching'),
     auth.doesRolePermitsThisAction('customerMatchingPermission'),
