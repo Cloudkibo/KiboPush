@@ -35,6 +35,7 @@ class Convo extends React.Component {
 
     }
     props.loadBroadcastsList()
+    props.loadSubscribersList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)

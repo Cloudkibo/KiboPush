@@ -52,6 +52,7 @@ class Survey extends React.Component {
     document.title = 'KiboPush | Survey'
   }
   componentWillMount () {
+    this.props.loadSubscribersList()
     this.props.loadSurveysList()
   }
   showDialog () {

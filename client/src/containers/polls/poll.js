@@ -25,6 +25,7 @@ import YouTube from 'react-youtube'
 
 class Poll extends React.Component {
   constructor (props, context) {
+    props.loadSubscribersList()
     props.loadPollsList()
     super(props, context)
     this.state = {
