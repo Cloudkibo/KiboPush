@@ -3,9 +3,13 @@ import Files from 'react-files'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
+import Halogen from 'halogen'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import YouTube from 'react-youtube'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -17,9 +21,13 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false,
+      disabled: true,
       selectPage: {},
-      fblink: ''
+      fblink: '',
+      manually: false,
+      phoneNumbers: [],
+      numbersError: [],
+      loading: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -30,10 +38,24 @@ class CustomerMatching extends React.Component {
     this.clickAlert = this.clickAlert.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
     this.getSampleFile = this.getSampleFile.bind(this)
+    this.enterPhoneNoManually = this.enterPhoneNoManually.bind(this)
+    this.removeFile = this.removeFile.bind(this)
+    this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+    this.props.clearAlertMessage()
   }
   getSampleFile () {
     this.props.downloadSampleFile()
   }
+
+  enterPhoneNoManually () {
+    this.setState({manually: true})
+  }
+
+  removeFile () {
+    this.setState({file: ''})
+  }
+
   onChangeValue (event) {
     if (event.target.value !== -1) {
       let page
@@ -43,14 +65,9 @@ class CustomerMatching extends React.Component {
           break
         }
       }
-      if (page.pageUserName) {
+      if (page) {
         this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageUserName}`,
-          selectPage: page
-        })
-      } else {
-        this.setState({
-          textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${page.pageId}`,
+          textAreaValue: `Please subscribe to my page *${page.pageName}* by typing Yes`,
           selectPage: page
         })
       }
@@ -70,8 +87,13 @@ class CustomerMatching extends React.Component {
       messageErrors: [],
       alertMessage: '',
       type: '',
-      disabled: false
+      disabled: true,
+      loading: false,
+      manually: false,
+      phoneNumbers: [],
+      numbersError: []
     })
+    this.props.clearAlertMessage()
     this.selectPage()
   }
 
@@ -86,7 +108,8 @@ class CustomerMatching extends React.Component {
       }
       this.setState({
         file: files,
-        fileErrors: []
+        fileErrors: [],
+        disabled: false
       })
       console.log(this.state.file[0])
     }
@@ -110,14 +133,39 @@ class CustomerMatching extends React.Component {
       fileData.append('filesize', file[0].size)
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
+
+      if (this.validate('file')) {
+        this.setState({
+          loading: true,
+          disabled: true
+        })
+        this.props.saveFileForPhoneNumbers(fileData, this.handleResponse)
+      }
+    } else if (this.inputPhoneNumbers.value !== '') {
+      if (this.validate('numbers')) {
+        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId})
+      }
     }
-    if (this.validate()) {
-      this.props.saveFileForPhoneNumbers(fileData)
+  }
+  handleResponse () {
+    this.setState({
+      loading: false
+    })
+  }
+
+  onPhoneNumbersChange (e) {
+    console.log('onPhoneNumbersChange')
+    this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
+    if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
+      this.setState({disabled: false})
     }
   }
 
   onTextChange (e) {
     this.setState({textAreaValue: e.target.value})
+    if (e.target.value !== '' && ((this.state.file && this.state.file !== '') || this.inputPhoneNumbers.value !== '')) {
+      this.setState({disabled: false})
+    }
     if (e.target.value) {
       this.setState({messageErrors: []})
     } else {
@@ -127,21 +175,34 @@ class CustomerMatching extends React.Component {
     }
   }
 
-  validate () {
+  validate (type) {
     var errors = false
     console.log('validate', this.state)
-    if (this.state.file === '') {
-      this.setState({
-        fileErrors: [{errorMsg: 'Upload a file'}]
-      })
-      errors = true
-    }
-    if (this.state.textAreaValue === '' &&
-      this.state.textAreaValue.length < 1) {
-      this.setState({
-        messageErrors: [{errorMsg: 'Enter an invitation message'}]
-      })
-      errors = true
+    if (type === 'file') {
+      if (this.state.file === '') {
+        this.setState({
+          fileErrors: [{errorMsg: 'Upload a file'}]
+        })
+        errors = true
+      }
+      if (this.state.textAreaValue === '' &&
+        this.state.textAreaValue.length < 1) {
+        this.setState({
+          messageErrors: [{errorMsg: 'Enter an invitation message'}]
+        })
+        errors = true
+      }
+    } else if (type === 'numbers') {
+      const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+      console.log('phoneNumbers:', this.state.phoneNumbers)
+      let err = []
+      for (var i = 0; i < this.state.phoneNumbers.length; i++) {
+        if (!this.state.phoneNumbers[i].match(regex)) {
+          err.push(this.state.phoneNumbers[i])
+          errors = true
+        }
+      }
+      this.setState({numbersError: err})
     }
     return !errors
   }
@@ -156,29 +217,36 @@ class CustomerMatching extends React.Component {
         disabled: true
       })
     } else if (res.status === 'success') {
-      this.setState({
-        alertMessage: ('Your file has been uploaded successfully.'),
-        type: 'success',
-        disabled: true
-      })
+      if (this.state.file && this.state.file !== '') {
+        this.setState({
+          alertMessage: ('Your file has been uploaded successfully.'),
+          type: 'success',
+          disabled: true
+        })
+      } else {
+        this.setState({
+          alertMessage: (res.description),
+          type: 'success',
+          disabled: true
+        })
+      }
     } else {
       this.setState({
         alertMessage: '',
-        type: '',
-        disabled: false
+        type: ''
       })
     }
   }
   selectPage () {
-    if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
+    if (this.props.pages && this.props.pages.length > 0) {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageUserName}`,
+        textAreaValue: `Please subscribe to my page *${this.props.pages[0].pageName}* by typing Yes`,
         selectPage: this.props.pages[0]
       })
     } else {
       this.setState({
-        textAreaValue: `Enter an invitation message for subscibers of your page: https://m.me/${this.props.pages[0].pageId}`,
-        selectPage: this.props.pages[0]
+        textAreaValue: '',
+        selectPage: {}
       })
     }
   }
@@ -199,9 +267,31 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    console.log(this.state)
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="r2z8GV_qWvY"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -215,6 +305,25 @@ class CustomerMatching extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                  this.props.pages &&
+                  this.props.pages.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Pages Connected</h4>
+                    You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+                  </div>
+            }
+
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
+              </div>
+              <div className='m-alert__text'>
+                Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+              </div>
+            </div>
+
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
                 role='alert'>
@@ -237,10 +346,7 @@ class CustomerMatching extends React.Component {
                   specific
                   for pages that belong to United States of America (One of the
                   page admins should be from USA). There is a one time fee for for each page that you have connected.
-                  For further Details on how to make the payment, please contact us
-                  <a href='https://www.messenger.com/t/kibopush' target='_blank'>
-                    here
-                  </a>
+                  For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
                 </div>
               </div>
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -260,7 +366,7 @@ class CustomerMatching extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Upload CSV
+                            Invite people using phone number
                           </h3>
                         </div>
                       </div>
@@ -282,98 +388,85 @@ class CustomerMatching extends React.Component {
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
-                        <label className='col-form-label col-lg-3 col-sm-12'>
-                          Upload your file
-                        </label>
-                        <div className='col-lg-4 col-md-9 col-sm-12'>
-                          <div className='m-dropzone dropzone dz-clickable'
-                            id='m-dropzone-one'>
-                            <Files
-                              className='file-upload-area'
-                              onChange={this.onFilesChange}
-                              onError={this.onFilesError}
-                              accepts={[
-                                'text/comma-separated-values',
-                                'text/csv',
-                                'application/csv',
-                                '.csv',
-                                'application/vnd.ms-excel']}
-                              multiple={false}
-                              maxFileSize={25000000}
-                              minFileSize={0}
-                              clickable>
-                              <div
-                                className='m-dropzone__msg dz-message needsclick'>
-                                <h3 className='m-dropzone__msg-title'>
-                                  Drop file here or click to upload.
-                                </h3>
-                                <span className='m-dropzone__msg-desc'>
-                                Please upload the CSV type file.
-                                <h3 className='m-dropzone__msg-title' style={{lineHeight: '40px'}}>
-                                  {this.state.file !== ''
-                                         ? `Selected File : ${this.state.file[0].name}`
-                                         : ''}
-                                </h3>
+                        <label className='col-2 col-form-label' />
+                        <div className='col-lg-6 col-md-9 col-sm-12'>
+                          {
+                            this.state.file !== ''
+                            ? <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
+                              <div style={{marginTop: '10%'}}>
+                                <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
+                                  <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                                 </span>
+                                <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
                               </div>
-                            </Files>
-                          </div>
+                            </div>
+                            : <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
+                              {
+                                this.state.manually
+                                ? <div>
+                                  <label>{'Enter phone number separated by semi colon {;}'}</label>
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  {
+                                    this.state.numbersError.length > 0 &&
+                                    <span className='m-form__help'>
+                                      <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
+                                    </span>
+                                  }
+                                </div>
+                                : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
+                              }
+                              <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
+                              <Files
+                                className='file-upload-area'
+                                onChange={this.onFilesChange}
+                                onError={this.onFilesError}
+                                accepts={[
+                                  'text/comma-separated-values',
+                                  'text/csv',
+                                  'application/csv',
+                                  '.csv',
+                                  'application/vnd.ms-excel']}
+                                multiple={false}
+                                maxFileSize={25000000}
+                                minFileSize={0}
+                                clickable>
+                                <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
+                              </Files>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Invitation Message
+                        </label>
+                        <div className='col-lg-6'>
+                          <textarea
+                            className='form-control m-input m-input--solid'
+                            id='exampleTextarea' rows='3'
+                            placeholder='Enter Invitation Message'
+                            value={this.state.textAreaValue}
+                            onChange={this.onTextChange} />
+                          <span className='m-form__help'>
+                            {
+                              this.state.messageErrors.map(
+                                m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                              )
+                            }
+                          </span>
                         </div>
                       </div>
                       <div className='m-form'>
                         <div className='m-portlet__body'>
-                          <div
-                            className='m-form__section m-form__section--first'>
-                            <div className='m-form__heading'>
-                              <h3 className='m-form__heading-title'>
-                                File Info and Invite Message:
-                              </h3>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-lg-2 col-form-label'>
-                                File Selected:
-                              </label>
-                              <div className='col-lg-6'>
-                                <input type='text' disabled='true'
-                                  className='form-control m-input'
-                                  value={this.state.file !== ''
-                                         ? this.state.file[0].name
-                                         : ''} />
-                                <span className='m-form__help'>
-                                  {
-                                    this.state.fileErrors.map(
-                                      f => <span style={{color: 'red'}}>{f.errorMsg}</span>)
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-lg-2 col-form-label'>
-                                Invitation Message
-                              </label>
-                              <div className='col-lg-6'>
-                                <textarea
-                                  className='form-control m-input m-input--solid'
-                                  id='exampleTextarea' rows='3'
-                                  placeholder='Enter Invitation Message'
-                                  value={this.state.textAreaValue}
-                                  onChange={this.onTextChange} />
-                                <span className='m-form__help'>
-                                  {
-                                    this.state.messageErrors.map(
-                                      m => <span style={{color: 'red'}}>{m.errorMsg}</span>)
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                          </div>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
                             <div className='m-form__actions m-form__actions' style={{paddingleft: '0px !important'}}>
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { this.state.disabled
-                                ? <button type='submit' className='btn btn-primary' disabled='disabled'>
+                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled
+                                ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
                                 : <button onClick={this.handleSubmit} type='submit' className='btn btn-primary'>
@@ -390,10 +483,23 @@ class CustomerMatching extends React.Component {
                               </div>
                             </div>
                             {
+                              this.state.loading
+                              ? <ModalContainer>
+                                <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                                  className='align-center'>
+                                  <center><Halogen.RingLoader color='#716aca' /></center>
+                                </div>
+                              </ModalContainer>
+                              : <span />
+                            }
+                            {
                               this.state.alertMessage !== '' &&
                               <div className='alert alert-success' role='alert'>
                                 {this.state.alertMessage} <br />
-                                <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                {
+                                  this.state.file && this.state.file !== '' &&
+                                  <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                }
                               </div>
                             }
                           </div>
@@ -425,7 +531,10 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     saveFileForPhoneNumbers: saveFileForPhoneNumbers,
     loadMyPagesList: loadMyPagesList,
-    downloadSampleFile: downloadSampleFile},
+    downloadSampleFile: downloadSampleFile,
+    sendPhoneNumbers: sendPhoneNumbers,
+    clearAlertMessage: clearAlertMessage
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerMatching)

@@ -5,7 +5,9 @@ let phoneNumberSchema = new Schema({
   name: String,
   number: String,
   userId: { type: Schema.ObjectId, ref: 'users' },
-  datetime: { type: Date, default: Date.now }
+  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
+  datetime: { type: Date, default: Date.now },
+  hasSubscribed: { type: Boolean }
 })
 
 module.exports = mongoose.model('phoneNumber', phoneNumberSchema)

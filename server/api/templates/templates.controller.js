@@ -1,6 +1,7 @@
 const logger = require('../../components/logger')
 const TemplatePolls = require('./pollTemplate.model')
 const TemplateSurveys = require('./surveyTemplate.model')
+const TemplateBroadcasts = require('./broadcastTemplate.model')
 const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
 
@@ -140,6 +141,26 @@ exports.createCategory = function (req, res) {
     }
   })
 }
+exports.editCategory = function (req, res) {
+  Category.findById(req.body._id, (err, category) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!category) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    category.name = req.body.name
+    category.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Poll update failed'})
+      }
+      res.status(201).json({status: 'success', payload: category})
+    })
+  })
+}
 exports.surveyDetails = function (req, res) {
   TemplateSurveys.find({_id: req.params.surveyid}, (err, survey) => {
     if (err) {
@@ -198,7 +219,8 @@ exports.deletePoll = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -219,7 +241,8 @@ exports.deleteCategory = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'category update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -240,7 +263,8 @@ exports.deleteSurvey = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'survey update failed'})
       }
-      return res.status(204).end()
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }
@@ -323,5 +347,102 @@ exports.editPoll = function (req, res) {
       }
       res.status(201).json({status: 'success', payload: poll})
     })
+  })
+}
+
+exports.createBroadcast = function (req, res) {
+  let broadcastPayload = {
+    title: req.body.title,
+    category: req.body.category,
+    payload: req.body.payload
+  }
+  const broadcast = new TemplateBroadcasts(broadcastPayload)
+
+  // save model to MongoDB
+  broadcast.save((err, broadcastCreated) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        description: 'Failed to insert record'
+      })
+    } else {
+      res.status(201).json({status: 'success', payload: broadcastCreated})
+    }
+  })
+}
+exports.allBroadcasts = function (req, res) {
+  TemplateBroadcasts.find({}, (err, broadcasts) => {
+    if (err) {
+      logger.serverLog(TAG, `Error: ${err}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: broadcasts
+    })
+  })
+}
+exports.deleteBroadcast = function (req, res) {
+  TemplateBroadcasts.findById(req.params.id, (err, broadcast) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!broadcast) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    broadcast.remove((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'poll update failed'})
+      }
+      return res.status(200)
+      .json({status: 'success'})
+    })
+  })
+}
+exports.editBroadcast = function (req, res) {
+  TemplateBroadcasts.findById(req.body._id, (err, broadcast) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!broadcast) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    broadcast.title = req.body.title
+    broadcast.payload = req.body.payload
+    broadcast.category = req.body.category
+    broadcast.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Poll update failed'})
+      }
+      res.status(201).json({status: 'success', payload: broadcast})
+    })
+  })
+}
+exports.broadcastDetails = function (req, res) {
+  //
+  TemplateBroadcasts.findOne({_id: req.params.broadcastid}, (err, broadcast) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    if (!broadcast) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Poll not found.`
+      })
+    }
+    return res.status(200)
+    .json({status: 'success', payload: broadcast})
   })
 }

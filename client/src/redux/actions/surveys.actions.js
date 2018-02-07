@@ -60,15 +60,16 @@ export function loadSurveysList () {
   }
 }
 export function sendsurvey (survey, msg) {
-  console.log('send survey called')
+  console.log('send survey called', survey)
   return (dispatch) => {
     callApi(`surveys/send`, 'post', survey)
       .then(res => {
+        console.log('sendsurveyresponse', res)
         if (res.status === 'success') {
           msg.success('Survey sent successfully')
           dispatch(sendSurveySuccess())
         } else {
-          msg.error('Cannot send survey')
+          msg.error('Survey not send')
           dispatch(sendSurveyFailure())
         }
       })

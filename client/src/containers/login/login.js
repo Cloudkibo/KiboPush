@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+
 import { log } from './../../utility/socketio'
 const TAG = 'containers/login/login'
 
@@ -40,6 +41,7 @@ class Login extends React.Component {
                 </div>
               </div>
               <div className='m-stack__item m-stack__item--center'>
+
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
                   <a href='http://kibopush.com/faq/' id='m_login_signup' target='_blank' className='m-link m-link--focus m-login__account-link'>Visit FAQ page</a>

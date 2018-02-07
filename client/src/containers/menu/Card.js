@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
+import Halogen from 'halogen'
+import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 
 class Card extends React.Component {
@@ -21,6 +23,7 @@ class Card extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.updateCardDetails = this.updateCardDetails.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
       imgSrc: '',
       title: '',
@@ -30,11 +33,15 @@ class Card extends React.Component {
       fileName: '',
       type: '',
       size: '',
-      image_url: ''
+      image_url: '',
+      loading: false
     }
   }
   componentWillReceiveProps (nextProps) {
     this.updateCardDetails(nextProps)
+  }
+  setLoading () {
+    this.setState({loading: false})
   }
   updateCardDetails (cardProps) {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
@@ -44,7 +51,12 @@ class Card extends React.Component {
         componentType: 'card',
         title: cardProps.cardDetails.title,
         imgSrc: cardProps.cardDetails.image_url,
-        button: cardProps.cardDetails.buttons
+        button: cardProps.cardDetails.buttons,
+        fileurl: cardProps.cardDetails.fileurl,
+        fileName: cardProps.cardDetails.fileName,
+        image_url: cardProps.cardDetails.image_url,
+        type: cardProps.cardDetails.type,
+        size: cardProps.cardDetails.size
       })
       if (cardProps.cardDetails.subtitle) {
         this.setState({ subtitle: cardProps.cardDetails.subtitle })
@@ -82,11 +94,12 @@ class Card extends React.Component {
     }.bind(this)
     console.log(url) // Would see a path?
     console.log('Card Image in OnChange', file)
+    this.setState({loading: true})
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
       type: file.type,
       image_url: '',
-      size: file.size}, this.updateImageUrl)
+      size: file.size}, this.updateImageUrl, this.setLoading)
   }
 
   handleChange (event) {
@@ -191,7 +204,7 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
       title: this.state.title,
-      description: event.target.value,
+      description: this.state.subtitle,
       buttons: this.state.button})
   }
 
@@ -231,6 +244,16 @@ class Card extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button onAdd={this.addButton} />
         </div>
+        {
+          this.state.loading
+          ? <ModalContainer>
+            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
+            </div>
+          </ModalContainer>
+          : <span />
+        }
       </div>
     )
   }

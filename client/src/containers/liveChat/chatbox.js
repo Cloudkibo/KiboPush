@@ -18,14 +18,16 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import Popover from 'react-simple-popover'
+// import Popover from 'react-simple-popover'
+import Popover from '../../components/Popover/popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import {
   isEmoji,
   getmetaurl,
   displayDate,
-  showDate
+  showDate,
+  validURL
 } from './utilities'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
@@ -112,11 +114,16 @@ class ChatBox extends React.Component {
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
+    this.scrollToTop()
     // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
+  }
+
+  scrollToTop () {
+    this.top.scrollIntoView({behavior: 'instant'})
   }
 
   removeAttachment () {
@@ -425,6 +432,7 @@ class ChatBox extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in chatbox')
     this.scrollToBottom()
+    this.scrollToTop()
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -447,6 +455,7 @@ class ChatBox extends React.Component {
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate in chatbox')
     this.scrollToBottom()
+    this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -511,9 +520,12 @@ class ChatBox extends React.Component {
     return (
       <div className='col-xl-5'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <Popover
-          style={{paddingBottom: '100px', width: '280px', height: '390px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='390px'
           target={this.target}
           show={this.state.showEmojiPicker}
           onHide={this.closeEmojiPicker}
@@ -533,8 +545,9 @@ class ChatBox extends React.Component {
           </div>
         </Popover>
         <Popover
-          style={{ width: '305px', height: '360px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          style={{width: '305px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='360px'
           target={this.stickers}
           show={this.state.showStickers}
           onHide={this.hideStickers}
@@ -546,8 +559,9 @@ class ChatBox extends React.Component {
           />
         </Popover>
         <Popover
-          style={{ width: '232px', height: '400px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25 }}
+          style={{width: '232px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
+          height='400px'
           target={this.gifs}
           show={this.state.showGifPicker}
           onHide={this.closeGif}
@@ -578,143 +592,133 @@ class ChatBox extends React.Component {
                                     {displayDate(msg.datetime)}
                                   </div>
                                 }
-                                <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
+                                <div style={{minWidth: '200px', maxWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
                                   <div className='m-messenger__message-pic'>
                                     <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
                                   </div>
                                   <div className='m-messenger__message-body'>
                                     <div className='m-messenger__message-arrow' />
                                     {
-                                      msg.payload.attachments
-                                      ? (msg.payload.attachments[0].type === 'video'
-                                        ? <div className='m-messenger__message-content'>
+                                      msg.payload.attachments && !msg.url_meta
+                                      ? (
+                                        <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared a video
+                                            {this.props.currentSession.subscriber_id.firstName} shared
                                           </div>
-                                          <ReactPlayer
-                                            url={msg.payload.attachments[0].payload.url}
-                                            controls
-                                            width='100%'
-                                            height='140px'
-                                            onPlay={this.onTestURLVideo(msg.payload.attachments[0].payload.url)}
-                                          />
-                                        </div>
-                                        : msg.payload.attachments[0].type === 'audio'
-                                        ? <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared an audio
-                                          </div>
-                                          <ReactPlayer
-                                            url={msg.payload.attachments[0].payload.url}
-                                            controls
-                                            width='100%'
-                                            height='auto'
-                                            onPlay={this.onTestURLAudio(msg.payload.attachments[0].payload.url)}
-                                          />
-                                        </div>
-                                        : msg.payload.attachments[0].type === 'image'
-                                        ? <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared an image
-                                          </div>
-                                          <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                            <img
-                                              src={msg.payload.attachments[0].payload.url}
-                                              style={{maxWidth: '150px', maxHeight: '85px'}}
-                                            />
-                                          </a>
-                                        </div>
-                                        : msg.payload.attachments[0].type === 'location'
-                                        ? <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared an address
-                                          </div>
-                                          <table style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
-                                            <tbody>
-                                              <tr>
-                                                <td>
-                                                  <a href={this.getmainURL(msg.payload.attachments[0].payload)} target='_blank'>
-                                                    <img style={{width: '200px'}} src={this.geturl(msg.payload.attachments[0].payload)} />
-                                                  </a>
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>
-                                                  <p style={{fontWeight: 'bold'}}> {msg.payload.attachments[0].title} </p>
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          </table>
-                                        </div>
-                                        : msg.url_meta
-                                        ? <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared a link
-                                          </div>
-                                          <div style={{clear: 'both', display: 'block'}}>
-                                            <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
-                                              <table style={{maxWidth: '175px'}}>
-                                                {
-                                                  msg.url_meta.type && msg.url_meta.type === 'video'
-                                                  ? <tbody>
-                                                    <tr>
-                                                      <td style={{width: '30%'}} colspan='2'>
-                                                        <ReactPlayer
-                                                          url={msg.url_meta.url}
-                                                          controls
-                                                          width='100%'
-                                                          height='100px'
-                                                        />
-                                                      </td>
-                                                      <td style={{width: '70%'}}>
-                                                        <div>
-                                                          <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
-                                                          </a>
-                                                          <br />
-                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                        </div>
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                  : <tbody>
-                                                    <tr>
-                                                      <td>
-                                                        <div style={{width: 45, height: 45}}>
-                                                          {
-                                                            msg.url_meta.image &&
-                                                            <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
-                                                          }
-                                                        </div>
-                                                      </td>
-                                                      <td>
-                                                        <div>
-                                                          <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
-                                                          </a>
-                                                          <br />
-                                                          {
-                                                            msg.url_meta.description &&
-                                                            <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                          }
-                                                        </div>
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                }
+                                          {
+                                            msg.payload.attachments.map((att, index) => (
+                                              att.type === 'video'
+                                              ? <div key={index}>
+                                                <ReactPlayer
+                                                  url={att.payload.url}
+                                                  controls
+                                                  width='100%'
+                                                  height='140px'
+                                                  onPlay={this.onTestURLVideo(att.payload.url)}
+                                                />
+                                              </div>
+                                              : att.type === 'audio'
+                                              ? <div style={{marginTop: '40px'}} key={index}>
+                                                <ReactPlayer
+                                                  url={att.payload.url}
+                                                  controls
+                                                  width='100%'
+                                                  height='auto'
+                                                  onPlay={this.onTestURLAudio(att.payload.url)}
+                                                />
+                                              </div>
+                                              : att.type === 'image'
+                                              ? <a key={index} href={att.payload.url} target='_blank'>
+                                                <img
+                                                  src={att.payload.url}
+                                                  style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+                                                />
+                                              </a>
+                                              : att.type === 'location'
+                                              ? <table key={index} style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
+                                                <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <a href={this.getmainURL(att.payload)} target='_blank'>
+                                                        <img style={{width: '200px'}} src={this.geturl(att.payload)} />
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      <p style={{fontWeight: 'bold'}}> {att.title} </p>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
                                               </table>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        : <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared a file
-                                          </div>
-                                          <a href={msg.payload.attachments[0].payload.url} target='_blank'>
-                                            <h6><i className='fa fa-file-text-o' /><strong> {msg.payload.attachments[0].payload.url.split('?')[0].split('/')[msg.payload.attachments[0].payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                                          </a>
+                                              : att.type === 'file' &&
+                                              <a key={index} href={att.payload.url} target='_blank'>
+                                                <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
+                                              </a>
+                                            ))
+                                          }
                                         </div>
                                       )
+                                      : msg.url_meta
+                                      ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.props.currentSession.subscriber_id.firstName} shared a link
+                                        </div>
+                                        <div style={{clear: 'both', display: 'block'}}>
+                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                            <table style={{maxWidth: '175px'}}>
+                                              {
+                                                msg.url_meta.type && msg.url_meta.type === 'video'
+                                                ? <tbody>
+                                                  <tr>
+                                                    <td style={{width: '30%'}} colspan='2'>
+                                                      <ReactPlayer
+                                                        url={msg.url_meta.url}
+                                                        controls
+                                                        width='100%'
+                                                        height='100px'
+                                                      />
+                                                    </td>
+                                                    <td style={{width: '70%'}}>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                                : <tbody>
+                                                  <tr>
+                                                    <td>
+                                                      <div style={{width: 45, height: 45}}>
+                                                        {
+                                                          msg.url_meta.image &&
+                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                    <td>
+                                                      <div>
+                                                        <a href={msg.url_meta.url} target='_blank'>
+                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                        </a>
+                                                        <br />
+                                                        {
+                                                          msg.url_meta.description &&
+                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        }
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              }
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
                                         <div className='m-messenger__message-username'>
@@ -728,7 +732,7 @@ class ChatBox extends React.Component {
                                         <div className='m-messenger__message-username'>
                                           {this.props.currentSession.subscriber_id.firstName} wrote
                                         </div>
-                                        <div className='m-messenger__message-text'>
+                                        <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                           {msg.payload.text}
                                         </div>
                                       </div>
@@ -774,7 +778,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'file'
                                       ? <div className='m-messenger__message-content'>
-                                        <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} style={{color: 'blue', textDecoration: 'underline'}} >{msg.payload.fileName}</a>
+                                        <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
+                                          <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
+                                        </a>
                                       </div>
                                       : msg.payload.componentType === 'card'
                                       ? <div className='m-messenger__message-content'>
@@ -879,7 +885,7 @@ class ChatBox extends React.Component {
                                                       <td style={{width: '70%'}}>
                                                         <div>
                                                           <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
                                                           <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
@@ -900,7 +906,7 @@ class ChatBox extends React.Component {
                                                       <td>
                                                         <div>
                                                           <a href={msg.url_meta.url} target='_blank'>
-                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold'}}>{msg.url_meta.title}</p>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
                                                           </a>
                                                           <br />
                                                           {
@@ -917,9 +923,17 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                         : <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-text'>
-                                            {msg.payload.text}
-                                          </div>
+                                          {
+                                            validURL(msg.payload.text)
+                                            ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                <p>{msg.payload.text}</p>
+                                              </a>
+                                            </div>
+                                            : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
+                                            </div>
+                                          }
                                         </div>
                                       )
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
@@ -930,7 +944,7 @@ class ChatBox extends React.Component {
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-text'>
+                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
                                         </div>
@@ -966,12 +980,11 @@ class ChatBox extends React.Component {
                     </div>
                   </div>
                   { this.state.uploaded
-                    ? <div style={{backgroundColor: '#f1ecec', wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
+                    ? <div style={{wordWrap: 'break-word', overFlow: 'auto', minHeight: '50px'}}>
                       <span onClick={this.removeAttachment} style={{cursor: 'pointer', float: 'right'}} className='fa-stack'>
-                        <i style={{color: '#ccc'}} className='fa fa-circle fa-stack-2x' />
-                        <i className='fa fa-times fa-stack-1x fa-inverse' />
+                        <i style={{color: '#ccc'}} className='fa fa-times fa-stack-1x fa-inverse' />
                       </span>
-                      <div>{this.state.attachment.name}</div>
+                      <div><i className='fa fa-file-text-o' /> {this.state.attachment.name}</div>
                       <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.removeFileDescription}</div>
                     </div>
                     : <div style={{wordWrap: 'break-word', color: 'red', fontSize: 'small'}}>{this.state.uploadDescription}</div>
@@ -979,7 +992,7 @@ class ChatBox extends React.Component {
                   <div>
                     <div style={{display: 'inline-block'}} data-tip='emoticons'>
                       <i style={styles.iconclass} onClick={() => {
-                        this.refs.selectFile.click()
+                        this.refs.selectImage.click()
                       }}>
                         <i style={{
                           fontSize: '20px',
@@ -991,6 +1004,8 @@ class ChatBox extends React.Component {
                           textAlign: 'center'
                         }} className='fa fa-file-image-o' />
                       </i>
+                      <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+                        ref='selectImage' style={styles.inputf} />
                     </div>
                     <div style={{display: 'inline-block'}} data-tip='attachments'>
                       { this.state.uploadedId !== ''
@@ -1010,7 +1025,7 @@ class ChatBox extends React.Component {
                             }} className='fa fa-paperclip' />
                           </i>
                           <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                            multiple='false' ref='selectFile' style={styles.inputf} disabled />
+                            ref='selectFile' style={styles.inputf} disabled />
                         </div>
                         : <div>
                           <i style={styles.iconclass} onClick={() => {
@@ -1027,7 +1042,7 @@ class ChatBox extends React.Component {
                             }} className='fa fa-paperclip' />
                           </i>
                           <input type='file' accept='image/*,audio/*,video/*,application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf' onChange={this.onFileChange} onError={this.onFilesError}
-                            multiple='false' ref='selectFile' style={styles.inputf} />
+                            ref='selectFile' style={styles.inputf} />
                         </div>
                       }
                     </div>

@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 
 export function setBrowserName (data) {
   return {
@@ -8,6 +9,8 @@ export function setBrowserName (data) {
   }
 }
 export function showuserdetails (data) {
+  // NOTE: don't remove following auth method call
+  auth.putUserId(data._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
     data
@@ -19,6 +22,23 @@ export function getuserdetails () {
 
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
+  }
+}
+
+export function storeFbAppId (data) {
+  // NOTE: don't remove following auth method call
+  console.log(data)
+  return {
+    type: ActionTypes.STORE_FB_APP_ID,
+    data
+  }
+}
+
+export function getFbAppId () {
+  console.log('getfbappId')
+
+  return (dispatch) => {
+    callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
   }
 }
 

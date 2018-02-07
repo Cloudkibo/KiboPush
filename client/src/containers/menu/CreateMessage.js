@@ -70,7 +70,7 @@ class CreateMessage extends React.Component {
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
-          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
+          payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         break
       default:
@@ -171,11 +171,11 @@ class CreateMessage extends React.Component {
     // this.setState({message: payload})
     var temp = this.state.message
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.text = obj.text
+        temp[i].text = obj.text
         if (obj.button.length > 0) {
-          data.buttons = obj.button
+          temp[i].buttons = obj.button
         }
         isPresent = true
       }
@@ -193,15 +193,16 @@ class CreateMessage extends React.Component {
   handleCard (obj) {
     var temp = this.state.message
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.fileName = obj.fileName
-        data.fileurl = obj.fileurl
-        data.size = obj.size
-        data.type = obj.type
-        data.title = obj.title
-        data.buttons = obj.buttons
-        data.description = obj.description
+        temp[i].fileName = obj.fileName
+        temp[i].image_url = obj.image_url
+        temp[i].fileurl = obj.fileurl
+        temp[i].size = obj.size
+        temp[i].type = obj.type
+        temp[i].title = obj.title
+        temp[i].buttons = obj.buttons
+        temp[i].description = obj.description
         isPresent = true
       }
     })
@@ -217,9 +218,9 @@ class CreateMessage extends React.Component {
     obj.cards.forEach((d) => {
       delete d.id
     })
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.cards = obj.cards
+        temp[i].cards = obj.cards
         isPresent = true
       }
     })
@@ -232,9 +233,9 @@ class CreateMessage extends React.Component {
   handleImage (obj) {
     var temp = this.state.message
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data = obj
+        temp[i] = obj
         isPresent = true
       }
     })
@@ -249,9 +250,9 @@ class CreateMessage extends React.Component {
   handleFile (obj) {
     var temp = this.state.message
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data = obj
+        temp[i] = obj
         isPresent = true
       }
     })
@@ -480,7 +481,7 @@ class CreateMessage extends React.Component {
                   </ModalDialog>
                 </ModalContainer>
               }
-                  <div className='ui-block' style={{maxHeight: 350, overflowY: 'scroll', marginTop: '-15px', padding: 75, borderRadius: '0px', border: '1px solid #ccc', height: '350px'}}>
+                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
                     <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 

@@ -6,6 +6,7 @@ import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { browserHistory, Link } from 'react-router'
 import Notification from 'react-web-notification'
@@ -21,7 +22,9 @@ class Header extends React.Component {
   }
 
   handleNotificationOnShow () {
+    console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
+    this.props.resetSocket()
   }
 
   onNotificationClick () {
@@ -50,7 +53,8 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession && this.state.ignore) {
+    console.log('componentWillReceiveProps in header called', this.state.ignore)
+    if (nextProps.socketSession !== '' && this.state.ignore) {
       console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
@@ -65,6 +69,7 @@ class Header extends React.Component {
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
         <Notification
           ignore={this.state.ignore}
+          disableActiveWindow
           title={'New Message'}
           onShow={this.handleNotificationOnShow}
           onClick={this.onNotificationClick}
@@ -221,6 +226,7 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
+                          <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : 'hello'}</span>
                           <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
@@ -306,7 +312,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    resetSocket: resetSocket
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

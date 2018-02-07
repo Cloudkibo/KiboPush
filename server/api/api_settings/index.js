@@ -8,9 +8,28 @@ const router = express.Router()
 const controller = require('./api_settings.controller')
 const auth = require('../../auth/auth.service')
 
-router.post('/', auth.isAuthenticated(), controller.index)
-router.post('/enable', auth.isAuthenticated(), controller.enable)
-router.post('/disable', auth.isAuthenticated(), controller.disable)
-router.post('/reset', auth.isAuthenticated(), controller.reset)
+router.post('/',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('api'),
+  auth.doesRolePermitsThisAction('apiPermission'),
+  controller.index)
+
+router.post('/enable',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('api'),
+  auth.doesRolePermitsThisAction('apiPermission'),
+  controller.enable)
+
+router.post('/disable',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('api'),
+  auth.doesRolePermitsThisAction('apiPermission'),
+  controller.disable)
+
+router.post('/reset',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('api'),
+  auth.doesRolePermitsThisAction('apiPermission'),
+  controller.reset)
 
 module.exports = router

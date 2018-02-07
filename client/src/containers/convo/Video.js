@@ -13,6 +13,7 @@ import {
   sendbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
+import ReactPlayer from 'react-player'
 
 import { uploadFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
@@ -28,27 +29,41 @@ class Video extends React.Component {
       file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    if (this.props.file && this.props.file !== '') {
+      var fileInfo = {
+        id: this.props.id,
+        componentType: 'audio',
+        name: this.props.file.fileName,
+        type: this.props.file.type,
+        size: this.props.file.size,
+        url: ''
+      }
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
+      }
+      this.setState({file: fileInfo, showPreview: true})
+    }
+  }
+
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
+      console.log('Video File Format not supported. Please download.')
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -91,7 +106,7 @@ class Video extends React.Component {
           size: file.size
         }
         console.log(fileInfo)
-        this.setState({loading: true})
+        this.setState({loading: true, showPreview: false})
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
     }
@@ -113,7 +128,7 @@ class Video extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -133,9 +148,20 @@ class Video extends React.Component {
             >
               <div className='align-center'>
                 <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
+                <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <ReactPlayer
+                url={this.state.file.url}
+                controls
+                width='100%'
+                height='auto'
+                onPlay={this.onTestURLVideo(this.state.file.url)}
+              />
+            </div>
           }
           {
           this.state.showDialog &&

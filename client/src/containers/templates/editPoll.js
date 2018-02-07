@@ -138,9 +138,15 @@ class EditPoll extends React.Component {
   }
   createPoll () {
     var options = []
-    if (this.state.title === '' || this.state.categoryValue.length === 0 || this.state.option1 === '' || this.state.option2 === '' ||
-      this.state.option3 === '' || this.state.statement === '') {
-      this.setState({alert: true})
+    if (this.state.title === '') {
+      this.msg.error('Please add a title')
+    } else if (this.state.categoryValue.length === 0) {
+      this.msg.error('Please select a category')
+    } else if (this.state.statement === '') {
+      this.msg.error('Please add a statement')
+    } else if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '') {
+      this.msg.error('Please add all the responses')
     } else {
       if (this.state.option1 !== '') {
         options.push(this.state.option1)

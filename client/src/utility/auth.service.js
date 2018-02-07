@@ -13,8 +13,12 @@ const auth = {
     return cookie.load('token')
   },
 
-  putNext (val) {
-    cookie.save('next', val)
+  putCookie (val) {
+    cookie.save('token', val)
+  },
+
+  putUserId (val) {
+    cookie.save('userid', val)
   },
 
   getNext () {
@@ -26,6 +30,7 @@ const auth = {
   },
 
   logout (cb) {
+    cookie.remove('userid')
     cookie.remove('token', { path: '/' })
     if (cb) cb()
     this.onChange(false)

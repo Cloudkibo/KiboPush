@@ -9,6 +9,7 @@ let Schema = mongoose.Schema
 
 let autoPostingSchema = new Schema({
   userId: { type: Schema.ObjectId, ref: 'users' },
+  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   accountTitle: String,
   subscriptionUrl: String,
 // TODO make it enum, possible values: facebook, youtube, twitter etc

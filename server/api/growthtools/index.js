@@ -10,7 +10,22 @@ const auth = require('../../auth/auth.service')
 const multiparty = require('connect-multiparty')
 const multipartyMiddleware = multiparty()
 
-router.get('/', auth.isAuthenticated(), controller.index)
-router.post('/upload', auth.isAuthenticated(), multipartyMiddleware, controller.upload)
+router.post('/upload',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('customer_matching'),
+  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  multipartyMiddleware,
+  controller.upload)
+
+router.post('/sendNumbers',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('customer_matching'),
+  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  controller.sendNumbers)
+router.get('/retrievePhoneNumbers',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('customer_matching'),
+  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  controller.retrievePhoneNumbers)
 
 module.exports = router

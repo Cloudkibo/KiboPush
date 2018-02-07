@@ -5,10 +5,15 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset, getAPI } from '../../redux/actions/settings.actions'
+import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
+import ResetPassword from './resetPassword'
+import ConnectFb from './connectFb'
+import YouTube from 'react-youtube'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -22,15 +27,34 @@ class Settings extends React.Component {
       buttonState: '',
       count: 1,
       count1: 0,
-      firstTime: true
+      firstTime: true,
+      resetPassword: false,
+      showAPI: true,
+      saveState: null
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.setReset = this.setReset.bind(this)
+    this.setResetPass = this.setResetPass.bind(this)
+    this.setAPI = this.setAPI.bind(this)
+    this.setConnectFb = this.setConnectFb.bind(this)
   }
   componentWillMount () {
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
+      this.setState({showAPI: false, resetPassword: false, connectFb: true})
+    }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
+  }
+  setAPI () {
+    this.props.saveSwitchState()
+    this.setState({showAPI: true, resetPassword: false, connectFb: false})
+  }
+  setResetPass () {
+    this.setState({showAPI: false, resetPassword: true, connectFb: false})
+  }
+  setConnectFb () {
+    this.setState({showAPI: false, resetPassword: false, connectFb: true})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -48,6 +72,10 @@ class Settings extends React.Component {
     // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
+    console.log('componentDidMount')
+    if (this.state.saveState === true || this.state.saveState === false) {
+      this.initializeSwitch(this.state.saveState)
+    }
   }
   changeType (e) {
     if (this.state.type === 'password') {
@@ -89,6 +117,12 @@ class Settings extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('hello', nextProps)
+    if (nextProps.user && nextProps.user.emailVerified === false &&
+      (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
+      browserHistory.push({
+        pathname: '/resendVerificationEmail'
+      })
+    }
     if (nextProps.apiEnable) {
       console.log('this.state.disabled', this.state.disable)
       if (this.state.disable === false) {
@@ -116,6 +150,7 @@ class Settings extends React.Component {
         if (this.state.count1 !== 1) {
           console.log('apisuccess')
           this.initializeSwitch(nextProps.apiSuccess.enabled)
+          this.setState({saveState: nextProps.apiSuccess.enabled})
         }
         this.setState({count: 2})
       }
@@ -124,6 +159,7 @@ class Settings extends React.Component {
       if (this.state.firstTime === true) {
         this.initializeSwitch(false)
         this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
+        this.setState({saveState: false})
       }
     }
   }
@@ -131,6 +167,27 @@ class Settings extends React.Component {
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="6hmz4lkUAqM"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -143,7 +200,16 @@ class Settings extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <div className='row'>
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
+              </div>
+              <div className='m-alert__text'>
+                Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+              </div>
+            </div>
+              <div className='row' style={{height: 80 + 'vh'}}>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height'>
                     <div className='m-portlet__body'>
@@ -151,11 +217,11 @@ class Settings extends React.Component {
                         <div className='m-card-profile__title m--hide'>
                           Your Profile
                         </div>
-                        <div className='m-card-profile__pic'>
+                        {/* <div className='m-card-profile__pic'>
                           <div className='m-card-profile__pic-wrapper'>
                             <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
                           </div>
-                        </div>
+                        </div> */}
                         <div className='m-card-profile__details'>
                           <span className='m-card-profile__name'>
                             {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
@@ -168,15 +234,30 @@ class Settings extends React.Component {
                           <span className='m-nav__section-text'>Section</span>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link'>
+                          <a className='m-nav__link' onClick={this.setAPI}>
                             <i className='m-nav__link-icon flaticon-share' />
                             <span className='m-nav__link-text'>API</span>
                           </a>
                         </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setResetPass} >
+                            <i className='m-nav__link-icon flaticon-lock-1' />
+                            <span className='m-nav__link-text'>Reset Password</span>
+                          </a>
+                        </li>
+                        { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setConnectFb} >
+                            <i className='m-nav__link-icon fa fa-facebook' />
+                            <span className='m-nav__link-text'>Connect with Facebook</span>
+                          </a>
+                        </li>
+                      }
                       </ul>
                     </div>
                   </div>
                 </div>
+                { this.state.showAPI &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -246,6 +327,13 @@ class Settings extends React.Component {
                     </div>
                   </div>
                 </div>
+                }
+                { this.state.resetPassword &&
+                  <ResetPassword />
+                }
+                { this.state.connectFb &&
+                  <ConnectFb />
+                }
               </div>
             </div>
           </div>
@@ -262,7 +350,8 @@ function mapStateToProps (state) {
     apiDisable: (state.APIInfo.apiDisable),
     resetData: (state.APIInfo.resetData),
     apiSuccess: (state.APIInfo.apiSuccess),
-    apiFailure: (state.APIInfo.apiFailure)
+    apiFailure: (state.APIInfo.apiFailure),
+    switchState: (state.APIInfo.switchState)
   }
 }
 
@@ -272,7 +361,8 @@ function mapDispatchToProps (dispatch) {
     enable: enable,
     disable: disable,
     reset: reset,
-    getAPI: getAPI
+    getAPI: getAPI,
+    saveSwitchState: saveSwitchState
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

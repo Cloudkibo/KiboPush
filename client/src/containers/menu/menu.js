@@ -160,6 +160,7 @@ class Menu extends React.Component {
         if (temp[index[1]].submenu[index[2]].url) {
           delete temp[index[1]].submenu[index[2]].url
         }
+
         temp[index[1]].submenu[index[2]].type = 'postback'
         temp[index[1]].submenu[index[2]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].payload = payload
@@ -167,11 +168,12 @@ class Menu extends React.Component {
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload && temp[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
-          payload = temp[index[1]].submenu[index[2]].payload
+          payload = temp[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].url) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].url
         }
+
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
         temp[index[1]].submenu[index[2]].submenu[index[3]].title = this.clickedValue
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = payload
@@ -196,6 +198,13 @@ class Menu extends React.Component {
         this.msg.error('Sorry you can add more than 5 submenus')
         return
       }
+      if (temp[this.state.indexClicked].payload) {
+        delete temp[this.state.indexClicked].payload
+      }
+      if (temp[this.state.indexClicked].url) {
+        delete temp[this.state.indexClicked].url
+      }
+      temp[this.state.indexClicked].type = 'nested'
       temp[this.state.indexClicked].submenu.push({
         title: 'Sub Menu',
         submenu: []
@@ -206,6 +215,13 @@ class Menu extends React.Component {
         this.msg.error('Sorry you can add more than 5 nested menus')
         return
       }
+      if (temp[this.state.indexClicked].submenu[this.subIndex].payload) {
+        delete temp[this.state.indexClicked].submenu[this.subIndex].payload
+      }
+      if (temp[this.state.indexClicked].submenu[this.subIndex].url) {
+        delete temp[this.state.indexClicked].submenu[this.subIndex].url
+      }
+      temp[this.state.indexClicked].submenu[this.subIndex].type = 'nested'
       temp[this.state.indexClicked].submenu[this.subIndex].submenu.push({
         title: 'Nested Menu'
       })
@@ -389,7 +405,7 @@ class Menu extends React.Component {
         break
       case 'nested':
         console.log('A Nested was Clicked position ', index[1], index[2], index[3])
-        if (temp[index[1]].submenu[index[2]].submenu[index[3]].paylaod) {
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
@@ -414,13 +430,19 @@ class Menu extends React.Component {
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
+      console.log('this.props.currentMenuItem.itemMenus', this.props.currentMenuItem.itemMenus)
+      var temp = []
+      for (var k = 0; k < this.props.currentMenuItem.itemMenus.length; k++) {
+        temp.push(this.props.currentMenuItem.itemMenus[k])
+      }
+      temp.push({url: 'www.kibopush.com', type: 'web_url', submenu: [], title: 'Powered by KiboPush'})
       var data = {}
       if (this.state.pageValue === '') {
         console.log('empty')
         this.msg.error('Please select a page')
         return
       }
-      data.payload = transformData(this.props.currentMenuItem.itemMenus)
+      data.payload = transformData(temp)
       data.pageId = this.state.pageValue
       data.userId = this.props.user._id
       data.jsonStructure = this.props.currentMenuItem.itemMenus
@@ -479,7 +501,7 @@ class Menu extends React.Component {
         {console.log('isNested', this.getItemClicked())}
         {(this.getItemClicked() && this.getItemClicked().submenu && this.getItemClicked().submenu.length === 0) || this.isNested()
         ? <div id='popover-option2' className='container'>
-          { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'postback')
+          { (this.getItemClicked() && this.getItemClicked().payload && this.getItemClicked().payload.length > 0)
           ? <Link to='CreateMessage'>
             <div className='row'>
               <button onClick={(e) => { this.setCreateMessage(e) }} className='btn m-btn--pill btn-primary' style={{width: '400px'}}> Edit Message</button>
@@ -499,7 +521,7 @@ class Menu extends React.Component {
           getUrl(this.state.itemMenus, this.clickIndex) && !getUrl(this.state.itemMenus, this.clickIndex).nested &&
           <div className='container' id='popover-option3'>
             <div className='row'>
-              { (this.state.selecteditem && this.state.selecteditem.type && this.state.selecteditem.type === 'web_url')
+              { (this.getItemClicked() && this.getItemClicked().url && this.getItemClicked().url !== '')
               ? <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-primary' style={{width: '400px'}}>Set Web Url</button>
               : <button onClick={this.setWebUrl.bind(this)} id='popover-option3-button' className='btn m-btn--pill btn-secondary' style={{width: '400px'}}>Set Web Url</button>
               }
@@ -679,7 +701,7 @@ class Menu extends React.Component {
                                     <div className='form-group m-form__group'>
                                       <div className='input-group m-input-group'>
                                         <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title}
-                                          className='form-control m-input' onClick={() => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(index) }} style={{width: '350px'}} />
+                                          className='form-control m-input' onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
                                         <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
                                           <i className='fa fa-times' aria-hidden='true' />
                                         </span>

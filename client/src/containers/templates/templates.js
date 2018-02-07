@@ -1,9 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-//  import templatePolls from './templatePolls'
 import TemplateSurveys from './templateSurveys'
 import TemplatePolls from './templatePolls'
+import TemplateBroadcasts from './templateBroadcasts'
+import { Link } from 'react-router'
 
 class templates extends React.Component {
   render () {
@@ -15,6 +18,8 @@ class templates extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
             <div className='m-subheader '>
+              <Link to='/categories' className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right'>Category
+              </Link>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
                   <h3 className='m-subheader__title'>Templates</h3>
@@ -22,8 +27,15 @@ class templates extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <TemplateSurveys />
-              <TemplatePolls />
+              <TemplateBroadcasts />
+              {
+                this.props.user && this.props.user.isSuperUser &&
+                <TemplateSurveys />
+              }
+              {
+                this.props.user && this.props.user.isSuperUser &&
+                <TemplatePolls />
+              }
             </div>
           </div>
         </div>
@@ -31,4 +43,16 @@ class templates extends React.Component {
     )
   }
 }
-export default templates
+
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    user: (state.basicInfo.user)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(templates)

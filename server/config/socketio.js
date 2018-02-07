@@ -18,13 +18,16 @@ function onDisconnect (socket) {
 
 // When the user connects.. perform this
 function onConnect (socket) {
+  logger.serverLog(TAG, 'On Connect Called Server Side')
   socket.on('logClient', function (data) {
     logger.clientLog(data.tag, data.data)
   })
 
-  socket.on('join', (data) => {
+  socket.on('message', (data) => {
     logger.serverLog(TAG, `Joining room for ${JSON.stringify(data)}`)
-    socket.join(data._id)
+    if (data.action === 'join_room') {
+      socket.join(data.room_id)
+    }
   })
 
   // Insert sockets below
@@ -49,10 +52,12 @@ exports.setup = function (socketio) {
   // }));
 
   socketio.on('connection', function (socket) {
+    logger.serverLog(TAG, 'On Connect Called Server Side')
     socket.connectedAt = new Date()
 
     // Call onDisconnect.
     socket.on('disconnect', function () {
+      logger.serverLog(TAG, 'On Disconnect Called Server Side')
       onDisconnect(socket)
       // logger.serverLog(TAG, `SOCKET ${socket.id} DISCONNECTED AT ${new Date()}`)
     })
@@ -66,4 +71,9 @@ exports.setup = function (socketio) {
 exports.sendChatToAgents = function (data) {
   logger.serverLog(TAG, `Sending new chat payload to client using socket.io`)
   globalSocket.to(data.room_id).emit('new_chat', data.payload)
+}
+
+exports.sendMessageToClient = function (data) {
+  // logger.serverLog(TAG, `Sending message to client using socket.io ${JSON.stringify(data)}`)
+  globalSocket.to(data.room_id).emit('message', data.body)
 }

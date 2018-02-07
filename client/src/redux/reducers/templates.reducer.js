@@ -16,6 +16,10 @@ export function templatesInfo (state = {}, action) {
         createwarning: action.data.status
 
       })
+    case ActionTypes.ADD_TEMPLATE_BROADCAST:
+      return Object.assign({}, state, {
+        broadcasts: action.data.payload
+      })
     case ActionTypes.ADD_TEMPLATE_POLL:
       return Object.assign({}, state, {
         surveys: [...state.polls, action.data.payload],
@@ -37,6 +41,19 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_POLL_DETAILS:
       return Object.assign({}, state, {
         pollDetails: action.data
+      })
+    case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST:
+      return Object.assign({}, state, {
+        broadcasts: action.data
+      })
+    case ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS:
+      return Object.assign({}, state, {
+        broadcastDetails: action.data
+      })
+    case ActionTypes.SAVE_BROADCAST_INFORMATION:
+      console.log('getCurrentBroadcast', action.data)
+      return Object.assign({}, state, {
+        currentBroadcast: action.data
       })
     default:
       return state

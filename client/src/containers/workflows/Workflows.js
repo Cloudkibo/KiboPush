@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/workflows.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import { registerAction } from '../../utility/socketio'
 
 class Workflows extends React.Component {
   constructor (props, context) {
@@ -104,6 +105,19 @@ class Workflows extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
+    registerAction({
+      event: 'workflow_created',
+      action: function (data) {
+        this.props.loadWorkFlowList()()
+      }
+    })
+
+    registerAction({
+      event: 'workflow_updated',
+      action: function (data) {
+        this.props.loadWorkFlowList()()
+      }
+    })
     document.title = 'KiboPush | Workflows'
 
     // this.initializeConditionSelect(this.state.conditionSelect.options)

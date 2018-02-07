@@ -6,7 +6,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -18,6 +18,9 @@ import {
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -27,7 +30,9 @@ class Convo extends React.Component {
       type: '',
       broadcastsData: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      isShowingModal: false
+
     }
     props.loadBroadcastsList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
@@ -35,8 +40,18 @@ class Convo extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onFilter = this.onFilter.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
+  }
+  showDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModal: true})
   }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
@@ -49,6 +64,15 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    var compProp = this.props
+    registerAction({
+      event: 'new_broadcast',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.loadBroadcastsList()
+      }
+    })
+
     document.title = 'KiboPush | Broadcast'
   }
 
@@ -78,6 +102,13 @@ class Convo extends React.Component {
     this.props.history.push({
       pathname: `/editbroadcast`,
       state: broadcast._id
+    })
+  }
+
+  gotoCreate (broadcast) {
+    browserHistory.push({
+      pathname: `/createconvo`,
+      state: {module: 'convo'}
     })
   }
 
@@ -160,6 +191,27 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="htqFmbTBDbk"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -178,8 +230,8 @@ class Convo extends React.Component {
                 <div style={{padding: '10px'}}>
                   <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
                     <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
-                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click <Link
-                        to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>.
+                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click
+                      <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
                       </div>
                     </div>
                   </div>
@@ -190,7 +242,8 @@ class Convo extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? <a href='http://kibopush.com/broadcast/' target='_blank'>Click Here </a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -217,39 +270,65 @@ class Convo extends React.Component {
                                 </span>
                               </button>
                             </a>
-                            : <Link to='createconvo'>
-                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                            : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                              <span>
+                                <i className='la la-plus' />
                                 <span>
-                                  <i className='la la-plus' />
-                                  <span>
-                                    Create New Broadcast
-                                  </span>
+                                  Create New Broadcast
                                 </span>
-                              </button>
-                            </Link>
-                        }
+                              </span>
+                            </button>
+                      }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                        <div className='form-row'>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                            <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
-                          </div>
-                          <div style={{display: 'inline-block'}} className='form-group col-md-4'>
-                            <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
-                              <option value='' disabled>Filter by type...</option>
-                              <option value='text'>text</option>
-                              <option value='image'>image</option>
-                              <option value='card'>card</option>
-                              <option value='gallery'>gallery</option>
-                              <option value='audio'>audio</option>
-                              <option value='video'>video</option>
-                              <option value='file'>file</option>
-                              <option value='miscellaneous'>miscellaneous</option>
-                              <option value=''>all</option>
-                            </select>
-                          </div>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <h3>Create Broadcast</h3>
+                                <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                                      Create New Broadcast
+                                    </Link>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
+                                      Use Template
+                                    </Link>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
                         </div>
+                      </div>
+                      <div className='form-row'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
+                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                        </div>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                          <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
+                            <option value='' disabled>Filter by type...</option>
+                            <option value='text'>text</option>
+                            <option value='image'>image</option>
+                            <option value='card'>card</option>
+                            <option value='gallery'>gallery</option>
+                            <option value='audio'>audio</option>
+                            <option value='video'>video</option>
+                            <option value='file'>file</option>
+                            <option value='miscellaneous'>miscellaneous</option>
+                            <option value=''>all</option>
+                          </select>
+                        </div>
+                      </div>
                       <div>
 
                         { this.state.broadcastsData && this.state.broadcastsData.length > 0
@@ -329,6 +408,7 @@ class Convo extends React.Component {
             </div>
           </div>
         </div>
+
       </div>
     )
   }

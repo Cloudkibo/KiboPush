@@ -610,150 +610,6 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-  /page_broadcast/:
-    get:
-      description: Gives the details of the broadcasts sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Broadcast'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /page_broadcast/:id:
-    get:
-      description: Gives the details of a particular broadcast that is sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Broadcast'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /page_poll/:
-    get:
-      description: Gives the details of the polls sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Poll'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /page_poll/:id:
-    get:
-      description: Gives the details of a particular poll that is sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Poll'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /page_survey/:
-    get:
-      description: Gives the details of the surveys sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Survey'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-  /page_survey/:id:
-    get:
-      description: Gives the details of a particular survey that is sent to subscribers
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              payload:
-                type: array
-                items:
-                  $ref: '#/definitions/Page_Survey'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
   /pages/:
     get:
       description: Gives the details of all the connected pages of a particular user
@@ -1328,8 +1184,31 @@ paths:
                description: success
               payload:
                 type: object
-                $ref: '#/definitions/Survey'
-                description: The newly created Survey
+                properties:
+                  title:
+                    type: string
+                  userId:
+                    type: string
+                  _id:
+                    type: string
+                  isresponded:
+                    type: number
+                  segmentationGender:
+                    type: array
+                    items:
+                      type: string
+                  segmentationLocale:
+                    type: array
+                    items:
+                      type: string
+                  segmentationPageIds:
+                    type: array
+                    items:
+                      type: string
+                  isSegmented:
+                    type: boolean
+                  datetime:
+                    type: string
         '500':
           description: failed
           schema:
@@ -1363,7 +1242,7 @@ paths:
               payload:
                 type: object
                 $ref: '#/definitions/Autoposting'
-                description: The newly created autopost
+                description: The edited survey
         '500':
           description: failed
           schema:
@@ -1970,6 +1849,54 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /templates/allBroadcasts:
+    get:
+      description: Gives all the template surveys
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#/definitions/BroadcastTemplate'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /templates/allCategories:
+    get:
+      description: Gives all the categories
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
 ################################################################################
 #                                 Definitions                                  #
@@ -2367,9 +2294,6 @@ definitions:
       description:
         type: string
         description: Detailed description of the survey
-      image:
-        type: string
-        description: Image attached to survey
       userId:
         type: string
         description: User Id of the admin of that page.
@@ -2688,11 +2612,8 @@ definitions:
         type: string
         description: seen or unseen
       payload:
-        type: array
+        type: object
         description: The message content
-        items:
-            type: object
-            description: The payload array would have different types of objects with different json structure. So, for now, we will provide a link that will tell the json structure
       url_meta:
         type: object
         description: The metadata of a url
@@ -2745,6 +2666,9 @@ definitions:
     type: object
     description: This table is used to store the template polls
     properties:
+      _id:
+        type: string
+        description: unique id of the record
       title:
         type: string
         description: The title of the poll
@@ -2766,6 +2690,9 @@ definitions:
     type: object
     description: This table is used to store the template surveys
     properties:
+      _id:
+        type: string
+        description: unique id of the record
       title:
         type: string
         description: The title of the survey
@@ -2797,7 +2724,27 @@ definitions:
           surveyId:
             type: string
             description: The id of the survey
-
+  BroadcastTemplate:
+    type: object
+    description: This table is used to store the template broadcasts
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+      title:
+        type: string
+        description: The title of the broadcast
+      category:
+        type: string
+        description: The ctategory of the broadcast
+      payload:
+        type: array
+        items:
+          type: object
+          description: the content of the broadcast
+      datetime:
+        type: object
+        description: The date and time at which the broadcast is created
   Graph:
     type: object
     description: gives the number of broadcasts, surveys or polls made along with the date

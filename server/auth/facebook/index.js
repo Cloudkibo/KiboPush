@@ -20,6 +20,6 @@ router
   .get('/callback', passport.authenticate('facebook', {
     failureRedirect: '/',
     session: false
-  }), auth.setTokenCookie)
+  }), auth.fbConnectDone)
 
 module.exports = router

@@ -9,7 +9,8 @@ const initialState = {
   workFlowsTourSeen: true,
   surveyTourSeen: true,
   convoTourSeen: true,
-  pollTourSeen: true
+  pollTourSeen: true,
+  fbAppId: ''
 }
 
 export function basicInfo (state = initialState, action) {
@@ -56,6 +57,10 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.GET_STARTED_COMPLETED:
       return Object.assign({}, state, {
         getStartedSeen: true
+      })
+    case ActionTypes.STORE_FB_APP_ID:
+      return Object.assign({}, state, {
+        fbAppId: action.data
       })
     default:
       return state

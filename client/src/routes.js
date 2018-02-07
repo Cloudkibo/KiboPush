@@ -3,7 +3,11 @@ import { Route, IndexRoute } from 'react-router'
 import React from 'react'
 import App from './sub.app.js'
 import Home from './containers/home'
-import Login from './containers/login/login'
+//  import Login from './containers/login/login'
+import Login from './containers/login/new'
+import Signup from './containers/signup/signup'
+import ResendVerificationEmail from './containers/signup/resendEmail'
+import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
@@ -56,17 +60,32 @@ import CreateTemplatePoll from './containers/templates/createPoll'
 import Template from './containers/templates/templates'
 import TemplatePoll from './containers/templates/templatePolls'
 import TemplateSurvey from './containers/templates/templateSurveys'
+import TemplateBroadcasts from './containers/templates/templateBroadcasts'
+import CreateBroadcastTemplate from './containers/templates/createBroadcastTemplate'
+import ViewBroadcastTemplate from './containers/templates/viewBroadcastTemplate'
+import EditBroadcastTemplate from './containers/templates/editBroadcastTemplate'
 import ViewTemplateSurvey from './containers/templates/viewSurvey'
 import ViewTemplatePoll from './containers/templates/viewPoll'
 import EditPoll from './containers/templates/editPoll'
 import EditSurvey from './containers/templates/editSurvey'
+import Categories from './containers/templates/categories'
 import ShowTemplateSurveys from './containers/survey/showTemplates'
 import EditTemplateSurvey from './containers/survey/editTemplate'
 import ShowTemplatePolls from './containers/polls/showTemplates'
 import EditTemplatePoll from './containers/polls/editTemplate'
 import ViewTemplatePollUser from './containers/polls/viewTemplate'
 import ViewTemplateSurveyUser from './containers/survey/viewTemplate'
-
+import ShowTemplateBroadcasts from './containers/convo/showTemplates'
+import EditTemplateBroadcast from './containers/convo/editTemplate'
+import Invitations from './containers/invitations/invitations'
+import InviteMembers from './containers/invitations/inviteMember'
+import Members from './containers/members/members'
+import Connect from './containers/facebookConnect/connect'
+import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
+import ViewWelcomeMessage from './containers/welcomeMessage/viewMessage'
+import CustomerLists from './containers/customerLists/customerLists'
+import PhoneList from './containers/customerLists/listDetails'
+import CreateSubList from './containers/customerLists/createSubList'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -79,7 +98,15 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
+  console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
+    // if (auth.getNext() === 'addPages') {
+    //   auth.removeNext()
+    //   return replace({
+    //     pathname: '/addPages',
+    //     state: { nextPathname: nextState.location.pathname }
+    //   })
+    // }
     console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
@@ -91,6 +118,10 @@ function redirectAuthUsers (nextState, replace) {
 const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Login} onEnter={redirectAuthUsers} />
+    <Route path='/signup' component={Signup} />
+    <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
+    <Route path='/forgotPassword' component={ForgotPassword} />
+    <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
@@ -144,6 +175,10 @@ const routes = (
     <Route path='/templates' component={Template} onEnter={requireAuth} />
     <Route path='/templatePolls' component={TemplatePoll} onEnter={requireAuth} />
     <Route path='/templateSurveys' component={TemplateSurvey} onEnter={requireAuth} />
+    <Route path='/templateBroadcasts' component={TemplateBroadcasts} onEnter={requireAuth} />
+    <Route path='/createBroadcastTemplate' component={CreateBroadcastTemplate} onEnter={requireAuth} />
+    <Route path='/viewBroadcastTemplate' component={ViewBroadcastTemplate} onEnter={requireAuth} />
+    <Route path='/editBroadcastTemplate' component={EditBroadcastTemplate} onEnter={requireAuth} />
     <Route path='/viewSurvey' component={ViewTemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewPoll' component={ViewTemplatePoll} onEnter={requireAuth} />
     <Route path='/editPoll' component={EditPoll} onEnter={requireAuth} />
@@ -154,6 +189,18 @@ const routes = (
     <Route path='/editTemplateSurvey' component={EditTemplateSurvey} onEnter={requireAuth} />
     <Route path='/viewTemplateSurveyUser' component={ViewTemplateSurveyUser} onEnter={requireAuth} />
     <Route path='/viewTemplatePollUser' component={ViewTemplatePollUser} onEnter={requireAuth} />
+    <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
+    <Route path='/categories' component={Categories} onEnter={requireAuth} />
+    <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
+    <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
+    <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
+    <Route path='/members' component={Members} onEnter={requireAuth} />
+    <Route path='/connectFb' component={Connect} onEnter={requireAuth} />
+    <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
+    <Route path='/viewWelcomeMessage' component={ViewWelcomeMessage} onEnter={requireAuth} />
+    <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
+    <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
+    <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
 
   </Route>
 

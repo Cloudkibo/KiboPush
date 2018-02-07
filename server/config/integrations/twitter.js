@@ -40,18 +40,16 @@ function connect () {
           {follow: arrUsers})
 
         stream.on('tweet', tweet => {
-          logger.serverLog(TAG, `Tweet received : ${tweet.text}`)
+          // logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet)}`)
           AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
-            .populate('userId')
+            .populate('userId companyId')
             .exec((err, autopostings) => {
               if (err) {
                 return logger.serverLog(TAG, 'Internal Server Error on connect')
               }
-              logger.serverLog(TAG,
-                `Autoposting records got for tweet : ${autopostings.length}`)
               autopostings.forEach(postingItem => {
                 let pagesFindCriteria = {
-                  userId: postingItem.userId._id,
+                  companyId: postingItem.companyId._id,
                   connected: true
                 }
 
@@ -112,15 +110,7 @@ function connect () {
                           `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
                         subscribers.forEach(subscriber => {
-                          let messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'text': tweet.text,
-                              'metadata': 'This is a meta data for tweet'
-                            })
-                          }
+                          let messageData = createFbPayload(subscriber, tweet)
                           request(
                             {
                               'method': 'POST',
@@ -158,7 +148,7 @@ function connect () {
 }
 
 function restart () {
-  stream.stop()
+  if (stream) stream.stop()
   connect()
 }
 
@@ -175,6 +165,51 @@ function findUser (screenName, fn) {
       }
       fn(null, data)
     })
+}
+
+function createFbPayload (subscriber, tweet) {
+  let messageData = {}
+  if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
+    messageData = {
+      'recipient': JSON.stringify({
+        'id': subscriber.senderId
+      }),
+      'message': JSON.stringify({
+        'text': tweet.text,
+        'metadata': 'This is a meta data for tweet'
+      })
+    }
+  } else {
+    messageData = {
+      'recipient': JSON.stringify({
+        'id': subscriber.senderId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'generic',
+            'elements': [
+              {
+                'title': tweet.text,
+                'image_url': tweet.entities.media[0].media_url,
+                'subtitle': 'kibopush.com',
+                'buttons': [
+                  {
+                    'type': 'web_url',
+                    'url': tweet.entities.media[0].url,
+                    'title': 'View Tweet'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      })
+    }
+  }
+  logger.serverLog(TAG, `payload to send ${JSON.stringify(messageData)}`)
+  return messageData
 }
 
 exports.connect = connect

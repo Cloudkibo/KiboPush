@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
+import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
 export const API_URL = '/api'
 var json2csv = require('json2csv')
@@ -12,10 +13,9 @@ export function sendresp (data) {
   }
 }
 
-export function saveFileForPhoneNumbers (filedata) {
+export function saveFileForPhoneNumbers (filedata, handleResponse) {
   return (dispatch) => {
     console.log('In dispatch', filedata.get('file'))
-    console.log('In dispatch', filedata.get('pageId'))
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
@@ -28,10 +28,23 @@ export function saveFileForPhoneNumbers (filedata) {
       console.log('respone', res)
       var data = {status: res.status, description: res.description}
       console.log(data)
+      handleResponse()
       dispatch(sendresp(data))
     })
   }
 }
+
+export function sendPhoneNumbers (data) {
+  return (dispatch) => {
+    callApi('growthTools/sendNumbers', 'post', data)
+      .then(res => {
+        console.log('Response', res)
+        dispatch(sendresp(res))
+      }
+    )
+  }
+}
+
 export function downloadSampleFile () {
   console.log('download Sample File called')
   let users = []
@@ -56,4 +69,9 @@ export function downloadSampleFile () {
       fileDownload(csv, 'sampleFile.csv')
     }
   })
+}
+export function clearAlertMessage () {
+  return {
+    type: ActionTypes.CLEAR_ALERT_FILERESPONSE
+  }
 }

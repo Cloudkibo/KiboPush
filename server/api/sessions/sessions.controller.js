@@ -3,18 +3,39 @@
  */
 const Sessions = require('./sessions.model')
 const LiveChat = require('./../livechat/livechat.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sessions/sessions.controller.js'
 
 // get list of fb sessions
 exports.index = function (req, res) {
-  Sessions.find({company_id: req.body.company_id})
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Sessions.find({company_id: companyUser.companyId})
     .populate('subscriber_id page_id')
     .exec(function (err, sessions) {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+        .json({status: 'failed', description: 'Internal Server Error'})
       }
+      let tempSessions = []
+      for (var i = 0; i < sessions.length; i++) {
+        if (sessions[i].page_id.connected && sessions[i].subscriber_id.isSubscribed) {
+          tempSessions.push(sessions[i])
+        }
+      }
+      sessions = tempSessions
       if (sessions.length > 0) {
         LiveChat.aggregate([
           {$match: {status: 'unseen', format: 'facebook'}},
@@ -47,6 +68,7 @@ exports.index = function (req, res) {
         })
       }
     })
+  })
 }
 
 // get fb session

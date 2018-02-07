@@ -20,6 +20,8 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -112,6 +114,14 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    var compProp = this.props
+    registerAction({
+      event: 'poll_created',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.loadPollsList()
+      }
+    })
   }
 
   gotoView (poll) {
@@ -131,7 +141,6 @@ class Poll extends React.Component {
   }
 
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -143,6 +152,27 @@ class Poll extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+              <YouTube
+                videoId="fY-YEtYtGhA"
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 1
+                  }
+                }}
+              />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -168,7 +198,8 @@ class Poll extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding this page? <a href='http://kibopush.com/poll/' target='_blank'>Click Here </a>
+                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/poll/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>

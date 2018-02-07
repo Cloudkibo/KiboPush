@@ -31,14 +31,24 @@ class Text extends React.Component {
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
     this.state = {
-      button: [],
-      text: '',
+      button: props.buttons ? props.buttons : [],
+      text: props.txt ? props.txt : '',
       showEmojiPicker: false
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
   }
   componentDidMount () {
+    if (this.props.message && this.props.message !== '') {
+      this.setState({text: this.props.message})
+    }
+    if (this.props.buttons && this.props.buttons.length > 0) {
+      if (this.state.button.length < 1) {
+        this.setState({
+          button: this.props.buttons
+        })
+      }
+    }
   }
 
   showEmojiPicker () {
@@ -88,7 +98,7 @@ class Text extends React.Component {
   render () {
     return (
       <div>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: '2', marginTop: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

@@ -76,36 +76,42 @@ exports.create = function (req, res) {
             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
           }
 
-          logger.serverLog(TAG,
-            `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
-          let messageData = utility.prepareSendAPIPayload(
-            subscriber.senderId,
-            req.body.payload, true)
+          session.last_activity_time = Date.now()
+          session.save((err) => {
+            if (err) {
+              return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG,
+              `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
+            let messageData = utility.prepareSendAPIPayload(
+              subscriber.senderId,
+              req.body.payload, true)
 
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              session.page_id.accessToken
-            },
-            (err, res) => {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message live chat ${JSON.stringify(err)}`)
-              } else {
-                if (res.statusCode !== 200) {
-                  logger.serverLog(TAG,
-                    `At send message live chat response ${JSON.stringify(
-                      res.body.error)}`)
+            request(
+              {
+                'method': 'POST',
+                'json': true,
+                'formData': messageData,
+                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                session.page_id.accessToken
+              },
+              (err, res) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At send message live chat ${JSON.stringify(err)}`)
                 } else {
-                  logger.serverLog(TAG,
-                    `At send message live chat response ${JSON.stringify(
-                      res.body.message_id)}`)
+                  if (res.statusCode !== 200) {
+                    logger.serverLog(TAG,
+                      `At send message live chat response ${JSON.stringify(
+                        res.body.error)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At send message live chat response ${JSON.stringify(
+                        res.body.message_id)}`)
+                  }
                 }
-              }
-            })
+              })
+          })
         })
       })
     return res.status(200).json({status: 'success', payload: chatMessage})

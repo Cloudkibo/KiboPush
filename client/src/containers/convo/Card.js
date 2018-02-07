@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
+import Halogen from 'halogen'
+import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 
 class Card extends React.Component {
@@ -20,33 +22,49 @@ class Card extends React.Component {
     this.editButton = this.editButton.bind(this)
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
-      imgSrc: '',
-      title: '',
-      button: [],
-      subtitle: '',
+      imgSrc: props.img ? props.img : '',
+      title: props.title ? props.title : '',
+      button: props.buttons ? props.buttons : [],
+      subtitle: props.subtitle ? props.subtitle : '',
       fileurl: '',
       fileName: '',
       type: '',
       size: '',
-      image_url: ''
+      image_url: '',
+      loading: false
     }
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
+    this.updateCardDetails(this.props)
   }
-
+  componentWillReceiveProps (nextProps) {
+    this.updateCardDetails(nextProps)
+  }
+  updateCardDetails (cardProps) {
+    if (cardProps.cardDetails && cardProps.cardDetails !== '') {
+      console.log(cardProps.cardDetails)
+      this.setState({
+        id: cardProps.id,
+        componentType: 'card',
+        title: cardProps.cardDetails.title,
+        imgSrc: cardProps.cardDetails.image_url,
+        button: cardProps.cardDetails.buttons,
+        fileurl: cardProps.cardDetails.fileurl,
+        fileName: cardProps.cardDetails.fileName,
+        image_url: cardProps.cardDetails.image_url,
+        type: cardProps.cardDetails.type,
+        size: cardProps.cardDetails.size
+      })
+      if (cardProps.cardDetails.subtitle) {
+        this.setState({ subtitle: cardProps.cardDetails.subtitle })
+      } else if (cardProps.cardDetails.description) {
+        this.setState({ subtitle: cardProps.cardDetails.description })
+      }
+    }
+  }
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
@@ -61,11 +79,12 @@ class Card extends React.Component {
     }.bind(this)
     console.log(url) // Would see a path?
     console.log('Card Image in OnChange', file)
+    this.setState({loading: true})
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
       type: file.type,
       image_url: '',
-      size: file.size}, this.updateImageUrl)
+      size: file.size}, this.updateImageUrl, this.setLoading)
   }
 
   handleChange (event) {
@@ -153,6 +172,9 @@ class Card extends React.Component {
       buttons: this.state.button})
   }
 
+  setLoading () {
+    this.setState({loading: false})
+  }
   updateImageUrl (data) {
     console.log('Update Card Image Url')
     console.log(data)
@@ -170,7 +192,7 @@ class Card extends React.Component {
       type: this.state.type,
       size: this.state.size,
       title: this.state.title,
-      description: event.target.value,
+      description: this.state.subtitle,
       buttons: this.state.button})
   }
 
@@ -178,7 +200,7 @@ class Card extends React.Component {
     console.log('State: ', this.props.id)
     return (
       <div>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -200,8 +222,8 @@ class Card extends React.Component {
 
           </div>
           <div>
-            <input onChange={this.handleChange} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
@@ -210,6 +232,16 @@ class Card extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button onAdd={this.addButton} />
         </div>
+        {
+          this.state.loading
+          ? <ModalContainer>
+            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
+            </div>
+          </ModalContainer>
+          : <span />
+        }
       </div>
     )
   }

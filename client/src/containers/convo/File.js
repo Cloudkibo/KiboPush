@@ -27,7 +27,8 @@ class File extends React.Component {
       file: '',
       errorMsg: '',
       showErrorDialogue: false,
-      loading: false
+      loading: false,
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -48,6 +49,20 @@ class File extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
+    if (this.props.file && this.props.file !== '') {
+      var fileInfo = {
+        id: this.props.id,
+        componentType: 'audio',
+        name: this.props.file.fileName,
+        type: this.props.file.type,
+        size: this.props.file.size,
+        url: ''
+      }
+      if (this.props.file.fileurl) {
+        fileInfo.url = this.props.file.fileurl.url
+      }
+      this.setState({file: fileInfo, showPreview: true})
+    }
   }
 
   showDialog (page) {
@@ -85,7 +100,7 @@ class File extends React.Component {
           size: file.size
         }
         console.log(fileInfo)
-        this.setState({loading: true})
+        this.setState({loading: true, showPreview: false})
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
     }
@@ -107,7 +122,7 @@ class File extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -127,9 +142,16 @@ class File extends React.Component {
           >
               <div className='align-center'>
                 <img src='icons/file.png' alt='Text' style={{maxHeight: 40}} />
-                <h4>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
+                <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
+          }
+          { this.state.showPreview &&
+            <div style={{padding: '10px', marginTop: '40px'}}>
+              <a href={this.state.file.url} target='_blank' download>
+                <h6 style={{wordBreak: 'break-word'}}><i className='fa fa-file-text-o' /><strong> {this.state.file.name} </strong></h6>
+              </a>
+            </div>
           }
           {
           this.state.showDialog &&
