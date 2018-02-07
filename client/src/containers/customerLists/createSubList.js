@@ -69,7 +69,7 @@ class CreateSubList extends React.Component {
     }
 
     this.setState({
-      parentListName: this.props.currentList.listName,
+      parentListName: this.props.currentList.parentListName,
       isEdit: true,
       newListName: this.props.currentList.listName,
       conditions: tempConditions
