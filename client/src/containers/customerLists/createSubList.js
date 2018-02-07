@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList
+  loadCustomerLists, createSubList, editList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -35,8 +35,10 @@ class CreateSubList extends React.Component {
     this.changeText = this.changeText.bind(this)
     this.removeCondition = this.removeCondition.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.onUpdate = this.onSave.bind(this)
     this.validateNewList = this.validateNewList.bind(this)
     this.handleCreateSubList = this.handleCreateSubList.bind(this)
+    this.handleEditList = this.handleEditList.bind(this)
     this.resetPage = this.resetPage.bind(this)
     this.initializeList = this.initializeList.bind(this)
     props.loadMyPagesList()
@@ -92,9 +94,29 @@ class CreateSubList extends React.Component {
       this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
   }
+  onUpdate () {
+    var isValid = this.validateNewList()
+    if (isValid) {
+      this.setState({errorMessages: []})
+      var listName = this.state.newListName
+      var conditions = this.state.conditions
+      var listId = this.props.currentList._id
+
+      var listEditPayload = {'_id': listId, 'listName': listName, 'conditions': conditions}
+      this.setState({isSaveEnabled: false})
+      this.props.editList(listEditPayload, this.msg, this.handleEditList)
+    }
+  }
+
+  handleEditList (res) {
+    this.setState({
+      errorMessages: [],
+      isSaveEnabled: true
+    })
+  }
 
   handleCreateSubList (res) {
-    if (res.status === 'succes') {
+    if (res.status === 'success') {
       this.resetPage()
       $("#selectLists").val('').trigger('change')
     } else {
@@ -515,9 +537,16 @@ class CreateSubList extends React.Component {
                             <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
                              Back
                             </Link>
+                            { !this.state.isEdit &&
                             <button className='btn btn-primary' onClick={this.onSave}>
                              Save
                             </button>
+                            }
+                            { this.state.isEdit &&
+                            <button className='btn btn-primary' onClick={this.onUpdate}>
+                             Save
+                            </button>
+                            }
                           </div>
                           : <div>
                             <Link style={{marginRight: '10px'}} disabled className='btn btn-primary'>
@@ -551,7 +580,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     loadCustomerLists: loadCustomerLists,
-    createSubList: createSubList
+    createSubList: createSubList,
+    editList: editList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)

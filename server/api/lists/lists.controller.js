@@ -66,8 +66,8 @@ exports.viewList = function (req, res) {
         })
       })
     } else {
-      console.log('listcontent', list[0].content.length)
-      if (list[0].content.length !== 0) {
+      // console.log('listcontent', list[0].content.length)
+      if (list[0].content && list[0].content.length !== 0) {
         let pagesFindCriteria = {}
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           _id: {
