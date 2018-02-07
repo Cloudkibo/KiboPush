@@ -80,7 +80,7 @@ class CreateSubList extends React.Component {
       this.setState({errorMessages: []})
       var listName = this.state.newListName
       var conditions = this.state.conditions
-      var listPayload = {'_id': this.state.listSelected, 'listName': listName, 'conditions': conditions}
+      var listPayload = {'parentList': this.state.listSelected, 'listName': listName, 'conditions': conditions}
       this.setState({isSaveEnabled: false})
       this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
@@ -235,15 +235,14 @@ class CreateSubList extends React.Component {
         var selectedOptions = e.target.selectedOptions
         console.log('selected options', e.target.selectedOptions)
         var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].label
-          selected.push(selectedOption)
+        if (selectedOptions.length > 0) {
+          self.setState({ listSelected: selectedOptions[0].value })
         }
-        self.setState({ listSelected: selected })
       }
       console.log('change List Selection', selected)
     })
-      $("#selectLists").val('').trigger('change')
+
+    $("#selectLists").val('').trigger('change')
   }
 
   render () {
