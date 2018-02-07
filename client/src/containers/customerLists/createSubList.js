@@ -116,7 +116,7 @@ class CreateSubList extends React.Component {
   }
 
   handleCreateSubList (res) {
-    if (res.status === 'success') {
+    if (res.status === 'success' && res.payload) {
       this.resetPage()
       $("#selectLists").val('').trigger('change')
     } else {
