@@ -67,6 +67,13 @@ class Header extends React.Component {
 
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+
+        <div className="fb-customerchat"
+         data-page_id="151990922046256"
+         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
+         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
+        </div>
+
         <Notification
           ignore={this.state.ignore}
           disableActiveWindow
