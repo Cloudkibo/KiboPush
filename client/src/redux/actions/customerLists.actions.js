@@ -70,7 +70,7 @@ export function editList (list, msg, handleEditList) {
       .then(res => {
         console.log('response from editList', res)
         if (res.status === 'success') {
-          dispatch(viewListDetails(res.payload._id, handleEditList, msg))
+          dispatch(viewListDetails(res.payload[0]._id, handleEditList, msg))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Unable to save list. ${res.description}`)
