@@ -62,7 +62,9 @@ class CreateConvo extends React.Component {
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       steps: [],
-      showMessengerModal: false
+      showMessengerModal: false,
+      showSegmetation: false,
+      showList: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -87,6 +89,8 @@ class CreateConvo extends React.Component {
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
     this.goBack = this.goBack.bind(this)
+    this.handleRadioList = this.handleRadioList.bind(this)
+    this.handleRadioSegmentation = this.handleRadioSegmentation.bind(this)
   }
 //  sddsdfas
   componentWillMount () {
@@ -105,8 +109,8 @@ class CreateConvo extends React.Component {
     }
 
     this.setState({page: {options: options}})
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
+    // this.initializeGenderSelect(this.state.Gender.options)
+    // this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     if (this.props.pages.length > 0) {
       console.log('componentDidMount pageValue set')
@@ -487,6 +491,16 @@ class CreateConvo extends React.Component {
       pathname: `/welcomeMessage`
     })
   }
+  handleRadioSegmentation (e) {
+    this.setState({
+      showSegmetation: true, showList: false
+    })
+  }
+  handleRadioList (e) {
+    this.setState({
+      showSegmetation: false, showList: true
+    })
+  }
   render () {
     console.log('Pages ', this.props.pages)
     console.log('Page Value', this.state.pageValue)
@@ -595,32 +609,33 @@ class CreateConvo extends React.Component {
                       <div>
                         <fieldset>
                           <div className='form-group m-form__group'>
-                            <select id='selectPage' style={{minWidth: 75 + '%'}} placeholder='Select Page' />
+                            <select id='selectPage' style={{minWidth: 75 + '%'}} />
                           </div>
                           <br />
                           <h3>Set Targeting:</h3>
                           <br />
-                          <br />
-                          <div className='row radio-buttons'>
-                            <div className='col-xl-6 radio'>
+                          <div className='row radio-buttons' style={{marginLeft: '10px'}}>
+                            <div className='col radio'>
                               <input id='segmentAll'
                                 type='radio'
                                 value='segmentAll'
                                 name='segmentationType'
-                                onChange={this.handleRadioChange}
-                                checked={this.state.selectedRadio === 'segmentAll'} />
+                                onChange={this.handleRadioSegmentation}
+                                checked={this.state.showSegmetation} />
                               <label>Using Segmentation</label>
                             </div>
-                            <div className='col-xl-6 radio'>
+                            <div className='col radio' style={{marginTop: '8px'}}>
                               <input id='segmentList'
                                 type='radio'
                                 value='segmentList'
                                 name='segmentationType'
-                                onChange={this.handleRadioChange}
-                                checked={this.state.selectedRadio === 'segmentList'} />
+                                onChange={this.handleRadioList}
+                                checked={this.state.showList} />
                               <label>Using Customer Lists</label>
                             </div>
                           </div>
+                          <br />
+                          { this.state.showSegmetation &&
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
@@ -628,7 +643,17 @@ class CreateConvo extends React.Component {
                             <div className='form-group m-form__group'>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            { this.initializeGenderSelect(this.state.Gender.options) }
+                            { this.initializeLocaleSelect(this.state.Locale.options) }
                           </div>
+                        }
+                        { this.state.showList &&
+                        <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectList' style={{minWidth: 75 + '%'}} />
+                          </div>
+                        </div>
+                      }
                           <br />
                         </fieldset>
                         <br />
