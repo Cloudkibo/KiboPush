@@ -31,7 +31,7 @@ exports.index = function (req, res) {
       }
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
-        if (sessions[i].page_id.connected) {
+        if (sessions[i].page_id.connected && sessions[i].subscriber_id.isSubscribed) {
           tempSessions.push(sessions[i])
         }
       }
