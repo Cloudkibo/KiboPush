@@ -21,7 +21,7 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Subscribers.find({ companyId: companyUser.companyId, isEnabledByPage: true }).populate('pageId').exec((err, subscribers) => {
+    Subscribers.find({ companyId: companyUser.companyId, isEnabledByPage: true, isSubscribed: true }).populate('pageId').exec((err, subscribers) => {
       if (err) {
         logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
         return res.status(404)

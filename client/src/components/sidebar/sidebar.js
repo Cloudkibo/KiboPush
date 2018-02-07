@@ -480,14 +480,14 @@ class Sidebar extends Component {
               }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
-              {this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
+              {/* this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-share' />
                   <span className='m-menu__link-text'>Messenger Link</span>
                 </Link>
               </li>
-              }
+              */}
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>

@@ -12,6 +12,7 @@ class PageLikesSubscribers extends React.Component {
       selectedPage: this.props.connectedPages[0].pageName,
       likes: this.props.connectedPages[0].likes,
       subscribers: this.props.connectedPages[0].subscribers,
+      unsubscribes: this.props.connectedPages[0].unsubscribes,
       showDropDown: false
     }
     this.showDropDown = this.showDropDown.bind(this)
@@ -38,11 +39,13 @@ class PageLikesSubscribers extends React.Component {
     this.setState({
       selectedPage: this.props.connectedPages[index].pageName,
       likes: this.props.connectedPages[index].likes,
-      subscribers: this.props.connectedPages[index].subscribers
+      subscribers: this.props.connectedPages[index].subscribers,
+      unsubscribes: this.props.connectedPages[index].unsubscribes
     })
   }
 
   render () {
+    console.log('hey')
     var convertRate = this.state.likes ? ((this.state.subscribers / this.state.likes) * 100).toFixed(1) + '%' : '0%'
     return (
       <div className='col-xl-6'>
@@ -104,11 +107,11 @@ class PageLikesSubscribers extends React.Component {
           <div className='m-portlet__body'>
             <div className='m-widget21'>
               <div className='row'>
-                <div className='col'>
-                  <div className='m-widget21__item m--pull-right'>
+                <div className='col-xl-4'>
+                  <div className='m-widget21__item'>
                     <span className='m-widget21__icon'>
                       <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='fa flaticon-users m--font-light' />
+                        <i className='fa flaticon-user-ok m--font-light' />
                       </a>
                     </span>
                     <div className='m-widget21__info'>
@@ -122,8 +125,8 @@ class PageLikesSubscribers extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className='col m--align-left'>
-                  <div className='m-widget21__item m--pull-left'>
+                <div className='col-xl-4'>
+                  <div className='m-widget21__item'>
                     <span className='m-widget21__icon'>
                       <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
                         <i className='fa fa-thumbs-o-up m--font-light' />
@@ -136,6 +139,24 @@ class PageLikesSubscribers extends React.Component {
                       <br />
                       <span className='m-widget21__sub'>
                         Likes
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className='col-xl-4'>
+                  <div className='m-widget21__item'>
+                    <span className='m-widget21__icon'>
+                      <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                        <i className='fa flaticon-users m--font-light' />
+                      </a>
+                    </span>
+                    <div className='m-widget21__info'>
+                      <span className='m-widget21__title'>
+                        {this.state.unsubscribes}
+                      </span>
+                      <br />
+                      <span className='m-widget21__sub'>
+                        Unsubscribes
                       </span>
                     </div>
                   </div>

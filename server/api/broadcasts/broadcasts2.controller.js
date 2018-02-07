@@ -363,31 +363,49 @@ exports.sendConversation = function (req, res) {
                         err2
                       })
                     }
-                    // if (payloadItem.buttons) {
-                    //   for (var i = 0; i < payloadItem.buttons.length; i++) {
-                    //     let url = new URL({
-                    //       broadcastId: savedpagebroadcast._id,
-                    //       originalURL: payloadItem.buttons[i].url
-                    //     })
-                    //     url.save((err2, savedurl) => {
-                    //       if (err2) {
-                    //         logger.serverLog(TAG, {
-                    //           status: 'failed',
-                    //           description: 'url create failed',
-                    //           err2
-                    //         })
-                    //       }
-                    //       logger.serverLog(TAG,
-                    //         `url saved ${JSON.stringify(savedurl)}`)
-                    //       payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/' + savedurl._id
-                    //     })
-                    //   }
-                    // }
-                    logger.serverLog(TAG,
+                    if (payloadItem.buttons) {
+                      for (var i = 0; i < payloadItem.buttons.length; i++) {
+                        let url = new URL({
+                          broadcastId: savedpagebroadcast._id,
+                          originalURL: payloadItem.buttons[i].url
+                        })
+                        url.save((err2, savedurl) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'url create failed',
+                              err2
+                            })
+                          }
+                          // logger.serverLog(TAG,
+                          //   `url saved ${JSON.stringify(savedurl)}`)
+                          // payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/' + savedurl._id
+                        })
+                      }
+                    }
+                    //  console.log('savedpagebroadcast._id', savedpagebroadcast._id)
+                    URL.find({}, (err, urls) => {
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
+                      //  console.log('urls', urls)
+                      if (urls.length > 0) {
+                        logger.serverLog(TAG,
+                       `inside if ${JSON.stringify(payloadItem)}`)
+                        payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
+                        logger.serverLog(TAG,
+                       `payloaditem ${JSON.stringify(payloadItem)}`)
+                      }
+                       logger.serverLog(TAG,
                       `payloaditem ${JSON.stringify(payloadItem)}`)
                     let messageData = utility.prepareSendAPIPayload(
                       subscriber.senderId,
                       payloadItem)
+                      logger.serverLog(TAG,
+                     `messageData ${JSON.stringify(messageData)}`)
                     request(
                       {
                         'method': 'POST',
@@ -412,6 +430,7 @@ exports.sendConversation = function (req, res) {
                           }
                         }
                       })
+                    })
                   })
                 })
               })

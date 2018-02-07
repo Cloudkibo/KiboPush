@@ -11,7 +11,8 @@ const listSchema = new Schema({
   content: {type: Schema.Types.Mixed},
   conditions: {type: Schema.Types.Mixed},
   initialList: Boolean,
-  parentList: { type: Schema.ObjectId }
+  parentList: { type: Schema.ObjectId },
+  parentListName: { type: String }
 })
 
 module.exports = mongoose.model('lists', listSchema)
