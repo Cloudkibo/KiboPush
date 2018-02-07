@@ -49,15 +49,16 @@ export function createSubList (list, msg, handleCreateSubList) {
       .then(res => {
         console.log('response from createSubList', res)
         if (res.status === 'success') {
-          dispatch(viewListDetails(res.payload[0]._id, handleCreateSubList, msg))
+          msg.success('List created successfully')
+          dispatch(addList(res))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Unable to save list. ${res.description}`)
           } else {
             msg.error('Unable to save list')
           }
-          handleCreateSubList(res)
         }
+        handleCreateSubList(res)
       })
   }
 }
@@ -70,15 +71,15 @@ export function editList (list, msg, handleEditList) {
       .then(res => {
         console.log('response from editList', res)
         if (res.status === 'success') {
-          dispatch(viewListDetails(res.payload[0]._id, handleEditList, msg))
+          msg.success('List updated successfully')
         } else {
           if (res.status === 'failed' && res.description) {
-            msg.error(`Unable to save list. ${res.description}`)
+            msg.error(`Unable to update list. ${res.description}`)
           } else {
-            msg.error('Unable to save list')
+            msg.error('Unable to update list')
           }
-          handleEditList(res)
         }
+        handleEditList(res)
       })
   }
 }
@@ -112,26 +113,5 @@ export function clearCurrentList () {
   return {
     type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
     data: null
-  }
-}
-
-export function viewListDetails (id, handleUpdateList, msg) {
-  console.log('viewListDetails called')
-  return (dispatch) => {
-    callApi(`lists/viewList/${id}`)
-    .then(res => {
-      console.log('response from viewListDetail', res)
-      if (res.status === 'success' && res.payload) {
-        msg.success('List updated successfully')
-        handleUpdateList(res)
-      } else {
-        if (res.status === 'failed' && res.description) {
-          msg.error(`Unable to save list. Please try with a different condition. ${res.description}`)
-        } else {
-          msg.error('Unable to save list. Please try with a different condition')
-        }
-      }
-      handleUpdateList(res)
-    })
   }
 }
