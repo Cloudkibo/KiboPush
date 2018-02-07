@@ -62,6 +62,27 @@ export function createSubList (list, msg, handleCreateSubList) {
       })
   }
 }
+
+export function editList (list, msg, handleEditList) {
+  console.log('Editing list')
+  console.log(list)
+  return (dispatch) => {
+    callApi('lists/editList', 'post', list)
+      .then(res => {
+        console.log('response from editList', res)
+        if (res.status === 'success') {
+          msg.success('List updated successfully')
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to update list. ${res.description}`)
+          } else {
+            msg.error('Unable to update list')
+          }
+        }
+        handleEditList(res)
+      })
+  }
+}
 export function saveCurrentList (list) {
   console.log('Saving Current List', list)
   return {

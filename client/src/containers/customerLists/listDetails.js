@@ -23,6 +23,7 @@ class ListDetails extends React.Component {
       listName: this.props.currentList ? this.props.currentList.listName : 'Subscribers'
     }
     this.displayData = this.displayData.bind(this)
+    this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     if (this.props.currentList) {
       props.loadListDetails(this.props.currentList._id)
@@ -60,6 +61,18 @@ class ListDetails extends React.Component {
   handlePageClick (data) {
     console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
+  }
+
+  searchSubscriber (event) {
+    console.log('exeuting subscriber')
+    var filtered = []
+    for (let i = 0; i < this.props.listDetail.length; i++) {
+      if (this.props.listDetail[i].firstName.toLowerCase().includes(event.target.value) || this.props.listDetail[i].lastName.toLowerCase().includes(event.target.value)) {
+        filtered.push(this.props.listDetail[i])
+      }
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   render () {
