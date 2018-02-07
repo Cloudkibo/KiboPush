@@ -42,7 +42,7 @@ exports.viewList = function (req, res) {
     console.log('list', list[0].conditions)
     if (list[0].initialList === true) {
       console.log('insidecoditions')
-      Subscribers.find({isSubscribedByPhoneNumber: true}, (err, subscribers) => {
+      Subscribers.find({isSubscribedByPhoneNumber: true}).populate('pageId').exec((err, subscribers) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
@@ -74,7 +74,7 @@ exports.viewList = function (req, res) {
             $in: list[0].content
           }
         })
-        Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+        Subscribers.find(pagesFindCriteria).populate('pageId').exec((err, subscriber) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
