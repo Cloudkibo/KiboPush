@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList
+  loadCustomerLists, createSubList, editList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -23,7 +23,8 @@ class CreateSubList extends React.Component {
       newListName: '',
       errorMessages: [],
       isSaveEnabled: true,
-      isEdit: false
+      isEdit: false,
+      parentListName: ''
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -34,8 +35,10 @@ class CreateSubList extends React.Component {
     this.changeText = this.changeText.bind(this)
     this.removeCondition = this.removeCondition.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.onUpdate = this.onUpdate.bind(this)
     this.validateNewList = this.validateNewList.bind(this)
     this.handleCreateSubList = this.handleCreateSubList.bind(this)
+    this.handleEditList = this.handleEditList.bind(this)
     this.resetPage = this.resetPage.bind(this)
     this.initializeList = this.initializeList.bind(this)
     props.loadMyPagesList()
@@ -56,20 +59,22 @@ class CreateSubList extends React.Component {
 
   initializeList () {
     var tempConditions = []
-    /*
-    if (this.props.currentList.condition) {
-    var editCondition = JSON.parse(this.props.currentList.condition)
-    for (var i = 0; i < editCondition.length; i++) {
-      var obj
-      obj.condition = editCondition[i].condition
-      obj.criteria = editCondition[i].criteria
-      obj.text = editCondition[i].text
-      tempConditions.push(obj)
+    if (this.props.currentList.conditions) {
+      var editCondition = this.props.currentList.conditions
+      for (var i = 0; i < editCondition.length; i++) {
+        var obj = {}
+        obj.condition = editCondition[i].condition
+        obj.criteria = editCondition[i].criteria
+        obj.text = editCondition[i].text
+        tempConditions.push(obj)
+      }
     }
-    */
+
     this.setState({
+      parentListName: this.props.currentList.parentListName,
       isEdit: true,
-      newListName: this.props.currentList.listName
+      newListName: this.props.currentList.listName,
+      conditions: tempConditions
     })
     var id = this.props.currentList._id
     console.log(id)
@@ -80,15 +85,46 @@ class CreateSubList extends React.Component {
       this.setState({errorMessages: []})
       var listName = this.state.newListName
       var conditions = this.state.conditions
-      var listPayload = {'_id': this.state.listSelected, 'listName': listName, 'conditions': conditions}
+      var parentListId = ''
+      if (this.state.listSelected !== '') {
+        parentListId = this.state.listSelected._id
+      }
+      var listPayload = {'_id': parentListId, 'listName': listName, 'conditions': conditions}
       this.setState({isSaveEnabled: false})
       this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
   }
+  onUpdate () {
+    var isValid = this.validateNewList()
+    if (isValid) {
+      this.setState({errorMessages: []})
+      var listName = this.state.newListName
+      var conditions = this.state.conditions
+      var listId = this.props.currentList._id
 
-  handleCreateSubList () {
-    this.resetPage()
-    $("#selectLists").val('').trigger('change')
+      var listEditPayload = {'_id': listId, 'listName': listName, 'conditions': conditions}
+      this.setState({isSaveEnabled: false})
+      this.props.editList(listEditPayload, this.msg, this.handleEditList)
+    }
+  }
+
+  handleEditList (res) {
+    this.setState({
+      errorMessages: [],
+      isSaveEnabled: true
+    })
+  }
+
+  handleCreateSubList (res) {
+    if (res.status === 'success' && res.payload) {
+      this.resetPage()
+      $("#selectLists").val('').trigger('change')
+    } else {
+      this.setState({
+        errorMessages: [],
+        isSaveEnabled: true
+      })
+    }
   }
 
   resetPage () {
@@ -236,7 +272,7 @@ class CreateSubList extends React.Component {
         console.log('selected options', e.target.selectedOptions)
         var selected = []
         if (selectedOptions.length > 0) {
-          self.setState({ listSelected: selectedOptions[0].value })
+          self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
         }
       }
       console.log('change List Selection', selected)
@@ -336,6 +372,20 @@ class CreateSubList extends React.Component {
                           </span>
                         </div>
                         }
+                        { this.state.isEdit &&
+                          <div className='form-group m-form__group col-12'>
+                            <label className='col-lg-2 col-form-label'>
+                              Parent List Name
+                            </label>
+                            <div className='col-lg-6'>
+                              <input id='listName'
+                                type='text'
+                                value={this.state.parentListName}
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          }
                         <div className='form-group m-form__group col-12'>
                           <label className='col-lg-2 col-form-label'>
                             List Name
@@ -396,7 +446,11 @@ class CreateSubList extends React.Component {
                                        <select className='form-control m-input' onChange={(e) => this.changeCondition(e, i)}
                                          value={condition.condition} >
                                          <option value=''>Select Condition</option>
-                                         <option value='name'>Name</option>
+                                         <option value='firstName'>First Name</option>
+                                         <option value='lastName'>Last Name</option>
+                                         <option value='email'>Email</option>
+                                         <option value='phoneNumber'>Phone Number</option>
+                                         <option value='page'>Page</option>
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
                                        </select>
@@ -483,9 +537,14 @@ class CreateSubList extends React.Component {
                             <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
                              Back
                             </Link>
-                            <button className='btn btn-primary' onClick={this.onSave}>
-                             Save
+                            { !this.state.isEdit
+                            ? <button className='btn btn-primary' onClick={this.onSave}>
+                              Save
+                              </button>
+                            : <button className='btn btn-primary' onClick={this.onUpdate}>
+                             Update
                             </button>
+                            }
                           </div>
                           : <div>
                             <Link style={{marginRight: '10px'}} disabled className='btn btn-primary'>
@@ -519,7 +578,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     loadCustomerLists: loadCustomerLists,
-    createSubList: createSubList
+    createSubList: createSubList,
+    editList: editList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)

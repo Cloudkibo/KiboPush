@@ -155,15 +155,30 @@ class CustomerLists extends React.Component {
                                           style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           View
                                         </Link>
-                                        <Link to='/createSubList' className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
-                                          Edit
-                                        </Link>
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogDelete(list._id)}>
-                                          Delete
-                                        </button>
+                                        {list.initialList
+                                        ? <div>
+                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
+                                            style={{float: 'left', margin: 2}} disabled>
+                                            Edit
+                                          </Link>
+                                          <button className='btn btn-primary btn-sm'
+                                            style={{float: 'left', margin: 2}}
+                                            disabled>
+                                            Delete
+                                          </button>
+                                        </div>
+                                        : <div>
+                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
+                                            style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
+                                            Edit
+                                          </Link>
+                                          <button className='btn btn-primary btn-sm'
+                                            style={{float: 'left', margin: 2}}
+                                            onClick={() => this.showDialogDelete(list._id)}>
+                                            Delete
+                                          </button>
+                                        </div>
+                                      }
                                       </span>
                                     </td>
                                   </tr>

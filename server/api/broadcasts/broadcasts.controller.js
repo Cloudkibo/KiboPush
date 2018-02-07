@@ -518,6 +518,16 @@ function handleMessageFromSomeOtherApp (event) {
                   logger.serverLog(TAG, 'susbscriber if')
                   createSession(page, subscriberCreated, event)
                 }
+                require('./../../config/socketio').sendMessageToClient({
+                  room_id: page.companyId,
+                  body: {
+                    action: 'new_subscriber',
+                    payload: {
+                      name: subscriberCreated.firstName + ' ' + subscriberCreated.lastName,
+                      subscriber: subscriberCreated
+                    }
+                  }
+                })
               })
             } else {
               if (!(event.postback && event.postback.title === 'Get Started')) {
