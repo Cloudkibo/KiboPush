@@ -66,8 +66,8 @@ exports.viewList = function (req, res) {
         })
       })
     } else {
-      console.log('listcontent', list[0].content.length)
-      if (list[0].content.length !== 0) {
+      //  console.log('listcontent', list[0].content.length)
+      if (list[0].content && list[0].content.length !== 0) {
         let pagesFindCriteria = {}
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           _id: {
@@ -417,12 +417,13 @@ exports.editList = function (req, res) {
     }
     list.listName = req.body.listName
     list.conditions = req.body.conditions
-    list.save((err2) => {
+    list.content = []
+    list.save((err2, savedList) => {
       if (err2) {
         return res.status(500)
           .json({status: 'failed', description: 'Poll update failed'})
       }
-      res.status(201).json({status: 'success', payload: list})
+      console.log('savedList')
     })
     Lists.find({_id: list.parentList}, (err, list) => {
       if (err) {

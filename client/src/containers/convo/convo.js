@@ -230,7 +230,7 @@ class Convo extends React.Component {
                 <div style={{padding: '10px'}}>
                   <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
                     <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
-                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click 
+                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click
                       <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
                       </div>
                     </div>
@@ -242,8 +242,8 @@ class Convo extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>

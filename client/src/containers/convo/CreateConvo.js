@@ -594,13 +594,34 @@ class CreateConvo extends React.Component {
                       this.props.location.state.module === 'convo' &&
                       <div>
                         <fieldset>
+                          <div className='form-group m-form__group'>
+                            <select id='selectPage' style={{minWidth: 75 + '%'}} placeholder='Select Page' />
+                          </div>
                           <br />
                           <h3>Set Targeting:</h3>
                           <br />
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                          <br />
+                          <div className='row radio-buttons'>
+                            <div className='col-xl-6 radio'>
+                              <input id='segmentAll'
+                                type='radio'
+                                value='segmentAll'
+                                name='segmentationType'
+                                onChange={this.handleRadioChange}
+                                checked={this.state.selectedRadio === 'segmentAll'} />
+                              <label>Using Segmentation</label>
                             </div>
+                            <div className='col-xl-6 radio'>
+                              <input id='segmentList'
+                                type='radio'
+                                value='segmentList'
+                                name='segmentationType'
+                                onChange={this.handleRadioChange}
+                                checked={this.state.selectedRadio === 'segmentList'} />
+                              <label>Using Customer Lists</label>
+                            </div>
+                          </div>
+                          <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
                             </div>
