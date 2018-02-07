@@ -66,21 +66,34 @@ exports.viewList = function (req, res) {
         })
       })
     } else {
-      let pagesFindCriteria = {}
-      pagesFindCriteria = _.merge(pagesFindCriteria, {
-        _id: {
-          $in: list[0].content
-        }
-      })
-      Subscribers.find(pagesFindCriteria, (err, subscriber) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        return res.status(201).json({status: 'success', payload: subscriber})
-      })
+      console.log('listcontent', list[0].content.length)
+      if (list[0].content.length !== 0) {
+        let pagesFindCriteria = {}
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
+          _id: {
+            $in: list[0].content
+          }
+        })
+        Subscribers.find(pagesFindCriteria, (err, subscriber) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: subscriber})
+        })
+      } else {
+        console.log('in else')
+        list[0].remove((err2) => {
+          if (err2) {
+            return res.status(500)
+              .json({status: 'failed', description: 'list update failed'})
+          }
+          return res.status(200)
+          .json({status: 'success'})
+        })
+      }
     }
   })
 }
@@ -118,22 +131,25 @@ exports.createList = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let listPayload = {
-      companyId: companyUser.companyId,
-      userId: req.user._id,
-      listName: req.body.listName,
-      conditions: req.body.conditions,
-      parentList: req.body._id
-    }
-    const list = new Lists(listPayload)
-    list.save((err, listCreated) => {
+    Lists.find({_id: req.body._id}, (err, list) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      Lists.find({_id: req.body._id}, (err, list) => {
+      console.log('listName', list[0].listName)
+      let listPayload = {
+        companyId: companyUser.companyId,
+        userId: req.user._id,
+        listName: req.body.listName,
+        conditions: req.body.conditions,
+        parentList: req.body._id,
+        parentListName: list[0].listName
+      }
+      console.log('listsPayload', listPayload)
+      const newlist = new Lists(listPayload)
+      newlist.save((err, listCreated) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
