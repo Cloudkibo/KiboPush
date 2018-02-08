@@ -10,7 +10,7 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import ReactPaginate from 'react-paginate'
 
 class ListDetails extends React.Component {
@@ -239,9 +239,14 @@ class ListDetails extends React.Component {
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit'>
                       <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                        <Link to='/customerLists' className='btn btn-primary'>
+                        { this.props.location && this.props.location.state && this.props.location.state.module === 'customerMatching'
+                        ? <Link to='/customerMatchingUsingPhNum' className='btn btn-primary'>
                           Back
                         </Link>
+                        : <Link to='/customerLists' className='btn btn-primary'>
+                          Back
+                        </Link>
+                      }
                       </div>
                     </div>
                   </div>

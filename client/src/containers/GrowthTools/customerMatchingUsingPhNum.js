@@ -4,12 +4,15 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import {
+  loadCustomerLists, saveCurrentList
+} from '../../redux/actions/customerLists.actions'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -27,7 +30,8 @@ class CustomerMatching extends React.Component {
       manually: false,
       phoneNumbers: [],
       numbersError: [],
-      loading: false
+      loading: false,
+      initialList: ''
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -42,12 +46,20 @@ class CustomerMatching extends React.Component {
     this.removeFile = this.removeFile.bind(this)
     this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
+    this.saveList = this.saveList.bind(this)
     this.props.clearAlertMessage()
+    this.props.loadCustomerLists()
   }
   getSampleFile () {
     this.props.downloadSampleFile()
   }
-
+  saveList (list) {
+    browserHistory.push({
+      pathname: `/listDetails`,
+      state: {module: 'customerMatching'}
+    })
+    this.props.saveCurrentList(list)
+  }
   enterPhoneNoManually () {
     this.setState({manually: true})
   }
@@ -236,6 +248,16 @@ class CustomerMatching extends React.Component {
         type: ''
       })
     }
+    if (nextProps.customerLists && nextProps.customerLists.length > 0) {
+      for (var i = 0; i < nextProps.customerLists.length; i++) {
+        var list = nextProps.customerLists[i]
+        if (list.initialList) {
+          this.setState({
+            initialList: nextProps.customerLists[i]
+          })
+        }
+      }
+    }
   }
   selectPage () {
     if (this.props.pages && this.props.pages.length > 0) {
@@ -345,7 +367,7 @@ class CustomerMatching extends React.Component {
                   <b>Note: </b>This is an experimental feature and it is
                   specific
                   for pages that belong to United States of America (One of the
-                  page admins should be from USA). There is a one time fee for for each page that you have connected.
+                  page admins should be from USA). There is a one time fee for each page that you have connected.
                   For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
                 </div>
               </div>
@@ -373,6 +395,23 @@ class CustomerMatching extends React.Component {
                     </div>
 
                     <div className='m-portlet__body'>
+                      { this.state.initialList !== '' &&
+                        <div className='form-group m-form__group  row'>
+                          <label className='col-4 col-form-label'>
+                            View Customers Lists
+                          </label>
+                          <div className='col-8'>
+                            <span style={{float: 'right'}}>
+                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
+                                Customers Subscribed
+                              </button>
+                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
+                                Customers With Pending Subscription
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      }
                       <div className='form-group m-form__group row'>
                         <label className='col-2 col-form-label'>
                           Change Page
@@ -521,7 +560,8 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.getFileUploadResponse,
-    pages: state.pagesInfo.pages
+    pages: state.pagesInfo.pages,
+    customerLists: (state.listsInfo.customerLists)
     // uploadResponse: {status :'success'}
     // uploadResponse: {status :'failed' , description: 'Some problem'}
   }
@@ -533,7 +573,9 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     downloadSampleFile: downloadSampleFile,
     sendPhoneNumbers: sendPhoneNumbers,
-    clearAlertMessage: clearAlertMessage
+    clearAlertMessage: clearAlertMessage,
+    loadCustomerLists: loadCustomerLists,
+    saveCurrentList: saveCurrentList
   },
     dispatch)
 }
