@@ -70,6 +70,7 @@ class Header extends React.Component {
 
         <div className="fb-customerchat"
          data-page_id="151990922046256"
+         data-minimized = true
          data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
          data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
         </div>

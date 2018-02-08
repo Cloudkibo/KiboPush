@@ -518,7 +518,7 @@ class CreateConvo extends React.Component {
 
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'

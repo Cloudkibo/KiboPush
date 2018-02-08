@@ -155,7 +155,7 @@ class Survey extends React.Component {
     console.log('render method survey')
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
