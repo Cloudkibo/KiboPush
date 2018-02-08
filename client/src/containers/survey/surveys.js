@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   loadSurveysList,
-  sendsurvey
+  sendsurvey,
+  deleteSurvey
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
@@ -30,16 +31,19 @@ class Survey extends React.Component {
       surveysData: [],
       totalLength: 0,
       sent: false,
-      isShowingModal: false
+      isShowingModal: false,
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
   componentDidMount () {
-    
     var compProp = this.props
     registerAction({
       event: 'survey_created',
@@ -137,6 +141,14 @@ class Survey extends React.Component {
       pathname: `/surveyResult`,
       state: survey._id
     })
+  }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
 
   render () {
@@ -266,6 +278,24 @@ class Survey extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
+                          {
+                            this.state.isShowingModalDelete &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialogDelete}>
+                                <h3>Delete Survey</h3>
+                                <p>Are you sure you want to delete this survey?</p>
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.props.deleteSurvey(this.state.deleteid, this.msg)
+                                    this.closeDialogDelete()
+                                  }}>Delete
+                                </button>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
                         </div>
                       </div>
                       { this.state.surveysData && this.state.surveysData.length > 0
@@ -326,7 +356,18 @@ class Survey extends React.Component {
                                   Send
                               </button>
                               </span>
-                              }
+                            } { survey.sent === 0
+                              ? <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.showDialogDelete(survey._id)}>
+                              Delete
+                          </button>
+                          : <button className='btn btn-primary btn-sm' disabled
+                            style={{float: 'left', margin: 2}}
+                            onClick={() => this.showDialogDelete(survey._id)}>
+                          Delete
+                      </button>
+                        }
 
                                 </td>
                               </tr>
@@ -377,6 +418,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList}, dispatch)
+    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

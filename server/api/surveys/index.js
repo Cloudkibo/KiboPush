@@ -45,4 +45,10 @@ router.get('/:id',
   auth.doesRolePermitsThisAction('surveyPermission'),
   controller.show) // show survey and responses of the survey
 
+router.delete('/deleteSurvey/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('surveys'),
+  auth.doesRolePermitsThisAction('surveyPermission'),
+  controller.deleteSurvey) // show survey and responses of the survey
+
 module.exports = router

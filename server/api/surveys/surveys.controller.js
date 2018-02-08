@@ -517,3 +517,25 @@ exports.send = function (req, res) {
       })
     })
 }
+exports.deleteSurvey = function (req, res) {
+  logger.serverLog(TAG,
+    `This is body in delete survey ${JSON.stringify(req.params)}`)
+  Surveys.findById(req.params.id, (err, survey) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!survey) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    survey.remove((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'survey update failed'})
+      }
+      return res.status(200)
+      .json({status: 'success'})
+    })
+  })
+}

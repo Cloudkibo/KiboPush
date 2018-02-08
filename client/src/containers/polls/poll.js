@@ -13,7 +13,8 @@ import {
   addPoll,
   loadPollsList,
   sendpoll,
-  clearAlertMessage
+  clearAlertMessage,
+  deletePoll
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -33,13 +34,17 @@ class Poll extends React.Component {
       alertType: '',
       pollsData: [],
       totalLength: 0,
-      isShowingModal: false
+      isShowingModal: false,
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.props.clearAlertMessage()
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
   showDialog () {
     console.log('in showDialog')
@@ -48,6 +53,14 @@ class Poll extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
   componentWillMount () {
    // this.props.loadSubscribersList()
@@ -256,6 +269,24 @@ class Poll extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
+                          {
+                            this.state.isShowingModalDelete &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialogDelete}>
+                                <h3>Delete Poll</h3>
+                                <p>Are you sure you want to delete this poll?</p>
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.closeDialogDelete()
+                                  }}>Delete
+                                </button>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
                         </div>
                       </div>
                       { this.state.pollsData && this.state.pollsData.length > 0
@@ -333,6 +364,18 @@ class Poll extends React.Component {
                                       </button>
                                     </span>
                                     }
+                                    { poll.sent === 0
+                                      ? <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.showDialogDelete(poll._id)}>
+                                    Delete
+                                  </button>
+                                  : <button className='btn btn-primary btn-sm' disabled
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.showDialogDelete(poll._id)}>
+                                  Delete
+                                </button>
+                                  }
                                   </span>
                                 </td>
                               </tr>
@@ -387,7 +430,8 @@ function mapDispatchToProps (dispatch) {
       addPoll: addPoll,
       sendpoll: sendpoll,
       clearAlertMessage: clearAlertMessage,
-      loadSubscribersList: loadSubscribersList
+      loadSubscribersList: loadSubscribersList,
+      deletePoll: deletePoll
     },
     dispatch)
 }

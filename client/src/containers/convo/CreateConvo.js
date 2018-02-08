@@ -636,7 +636,7 @@ class CreateConvo extends React.Component {
                                 <label>Using List</label>
                               </div>
                             </div>*/}
-                          { //this.state.showSegmentation &&
+                          { //  this.state.showSegmentation &&
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
