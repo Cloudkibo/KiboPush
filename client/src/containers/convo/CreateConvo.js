@@ -62,7 +62,9 @@ class CreateConvo extends React.Component {
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       steps: [],
-      showMessengerModal: false
+      showMessengerModal: false,
+      showList: false,
+      showSegmentation: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -87,6 +89,8 @@ class CreateConvo extends React.Component {
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
     this.goBack = this.goBack.bind(this)
+    this.handleRadioList = this.handleRadioList.bind(this)
+    this.handleRadioSegmentation = this.handleRadioSegmentation.bind(this)
   }
 //  sddsdfas
   componentWillMount () {
@@ -465,7 +469,7 @@ class CreateConvo extends React.Component {
       allowClear: true,
       multiple: true
     })
-
+    console.log('initializeLocaleSelect')
     /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
       /* eslint-enable */
@@ -487,10 +491,22 @@ class CreateConvo extends React.Component {
       pathname: `/welcomeMessage`
     })
   }
+  handleRadioList (e) {
+    this.setState({
+      showList: true, showSegmentation: false
+    })
+  }
+  handleRadioSegmentation (e) {
+    console.log(e.target.value)
+    $('#selectGender').prop('disabled', false)
+    this.setState({
+      showList: false, showSegmentation: true
+    })
+  }
   render () {
     console.log('Pages ', this.props.pages)
     console.log('Page Value', this.state.pageValue)
-    console.log('List', this.state.list)
+    console.log('List', this.state)
 
     var alertOptions = {
       offset: 14,
@@ -593,14 +609,35 @@ class CreateConvo extends React.Component {
                     {
                       this.props.location.state.module === 'convo' &&
                       <div>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                        </div>
                         <fieldset>
                           <br />
                           <h3>Set Targeting:</h3>
                           <br />
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                            <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                              <div className='radio'>
+                                <input id='segmentAll'
+                                  type='radio'
+                                  value='segmentAll'
+                                  name='segmentationType'
+                                  onChange={this.handleRadioSegmentation}
+                                  checked={this.state.showSegmentation} />
+                                <label>Using Segmentation</label>
+                              </div>
+                              <div className='radio'>
+                                <input id='segmentList'
+                                  type='radio'
+                                  value='segmentList'
+                                  name='segmentationType'
+                                  onChange={this.handleRadioList}
+                                  checked={this.state.showList} />
+                                <label>Using List</label>
+                              </div>
                             </div>
+                          {this.state.showSegmentation &&
+                          <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
                             </div>
@@ -608,6 +645,8 @@ class CreateConvo extends React.Component {
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
                           </div>
+                        }
+
                           <br />
                         </fieldset>
                         <br />
