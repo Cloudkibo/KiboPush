@@ -339,15 +339,22 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageId === this.state.pageValue) {
-        if (!this.props.pages[i].adminSubscriberId) {
-          this.setState({showMessengerModal: true})
-          console.log('Setting Messenger Modal to True')
-          return
-        }
-      }
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue})
+    console.log("Check",  check)
+    if(check.length <= 0){
+      this.setState({showMessengerModal: true})
+      console.log('Setting Messenger Modal to True')
+      return
     }
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (this.props.pages[i].pageId === this.state.pageValue) {
+    //     if (!this.props.pages[i].adminSubscriberId) {
+          // this.setState({showMessengerModal: true})
+          // console.log('Setting Messenger Modal to True')
+          // return
+    //     }
+    //   }
+    // }
 
     if (this.state.broadcast.length === 0) {
       return
@@ -727,7 +734,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     fileInfo: (state.convosInfo.fileInfo),
     user: (state.basicInfo.user),
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    adminPageSubscription: state.basicInfo.adminPageSubscription 
   }
 }
 
