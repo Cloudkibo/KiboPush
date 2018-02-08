@@ -132,7 +132,7 @@ exports.upload = function (req, res) {
                 .json({status: 'failed', description: 'Incorrect column names'})
             }
           })
-          .on('close', function () {
+          .on('end', function () {
             fs.unlinkSync(dir + '/userfiles' + serverPath)
           })
       })
