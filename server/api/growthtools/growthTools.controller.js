@@ -177,7 +177,7 @@ exports.sendNumbers = function (req, res) {
       }
     })
     for (let i = 0; i < req.body.numbers.length; i++) {
-      var result = req.body.numbers[i].replace(/[- )(]/g, '')
+      let result = req.body.numbers[i].replace(/[- )(]/g, '')
       let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
       Pages.find(pagesFindCriteria, (err, pages) => {
         if (err) {
@@ -197,6 +197,7 @@ exports.sendNumbers = function (req, res) {
           }
         })
         pages.forEach(page => {
+          logger.serverLog(TAG, `number where message is going ${result}`)
           let messageData = {
             'recipient': JSON.stringify({
               'phone_number': result
