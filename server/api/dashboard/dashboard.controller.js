@@ -335,7 +335,7 @@ exports.stats = function (req, res) {
               payload.totalPages = allPagesCount
 
               Subscribers.count(
-                {companyId: companyUser.companyId, isEnabledByPage: true},
+                {companyId: companyUser.companyId, isEnabledByPage: true, isSubscribed: true},
                 (err2, subscribersCount) => {
                   if (err2) {
                     return res.status(500).json(

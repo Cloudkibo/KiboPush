@@ -32,6 +32,19 @@ exports.allLists = function (req, res) {
 }
 exports.viewList = function (req, res) {
   console.log('hi')
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
   Lists.find({_id: req.params.id}, (err, list) => {
     if (err) {
       return res.status(500).json({
@@ -42,7 +55,7 @@ exports.viewList = function (req, res) {
     console.log('list', list[0].conditions)
     if (list[0].initialList === true) {
       console.log('insidecoditions')
-      Subscribers.find({isSubscribedByPhoneNumber: true}).populate('pageId').exec((err, subscribers) => {
+      Subscribers.find({isSubscribedByPhoneNumber: true, companyId: companyUser.companyId}).populate('pageId').exec((err, subscribers) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
@@ -95,6 +108,7 @@ exports.viewList = function (req, res) {
         })
       }
     }
+  })
   })
 }
 function exists (id, subscriberId) {
@@ -158,7 +172,7 @@ exports.createList = function (req, res) {
         }
         if (list[0].initialList === true) {
           for (let i = 0; i < req.body.conditions.length; i++) {
-            let myCondition = { isSubscribedByPhoneNumber: true }
+            let myCondition = { isSubscribedByPhoneNumber: true, companyId: companyUser.companyId }
             if (req.body.conditions[i].criteria === 'is') {
               var textTemp4 = '^' + req.body.conditions[i].text
               var cond4 = new RegExp(textTemp4)
