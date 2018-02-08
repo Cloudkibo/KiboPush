@@ -249,6 +249,14 @@ exports.getfbMessage = function (req, res) {
                           }
                         })
                       } else {
+                        if (subscriberByPhoneNumber === true) {
+                          logger.serverLog(TAG, 'susbscriber if')
+                          Subscribers.update({senderId: sender}, {phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier, isSubscribedByPhoneNumber: true}, (err, subscriber) => {
+                            if (err) logger.serverLog(TAG, err)
+                            logger.serverLog(TAG,
+                              `something received from facebook subscrber ${JSON.stringify(subscriber)}`)
+                          })
+                        }
                         if (!(event.postback && event.postback.title === 'Get Started')) {
                           logger.serverLog(TAG, 'susbscriber else')
                           createSession(page, subscriber, event)

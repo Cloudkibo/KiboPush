@@ -68,7 +68,7 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              PhoneNumber.update({number: result}, {
+              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
                 name: data.names,
                 number: result,
                 userId: req.user._id,
@@ -143,7 +143,6 @@ exports.sendNumbers = function (req, res) {
   if (!_.has(req.body, 'numbers')) parametersMissing = true
   if (!_.has(req.body, 'text')) parametersMissing = true
   if (!_.has(req.body, 'pageId')) parametersMissing = true
-  console.log('phonenumebrs', req.body.numbers)
   if (parametersMissing) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing. Put numbers, text fields and pageId in payload.'})
@@ -183,7 +182,7 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result}, {
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
           name: '',
           number: result,
           userId: req.user._id,

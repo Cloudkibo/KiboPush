@@ -31,7 +31,6 @@ exports.allLists = function (req, res) {
   })
 }
 exports.viewList = function (req, res) {
-  console.log('hi')
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
