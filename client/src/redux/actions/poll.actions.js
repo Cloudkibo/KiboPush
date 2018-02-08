@@ -75,6 +75,7 @@ export function sendpoll (poll) {
     callApi('polls/send', 'post', poll)
       .then(res => {
         dispatch(sendpollresp(res.payload))
+        console.log('sendpollresp', res)
         if (res.status === 'success') {
           dispatch(sendPollSuccess())
         } else {
@@ -179,6 +180,25 @@ export function getpollresults (pollid) {
       .then(res => {
         dispatch(showresponses(res.payload))
         dispatch(showresponsesfull(res.payload))
+      })
+  }
+}
+export function deletePoll (id, msg) {
+  return (dispatch) => {
+    console.log('id', id)
+    callApi(`polls/deletePoll/${id}`, 'delete')
+      .then(res => {
+        console.log('Response Delete', res)
+        if (res.status === 'success') {
+          msg.success('Poll deleted successfully')
+          dispatch(loadPollsList())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete poll. ${res.description}`)
+          } else {
+            msg.error('Failed to delete poll')
+          }
+        }
       })
   }
 }

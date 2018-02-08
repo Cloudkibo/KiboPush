@@ -616,7 +616,7 @@ class CreateConvo extends React.Component {
                           <br />
                           <h3>Set Targeting:</h3>
                           <br />
-                            <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                            {/*<div className='radio-buttons' style={{marginLeft: '37px'}}>
                               <div className='radio'>
                                 <input id='segmentAll'
                                   type='radio'
@@ -635,8 +635,8 @@ class CreateConvo extends React.Component {
                                   checked={this.state.showList} />
                                 <label>Using List</label>
                               </div>
-                            </div>
-                          {this.state.showSegmentation &&
+                            </div>*/}
+                          { //  this.state.showSegmentation &&
                           <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
