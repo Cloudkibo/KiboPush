@@ -356,3 +356,4 @@ export function deleteSurvey (id, msg) {
       })
   }
 }
+//
