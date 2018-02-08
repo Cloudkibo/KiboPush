@@ -28,7 +28,7 @@ import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted, getFbAppId } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -68,6 +68,7 @@ class CreateConvo extends React.Component {
     }
     props.getuserdetails()
     props.getFbAppId()
+    props.getAdminSubscriptions()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -354,7 +355,7 @@ class CreateConvo extends React.Component {
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
-      self: 'true',
+      self: true,
       payload: this.state.broadcast,
       title: this.state.convoTitle
 
@@ -696,7 +697,7 @@ class CreateConvo extends React.Component {
                         <MessengerPlugin
                           appId={this.props.fbAppId}
                           pageId={this.state.pageValue}
-                          passthroughParams={this.props.user._id + "Hey I am a crazy stupid person"}
+                          passthroughParams={this.props.user._id}
                           onClick={() => { this.setState({showMessengerModal: false}) }}
                         />
                       </ModalDialog>
@@ -743,7 +744,8 @@ function mapDispatchToProps (dispatch) {
       getuserdetails: getuserdetails,
       convoTourCompleted: convoTourCompleted,
       getFbAppId: getFbAppId,
-      createWelcomeMessage: createWelcomeMessage
+      createWelcomeMessage: createWelcomeMessage,
+      getAdminSubscriptions: getAdminSubscriptions,
     },
     dispatch)
 }

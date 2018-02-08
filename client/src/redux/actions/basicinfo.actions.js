@@ -34,11 +34,28 @@ export function storeFbAppId (data) {
   }
 }
 
+export function storeAdminSubscriptions (data) {
+  // NOTE: don't remove following auth method call
+  console.log(data)
+  return {
+    type: ActionTypes.STORE_ADMIN_SUB_ID,
+    data
+  }
+}
+
 export function getFbAppId () {
   console.log('getfbappId')
 
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
+  }
+}
+
+export function getAdminSubscriptions () {
+  console.log('getAdminSubscriptions')
+
+  return (dispatch) => {
+    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }
 }
 
