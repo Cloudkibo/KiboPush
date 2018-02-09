@@ -47,6 +47,20 @@ exports.upload = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
+      listName: 'All customers',
+      userId: req.user._id,
+      companyId: companyUser.companyId,
+      conditions: 'initial_list',
+      initialList: true
+    }, {upsert: true}, (err2, savedList) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+    })
     fs.rename(
       req.files.file.path,
       dir + '/userfiles' + serverPath,
@@ -69,20 +83,6 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
-                listName: 'All customers',
-                userId: req.user._id,
-                companyId: companyUser.companyId,
-                conditions: 'initial_list',
-                initialList: true
-              }, {upsert: true}, (err2, savedList) => {
-                if (err) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: `Internal Server Error ${JSON.stringify(err)}`
-                  })
-                }
-              })
               PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
                 name: data.names,
                 number: result,
