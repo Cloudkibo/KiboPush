@@ -213,6 +213,7 @@ exports.createList = function (req, res) {
                         description: `Internal Server Error ${JSON.stringify(err)}`
                       })
                     }
+                    console.log('updatedList', savedList)
                   })
                 })
                 //  console.log('subscribersPayload', subscribersPayload)
@@ -279,9 +280,22 @@ exports.createList = function (req, res) {
                         description: `Internal Server Error ${JSON.stringify(err)}`
                       })
                     }
+                    console.log('updatedList', savedList)
                   })
                 })
                 //  console.log('subscribersPayload', subscribersPayload)
+              }
+              if (i === req.body.conditions.length - 1) {
+                console.log('in i condition')
+                Lists.find({_id: listCreated}, (err, newlist) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: `Internal Server Error ${JSON.stringify(err)}`
+                    })
+                  }
+                  return res.status(201).json({status: 'success', payload: newlist})
+                })
               }
             }
           } else {
@@ -393,15 +407,15 @@ exports.createList = function (req, res) {
               }
             }
           }
-          Lists.find({_id: listCreated}, (err, newlist) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              })
-            }
-            return res.status(201).json({status: 'success', payload: newlist})
-          })
+          // Lists.find({_id: listCreated}, (err, newlist) => {
+          //   if (err) {
+          //     return res.status(500).json({
+          //       status: 'failed',
+          //       description: `Internal Server Error ${JSON.stringify(err)}`
+          //     })
+          //   }
+          //   return res.status(201).json({status: 'success', payload: newlist})
+          // })
         })
       } else {
         for (let i = 0; i < req.body.conditions.length; i++) {
