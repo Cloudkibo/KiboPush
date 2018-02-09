@@ -145,6 +145,7 @@ class CustomerMatching extends React.Component {
       fileData.append('filesize', file[0].size)
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
+      fileData.append('_id', this.state.selectPage._id)
 
       if (this.validate('file')) {
         this.setState({
@@ -155,7 +156,8 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId})
+        console.log('pageinfo', this.state.selectPage)
+        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
       }
     }
   }
