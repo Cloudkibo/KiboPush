@@ -165,5 +165,9 @@
       "client/public"
     ],
     "parser": "babel-eslint"
+  },
+  "nodemonConfig": {
+    "ignore": ["client/*", "documentation/*"],
+    "delay": "1000"
   }
 }
