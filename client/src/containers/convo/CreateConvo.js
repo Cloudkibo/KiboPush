@@ -421,7 +421,7 @@ class CreateConvo extends React.Component {
     //     }
     //   }
     // }
-
+    //
     if (this.state.broadcast.length === 0) {
       return
     }
