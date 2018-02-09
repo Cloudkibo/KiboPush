@@ -109,7 +109,7 @@ class Convo extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createconvo`,
-      state: {module: 'convo'}
+      state: {module: 'convo', subscribers: this.props.subscribers}
     })
   }
 

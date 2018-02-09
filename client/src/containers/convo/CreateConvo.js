@@ -29,6 +29,8 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import _ from 'underscore'
+
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -92,7 +94,8 @@ class CreateConvo extends React.Component {
     this.goBack = this.goBack.bind(this)
     this.handleRadioList = this.handleRadioList.bind(this)
     this.handleRadioSegmentation = this.handleRadioSegmentation.bind(this)
-  }
+    this.checkConditions = this.checkConditions.bind(this)
+}
 //  sddsdfas
   componentWillMount () {
     // this.props.loadMyPagesList();
@@ -290,7 +293,65 @@ class CreateConvo extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     this.setState({list: temp, broadcast: temp2})
   }
-
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.location.state.subscribers.length; j++) {
+          if (this.props.location.state.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.location.state.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.location.state.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.location.state.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.location.state.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.location.state.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.location.state.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.location.state.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
+  }
   sendConvo () {
     if (this.state.broadcast.length === 0) {
       return
@@ -321,27 +382,32 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var data = {
-        platform: 'facebook',
-        payload: this.state.broadcast,
-        isSegmented: isSegmentedValue,
-        segmentationPageIds: [this.state.pageValue],
-        segmentationLocale: this.state.localeValue,
-        segmentationGender: this.state.genderValue,
-        segmentationTimeZone: '',
-        title: this.state.convoTitle
+      var res = this.checkConditions([this.state.pageValue], this.state.genderValue, this.state.localeValue)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        var data = {
+          platform: 'facebook',
+          payload: this.state.broadcast,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: [this.state.pageValue],
+          segmentationLocale: this.state.localeValue,
+          segmentationGender: this.state.genderValue,
+          segmentationTimeZone: '',
+          title: this.state.convoTitle
 
+        }
+        console.log('Data sent: ', data)
+        this.props.sendBroadcast(data, this.msg)
+        this.setState({broadcast: [], list: []})
       }
-      console.log('Data sent: ', data)
-      this.props.sendBroadcast(data, this.msg)
-      this.setState({broadcast: [], list: []})
     }
   }
 
   testConvo () {
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue})
-    console.log("Check",  check)
-    if(check.length <= 0){
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue })
+    console.log('Check', check)
+    if (check.length <= 0) {
       this.setState({showMessengerModal: true})
       console.log('Setting Messenger Modal to True')
       return
@@ -735,7 +801,7 @@ function mapStateToProps (state) {
     fileInfo: (state.convosInfo.fileInfo),
     user: (state.basicInfo.user),
     fbAppId: state.basicInfo.fbAppId,
-    adminPageSubscription: state.basicInfo.adminPageSubscription 
+    adminPageSubscription: state.basicInfo.adminPageSubscription
   }
 }
 

@@ -3,10 +3,9 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -38,6 +37,7 @@ class Poll extends React.Component {
       isShowingModalDelete: false,
       deleteid: ''
     }
+    this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -153,7 +153,12 @@ class Poll extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
-
+  gotoCreate () {
+    browserHistory.push({
+      pathname: `/createpoll`,
+      state: {subscribers: this.props.subscribers}
+    })
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -212,8 +217,8 @@ class Poll extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/poll/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/poll/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -256,9 +261,9 @@ class Poll extends React.Component {
                                 <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/createpoll' className='btn btn-primary'>
+                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
                                       Create New Poll
-                                    </Link>
+                                    </button>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <Link to='/showTemplatePolls' className='btn btn-primary'>

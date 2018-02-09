@@ -13,6 +13,9 @@ import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicin
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
+import _ from 'underscore'
+
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -61,6 +64,7 @@ class AddSurvey extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
   }
 
   componentDidMount () {
@@ -134,6 +138,7 @@ class AddSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
+        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -199,6 +204,63 @@ class AddSurvey extends React.Component {
 
       })
     }
+  }
+  checkConditions (surveybody) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (surveybody.segmentationPageIds.length > 0) {
+      for (var i = 0; i < surveybody.segmentationPageIds.length; i++) {
+        for (var j = 0; j < this.props.location.state.subscribers.length; j++) {
+          if (this.props.location.state.subscribers[j].pageId.pageId === surveybody.segmentationPageIds[i]) {
+            console.log('in if')
+            subscribersMatchPages.push(this.props.location.state.subscribers[j])
+          }
+        }
+      }
+    }
+    if (surveybody.segmentationGender.length > 0) {
+      for (var k = 0; k < this.props.location.state.subscribers.length; k++) {
+        for (var l = 0; l < surveybody.segmentationGender.length; l++) {
+          if (this.props.location.state.subscribers[k].gender === surveybody.segmentationGender[l]) {
+            subscribersMatchGender.push(this.props.location.state.subscribers[k])
+          }
+        }
+      }
+    }
+    if (surveybody.segmentationLocale.length > 0) {
+      for (var m = 0; m < this.props.location.state.subscribers.length; m++) {
+        for (var n = 0; n < surveybody.segmentationLocale.length; n++) {
+          if (this.props.location.state.subscribers[m].locale === surveybody.segmentationLocale[n]) {
+            subscribersMatchLocale.push(this.props.location.state.subscribers[m])
+          }
+        }
+      }
+    }
+    if (surveybody.segmentationPageIds.length > 0 && surveybody.segmentationGender.length > 0 && surveybody.segmentationLocale.length > 0) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (surveybody.segmentationPageIds.length > 0 && surveybody.segmentationGender.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (surveybody.segmentationPageIds.length > 0 && surveybody.segmentationLocale.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (surveybody.segmentationGender.length > 0 && surveybody.segmentationLocale.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (surveybody.segmentationPageIds.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (surveybody.segmentationGender.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (surveybody.segmentationLocale.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
   }
   createSurvey (e) {
     e.preventDefault()
@@ -277,10 +339,16 @@ class AddSurvey extends React.Component {
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue
         }
-        this.props.createsurvey(surveybody)
-        this.props.history.push({
-          pathname: '/surveys'
-        })
+        console.log('this.props.location.state.subscribers', this.props.location.state.subscribers)
+        var res = this.checkConditions(surveybody)
+        if (res === false) {
+          this.msg.error('No subscribers match the selected criteria')
+        } else {
+          this.props.createsurvey(surveybody)
+          this.props.history.push({
+            pathname: '/surveys'
+          })
+        }
       } else {
         this.setState({
           alertMessage: 'Please fill all the fields.',
@@ -538,9 +606,17 @@ class AddSurvey extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     const { disabled, stayOpen } = this.state
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
       !(this.props.user && this.props.user.surveyTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
