@@ -350,6 +350,9 @@ class CreateConvo extends React.Component {
     } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
       return false
     }
+    console.log('subscribersMatchPages', subscribersMatchPages)
+    console.log('genderValue', subscribersMatchGender)
+    console.log('subscribersMatchLocale', subscribersMatchLocale)
     return true
   }
   sendConvo () {
