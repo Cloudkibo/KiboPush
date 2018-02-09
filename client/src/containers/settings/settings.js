@@ -226,6 +226,9 @@ class Settings extends React.Component {
                           <span className='m-card-profile__name'>
                             {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
                           </span>
+                          <span className='m-card-profile__email'>
+                            {(this.props.user) ? this.props.user.email : ''}
+                          </span>
                         </div>
                       </div>
                       <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
