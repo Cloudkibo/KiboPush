@@ -4,7 +4,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -54,6 +54,10 @@ class CustomerMatching extends React.Component {
     this.props.downloadSampleFile()
   }
   saveList (list) {
+    browserHistory.push({
+      pathname: `/listDetails`,
+      state: {module: 'customerMatching'}
+    })
     this.props.saveCurrentList(list)
   }
   enterPhoneNoManually () {
@@ -244,12 +248,12 @@ class CustomerMatching extends React.Component {
         type: ''
       })
     }
-    if (this.props.customerLists && this.props.customerLists.length > 0) {
-      for (var i = 0; i < this.props.customerLists.length; i++) {
-        var list = this.props.customerLists[i]
+    if (nextProps.customerLists && nextProps.customerLists.length > 0) {
+      for (var i = 0; i < nextProps.customerLists.length; i++) {
+        var list = nextProps.customerLists[i]
         if (list.initialList) {
           this.setState({
-            initialList: this.props.customerLists[i]
+            initialList: nextProps.customerLists[i]
           })
         }
       }
@@ -393,12 +397,19 @@ class CustomerMatching extends React.Component {
                     <div className='m-portlet__body'>
                       { this.state.initialList !== '' &&
                         <div className='form-group m-form__group  row'>
-                          <span style={{paddingLeft: '15px', paddingBottom: '15px'}}>
-                            Click on the link to see the list of customers who have subscribed to you using Customer Matching.
-                            <Link to='/listDetails' style={{marginLeft: '5px'}} onClick={() => this.saveList(this.state.initialList)}>
-                              View Subscribers
-                            </Link>
-                          </span>
+                          <label className='col-4 col-form-label'>
+                            View Customers Lists
+                          </label>
+                          <div className='col-8'>
+                            <span style={{float: 'right'}}>
+                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
+                                Customers Subscribed
+                              </button>
+                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
+                                Customers With Pending Subscription
+                              </button>
+                            </span>
+                          </div>
                         </div>
                       }
                       <div className='form-group m-form__group row'>

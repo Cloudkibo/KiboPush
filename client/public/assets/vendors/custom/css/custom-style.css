@@ -40,3 +40,6 @@ span.select2.select2-container.select2-container--default {
   .pagination>li>a:hover {
     background-color: #bac3d0
   }
+  .btnListDetail:hover {
+    color: white !important
+  }
