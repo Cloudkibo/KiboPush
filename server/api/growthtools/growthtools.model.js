@@ -9,7 +9,8 @@ let phoneNumberSchema = new Schema({
   datetime: { type: Date, default: Date.now },
   hasSubscribed: { type: Boolean, default: false },
   pageId: {
-    type: String
+    type: Schema.ObjectId,
+    ref: 'pages'
   }
 })
 
