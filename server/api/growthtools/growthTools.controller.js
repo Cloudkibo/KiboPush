@@ -68,11 +68,12 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
+              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
                 name: data.names,
                 number: result,
                 userId: req.user._id,
-                companyId: companyUser.companyId
+                companyId: companyUser.companyId,
+                pageId: req.body.pageId
               }, {upsert: true}, (err2, phonenumbersaved) => {
                 if (err2) {
                   return res.status(500).json({
@@ -184,11 +185,13 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
+        logger.serverLog(TAG, `pageId ${req.body.pageId}`)
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
           name: '',
           number: result,
           userId: req.user._id,
-          companyId: companyUser.companyId
+          companyId: companyUser.companyId,
+          pageId: req.body.pageId
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
             return res.status(500).json({
