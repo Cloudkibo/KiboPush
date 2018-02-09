@@ -103,7 +103,7 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     logger.serverLog(TAG,
       `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
-    PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier}, {
+    PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: req.body.entry[0].id}, {
       hasSubscribed: true
     }, (err2, phonenumbersaved) => {
       if (err2) {

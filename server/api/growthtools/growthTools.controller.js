@@ -68,11 +68,12 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
+              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
                 name: data.names,
                 number: result,
                 userId: req.user._id,
-                companyId: companyUser.companyId
+                companyId: companyUser.companyId,
+                pageId: req.body.pageId
               }, {upsert: true}, (err2, phonenumbersaved) => {
                 if (err2) {
                   return res.status(500).json({
@@ -184,11 +185,14 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
+        logger.serverLog(TAG, `pageId ${req.body.pageId}`)
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
           name: '',
           number: result,
           userId: req.user._id,
-          companyId: companyUser.companyId
+          companyId: companyUser.companyId,
+          pageId: req.body.pageId,
+          hasSubscribed: false
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
             return res.status(500).json({
@@ -259,6 +263,32 @@ exports.retrievePhoneNumbers = function (req, res) {
         })
       }
       return res.status(201).json({status: 'success', payload: phonenumbers})
+    })
+  })
+}
+exports.pendingSubscription = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false}, (err2, phonenumbers) => {
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'phone number create failed'
+        })
+      }
+      return res.status(200)
+      .json({status: 'success', payload: phonenumbers})
     })
   })
 }
