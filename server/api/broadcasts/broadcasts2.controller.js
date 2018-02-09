@@ -392,7 +392,7 @@ exports.sendConversation = function (req, res) {
                         })
                       }
                       //  console.log('urls', urls)
-                      if (urls.length > 0) {
+                      if (payloadItem.buttons && urls.length > 0) {
                         logger.serverLog(TAG,
                        `inside if ${JSON.stringify(payloadItem)}`)
                         payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
