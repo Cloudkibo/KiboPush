@@ -253,6 +253,9 @@ class Header extends React.Component {
                                 <span className='m-card-user__name m--font-weight-500'>
                                   {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
                                 </span>
+                                <span className='m-card-user__email'>
+                                  {(this.props.user) ? this.props.user.email : ''}
+                                </span>
                               </div>
                             </div>
                           </div>
