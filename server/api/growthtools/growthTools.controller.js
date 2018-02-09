@@ -11,6 +11,7 @@ const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
+const mongoose = require('mongoose')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
@@ -46,6 +47,20 @@ exports.upload = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
+      listName: 'All customers',
+      userId: req.user._id,
+      companyId: companyUser.companyId,
+      conditions: 'initial_list',
+      initialList: true
+    }, {upsert: true}, (err2, savedList) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+    })
     fs.rename(
       req.files.file.path,
       dir + '/userfiles' + serverPath,
@@ -191,7 +206,7 @@ exports.sendNumbers = function (req, res) {
           number: result,
           userId: req.user._id,
           companyId: companyUser.companyId,
-          pageId: req.body.pageId,
+          pageId: mongoose.Types.ObjectId(req.body.pageId),
           hasSubscribed: false
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
@@ -280,7 +295,7 @@ exports.pendingSubscription = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false}, (err2, phonenumbers) => {
+    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false}).populate('pageId').exec((err2, phonenumbers) => {
       if (err2) {
         return res.status(500).json({
           status: 'failed',
