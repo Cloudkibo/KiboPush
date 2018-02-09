@@ -392,13 +392,13 @@ exports.sendConversation = function (req, res) {
                         })
                       }
                       //  console.log('urls', urls)
-                      if (payloadItem.buttons && urls.length > 0) {
-                        logger.serverLog(TAG,
-                       `inside if ${JSON.stringify(payloadItem)}`)
-                        payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
-                        logger.serverLog(TAG,
-                       `payloaditem ${JSON.stringify(payloadItem)}`)
-                      }
+                      // if (payloadItem.buttons && urls.length > 0) {
+                      //   logger.serverLog(TAG,
+                      //  `inside if ${JSON.stringify(payloadItem)}`)
+                      //   payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
+                      //   logger.serverLog(TAG,
+                      //  `payloaditem ${JSON.stringify(payloadItem)}`)
+                      // }
                        logger.serverLog(TAG,
                       `payloaditem ${JSON.stringify(payloadItem)}`)
                     let messageData = utility.prepareSendAPIPayload(

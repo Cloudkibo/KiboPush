@@ -14,7 +14,7 @@ import {
   deleteSurvey
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -41,6 +41,7 @@ class Survey extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
   }
 
   componentDidMount () {
@@ -150,7 +151,12 @@ class Survey extends React.Component {
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
   }
-
+  gotoCreate () {
+    browserHistory.push({
+      pathname: `/addsurvey`,
+      state: {subscribers: this.props.subscribers}
+    })
+  }
   render () {
     console.log('render method survey')
     var alertOptions = {
@@ -209,8 +215,8 @@ class Survey extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -265,9 +271,9 @@ class Survey extends React.Component {
                                 <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/addsurvey' className='btn btn-primary'>
+                                    <button to='/addsurvey' className='btn btn-primary' onClick={() => this.gotoView()}>
                                       Create New Survey
-                                    </Link>
+                                    </button>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <Link to='/showTemplateSurveys' className='btn btn-primary'>
