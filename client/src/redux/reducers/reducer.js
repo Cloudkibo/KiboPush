@@ -13,7 +13,7 @@ import {surveysInfo} from './surveys.reducer.js'
 import {workflowsInfo} from './workflows.reducer.js'
 import {autopostingInfo} from './autoposting.reducer.js'
 import {convosInfo} from './convos.reducer.js'
-import {getFileUploadResponse} from './growthTools.reducer.js'
+import {getFileUploadResponse, nonSubscribersInfo} from './growthTools.reducer.js'
 import {liveChat} from './livechat.reducer.js'
 import {templatesInfo} from './templates.reducer.js'
 import {listsInfo} from './customerLists.reducer.js'
@@ -63,7 +63,8 @@ const appReducer = combineReducers({
   templatesInfo,
   invitationsInfo,
   membersInfo,
-  listsInfo
+  listsInfo,
+  nonSubscribersInfo
 })
 
 export default appReducer
