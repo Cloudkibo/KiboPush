@@ -405,20 +405,20 @@ class CustomerMatching extends React.Component {
                       { (this.state.initialList !== '' || this.state.nonSubscribersList !== '') &&
                         <div className='form-group m-form__group  row'>
                           <label className='col-4 col-form-label'>
-                            View Customers Lists
+                            View Customers List
                           </label>
                           <div className='col-8'>
                             <span style={{float: 'right'}}>
-                            {this.state.initialList !== '' &&
+                              {this.state.initialList !== '' &&
                               <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
                                 Customers Subscribed
                               </button>
-                            }
-                            { this.state.nonSubscribersList !== '' &&
+                              }
+                              { this.state.nonSubscribersList !== '' &&
                               <Link to='/nonSubscribersList' className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                                 Customers With Pending Subscription
                               </Link>
-                            }
+                              }
                             </span>
                           </div>
                         </div>
