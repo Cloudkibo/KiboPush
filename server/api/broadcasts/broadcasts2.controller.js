@@ -144,7 +144,7 @@ exports.sendConversation = function (req, res) {
           }
         })
 
-        let pagesFindCriteria = {userId: req.user._id, connected: true}
+        let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
         if (req.body.isSegmented) {
           if (req.body.segmentationPageIds.length > 0) {
