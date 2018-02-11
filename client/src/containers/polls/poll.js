@@ -161,7 +161,7 @@ class Poll extends React.Component {
   }
   render () {
     var alertOptions = {
-      offset: 14,
+      offset: 75,
       position: 'top right',
       theme: 'dark',
       time: 5000,

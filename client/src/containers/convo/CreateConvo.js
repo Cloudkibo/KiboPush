@@ -586,7 +586,7 @@ class CreateConvo extends React.Component {
     console.log('List', this.state)
 
     var alertOptions = {
-      offset: 14,
+      offset: 75,
       position: 'top right',
       theme: 'dark',
       time: 5000,
