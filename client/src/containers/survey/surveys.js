@@ -160,10 +160,10 @@ class Survey extends React.Component {
   render () {
     console.log('render method survey')
     var alertOptions = {
-      offset: 14,
+      offset: 50,
       position: 'top right',
       theme: 'dark',
-      time: 5000,
+      time: 3000,
       transition: 'scale'
     }
     return (
