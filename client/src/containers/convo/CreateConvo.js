@@ -825,6 +825,7 @@ class CreateConvo extends React.Component {
                       onClick={() => { this.setState({showMessengerModal: false}); console.log("Model Clicked") }}
                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
+                        onClick={() => { this.setState({showMessengerModal: false}); console.log("Dialog Clicked") }}
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
                         <h3  onClick={() => { this.setState({showMessengerModal: false}); console.log("Text Clicked") }} >Connect to Messenger:</h3>
                         <MessengerPlugin
