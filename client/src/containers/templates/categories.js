@@ -238,21 +238,41 @@ class Category extends React.Component {
                                       className='m-datatable__cell'>
                                       <span
                                         style={{width: '150px'}}>{category.name}</span></td>
-                                    <td data-field='seemore'
-                                      className='m-datatable__cell'>
-                                      <span className='pull-right'
-                                        style={{width: '170px'}}>
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogEdit(category)}>
-                                        Edit
+                                    { this.props.user.isSuperUser
+                                        ? <td data-field='seemore'
+                                          className='m-datatable__cell'>
+                                          <span className='pull-right'
+                                            style={{width: '170px'}}>
+                                            <button className='btn btn-primary btn-sm'
+                                              style={{float: 'left', margin: 2}}
+                                              onClick={() => this.showDialogEdit(category)}>
+                                            Edit
+                                        </button>
+                                            <button className='btn btn-primary btn-sm'
+                                              style={{float: 'left', margin: 2}}
+                                              onClick={() => this.showDialogDelete(category._id)}>
+                                            Delete
+                                        </button>
+                                          </span></td>
+                                : <td data-field='seemore'
+                                  className='m-datatable__cell'>
+                                  { !category.createdBySuperUser &&
+                                    <span className='pull-right'
+                                      style={{width: '170px'}}>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.showDialogEdit(category)}>
+                                       Edit
+                                     </button>
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.showDialogDelete(category._id)}>
+                                    Delete
                                     </button>
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogDelete(category._id)}>
-                                        Delete
-                                    </button>
-                                      </span></td>
+                                    </span>
+                                 }
+                                </td>
+                                }
                                   </tr>
                                 ))
                               }
@@ -281,6 +301,7 @@ class Category extends React.Component {
 }
 function mapStateToProps (state) {
   return {
+    user: (state.basicInfo.user),
     categories: state.templatesInfo.categories
   }
 }
