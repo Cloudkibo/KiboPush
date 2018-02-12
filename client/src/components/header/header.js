@@ -183,7 +183,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/createconvo' className='m-nav-grid__item'>
+                                    : <Link to='/convos' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
@@ -196,7 +196,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
-                                    : <Link to='/createpoll' className='m-nav-grid__item'>
+                                    : <Link to='/poll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
@@ -212,7 +212,7 @@ class Header extends React.Component {
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>
-                                     : <Link to='/addsurvey' className='m-nav-grid__item'>
+                                     : <Link to='/surveys' className='m-nav-grid__item'>
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>

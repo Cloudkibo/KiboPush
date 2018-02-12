@@ -773,7 +773,7 @@ class CreateConvo extends React.Component {
                           appId={this.props.fbAppId}
                           pageId={this.state.pageValue}
                           passthroughParams={this.props.user._id}
-                          onClick={() => { this.setState({showMessengerModal: false}) }}
+                          onClick={() => { console.log("Click on Messenger"); this.setState({showMessengerModal: false}) }}
                         />
                       </ModalDialog>
                     </ModalContainer>
