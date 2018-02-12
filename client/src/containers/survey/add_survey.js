@@ -49,7 +49,8 @@ class AddSurvey extends React.Component {
       genderValue: [],
       localeValue: [],
       steps: [],
-      showDropDown: false
+      showDropDown: false,
+      checkConditions: true
     }
     // surveyQuestions will be an array of json object
     // each json object will have following keys:
@@ -341,6 +342,7 @@ class AddSurvey extends React.Component {
         }
         console.log('this.props.location.state.subscribers', this.props.location.state.subscribers)
         var res = this.checkConditions(surveybody)
+        this.setState({checkConditions: res})
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {

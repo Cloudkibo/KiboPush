@@ -109,17 +109,32 @@ exports.createSurvey = function (req, res) {
   })
 }
 exports.allCategories = function (req, res) {
-  Category.find({}, (err, categories) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      logger.serverLog(TAG, `Error: ${err}`)
       return res.status(500).json({
         status: 'failed',
-        description: `Internal Server Error${JSON.stringify(err)}`
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({
-      status: 'success',
-      payload: categories
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Category.find({'$or': [{
+      companyId: companyUser.companyId}, {createdBySuperUser: true}]}, (err, categories) => {
+      if (err) {
+        logger.serverLog(TAG, `Error: ${err}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: categories
+      })
     })
   })
 }
