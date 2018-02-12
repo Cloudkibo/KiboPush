@@ -519,7 +519,7 @@ exports.uploadFile = function (req, res) {
     }
 
     logger.serverLog(TAG,
-                  `Users ${JSON.stringify(users)}`)
+                  `Users ${JSON.stringify(users[0])}`)
 
     Pages.find({}, (err, pages) => {
       if (err) {
@@ -530,7 +530,7 @@ exports.uploadFile = function (req, res) {
       }
 
       logger.serverLog(TAG,
-                    `Pages ${JSON.stringify(pages)}`)
+                    `Pages ${JSON.stringify(pages[0])}`)
 
       let usersPayload = []
       for (let a = 0; a < pages.length; a++) {
