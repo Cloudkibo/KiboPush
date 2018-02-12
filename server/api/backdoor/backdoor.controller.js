@@ -529,7 +529,7 @@ exports.uploadFile = function (req, res) {
       let usersPayload = []
       for (let a = 0; a < pages.length; a++) {
         for (let b = 0; b < users.length; b++) {
-          if (pages[a].userId === users[b]._id) {
+          if (mongoose.Types.ObjectId(pages[a].userId) === mongoose.Types.ObjectId(users[b]._id)) {
             usersPayload.push({
               Page: pages[a].pageName,
               isConnected: pages[a].connected,
