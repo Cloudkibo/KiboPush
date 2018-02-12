@@ -125,21 +125,40 @@ exports.allCategories = function (req, res) {
 }
 
 exports.createCategory = function (req, res) {
-  let categoryPayload = {
-    name: req.body.name
-  }
-  const category = new Category(categoryPayload)
-
-  // save model to MongoDB
-  category.save((err, categoryCreated) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to insert record'
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
-    } else {
-      res.status(201).json({status: 'success', payload: categoryCreated})
     }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let categoryPayload = {
+      name: req.body.name,
+      userId: req.user._id,
+      companyId: companyUser.companyId
+    }
+    if (req.user.isSuperUser) {
+      categoryPayload.createdBySuperUser = true
+    }
+    const category = new Category(categoryPayload)
+
+    // save model to MongoDB
+    category.save((err, categoryCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to insert record'
+        })
+      } else {
+        res.status(201).json({status: 'success', payload: categoryCreated})
+      }
+    })
   })
 }
 exports.editCategory = function (req, res) {
