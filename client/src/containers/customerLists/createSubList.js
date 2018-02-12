@@ -71,7 +71,7 @@ class CreateSubList extends React.Component {
     }
 
     this.setState({
-      parentListName: this.props.currentList.parentListName,
+      parentListName: this.props.currentList.parentListName ? this.props.currentList.parentListName : '',
       isEdit: true,
       newListName: this.props.currentList.listName,
       conditions: tempConditions
@@ -372,7 +372,7 @@ class CreateSubList extends React.Component {
                           </span>
                         </div>
                         }
-                        { this.state.isEdit && this.state.parentListName !== '' &&
+                        { (this.state.isEdit && this.state.parentListName !== '') &&
                           <div className='form-group m-form__group col-12'>
                             <label className='col-lg-2 col-form-label'>
                               Parent List Name
