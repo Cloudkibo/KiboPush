@@ -518,6 +518,9 @@ exports.uploadFile = function (req, res) {
       })
     }
 
+    logger.serverLog(TAG,
+                  `Users ${JSON.stringify(users)}`)
+
     Pages.find({}, (err, pages) => {
       if (err) {
         return res.status(404).json({
@@ -526,10 +529,15 @@ exports.uploadFile = function (req, res) {
         })
       }
 
+      logger.serverLog(TAG,
+                    `Pages ${JSON.stringify(pages)}`)
+
       let usersPayload = []
       for (let a = 0; a < pages.length; a++) {
         for (let b = 0; b < users.length; b++) {
           if (mongoose.Types.ObjectId(pages[a].userId) === mongoose.Types.ObjectId(users[b]._id)) {
+            logger.serverLog(TAG,
+                          `Inside If ${JSON.stringify(pages[a])}`)
             usersPayload.push({
               Page: pages[a].pageName,
               isConnected: pages[a].connected,
