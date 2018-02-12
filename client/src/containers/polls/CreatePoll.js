@@ -11,7 +11,6 @@ import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
-import _ from 'underscore'
 import AlertContainer from 'react-alert'
 
 class CreatePoll extends React.Component {
@@ -60,7 +59,6 @@ class CreatePoll extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
-    this.checkConditions = this.checkConditions.bind(this)
   }
 
   componentDidMount () {
@@ -195,65 +193,6 @@ class CreatePoll extends React.Component {
     var temp = value.split(',')
     this.setState({ localeValue: temp })
   }
-  checkConditions (pageValue, genderValue, localeValue) {
-    let subscribersMatchPages = []
-    let subscribersMatchLocale = []
-    let subscribersMatchGender = []
-    if (pageValue.length > 0) {
-      for (var i = 0; i < pageValue.length; i++) {
-        for (var j = 0; j < this.props.location.state.subscribers.length; j++) {
-          if (this.props.location.state.subscribers[j].pageId.pageId === pageValue[i]) {
-            subscribersMatchPages.push(this.props.location.state.subscribers[j])
-          }
-        }
-      }
-    }
-    if (genderValue.length > 0) {
-      for (var k = 0; k < this.props.location.state.subscribers.length; k++) {
-        for (var l = 0; l < genderValue.length; l++) {
-          if (this.props.location.state.subscribers[k].gender === genderValue[l]) {
-            subscribersMatchGender.push(this.props.location.state.subscribers[k])
-          }
-        }
-      }
-    }
-    if (localeValue.length > 0) {
-      for (var m = 0; m < this.props.location.state.subscribers.length; m++) {
-        for (var n = 0; n < localeValue.length; n++) {
-          if (this.props.location.state.subscribers[m].locale === localeValue[n]) {
-            subscribersMatchLocale.push(this.props.location.state.subscribers[m])
-          }
-        }
-      }
-    }
-    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
-      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
-      if (result.length === 0) {
-        console.log('inside if')
-        return false
-      }
-    } else if (pageValue.length > 0 && genderValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (genderValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
-      return false
-    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
-      return false
-    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
-      return false
-    }
-    return true
-  }
   createPoll () {
     var options = []
     if (this.state.option1 === '' || this.state.option2 === '' ||
@@ -274,26 +213,21 @@ class CreatePoll extends React.Component {
                     this.state.localeValue.length > 0) {
         isSegmentedValue = true
       }
-      var res = this.checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue)
-      if (res === false) {
-        this.msg.error('No subscribers match the selected criteria')
-      } else {
-        this.props.addPoll('', {
-          platform: 'Facebook',
-          datetime: Date.now(),
-          statement: this.state.statement,
-          sent: 0,
-          options: options,
-          isSegmented: isSegmentedValue,
-          segmentationPageIds: this.state.pageValue,
-          segmentationGender: this.state.genderValue,
-          segmentationLocale: this.state.localeValue
-        })
-        console.log('Poll added')
-        this.props.history.push({
-          pathname: '/poll'
-        })
-      }
+      this.props.addPoll('', {
+        platform: 'Facebook',
+        datetime: Date.now(),
+        statement: this.state.statement,
+        sent: 0,
+        options: options,
+        isSegmented: isSegmentedValue,
+        segmentationPageIds: this.state.pageValue,
+        segmentationGender: this.state.genderValue,
+        segmentationLocale: this.state.localeValue
+      })
+      console.log('Poll added')
+      this.props.history.push({
+        pathname: '/poll'
+      })
     }
   }
 

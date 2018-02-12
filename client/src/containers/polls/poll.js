@@ -22,6 +22,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
+import _ from 'underscore'
 
 class Poll extends React.Component {
   constructor (props, context) {
@@ -45,6 +46,8 @@ class Poll extends React.Component {
     this.props.clearAlertMessage()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
+    this.sendPoll = this.sendPoll.bind(this)
   }
   showDialog () {
     console.log('in showDialog')
@@ -155,9 +158,74 @@ class Poll extends React.Component {
   }
   gotoCreate () {
     browserHistory.push({
-      pathname: `/createpoll`,
-      state: {subscribers: this.props.subscribers}
+      pathname: `/createpoll`
     })
+  }
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
+  }
+  sendPoll (poll) {
+    var res = this.checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale)
+    if (res === false) {
+      this.msg.error('No subscribers match the selected criteria')
+    } else {
+      this.props.sendpoll(poll)
+    }
   }
   render () {
     var alertOptions = {
@@ -357,14 +425,14 @@ class Poll extends React.Component {
                                     ? <span style={{width: '150px'}}>
                                       <button className='btn btn-sm' disabled
                                         style={{float: 'left', margin: 2}}
-                                        onClick={() => this.props.sendpoll(poll)}>
+                                        onClick={() => this.sendPoll(poll)}>
                                         Send
                                       </button>
                                     </span>
                                     : <span style={{width: '150px'}}>
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
-                                        onClick={() => this.props.sendpoll(poll)}>
+                                        onClick={() => this.sendPoll(poll)}>
                                         Send
                                       </button>
                                     </span>

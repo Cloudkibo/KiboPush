@@ -113,6 +113,7 @@ exports.createList = function (req, res) {
       companyId: companyUser.companyId,
       userId: req.user._id,
       listName: req.body.listName,
+      conditions: req.body.conditions,
       content: req.body.content,
       parentList: req.body.parentListId,
       parentListName: req.body.parentListName
@@ -162,6 +163,7 @@ exports.editList = function (req, res) {
         .json({status: 'failed', description: 'Record not found'})
     }
     list.listName = req.body.listName
+    list.conditions = req.body.conditions
     list.content = req.body.content
     list.save((err2, savedList) => {
       if (err2) {
