@@ -822,6 +822,7 @@ class CreateConvo extends React.Component {
                   {
                     this.state.showMessengerModal &&
                     <ModalContainer style={{width: '500px'}}
+                      onClick={() => { this.setState({showMessengerModal: false}) }}
                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
