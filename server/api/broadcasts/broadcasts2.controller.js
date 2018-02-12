@@ -175,6 +175,7 @@ exports.sendConversation = function (req, res) {
             logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
 
             if (req.body.isList === true) {
+              logger.serverLog(TAG, `inside isList`)
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
                 {
