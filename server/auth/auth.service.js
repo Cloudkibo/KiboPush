@@ -279,6 +279,7 @@ exports.hasRequiredPlan = hasRequiredPlan
 exports.doesPlanPermitsThisAction = doesPlanPermitsThisAction
 exports.doesRolePermitsThisAction = doesRolePermitsThisAction
 exports.fbConnectDone = fbConnectDone
+exports.fetchPages = fetchPages
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
 
@@ -296,8 +297,8 @@ function fetchPages (url, user) {
       logger.serverLog(TAG, JSON.stringify(err))
       return
     }
-    // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
-    // logger.serverLog(TAG, JSON.stringify(resp.body))
+    logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
+    logger.serverLog(TAG, JSON.stringify(resp.body))
 
     const data = resp.body.data
     const cursor = resp.body.paging
