@@ -12,9 +12,6 @@ class CardsWithProgress extends React.Component {
     var pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
     var surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
     var surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
-    if(this.props.data.poll.pollResponseCount > this.props.data.poll.pollSentCount){
-      pollResponseConvertRate = '100%';
-    }
     return (
       <div className='row'>
         <div className='col-xl-4'>
