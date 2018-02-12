@@ -144,7 +144,7 @@ exports.sendConversation = function (req, res) {
           }
         })
 
-        let pagesFindCriteria = {userId: req.user._id, connected: true}
+        let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
         if (req.body.isSegmented) {
           if (req.body.segmentationPageIds.length > 0) {
@@ -175,6 +175,7 @@ exports.sendConversation = function (req, res) {
             logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
 
             if (req.body.isList === true) {
+              logger.serverLog(TAG, `inside isList`)
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
                 {
@@ -391,13 +392,13 @@ exports.sendConversation = function (req, res) {
                           })
                         }
                         //  console.log('urls', urls)
-                        if (payloadItem.buttons && urls.length > 0) {
-                          logger.serverLog(TAG,
-                            `inside if ${JSON.stringify(payloadItem)}`)
-                          payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
-                          logger.serverLog(TAG,
-                            `payloaditem ${JSON.stringify(payloadItem)}`)
-                        }
+                        // if (payloadItem.buttons && urls.length > 0) {
+                        //   logger.serverLog(TAG,
+                        //     `inside if ${JSON.stringify(payloadItem)}`)
+                        //   payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
+                        //   logger.serverLog(TAG,
+                        //     `payloaditem ${JSON.stringify(payloadItem)}`)
+                        // }
                         logger.serverLog(TAG,
                           `payloaditem ${JSON.stringify(payloadItem)}`)
                         let messageData = utility.prepareSendAPIPayload(

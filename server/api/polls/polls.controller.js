@@ -175,7 +175,6 @@ exports.report = function (req, res) {
 
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside sendpoll ${JSON.stringify(req.body)}`)
-  let isEmpty = []
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -263,11 +262,7 @@ exports.send = function (req, res) {
           if (err) {
             return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
           }
-          if (subscribers.length === 0) {
-            isEmpty.push(true)
-          }
           if (subscribers.length > 0) {
-            isEmpty.push(false)
             logger.serverLog(TAG,
               `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
             // get accesstoken of page
@@ -362,7 +357,7 @@ exports.send = function (req, res) {
         })
       }
       return res.status(200)
-      .json({status: 'success', payload: 'Polls sent successfully.', isEmpty: isEmpty})
+      .json({status: 'success', payload: 'Polls sent successfully.'})
     })
   })
 }

@@ -16,6 +16,7 @@ import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
 import ShareOptions from './containers/GrowthTools/ShareOptions'
 import CustomerMatching from './containers/GrowthTools/customerMatchingUsingPhNum'
+import NonSubscribersList from './containers/GrowthTools/nonSubscribersList'
 import Stats from './containers/stats/stats'
 import Broadcast from './containers/broadcast/broadcast'
 import Convo from './containers/convo/convo'
@@ -164,6 +165,7 @@ const routes = (
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
+    <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
     <Route path='/live' component={LiveChat} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />

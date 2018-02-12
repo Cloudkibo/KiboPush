@@ -411,7 +411,19 @@ exports.addPages = function (req, res) {
           return res.status(500).json({status: 'failed', description: err})
         }
         logger.serverLog(TAG, `Pages returned ${JSON.stringify(pages)}`)
-        res.status(201).json({status: 'success', payload: pages})
+        Pages.find({companyId: companyUser.companyId, connected: true}, (err, connectedPages) => {
+          if (err) {
+            return res.status(500).json({status: 'failed', description: err})
+          }
+          for (let a = 0; a < connectedPages.length; a++) {
+            for (let b = 0; b < pages.length; b++) {
+              if (connectedPages[a].pageId === pages[b].pageId) {
+                pages[b].connected = true
+              }
+            }
+          }
+          res.status(201).json({status: 'success', payload: pages})
+        })
       })
       //  return res.status(200).json({ status: 'success', payload: user});
     })

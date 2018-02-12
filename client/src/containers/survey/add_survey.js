@@ -13,6 +13,8 @@ import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicin
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
+
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -134,6 +136,7 @@ class AddSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
+        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -538,9 +541,17 @@ class AddSurvey extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     const { disabled, stayOpen } = this.state
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
       !(this.props.user && this.props.user.surveyTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />

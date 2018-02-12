@@ -83,12 +83,12 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
+              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                 name: data.names,
                 number: result,
                 userId: req.user._id,
                 companyId: companyUser.companyId,
-                pageId: req.body.pageId
+                pageId: req.body._id
               }, {upsert: true}, (err2, phonenumbersaved) => {
                 if (err2) {
                   return res.status(500).json({
@@ -156,6 +156,7 @@ exports.upload = function (req, res) {
 }
 
 exports.sendNumbers = function (req, res) {
+  logger.serverLog(TAG, `pageIdanisha ${JSON.stringify(req.body)}`)
   let parametersMissing = false
 
   if (!_.has(req.body, 'numbers')) parametersMissing = true
@@ -200,16 +201,16 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        logger.serverLog(TAG, `pageId ${req.body.pageId}`)
-        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body.pageId}, {
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
           name: '',
           number: result,
           userId: req.user._id,
           companyId: companyUser.companyId,
-          pageId: mongoose.Types.ObjectId(req.body.pageId),
+          pageId: req.body._id,
           hasSubscribed: false
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
+            logger.serverLog(TAG, err2)
             return res.status(500).json({
               status: 'failed',
               description: 'phone number create failed'

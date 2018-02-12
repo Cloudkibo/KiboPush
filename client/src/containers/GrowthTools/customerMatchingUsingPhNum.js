@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions} from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -31,7 +31,8 @@ class CustomerMatching extends React.Component {
       phoneNumbers: [],
       numbersError: [],
       loading: false,
-      initialList: ''
+      initialList: '',
+      nonSubscribersList: ''
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -49,6 +50,7 @@ class CustomerMatching extends React.Component {
     this.saveList = this.saveList.bind(this)
     this.props.clearAlertMessage()
     this.props.loadCustomerLists()
+    this.props.getPendingSubscriptions()
   }
   getSampleFile () {
     this.props.downloadSampleFile()
@@ -145,6 +147,7 @@ class CustomerMatching extends React.Component {
       fileData.append('filesize', file[0].size)
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
+      fileData.append('_id', this.state.selectPage._id)
 
       if (this.validate('file')) {
         this.setState({
@@ -155,7 +158,8 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId})
+        console.log('pageinfo', this.state.selectPage)
+        this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
       }
     }
   }
@@ -257,6 +261,11 @@ class CustomerMatching extends React.Component {
           })
         }
       }
+    }
+    if (nextProps.nonSubscribersNumbers && nextProps.nonSubscribersNumbers.length > 0) {
+      this.setState({
+        nonSubscribersList: nextProps.nonSubscribersNumbers
+      })
     }
   }
   selectPage () {
@@ -395,19 +404,23 @@ class CustomerMatching extends React.Component {
                     </div>
 
                     <div className='m-portlet__body'>
-                      { this.state.initialList !== '' &&
+                      { (this.state.initialList !== '' || this.state.nonSubscribersList !== '') &&
                         <div className='form-group m-form__group  row'>
                           <label className='col-4 col-form-label'>
-                            View Customers Lists
+                            View Customers List
                           </label>
                           <div className='col-8'>
                             <span style={{float: 'right'}}>
+                              {this.state.initialList !== '' &&
                               <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
                                 Customers Subscribed
                               </button>
-                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
+                              }
+                              { this.state.nonSubscribersList !== '' &&
+                              <Link to='/nonSubscribersList' className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                                 Customers With Pending Subscription
-                              </button>
+                              </Link>
+                              }
                             </span>
                           </div>
                         </div>
@@ -561,7 +574,8 @@ function mapStateToProps (state) {
   return {
     uploadResponse: state.getFileUploadResponse,
     pages: state.pagesInfo.pages,
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData)
     // uploadResponse: {status :'success'}
     // uploadResponse: {status :'failed' , description: 'Some problem'}
   }
@@ -575,7 +589,8 @@ function mapDispatchToProps (dispatch) {
     sendPhoneNumbers: sendPhoneNumbers,
     clearAlertMessage: clearAlertMessage,
     loadCustomerLists: loadCustomerLists,
-    saveCurrentList: saveCurrentList
+    saveCurrentList: saveCurrentList,
+    getPendingSubscriptions: getPendingSubscriptions
   },
     dispatch)
 }
