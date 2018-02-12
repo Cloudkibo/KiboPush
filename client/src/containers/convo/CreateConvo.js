@@ -30,7 +30,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import _ from 'underscore'
-
+import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -123,27 +123,18 @@ class CreateConvo extends React.Component {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
     }
-    this.addSteps([{
-      title: 'Component',
-      text: 'You can add components to your broadcast using these button',
-      selector: 'div#text',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Edit Title',
-      text: 'You can edit the title of your broadcast by clicking the pencil icon',
-      selector: 'i#convoTitle',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Send broadcast',
-      text: 'You can send your broadcast using these buttons',
-      selector: 'button#send',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}])
+
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.getAdminSubscriptions()
+        comp.setState({showMessengerModal: false})
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+      }
+    })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -822,10 +813,12 @@ class CreateConvo extends React.Component {
                   {
                     this.state.showMessengerModal &&
                     <ModalContainer style={{width: '500px'}}
+                      onClick={() => { this.setState({showMessengerModal: false}); console.log("Model Clicked") }}
                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
+                        onClick={() => { this.setState({showMessengerModal: false}); console.log("Dialog Clicked") }}
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
-                        <h3>Connect to Messenger:</h3>
+                        <h3  onClick={() => { this.setState({showMessengerModal: false}); console.log("Text Clicked") }} >Connect to Messenger:</h3>
                         <MessengerPlugin
                           appId={this.props.fbAppId}
                           pageId={this.state.pageValue}

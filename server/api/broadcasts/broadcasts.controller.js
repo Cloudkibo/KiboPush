@@ -645,6 +645,16 @@ function addAdminAsSubscriber (payload) {
         pageAdminSubscription.save((err) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }else{
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: page.companyId,
+              body: {
+                action: 'admin_subscriber',
+                payload: {
+                  subscribed_page: page,
+                }
+              }
+            })
           }
         })
       })
