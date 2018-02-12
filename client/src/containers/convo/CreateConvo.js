@@ -30,7 +30,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import _ from 'underscore'
-
+import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -123,6 +123,18 @@ class CreateConvo extends React.Component {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
     }
+
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.getAdminSubscriptions()
+        comp.setState({showMessengerModal: false})
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+      }
+    })
   }
 
   componentWillReceiveProps (nextProps) {
