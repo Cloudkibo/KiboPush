@@ -527,21 +527,23 @@ exports.uploadFile = function (req, res) {
       }
 
       let usersPayload = []
-      for (let i = 0; i < pages.length; i++) {
-        for (let j = 0; j < users.length; j++) {
-          if (pages[i].userId === users[j]._id) {
+      for (let a = 0; a < pages.length; a++) {
+        for (let b = 0; b < users.length; b++) {
+          if (pages[a].userId === users[b]._id) {
             usersPayload.push({
-              Page: pages[i].pageName,
-              isConnected: pages[i].connected,
-              Name: users[j].name,
-              Gender: users[j].gender,
-              Email: users[j].email,
-              Locale: users[j].locale,
-              Timezone: users[j].timezone
+              Page: pages[a].pageName,
+              isConnected: pages[a].connected,
+              Name: users[b].name,
+              Gender: users[b].gender,
+              Email: users[b].email,
+              Locale: users[b].locale,
+              Timezone: users[b].timezone
             })
           }
         }
       }
+      logger.serverLog(TAG,
+                    `File data ${JSON.stringify(usersPayload)}`)
       //  let dir = path.resolve(__dirname, './my-file.csv')
       // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
       // csvdata.write(dir, usersPayload,
