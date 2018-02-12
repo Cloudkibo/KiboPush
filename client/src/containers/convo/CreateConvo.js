@@ -123,27 +123,11 @@ class CreateConvo extends React.Component {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
     }
-    this.addSteps([{
-      title: 'Component',
-      text: 'You can add components to your broadcast using these button',
-      selector: 'div#text',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Edit Title',
-      text: 'You can edit the title of your broadcast by clicking the pencil icon',
-      selector: 'i#convoTitle',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Send broadcast',
-      text: 'You can send your broadcast using these buttons',
-      selector: 'button#send',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}])
+    
+    window.FB.Event.subscribe('send_to_messenger', function(e) {
+      // callback for events triggered by the plugin
+        console.log("Event", e)
+    });
   }
 
   componentWillReceiveProps (nextProps) {
