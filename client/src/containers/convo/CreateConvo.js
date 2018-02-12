@@ -123,11 +123,6 @@ class CreateConvo extends React.Component {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
     }
-    
-    window.FB.Event.subscribe('send_to_messenger', function(e) {
-      // callback for events triggered by the plugin
-        console.log("Event", e)
-    });
   }
 
   componentWillReceiveProps (nextProps) {
