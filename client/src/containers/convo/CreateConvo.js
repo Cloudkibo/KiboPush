@@ -438,7 +438,6 @@ class CreateConvo extends React.Component {
     }
     console.log('Data sent: ', data)
     this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
   }
 
   newConvo () {
