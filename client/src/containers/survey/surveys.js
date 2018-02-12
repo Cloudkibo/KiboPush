@@ -20,6 +20,7 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
+import _ from 'underscore'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -42,6 +43,8 @@ class Survey extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
+    this.sendSurvey = this.sendSurvey.bind(this)
   }
 
   componentDidMount () {
@@ -153,9 +156,75 @@ class Survey extends React.Component {
   }
   gotoCreate () {
     browserHistory.push({
-      pathname: `/addsurvey`,
-      state: {subscribers: this.props.subscribers}
+      pathname: `/addsurvey`
     })
+  }
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
+  }
+  sendSurvey (survey) {
+    var res = this.checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale)
+    if (res === false) {
+      this.msg.error('No subscribers match the selected criteria')
+    } else {
+      this.props.sendsurvey(survey, this.msg)
+    }
   }
   render () {
     console.log('render method survey')
@@ -357,7 +426,7 @@ class Survey extends React.Component {
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
                                   onClick={() => {
-                                    this.props.sendsurvey(survey, this.msg, this.msg)
+                                    this.sendSurvey(survey)
                                   }}>
                                   Send
                               </button>
