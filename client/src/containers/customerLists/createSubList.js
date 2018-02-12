@@ -6,12 +6,14 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList, editList
+  loadCustomerLists, createSubList, editList, loadListDetails, getParentList
 } from '../../redux/actions/customerLists.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { getSubList } from './subList'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -24,7 +26,9 @@ class CreateSubList extends React.Component {
       errorMessages: [],
       isSaveEnabled: true,
       isEdit: false,
-      parentListName: ''
+      parentListName: '',
+      parentListData: [],
+      allSubscribers: []
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -41,8 +45,12 @@ class CreateSubList extends React.Component {
     this.handleEditList = this.handleEditList.bind(this)
     this.resetPage = this.resetPage.bind(this)
     this.initializeList = this.initializeList.bind(this)
+    this.handleGetParentList = this.handleGetParentList.bind(this)
+    this.createSubList = this.createSubList.bind(this)
+    this.editSubList = this.editSubList.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
+    props.loadSubscribersList()
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -54,6 +62,14 @@ class CreateSubList extends React.Component {
     }
     if (this.props.currentList) {
       this.initializeList()
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called in CreateSublist', nextProps)
+    if (nextProps.subscribers) {
+      console.log('Subscribers Updated', nextProps.subscribers)
+      this.setState({ allSubscribers: nextProps.subscribers })
     }
   }
 
@@ -82,29 +98,70 @@ class CreateSubList extends React.Component {
   onSave () {
     var isValid = this.validateNewList()
     if (isValid) {
-      this.setState({errorMessages: []})
-      var listName = this.state.newListName
-      var conditions = this.state.conditions
+      this.setState({errorMessages: [], isSaveEnabled: false})
       var parentListId = ''
       if (this.state.listSelected !== '') {
         parentListId = this.state.listSelected._id
+        this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
+      } else {
+        this.setState({parentListData: this.props.subscribers})
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions)
+        if (subSetIds.length > 0) {
+          this.createSubList(subSetIds)
+        } else {
+          this.msg.error('New list is empty. Try creating a list with a different condition')
+          this.setState({isSaveEnabled: true})
+        }
       }
-      var listPayload = {'_id': parentListId, 'listName': listName, 'conditions': conditions}
-      this.setState({isSaveEnabled: false})
-      this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
     }
+  }
+  handleGetParentList (response) {
+    if (response.payload) {
+      this.setState({parentListData: response.payload})
+      var subSetIds = getSubList(response.payload, this.state.conditions)
+      if (subSetIds.length > 0) {
+        if (this.state.isEdit) {
+          this.editSubList(subSetIds)
+        } else {
+          this.createSubList(subSetIds)
+        }
+      } else {
+        this.msg.error('New list is empty. Try creating a list with a different condition')
+        this.setState({isSaveEnabled: true})
+      }
+    } else {
+      this.setState({
+        errorMessages: [],
+        isSaveEnabled: true
+      })
+    }
+  }
+
+  createSubList (content) {
+    var listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, 'parentListId': this.state.listSelected._id, 'parentListName': this.state.listSelected.name}
+    this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
+  }
+
+  editSubList (content) {
+    var listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, '_id': this.props.currentList._id}
+    this.props.editList(listPayload, this.msg, this.handleEditList)
   }
   onUpdate () {
     var isValid = this.validateNewList()
     if (isValid) {
-      this.setState({errorMessages: []})
-      var listName = this.state.newListName
-      var conditions = this.state.conditions
-      var listId = this.props.currentList._id
-
-      var listEditPayload = {'_id': listId, 'listName': listName, 'conditions': conditions}
-      this.setState({isSaveEnabled: false})
-      this.props.editList(listEditPayload, this.msg, this.handleEditList)
+      this.setState({errorMessages: [], isSaveEnabled: false})
+      if (this.props.currentList.parentList && this.props.currentList.parentList !== '') {
+        this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
+      } else {
+        this.setState({parentListData: this.props.subscribers})
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions)
+        if (subSetIds.length > 0) {
+          this.editSubList(subSetIds)
+        } else {
+          this.msg.error('New list is empty. Try creating a list with a different condition')
+          this.setState({isSaveEnabled: true})
+        }
+      }
     }
   }
 
@@ -571,7 +628,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
-    currentList: (state.listsInfo.currentList)
+    currentList: (state.listsInfo.currentList),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -579,7 +637,10 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     loadCustomerLists: loadCustomerLists,
     createSubList: createSubList,
-    editList: editList
+    editList: editList,
+    loadListDetails: loadListDetails,
+    getParentList: getParentList,
+    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)
