@@ -156,7 +156,7 @@ exports.getfbMessage = function (req, res) {
         if (itIsMessage) {
           const sender = event.sender.id
           const pageId = event.recipient.id
-          handleMessageFromSomeOtherApp(event)
+          // handleMessageFromSomeOtherApp(event)
           // get accesstoken of page
           Pages.find({pageId: pageId, connected: true})
             .populate('userId')
