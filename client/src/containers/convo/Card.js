@@ -205,7 +205,7 @@ class Card extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
+        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='broadcast-component ui-block hoverbordersolid'>
           <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
             <input
               ref='file'
