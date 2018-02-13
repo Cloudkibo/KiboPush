@@ -124,7 +124,7 @@ class Audio extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
+        <div className='broadcast-component ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
             ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
