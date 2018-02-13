@@ -292,8 +292,7 @@ class TemplateBroadcasts extends React.Component {
                               style={{height: '55px'}} key={i}>
                               <td data-field='sticker'
                                 className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>
+                                <span>
                                   {
                                     broadcast.createdBySuperUser &&
                                     <div style={{width: '100px', height: '50px'}}>
@@ -305,23 +304,23 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='title'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '150px'}}>
+                                  style={{width: '100px'}}>
                                   {broadcast.title}
                                 </span>
                               </td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '200px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span>
+                                  style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span>
                               </td>
                               <td data-field='category' className='m-datatable__cell'>
-                                <span style={{width: '150px'}}>{broadcast.category.join(
-                            ',')}</span>
+                                <span style={{width: '100px'}}>{broadcast.category.join(
+                            ', ')}</span>
                               </td>
                               <td data-field='created'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '150px'}}>{handleDate(broadcast.datetime)}</span></td>
+                                  style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
