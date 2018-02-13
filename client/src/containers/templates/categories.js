@@ -197,7 +197,7 @@ class Category extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deleteCategory(this.state.deleteid)
+                                    this.props.deleteCategory(this.state.deleteid, this.msg)
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>

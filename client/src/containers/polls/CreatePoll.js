@@ -12,12 +12,14 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
     props.getuserdetails()
+    props.loadCustomerLists()
     this.state = {
       page: {
         options: []
@@ -46,7 +48,10 @@ class CreatePoll extends React.Component {
       option1: '',
       option2: '',
       option3: '',
-      steps: []
+      steps: [],
+      selectedRadio: '',
+      listSelected: '',
+      isList: false
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -59,6 +64,8 @@ class CreatePoll extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.initializeListSelect = this.initializeListSelect.bind(this)
   }
 
   componentDidMount () {
@@ -108,6 +115,34 @@ class CreatePoll extends React.Component {
       type: 'hover',
       isFixed: true}
     ])
+  }
+  initializeListSelect (lists) {
+    console.log('Initialize Lists', lists)
+    var self = this
+    $('#selectLists').select2({
+      data: lists,
+      placeholder: 'Select Lists',
+      allowClear: true,
+      tags: true,
+      multiple: true
+    })
+
+    $('#selectLists').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('selected options', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ listSelected: selected })
+      }
+      console.log('change List Selection', selected)
+    })
+
+    $("#selectLists").val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
     console.log('Page Options in select', pageOptions)
@@ -178,7 +213,17 @@ class CreatePoll extends React.Component {
       console.log('change Locale', selected)
     })
   }
-
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called in add survey', nextProps)
+    console.log('nextpropscustomer', nextProps.customerLists)
+    if (nextProps.customerLists) {
+      let options = []
+      for (var j = 0; j < nextProps.customerLists.length; j++) {
+        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+      }
+      this.initializeListSelect(options)
+    }
+  }
   handlePageChange (value) {
     var temp = value.split(',')
     this.setState({ pageValue: temp })
@@ -194,6 +239,10 @@ class CreatePoll extends React.Component {
     this.setState({ localeValue: temp })
   }
   createPoll () {
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
     var options = []
     if (this.state.option1 === '' || this.state.option2 === '' ||
       this.state.option3 === '' || this.state.statement === '') {
@@ -222,7 +271,9 @@ class CreatePoll extends React.Component {
         isSegmented: isSegmentedValue,
         segmentationPageIds: this.state.pageValue,
         segmentationGender: this.state.genderValue,
-        segmentationLocale: this.state.localeValue
+        segmentationLocale: this.state.localeValue,
+        isList: isListValue,
+        segmentationList: this.state.listSelected
       })
       console.log('Poll added')
       this.props.history.push({
@@ -283,7 +334,18 @@ class CreatePoll extends React.Component {
   addTooltip (data) {
     this.refs.joyride.addTooltip(data)
   }
-
+  handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    if (e.currentTarget.value === 'list') {
+      this.setState({genderValue: [], localeValue: []})
+    } if (e.currentTarget.value === 'segmentation') {
+      this.setState({listSelected: [], isList: false})
+    }
+  }
   render () {
     const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -393,19 +455,55 @@ class CreatePoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='alert m-alert m-alert--default' role='alert'>
-                        <p>Select the type of customer you want to send poll to</p>
-                      </div>
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
                           <select id='selectPage' />
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectGender' />
+                      </div>
+                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                        <div className='radio'>
+                          <input id='segmentAll'
+                            type='radio'
+                            value='segmentation'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'segmentation'} />
+                          <label>Using Segmentation</label>
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectLocale' />
+                        <div className='radio'>
+                          <input id='segmentList'
+                            type='radio'
+                            value='list'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'list'} />
+                          <label>Using List</label>
                         </div>
+                      </div>
+                      <div className='m-form'>
+                        { this.state.selectedRadio === 'segmentation'
+                        ? <div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectGender' />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectLocale' />
+                          </div>
+                        </div>
+                        : <div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectGender' disabled />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <select id='selectLocale' disabled />
+                          </div>
+                        </div>
+                        }
+                        <br />
+                        { this.state.selectedRadio === 'list'
+                      ? <div className='form-group m-form__group'><select id='selectLists' /></div>
+                    : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
+                    }
                       </div>
                     </div>
                   </div>
@@ -424,7 +522,8 @@ function mapStateToProps (state) {
   return {
     polls: (state.pollsInfo.polls),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    customerLists: (state.listsInfo.customerLists)
 
   }
 }
@@ -434,7 +533,8 @@ function mapDispatchToProps (dispatch) {
     loadPollsList: loadPollsList,
     addPoll: addPoll,
     pollTourCompleted: pollTourCompleted,
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    loadCustomerLists: loadCustomerLists
   },
     dispatch)
 }

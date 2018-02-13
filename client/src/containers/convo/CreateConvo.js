@@ -360,6 +360,9 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    if (this.state.listSelected.length > 0) {
+      this.setState({isList: true})
+    }
     var isSegmentedValue = false
     if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
@@ -495,7 +498,7 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ listSelected: selected, isList: true })
+        self.setState({ listSelected: selected })
       }
       console.log('change List Selection', selected)
     })
@@ -603,7 +606,7 @@ class CreateConvo extends React.Component {
     })
     console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], isList: true})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }

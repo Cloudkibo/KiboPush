@@ -292,6 +292,12 @@ function prepareBroadCastPayload (req, companyId) {
       ? req.body.locale
       : null
   }
+  if (req.body.isList) {
+    broadcastPayload.isList = true
+    broadcastPayload.segmentationList = (req.body.segmentationList)
+      ? req.body.segmentationList
+      : null
+  }
   return broadcastPayload
 }
 

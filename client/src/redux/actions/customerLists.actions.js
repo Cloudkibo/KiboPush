@@ -5,6 +5,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function showCustomerLists (data) {
+  console.log('customerLists', data)
   return {
     type: ActionTypes.LOAD_CUSTOMER_LISTS,
     data
