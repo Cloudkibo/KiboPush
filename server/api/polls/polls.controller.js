@@ -175,7 +175,6 @@ exports.report = function (req, res) {
 
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside sendpoll ${JSON.stringify(req.body)}`)
-
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -359,6 +358,28 @@ exports.send = function (req, res) {
       }
       return res.status(200)
       .json({status: 'success', payload: 'Polls sent successfully.'})
+    })
+  })
+}
+exports.deletePoll = function (req, res) {
+  logger.serverLog(TAG,
+    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
+  Polls.findById(req.params.id, (err, poll) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!poll) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    poll.remove((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'poll update failed'})
+      }
+      return res.status(200)
+      .json({status: 'success'})
     })
   })
 }

@@ -18,6 +18,24 @@ export function loadCustomerLists () {
   }
 }
 
+export function getParentList (id, handleResponse, msg) {
+  console.log('getParentList called')
+  return (dispatch) => {
+    callApi(`lists/viewList/${id}`)
+      .then(res => {
+        console.log('response from viewList', res)
+        if (res.status !== 'success') {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to get list. ${res.description}`)
+          } else {
+            msg.error('Unable to get list')
+          }
+        }
+        handleResponse(res)
+      })
+  }
+}
+
 export function loadListDetails (id) {
   console.log('loadListDetails called')
   return (dispatch) => {
@@ -48,9 +66,8 @@ export function createSubList (list, msg, handleCreateSubList) {
     callApi('lists/createList', 'post', list)
       .then(res => {
         console.log('response from createSubList', res)
-        if (res.status === 'success') {
+        if (res.status === 'success' && res.payload) {
           msg.success('List created successfully')
-          dispatch(addList(res))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Unable to save list. ${res.description}`)
@@ -70,13 +87,13 @@ export function editList (list, msg, handleEditList) {
     callApi('lists/editList', 'post', list)
       .then(res => {
         console.log('response from editList', res)
-        if (res.status === 'success') {
-          msg.success('List updated successfully')
+        if (res.status === 'success' && res.payload) {
+          msg.success('List saved successfully')
         } else {
           if (res.status === 'failed' && res.description) {
-            msg.error(`Unable to update list. ${res.description}`)
+            msg.error(`Unable to save list. ${res.description}`)
           } else {
-            msg.error('Unable to update list')
+            msg.error('Unable to save list')
           }
         }
         handleEditList(res)

@@ -4,6 +4,7 @@ const TemplateSurveys = require('./surveyTemplate.model')
 const TemplateBroadcasts = require('./broadcastTemplate.model')
 const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 const TAG = 'api/polls/polls.controller.js'
 
@@ -108,37 +109,71 @@ exports.createSurvey = function (req, res) {
   })
 }
 exports.allCategories = function (req, res) {
-  Category.find({}, (err, categories) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      logger.serverLog(TAG, `Error: ${err}`)
       return res.status(500).json({
         status: 'failed',
-        description: `Internal Server Error${JSON.stringify(err)}`
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({
-      status: 'success',
-      payload: categories
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Category.find({'$or': [{
+      companyId: companyUser.companyId}, {createdBySuperUser: true}]}, (err, categories) => {
+      if (err) {
+        logger.serverLog(TAG, `Error: ${err}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: categories
+      })
     })
   })
 }
 
 exports.createCategory = function (req, res) {
-  let categoryPayload = {
-    name: req.body.name
-  }
-  const category = new Category(categoryPayload)
-
-  // save model to MongoDB
-  category.save((err, categoryCreated) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to insert record'
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
-    } else {
-      res.status(201).json({status: 'success', payload: categoryCreated})
     }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let categoryPayload = {
+      name: req.body.name,
+      userId: req.user._id,
+      companyId: companyUser.companyId
+    }
+    if (req.user.isSuperUser) {
+      categoryPayload.createdBySuperUser = true
+    }
+    const category = new Category(categoryPayload)
+
+    // save model to MongoDB
+    category.save((err, categoryCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to insert record'
+        })
+      } else {
+        res.status(201).json({status: 'success', payload: categoryCreated})
+      }
+    })
   })
 }
 exports.editCategory = function (req, res) {
@@ -351,37 +386,72 @@ exports.editPoll = function (req, res) {
 }
 
 exports.createBroadcast = function (req, res) {
-  let broadcastPayload = {
-    title: req.body.title,
-    category: req.body.category,
-    payload: req.body.payload
-  }
-  const broadcast = new TemplateBroadcasts(broadcastPayload)
-
-  // save model to MongoDB
-  broadcast.save((err, broadcastCreated) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to insert record'
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
-    } else {
-      res.status(201).json({status: 'success', payload: broadcastCreated})
     }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let broadcastPayload = {
+      title: req.body.title,
+      category: req.body.category,
+      payload: req.body.payload,
+      userId: req.user._id,
+      companyId: companyUser.companyId
+    }
+    if (req.user.isSuperUser) {
+      broadcastPayload.createdBySuperUser = true
+    }
+    const broadcast = new TemplateBroadcasts(broadcastPayload)
+
+    // save model to MongoDB
+    broadcast.save((err, broadcastCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to insert record'
+        })
+      } else {
+        res.status(201).json({status: 'success', payload: broadcastCreated})
+      }
+    })
   })
 }
 exports.allBroadcasts = function (req, res) {
-  TemplateBroadcasts.find({}, (err, broadcasts) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      logger.serverLog(TAG, `Error: ${err}`)
       return res.status(500).json({
         status: 'failed',
-        description: `Internal Server Error${JSON.stringify(err)}`
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({
-      status: 'success',
-      payload: broadcasts
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    TemplateBroadcasts.find({'$or': [{
+      companyId: companyUser.companyId}, {createdBySuperUser: true}]
+    }, (err, broadcasts) => {
+      if (err) {
+        logger.serverLog(TAG, `Error: ${err}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: broadcasts
+      })
     })
   })
 }

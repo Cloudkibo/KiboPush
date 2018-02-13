@@ -75,3 +75,19 @@ export function clearAlertMessage () {
     type: ActionTypes.CLEAR_ALERT_FILERESPONSE
   }
 }
+
+export function getPendingSubscriptions () {
+  console.log('Get Pending Subscriptions called')
+  return (dispatch) => {
+    callApi(`growthTools/pendingSubscription`)
+      .then(res => dispatch(showPendingSubscriptions(res.payload)))
+  }
+}
+
+export function showPendingSubscriptions (data) {
+  console.log('showPendingSubscriptions', data)
+  return {
+    type: ActionTypes.LOAD_NON_SUBSCRIBERS_DATA,
+    data
+  }
+}

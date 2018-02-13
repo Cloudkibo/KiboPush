@@ -13,7 +13,7 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
@@ -24,11 +24,13 @@ import File from './File'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
-import DragSortableList from 'react-drag-sortable'
+// import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted, getFbAppId } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import _ from 'underscore'
+import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -62,13 +64,18 @@ class CreateConvo extends React.Component {
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       steps: [],
-      showMessengerModal: false
+      showMessengerModal: false,
+      selectedRadio: '',
+      listSelected: '',
+      isList: false
     }
     props.getuserdetails()
     props.getFbAppId()
+    props.getAdminSubscriptions()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeListSelect = this.initializeListSelect.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -87,6 +94,10 @@ class CreateConvo extends React.Component {
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
     this.goBack = this.goBack.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
+
+    props.loadCustomerLists()
   }
 //  sddsdfas
   componentWillMount () {
@@ -113,32 +124,30 @@ class CreateConvo extends React.Component {
       this.setState({pageValue: this.props.pages[0].pageId})
     }
 
-    this.addSteps([{
-      title: 'Component',
-      text: 'You can add components to your broadcast using these button',
-      selector: 'div#text',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Edit Title',
-      text: 'You can edit the title of your broadcast by clicking the pencil icon',
-      selector: 'i#convoTitle',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Send broadcast',
-      text: 'You can send your broadcast using these buttons',
-      selector: 'button#send',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}])
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.getAdminSubscriptions()
+        comp.setState({showMessengerModal: false})
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+      }
+    })
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       console.log('Broadcasts Updated', nextProps.broadcasts)
+    }
+    console.log('nextProps.customerLists', nextProps.customerLists)
+    if (nextProps.customerLists) {
+      let options = []
+      for (var j = 0; j < nextProps.customerLists.length; j++) {
+        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+      }
+      this.initializeListSelect(options)
     }
     // if(nextProps.pages.length > 0){
     //   console.log("componentWillReceiveProps pageValue set")
@@ -285,7 +294,68 @@ class CreateConvo extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     this.setState({list: temp, broadcast: temp2})
   }
-
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.location.state.subscribers.length; j++) {
+          if (this.props.location.state.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.location.state.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.location.state.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.location.state.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.location.state.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.location.state.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.location.state.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.location.state.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    console.log('subscribersMatchPages', subscribersMatchPages)
+    console.log('genderValue', subscribersMatchGender)
+    console.log('subscribersMatchLocale', subscribersMatchLocale)
+    return true
+  }
   sendConvo () {
     if (this.state.broadcast.length === 0) {
       return
@@ -316,48 +386,60 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var data = {
-        platform: 'facebook',
-        payload: this.state.broadcast,
-        isSegmented: isSegmentedValue,
-        segmentationPageIds: [this.state.pageValue],
-        segmentationLocale: this.state.localeValue,
-        segmentationGender: this.state.genderValue,
-        segmentationTimeZone: '',
-        title: this.state.convoTitle
-
+      var res = this.checkConditions([this.state.pageValue], this.state.genderValue, this.state.localeValue)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        var data = {
+          platform: 'facebook',
+          payload: this.state.broadcast,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: [this.state.pageValue],
+          segmentationLocale: this.state.localeValue,
+          segmentationGender: this.state.genderValue,
+          segmentationTimeZone: '',
+          title: this.state.convoTitle,
+          segmentationList: this.state.listSelected,
+          isList: this.state.isList
+        }
+        console.log('Data sent: ', data)
+        this.props.sendBroadcast(data, this.msg)
+        this.setState({broadcast: [], list: []})
       }
-      console.log('Data sent: ', data)
-      this.props.sendBroadcast(data, this.msg)
-      this.setState({broadcast: [], list: []})
     }
   }
 
   testConvo () {
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageId === this.state.pageValue) {
-        if (!this.props.pages[i].adminSubscriberId) {
-          this.setState({showMessengerModal: true})
-          console.log('Setting Messenger Modal to True')
-          return
-        }
-      }
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue })
+    console.log('Check', check)
+    if (check.length <= 0) {
+      this.setState({showMessengerModal: true})
+      console.log('Setting Messenger Modal to True')
+      return
     }
-
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (this.props.pages[i].pageId === this.state.pageValue) {
+    //     if (!this.props.pages[i].adminSubscriberId) {
+          // this.setState({showMessengerModal: true})
+          // console.log('Setting Messenger Modal to True')
+          // return
+    //     }
+    //   }
+    // }
+    //
     if (this.state.broadcast.length === 0) {
       return
     }
     console.log(this.state.broadcast)
     var data = {
       platform: 'facebook',
-      self: 'true',
+      self: true,
       payload: this.state.broadcast,
       title: this.state.convoTitle
 
     }
     console.log('Data sent: ', data)
     this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
   }
 
   newConvo () {
@@ -392,7 +474,34 @@ class CreateConvo extends React.Component {
       })
     }
   }
+  initializeListSelect (lists) {
+    console.log('Initialize Lists', lists)
+    var self = this
+    $('#selectLists').select2({
+      data: lists,
+      placeholder: 'Select Lists',
+      allowClear: true,
+      tags: true,
+      multiple: true
+    })
 
+    $('#selectLists').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('selected options', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ listSelected: selected, isList: true })
+      }
+      console.log('change List Selection', selected)
+    })
+
+    $("#selectLists").val('').trigger('change')
+  }
   initializePageSelect (pageOptions) {
     console.log(pageOptions)
     var self = this
@@ -465,7 +574,7 @@ class CreateConvo extends React.Component {
       allowClear: true,
       multiple: true
     })
-
+    console.log('initializeLocaleSelect')
     /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
       /* eslint-enable */
@@ -487,14 +596,26 @@ class CreateConvo extends React.Component {
       pathname: `/welcomeMessage`
     })
   }
+  handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    if (e.currentTarget.value === 'list') {
+      this.setState({genderValue: [], localeValue: []})
+    } if (e.currentTarget.value === 'segmentation') {
+      this.setState({listSelected: [], isList: false})
+    }
+  }
   render () {
     console.log('Pages ', this.props.pages)
     console.log('Page Value', this.state.pageValue)
-    console.log('List', this.state.list)
+    console.log('List', this.state)
 
     var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
+      offset: 75,
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -593,20 +714,62 @@ class CreateConvo extends React.Component {
                     {
                       this.props.location.state.module === 'convo' &&
                       <div>
+                        <h3>Select Page:</h3>
+                        <div className='form-group m-form__group'>
+                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                        </div>
                         <fieldset>
                           <br />
                           <h3>Set Targeting:</h3>
-                          <br />
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                          <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                            <div className='radio'>
+                              <input id='segmentAll'
+                                type='radio'
+                                value='segmentation'
+                                name='segmentationType'
+                                onChange={this.handleRadioButton}
+                                checked={this.state.selectedRadio === 'segmentation'} />
+                              <label>Using Segmentation</label>
                             </div>
+                            <div className='radio'>
+                              <input id='segmentList'
+                                type='radio'
+                                value='list'
+                                name='segmentationType'
+                                onChange={this.handleRadioButton}
+                                checked={this.state.selectedRadio === 'list'} />
+                              <label>Using List</label>
+                            </div>
+                          </div>
+                          <br />
+                          { this.state.selectedRadio === 'segmentation'
+                          ? <div className='m-form'>
                             <div className='form-group m-form__group'>
                               <select id='selectGender' style={{minWidth: 75 + '%'}} />
                             </div>
-                            <div className='form-group m-form__group'>
+                            <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                          </div>
+                        : <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                          </div>
+                          <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                            <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                          </div>
+                        </div>
+                        }
+                          <br />
+                          <div className='m-form'>
+                            { this.state.selectedRadio === 'list'
+                          ? <div className='form-group m-form__group'>
+                            <select id='selectLists' style={{minWidth: 75 + '%'}} />
+                          </div>
+                          : <div className='form-group m-form__group'>
+                            <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
+                          </div>
+                          }
                           </div>
                           <br />
                         </fieldset>
@@ -650,15 +813,17 @@ class CreateConvo extends React.Component {
                   {
                     this.state.showMessengerModal &&
                     <ModalContainer style={{width: '500px'}}
+                      onClick={() => { this.setState({showMessengerModal: false}); console.log("Model Clicked") }}
                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
+                        onClick={() => { this.setState({showMessengerModal: false}); console.log("Dialog Clicked") }}
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
-                        <h3>Connect to Messenger:</h3>
+                        <h3  onClick={() => { this.setState({showMessengerModal: false}); console.log("Text Clicked") }} >Connect to Messenger:</h3>
                         <MessengerPlugin
                           appId={this.props.fbAppId}
                           pageId={this.state.pageValue}
                           passthroughParams={this.props.user._id}
-                          onClick={() => { this.setState({showMessengerModal: false}) }}
+                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
                         />
                       </ModalDialog>
                     </ModalContainer>
@@ -687,7 +852,9 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     fileInfo: (state.convosInfo.fileInfo),
     user: (state.basicInfo.user),
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    adminPageSubscription: state.basicInfo.adminPageSubscription,
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 
@@ -704,7 +871,9 @@ function mapDispatchToProps (dispatch) {
       getuserdetails: getuserdetails,
       convoTourCompleted: convoTourCompleted,
       getFbAppId: getFbAppId,
-      createWelcomeMessage: createWelcomeMessage
+      createWelcomeMessage: createWelcomeMessage,
+      getAdminSubscriptions: getAdminSubscriptions,
+      loadCustomerLists: loadCustomerLists
     },
     dispatch)
 }

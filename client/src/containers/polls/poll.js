@@ -3,17 +3,17 @@
  */
 
 import React from 'react'
-import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addPoll,
   loadPollsList,
   sendpoll,
-  clearAlertMessage
+  clearAlertMessage,
+  deletePoll
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -22,9 +22,11 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
+import _ from 'underscore'
 
 class Poll extends React.Component {
   constructor (props, context) {
+    props.loadSubscribersList()
     props.loadPollsList()
     super(props, context)
     this.state = {
@@ -32,13 +34,20 @@ class Poll extends React.Component {
       alertType: '',
       pollsData: [],
       totalLength: 0,
-      isShowingModal: false
+      isShowingModal: false,
+      isShowingModalDelete: false,
+      deleteid: ''
     }
+    this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.props.clearAlertMessage()
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
+    this.sendPoll = this.sendPoll.bind(this)
   }
   showDialog () {
     console.log('in showDialog')
@@ -47,6 +56,14 @@ class Poll extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
   componentWillMount () {
    // this.props.loadSubscribersList()
@@ -139,11 +156,81 @@ class Poll extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
-
+  gotoCreate () {
+    browserHistory.push({
+      pathname: `/createpoll`
+    })
+  }
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
+  }
+  sendPoll (poll) {
+    var res = this.checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale)
+    if (res === false) {
+      this.msg.error('No subscribers match the selected criteria')
+    } else {
+      this.props.sendpoll(poll)
+    }
+  }
   render () {
     var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
+      offset: 75,
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -198,8 +285,8 @@ class Poll extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/poll/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/poll/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -242,9 +329,9 @@ class Poll extends React.Component {
                                 <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/createpoll' className='btn btn-primary'>
+                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
                                       Create New Poll
-                                    </Link>
+                                    </button>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <Link to='/showTemplatePolls' className='btn btn-primary'>
@@ -252,6 +339,24 @@ class Poll extends React.Component {
                                     </Link>
                                   </div>
                                 </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                          {
+                            this.state.isShowingModalDelete &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialogDelete}>
+                                <h3>Delete Poll</h3>
+                                <p>Are you sure you want to delete this poll?</p>
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.closeDialogDelete()
+                                  }}>Delete
+                                </button>
                               </ModalDialog>
                             </ModalContainer>
                           }
@@ -320,18 +425,30 @@ class Poll extends React.Component {
                                     ? <span style={{width: '150px'}}>
                                       <button className='btn btn-sm' disabled
                                         style={{float: 'left', margin: 2}}
-                                        onClick={() => this.props.sendpoll(poll)}>
+                                        onClick={() => this.sendPoll(poll)}>
                                         Send
                                       </button>
                                     </span>
                                     : <span style={{width: '150px'}}>
                                       <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
-                                        onClick={() => this.props.sendpoll(poll)}>
+                                        onClick={() => this.sendPoll(poll)}>
                                         Send
                                       </button>
                                     </span>
                                     }
+                                    { poll.sent === 0
+                                      ? <button className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}}
+                                        onClick={() => this.showDialogDelete(poll._id)}>
+                                    Delete
+                                  </button>
+                                  : <button className='btn btn-primary btn-sm' disabled
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.showDialogDelete(poll._id)}>
+                                  Delete
+                                </button>
+                                  }
                                   </span>
                                 </td>
                               </tr>
@@ -386,7 +503,8 @@ function mapDispatchToProps (dispatch) {
       addPoll: addPoll,
       sendpoll: sendpoll,
       clearAlertMessage: clearAlertMessage,
-      loadSubscribersList: loadSubscribersList
+      loadSubscribersList: loadSubscribersList,
+      deletePoll: deletePoll
     },
     dispatch)
 }

@@ -337,3 +337,23 @@ export function loadsurveyresponses (surveyid) {
       .then(res => dispatch(showSurveyResponse(res.payload)))
   }
 }
+export function deleteSurvey (id, msg) {
+  return (dispatch) => {
+    console.log('id', id)
+    callApi(`surveys/deleteSurvey/${id}`, 'delete')
+      .then(res => {
+        console.log('Response Delete', res)
+        if (res.status === 'success') {
+          msg.success('Survey deleted successfully')
+          dispatch(loadSurveysList())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete survey. ${res.description}`)
+          } else {
+            msg.error('Failed to delete survey')
+          }
+        }
+      })
+  }
+}
+//

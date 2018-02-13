@@ -85,6 +85,11 @@ class Login extends React.Component {
     return (
       <div style={{height: 100 + 'vh'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className="fb-customerchat"
+         data-page_id="151990922046256"
+         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
+         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
+        </div>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login'>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>

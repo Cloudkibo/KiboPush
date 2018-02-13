@@ -11,7 +11,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 
 class CustomerLists extends React.Component {
@@ -42,6 +42,10 @@ class CustomerLists extends React.Component {
     this.setState({editName: e.target.value})
   }
   saveCurrentList (list) {
+    browserHistory.push({
+      pathname: `/listDetails`,
+      state: {module: 'customerList'}
+    })
     this.props.saveCurrentList(list)
   }
   render () {
@@ -151,10 +155,10 @@ class CustomerLists extends React.Component {
                                       className='m-datatable__cell'>
                                       <span className='pull-right'
                                         style={{width: '250px'}}>
-                                        <Link to='/listDetails' className='btn btn-primary btn-sm'
+                                        <button to='/listDetails' className='btn btn-primary btn-sm'
                                           style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           View
-                                        </Link>
+                                        </button>
                                         {list.initialList
                                         ? <div>
                                           <Link to='/createSubList' className='btn btn-primary btn-sm'

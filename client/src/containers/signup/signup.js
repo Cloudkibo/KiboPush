@@ -139,6 +139,11 @@ class Signup extends React.Component {
     console.log('In signup JS')
     return (
       <div style={{height: 130 + 'vh'}}>
+      <div className="fb-customerchat"
+       data-page_id="151990922046256"
+       data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
+       data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
+      </div>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: 130 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>

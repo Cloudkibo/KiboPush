@@ -22,7 +22,8 @@ var callbacks = {
   poll_created: false,
   survey_created: false,
   workflow_created: false,
-  workflow_updated: false
+  workflow_updated: false,
+  new_subscriber: false,
 }
 
 export function registerAction (callback) {

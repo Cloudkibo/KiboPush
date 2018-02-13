@@ -11,6 +11,7 @@ import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
+import AlertContainer from 'react-alert'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
@@ -192,7 +193,6 @@ class CreatePoll extends React.Component {
     var temp = value.split(',')
     this.setState({ localeValue: temp })
   }
-
   createPoll () {
     var options = []
     if (this.state.option1 === '' || this.state.option2 === '' ||
@@ -286,8 +286,16 @@ class CreatePoll extends React.Component {
 
   render () {
     const { disabled, stayOpen } = this.state
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>

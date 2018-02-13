@@ -104,7 +104,7 @@ class Text extends React.Component {
           </span>
         </div>
         <div style={{marginBottom: '-14px'}}>
-          <textarea value={this.state.text} className='hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
+          <textarea value={this.state.text} className='broadcast-component hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
           {
               /*
           <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>

@@ -10,7 +10,8 @@ const initialState = {
   surveyTourSeen: true,
   convoTourSeen: true,
   pollTourSeen: true,
-  fbAppId: ''
+  fbAppId: '',
+  adminPageSubscription: [],
 }
 
 export function basicInfo (state = initialState, action) {
@@ -62,6 +63,11 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         fbAppId: action.data
       })
+    case ActionTypes.STORE_ADMIN_SUB_ID:
+      return Object.assign({}, state, {
+        adminPageSubscription: action.data
+      })
+    
     default:
       return state
   }

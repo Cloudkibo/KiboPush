@@ -34,6 +34,11 @@ router.post('/', function (req, res, next) {
 
         let token = auth.signToken(user._id)
         res.json({token: token})
+        if (user.facebookInfo) {
+          auth.fetchPages(`https://graph.facebook.com/v2.10/${
+            user.facebookInfo.fbId}/accounts?access_token=${
+            user.facebookInfo.fbToken}`, user)
+        }
       })(req, res, next)
     })
   } else {
@@ -46,6 +51,11 @@ router.post('/', function (req, res, next) {
 
       let token = auth.signToken(user._id)
       res.json({token: token})
+      if (user.facebookInfo) {
+        auth.fetchPages(`https://graph.facebook.com/v2.10/${
+          user.facebookInfo.fbId}/accounts?access_token=${
+          user.facebookInfo.fbToken}`, user)
+      }
     })(req, res, next)
   }
 })

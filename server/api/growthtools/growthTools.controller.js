@@ -11,6 +11,7 @@ const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
+const mongoose = require('mongoose')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
@@ -46,6 +47,20 @@ exports.upload = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
+      listName: 'All customers',
+      userId: req.user._id,
+      companyId: companyUser.companyId,
+      conditions: 'initial_list',
+      initialList: true
+    }, {upsert: true}, (err2, savedList) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+    })
     fs.rename(
       req.files.file.path,
       dir + '/userfiles' + serverPath,
@@ -68,11 +83,12 @@ exports.upload = function (req, res) {
               //   number: result,
               //   userId: req.user._id
               // })
-              PhoneNumber.update({number: result}, {
+              PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                 name: data.names,
                 number: result,
                 userId: req.user._id,
-                companyId: companyUser.companyId
+                companyId: companyUser.companyId,
+                pageId: req.body._id
               }, {upsert: true}, (err2, phonenumbersaved) => {
                 if (err2) {
                   return res.status(500).json({
@@ -132,18 +148,20 @@ exports.upload = function (req, res) {
                 .json({status: 'failed', description: 'Incorrect column names'})
             }
           })
+          .on('end', function () {
+            fs.unlinkSync(dir + '/userfiles' + serverPath)
+          })
       })
   })
-  fs.unlinkSync(dir + '/userfiles' + serverPath)
 }
 
 exports.sendNumbers = function (req, res) {
+  logger.serverLog(TAG, `pageIdanisha ${JSON.stringify(req.body)}`)
   let parametersMissing = false
 
   if (!_.has(req.body, 'numbers')) parametersMissing = true
   if (!_.has(req.body, 'text')) parametersMissing = true
   if (!_.has(req.body, 'pageId')) parametersMissing = true
-  console.log('phonenumebrs', req.body.numbers)
   if (parametersMissing) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing. Put numbers, text fields and pageId in payload.'})
@@ -162,7 +180,7 @@ exports.sendNumbers = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Lists.update({initialList: true}, {
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
       listName: 'All customers',
       userId: req.user._id,
       companyId: companyUser.companyId,
@@ -177,19 +195,22 @@ exports.sendNumbers = function (req, res) {
       }
     })
     for (let i = 0; i < req.body.numbers.length; i++) {
-      var result = req.body.numbers[i].replace(/[- )(]/g, '')
+      let result = req.body.numbers[i].replace(/[- )(]/g, '')
       let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
       Pages.find(pagesFindCriteria, (err, pages) => {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result}, {
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
           name: '',
           number: result,
           userId: req.user._id,
-          companyId: companyUser.companyId
+          companyId: companyUser.companyId,
+          pageId: req.body._id,
+          hasSubscribed: false
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
+            logger.serverLog(TAG, err2)
             return res.status(500).json({
               status: 'failed',
               description: 'phone number create failed'
@@ -197,6 +218,7 @@ exports.sendNumbers = function (req, res) {
           }
         })
         pages.forEach(page => {
+          logger.serverLog(TAG, `number where message is going ${result}`)
           let messageData = {
             'recipient': JSON.stringify({
               'phone_number': result
@@ -257,6 +279,32 @@ exports.retrievePhoneNumbers = function (req, res) {
         })
       }
       return res.status(201).json({status: 'success', payload: phonenumbers})
+    })
+  })
+}
+exports.pendingSubscription = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false}).populate('pageId').exec((err2, phonenumbers) => {
+      if (err2) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'phone number create failed'
+        })
+      }
+      return res.status(200)
+      .json({status: 'success', payload: phonenumbers})
     })
   })
 }

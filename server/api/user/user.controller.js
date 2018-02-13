@@ -174,6 +174,8 @@ exports.create = function (req, res) {
               description: 'This workspace name already has an account on KiboPush. Contact support for more information.'
             })
           } else {
+            let plan = 'plan_C'
+            if (config.env === 'production') plan = 'plan_D'
             let accountData = new Users({
               name: req.body.name,
               email: req.body.email.toLowerCase(),
@@ -181,7 +183,7 @@ exports.create = function (req, res) {
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
               role: 'buyer',
-              plan: 'plan_D'
+              plan: plan
             })
 
             // console.log(req.body)
@@ -351,6 +353,8 @@ exports.create = function (req, res) {
           description: 'This email address already has an account on KiboPush. Contact support for more information.'
         })
       } else {
+        let plan = 'plan_A'
+        if (config.env === 'production') plan = 'plan_B'
         let today = new Date()
         let uid = crypto.randomBytes(8).toString('hex')
         let domain = 'f' + uid + '' + today.getFullYear() + '' +
@@ -364,7 +368,7 @@ exports.create = function (req, res) {
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
           role: 'buyer',
-          plan: 'plan_B'
+          plan: plan
         })
 
         // console.log(req.body)
@@ -543,6 +547,8 @@ exports.joinCompany = function (req, res) {
           description: 'Invitation token invalid or expired. Please contact admin to invite you again.'
         })
       }
+      let plan = 'plan_C'
+      if (config.env === 'production') plan = 'plan_D'
       let role = invitationToken.role
       let accountData = new Users({
         name: req.body.name,
@@ -551,7 +557,7 @@ exports.joinCompany = function (req, res) {
         password: req.body.password,
         domain_email: invitationToken.domain + '' + req.body.email,
         role: role,
-        plan: 'plan_D'
+        plan: plan
       })
 
       // console.log(req.body)

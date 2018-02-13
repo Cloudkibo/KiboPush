@@ -10,15 +10,17 @@ import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   loadSurveysList,
-  sendsurvey
+  sendsurvey,
+  deleteSurvey
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
+import _ from 'underscore'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -30,16 +32,22 @@ class Survey extends React.Component {
       surveysData: [],
       totalLength: 0,
       sent: false,
-      isShowingModal: false
+      isShowingModal: false,
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
+    this.sendSurvey = this.sendSurvey.bind(this)
   }
 
   componentDidMount () {
-    
     var compProp = this.props
     registerAction({
       event: 'survey_created',
@@ -52,6 +60,7 @@ class Survey extends React.Component {
     document.title = 'KiboPush | Survey'
   }
   componentWillMount () {
+    this.props.loadSubscribersList()
     this.props.loadSurveysList()
   }
   showDialog () {
@@ -137,14 +146,93 @@ class Survey extends React.Component {
       state: survey._id
     })
   }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
 
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
+  gotoCreate () {
+    browserHistory.push({
+      pathname: `/addsurvey`
+    })
+  }
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        console.log('inside if')
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    return true
+  }
+  sendSurvey (survey) {
+    var res = this.checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale)
+    if (res === false) {
+      this.msg.error('No subscribers match the selected criteria')
+    } else {
+      this.props.sendsurvey(survey, this.msg)
+    }
+  }
   render () {
     console.log('render method survey')
     var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
+      offset: 75,
+      position: 'top right',
       theme: 'dark',
-      time: 5000,
+      time: 3000,
       transition: 'scale'
     }
     return (
@@ -196,8 +284,8 @@ class Survey extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -252,9 +340,9 @@ class Survey extends React.Component {
                                 <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/addsurvey' className='btn btn-primary'>
+                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
                                       Create New Survey
-                                    </Link>
+                                    </button>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <Link to='/showTemplateSurveys' className='btn btn-primary'>
@@ -262,6 +350,24 @@ class Survey extends React.Component {
                                     </Link>
                                   </div>
                                 </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                          {
+                            this.state.isShowingModalDelete &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialogDelete}>
+                                <h3>Delete Survey</h3>
+                                <p>Are you sure you want to delete this survey?</p>
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.props.deleteSurvey(this.state.deleteid, this.msg)
+                                    this.closeDialogDelete()
+                                  }}>Delete
+                                </button>
                               </ModalDialog>
                             </ModalContainer>
                           }
@@ -320,12 +426,23 @@ class Survey extends React.Component {
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'left', margin: 2}}
                                   onClick={() => {
-                                    this.props.sendsurvey(survey, this.msg, this.msg)
+                                    this.sendSurvey(survey)
                                   }}>
                                   Send
                               </button>
                               </span>
-                              }
+                            } { survey.sent === 0
+                              ? <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.showDialogDelete(survey._id)}>
+                              Delete
+                          </button>
+                          : <button className='btn btn-primary btn-sm' disabled
+                            style={{float: 'left', margin: 2}}
+                            onClick={() => this.showDialogDelete(survey._id)}>
+                          Delete
+                      </button>
+                        }
 
                                 </td>
                               </tr>
@@ -376,6 +493,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList}, dispatch)
+    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

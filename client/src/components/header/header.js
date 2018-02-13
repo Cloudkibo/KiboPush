@@ -67,6 +67,14 @@ class Header extends React.Component {
 
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+
+        <div className="fb-customerchat"
+         data-page_id="151990922046256"
+         data-minimized = "true"
+         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
+         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
+        </div>
+
         <Notification
           ignore={this.state.ignore}
           disableActiveWindow
@@ -175,7 +183,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/createconvo' className='m-nav-grid__item'>
+                                    : <Link to='/convos' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
@@ -188,7 +196,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
-                                    : <Link to='/createpoll' className='m-nav-grid__item'>
+                                    : <Link to='/poll' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-time' />
                                       <span className='m-nav-grid__text'>Send New Poll</span>
                                     </Link>
@@ -204,7 +212,7 @@ class Header extends React.Component {
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>
-                                     : <Link to='/addsurvey' className='m-nav-grid__item'>
+                                     : <Link to='/surveys' className='m-nav-grid__item'>
                                        <i className='m-nav-grid__icon flaticon-folder' />
                                        <span className='m-nav-grid__text'>Send New Survey</span>
                                      </Link>
@@ -244,6 +252,9 @@ class Header extends React.Component {
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
                                   {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                                </span>
+                                <span className='m-card-user__email'>
+                                  {(this.props.user) ? this.props.user.email : ''}
                                 </span>
                               </div>
                             </div>
