@@ -288,14 +288,17 @@ class TemplateBroadcasts extends React.Component {
                               style={{height: '55px'}} key={i}>
                               <td data-field='title'
                                 className='m-datatable__cell'>
-                                {
-                                  broadcast.createdBySuperUser &&
-                                  <div>
-                                    <NotificationBadge count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
-                                  </div>
-                                }
                                 <span
-                                  style={{width: '150px'}}>{broadcast.title}</span></td>
+                                  style={{width: '150px'}}>
+                                  {
+                                    broadcast.createdBySuperUser &&
+                                    <div>
+                                      <NotificationBadge style={{backgroundColor: 'green'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
+                                    </div>
+                                  }
+                                  {broadcast.title}
+                                </span>
+                              </td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
                                 <span
