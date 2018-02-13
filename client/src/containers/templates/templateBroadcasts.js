@@ -7,7 +7,6 @@ import { handleDate } from '../../utility/utils'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import NotificationBadge, {Effect} from 'react-notification-badge'
 
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
@@ -288,12 +287,6 @@ class TemplateBroadcasts extends React.Component {
                               style={{height: '55px'}} key={i}>
                               <td data-field='title'
                                 className='m-datatable__cell'>
-                                {
-                                  broadcast.createdBySuperUser &&
-                                  <div>
-                                    <NotificationBadge label='KiboPush' effect={Effect.ROTATE_Y} />
-                                  </div>
-                                }
                                 <span
                                   style={{width: '150px'}}>{broadcast.title}</span></td>
                               <td data-field='description'
