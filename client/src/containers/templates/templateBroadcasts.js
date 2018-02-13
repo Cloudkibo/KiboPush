@@ -258,6 +258,10 @@ class TemplateBroadcasts extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
+                          <th data-field='sticker'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}></span>
+                          </th>
                           <th data-field='title'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '150px'}}>Title</span>
@@ -286,7 +290,7 @@ class TemplateBroadcasts extends React.Component {
                             <tr data-row={i}
                               className='m-datatable__row m-datatable__row--even'
                               style={{height: '55px'}} key={i}>
-                              <td data-field='title'
+                              <td data-field='sticker'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '150px'}}>
@@ -296,6 +300,12 @@ class TemplateBroadcasts extends React.Component {
                                       <NotificationBadge style={{backgroundColor: 'green'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
                                     </div>
                                   }
+                                </span>
+                              </td>
+                              <td data-field='title'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{width: '150px'}}>
                                   {broadcast.title}
                                 </span>
                               </td>
