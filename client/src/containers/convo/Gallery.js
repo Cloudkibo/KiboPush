@@ -134,7 +134,7 @@ class Gallery extends React.Component {
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
-        <div>
+        <div className='broadcast-component'>
           <Slider ref={(c) => { this.slider = c }} {...settings}>
             {
               this.state.cards.map((card, i) => (
