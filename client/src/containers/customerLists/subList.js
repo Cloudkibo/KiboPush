@@ -10,7 +10,7 @@ export function getSubList (data, conditions) {
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        if (obj[field].toLowerCase() === text.toLowerCase()) {
+        if (obj[field] !== '' && obj[field].toLowerCase() === text.toLowerCase()) {
           filteredData.push(obj)
         }
       }
@@ -21,7 +21,7 @@ export function getSubList (data, conditions) {
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        if (obj[field].toLowerCase().includes(text.toLowerCase())) {
+        if (obj[field] !== '' && obj[field].toLowerCase().includes(text.toLowerCase())) {
           filteredData.push(obj)
         }
       }
@@ -32,9 +32,11 @@ export function getSubList (data, conditions) {
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        var subText = obj[field].substring(0, text.length)
-        if (subText.toLowerCase() === (text.toLowerCase())) {
-          filteredData.push(obj)
+        if (obj[field] && obj[field] !== '') {
+          var subText = obj[field].substring(0, text.length)
+          if (subText.toLowerCase() === (text.toLowerCase())) {
+            filteredData.push(obj)
+          }
         }
       }
       data = filteredData

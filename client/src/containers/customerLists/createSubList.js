@@ -110,6 +110,7 @@ class CreateSubList extends React.Component {
           this.createSubList(subSetIds)
         } else {
           this.msg.error('New list is empty. Try creating a list with a different condition')
+          this.setState({isSaveEnabled: true})
         }
       }
     }
@@ -126,6 +127,7 @@ class CreateSubList extends React.Component {
         }
       } else {
         this.msg.error('New list is empty. Try creating a list with a different condition')
+        this.setState({isSaveEnabled: true})
       }
     } else {
       this.setState({
