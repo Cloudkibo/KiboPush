@@ -159,11 +159,15 @@ export function deleteSurvey (id, msg) {
       })
   }
 }
-export function deleteCategory (id) {
+export function deleteCategory (id, msg) {
   return (dispatch) => {
     callApi(`templates/deleteCategory/${id}`, 'delete')
       .then(res => {
-        dispatch(loadCategoriesList())
+        console.log('response from delete cargory', res)
+        if (res.status === 'success') {
+          msg.success('Category deleted successfully')
+          dispatch(loadCategoriesList())
+        }
       })
   }
 }

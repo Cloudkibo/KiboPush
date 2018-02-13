@@ -360,6 +360,10 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
     var isSegmentedValue = false
     if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
@@ -400,7 +404,7 @@ class CreateConvo extends React.Component {
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
-          isList: this.state.isList
+          isList: isListValue
         }
         console.log('Data sent: ', data)
         this.props.sendBroadcast(data, this.msg)
@@ -495,7 +499,7 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ listSelected: selected, isList: true })
+        self.setState({ listSelected: selected })
       }
       console.log('change List Selection', selected)
     })
@@ -603,7 +607,7 @@ class CreateConvo extends React.Component {
     })
     console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], isList: true})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }
@@ -813,12 +817,12 @@ class CreateConvo extends React.Component {
                   {
                     this.state.showMessengerModal &&
                     <ModalContainer style={{width: '500px'}}
-                      onClick={() => { this.setState({showMessengerModal: false}); console.log("Model Clicked") }}
+                      onClick={() => { this.setState({showMessengerModal: false}); console.log('Model Clicked') }}
                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                       <ModalDialog style={{width: '500px'}}
-                        onClick={() => { this.setState({showMessengerModal: false}); console.log("Dialog Clicked") }}
+                        onClick={() => { this.setState({showMessengerModal: false}); console.log('Dialog Clicked') }}
                         onClose={() => { this.setState({showMessengerModal: false}) }}>
-                        <h3  onClick={() => { this.setState({showMessengerModal: false}); console.log("Text Clicked") }} >Connect to Messenger:</h3>
+                        <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
                         <MessengerPlugin
                           appId={this.props.fbAppId}
                           pageId={this.state.pageValue}

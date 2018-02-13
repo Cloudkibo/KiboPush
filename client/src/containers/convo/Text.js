@@ -97,14 +97,14 @@ class Text extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='broadcast-component'>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
         <div style={{marginBottom: '-14px'}}>
-          <textarea value={this.state.text} className='broadcast-component hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
+          <textarea value={this.state.text} className='hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
           {
               /*
           <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>

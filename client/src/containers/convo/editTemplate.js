@@ -13,7 +13,9 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import Image from './Image'
@@ -28,6 +30,8 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import _ from 'underscore'
+
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -62,9 +66,14 @@ class EditTemplate extends React.Component {
       convoTitle: 'Broadcast Title',
       steps: [],
       showMessengerModal: false,
-      stay: false
+      stay: false,
+      selectedRadio: '',
+      listSelected: '',
+      isList: false
     }
     props.getuserdetails()
+    props.loadSubscribersList()
+    props.loadCustomerLists()
     console.log('props.templatesInfo', props.currentBroadcast)
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
@@ -92,8 +101,10 @@ class EditTemplate extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.backToTemplates = this.backToTemplates.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.checkConditions = this.checkConditions.bind(this)
     this.goBack = this.goBack.bind(this)
-
   }
 //  sddsdfas
   componentWillMount () {
@@ -103,8 +114,76 @@ class EditTemplate extends React.Component {
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
+  checkConditions (pageValue, genderValue, localeValue) {
+    let subscribersMatchPages = []
+    let subscribersMatchLocale = []
+    let subscribersMatchGender = []
+    if (pageValue.length > 0) {
+      for (var i = 0; i < pageValue.length; i++) {
+        for (var j = 0; j < this.props.subscribers.length; j++) {
+          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
+            subscribersMatchPages.push(this.props.subscribers[j])
+          }
+        }
+      }
+    }
+    if (genderValue.length > 0) {
+      for (var k = 0; k < this.props.subscribers.length; k++) {
+        for (var l = 0; l < genderValue.length; l++) {
+          if (this.props.subscribers[k].gender === genderValue[l]) {
+            subscribersMatchGender.push(this.props.subscribers[k])
+          }
+        }
+      }
+    }
+    if (localeValue.length > 0) {
+      for (var m = 0; m < this.props.subscribers.length; m++) {
+        for (var n = 0; n < localeValue.length; n++) {
+          if (this.props.subscribers[m].locale === localeValue[n]) {
+            subscribersMatchLocale.push(this.props.subscribers[m])
+          }
+        }
+      }
+    }
+    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
+      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
+      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
+      if (result.length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && genderValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (genderValue.length > 0 && localeValue.length) {
+      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
+        return false
+      }
+    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
+      return false
+    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
+      return false
+    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+      return false
+    }
+    console.log('subscribersMatchPages', subscribersMatchPages)
+    console.log('genderValue', subscribersMatchGender)
+    console.log('subscribersMatchLocale', subscribersMatchLocale)
+    return true
+  }
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
+    if (nextprops.customerLists) {
+      let options = []
+      for (var j = 0; j < nextprops.customerLists.length; j++) {
+        options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+      }
+      this.initializeListSelect(options)
+    }
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (nextprops.broadcastDetails) {
@@ -115,6 +194,7 @@ class EditTemplate extends React.Component {
       }
     }
   }
+
   setEditComponents (payload) {
     var temp = []
     var message = []
@@ -319,6 +399,10 @@ class EditTemplate extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
     var isSegmentedValue = false
     if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
@@ -345,19 +429,26 @@ class EditTemplate extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var data = {
-        platform: 'facebook',
-        payload: this.state.broadcast,
-        isSegmented: isSegmentedValue,
-        segmentationPageIds: [this.state.pageValue],
-        segmentationLocale: this.state.localeValue,
-        segmentationGender: this.state.genderValue,
-        segmentationTimeZone: '',
-        title: this.state.convoTitle
+      var res = this.checkConditions([this.state.pageValue], this.state.genderValue, this.state.localeValue)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        var data = {
+          platform: 'facebook',
+          payload: this.state.broadcast,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: [this.state.pageValue],
+          segmentationLocale: this.state.localeValue,
+          segmentationGender: this.state.genderValue,
+          segmentationTimeZone: '',
+          title: this.state.convoTitle,
+          segmentationList: this.state.listSelected,
+          isList: isListValue
+        }
+        console.log('Data sent: ', data)
+        this.props.sendBroadcast(data, this.msg)
+        //  this.setState({broadcast: [], list: []})
       }
-      console.log('Data sent: ', data)
-      this.props.sendBroadcast(data, this.msg)
-      //  this.setState({broadcast: [], list: []})
     }
     this.setState({stay: true})
   }
@@ -392,7 +483,34 @@ class EditTemplate extends React.Component {
   newConvo () {
     this.setState({broadcast: [], list: []})
   }
+  initializeListSelect (lists) {
+    console.log('Initialize Lists', lists)
+    var self = this
+    $('#selectLists').select2({
+      data: lists,
+      placeholder: 'Select Lists',
+      allowClear: true,
+      tags: true,
+      multiple: true
+    })
 
+    $('#selectLists').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('selected options', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ listSelected: selected })
+      }
+      console.log('change List Selection', selected)
+    })
+
+    $("#selectLists").val('').trigger('change')
+  }
   initializePageSelect (pageOptions) {
     console.log(pageOptions)
     var self = this
@@ -473,6 +591,18 @@ class EditTemplate extends React.Component {
     this.props.history.push({
       pathname: `/welcomeMessage`
     })
+  }
+  handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    if (e.currentTarget.value === 'list') {
+      this.setState({genderValue: [], localeValue: [], isList: true})
+    } if (e.currentTarget.value === 'segmentation') {
+      this.setState({listSelected: [], isList: false})
+    }
   }
   render () {
     console.log('Pages ', this.props.pages)
@@ -576,20 +706,62 @@ class EditTemplate extends React.Component {
                       <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={() => this.goBack()}>Back</button>
                     </div>
                     : <div>
+                      <h3>Select Page:</h3>
+                      <div className='form-group m-form__group'>
+                        <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                      </div>
                       <fieldset>
                         <br />
                         <h3>Set Targeting:</h3>
-                        <br />
-                        <div className='m-form'>
-                          <div className='form-group m-form__group'>
-                            <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                        <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                          <div className='radio'>
+                            <input id='segmentAll'
+                              type='radio'
+                              value='segmentation'
+                              name='segmentationType'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'segmentation'} />
+                            <label>Using Segmentation</label>
                           </div>
+                          <div className='radio'>
+                            <input id='segmentList'
+                              type='radio'
+                              value='list'
+                              name='segmentationType'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'list'} />
+                            <label>Using List</label>
+                          </div>
+                        </div>
+                        <br />
+                        { this.state.selectedRadio === 'segmentation'
+                        ? <div className='m-form'>
                           <div className='form-group m-form__group'>
                             <select id='selectGender' style={{minWidth: 75 + '%'}} />
                           </div>
-                          <div className='form-group m-form__group'>
+                          <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                             <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                           </div>
+                        </div>
+                      : <div className='m-form'>
+                        <div className='form-group m-form__group'>
+                          <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                        </div>
+                        <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                          <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                        </div>
+                      </div>
+                      }
+                        <br />
+                        <div className='m-form'>
+                          { this.state.selectedRadio === 'list'
+                        ? <div className='form-group m-form__group'>
+                          <select id='selectLists' style={{minWidth: 75 + '%'}} />
+                        </div>
+                        : <div className='form-group m-form__group'>
+                          <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
+                        </div>
+                        }
                         </div>
                         <br />
                       </fieldset>
@@ -600,8 +772,6 @@ class EditTemplate extends React.Component {
                         <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
                         <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
                         <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
-                        <button style={{float: 'left', marginLeft: 20}} onClick={this.backToTemplates} className='btn btn-primary btn-sm' >Back </button>
-
                       </div>
                     </div>
                   }
@@ -675,7 +845,10 @@ function mapStateToProps (state) {
     fileInfo: (state.convosInfo.fileInfo),
     user: (state.basicInfo.user),
     broadcastDetails: (state.templatesInfo.broadcastDetails),
-    currentBroadcast: (state.templatesInfo.currentBroadcast)
+    currentBroadcast: (state.templatesInfo.currentBroadcast),
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
+
   }
 }
 
@@ -690,8 +863,9 @@ function mapDispatchToProps (dispatch) {
       getuserdetails: getuserdetails,
       loadBroadcastDetails: loadBroadcastDetails,
       saveBroadcastInformation: saveBroadcastInformation,
-      createWelcomeMessage: createWelcomeMessage
-
+      createWelcomeMessage: createWelcomeMessage,
+      loadCustomerLists: loadCustomerLists,
+      loadSubscribersList: loadSubscribersList
     },
     dispatch)
 }

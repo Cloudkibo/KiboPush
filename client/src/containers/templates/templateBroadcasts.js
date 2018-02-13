@@ -7,6 +7,7 @@ import { handleDate } from '../../utility/utils'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import NotificationBadge, {Effect} from 'react-notification-badge'
 
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
@@ -247,7 +248,7 @@ class TemplateBroadcasts extends React.Component {
                 </div>
                 {
                   this.state.broadcastsData && this.state.broadcastsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='local_data'>
                     <table className='m-datatable__table'
                       id='m-datatable--27866229129' style={{
                         display: 'block',
@@ -257,21 +258,25 @@ class TemplateBroadcasts extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
+                          <th data-field='sticker'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}} />
+                          </th>
                           <th data-field='title'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Title</span>
+                            <span style={{width: '100px'}}>Title</span>
                           </th>
                           <th data-field='description'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '200px'}}>Type</span>
+                            <span style={{width: '100px'}}>Type</span>
                           </th>
                           <th data-field='category'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Category</span>
+                            <span style={{width: '100px'}}>Category</span>
                           </th>
                           <th data-field='created'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Created At</span>
+                            <span style={{width: '100px'}}>Created At</span>
                           </th>
                           <th data-field='seemore'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -283,25 +288,39 @@ class TemplateBroadcasts extends React.Component {
                         {
                           this.state.broadcastsData.map((broadcast, i) => (
                             <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
+                              className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                               style={{height: '55px'}} key={i}>
+                              <td data-field='sticker'
+                                className='m-datatable__cell'>
+                                <span style={{width: '100px'}}>
+                                  {
+                                    broadcast.createdBySuperUser &&
+                                    <div style={{width: '100px', height: '50px'}}>
+                                      <NotificationBadge style={{backgroundColor: 'green', position: 'initial'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
+                                    </div>
+                                  }
+                                </span>
+                              </td>
                               <td data-field='title'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '150px'}}>{broadcast.title}</span></td>
+                                  style={{width: '100px'}}>
+                                  {broadcast.title}
+                                </span>
+                              </td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '200px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span>
+                                  style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span>
                               </td>
                               <td data-field='category' className='m-datatable__cell'>
-                                <span style={{width: '150px'}}>{broadcast.category.join(
-                            ',')}</span>
+                                <span style={{width: '100px'}}>{broadcast.category.join(
+                            ', ')}</span>
                               </td>
                               <td data-field='created'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '150px'}}>{handleDate(broadcast.datetime)}</span></td>
+                                  style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span

@@ -6,6 +6,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const PollPage = require('../page_poll/page_poll.model')
+const Lists = require('../lists/lists.model')
 let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'
@@ -102,6 +103,12 @@ exports.create = function (req, res) {
         : null
       pollPayload.segmentationLocale = (req.body.segmentationLocale)
         ? req.body.segmentationLocale
+        : null
+    }
+    if (req.body.isList) {
+      pollPayload.isList = true
+      pollPayload.segmentationList = (req.body.segmentationList)
+        ? req.body.segmentationList
         : null
     }
     const poll = new Polls(pollPayload)
@@ -238,123 +245,203 @@ exports.send = function (req, res) {
       logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
       for (let z = 0; z < pages.length; z++) {
         logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
-        let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
-
-        if (req.body.isSegmented) {
-          if (req.body.segmentationGender.length > 0) {
-            subscriberFindCriteria = _.merge(subscriberFindCriteria,
-              {
-                gender: {
-                  $in: req.body.segmentationGender
-                }
-              })
-          }
-          if (req.body.segmentationLocale.length > 0) {
-            subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-              locale: {
-                $in: req.body.segmentationLocale
+        if (req.body.isList === true) {
+          logger.serverLog(TAG, `inside isList`)
+          let ListFindCriteria = {}
+          ListFindCriteria = _.merge(ListFindCriteria,
+            {
+              _id: {
+                $in: req.body.segmentationList
               }
             })
-          }
-        }
-
-        Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-          if (err) {
-            return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
-          }
-          if (subscribers.length > 0) {
-            logger.serverLog(TAG,
-              `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
-            // get accesstoken of page
-            // -- Page tokens get expired therefore we need to fetch it from Graph api
-            needle.get(
-              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
-              (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG,
-                    `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                }
-
-                for (let j = 0; j < subscribers.length; j++) {
-                  logger.serverLog(TAG,
-                    `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
-                  const data = {
-                    recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                    message: messageData
-                  }
-
-                  needle.post(
-                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                    data, (err, resp) => {
-                      if (err) {
-                        logger.serverLog(TAG, err)
-                        logger.serverLog(TAG,
-                          `Error occured at subscriber :${JSON.stringify(
-                            subscribers[j])}`)
-                      }
-                      logger.serverLog(TAG,
-                        `Sending poll to subscriber response ${JSON.stringify(
-                          resp.body)}`)
-                      let pollBroadcast = new PollPage({
-                        pageId: pages[z].pageId,
-                        userId: req.user._id,
-                        companyId: companyUser.companyId,
-                        subscriberId: subscribers[j].senderId,
-                        pollId: req.body._id,
-                        seen: false
-                      })
-
-                      pollBroadcast.save((err2) => {
-                        if (err2) {
-                          logger.serverLog(TAG, {
-                            status: 'failed',
-                            description: 'PollBroadcast create failed',
-                            err2
-                          })
-                        }
-                        // not using now
-                        // Sessions.findOne({
-                        //   subscriber_id: subscribers[j]._id,
-                        //   page_id: pages[z]._id,
-                        //   company_id: pages[z].userId._id
-                        // }, (err, session) => {
-                        //   if (err) {
-                        //     return logger.serverLog(TAG,
-                        //       `At get session ${JSON.stringify(err)}`)
-                        //   }
-                        //   if (!session) {
-                        //     return logger.serverLog(TAG,
-                        //       `No chat session was found for polls`)
-                        //   }
-                        //   const chatMessage = new LiveChat({
-                        //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
-                        //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
-                        //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
-                        //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        //     session_id: session._id,
-                        //     company_id: pages[z].userId._id, // this is admin id till we have companies
-                        //     payload: {
-                        //       componentType: 'poll',
-                        //       payload: messageData
-                        //     }, // this where message content will go
-                        //     status: 'unseen' // seen or unseen
-                        //   })
-                        //   chatMessage.save((err, chatMessageSaved) => {
-                        //     if (err) {
-                        //       return logger.serverLog(TAG,
-                        //         `At save chat${JSON.stringify(err)}`)
-                        //     }
-                        //     logger.serverLog(TAG,
-                        //       'Chat message saved for poll sent')
-                        //   })
-                        // })
-                      })
-                    })
+          Lists.find(ListFindCriteria, (err, lists) => {
+            if (err) {
+              return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            }
+            lists.forEach(list => {
+              let subsFindCriteria = {}
+              subsFindCriteria = _.merge(subsFindCriteria, {
+                _id: {
+                  $in: list.content
                 }
               })
+              Subscribers.find(subsFindCriteria, (err, subscribers) => {
+                if (err) {
+                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                }
+                console.log('subscribers', subscribers)
+                needle.get(
+                  `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
+                  (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                    }
+
+                    for (let j = 0; j < subscribers.length; j++) {
+                      logger.serverLog(TAG,
+                        `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+
+                      const data = {
+                        recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                        message: messageData
+                      }
+
+                      needle.post(
+                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                        data, (err, resp) => {
+                          if (err) {
+                            logger.serverLog(TAG, err)
+                            logger.serverLog(TAG,
+                              `Error occured at subscriber :${JSON.stringify(
+                                subscribers[j])}`)
+                          }
+                          logger.serverLog(TAG,
+                            `Sending poll to subscriber response ${JSON.stringify(
+                              resp.body)}`)
+                          let pollBroadcast = new PollPage({
+                            pageId: pages[z].pageId,
+                            userId: req.user._id,
+                            companyId: companyUser.companyId,
+                            subscriberId: subscribers[j].senderId,
+                            pollId: req.body._id,
+                            seen: false
+                          })
+
+                          pollBroadcast.save((err2) => {
+                            if (err2) {
+                              logger.serverLog(TAG, {
+                                status: 'failed',
+                                description: 'PollBroadcast create failed',
+                                err2
+                              })
+                            }
+                          })
+                        })
+                    }
+                  })
+              })
+            })
+          })
+        } else {
+          let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
+
+          if (req.body.isSegmented) {
+            if (req.body.segmentationGender.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                {
+                  gender: {
+                    $in: req.body.segmentationGender
+                  }
+                })
+            }
+            if (req.body.segmentationLocale.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                locale: {
+                  $in: req.body.segmentationLocale
+                }
+              })
+            }
           }
-        })
+
+          Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+            if (err) {
+              return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
+            }
+            if (subscribers.length > 0) {
+              logger.serverLog(TAG,
+                `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
+              // get accesstoken of page
+              // -- Page tokens get expired therefore we need to fetch it from Graph api
+              needle.get(
+                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
+                (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                  }
+
+                  for (let j = 0; j < subscribers.length; j++) {
+                    logger.serverLog(TAG,
+                      `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+
+                    const data = {
+                      recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                      message: messageData
+                    }
+
+                    needle.post(
+                      `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                      data, (err, resp) => {
+                        if (err) {
+                          logger.serverLog(TAG, err)
+                          logger.serverLog(TAG,
+                            `Error occured at subscriber :${JSON.stringify(
+                              subscribers[j])}`)
+                        }
+                        logger.serverLog(TAG,
+                          `Sending poll to subscriber response ${JSON.stringify(
+                            resp.body)}`)
+                        let pollBroadcast = new PollPage({
+                          pageId: pages[z].pageId,
+                          userId: req.user._id,
+                          companyId: companyUser.companyId,
+                          subscriberId: subscribers[j].senderId,
+                          pollId: req.body._id,
+                          seen: false
+                        })
+
+                        pollBroadcast.save((err2) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'PollBroadcast create failed',
+                              err2
+                            })
+                          }
+                          // not using now
+                          // Sessions.findOne({
+                          //   subscriber_id: subscribers[j]._id,
+                          //   page_id: pages[z]._id,
+                          //   company_id: pages[z].userId._id
+                          // }, (err, session) => {
+                          //   if (err) {
+                          //     return logger.serverLog(TAG,
+                          //       `At get session ${JSON.stringify(err)}`)
+                          //   }
+                          //   if (!session) {
+                          //     return logger.serverLog(TAG,
+                          //       `No chat session was found for polls`)
+                          //   }
+                          //   const chatMessage = new LiveChat({
+                          //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                          //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                          //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                          //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                          //     session_id: session._id,
+                          //     company_id: pages[z].userId._id, // this is admin id till we have companies
+                          //     payload: {
+                          //       componentType: 'poll',
+                          //       payload: messageData
+                          //     }, // this where message content will go
+                          //     status: 'unseen' // seen or unseen
+                          //   })
+                          //   chatMessage.save((err, chatMessageSaved) => {
+                          //     if (err) {
+                          //       return logger.serverLog(TAG,
+                          //         `At save chat${JSON.stringify(err)}`)
+                          //     }
+                          //     logger.serverLog(TAG,
+                          //       'Chat message saved for poll sent')
+                          //   })
+                          // })
+                        })
+                      })
+                  }
+                })
+            }
+          })
+        }
       }
       return res.status(200)
       .json({status: 'success', payload: 'Polls sent successfully.'})

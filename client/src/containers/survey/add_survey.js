@@ -14,11 +14,13 @@ import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
+    props.loadCustomerLists()
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
@@ -48,14 +50,11 @@ class AddSurvey extends React.Component {
       genderValue: [],
       localeValue: [],
       steps: [],
-      showDropDown: false
+      showDropDown: false,
+      selectedRadio: '',
+      listSelected: '',
+      isList: false
     }
-    // surveyQuestions will be an array of json object
-    // each json object will have following keys:
-    // statement : //value of question
-    // type: //text or multichoice
-    // choiceCount: //no of options
-    // options: [] array of choice values
     this.createSurvey = this.createSurvey.bind(this)
     this.addSteps = this.addSteps.bind(this)
     this.addTooltip = this.addTooltip.bind(this)
@@ -63,6 +62,8 @@ class AddSurvey extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.initializeListSelect = this.initializeListSelect.bind(this)
   }
 
   componentDidMount () {
@@ -122,7 +123,34 @@ class AddSurvey extends React.Component {
         isFixed: true}
     ])
   }
+  initializeListSelect (lists) {
+    console.log('Initialize Lists', lists)
+    var self = this
+    $('#selectLists').select2({
+      data: lists,
+      placeholder: 'Select Lists',
+      allowClear: true,
+      tags: true,
+      multiple: true
+    })
 
+    $('#selectLists').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('selected options', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ listSelected: selected })
+      }
+      console.log('change List Selection', selected)
+    })
+
+    $("#selectLists").val('').trigger('change')
+  }
   initializePageSelect (pageOptions) {
     console.log('asd', pageOptions)
     var self = this
@@ -194,17 +222,31 @@ class AddSurvey extends React.Component {
     })
   }
 
-  componentWillReceiveProps (nextprops) {
-    if (nextprops.createwarning) {
+  componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps is called in add survey', nextProps)
+    console.log('nextpropscustomer', nextProps.customerLists)
+    if (nextProps.customerLists) {
+      let options = []
+      for (var j = 0; j < nextProps.customerLists.length; j++) {
+        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+      }
+      this.initializeListSelect(options)
+    }
+    if (nextProps.createwarning) {
       console.log('i am called')
       this.props.history.push({
         pathname: '/surveys'
 
       })
+      console.log('nextprops', nextProps)
     }
   }
   createSurvey (e) {
     e.preventDefault()
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
       this.setState({
@@ -278,8 +320,11 @@ class AddSurvey extends React.Component {
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
-          segmentationLocale: this.state.localeValue
+          segmentationLocale: this.state.localeValue,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
         }
+        console.log('surveybody', surveybody)
         this.props.createsurvey(surveybody)
         this.props.history.push({
           pathname: '/surveys'
@@ -539,7 +584,18 @@ class AddSurvey extends React.Component {
     }
     return uiItems || null
   }
-
+  handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    if (e.currentTarget.value === 'list') {
+      this.setState({genderValue: [], localeValue: []})
+    } if (e.currentTarget.value === 'segmentation') {
+      this.setState({listSelected: [], isList: false})
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -639,7 +695,7 @@ class AddSurvey extends React.Component {
                   </div>
                 </div>
                 <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
+                  <div className='m-portlet' style={{height: '93%'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
@@ -650,19 +706,44 @@ class AddSurvey extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='alert m-alert m-alert--default' role='alert'>
-                        <p>Select the type of customer you want to send survey to</p>
-                      </div>
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
                           <select id='selectPage' />
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectGender' />
+                      </div>
+                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                        <div className='radio'>
+                          <input id='segmentAll'
+                            type='radio'
+                            value='segmentation'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'segmentation'} />
+                          <label>Using Segmentation</label>
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectLocale' />
+                        <div className='radio'>
+                          <input id='segmentList'
+                            type='radio'
+                            value='list'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'list'} />
+                          <label>Using List</label>
                         </div>
+                      </div>
+                      <div className='m-form'>
+                        { this.state.selectedRadio === 'segmentation'
+                        ? <div>
+                          <div className='form-group m-form__group'><select id='selectGender' /></div>
+                          <div className='form-group m-form__group'><select id='selectLocale' /></div></div>
+                          : <div><div className='form-group m-form__group'><select id='selectGender' disabled /></div>
+                            <div className='form-group m-form__group'><select id='selectLocale' disabled /></div></div>
+                      }
+                        <br />
+                        { this.state.selectedRadio === 'list'
+                        ? <div className='form-group m-form__group'><select id='selectLists' /></div>
+                      : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
+                      }
                       </div>
                     </div>
                   </div>
@@ -681,7 +762,8 @@ function mapStateToProps (state) {
   return {
     surveys: (state.surveysInfo.surveys),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 
@@ -689,7 +771,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     getuserdetails: getuserdetails,
-    surveyTourCompleted: surveyTourCompleted
+    surveyTourCompleted: surveyTourCompleted,
+    loadCustomerLists: loadCustomerLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
