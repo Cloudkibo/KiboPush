@@ -199,13 +199,13 @@ class Card extends React.Component {
   render () {
     console.log('State: ', this.props.id)
     return (
-      <div>
+      <div className='broadcast-component'>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='broadcast-component ui-block hoverbordersolid'>
+        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
             <input
               ref='file'
