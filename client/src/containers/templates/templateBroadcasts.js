@@ -260,23 +260,23 @@ class TemplateBroadcasts extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='sticker'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}} />
+                            <span style={{width: '100px'}} />
                           </th>
                           <th data-field='title'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Title</span>
+                            <span style={{width: '100px'}}>Title</span>
                           </th>
                           <th data-field='description'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '200px'}}>Type</span>
+                            <span style={{width: '100px'}}>Type</span>
                           </th>
                           <th data-field='category'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Category</span>
+                            <span style={{width: '100px'}}>Category</span>
                           </th>
                           <th data-field='created'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Created At</span>
+                            <span style={{width: '100px'}}>Created At</span>
                           </th>
                           <th data-field='seemore'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -292,11 +292,11 @@ class TemplateBroadcasts extends React.Component {
                               style={{height: '55px'}} key={i}>
                               <td data-field='sticker'
                                 className='m-datatable__cell'>
-                                <span>
+                                <span style={{width: '100px'}}>
                                   {
                                     broadcast.createdBySuperUser &&
                                     <div style={{width: '100px', height: '50px'}}>
-                                      <NotificationBadge style={{backgroundColor: 'green'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
+                                      <NotificationBadge style={{backgroundColor: 'green', position: 'initial'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
                                     </div>
                                   }
                                 </span>
