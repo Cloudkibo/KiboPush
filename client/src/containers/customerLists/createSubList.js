@@ -150,7 +150,18 @@ class CreateSubList extends React.Component {
     var isValid = this.validateNewList()
     if (isValid) {
       this.setState({errorMessages: [], isSaveEnabled: false})
-      this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
+      if (this.props.currentList.parentList && this.props.currentList.parentList !== '') {
+        this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
+      } else {
+        this.setState({parentListData: this.props.subscribers})
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions)
+        if (subSetIds.length > 0) {
+          this.editSubList(subSetIds)
+        } else {
+          this.msg.error('New list is empty. Try creating a list with a different condition')
+          this.setState({isSaveEnabled: true})
+        }
+      }
     }
   }
 
