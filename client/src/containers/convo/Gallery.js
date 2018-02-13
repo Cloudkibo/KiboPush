@@ -120,7 +120,7 @@ class Gallery extends React.Component {
       afterChange: this.handleChange
     }
     return (
-      <div>
+      <div className='broadcast-component'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ position: 'absolute', height: 20+'px', zIndex: 6, right: 100+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
@@ -134,7 +134,7 @@ class Gallery extends React.Component {
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }
-        <div className='broadcast-component'>
+        <div>
           <Slider ref={(c) => { this.slider = c }} {...settings}>
             {
               this.state.cards.map((card, i) => (
