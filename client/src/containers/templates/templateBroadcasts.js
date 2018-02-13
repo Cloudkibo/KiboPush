@@ -248,7 +248,7 @@ class TemplateBroadcasts extends React.Component {
                 </div>
                 {
                   this.state.broadcastsData && this.state.broadcastsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='local_data'>
                     <table className='m-datatable__table'
                       id='m-datatable--27866229129' style={{
                         display: 'block',
@@ -260,7 +260,7 @@ class TemplateBroadcasts extends React.Component {
                           style={{height: '53px'}}>
                           <th data-field='sticker'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}></span>
+                            <span style={{width: '150px'}} />
                           </th>
                           <th data-field='title'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -288,7 +288,7 @@ class TemplateBroadcasts extends React.Component {
                         {
                           this.state.broadcastsData.map((broadcast, i) => (
                             <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
+                              className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                               style={{height: '55px'}} key={i}>
                               <td data-field='sticker'
                                 className='m-datatable__cell'>
@@ -296,7 +296,7 @@ class TemplateBroadcasts extends React.Component {
                                   style={{width: '150px'}}>
                                   {
                                     broadcast.createdBySuperUser &&
-                                    <div>
+                                    <div style={{width: '100px', height: '50px'}}>
                                       <NotificationBadge style={{backgroundColor: 'green'}} count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
                                     </div>
                                   }
