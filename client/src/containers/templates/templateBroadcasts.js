@@ -291,7 +291,7 @@ class TemplateBroadcasts extends React.Component {
                                 {
                                   broadcast.createdBySuperUser &&
                                   <div>
-                                    <NotificationBadge label='KiboPush' effect={Effect.ROTATE_Y} />
+                                    <NotificationBadge count={1} label='KiboPush' effect={Effect.ROTATE_Y} />
                                   </div>
                                 }
                                 <span
