@@ -2746,10 +2746,592 @@
                                 "payload": {
                                     "type": "array",
                                     "items": {
-                                        "type": "string"
+                                        "$ref": "#/definitions/Category"
                                     }
                                 }
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/surveyDetails/:surveyid": {
+            "get": {
+                "description": "Gives a particular survey detail",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "properties": {
+                                        "survey": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/SurveyTemplate"
+                                            }
+                                        },
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/SurveyQuestion"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/pollDetails/:pollid": {
+            "get": {
+                "description": "Gives a particular poll template details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/PollTemplate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/broadcastDetails/:broadcastid": {
+            "get": {
+                "description": "Gives a particular poll template details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/BroadcastTemplate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/createBroadcast": {
+            "post": {
+                "description": "creates a broadcast",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "broadcast",
+                        "in": "body",
+                        "description": "broadcast to save",
+                        "schema": {
+                            "$ref": "#/definitions/BroadcastTemplate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/BroadcastTemplate"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/editBroadcast": {
+            "post": {
+                "description": "creates a broadcast",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "broadcast",
+                        "in": "body",
+                        "description": "broadcast to edit",
+                        "schema": {
+                            "$ref": "#/definitions/BroadcastTemplateEdit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/BroadcastTemplateEdit"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/createCategory": {
+            "post": {
+                "description": "creates a category",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "body",
+                        "description": "category to save",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/Category"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/editCategory": {
+            "post": {
+                "description": "edits a category",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "body",
+                        "description": "category to edit",
+                        "schema": {
+                            "$ref": "#/definitions/CategoryEdit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/CategoryEdit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/allLists": {
+            "get": {
+                "description": "Gives all the lists of a particular user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/List"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/createList": {
+            "post": {
+                "description": "creates a list",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "list",
+                        "in": "body",
+                        "description": "list to save",
+                        "schema": {
+                            "$ref": "#/definitions/List"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/List"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/deleteCategory/:id": {
+            "delete": {
+                "description": "Delete a category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/editList": {
+            "post": {
+                "description": "edits a list",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "list",
+                        "in": "body",
+                        "description": "list to edit",
+                        "schema": {
+                            "$ref": "#/definitions/ListEdit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ListEdit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/viewList/:id": {
+            "get": {
+                "description": "Gives all the lists of a particular user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/List"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/lists/deletelist/:id": {
+            "delete": {
+                "description": "Delete a list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
                         }
                     },
                     "500": {
@@ -3858,10 +4440,16 @@
         "BroadcastTemplate": {
             "type": "object",
             "description": "This table is used to store the template broadcasts",
+            "required": [
+                "title",
+                "category",
+                "payload"
+            ],
             "properties": {
                 "_id": {
                     "type": "string",
-                    "description": "unique id of the record"
+                    "description": "unique id of the record",
+                    "readOnly": true
                 },
                 "title": {
                     "type": "string",
@@ -3881,6 +4469,55 @@
                 "datetime": {
                     "type": "object",
                     "description": "The date and time at which the broadcast is created"
+                },
+                "userId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "BroadcastTemplateEdit": {
+            "type": "object",
+            "description": "This table is used to store the template broadcasts",
+            "required": [
+                "_id"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "unique id of the record",
+                    "readOnly": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the broadcast"
+                },
+                "category": {
+                    "type": "string",
+                    "description": "The ctategory of the broadcast"
+                },
+                "payload": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "description": "the content of the broadcast"
+                    }
+                },
+                "datetime": {
+                    "type": "object",
+                    "description": "The date and time at which the broadcast is created"
+                },
+                "userId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "string",
+                    "readOnly": true
                 }
             }
         },
@@ -3963,6 +4600,189 @@
                     "type": "string",
                     "description": "The date and time at which the session is created",
                     "readOnly": true
+                }
+            }
+        },
+        "Category": {
+            "type": "object",
+            "description": "This table is used to store categories for templates",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "unique id of the record",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "name of the category"
+                },
+                "userId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "createdBySuperUser": {
+                    "type": "boolean",
+                    "readOnly": true
+                }
+            }
+        },
+        "CategoryEdit": {
+            "type": "object",
+            "description": "This table is used to store categories for templates",
+            "required": [
+                "name",
+                "_id"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "unique id of the record"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "name of the category"
+                },
+                "userId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "createdBySuperUser": {
+                    "type": "boolean",
+                    "readOnly": true
+                }
+            }
+        },
+        "List": {
+            "type": "object",
+            "description": "This table is used to store customer lists",
+            "required": [
+                "listName",
+                "content",
+                "conditions"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "listName": {
+                    "type": "string",
+                    "description": "Name of the list"
+                },
+                "datetime": {
+                    "type": "object",
+                    "description": "Date and time at which the list is created"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The subscriber ids"
+                    }
+                },
+                "conditions": {
+                    "type": "array",
+                    "description": "the conditions to create a list",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "condition": {
+                                "type": "string"
+                            },
+                            "criteria": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "initialList": {
+                    "type": "boolean",
+                    "description": "If it is a global list or not",
+                    "readOnly": true
+                },
+                "parentList": {
+                    "type": "string",
+                    "description": "Id of the parent list"
+                },
+                "parentListName": {
+                    "type": "string",
+                    "description": "Name of the parent list"
+                },
+                "userId": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "ListEdit": {
+            "type": "object",
+            "description": "This table is used to store customer lists",
+            "required": [
+                "_id"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record"
+                },
+                "listName": {
+                    "type": "string",
+                    "description": "Name of the list"
+                },
+                "userId": {
+                    "type": "string",
+                    "description": "Id of the user"
+                },
+                "companyId": {
+                    "type": "string",
+                    "description": "CompanyId of the user"
+                },
+                "datetime": {
+                    "type": "object",
+                    "description": "Date and time at which the list is created"
+                },
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The subscriber ids"
+                    }
+                },
+                "conditions": {
+                    "type": "object",
+                    "description": "the conditions to create a list"
+                },
+                "initialList": {
+                    "type": "boolean",
+                    "description": "If it is a global list or not",
+                    "readOnly": true
+                },
+                "parentList": {
+                    "type": "string",
+                    "description": "Id of the parent list"
+                },
+                "parentListName": {
+                    "type": "string",
+                    "description": "Name of the parent list"
                 }
             }
         },
