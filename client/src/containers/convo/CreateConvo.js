@@ -17,6 +17,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
+import { Link } from 'react-router'
 import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
@@ -62,6 +63,7 @@ class CreateConvo extends React.Component {
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
+      isShowingModalGuideLines: false,
       convoTitle: 'Broadcast Title',
       steps: [],
       showMessengerModal: false,
@@ -72,6 +74,8 @@ class CreateConvo extends React.Component {
     props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
+    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
+    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -154,7 +158,14 @@ class CreateConvo extends React.Component {
     //   this.setState({pageValue: nextProps.pages[0].pageId})
     // }
   }
+  showGuideLinesDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModalGuideLines: true})
+  }
 
+  closeGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: false})
+  }
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -641,8 +652,15 @@ class CreateConvo extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                   View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+                </div>
+              </div>
               <div className='row'>
-
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                   <div style={{padding: '25px'}} className='row' />
                   <div>
@@ -810,6 +828,55 @@ class CreateConvo extends React.Component {
                         <h3>Rename:</h3>
                         <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
                         <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                  {
+                    this.state.isShowingModalGuideLines &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeGuideLinesDialog}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeGuideLinesDialog}>
+                        <h4>Message Types</h4>
+                        <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
+                        <div className='panel-group accordion' id='accordion1'>
+                          <div className='panel panel-default'>
+                            <div className='panel-heading guidelines-heading'>
+                              <h4 className='panel-title'>
+                                <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
+                              </h4>
+                            </div>
+                            <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                              <div className='panel-body'>
+                                <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='panel panel-default'>
+                            <div className='panel-heading guidelines-heading'>
+                              <h4 className='panel-title'>
+                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
+                              </h4>
+                            </div>
+                            <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                              <div className='panel-body'>
+                                Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                              </div>
+                            </div>
+                          </div>
+                          <div className='panel panel-default'>
+                            <div className='panel-heading guidelines-heading'>
+                              <h4 className='panel-title'>
+                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
+                              </h4>
+                            </div>
+                            <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                              <div className='panel-body'>
+                                After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </ModalDialog>
                     </ModalContainer>
                   }

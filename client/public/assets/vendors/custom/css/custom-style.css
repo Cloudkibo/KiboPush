@@ -43,3 +43,16 @@ span.select2.select2-container.select2-container--default {
   .btnListDetail:hover {
     color: white !important
   }
+
+  .guidelines-link {
+    display: block;
+    text-decoration: none !important;
+    height: 100%;
+    width: 100%
+  }
+ .panel-heading.guidelines-heading:hover{
+    background-color:#ebedf2;
+  }
+  .linkMessageTypes:hover {
+    text-decoration: underline !important;
+  }

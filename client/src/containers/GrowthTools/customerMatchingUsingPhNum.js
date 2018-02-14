@@ -384,10 +384,6 @@ class CustomerMatching extends React.Component {
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
                 </div>
-                <div className='m-alert__text'>
-                  Need further help in understanding Customer Matching using Phone Numbers ?
-                  <a target='_blank' href='http://kibopush.com/invite-sms/'> Click Here </a>
-                </div>
               </div>
               <div className='row'>
                 <div
