@@ -437,18 +437,27 @@ class Poll extends React.Component {
                                       </button>
                                     </span>
                                     }
-                                    { poll.sent === 0
+                                    { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                                       ? <button className='btn btn-primary btn-sm'
                                         style={{float: 'left', margin: 2}}
                                         onClick={() => this.showDialogDelete(poll._id)}>
-                                    Delete
+                                      Delete
                                   </button>
-                                  : <button className='btn btn-primary btn-sm' disabled
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.showDialogDelete(poll._id)}>
-                                  Delete
+                                  : <div>
+                                    {poll.sent === 0
+                                    ? <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.showDialogDelete(poll._id)}>
+                                    Delete
+                                </button>
+                                : <button className='btn btn-primary btn-sm' disabled
+                                  style={{float: 'left', margin: 2}}
+                                  onClick={() => this.showDialogDelete(poll._id)}>
+                                Delete
                                 </button>
                                   }
+                                  </div>
+                                }
                                   </span>
                                 </td>
                               </tr>
@@ -492,7 +501,8 @@ function mapStateToProps (state) {
     polls: (state.pollsInfo.polls),
     successMessage: (state.pollsInfo.successMessage),
     errorMessage: (state.pollsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    user: (state.basicInfo.user)
   }
 }
 

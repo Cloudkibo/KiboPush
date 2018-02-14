@@ -431,17 +431,26 @@ class Survey extends React.Component {
                                   Send
                               </button>
                               </span>
-                            } { survey.sent === 0
+                            } { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                               ? <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}
                                 onClick={() => this.showDialogDelete(survey._id)}>
                               Delete
                           </button>
-                          : <button className='btn btn-primary btn-sm' disabled
-                            style={{float: 'left', margin: 2}}
-                            onClick={() => this.showDialogDelete(survey._id)}>
-                          Delete
-                      </button>
+                          : <div>
+                            {survey.sent === 0
+                            ? <button className='btn btn-primary btn-sm'
+                              style={{float: 'left', margin: 2}}
+                              onClick={() => this.showDialogDelete(survey._id)}>
+                            Delete
+                        </button>
+                        : <button className='btn btn-primary btn-sm' disabled
+                          style={{float: 'left', margin: 2}}
+                          onClick={() => this.showDialogDelete(survey._id)}>
+                        Delete
+                        </button>
+                          }
+                          </div>
                         }
 
                                 </td>
@@ -487,7 +496,8 @@ function mapStateToProps (state) {
     successMessage: (state.surveysInfo.successMessage),
     errorMessage: (state.surveysInfo.errorMessage),
     successTime: (state.surveysInfo.successTime),
-    errorTime: (state.surveysInfo.errorTime)
+    errorTime: (state.surveysInfo.errorTime),
+    user: (state.basicInfo.user)
   }
 }
 

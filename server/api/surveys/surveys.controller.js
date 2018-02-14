@@ -403,7 +403,7 @@ exports.send = function (req, res) {
                       return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                     }
                     lists.forEach(list => {
-                      let subsFindCriteria = {}
+                      let subsFindCriteria = {pageId: pages[z]._id}
                       subsFindCriteria = _.merge(subsFindCriteria, {
                         _id: {
                           $in: list.content
