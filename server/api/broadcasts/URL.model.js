@@ -10,7 +10,8 @@ let Schema = mongoose.Schema
 let urlSchema = new Schema({
   originalURL: String,
   shortenedURL: String,
-  broadcastId: { type: Schema.ObjectId, ref: 'page_broadcasts' }
+  broadcastId: { type: Schema.ObjectId, ref: 'page_broadcasts' },
+  itemId: String
 })
 
 module.exports = mongoose.model('URL', urlSchema)
