@@ -377,19 +377,17 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.props.user && this.props.user.isSuperUser) {
-      if (this.state.createPhoneList && this.props.user.permissions.pagesPermission) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-list' />
-              <span className='m-menu__link-text'>Customers Lists</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+    if (this.state.createPhoneList && this.props.user.permissions.pagesPermission) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-list' />
+            <span className='m-menu__link-text'>Customers Lists</span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
   }
   showWelcomeMessageItem () {
