@@ -377,7 +377,7 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.state.createPhoneList && this.props.user.permissions.pagesPermission) {
+    if (this.state.createPhoneList && this.props.user && this.props.user.permissions.pagesPermission) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
