@@ -342,54 +342,45 @@ exports.send = function (req, res) {
             if (subscribers.length > 0) {
               logger.serverLog(TAG,
                 `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
-              // get accesstoken of page
-              // -- Page tokens get expired therefore we need to fetch it from Graph api
-              needle.get(
-                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
-                (err, resp) => {
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                  }
 
-                  for (let j = 0; j < subscribers.length; j++) {
-                    logger.serverLog(TAG,
-                      `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+              for (let j = 0; j < subscribers.length; j++) {
+                logger.serverLog(TAG,
+                  `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
 
-                    const data = {
-                      recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                      message: messageData
-                    }
+                const data = {
+                  recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                  message: messageData
+                }
 
-                    needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                      data, (err, resp) => {
-                        if (err) {
-                          logger.serverLog(TAG, err)
-                          logger.serverLog(TAG,
-                            `Error occured at subscriber :${JSON.stringify(
-                              subscribers[j])}`)
-                        }
+                needle.post(
+                  `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+                    data, (err, resp) => {
+                      if (err) {
+                        logger.serverLog(TAG, err)
                         logger.serverLog(TAG,
-                          `Sending poll to subscriber response ${JSON.stringify(
-                            resp.body)}`)
-                        let pollBroadcast = new PollPage({
-                          pageId: pages[z].pageId,
-                          userId: req.user._id,
-                          companyId: companyUser.companyId,
-                          subscriberId: subscribers[j].senderId,
-                          pollId: req.body._id,
-                          seen: false
-                        })
+                          `Error occured at subscriber :${JSON.stringify(
+                            subscribers[j])}`)
+                      }
+                      logger.serverLog(TAG,
+                        `Sending poll to subscriber response ${JSON.stringify(
+                          resp.body)}`)
+                      let pollBroadcast = new PollPage({
+                        pageId: pages[z].pageId,
+                        userId: req.user._id,
+                        companyId: companyUser.companyId,
+                        subscriberId: subscribers[j].senderId,
+                        pollId: req.body._id,
+                        seen: false
+                      })
 
-                        pollBroadcast.save((err2) => {
-                          if (err2) {
-                            logger.serverLog(TAG, {
-                              status: 'failed',
-                              description: 'PollBroadcast create failed',
-                              err2
-                            })
-                          }
+                      pollBroadcast.save((err2) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'PollBroadcast create failed',
+                            err2
+                          })
+                        }
                           // not using now
                           // Sessions.findOne({
                           //   subscriber_id: subscribers[j]._id,
@@ -426,10 +417,9 @@ exports.send = function (req, res) {
                           //       'Chat message saved for poll sent')
                           //   })
                           // })
-                        })
                       })
-                  }
-                })
+                    })
+              }
             }
           })
         }
