@@ -318,6 +318,10 @@ exports.getfbMessage = function (req, res) {
                 }
                 handleThePagePostsForAutoPosting(event)
               })
+            } else if (event.value.item === 'video' && event.value.message) {
+              handleThePagePostsForAutoPosting(event)
+              event.value.item = 'status'
+              handleThePagePostsForAutoPosting(event)
             } else {
               handleThePagePostsForAutoPosting(event)
             }
