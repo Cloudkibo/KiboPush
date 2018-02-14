@@ -7,7 +7,6 @@ const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const PollPage = require('../page_poll/page_poll.model')
 const Lists = require('../lists/lists.model')
-const Users = require('./../user/Users.model')
 let _ = require('lodash')
 
 const TAG = 'api/polls/polls.controller.js'
@@ -196,207 +195,92 @@ exports.send = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    /*
+     Expected request body
+     { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
+     */
+    const messageData = {
+      text: req.body.statement,
+      quick_replies: [
+        {
+          'content_type': 'text',
+          'title': req.body.options[0],
+          'payload': JSON.stringify(
+                {poll_id: req.body._id, option: req.body.options[0]})
+        },
+        {
+          'content_type': 'text',
+          'title': req.body.options[1],
+          'payload': JSON.stringify(
+                {poll_id: req.body._id, option: req.body.options[1]})
+        },
+        {
+          'content_type': 'text',
+          'title': req.body.options[2],
+          'payload': JSON.stringify(
+                {poll_id: req.body._id, option: req.body.options[2]})
+        }
+      ]
+    }
 
-    /* Getting the company user who has connected the facebook account */
-    Pages.findOne({companyId: companyUser.companyId, connected: true}, (err, userPage) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
+    logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
+    let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
+    if (req.body.isSegmented) {
+      if (req.body.segmentationPageIds.length > 0) {
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
+          pageId: {
+            $in: req.body.segmentationPageIds
+          }
         })
       }
-
-      Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        var currentUser
-        if (req.user.facebookInfo) {
-          currentUser = req.user
-        } else {
-          currentUser = connectedUser
-        }
-
-        /*
-        Expected request body
-        { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
-        */
-        const messageData = {
-          text: req.body.statement,
-          quick_replies: [
+    }
+    Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
+      if (err) {
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
+      for (let z = 0; z < pages.length; z++) {
+        logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
+        if (req.body.isList === true) {
+          logger.serverLog(TAG, `inside isList`)
+          let ListFindCriteria = {}
+          ListFindCriteria = _.merge(ListFindCriteria,
             {
-              'content_type': 'text',
-              'title': req.body.options[0],
-              'payload': JSON.stringify(
-                {poll_id: req.body._id, option: req.body.options[0]})
-            },
-            {
-              'content_type': 'text',
-              'title': req.body.options[1],
-              'payload': JSON.stringify(
-                {poll_id: req.body._id, option: req.body.options[1]})
-            },
-            {
-              'content_type': 'text',
-              'title': req.body.options[2],
-              'payload': JSON.stringify(
-                {poll_id: req.body._id, option: req.body.options[2]})
-            }
-          ]
-        }
-
-        logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
-        let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
-        if (req.body.isSegmented) {
-          if (req.body.segmentationPageIds.length > 0) {
-            pagesFindCriteria = _.merge(pagesFindCriteria, {
-              pageId: {
-                $in: req.body.segmentationPageIds
+              _id: {
+                $in: req.body.segmentationList
               }
             })
-          }
-        }
-        Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
-          if (err) {
-            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error${JSON.stringify(err)}`
-            })
-          }
-          logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
-          for (let z = 0; z < pages.length; z++) {
-            logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
-            if (req.body.isList === true) {
-              logger.serverLog(TAG, `inside isList`)
-              let ListFindCriteria = {}
-              ListFindCriteria = _.merge(ListFindCriteria,
-                {
-                  _id: {
-                    $in: req.body.segmentationList
-                  }
-                })
-              Lists.find(ListFindCriteria, (err, lists) => {
+          Lists.find(ListFindCriteria, (err, lists) => {
+            if (err) {
+              return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            }
+            lists.forEach(list => {
+              let subsFindCriteria = {pageId: pages[z]._id}
+              subsFindCriteria = _.merge(subsFindCriteria, {
+                _id: {
+                  $in: list.content
+                }
+              })
+              Subscribers.find(subsFindCriteria, (err, subscribers) => {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                lists.forEach(list => {
-                  let subsFindCriteria = {}
-                  subsFindCriteria = _.merge(subsFindCriteria, {
-                    _id: {
-                      $in: list.content
-                    }
-                  })
-                  Subscribers.find(subsFindCriteria, (err, subscribers) => {
-                    if (err) {
-                      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                    }
-                    console.log('subscribers', subscribers)
-                    needle.get(
-                    `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                    (err, resp) => {
-                      if (err) {
-                        logger.serverLog(TAG,
-                          `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                      }
-
-                      for (let j = 0; j < subscribers.length; j++) {
-                        logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
-                        const data = {
-                          recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
-                        }
-
-                        needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                        data, (err, resp) => {
-                          if (err) {
-                            logger.serverLog(TAG, err)
-                            logger.serverLog(TAG,
-                              `Error occured at subscriber :${JSON.stringify(
-                                subscribers[j])}`)
-                          }
-                          logger.serverLog(TAG,
-                            `Sending poll to subscriber response ${JSON.stringify(
-                              resp.body)}`)
-                          let pollBroadcast = new PollPage({
-                            pageId: pages[z].pageId,
-                            userId: req.user._id,
-                            companyId: companyUser.companyId,
-                            subscriberId: subscribers[j].senderId,
-                            pollId: req.body._id,
-                            seen: false
-                          })
-
-                          pollBroadcast.save((err2) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'PollBroadcast create failed',
-                                err2
-                              })
-                            }
-                          })
-                        })
-                      }
-                    })
-                  })
-                })
-              })
-            } else {
-              let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
-
-              if (req.body.isSegmented) {
-                if (req.body.segmentationGender.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                    {
-                      gender: {
-                        $in: req.body.segmentationGender
-                      }
-                    })
-                }
-                if (req.body.segmentationLocale.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                    locale: {
-                      $in: req.body.segmentationLocale
-                    }
-                  })
-                }
-              }
-
-              Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                if (err) {
-                  return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
-                }
-                if (subscribers.length > 0) {
+                console.log('subscribers', subscribers)
+                for (let j = 0; j < subscribers.length; j++) {
                   logger.serverLog(TAG,
-                    `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
-                  // get accesstoken of page
-                  // -- Page tokens get expired therefore we need to fetch it from Graph api
-                  needle.get(
-                  `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                  (err, resp) => {
-                    if (err) {
-                      logger.serverLog(TAG,
-                      `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                    }
+                    `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
 
-                    for (let j = 0; j < subscribers.length; j++) {
-                      logger.serverLog(TAG,
-                      `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+                  const data = {
+                    recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                    message: messageData
+                  }
 
-                      const data = {
-                        recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                        message: messageData
-                      }
-
-                      needle.post(
-                      `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                  needle.post(
+                    `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
                       data, (err, resp) => {
                         if (err) {
                           logger.serverLog(TAG, err)
@@ -424,6 +308,79 @@ exports.send = function (req, res) {
                               err2
                             })
                           }
+                        })
+                      })
+                }
+              })
+            })
+          })
+        } else {
+          let subscriberFindCriteria = {pageId: pages[z]._id, isSubscribed: true}
+
+          if (req.body.isSegmented) {
+            if (req.body.segmentationGender.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                {
+                  gender: {
+                    $in: req.body.segmentationGender
+                  }
+                })
+            }
+            if (req.body.segmentationLocale.length > 0) {
+              subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                locale: {
+                  $in: req.body.segmentationLocale
+                }
+              })
+            }
+          }
+
+          Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+            if (err) {
+              return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
+            }
+            if (subscribers.length > 0) {
+              logger.serverLog(TAG,
+                `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
+
+              for (let j = 0; j < subscribers.length; j++) {
+                logger.serverLog(TAG,
+                  `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+
+                const data = {
+                  recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                  message: messageData
+                }
+
+                needle.post(
+                  `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+                    data, (err, resp) => {
+                      if (err) {
+                        logger.serverLog(TAG, err)
+                        logger.serverLog(TAG,
+                          `Error occured at subscriber :${JSON.stringify(
+                            subscribers[j])}`)
+                      }
+                      logger.serverLog(TAG,
+                        `Sending poll to subscriber response ${JSON.stringify(
+                          resp.body)}`)
+                      let pollBroadcast = new PollPage({
+                        pageId: pages[z].pageId,
+                        userId: req.user._id,
+                        companyId: companyUser.companyId,
+                        subscriberId: subscribers[j].senderId,
+                        pollId: req.body._id,
+                        seen: false
+                      })
+
+                      pollBroadcast.save((err2) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'PollBroadcast create failed',
+                            err2
+                          })
+                        }
                           // not using now
                           // Sessions.findOne({
                           //   subscriber_id: subscribers[j]._id,
@@ -460,18 +417,15 @@ exports.send = function (req, res) {
                           //       'Chat message saved for poll sent')
                           //   })
                           // })
-                        })
                       })
-                    }
-                  })
-                }
-              })
+                    })
+              }
             }
-          }
-          return res.status(200)
-          .json({status: 'success', payload: 'Polls sent successfully.'})
-        })
-      })
+          })
+        }
+      }
+      return res.status(200)
+      .json({status: 'success', payload: 'Polls sent successfully.'})
     })
   })
 }
