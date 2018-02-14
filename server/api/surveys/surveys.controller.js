@@ -414,65 +414,55 @@ exports.send = function (req, res) {
                           return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                         }
                         console.log('subscribers', subscribers)
-                        needle.get(
-                          `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
-                          (err, resp) => {
-                            if (err) {
-                              logger.serverLog(TAG,
-                                `Page access token from graph api error ${JSON.stringify(
-                                err)}`)
+
+                        for (let j = 0; j < subscribers.length; j++) {
+                          const messageData = {
+                            attachment: {
+                              type: 'template',
+                              payload: {
+                                template_type: 'button',
+                                text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                buttons
+                              }
                             }
-
-                            for (let j = 0; j < subscribers.length; j++) {
-                              const messageData = {
-                                attachment: {
-                                  type: 'template',
-                                  payload: {
-                                    template_type: 'button',
-                                    text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                                    buttons
-
-                                  }
+                          }
+                          const data = {
+                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                            message: messageData
+                          }
+                          logger.serverLog(TAG, messageData)
+                          needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+                              data, (err, resp) => {
+                                if (err) {
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: JSON.stringify(err)
+                                  })
                                 }
-                              }
-                              const data = {
-                                recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                message: messageData
-                              }
-                              logger.serverLog(TAG, messageData)
-                              needle.post(
-                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                data, (err, resp) => {
-                                  if (err) {
-                                    return res.status(500).json({
+                                logger.serverLog(TAG,
+                                  `Sending survey to subscriber response ${JSON.stringify(
+                                      resp.body)}`)
+                                let surveyPage = new SurveyPage({
+                                  pageId: pages[z].pageId,
+                                  userId: req.user._id,
+                                  subscriberId: subscribers[j].senderId,
+                                  surveyId: req.body._id,
+                                  seen: false,
+                                  companyId: companyUser.companyId
+                                })
+
+                                surveyPage.save((err2) => {
+                                  if (err2) {
+                                    logger.serverLog(TAG, {
                                       status: 'failed',
-                                      description: JSON.stringify(err)
+                                      description: 'PollBroadcast create failed',
+                                      err2
                                     })
                                   }
-                                  logger.serverLog(TAG,
-                                    `Sending survey to subscriber response ${JSON.stringify(
-                                      resp.body)}`)
-                                  let surveyPage = new SurveyPage({
-                                    pageId: pages[z].pageId,
-                                    userId: req.user._id,
-                                    subscriberId: subscribers[j].senderId,
-                                    surveyId: req.body._id,
-                                    seen: false,
-                                    companyId: companyUser.companyId
-                                  })
-
-                                  surveyPage.save((err2) => {
-                                    if (err2) {
-                                      logger.serverLog(TAG, {
-                                        status: 'failed',
-                                        description: 'PollBroadcast create failed',
-                                        err2
-                                      })
-                                    }
-                                  })
                                 })
-                            }
-                          })
+                              })
+                        }
                       })
                     })
                   })

@@ -270,56 +270,47 @@ exports.send = function (req, res) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
                 console.log('subscribers', subscribers)
-                needle.get(
-                  `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${req.user.facebookInfo.fbToken}`,
-                  (err, resp) => {
-                    if (err) {
-                      logger.serverLog(TAG,
-                        `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                    }
+                for (let j = 0; j < subscribers.length; j++) {
+                  logger.serverLog(TAG,
+                    `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
 
-                    for (let j = 0; j < subscribers.length; j++) {
-                      logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
+                  const data = {
+                    recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                    message: messageData
+                  }
 
-                      const data = {
-                        recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                        message: messageData
-                      }
-
-                      needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                        data, (err, resp) => {
-                          if (err) {
-                            logger.serverLog(TAG, err)
-                            logger.serverLog(TAG,
-                              `Error occured at subscriber :${JSON.stringify(
-                                subscribers[j])}`)
-                          }
+                  needle.post(
+                    `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+                      data, (err, resp) => {
+                        if (err) {
+                          logger.serverLog(TAG, err)
                           logger.serverLog(TAG,
-                            `Sending poll to subscriber response ${JSON.stringify(
-                              resp.body)}`)
-                          let pollBroadcast = new PollPage({
-                            pageId: pages[z].pageId,
-                            userId: req.user._id,
-                            companyId: companyUser.companyId,
-                            subscriberId: subscribers[j].senderId,
-                            pollId: req.body._id,
-                            seen: false
-                          })
-
-                          pollBroadcast.save((err2) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'PollBroadcast create failed',
-                                err2
-                              })
-                            }
-                          })
+                            `Error occured at subscriber :${JSON.stringify(
+                              subscribers[j])}`)
+                        }
+                        logger.serverLog(TAG,
+                          `Sending poll to subscriber response ${JSON.stringify(
+                            resp.body)}`)
+                        let pollBroadcast = new PollPage({
+                          pageId: pages[z].pageId,
+                          userId: req.user._id,
+                          companyId: companyUser.companyId,
+                          subscriberId: subscribers[j].senderId,
+                          pollId: req.body._id,
+                          seen: false
                         })
-                    }
-                  })
+
+                        pollBroadcast.save((err2) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'PollBroadcast create failed',
+                              err2
+                            })
+                          }
+                        })
+                      })
+                }
               })
             })
           })
