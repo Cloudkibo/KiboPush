@@ -263,7 +263,7 @@ exports.disable = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Pages.update({_id: req.body._id},
+    Pages.update({pageId: req.body.pageId, companyId: companyUser.companyId, connected: true},
       {connected: false}, {multi: true}, (err) => {
         if (err) {
           res.status(500).json({

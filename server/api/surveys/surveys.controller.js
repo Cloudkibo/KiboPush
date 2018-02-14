@@ -312,14 +312,7 @@ exports.submitresponse = function (req, res) {
   return res.status(200)
     .json({status: 'success', payload: 'Response submitted successfully'})
 }
-function exists (list, content) {
-  for (let i = 0; i < list.length; i++) {
-    if (JSON.stringify(list[i]) === JSON.stringify(content)) {
-      return true
-    }
-  }
-  return false
-}
+
 exports.send = function (req, res) {
   logger.serverLog(TAG, `Inside sendsurvey ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -413,82 +406,68 @@ exports.send = function (req, res) {
                     if (err) {
                       return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                     }
-                    let subsFindCriteria = {pageId: pages[z]._id}
-                    let listData = []
-                    if (lists.length > 1) {
-                      for (let i = 0; i < lists.length; i++) {
-                        for (let j = 0; j < lists[i].content.length; j++) {
-                          if (exists(listData, lists[i].content[j]) === false) {
-                            listData.push(lists[i].content[j])
-                          }
-                        }
-                      }
+                    lists.forEach(list => {
+                      let subsFindCriteria = {pageId: pages[z]._id}
                       subsFindCriteria = _.merge(subsFindCriteria, {
                         _id: {
-                          $in: listData
+                          $in: list.content
                         }
                       })
-                    } else {
-                      subsFindCriteria = _.merge(subsFindCriteria, {
-                        _id: {
-                          $in: lists[0].content
+                      Subscribers.find(subsFindCriteria, (err, subscribers) => {
+                        if (err) {
+                          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                         }
-                      })
-                    }
-                    Subscribers.find(subsFindCriteria, (err, subscribers) => {
-                      if (err) {
-                        return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                      }
-                      console.log('subscribers', subscribers)
+                        console.log('subscribers', subscribers)
 
-                      for (let j = 0; j < subscribers.length; j++) {
-                        const messageData = {
-                          attachment: {
-                            type: 'template',
-                            payload: {
-                              template_type: 'button',
-                              text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                              buttons
+                        for (let j = 0; j < subscribers.length; j++) {
+                          const messageData = {
+                            attachment: {
+                              type: 'template',
+                              payload: {
+                                template_type: 'button',
+                                text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                buttons
+                              }
                             }
                           }
-                        }
-                        const data = {
-                          recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
-                        }
-                        logger.serverLog(TAG, messageData)
-                        needle.post(
-                          `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
-                            data, (err, resp) => {
-                              if (err) {
-                                return res.status(500).json({
-                                  status: 'failed',
-                                  description: JSON.stringify(err)
-                                })
-                              }
-                              logger.serverLog(TAG,
-                                `Sending survey to subscriber response ${JSON.stringify(
-                                    resp.body)}`)
-                              let surveyPage = new SurveyPage({
-                                pageId: pages[z].pageId,
-                                userId: req.user._id,
-                                subscriberId: subscribers[j].senderId,
-                                surveyId: req.body._id,
-                                seen: false,
-                                companyId: companyUser.companyId
-                              })
-
-                              surveyPage.save((err2) => {
-                                if (err2) {
-                                  logger.serverLog(TAG, {
+                          const data = {
+                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                            message: messageData
+                          }
+                          logger.serverLog(TAG, messageData)
+                          needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+                              data, (err, resp) => {
+                                if (err) {
+                                  return res.status(500).json({
                                     status: 'failed',
-                                    description: 'PollBroadcast create failed',
-                                    err2
+                                    description: JSON.stringify(err)
                                   })
                                 }
+                                logger.serverLog(TAG,
+                                  `Sending survey to subscriber response ${JSON.stringify(
+                                      resp.body)}`)
+                                let surveyPage = new SurveyPage({
+                                  pageId: pages[z].pageId,
+                                  userId: req.user._id,
+                                  subscriberId: subscribers[j].senderId,
+                                  surveyId: req.body._id,
+                                  seen: false,
+                                  companyId: companyUser.companyId
+                                })
+
+                                surveyPage.save((err2) => {
+                                  if (err2) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'PollBroadcast create failed',
+                                      err2
+                                    })
+                                  }
+                                })
                               })
-                            })
-                      }
+                        }
+                      })
                     })
                   })
                 } else {
