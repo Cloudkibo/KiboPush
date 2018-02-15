@@ -56,3 +56,16 @@ span.select2.select2-container.select2-container--default {
   .linkMessageTypes:hover {
     text-decoration: underline !important;
   }
+.nameOptions:hover {
+  background-color:#ebedf2;
+  cursor: pointer;
+}
+.m-messenger__form-tools.pull-right.messengerTools {
+  background-color: #f4f5f8
+}
+i.greetingMessage.fa.fa-user:hover {
+  filter: brightness(50%);
+}
+i.greetingMessage.fa.fa-smile-o:hover {
+  filter: brightness(50%);
+}

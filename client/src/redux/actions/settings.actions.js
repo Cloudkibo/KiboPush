@@ -109,3 +109,11 @@ export function changePass (data, msg) {
       })
   }
 }
+
+export function saveGreetingMessage (greeting, msg) {
+  console.log('Saving Greeting Message')
+  return {
+    type: ActionTypes.GET_GREETING_MESSAGE,
+    data: greeting
+  }
+}
