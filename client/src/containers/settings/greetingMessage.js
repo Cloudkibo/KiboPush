@@ -130,10 +130,17 @@ class GreetingMessage extends React.Component {
 
   setEmoji (emoji) {
     console.log('selected emoji', emoji)
-    this.setState({
-      greetingMessage: this.state.greetingMessage + emoji.native,
-      showEmojiPicker: false
-    })
+    var message = this.state.greetingMessage + emoji.native
+    var textCount = 160 - message.length
+    if (textCount > 0) {
+      this.setState({
+        textCount: textCount,
+        greetingMessage: this.state.greetingMessage + emoji.native,
+        showEmojiPicker: false
+      })
+    } else {
+      this.setState({showEmojiPicker: false})
+    }
   }
   componentWillMount () {
   }
