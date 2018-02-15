@@ -49,6 +49,7 @@ class GreetingMessage extends React.Component {
     this.getName = this.getName.bind(this)
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
     this.closePreviewDialog = this.closePreviewDialog.bind(this)
+    this.selectPage = this.selectPage.bind(this)
     props.loadMyPagesList()
   }
   showPreviewDialog () {
@@ -98,7 +99,8 @@ class GreetingMessage extends React.Component {
   saveGreetingMessage () {
     console.log('Save Message')
     if (this.state.greetingMessage.length > 0) {
-      this.props.saveGreetingMessage(this.state.greetingMessage, this.msg)
+      var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
+      this.props.saveGreetingMessage(payload, this.msg)
     }
   }
   onGreetingMessageChange (e) {
@@ -145,7 +147,19 @@ class GreetingMessage extends React.Component {
   componentWillMount () {
   }
   componentDidMount () {
+    this.selectPage()
     document.title = 'KiboPush | api_settings'
+  }
+  selectPage () {
+    if (this.props.pages && this.props.pages.length > 0) {
+      this.setState({
+        selectPage: this.props.pages[0]
+      })
+    } else {
+      this.setState({
+        selectPage: {}
+      })
+    }
   }
   componentWillReceiveProps (nextProps) {
   }
@@ -201,7 +215,7 @@ class GreetingMessage extends React.Component {
             <ModalDialog style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
               <h3>Greeting Message Preview</h3>
-              <ViewScreen />
+              <ViewScreen user={this.props.user} page={this.state.selectPage} />
             </ModalDialog>
           </ModalContainer>
         }

@@ -347,7 +347,7 @@ class Settings extends React.Component {
                   <ResetPassword />
                 }
                 { this.state.showGreetingMessage &&
-                  <GreetingMessage />
+                  <GreetingMessage user={this.props.user} />
                 }
                 { this.state.connectFb &&
                   <ConnectFb />

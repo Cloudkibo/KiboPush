@@ -1,6 +1,4 @@
 import React from 'react'
-import ReactPlayer from 'react-player'
-import Slider from 'react-slick'
 import RightArrow from '../../containers/convo/RightArrow'
 import LeftArrow from '../../containers/convo/LeftArrow'
 
@@ -42,7 +40,7 @@ class ViewScreen extends React.Component {
               <h6 style={{color: '#007aff'}}><i className='fa fa-chevron-left' />Back</h6>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
-              <h7>KiboPush</h7>
+              <h7>{this.props.page.pageName}</h7>
               <p style={{color: '#ccc'}}>Typically replies instantly</p>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
@@ -83,5 +81,4 @@ class ViewScreen extends React.Component {
     )
   }
 }
-
 export default ViewScreen
