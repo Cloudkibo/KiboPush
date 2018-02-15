@@ -83,12 +83,12 @@ class GreetingMessage extends React.Component {
 
   getName (e, name) {
     console.log('selected name', name)
-    var message = this.state.greetingMessage + `[${name}]`
+    var message = this.state.greetingMessage + `{{${name}}}`
     var textCount = 160 - message.length
     if (textCount > 0) {
       this.setState({
         textCount: textCount,
-        greetingMessage: this.state.greetingMessage + `[${name}]`,
+        greetingMessage: this.state.greetingMessage + `{{${name}}}`,
         showUserOptions: false
       })
     } else {
@@ -183,9 +183,9 @@ class GreetingMessage extends React.Component {
           show={this.state.showUserOptions}
           onHide={this.closeUserOptions}
         >
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'First_Name')}>First Name</div>
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'Last_Name')}>Last Name</div>
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'Full_Name')}>Full Name</div>
+          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
         </Popover>
         {
           this.state.showPreview &&
