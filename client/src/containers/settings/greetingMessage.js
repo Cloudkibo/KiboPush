@@ -12,7 +12,7 @@ import { Picker } from 'emoji-mart'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Popover from '../../components/Popover/popover'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
-import ViewScreen from './ViewScreen'
+import ViewScreen from './viewScreen'
 
 const styles = {
   iconclass: {
