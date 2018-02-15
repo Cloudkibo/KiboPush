@@ -50,9 +50,9 @@ class Header extends React.Component {
       // addScript = document.createElement('script')
       // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
       // document.body.appendChild(addScript)
-      FS.identify('this.props.user.email', {
-        displayName: 'this.props.user.name',
-        email: 'this.props.user.email',
+      FS.identify(this.props.user.email, {
+        displayName: this.props.user.name,
+        email: this.props.user.email,
         // TODO: Add your own custom user variables here, details at
         // http://help.fullstory.com/develop-js/setuservars.
         reviewsWritten_int: 14,
