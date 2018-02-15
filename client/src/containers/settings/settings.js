@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
+import GreetingMessage from './greetingMessage'
 import ConnectFb from './connectFb'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -30,7 +31,8 @@ class Settings extends React.Component {
       firstTime: true,
       resetPassword: false,
       showAPI: true,
-      saveState: null
+      saveState: null,
+      showGreetingMessage: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -38,23 +40,27 @@ class Settings extends React.Component {
     this.setResetPass = this.setResetPass.bind(this)
     this.setAPI = this.setAPI.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
+    this.setGreetingMessage = this.setGreetingMessage.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
-      this.setState({showAPI: false, resetPassword: false, connectFb: true})
+      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true})
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false, connectFb: false})
+    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true, connectFb: false})
+    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false})
+  }
+  setGreetingMessage () {
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false})
   }
   setConnectFb () {
-    this.setState({showAPI: false, resetPassword: false, connectFb: true})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -248,6 +254,12 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>Reset Password</span>
                           </a>
                         </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setGreetingMessage} >
+                            <i className='m-nav__link-icon flaticon-exclamation' />
+                            <span className='m-nav__link-text'>Greeting Text</span>
+                          </a>
+                        </li>
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setConnectFb} >
@@ -333,6 +345,9 @@ class Settings extends React.Component {
                 }
                 { this.state.resetPassword &&
                   <ResetPassword />
+                }
+                { this.state.showGreetingMessage &&
+                  <GreetingMessage />
                 }
                 { this.state.connectFb &&
                   <ConnectFb />
