@@ -16,7 +16,9 @@ const pollSchema = new Schema({
   segmentationPageIds: [String],
   segmentationLocale: [String],
   segmentationGender: [String],
-  segmentationTimeZone: String
+  segmentationTimeZone: String,
+  isList: { type: Boolean, default: false },
+  segmentationList: [String]
 })
 
 module.exports = mongoose.model('polls', pollSchema)

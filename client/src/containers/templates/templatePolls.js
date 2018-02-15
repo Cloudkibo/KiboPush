@@ -150,7 +150,7 @@ class templatePolls extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='row'>
+      <div className='template-polls row'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>

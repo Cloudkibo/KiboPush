@@ -14,11 +14,13 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { createsurvey } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
+    props.loadCustomerLists()
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       console.log('id', id)
@@ -56,12 +58,17 @@ class EditTemplate extends React.Component {
       genderValue: [],
       localeValue: [],
       steps: [],
-      showDropDown: false
+      showDropDown: false,
+      selectedRadio: '',
+      listSelected: '',
+      isList: false
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.initializeListSelect = this.initializeListSelect.bind(this)
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Survey'
@@ -77,6 +84,13 @@ class EditTemplate extends React.Component {
     this.initializePageSelect(options)
   }
   componentWillReceiveProps (nextprops) {
+    if (nextprops.customerLists) {
+      let options = []
+      for (var j = 0; j < nextprops.customerLists.length; j++) {
+        options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+      }
+      this.initializeListSelect(options)
+    }
     if (nextprops.survey) {
       console.log('details', nextprops.survey)
       this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
@@ -86,6 +100,35 @@ class EditTemplate extends React.Component {
       this.setState({surveyQuestions: nextprops.questions})
     }
   }
+  initializeListSelect (lists) {
+    console.log('Initialize Lists', lists)
+    var self = this
+    $('#selectLists').select2({
+      data: lists,
+      placeholder: 'Select Lists',
+      allowClear: true,
+      tags: true,
+      multiple: true
+    })
+
+    $('#selectLists').on('change', function (e) {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('selected options', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ listSelected: selected })
+      }
+      console.log('change List Selection', selected)
+    })
+
+    $("#selectLists").val('').trigger('change')
+  }
+
   initializePageSelect (pageOptions) {
     console.log('asd', pageOptions)
     var self = this
@@ -177,6 +220,10 @@ class EditTemplate extends React.Component {
   }
   createSurvey (e) {
     e.preventDefault()
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
     let flag = 0
     if (this.state.surveyQuestions.length === 0) {
       this.setState({
@@ -254,7 +301,9 @@ class EditTemplate extends React.Component {
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
-          segmentationLocale: this.state.localeValue
+          segmentationLocale: this.state.localeValue,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
         }
         this.props.createsurvey(surveybody)
         this.props.history.push({
@@ -482,6 +531,18 @@ class EditTemplate extends React.Component {
     }
     return uiItems || null
   }
+  handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+    console.log('e.currentTarget.value', e.currentTarget.value)
+    if (e.currentTarget.value === 'list') {
+      this.setState({genderValue: [], localeValue: []})
+    } if (e.currentTarget.value === 'segmentation') {
+      this.setState({listSelected: [], isList: false})
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -588,19 +649,44 @@ class EditTemplate extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='alert m-alert m-alert--default' role='alert'>
-                        <p>Select the type of customer you want to send survey to</p>
-                      </div>
                       <div className='m-form'>
                         <div className='form-group m-form__group'>
                           <select id='selectPage' />
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectGender' />
+                      </div>
+                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                        <div className='radio'>
+                          <input id='segmentAll'
+                            type='radio'
+                            value='segmentation'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'segmentation'} />
+                          <label>Using Segmentation</label>
                         </div>
-                        <div className='form-group m-form__group'>
-                          <select id='selectLocale' />
+                        <div className='radio'>
+                          <input id='segmentList'
+                            type='radio'
+                            value='list'
+                            name='segmentationType'
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'list'} />
+                          <label>Using List</label>
                         </div>
+                      </div>
+                      <div className='m-form'>
+                        { this.state.selectedRadio === 'segmentation'
+                        ? <div>
+                          <div className='form-group m-form__group'><select id='selectGender' /></div>
+                          <div className='form-group m-form__group'><select id='selectLocale' /></div></div>
+                          : <div><div className='form-group m-form__group'><select id='selectGender' disabled /></div>
+                            <div className='form-group m-form__group'><select id='selectLocale' disabled /></div></div>
+                      }
+                        <br />
+                        { this.state.selectedRadio === 'list'
+                        ? <div className='form-group m-form__group'><select id='selectLists' /></div>
+                      : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
+                      }
                       </div>
                     </div>
                   </div>
@@ -621,7 +707,8 @@ function mapStateToProps (state) {
     questions: (state.templatesInfo.questions),
     currentSurvey: (state.getCurrentSurvey.currentSurvey),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 
@@ -629,7 +716,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     loadSurveyDetails: loadSurveyDetails,
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    loadCustomerLists: loadCustomerLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)

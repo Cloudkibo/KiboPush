@@ -58,6 +58,17 @@ class Header extends React.Component {
       console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
+    if(nextProps.user){
+      FS.identify(nextProps.user.email, {
+        displayName: nextProps.user.name,
+        email: nextProps.user.email,
+        // TODO: Add your own custom user variables here, details at
+        // http://help.fullstory.com/develop-js/setuservars.
+        reviewsWritten_int: 14,
+      });
+      console.log("FS identify Executed");
+    }
+   
   }
   componentWillMount () {
     this.props.getuserdetails()

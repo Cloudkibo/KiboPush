@@ -156,7 +156,7 @@ exports.getfbMessage = function (req, res) {
         if (itIsMessage) {
           const sender = event.sender.id
           const pageId = event.recipient.id
-          handleMessageFromSomeOtherApp(event)
+          // handleMessageFromSomeOtherApp(event)
           // get accesstoken of page
           Pages.find({pageId: pageId, connected: true})
             .populate('userId')
@@ -306,166 +306,25 @@ exports.getfbMessage = function (req, res) {
       for (let i = 0; i < changeEvents.length; i++) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {
-          if (event.value.verb === 'add' && (['status', 'photo', 'video'].indexOf(event.value.item) > -1)) {
-            AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
-              .populate('userId')
-              .exec((err, autopostings) => {
+          if (event.value.verb === 'add' && (['status', 'photo', 'video', 'share'].indexOf(event.value.item) > -1)) {
+            if (event.value.item === 'share') {
+              og(event.value.link, (err, meta) => {
                 if (err) {
-                  return logger.serverLog(TAG,
-                    'Internal Server Error on connect')
+                  logger.serverLog(TAG, `Error: ${err}`)
                 }
-                logger.serverLog(TAG,
-                  `Autoposting records got for fb : ${autopostings.length}`)
-                autopostings.forEach(postingItem => {
-                  let pagesFindCriteria = {
-                    userId: postingItem.userId._id,
-                    connected: true
-                  }
-
-                  if (postingItem.isSegmented) {
-                    if (postingItem.segmentationPageIds) {
-                      pagesFindCriteria = _.merge(pagesFindCriteria, {
-                        pageId: {
-                          $in: postingItem.segmentationPageIds
-                        }
-                      })
-                    }
-                  }
-                  Pages.find(pagesFindCriteria, (err, pages) => {
-                    if (err) {
-                      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                    }
-                    logger.serverLog(TAG,
-                      `Pages records got for fb : ${pages.length}`)
-                    pages.forEach(page => {
-                      logger.serverLog(TAG,
-                        `Page in the loop for fb ${page.pageName}`)
-
-                      let subscriberFindCriteria = {
-                        pageId: page._id,
-                        isSubscribed: true
-                      }
-
-                      if (postingItem.isSegmented) {
-                        if (postingItem.segmentationGender.length > 0) {
-                          subscriberFindCriteria = _.merge(
-                            subscriberFindCriteria,
-                            {
-                              gender: {
-                                $in: postingItem.segmentationGender
-                              }
-                            })
-                        }
-                        if (postingItem.segmentationLocale.length > 0) {
-                          subscriberFindCriteria = _.merge(
-                            subscriberFindCriteria, {
-                              locale: {
-                                $in: postingItem.segmentationLocale
-                              }
-                            })
-                        }
-                      }
-
-                      logger.serverLog(TAG,
-                        `Subscribers Criteria for segmentation ${JSON.stringify(
-                          subscriberFindCriteria)}`)
-                      Subscribers.find(subscriberFindCriteria,
-                        (err, subscribers) => {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `Error ${JSON.stringify(err)}`)
-                          }
-
-                          logger.serverLog(TAG,
-                            `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
-
-                          subscribers.forEach(subscriber => {
-                            let messageData = {}
-                            if (event.value.item === 'status') {
-                              messageData = {
-                                'recipient': JSON.stringify({
-                                  'id': subscriber.senderId
-                                }),
-                                'message': JSON.stringify({
-                                  'text': event.value.message,
-                                  'metadata': 'This is a meta data for fb post'
-                                })
-                              }
-                            } else if (event.value.item === 'photo') {
-                              messageData = {
-                                'recipient': JSON.stringify({
-                                  'id': subscriber.senderId
-                                }),
-                                'message': JSON.stringify({
-                                  'attachment': {
-                                    'type': 'template',
-                                    'payload': {
-                                      'template_type': 'generic',
-                                      'elements': [
-                                        {
-                                          'title': event.value.sender_name,
-                                          'image_url': event.value.link,
-                                          'subtitle': 'kibopush.com',
-                                          'buttons': [
-                                            {
-                                              'type': 'web_url',
-                                              'url': 'https://www.facebook.com/' + event.value.sender_id,
-                                              'title': 'View Page'
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  }
-                                })
-                              }
-                            } else if (event.value.item === 'video') {
-                              messageData = {
-                                'recipient': JSON.stringify({
-                                  'id': subscriber.senderId
-                                }),
-                                'message': JSON.stringify({
-                                  'attachment': {
-                                    'type': 'video',
-                                    'payload': {
-                                      'url': event.value.link,
-                                      'is_reusable': false
-                                    }
-                                  }
-                                })
-                              }
-                            }
-                            request(
-                              {
-                                'method': 'POST',
-                                'json': true,
-                                'formData': messageData,
-                                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                                page.accessToken
-                              },
-                              function (err, res) {
-                                if (err) {
-                                  return logger.serverLog(TAG,
-                                    `At send fb post broadcast ${JSON.stringify(
-                                      err)}`)
-                                } else {
-                                  if (res.statusCode !== 200) {
-                                    logger.serverLog(TAG,
-                                      `At send fb post broadcast response ${JSON.stringify(
-                                        res.body.error)}`)
-                                  } else {
-                                    logger.serverLog(TAG,
-                                      `At send fb post broadcast response ${JSON.stringify(
-                                        res.body.message_id)}`)
-                                  }
-                                }
-                              })
-                          })
-                        })
-                    })
-                  })
-                })
+                logger.serverLog(TAG, `Url Meta: ${JSON.stringify(meta)}`)
+                if (meta && meta.image && meta.image.url) {
+                  event.value.image = meta.image.url
+                }
+                handleThePagePostsForAutoPosting(event)
               })
+            } else if (event.value.item === 'video' && event.value.message) {
+              handleThePagePostsForAutoPosting(event)
+              event.value.item = 'status'
+              handleThePagePostsForAutoPosting(event)
+            } else {
+              handleThePagePostsForAutoPosting(event)
+            }
           }
         }
       }
@@ -473,6 +332,196 @@ exports.getfbMessage = function (req, res) {
   }
 
   return res.status(200).json({status: 'success', description: 'got the data.'})
+}
+
+function handleThePagePostsForAutoPosting (event) {
+  AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
+  .populate('userId')
+  .exec((err, autopostings) => {
+    if (err) {
+      return logger.serverLog(TAG,
+        'Internal Server Error on connect')
+    }
+    logger.serverLog(TAG,
+      `Autoposting records got for fb : ${autopostings.length}`)
+    autopostings.forEach(postingItem => {
+      let pagesFindCriteria = {
+        userId: postingItem.userId._id,
+        connected: true
+      }
+
+      if (postingItem.isSegmented) {
+        if (postingItem.segmentationPageIds) {
+          pagesFindCriteria = _.merge(pagesFindCriteria, {
+            pageId: {
+              $in: postingItem.segmentationPageIds
+            }
+          })
+        }
+      }
+      Pages.find(pagesFindCriteria, (err, pages) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        }
+        logger.serverLog(TAG,
+          `Pages records got for fb : ${pages.length}`)
+        pages.forEach(page => {
+          logger.serverLog(TAG,
+            `Page in the loop for fb ${page.pageName}`)
+
+          let subscriberFindCriteria = {
+            pageId: page._id,
+            isSubscribed: true
+          }
+
+          if (postingItem.isSegmented) {
+            if (postingItem.segmentationGender.length > 0) {
+              subscriberFindCriteria = _.merge(
+                subscriberFindCriteria,
+                {
+                  gender: {
+                    $in: postingItem.segmentationGender
+                  }
+                })
+            }
+            if (postingItem.segmentationLocale.length > 0) {
+              subscriberFindCriteria = _.merge(
+                subscriberFindCriteria, {
+                  locale: {
+                    $in: postingItem.segmentationLocale
+                  }
+                })
+            }
+          }
+
+          logger.serverLog(TAG,
+            `Subscribers Criteria for segmentation ${JSON.stringify(
+              subscriberFindCriteria)}`)
+          Subscribers.find(subscriberFindCriteria,
+            (err, subscribers) => {
+              if (err) {
+                return logger.serverLog(TAG,
+                  `Error ${JSON.stringify(err)}`)
+              }
+
+              logger.serverLog(TAG,
+                `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+              subscribers.forEach(subscriber => {
+                let messageData = {}
+                if (event.value.item === 'status') {
+                  messageData = {
+                    'recipient': JSON.stringify({
+                      'id': subscriber.senderId
+                    }),
+                    'message': JSON.stringify({
+                      'text': event.value.message,
+                      'metadata': 'This is a meta data for fb post'
+                    })
+                  }
+                } else if (event.value.item === 'share') {
+                  messageData = {
+                    'recipient': JSON.stringify({
+                      'id': subscriber.senderId
+                    }),
+                    'message': JSON.stringify({
+                      'attachment': {
+                        'type': 'template',
+                        'payload': {
+                          'template_type': 'generic',
+                          'elements': [
+                            {
+                              'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                              'image_url': event.value.image,
+                              'subtitle': 'kibopush.com',
+                              'buttons': [
+                                {
+                                  'type': 'web_url',
+                                  'url': event.value.link,
+                                  'title': 'View Link'
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    })
+                  }
+                } else if (event.value.item === 'photo') {
+                  messageData = {
+                    'recipient': JSON.stringify({
+                      'id': subscriber.senderId
+                    }),
+                    'message': JSON.stringify({
+                      'attachment': {
+                        'type': 'template',
+                        'payload': {
+                          'template_type': 'generic',
+                          'elements': [
+                            {
+                              'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                              'image_url': event.value.link,
+                              'subtitle': 'kibopush.com',
+                              'buttons': [
+                                {
+                                  'type': 'web_url',
+                                  'url': 'https://www.facebook.com/' + event.value.sender_id,
+                                  'title': 'View Page'
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    })
+                  }
+                } else if (event.value.item === 'video') {
+                  messageData = {
+                    'recipient': JSON.stringify({
+                      'id': subscriber.senderId
+                    }),
+                    'message': JSON.stringify({
+                      'attachment': {
+                        'type': 'video',
+                        'payload': {
+                          'url': event.value.link,
+                          'is_reusable': false
+                        }
+                      }
+                    })
+                  }
+                }
+                request(
+                  {
+                    'method': 'POST',
+                    'json': true,
+                    'formData': messageData,
+                    'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                    page.accessToken
+                  },
+                  function (err, res) {
+                    if (err) {
+                      return logger.serverLog(TAG,
+                        `At send fb post broadcast ${JSON.stringify(
+                          err)}`)
+                    } else {
+                      if (res.statusCode !== 200) {
+                        logger.serverLog(TAG,
+                          `At send fb post broadcast response ${JSON.stringify(
+                            res.body.error)}`)
+                      } else {
+                        logger.serverLog(TAG,
+                          `At send fb post broadcast response ${JSON.stringify(
+                            res.body.message_id)}`)
+                      }
+                    }
+                  })
+              })
+            })
+        })
+      })
+    })
+  })
 }
 
 function handleMessageFromSomeOtherApp (event) {
