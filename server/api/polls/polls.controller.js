@@ -227,6 +227,7 @@ exports.send = function (req, res) {
         } else {
           currentUser = connectedUser
         }
+        logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
         /*
         Expected request body
         { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });

@@ -483,6 +483,32 @@ exports.saveGreetingText = function (req, res) {
             description: 'Failed to update record'
           })
         }
+        var valueForMenu = {
+          'greeting': [{
+            'locale': 'default',
+            'text': req.body.greetingText
+          }]
+        }
+        Pages.findOne({pageId: req.body.pageId, companyId: companyUser.companyId}, (err, pages) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              description: err
+            })
+          }
+          const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pages.accessToken}`
+
+          needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+            if (!err) {
+              logger.serverLog(TAG,
+              `Menu added to page ${req.body.pageName}`)
+            }
+            if (err) {
+              logger.serverLog(TAG,
+              `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        })
         res.status(201).json({status: 'success', payload: req.body})
       })
   })
