@@ -36,7 +36,8 @@ class GreetingMessage extends React.Component {
       showUserOptions: false,
       selectPage: {},
       textCount: 160,
-      showPreview: false
+      showPreview: false,
+      previewMessage: ''
     }
     this.saveGreetingMessage = this.saveGreetingMessage.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -54,7 +55,16 @@ class GreetingMessage extends React.Component {
   }
   showPreviewDialog () {
     console.log('in showDialog')
+    var message = this.state.greetingMessage
+    var name = this.props.user.facebookInfo.name.split(' ')
+    var fullname = this.props.user.facebookInfo.name
+    var firstName = name[0] ? name[0] : name
+    var lastName = name[1] ? name[1] : name
+    message = message.replace(/{{user_first_name}}/g, firstName)
+    message = message.replace(/{{user_last_name}}/g, lastName)
+    message = message.replace(/{{user_full_name}}/g, fullname)
     this.setState({showPreview: true})
+    this.setState({previewMessage: message})
   }
 
   closePreviewDialog () {
@@ -96,7 +106,8 @@ class GreetingMessage extends React.Component {
       this.setState({showUserOptions: false})
     }
   }
-  saveGreetingMessage () {
+  saveGreetingMessage (e) {
+    e.preventDefault()
     console.log('Save Message')
     if (this.state.greetingMessage.length > 0) {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
@@ -162,6 +173,15 @@ class GreetingMessage extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
+    console.log(nextProps.greetingMessage)
+    if (nextProps.greetingMessage) {
+      this.setState({greetingMessage: nextProps.greetingMessage.greetingText})
+      for (var i = 0; i < nextProps.pages.length; i++) {
+        if (nextProps.pages[i].pageId === nextProps.greetingMessage.pageId) {
+          this.setState({ selectPage: nextProps.pages[i] })
+        }
+      }
+    }
   }
   render () {
     var alertOptions = {
@@ -215,7 +235,7 @@ class GreetingMessage extends React.Component {
             <ModalDialog style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
               <h3>Greeting Message Preview</h3>
-              <ViewScreen user={this.props.user} page={this.state.selectPage} />
+              <ViewScreen user={this.props.user} page={this.state.selectPage} previewMessage={this.state.previewMessage} />
             </ModalDialog>
           </ModalContainer>
         }
@@ -250,7 +270,7 @@ class GreetingMessage extends React.Component {
                       <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
                         {
                           this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                            <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                            <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
                           ))
                         }
                       </select>
@@ -308,7 +328,7 @@ class GreetingMessage extends React.Component {
                   <div className='form-group m-form__group row pull-right'>
                     <div className='col-12' style={{marginRight: '35px'}}>
                       <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                      <button className='btn btn-primary' onClick={this.saveGreetingMessage}>Save</button>
+                      <button className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                     </div>
                   </div>
                 </div>
