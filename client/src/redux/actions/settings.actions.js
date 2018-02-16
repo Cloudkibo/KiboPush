@@ -110,10 +110,26 @@ export function changePass (data, msg) {
   }
 }
 
-export function saveGreetingMessage (greeting, msg) {
+export function showGreetingMessage (data) {
   console.log('Saving Greeting Message')
   return {
     type: ActionTypes.GET_GREETING_MESSAGE,
-    data: greeting
+    data: data
+  }
+}
+
+export function saveGreetingMessage (data, msg) {
+  console.log(data)
+  return (dispatch) => {
+    callApi('pages/saveGreetingText', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('success greeting text', res.payload)
+          msg.success('Greeting message saved successfully')
+          dispatch(showGreetingMessage(res.payload))
+        } else {
+          msg.error(res.description)
+        }
+      })
   }
 }

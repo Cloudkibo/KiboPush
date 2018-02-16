@@ -25,6 +25,9 @@ const pageSchema = new Schema({
   },
   userId: {type: Schema.ObjectId, ref: 'users'},
   companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
+  greetingText: {
+    type: String, default: 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
+  },
   welcomeMessage: {
     type: Schema.Types.Mixed
   },
