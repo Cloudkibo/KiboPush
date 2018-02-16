@@ -319,8 +319,7 @@ exports.getfbMessage = function (req, res) {
                 handleThePagePostsForAutoPosting(event)
               })
             } else if (event.value.item === 'video' && event.value.message) {
-              handleThePagePostsForAutoPosting(event)
-              event.value.item = 'status'
+              handleThePagePostsForAutoPosting(event, 'status')
               handleThePagePostsForAutoPosting(event)
             } else {
               handleThePagePostsForAutoPosting(event)
@@ -334,7 +333,7 @@ exports.getfbMessage = function (req, res) {
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 
-function handleThePagePostsForAutoPosting (event) {
+function handleThePagePostsForAutoPosting (event, status) {
   AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
   .populate('userId')
   .exec((err, autopostings) => {
@@ -409,7 +408,7 @@ function handleThePagePostsForAutoPosting (event) {
 
               subscribers.forEach(subscriber => {
                 let messageData = {}
-                if (event.value.item === 'status') {
+                if (event.value.item === 'status' || status) {
                   messageData = {
                     'recipient': JSON.stringify({
                       'id': subscriber.senderId
