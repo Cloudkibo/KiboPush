@@ -83,7 +83,8 @@ class GreetingMessage extends React.Component {
       if (page) {
         this.setState({
           selectPage: page,
-          greetingMessage: page.greetingText
+          greetingMessage: page.greetingText,
+          textCount: this.props.pages[0].greetingText !== '' ? (160 - this.props.pages[0].greetingText.length) : 160
         })
       }
     } else {
@@ -167,7 +168,8 @@ class GreetingMessage extends React.Component {
     if (this.props.pages && this.props.pages.length > 0) {
       this.setState({
         selectPage: this.props.pages[0],
-        greetingMessage: this.props.pages[0].greetingText
+        greetingMessage: this.props.pages[0].greetingText,
+        textCount: this.props.pages[0].greetingText !== ''? (160 - this.props.pages[0].greetingText.length) : 160
       })
     } else {
       this.setState({
