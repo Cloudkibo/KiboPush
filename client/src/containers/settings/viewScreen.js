@@ -4,20 +4,6 @@ import LeftArrow from '../../containers/convo/LeftArrow'
 
 class ViewScreen extends React.Component {
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    document.body.appendChild(addScript)
   }
 
   render () {
@@ -47,34 +33,37 @@ class ViewScreen extends React.Component {
               <h6 style={{color: '#007aff'}}>Manage</h6>
             </div>
           </div>
-          <div className='m-portlet m-portlet--mobile'>
-            <div style={{padding: '0px'}} className='m-portlet__body'>
-              <div className='tab-content'>
-                <div className='tab-pane active m-scrollable' role='tabpanel'>
-                  <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                    <div style={{height: '570px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                      <div style={{position: 'relative', padding: '10px', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                        <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                          <div className='m-messenger__message m-messenger__message--in'>
-                            <div className='m-messenger__message-pic'>
-                              <img src='icons/user.png' alt='' />
-                            </div>
-                            <div style={{maxWidth: '235px'}} className='m-messenger__message-body'>
-                              <div className='m-messenger__message-arrow' />
-                              <div className='m-messenger__message-content'>
-                                <div className='m-messenger__message-text'>
-                                  Hello
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+          <div className='m-portlet__body'>
+            <div className='row'>
+              <div className='m-widget4' style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '35px' }}>
+                <div className='m-widget4__item'>
+                  <div className='col-12'>
+                    <div className='m-widget4__img m-widget4__img--pic'>
+                      <img alt='pic' src={(this.props.page.pagePic) ? this.props.page.pagePic : 'icons/users.jpg'} />
+                    </div>
+                  </div>
+                  <div className='col-12'>
+                    <div className='m-widget4__info previewInfo'>
+                      <span className='m-widget4__title'>
+                        {this.props.page.pageName}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
+              <div className='col-12 msgPreview'>
+                <i className='flaticon-speech-bubble-1 msgPreviewLeft' style={{color: 'blue'}} />
+                <p className='msgPreviewRight'>Typically replies instantly</p>
+              </div>
+              <div className='col-12 msgPreview' >
+                <i className='flaticon-exclamation msgPreviewLeft' style={{color: 'blue'}} />
+                <p className='msgPreviewRight'>{this.props.previewMessage}</p>
+              </div>
             </div>
+          </div>
+          <div className='m-portlet__foot footerPreview'>
+            <div className='footerInfo'>When you tap Get Started, {this.props.page.pageName} will see your public info</div>
+            <button className='buttonPreview'>Get Started</button>
           </div>
         </div>
       </div>
