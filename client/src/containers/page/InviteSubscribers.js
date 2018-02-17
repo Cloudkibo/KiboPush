@@ -189,7 +189,7 @@ class InviteSubscribers extends React.Component {
                           <div className='m-portlet__body'>
                             <div className='form-group m-form__group m--margin-top-10'>
                               <div className='alert m-alert m-alert--default' role='alert'>
-                                This is a link of your page. Use it to invite subscribers.
+                                This is the link to your facebook page. Copy this link and share it with people to invite them to become susbcribers of your page
                                 <input className='form-control m-input m-input--air' value={this.state.fblink} />
                               </div>
                             </div>

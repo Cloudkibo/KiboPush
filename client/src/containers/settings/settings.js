@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
+import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -32,7 +33,8 @@ class Settings extends React.Component {
       resetPassword: false,
       showAPI: true,
       saveState: null,
-      showGreetingMessage: false
+      showGreetingMessage: false,
+      showSubscribeToMessenger: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -41,6 +43,7 @@ class Settings extends React.Component {
     this.setAPI = this.setAPI.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
+    this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
@@ -51,16 +54,19 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false})
+    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false})
+    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false})
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false})
   }
   setConnectFb () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false})
+  }
+  setSubscribeToMessenger () {
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -206,16 +212,16 @@ class Settings extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding settings? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
-              </div>
-            </div>
-              <div className='row' style={{height: 80 + 'vh'}}>
+              <div className='row' style={{height: 92 + 'vh'}}>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height'>
                     <div className='m-portlet__body'>
@@ -258,6 +264,12 @@ class Settings extends React.Component {
                           <a className='m-nav__link' onClick={this.setGreetingMessage} >
                             <i className='m-nav__link-icon flaticon-exclamation' />
                             <span className='m-nav__link-text'>Greeting Text</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setSubscribeToMessenger} >
+                            <i className='m-nav__link-icon flaticon-alarm' />
+                            <span className='m-nav__link-text'>Subscribe To Messenger</span>
                           </a>
                         </li>
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
@@ -348,6 +360,9 @@ class Settings extends React.Component {
                 }
                 { this.state.showGreetingMessage &&
                   <GreetingMessage user={this.props.user} />
+                }
+                { this.state.showSubscribeToMessenger &&
+                  <SubscribeToMessenger />
                 }
                 { this.state.connectFb &&
                   <ConnectFb />
