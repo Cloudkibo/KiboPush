@@ -82,7 +82,8 @@ class GreetingMessage extends React.Component {
       }
       if (page) {
         this.setState({
-          selectPage: page
+          selectPage: page,
+          greetingMessage: page.greetingText
         })
       }
     } else {
@@ -112,6 +113,7 @@ class GreetingMessage extends React.Component {
     if (this.state.greetingMessage.length > 0) {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
       this.props.saveGreetingMessage(payload, this.msg)
+      this.props.loadMyPagesList()
     }
   }
   onGreetingMessageChange (e) {
@@ -164,7 +166,8 @@ class GreetingMessage extends React.Component {
   selectPage () {
     if (this.props.pages && this.props.pages.length > 0) {
       this.setState({
-        selectPage: this.props.pages[0]
+        selectPage: this.props.pages[0],
+        greetingMessage: this.props.pages[0].greetingText
       })
     } else {
       this.setState({

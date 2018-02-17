@@ -126,7 +126,6 @@ export function saveGreetingMessage (data, msg) {
         if (res.status === 'success') {
           console.log('success greeting text', res.payload)
           msg.success('Greeting message saved successfully')
-          dispatch(showGreetingMessage(res.payload))
         } else {
           msg.error(res.description)
         }

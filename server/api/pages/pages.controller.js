@@ -97,7 +97,8 @@ exports.allpages = function (req, res) {
               isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
               welcomeMessage: pages[i].welcomeMessage,
               subscribers: 0,
-              unsubscribes: 0
+              unsubscribes: 0,
+              greetingText: pages[i].greetingText
             })
           }
           for (let i = 0; i < pagesPayload.length; i++) {
