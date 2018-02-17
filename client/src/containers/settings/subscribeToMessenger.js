@@ -119,7 +119,7 @@ class SubscribeToMessenger extends React.Component {
                 <div className='m-portlet__body'>
                   <div className='form-group m-form__group row'>
                     <div className='input-group'>
-                      <label>Add the facebook messenger button to your website by copying the code below. It will send your facebook page
+                      <label>Add the facebook messenger button to your website by copying the code below in your website's HTML. This button will send your facebook page
                       link to your followers on the messenger.</label>
                       <br />
                       <br />
