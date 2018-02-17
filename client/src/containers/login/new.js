@@ -74,7 +74,7 @@ class Login extends React.Component {
     }
   }
   render () {
-    console.log('In Login JS')
+    console.log('In Login new JS')
     var alertOptions = {
       offset: 14,
       position: 'bottom left',
@@ -141,7 +141,8 @@ class Login extends React.Component {
 
                     { (this.state.account_type == 'none') &&
 
-                      <div className='m-login__form m-form' style={{marginLeft: 75}} >
+                      <div className='m-login__form m-form'>
+                        <center>
                         <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
                           Individual Account
                         </button>
@@ -150,6 +151,7 @@ class Login extends React.Component {
                         <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
                           Team Account
                         </button>
+                        </center>
                       </div>
                     }
 

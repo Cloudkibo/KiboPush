@@ -187,8 +187,7 @@ class ShareOptions extends React.Component {
                             </div>
                           </div>
                         }
-                          <p>This is a link to your page, you can send it to your
-                          friends
+                          <p>This is the link to your facebook page. Copy this link and share it with people to invite them to become susbcribers of your page
                         </p>
                           <div className='form-group m-form__group row'>
                             <label className='col-form-label col-lg-3 col-sm-12'>

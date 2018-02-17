@@ -139,11 +139,11 @@ class Signup extends React.Component {
     console.log('In signup JS')
     return (
       <div style={{height: 130 + 'vh'}}>
-      <div className="fb-customerchat"
-       data-page_id="151990922046256"
-       data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
-       data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
-      </div>
+        <div className='fb-customerchat'
+          data-page_id='151990922046256'
+          data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
+          data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request'
+        />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: 130 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
@@ -164,7 +164,7 @@ class Signup extends React.Component {
                       </div>
                     </div>
                     {
-                      (this.state.account_type != 'none') &&
+                    (this.state.account_type !== 'none') &&
                     <form onSubmit={this.onSubmit} className='m-login__form m-form'>
                       {this.state.error &&
                       <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>{this.state.error}</bold></div>
@@ -173,21 +173,19 @@ class Signup extends React.Component {
                         <input className='form-control m-input' type='text' placeholder='Name' ref='name' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       {
-                        (this.state.account_type == 'team') &&
+                        (this.state.account_type === 'team') &&
                         <div>
-                        <div className='form-group m-form__group'>
-                          <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                            onChange={this.check} />
-                          {/* !this.state.domain  &&
-                          <div id='email-error' style={{color: 'red'}}>Please enter a valid/unique workspace name</div>
-                           */}
+                          <div className='form-group m-form__group'>
+                            <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                              onChange={this.check} />
+                            {/* !this.state.domain  &&
+                            <div id='email-error' style={{color: 'red'}}>Please enter a valid/unique workspace name</div>
+                             */}
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
+                          </div>
                         </div>
-
-
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Company Name' ref='companyName' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
-                      </div>
-                      </div>
                       }
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
@@ -222,27 +220,27 @@ class Signup extends React.Component {
                       </div>
                     </form>
                     }
-                    { (this.state.account_type == 'none') &&
-
-                      <div className='m-login__form m-form' style={{marginLeft: 75}} >
-                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
-                         Create Individual Account
-                        </button>
-                        <br />
-                        <br />
-                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
-                          Create Team Account
-                        </button>
-                        <br />
-                        <br />
-                        <span>
-                          <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
-                            Cancel
-                          </Link>
-                        </span>
+                    { (this.state.account_type === 'none') &&
+                      <div className='m-login__form m-form'>
+                        <center>
+                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'individual'}) }}>
+                           Create Individual Account
+                          </button>
+                          <br />
+                          <br />
+                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'team'}) }}>
+                            Create Team Account
+                          </button>
+                          <br />
+                          <br />
+                          <span>
+                            <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                              Cancel
+                            </Link>
+                          </span>
+                        </center>
                       </div>
                     }
-
                   </div>
                 </div>
               </div>
