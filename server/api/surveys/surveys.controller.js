@@ -12,6 +12,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/surveys/surveys.controller.js'
 const mongoose = require('mongoose')
 const Lists = require('../lists/lists.model')
+const Users = require('./../user/Users.model')
 
 let _ = require('lodash')
 
@@ -336,129 +337,162 @@ exports.send = function (req, res) {
       })
     }
     logger.serverLog(TAG, `company users found`)
-    /*
-    Expected request body
-    { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
-    */
-    // we will send only first question to fb subsribers
-    // find questions
-    SurveyQuestions.find({surveyId: req.body._id})
-      .populate('surveyId')
-      .exec((err2, questions) => {
-        if (err2) {
+
+    /* Getting the company user who has connected the facebook account */
+    Pages.findOne({companyId: companyUser.companyId, connected: true}, (err, userPage) => {
+      if (err) {
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+
+      Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+        if (err) {
           return res.status(500).json({
             status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err2)}`
+            description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        logger.serverLog(TAG, `survey questions found ${JSON.stringify(questions)}`)
-        Surveys.findOne({_id: req.body._id}, (err, survey) => {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At surveys ${JSON.stringify(err)}`)
+        var currentUser
+        if (req.user.facebookInfo) {
+          currentUser = req.user
+        } else {
+          currentUser = connectedUser
+        }
+        logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
+        /*
+        Expected request body
+        { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
+        */
+        // we will send only first question to fb subsribers
+        // find questions
+        SurveyQuestions.find({surveyId: req.body._id})
+        .populate('surveyId')
+        .exec((err2, questions) => {
+          if (err2) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err2)}`
+            })
           }
-          logger.serverLog(TAG, `survey found ${JSON.stringify(survey)}`)
-          if (questions.length > 0) {
-            let first_question = questions[0]
-            // create buttons
-            const buttons = []
-            let next_question_id = 'nil'
-            if (questions.length > 1) {
-              next_question_id = questions[1]._id
+          logger.serverLog(TAG, `survey questions found ${JSON.stringify(questions)}`)
+          Surveys.findOne({_id: req.body._id}, (err, survey) => {
+            if (err) {
+              return logger.serverLog(TAG,
+              `At surveys ${JSON.stringify(err)}`)
             }
+            logger.serverLog(TAG, `survey found ${JSON.stringify(survey)}`)
+            if (questions.length > 0) {
+              let first_question = questions[0]
+              // create buttons
+              const buttons = []
+              let next_question_id = 'nil'
+              if (questions.length > 1) {
+                next_question_id = questions[1]._id
+              }
 
-            for (let x = 0; x < first_question.options.length; x++) {
-              buttons.push({
-                type: 'postback',
-                title: first_question.options[x],
-                payload: JSON.stringify({
-                  survey_id: req.body._id,
-                  option: first_question.options[x],
-                  question_id: first_question._id,
-                  next_question_id,
-                  userToken: req.user.facebookInfo.fbToken
-                })
-              })
-            }
-
-            let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
-            if (req.body.isSegmented) {
-              if (req.body.segmentationPageIds.length > 0) {
-                pagesFindCriteria = _.merge(pagesFindCriteria, {
-                  pageId: {
-                    $in: req.body.segmentationPageIds
-                  }
+              for (let x = 0; x < first_question.options.length; x++) {
+                buttons.push({
+                  type: 'postback',
+                  title: first_question.options[x],
+                  payload: JSON.stringify({
+                    survey_id: req.body._id,
+                    option: first_question.options[x],
+                    question_id: first_question._id,
+                    next_question_id,
+                    userToken: currentUser.facebookInfo.fbToken
+                  })
                 })
               }
-            }
-            Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
-              if (err) {
-                return res.status(500).json({
-                  status: 'failed',
-                  description: `Internal Server Error ${JSON.stringify(err)}`
-                })
+
+              let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
+              if (req.body.isSegmented) {
+                if (req.body.segmentationPageIds.length > 0) {
+                  pagesFindCriteria = _.merge(pagesFindCriteria, {
+                    pageId: {
+                      $in: req.body.segmentationPageIds
+                    }
+                  })
+                }
               }
-              logger.serverLog(TAG, `pages found ${JSON.stringify(pages)}`)
-              for (let z = 0; z < pages.length; z++) {
-                if (req.body.isList === true) {
-                  logger.serverLog(TAG, `inside isList`)
-                  let ListFindCriteria = {}
-                  ListFindCriteria = _.merge(ListFindCriteria,
-                    {
-                      _id: {
-                        $in: req.body.segmentationList
-                      }
-                    })
-                  Lists.find(ListFindCriteria, (err, lists) => {
-                    if (err) {
-                      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                    }
-                    let subsFindCriteria = {pageId: pages[z]._id}
-                    let listData = []
-                    if (lists.length > 1) {
-                      for (let i = 0; i < lists.length; i++) {
-                        for (let j = 0; j < lists[i].content.length; j++) {
-                          if (exists(listData, lists[i].content[j]) === false) {
-                            listData.push(lists[i].content[j])
-                          }
-                        }
-                      }
-                      subsFindCriteria = _.merge(subsFindCriteria, {
+              Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                logger.serverLog(TAG, `pages found ${JSON.stringify(pages)}`)
+                for (let z = 0; z < pages.length; z++) {
+                  if (req.body.isList === true) {
+                    logger.serverLog(TAG, `inside isList`)
+                    let ListFindCriteria = {}
+                    ListFindCriteria = _.merge(ListFindCriteria,
+                      {
                         _id: {
-                          $in: listData
+                          $in: req.body.segmentationList
                         }
                       })
-                    } else {
-                      subsFindCriteria = _.merge(subsFindCriteria, {
-                        _id: {
-                          $in: lists[0].content
-                        }
-                      })
-                    }
-                    Subscribers.find(subsFindCriteria, (err, subscribers) => {
+                    Lists.find(ListFindCriteria, (err, lists) => {
                       if (err) {
                         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                       }
-                      console.log('subscribers', subscribers)
-
-                      for (let j = 0; j < subscribers.length; j++) {
-                        const messageData = {
-                          attachment: {
-                            type: 'template',
-                            payload: {
-                              template_type: 'button',
-                              text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                              buttons
+                      let subsFindCriteria = {pageId: pages[z]._id}
+                      let listData = []
+                      if (lists.length > 1) {
+                        for (let i = 0; i < lists.length; i++) {
+                          for (let j = 0; j < lists[i].content.length; j++) {
+                            if (exists(listData, lists[i].content[j]) === false) {
+                              listData.push(lists[i].content[j])
                             }
                           }
                         }
-                        const data = {
-                          recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
+                        subsFindCriteria = _.merge(subsFindCriteria, {
+                          _id: {
+                            $in: listData
+                          }
+                        })
+                      } else {
+                        subsFindCriteria = _.merge(subsFindCriteria, {
+                          _id: {
+                            $in: lists[0].content
+                          }
+                        })
+                      }
+                      Subscribers.find(subsFindCriteria, (err, subscribers) => {
+                        if (err) {
+                          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                         }
-                        logger.serverLog(TAG, messageData)
-                        needle.post(
-                          `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+
+                        needle.get(
+                        `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                        (err, resp) => {
+                          if (err) {
+                            logger.serverLog(TAG,
+                            `Page access token from graph api error ${JSON.stringify(
+                            err)}`)
+                          }
+
+                          for (let j = 0; j < subscribers.length; j++) {
+                            const messageData = {
+                              attachment: {
+                                type: 'template',
+                                payload: {
+                                  template_type: 'button',
+                                  text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                  buttons
+                                }
+                              }
+                            }
+                            const data = {
+                              recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                              message: messageData
+                            }
+                            logger.serverLog(TAG, messageData)
+                            needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                             data, (err, resp) => {
                               if (err) {
                                 return res.status(500).json({
@@ -488,55 +522,65 @@ exports.send = function (req, res) {
                                 }
                               })
                             })
-                      }
-                    })
-                  })
-                } else {
-                  let subscriberFindCriteria = {
-                    pageId: pages[z]._id,
-                    isSubscribed: true
-                  }
-                  if (req.body.isSegmented) {
-                    if (req.body.segmentationGender.length > 0) {
-                      subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                        {
-                          gender: {
-                            $in: req.body.segmentationGender
                           }
                         })
-                    }
-                    if (req.body.segmentationLocale.length > 0) {
-                      subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                        locale: {
-                          $in: req.body.segmentationLocale
-                        }
                       })
+                    })
+                  } else {
+                    let subscriberFindCriteria = {
+                      pageId: pages[z]._id,
+                      isSubscribed: true
                     }
-                  }
-                  Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({status: 'failed', description: 'Subscribers not found'})
-                    }
-
-                    for (let j = 0; j < subscribers.length; j++) {
-                      const messageData = {
-                        attachment: {
-                          type: 'template',
-                          payload: {
-                            template_type: 'button',
-                            text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                            buttons
+                    if (req.body.isSegmented) {
+                      if (req.body.segmentationGender.length > 0) {
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                          {
+                            gender: {
+                              $in: req.body.segmentationGender
+                            }
+                          })
+                      }
+                      if (req.body.segmentationLocale.length > 0) {
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                          locale: {
+                            $in: req.body.segmentationLocale
                           }
+                        })
+                      }
+                    }
+                    Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+                      if (err) {
+                        return res.status(404)
+                        .json({status: 'failed', description: 'Subscribers not found'})
+                      }
+
+                      needle.get(
+                      `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                      (err, resp) => {
+                        if (err) {
+                          logger.serverLog(TAG,
+                          `Page access token from graph api error ${JSON.stringify(
+                          err)}`)
                         }
-                      }
-                      const data = {
-                        recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                        message: messageData
-                      }
-                      logger.serverLog(TAG, messageData)
-                      needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${pages[z].accessToken}`,
+
+                        for (let j = 0; j < subscribers.length; j++) {
+                          const messageData = {
+                            attachment: {
+                              type: 'template',
+                              payload: {
+                                template_type: 'button',
+                                text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                buttons
+                              }
+                            }
+                          }
+                          const data = {
+                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                            message: messageData
+                          }
+                          logger.serverLog(TAG, messageData)
+                          needle.post(
+                          `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                           data, (err, resp) => {
                             if (err) {
                               return res.status(500).json({
@@ -602,19 +646,22 @@ exports.send = function (req, res) {
                               // })
                             })
                           })
-                    }
-                  })
+                        }
+                      })
+                    })
+                  }
                 }
-              }
-              return res.status(200)
+                return res.status(200)
                 .json({status: 'success', payload: 'Survey sent successfully.'})
-            })
-          } else {
-            return res.status(404)
+              })
+            } else {
+              return res.status(404)
               .json({status: 'failed', description: 'Survey Questions not found'})
-          }
+            }
+          })
         })
       })
+    })
   })
 }
 exports.deleteSurvey = function (req, res) {

@@ -59,18 +59,23 @@ const PopoverContent = props => {
     children
   } = props
 
+  // return (
+  //   <div style={{...PopoverStyle, ...placementStyle.tooltip, ...style}}>
+  //     <div style={{...PopoverArrowStyle, ...placementStyle.arrow, left, top}} />
+  //     <div
+  //       ref={(node) => {
+  //         if (node) {
+  //           node.style.setProperty('height', props.height, 'important')
+  //         }
+  //       }}
+  //       style={{...PopoverInnerStyle, ...innerStyle}}>
+  //       {children}
+  //     </div>
+  //   </div>
+  // )
   return (
-    <div style={{...PopoverStyle, ...placementStyle.tooltip, ...style}}>
-      <div style={{...PopoverArrowStyle, ...placementStyle.arrow, left, top}} />
-      <div
-        ref={(node) => {
-          if (node) {
-            node.style.setProperty('height', props.height, 'important')
-          }
-        }}
-        style={{...PopoverInnerStyle, ...innerStyle}}>
-        {children}
-      </div>
+    <div>
+      Popover used to be here.
     </div>
   )
 }

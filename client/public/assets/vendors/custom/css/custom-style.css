@@ -56,3 +56,68 @@ span.select2.select2-container.select2-container--default {
   .linkMessageTypes:hover {
     text-decoration: underline !important;
   }
+.nameOptions:hover {
+  background-color:#ebedf2;
+  cursor: pointer;
+}
+.m-messenger__form-tools.pull-right.messengerTools {
+  background-color: #f4f5f8
+}
+i.greetingMessage.fa.fa-user:hover {
+  filter: brightness(50%);
+}
+i.greetingMessage.fa.fa-smile-o:hover {
+  filter: brightness(50%);
+}
+.m-widget4__info.previewInfo {
+    padding-left: 0px !important;
+}
+.msgPreview {
+  background: #fff;
+  padding: 8px 10px 0px 30px;
+  text-align: left;
+}
+.msgPreviewLeft {
+  float: left;
+  width: 33px;
+  padding-left: 7px;
+}
+.msgPreviewRight {
+  margin-left: 40px;
+  line-height: 16px;
+  padding-right: 50px;
+  font-size: 13px;
+  margin-top: 3px;
+}
+.footerPreview {
+  border-top: 1px solid #c8c7cc;
+  padding-top: 6px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  padding-bottom: 6px;
+}
+.buttonPreview {
+  height: 34px;
+  width: 300px;
+  line-height: 33px;
+  background: #007aff;
+  border: 1px solid #007aff;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  margin: 0;
+  position: relative;
+  font-size: 14px;
+  outline: 0;
+}
+.footerInfo {
+  color: #b5b5b5;
+  text-align: center;
+  font-size: 11px;
+  margin-bottom: 6px;
+  padding: 0 15px;
+}

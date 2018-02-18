@@ -380,11 +380,6 @@ class CustomerMatching extends React.Component {
                   For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
                 </div>
               </div>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-              </div>
               <div className='row'>
                 <div
                   className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>

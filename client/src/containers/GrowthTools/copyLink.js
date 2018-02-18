@@ -120,7 +120,7 @@ class CopyLink extends React.Component {
           }
             <div className='copylink col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
               <label>Link</label>
-              <p>This is a link to your page, you can send it to your friends
+              <p>This is the link to your page. Copy this link and share it with your friends to let them become subscriber of your page
               </p>
               <input value={this.state.fblink} />
 

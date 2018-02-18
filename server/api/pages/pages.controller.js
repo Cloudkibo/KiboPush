@@ -97,7 +97,8 @@ exports.allpages = function (req, res) {
               isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
               welcomeMessage: pages[i].welcomeMessage,
               subscribers: 0,
-              unsubscribes: 0
+              unsubscribes: 0,
+              greetingText: pages[i].greetingText
             })
           }
           for (let i = 0; i < pagesPayload.length; i++) {
@@ -185,7 +186,11 @@ exports.enable = function (req, res) {
                     var valueForMenu = {
                       'get_started': {
                         'payload': '<GET_STARTED_PAYLOAD>'
-                      }
+                      },
+                      'greeting': [{
+                        'locale': 'default',
+                        'text': 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
+                      }]
                     }
                     const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
 
@@ -454,4 +459,58 @@ exports.isWelcomeMessageEnabled = function (req, res) {
       }
       res.status(201).json({status: 'success', payload: req.body})
     })
+}
+
+exports.saveGreetingText = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Pages.update({pageId: req.body.pageId, companyId: companyUser.companyId},
+      {greetingText: req.body.greetingText}, {multi: true}, (err) => {
+        if (err) {
+          res.status(500).json({
+            status: 'Failed',
+            error: err,
+            description: 'Failed to update record'
+          })
+        }
+        var valueForMenu = {
+          'greeting': [{
+            'locale': 'default',
+            'text': req.body.greetingText
+          }]
+        }
+        Pages.findOne({pageId: req.body.pageId, companyId: companyUser.companyId}, (err, pages) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              description: err
+            })
+          }
+          const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pages.accessToken}`
+
+          needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+            if (!err) {
+              logger.serverLog(TAG,
+              `Menu added to page ${req.body.pageName}`)
+            }
+            if (err) {
+              logger.serverLog(TAG,
+              `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        })
+        res.status(201).json({status: 'success', payload: req.body})
+      })
+  })
 }

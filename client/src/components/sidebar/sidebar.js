@@ -468,13 +468,13 @@ class Sidebar extends Component {
               {this.showSubscribersItem()}
               {this.showWelcomeMessageItem()}
               {this.showCreatePhoneList()}
-              {this.props.user && this.state.subscribeToMessenger && this.props.user.plan.subscribe_to_messenger &&
+              {/* this.props.user && this.state.subscribeToMessenger && this.props.user.plan.subscribe_to_messenger &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-alarm' />
                   <span className='m-menu__link-text'>Subscribe to Messenger</span>
                 </Link>
-              </li>
+              </li>*/
               }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}

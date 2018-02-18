@@ -26,6 +26,10 @@ export function APIInfo (state = {}, action) {
       return Object.assign({}, state, {
         switchState: action.data
       })
+    case ActionTypes.GET_GREETING_MESSAGE:
+      return Object.assign({}, state, {
+        greetingMessage: action.data
+      })
     default:
       return state
   }

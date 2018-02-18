@@ -64,3 +64,6 @@ typings/
 # ides
 .idea/
 broadcastFiles/
+
+# .DS_Store file often screated by Mac OS
+.DS_Store

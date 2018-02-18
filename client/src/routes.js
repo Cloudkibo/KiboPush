@@ -5,6 +5,7 @@ import App from './sub.app.js'
 import Home from './containers/home'
 //  import Login from './containers/login/login'
 import Login from './containers/login/new'
+import LoginSignup from './containers/login/loginSignup'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
@@ -118,7 +119,8 @@ function redirectAuthUsers (nextState, replace) {
 
 const routes = (
   <Route path='/' component={App}>
-    <IndexRoute component={Login} onEnter={redirectAuthUsers} />
+    <IndexRoute component={LoginSignup} onEnter={redirectAuthUsers} />
+    <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
