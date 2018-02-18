@@ -225,7 +225,7 @@ class CreateWorkflow extends React.Component {
                   Define good rules for your workflow
                 </div>
               </div>
-              <div className='m-portlet m-portlet--mobile'>
+              <div id='workflow' className='m-portlet m-portlet--mobile'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
@@ -272,7 +272,7 @@ class CreateWorkflow extends React.Component {
                             onChange={this.changeReply}
                             value={this.state.reply} rows='5'
                             placeholder='Your reply here'
-                            id='exampleInputReply' />
+                            id='reply' />
                         </div>
                       </div>
                       <div className='form-group m-form__group row'>
