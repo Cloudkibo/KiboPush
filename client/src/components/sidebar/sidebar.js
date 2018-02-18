@@ -225,7 +225,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastTemplates () {
-    if (this.props.user) {
+    if (this.props.user && this.props.user.isSuperUser) {
       if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -377,17 +377,19 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.state.createPhoneList && this.props.user && this.props.user.permissions.pagesPermission) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-list' />
-            <span className='m-menu__link-text'>Customers Lists</span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
+    if (this.props.user && this.props.user.isSuperUser) {
+      if (this.state.createPhoneList && this.props.user && this.props.user.permissions.pagesPermission) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-list' />
+              <span className='m-menu__link-text'>Customers Lists</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
     }
   }
   showWelcomeMessageItem () {
@@ -456,7 +458,6 @@ class Sidebar extends Component {
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
               {this.showDashboard()}
-              {this.showBroadcastTemplates()}
               {this.showBroadcastsItem()}
               {this.showSurveysItem()}
               {this.showPollsItem()}
@@ -478,6 +479,7 @@ class Sidebar extends Component {
               }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
+              {this.showBroadcastTemplates()}
               {/* this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
