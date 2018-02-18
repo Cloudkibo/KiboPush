@@ -609,7 +609,7 @@ class AddSurvey extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
-      !(this.props.user && this.props.user.surveyTourSeen) &&
+      (this.props.user && this.props.user.surveyTourSeen) &&
         <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
       }
         <Header />
