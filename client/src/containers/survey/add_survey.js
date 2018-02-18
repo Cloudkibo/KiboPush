@@ -96,7 +96,7 @@ class AddSurvey extends React.Component {
       {
         title: 'Surveys',
         text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
-        selector: 'div#survey',
+        selector: 'h3#survey',
         position: 'top-right',
         type: 'hover',
         isFixed: true},
