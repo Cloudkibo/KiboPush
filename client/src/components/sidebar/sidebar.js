@@ -225,7 +225,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastTemplates () {
-    if (this.props.user) {
+    if (this.props.user && this.props.user.isSuperUser) {
       if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
