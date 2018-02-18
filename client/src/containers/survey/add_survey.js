@@ -97,11 +97,11 @@ class AddSurvey extends React.Component {
         title: 'Surveys',
         text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
         selector: 'div#survey',
-        position: 'top-left',
+        position: 'top-right',
         type: 'hover',
         isFixed: true},
       {
-        title: 'Title and Description',
+        title: 'Title and Introduction',
         text: `Give your survey a title and description for easy identification`,
         selector: 'div#identity',
         position: 'right',
@@ -110,7 +110,7 @@ class AddSurvey extends React.Component {
       {
         title: 'Add Questions',
         text: 'Add questions, and create a set of responses for your subscriber to reply with',
-        selector: 'button#questions',
+        selector: 'div#questions',
         position: 'bottom-left',
         type: 'hover',
         isFixed: true},
@@ -149,7 +149,7 @@ class AddSurvey extends React.Component {
       console.log('change List Selection', selected)
     })
 
-    $("#selectLists").val('').trigger('change')
+    $('#selectLists').val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
     console.log('asd', pageOptions)
@@ -619,7 +619,7 @@ class AddSurvey extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Survey Form</h3>
+                  <h3 id='survey' className='m-subheader__title'>Create Survey Form</h3>
                 </div>
               </div>
             </div>
@@ -627,7 +627,7 @@ class AddSurvey extends React.Component {
               <div className='row'>
                 <div
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile'>
+                  <div id='identity' className='m-portlet m-portlet--mobile'>
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
                         <div className='form-group' id='titl'>
@@ -664,8 +664,8 @@ class AddSurvey extends React.Component {
                      </div>
                      */}
 
-                      <div className='col-sm-6 col-md-4'>
-                        <button id='questions' className='btn btn-primary btn-sm'
+                      <div id='questions' className='col-sm-6 col-md-4'>
+                        <button className='btn btn-primary btn-sm'
                           onClick={this.addClick.bind(this)}> Add Questions
                       </button>
                       </div>
