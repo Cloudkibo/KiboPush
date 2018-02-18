@@ -196,7 +196,7 @@ class CreateWorkflow extends React.Component {
 
       <div>
         {
-          !(this.props.user && this.props.user.workFlowsTourSeen) &&
+          (this.props.user && this.props.user.workFlowsTourSeen) &&
           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps
             debug={false} type={'continuous'}
             callback={this.tourFinished} showStepsProgress
