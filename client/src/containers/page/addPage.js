@@ -101,7 +101,7 @@ class AddPage extends React.Component {
                   onClose={this.closeDialog}>
                   <ModalDialog style={{width: '300px'}}
                     onClose={this.closeDialog}>
-                    <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' />Warning:</h3>
+                    <h3><i style={{fontSize: '1.75rem'}} className='fa fa-exclamation-triangle' aria-hidden='true' /> Warning:</h3>
                     <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
                   </ModalDialog>
                 </ModalContainer>
