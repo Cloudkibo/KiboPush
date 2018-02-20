@@ -53,7 +53,8 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_ B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
-          pathname: '/connectFb'
+          pathname: '/connectFb',
+          state: { account_type: 'individual' }
         })
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
