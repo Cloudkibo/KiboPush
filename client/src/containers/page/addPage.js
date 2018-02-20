@@ -10,7 +10,6 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 import {
   addPages,
@@ -22,17 +21,15 @@ import { bindActionCreators } from 'redux'
 class AddPage extends React.Component {
   constructor (props) {
     super(props)
-    props.getuserdetails()
-    props.addPages()
-    this.state = {
-      counter: 0,
+    this.state = {counter: 0,
       showAlert: false,
       alertmsg: '',
-      timeout: 2000,
-      showWarning: false,
-      descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
-    }
-    this.closeDialog = this.closeDialog.bind(this)
+      timeout: 2000}
+  }
+
+  componentWillMount () {
+    this.props.getuserdetails()
+    this.props.addPages()
   }
 
   gotoView () {
@@ -58,13 +55,12 @@ class AddPage extends React.Component {
     document.title = 'KiboPush | Add Pages'
   }
 
-  closeDialog () {
-    this.setState({showWarning: false})
-  }
-
   componentWillReceiveProps (nextprops) {
-    if (nextprops.otherPages && nextprops.otherPages.length === 0) {
-      this.setState({showWarning: true})
+    if (nextprops.otherPages && nextprops.otherPages.length <= 0 &&
+      this.state.counter < 2) {
+      console.log('calling addPages')
+      this.props.addPages()
+      this.setState({counter: this.state.counter + 1})
     }
     if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
@@ -95,42 +91,26 @@ class AddPage extends React.Component {
                   <h3 className='m-subheader__title'>Manage Pages</h3>
                 </div>
               </div>
-              {
-                this.state.showWarning &&
-                <ModalContainer style={{width: '300px'}}
-                  onClose={this.closeDialog}>
-                  <ModalDialog style={{width: '300px'}}
-                    onClose={this.closeDialog}>
-                    <h3><i className='fa fa-exclamation-triangle' aria-hidden='true' />Warning:</h3>
-                    <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
-                  </ModalDialog>
-                </ModalContainer>
-            }
             </div>
             <div className='m-content'>
-              { this.props.user && !this.props.user.facebookInfo
-                ? <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                  <div className='m-alert__icon'>
-                    <i className='flaticon-exclamation m--font-brand' />
-                  </div>
-                  <div className='m-alert__text'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                { this.props.user && !this.props.user.facebookInfo
+                  ? <div className='m-alert__text'>
                     This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{color: 'blue', cursor: 'pointer'}}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{color: 'blue', cursor: 'pointer'}}>here</Link> to invite admins to your company.
                   </div>
-                </div>
-                : <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                  <div className='m-alert__icon'>
-                    <i className='flaticon-exclamation m--font-brand' />
+                : <div>
+                  { this.props.location.state && this.props.location.state.showMsg &&
+                  <div className='m-alert__text'>
+                    This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
+                    To connect the pages click on connect buttons. Click on Done button to save them.
                   </div>
-                  <div>
-                    { this.state.descriptionMsg &&
-                      <div className='m-alert__text'>
-                        This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
-                        To connect the pages click on connect buttons. Click on Done button to save them.
-                      </div>
-                    }
-                  </div>
+                }
                 </div>
               }
+              </div>
               <div className='row'>
                 <div className='col-xl-12'>
                   {this.state.showAlert === true &&
