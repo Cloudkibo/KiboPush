@@ -177,65 +177,53 @@ exports.enable = function (req, res) {
                         description: `Internal Server Error${JSON.stringify(err)}`
                       })
                     }
-                    Pages.find({companyId: companyUser.companyId, connected: true}, (err, connectedPages) => {
-                      if (err) {
-                        return res.status(500).json({status: 'failed', description: err})
-                      }
-                      for (let a = 0; a < connectedPages.length; a++) {
-                        for (let b = 0; b < pages.length; b++) {
-                          if (connectedPages[a].pageId === pages[b].pageId) {
-                            pages[b].connected = true
-                          }
-                        }
-                      }
-                      logger.serverLog(TAG, `Pages: ${JSON.stringify(pages)}`)
-                      const options = {
-                        url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
-                        qs: {access_token: req.body.accessToken},
-                        method: 'POST'
-                      }
-                      var valueForMenu = {
-                        'get_started': {
-                          'payload': '<GET_STARTED_PAYLOAD>'
-                        },
-                        'greeting': [{
-                          'locale': 'default',
-                          'text': 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
-                        }]
-                      }
-                      const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
+                    const options = {
+                      url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                      qs: {access_token: req.body.accessToken},
+                      method: 'POST'
 
-                      needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
-                        if (!err) {
-                          logger.serverLog(TAG,
+                    }
+                    var valueForMenu = {
+                      'get_started': {
+                        'payload': '<GET_STARTED_PAYLOAD>'
+                      },
+                      'greeting': [{
+                        'locale': 'default',
+                        'text': 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
+                      }]
+                    }
+                    const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
+
+                    needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
+                      if (!err) {
+                        logger.serverLog(TAG,
                           `Menu added to page ${req.body.pageName}`)
-                        }
-                        if (err) {
-                          logger.serverLog(TAG,
+                      }
+                      if (err) {
+                        logger.serverLog(TAG,
                           `Internal Server Error ${JSON.stringify(err)}`)
-                        }
-                      })
-                      needle.post(options.url, options, (error, response) => {
-                        if (error) {
-                          return res.status(500)
-                          .json(
+                      }
+                    })
+                    needle.post(options.url, options, (error, response) => {
+                      if (error) {
+                        return res.status(500)
+                        .json(
                           {status: 'failed', description: JSON.stringify(error)})
-                        }
-                        require('./../../config/socketio').sendMessageToClient({
-                          room_id: companyUser.companyId,
-                          body: {
-                            action: 'page_connect',
-                            payload: {
-                              page_id: req.body.pageId,
-                              user_id: req.user._id,
-                              user_name: req.user.name,
-                              company_id: companyUser.companyId
-                            }
+                      }
+                      require('./../../config/socketio').sendMessageToClient({
+                        room_id: companyUser.companyId,
+                        body: {
+                          action: 'page_connect',
+                          payload: {
+                            page_id: req.body.pageId,
+                            user_id: req.user._id,
+                            user_name: req.user.name,
+                            company_id: companyUser.companyId
                           }
-                        })
-                        res.status(200)
-                        .json({status: 'success', payload: {pages: pages}})
+                        }
                       })
+                      res.status(200)
+                      .json({status: 'success', payload: {pages: pages}})
                     })
                   })
                 })
@@ -343,43 +331,30 @@ exports.disable = function (req, res) {
                       description: `Error in getting pages subscriber count ${JSON.stringify(err2)}`
                     })
                   }
-                  Pages.find({companyId: companyUser.companyId, connected: true}, (err, connectedPages) => {
-                    if (err) {
-                      return res.status(500).json({status: 'failed', description: err})
-                    }
-                    for (let a = 0; a < connectedPages.length; a++) {
-                      for (let b = 0; b < pages.length; b++) {
-                        if (connectedPages[a].pageId === pages[b].pageId) {
-                          pages[b].connected = true
-                        }
-                      }
-                    }
-                    logger.serverLog(TAG, `Pages: ${JSON.stringify(pages)}`)
-                    let pagesPayload = []
-                    for (let i = 0; i < pages.length; i++) {
-                      pagesPayload.push({
-                        _id: pages[i]._id,
-                        pageId: pages[i].pageId,
-                        pageName: pages[i].pageName,
-                        userId: pages[i].userId,
-                        pagePic: pages[i].pagePic,
-                        connected: pages[i].connected,
-                        pageUserName: pages[i].pageUserName,
-                        likes: pages[i].likes,
-                        subscribers: 0
-                      })
-                    }
-                    for (let i = 0; i < pagesPayload.length; i++) {
-                      for (let j = 0; j < gotSubscribersCount.length; j++) {
-                        if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
-                          pagesPayload[i].subscribers = gotSubscribersCount[j].count
-                        }
-                      }
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: pagesPayload
+                  let pagesPayload = []
+                  for (let i = 0; i < pages.length; i++) {
+                    pagesPayload.push({
+                      _id: pages[i]._id,
+                      pageId: pages[i].pageId,
+                      pageName: pages[i].pageName,
+                      userId: pages[i].userId,
+                      pagePic: pages[i].pagePic,
+                      connected: pages[i].connected,
+                      pageUserName: pages[i].pageUserName,
+                      likes: pages[i].likes,
+                      subscribers: 0
                     })
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() === gotSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: pagesPayload
                   })
                 })
                 //  res.status(200).json({status: 'success', payload: pages})

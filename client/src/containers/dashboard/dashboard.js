@@ -51,11 +51,7 @@ class Dashboard extends React.Component {
       })
     }
     if (nextprops.user) {
-      if (!nextprops.user.facebookInfo) {
-        browserHistory.push({
-          pathname: '/connectFb'
-        })
-      } else if (nextprops.pages && nextprops.pages.length === 0) {
+      if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
         browserHistory.push({
           pathname: '/addPages',
