@@ -234,7 +234,7 @@ class Settings extends React.Component {
                             <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
                           </div>
                         </div> */}
-                        <div className='m-card-profile__details'>
+                        <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} className='m-card-profile__details'>
                           <span className='m-card-profile__name'>
                             {(this.props.user) ? this.props.user.name : ''}
                           </span>
@@ -345,7 +345,7 @@ class Settings extends React.Component {
                           </div>
                         </form>
                         <div className='form-group m-form__group'>
-                          <div className='alert m-alert m-alert--default' role='alert' style={{width: '515px', marginLeft: '90px'}}>
+                          <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                             For API documentation, please visit <a href='https://app.kibopush.com/docs'>https://app.kibopush.com/docs</a>
                           </div>
                         </div>
