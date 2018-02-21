@@ -99,7 +99,7 @@ class SubscribeToMessenger extends React.Component {
   }
   render () {
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
