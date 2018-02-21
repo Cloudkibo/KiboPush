@@ -234,7 +234,7 @@ class Signup extends React.Component {
                           <br />
                           <br />
                           <span>
-                            <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                            <Link id='m_login_signup_cancel' to='/' className='btn m-btn--pill btn-secondary'>
                               Cancel
                             </Link>
                           </span>
