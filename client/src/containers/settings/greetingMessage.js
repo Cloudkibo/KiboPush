@@ -329,15 +329,19 @@ class GreetingMessage extends React.Component {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='form-group m-form__group row pull-right'>
-                    <div className='col-12' style={{marginRight: '35px'}}>
-                      <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                      {
-                        this.state.greetingMessage.length > 0
-                        ? <button className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                        : <button className='btn btn-primary' disabled>Save</button>
-                      }
+                    <br />
+                    <div className='col-7' />
+                    <div className='col-5 form-group m-form__group row'>
+                      <div className='pull-right'>
+                        <div className='col-12'>
+                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                          {
+                            this.state.greetingMessage.length > 0
+                            ? <button className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                            : <button className='btn btn-primary' disabled>Save</button>
+                          }
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
