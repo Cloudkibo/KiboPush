@@ -83,7 +83,7 @@ class Login extends React.Component {
       transition: 'scale'
     }
     return (
-      <div style={{height: 100 + 'vh'}}>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='fb-customerchat'
           data-page_id='151990922046256'
@@ -151,7 +151,7 @@ class Login extends React.Component {
                         </button>
                           <br />
                           <br />
-                          <Link to='/' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                          <Link to='/' className='btn m-btn--pill btn-secondary'>
                           Cancel
                           </Link>
                         </center>

@@ -169,7 +169,7 @@ class GreetingMessage extends React.Component {
       this.setState({
         selectPage: this.props.pages[0],
         greetingMessage: this.props.pages[0].greetingText,
-        textCount: this.props.pages[0].greetingText !== ''? (160 - this.props.pages[0].greetingText.length) : 160
+        textCount: this.props.pages[0].greetingText !== '' ? (160 - this.props.pages[0].greetingText.length) : 160
       })
     } else {
       this.setState({
