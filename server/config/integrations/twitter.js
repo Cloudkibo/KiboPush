@@ -7,7 +7,7 @@ let Twit = require('twit')
 let AutoPosting = require('../../api/autoposting/autopostings.model')
 let Pages = require('../../api/pages/Pages.model')
 let Subscribers = require('../../api/subscribers/Subscribers.model')
-const AutopostingMessages = require('../autoposting_messages/autoposting_messages.model')
+const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
 let request = require('request')
 let _ = require('lodash')
 
