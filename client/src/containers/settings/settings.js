@@ -221,7 +221,7 @@ class Settings extends React.Component {
                   Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
-              <div className='row' style={{height: 92 + 'vh'}}>
+              <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height'>
                     <div className='m-portlet__body'>
