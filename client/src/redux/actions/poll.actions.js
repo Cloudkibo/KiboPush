@@ -70,15 +70,17 @@ export function clearAlertMessage () {
   }
 }
 
-export function sendpoll (poll) {
+export function sendpoll (poll, msg) {
   return (dispatch) => {
     callApi('polls/send', 'post', poll)
       .then(res => {
         dispatch(sendpollresp(res.payload))
         console.log('sendpollresp', res)
         if (res.status === 'success') {
+          msg.success('Poll sent successfully')
           dispatch(sendPollSuccess())
         } else {
+          msg.success('Poll not sent!')
           dispatch(sendPollFailure())
         }
       }
