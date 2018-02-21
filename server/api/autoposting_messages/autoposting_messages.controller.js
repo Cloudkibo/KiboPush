@@ -1,4 +1,4 @@
-const AutoPosting = require('./autopostings.model')
+const AutoPosting = require('./autoposting_messages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.index = function (req, res) {
