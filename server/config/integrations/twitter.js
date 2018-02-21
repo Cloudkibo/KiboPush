@@ -7,6 +7,7 @@ let Twit = require('twit')
 let AutoPosting = require('../../api/autoposting/autopostings.model')
 let Pages = require('../../api/pages/Pages.model')
 let Subscribers = require('../../api/subscribers/Subscribers.model')
+const AutopostingMessages = require('../autoposting_messages/autoposting_messages.model')
 let request = require('request')
 let _ = require('lodash')
 
@@ -108,6 +109,22 @@ function connect () {
 
                         logger.serverLog(TAG,
                           `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+                        let newMsg = new AutopostingMessages({
+                          pageId: page._id,
+                          companyId: postingItem.companyId,
+                          autoposting_type: 'twiitter',
+                          payload: tweet,
+                          autopostingId: postingItem._id,
+                          sent: subscribers.length,
+                          seen: 0,
+                          clicked: 0
+                        })
+
+                        newMsg.save((err, savedMsg) => {
+                          if (err) logger.serverLog(TAG, err)
+                          logger.serverLog(TAG, 'autoposting message saved')
+                        })
 
                         subscribers.forEach(subscriber => {
                           let messageData = createFbPayload(subscriber, tweet)

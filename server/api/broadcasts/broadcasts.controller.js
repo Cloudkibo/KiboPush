@@ -21,6 +21,7 @@ const LiveChat = require('../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 const Users = require('./../user/Users.model')
+const AutopostingMessages = require('../autoposting_messages/autoposting_messages.model')
 const utility = require('./broadcasts.utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
@@ -405,6 +406,22 @@ function handleThePagePostsForAutoPosting (event, status) {
 
               logger.serverLog(TAG,
                 `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+
+              let newMsg = new AutopostingMessages({
+                pageId: page._id,
+                companyId: postingItem.companyId,
+                autoposting_type: 'facebook',
+                payload: event,
+                autopostingId: postingItem._id,
+                sent: subscribers.length,
+                seen: 0,
+                clicked: 0
+              })
+
+              newMsg.save((err, savedMsg) => {
+                if (err) logger.serverLog(TAG, err)
+                logger.serverLog(TAG, 'autoposting message saved')
+              })
 
               subscribers.forEach(subscriber => {
                 let messageData = {}
