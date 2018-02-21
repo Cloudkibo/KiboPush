@@ -197,7 +197,7 @@ class GreetingMessage extends React.Component {
       transition: 'scale'
     }
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative'}}

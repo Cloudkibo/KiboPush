@@ -407,24 +407,10 @@ function handleThePagePostsForAutoPosting (event, status) {
               logger.serverLog(TAG,
                 `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
-              let newMsg = new AutopostingMessages({
-                pageId: page._id,
-                companyId: postingItem.companyId,
-                autoposting_type: 'facebook',
-                payload: event,
-                autopostingId: postingItem._id,
-                sent: subscribers.length,
-                seen: 0,
-                clicked: 0
-              })
-
-              newMsg.save((err, savedMsg) => {
-                if (err) logger.serverLog(TAG, err)
-                logger.serverLog(TAG, 'autoposting message saved')
-              })
-
+              let subscriberIds = []
               subscribers.forEach(subscriber => {
                 let messageData = {}
+                subscriberIds.push(subscriber.senderId)
                 if (event.value.item === 'status' || status) {
                   messageData = {
                     'recipient': JSON.stringify({
@@ -532,6 +518,22 @@ function handleThePagePostsForAutoPosting (event, status) {
                       }
                     }
                   })
+              })
+              let newMsg = new AutopostingMessages({
+                pageId: page.pageId,
+                companyId: postingItem.companyId,
+                autoposting_type: 'facebook',
+                payload: event,
+                autopostingId: postingItem._id,
+                subscribers: subscriberIds,
+                sent: subscribers.length,
+                seen: 0,
+                clicked: 0
+              })
+
+              newMsg.save((err, savedMsg) => {
+                if (err) logger.serverLog(TAG, err)
+                logger.serverLog(TAG, 'autoposting message saved')
               })
             })
         })

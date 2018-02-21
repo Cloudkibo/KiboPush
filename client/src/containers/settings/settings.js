@@ -236,7 +236,7 @@ class Settings extends React.Component {
                         </div> */}
                         <div className='m-card-profile__details'>
                           <span className='m-card-profile__name'>
-                            {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                            {(this.props.user) ? this.props.user.name : ''}
                           </span>
                           <span className='m-card-profile__email'>
                             {(this.props.user) ? this.props.user.email : ''}
@@ -285,7 +285,7 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 { this.state.showAPI &&
-                <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+                <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-tools'>

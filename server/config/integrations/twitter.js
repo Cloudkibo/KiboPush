@@ -110,24 +110,10 @@ function connect () {
                         logger.serverLog(TAG,
                           `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
-                        let newMsg = new AutopostingMessages({
-                          pageId: page._id,
-                          companyId: postingItem.companyId,
-                          autoposting_type: 'twiitter',
-                          payload: tweet,
-                          autopostingId: postingItem._id,
-                          sent: subscribers.length,
-                          seen: 0,
-                          clicked: 0
-                        })
-
-                        newMsg.save((err, savedMsg) => {
-                          if (err) logger.serverLog(TAG, err)
-                          logger.serverLog(TAG, 'autoposting message saved')
-                        })
-
+                        let subscriberIds = []
                         subscribers.forEach(subscriber => {
                           let messageData = createFbPayload(subscriber, tweet)
+                          subscriberIds.push(subscriber.senderId)
                           request(
                             {
                               'method': 'POST',
@@ -153,6 +139,22 @@ function connect () {
                                 }
                               }
                             })
+                        })
+                        let newMsg = new AutopostingMessages({
+                          pageId: page.pageId,
+                          companyId: postingItem.companyId,
+                          autoposting_type: 'twitter',
+                          payload: tweet,
+                          autopostingId: postingItem._id,
+                          subscribers: subscriberIds,
+                          sent: subscribers.length,
+                          seen: 0,
+                          clicked: 0
+                        })
+
+                        newMsg.save((err, savedMsg) => {
+                          if (err) logger.serverLog(TAG, err)
+                          logger.serverLog(TAG, 'autoposting message saved')
                         })
                       })
                   })
