@@ -4,6 +4,7 @@
  */
 
 import React from 'react'
+import { Link } from 'react-router'
 
 class PageLikesSubscribers extends React.Component {
   constructor (props, context) {
@@ -108,58 +109,64 @@ class PageLikesSubscribers extends React.Component {
             <div className='m-widget21'>
               <div className='row'>
                 <div className='col-xl-4'>
-                  <div className='m-widget21__item'>
-                    <span className='m-widget21__icon'>
-                      <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='fa flaticon-user-ok m--font-light' />
-                      </a>
-                    </span>
-                    <div className='m-widget21__info'>
-                      <span className='m-widget21__title'>
-                        {this.state.subscribers}
+                  <Link to='/subscribers' >
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa flaticon-user-ok m--font-light' />
+                        </a>
                       </span>
-                      <br />
-                      <span className='m-widget21__sub'>
-                        Subscribers
-                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.state.subscribers}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Subscribers
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
                 <div className='col-xl-4'>
-                  <div className='m-widget21__item'>
-                    <span className='m-widget21__icon'>
-                      <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='fa fa-thumbs-o-up m--font-light' />
-                      </a>
-                    </span>
-                    <div className='m-widget21__info'>
-                      <span className='m-widget21__title'>
-                        {this.state.likes}
+                  <Link to='/subscribers' >
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa fa-thumbs-o-up m--font-light' />
+                        </a>
                       </span>
-                      <br />
-                      <span className='m-widget21__sub'>
-                        Likes
-                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.state.likes}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Likes
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
                 <div className='col-xl-4'>
-                  <div className='m-widget21__item'>
-                    <span className='m-widget21__icon'>
-                      <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='fa flaticon-users m--font-light' />
-                      </a>
-                    </span>
-                    <div className='m-widget21__info'>
-                      <span className='m-widget21__title'>
-                        {this.state.unsubscribes}
+                  <Link to='/subscribers' >
+                    <div className='m-widget21__item'>
+                      <span className='m-widget21__icon'>
+                        <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+                          <i className='fa flaticon-users m--font-light' />
+                        </a>
                       </span>
-                      <br />
-                      <span className='m-widget21__sub'>
-                        Unsubscribes
-                      </span>
+                      <div className='m-widget21__info'>
+                        <span className='m-widget21__title'>
+                          {this.state.unsubscribes}
+                        </span>
+                        <br />
+                        <span className='m-widget21__sub'>
+                          Unsubscribes
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
               <div className='m--space-30' />

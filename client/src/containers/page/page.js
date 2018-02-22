@@ -159,16 +159,16 @@ class Page extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="xKa09wiYbrg"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='3XenbHoDZkA'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -184,28 +184,34 @@ class Page extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              {
-                  this.props.subscribers &&
+              { this.props.pages && this.props.pages.length === 0
+                ? <div className='alert alert-success'>
+                  <h4 className='block'>0 Connected Pages</h4>
+                  You do not have any connected pages. Please click on Connect Facebook Pages to connect your Facebook Pages.
+                </div>
+              : <div>
+                { this.props.subscribers &&
                   this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
                     <h4 className='block'>0 Subscribers</h4>
-                    Your connected pages have zero subscribers. Unless you don not
+                    Your connected pages have zero subscribers. Unless you do not
                     have any subscriber, you will not be able to broadcast
                     message, polls and surveys.
                     Lets invite subscribers first. Dont worry, we will guide
                     you on how you can invite subscribers.
                     Click on 'Invite Subscribers' button on right side of the
                     page title.
-
                   </div>
                 }
+              </div>
+              }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding pages? Here is the <a href='http://kibopush.com/user-guide/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>
@@ -233,7 +239,7 @@ class Page extends React.Component {
                                   <span>
                                     <i className='la la-plus' />
                                     <span>
-                                      Add Pages
+                                      Connect Facebook Pages
                                     </span>
                                   </span>
                                 </button>
