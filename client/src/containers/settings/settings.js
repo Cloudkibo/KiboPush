@@ -269,7 +269,7 @@ class Settings extends React.Component {
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setSubscribeToMessenger} >
                             <i className='m-nav__link-icon flaticon-alarm' />
-                            <span className='m-nav__link-text'>Subscribe To Messenger</span>
+                            <span className='m-nav__link-text'>HTML Widget</span>
                           </a>
                         </li>
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&

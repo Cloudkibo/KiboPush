@@ -326,6 +326,14 @@ class CreateBroadcastTemplate extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                </div>
+              </div>
               <div className='row'>
 
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>

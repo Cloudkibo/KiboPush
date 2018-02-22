@@ -540,19 +540,19 @@ class createSurvey extends React.Component {
                       </button>
                       </div>
                       <br /><br />
-                      <div className='add-options-message'>
+                        <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                          <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                            <button className='btn btn-primary pull-right'
+                              onClick={this.createSurvey}> Create Survey
+                            </button>
+                            <Link
+                              to='/templates'
+                              className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                              Cancel
+                            </Link>
+                          </div>
+                        </div>
 
-                        <button className='btn btn-primary pull-right'
-                          onClick={this.createSurvey}> Create Survey
-                      </button>
-                        <Link
-                          to='/templates'
-                          style={{float: 'right', margin: 2}}
-                          className='btn btn-border-think btn-transparent c-grey pull-right'>
-                        Cancel
-                      </Link>
-                        <br />
-                      </div>
                       {this.state.alertMessage !== '' &&
                       <center>
                         <Alert type={this.state.alertType}>
