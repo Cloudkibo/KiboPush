@@ -20,6 +20,7 @@ const path = require('path')
 const helmet = require('helmet')
 const passport = require('passport')
 const config = require('./environment/index')
+const Raven = require('raven')
 
 module.exports = function (app) {
   const env = app.get('env')
@@ -51,6 +52,8 @@ module.exports = function (app) {
      * HTTP headers appropriately.
      */
     app.use(helmet())
+
+    app.use(Raven.errorHandler())
   }
 
   if (env === 'development' || env === 'test') {
