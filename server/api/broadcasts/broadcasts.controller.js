@@ -410,7 +410,7 @@ function handleThePagePostsForAutoPosting (event, status) {
               let subscriberIds = []
               subscribers.forEach(subscriber => {
                 let messageData = {}
-                subscriberIds.push(subscriber.senderId)
+                subscriberIds.push({id: subscriber._id, senderId: subscriber.senderId})
                 if (event.value.item === 'status' || status) {
                   messageData = {
                     'recipient': JSON.stringify({
@@ -418,7 +418,10 @@ function handleThePagePostsForAutoPosting (event, status) {
                     }),
                     'message': JSON.stringify({
                       'text': event.value.message,
-                      'metadata': 'This is a meta data for fb post'
+                      'metadata': JSON.stringify({
+                        'autopostingId': postingItem._id,
+                        'autoposting_type': 'facebook'
+                      })
                     })
                   }
                 } else if (event.value.item === 'share') {
@@ -446,7 +449,11 @@ function handleThePagePostsForAutoPosting (event, status) {
                             }
                           ]
                         }
-                      }
+                      },
+                      'metadata': JSON.stringify({
+                        'autopostingId': postingItem._id,
+                        'autoposting_type': 'facebook'
+                      })
                     })
                   }
                 } else if (event.value.item === 'photo') {
@@ -474,7 +481,11 @@ function handleThePagePostsForAutoPosting (event, status) {
                             }
                           ]
                         }
-                      }
+                      },
+                      'metadata': JSON.stringify({
+                        'autopostingId': postingItem._id,
+                        'autoposting_type': 'facebook'
+                      })
                     })
                   }
                 } else if (event.value.item === 'video') {
@@ -489,7 +500,11 @@ function handleThePagePostsForAutoPosting (event, status) {
                           'url': event.value.link,
                           'is_reusable': false
                         }
-                      }
+                      },
+                      'metadata': JSON.stringify({
+                        'autopostingId': postingItem._id,
+                        'autoposting_type': 'facebook'
+                      })
                     })
                   }
                 }
@@ -520,7 +535,8 @@ function handleThePagePostsForAutoPosting (event, status) {
                   })
               })
               let newMsg = new AutopostingMessages({
-                pageId: page.pageId,
+                pageId: page._id,
+                page_fb_Id: page.pageId,
                 companyId: postingItem.companyId,
                 autoposting_type: 'facebook',
                 payload: event,
