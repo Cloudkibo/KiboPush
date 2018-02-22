@@ -105,7 +105,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -118,7 +118,7 @@ class CreateSubList extends React.Component {
   handleGetParentList (response) {
     if (response.payload) {
       this.setState({parentListData: response.payload})
-      var subSetIds = getSubList(response.payload, this.state.conditions)
+      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -154,7 +154,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -506,6 +506,7 @@ class CreateSubList extends React.Component {
                                          <option value='firstName'>First Name</option>
                                          <option value='lastName'>Last Name</option>
                                          <option value='email'>Email</option>
+                                         <option value='page'>Page</option>
                                          <option value='phoneNumber'>Phone Number</option>
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
