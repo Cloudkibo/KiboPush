@@ -10,11 +10,14 @@
 
 const path = require('path')
 const config = require('./config/environment/index')
+const Raven = require('raven')
 const logger = require('./components/logger')
 
 const TAG = 'routes.js'
 
 module.exports = function (app) {
+  const env = app.get('env')
+
   app.use('/api/dashboard/', require('./api/dashboard'))
   app.use('/api/things', require('./api/thing'))
   app.use('/api/users', require('./api/user'))
@@ -65,7 +68,13 @@ module.exports = function (app) {
     res.status(404).send({url: `${req.originalUrl} not found`})
   })
 
-  // app.use((req, res) => {
-  //   res.redirect('/')
-  // })
+  app.route('/*').get((req, res) => {
+    res.redirect('/')
+  }).post((req, res) => {
+    res.redirect('/')
+  })
+
+  if (env === 'production' || env === 'staging') {
+    app.use(Raven.errorHandler())
+  }
 }

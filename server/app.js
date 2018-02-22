@@ -40,10 +40,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(middleware.swaggerUi())
   httpApp.use(middleware.swaggerUi())
 
+  require('./config/express')(appObj)
   require('./config/setup')(app, httpApp, config)
   require('./components/utility').setupPlans()
   // require('./config/integrations/pubsubhubbub')()
   require('./config/integrations/twitter').connect()
   require('./routes')(appObj)
-  require('./config/express')(appObj)
 })
