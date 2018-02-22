@@ -13,7 +13,6 @@ let AutopostingMessagesSchema = new Schema({
   autoposting_type: String, // facebook or twitter or youtube
   payload: Schema.Types.Mixed, // this where message content will go
   autopostingId: {type: Schema.ObjectId, ref: 'autopostings'}, // unique name for autoposting account
-  subscribers: Schema.Types.Mixed, // array of subscriber fb ids
   sent: Number, // sent count
   seen: Number, // seen count
   clicked: Number, // clicked count
