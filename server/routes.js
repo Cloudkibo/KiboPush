@@ -65,7 +65,7 @@ module.exports = function (app) {
     res.status(404).send({url: `${req.originalUrl} not found`})
   })
 
-  app.use((req, res) => {
-    res.redirect('/')
-  })
+  // app.use((req, res) => {
+  //   res.redirect('/')
+  // })
 }
