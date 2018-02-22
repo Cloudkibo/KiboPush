@@ -9,7 +9,7 @@ let crypto = require('crypto')
 let path = require('path')
 
 exports.forgot = function (req, res) {
-  User.findOne({email: req.body.email, domain: req.body.domain},
+  User.findOne({email: req.body.email},
     function (err, gotUser) {
       if (err) {
         return res.status(500).json({
