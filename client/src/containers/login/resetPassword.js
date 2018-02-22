@@ -35,7 +35,7 @@ class ResetPassword extends React.Component {
   }
   onSubmit (event) {
     event.preventDefault()
-    this.props.forgotPass({email: this.refs.email.value, domain: this.refs.domain.value}, this.msg)
+    this.props.forgotPass({email: this.refs.email.value}, this.msg)
   }
   componentWillReceiveProps (nextprops) {
     console.log(nextprops)

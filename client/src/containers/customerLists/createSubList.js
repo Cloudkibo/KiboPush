@@ -507,7 +507,6 @@ class CreateSubList extends React.Component {
                                          <option value='lastName'>Last Name</option>
                                          <option value='email'>Email</option>
                                          <option value='phoneNumber'>Phone Number</option>
-                                         <option value='page'>Page</option>
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
                                        </select>
