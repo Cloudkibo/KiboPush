@@ -7,7 +7,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development' // production
 const express = require('express')
 const mongoose = require('mongoose')
 const config = require('./config/environment/index')
-const logger = require('./components/logger')
 
 const app = express()
 const httpApp = express()
@@ -41,10 +40,10 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   app.use(middleware.swaggerUi())
   httpApp.use(middleware.swaggerUi())
 
-  require('./routes')(appObj)
   require('./config/setup')(app, httpApp, config)
   require('./components/utility').setupPlans()
   // require('./config/integrations/pubsubhubbub')()
   require('./config/integrations/twitter').connect()
   require('./config/express')(appObj)
+  require('./routes')(appObj)
 })
