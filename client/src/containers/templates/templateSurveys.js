@@ -172,7 +172,7 @@ class templateSurveys extends React.Component {
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Create Survey
+                        Create Template Survey
                       </span>
                     </span>
                   </button>

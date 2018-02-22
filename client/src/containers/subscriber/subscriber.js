@@ -10,6 +10,7 @@ import { Link } from 'react-router'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class Subscriber extends React.Component {
   constructor (props, context) {
@@ -21,6 +22,7 @@ class Subscriber extends React.Component {
       filterByGender: '',
       filterByLocale: ''
     }
+    props.loadMyPagesList()
     props.loadSubscribersList()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -174,6 +176,13 @@ class Subscriber extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                this.props.pages && this.props.pages.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Connected Pages</h4>
+                    You do not have any connected pages. Unless you do not connect any pages, you won't be able to invite subscribers. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your facebook page.
+                  </div>
+              }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
@@ -194,16 +203,28 @@ class Subscriber extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='/invitesubscribers'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            <span>
-                              <i className='la la-user-plus' />
+                        {this.props.pages && this.props.pages.length > 0
+                          ? <Link to='/invitesubscribers' disabled>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>
-                                Invite Subscribers
+                                <i className='la la-user-plus' />
+                                <span>
+                                  Invite Subscribers
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </Link>
+                            </button>
+                          </Link>
+                          : <Link disabled>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                              <span>
+                                <i className='la la-user-plus' />
+                                <span>
+                                  Invite Subscribers
+                                </span>
+                              </span>
+                            </button>
+                          </Link>
+                      }
                       </div>
                     </div>
 
@@ -375,12 +396,14 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     subscribers: (state.subscribersInfo.subscribers),
-    locales: (state.subscribersInfo.locales)
+    locales: (state.subscribersInfo.locales),
+    pages: (state.pagesInfo.pages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadSubscribersList: loadSubscribersList},
+  return bindActionCreators({loadSubscribersList: loadSubscribersList,
+    loadMyPagesList: loadMyPagesList},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Subscriber)

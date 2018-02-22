@@ -122,7 +122,7 @@ class AddPage extends React.Component {
                     <i className='flaticon-exclamation m--font-brand' />
                   </div>
                   <div>
-                    { this.state.descriptionMsg &&
+                    { // this.state.descriptionMsg &&
                       <div className='m-alert__text'>
                         This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
                         To connect the pages click on connect buttons. Click on Done button to save them.

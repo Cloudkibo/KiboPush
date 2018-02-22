@@ -109,16 +109,16 @@ class Autoposting extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="RDOnbzldnoc"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='RDOnbzldnoc'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -151,8 +151,8 @@ class Autoposting extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/autoposting/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>
@@ -160,7 +160,7 @@ class Autoposting extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Connected Channels
+                        Connected Feeds
                       </h3>
                     </div>
                   </div>
@@ -171,7 +171,7 @@ class Autoposting extends React.Component {
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Add Channel
+                            Add Feed
                           </span>
                         </span>
                       </button>

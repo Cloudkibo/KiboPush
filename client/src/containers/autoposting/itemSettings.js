@@ -264,7 +264,7 @@ class ItemSettings extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Channel Settings</h3>
+                  <h3 className='m-subheader__title'>Feed Settings</h3>
                 </div>
               </div>
             </div>

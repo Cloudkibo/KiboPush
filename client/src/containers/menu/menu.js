@@ -10,6 +10,9 @@ import { transformData, getUrl } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
+import YouTube from 'react-youtube'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
 //  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
@@ -546,11 +549,48 @@ class Menu extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='CUyrESx7MyM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              {
+                this.props.pages && this.props.pages.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Connected Pages</h4>
+                    You do not have any connected pages. Unless you do not connect any pages, you won't be able to set Persistent Menu. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your Facebook Page.
+                  </div>
+              }
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
+              </div>
               <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
                 <div className='m-portlet m-portlet--full-height '>
                   <div className='m-portlet__head'>
