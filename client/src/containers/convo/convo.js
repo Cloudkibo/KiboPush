@@ -45,6 +45,10 @@ class Convo extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
   }
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   showDialog () {
     console.log('in showDialog')
     this.setState({isShowingModal: true})
@@ -65,6 +69,7 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'new_broadcast',
@@ -192,6 +197,8 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -200,7 +207,7 @@ class Convo extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
               <YouTube
-                videoId="htqFmbTBDbk"
+                videoId='htqFmbTBDbk'
                 opts={{
                   height: '390',
                   width: '640',

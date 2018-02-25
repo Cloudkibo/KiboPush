@@ -72,7 +72,7 @@ class Members extends React.Component {
     // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Members'
-
+    this.scrollToTop()
     // this.initializeConditionSelect(this.state.conditionSelect.options)
     // this.initializeActiveSelect(this.state.activeSelect.options)
   }
@@ -93,12 +93,17 @@ class Members extends React.Component {
       role
     })
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   render () {
     console.log('Members', this.props.members)
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />

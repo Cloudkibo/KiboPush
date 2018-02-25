@@ -421,13 +421,13 @@ class CreateBroadcastTemplate extends React.Component {
                     <div className='row'>
                       <br />
                       <br />
-                      <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New </button>
                       {
                         this.props.template
                         ? <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.editBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Update </button>
                         : <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.createBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Create </button>
                       }
+                      <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                     </div>
                   </div>
                 </div>

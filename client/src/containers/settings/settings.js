@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux'
 import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
+import WelcomeMessage from './welcomeMessage'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
 import YouTube from 'react-youtube'
@@ -34,7 +35,8 @@ class Settings extends React.Component {
       showAPI: true,
       saveState: null,
       showGreetingMessage: false,
-      showSubscribeToMessenger: false
+      showSubscribeToMessenger: false,
+      showWelcomeMessage: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -44,29 +46,40 @@ class Settings extends React.Component {
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
+    this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
-      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true})
+      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    }
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
+      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false})
+    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false})
+    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
   }
   setConnectFb () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
   }
   setSubscribeToMessenger () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false})
+  }
+  setWelcomeMessage () {
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+  }
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
@@ -84,6 +97,7 @@ class Settings extends React.Component {
     // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
+    this.scrollToTop()
     console.log('componentDidMount')
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
@@ -179,6 +193,8 @@ class Settings extends React.Component {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -186,16 +202,16 @@ class Settings extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="6hmz4lkUAqM"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='6hmz4lkUAqM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -270,6 +286,12 @@ class Settings extends React.Component {
                           <a className='m-nav__link' onClick={this.setSubscribeToMessenger} >
                             <i className='m-nav__link-icon flaticon-alarm' />
                             <span className='m-nav__link-text'>HTML Widget</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setWelcomeMessage} >
+                            <i className='m-nav__link-icon flaticon-menu-button' />
+                            <span className='m-nav__link-text'>Welcome Message</span>
                           </a>
                         </li>
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
@@ -363,6 +385,9 @@ class Settings extends React.Component {
                 }
                 { this.state.showSubscribeToMessenger &&
                   <SubscribeToMessenger />
+                }
+                { this.state.showWelcomeMessage &&
+                  <WelcomeMessage />
                 }
                 { this.state.connectFb &&
                   <ConnectFb />

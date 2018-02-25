@@ -5,7 +5,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
@@ -147,7 +147,12 @@ class Page extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
-
+  goToAddPages () {
+    browserHistory.push({
+      pathname: `/addPages`,
+      state: {module: 'page'}
+    })
+  }
   render () {
     return (
       <div>
@@ -234,16 +239,14 @@ class Page extends React.Component {
                         <div className='m-portlet__head-tools'>
                           <ul className='m-portlet__nav'>
                             <li className='m-portlet__nav-item'>
-                              <Link to='/addPages' >
-                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.goToAddPages}>
+                                <span>
+                                  <i className='la la-plus' />
                                   <span>
-                                    <i className='la la-plus' />
-                                    <span>
-                                      Connect Facebook Pages
-                                    </span>
+                                    Connect Facebook Pages
                                   </span>
-                                </button>
-                              </Link>
+                                </span>
+                              </button>
                             </li>
 
                           </ul>

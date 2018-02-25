@@ -28,7 +28,10 @@ class CustomerLists extends React.Component {
     props.loadCustomerLists()
     props.clearCurrentList()
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})
@@ -48,6 +51,9 @@ class CustomerLists extends React.Component {
     })
     this.props.saveCurrentList(list)
   }
+  componentDidMount () {
+    this.scrollToTop()
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -60,6 +66,8 @@ class CustomerLists extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />

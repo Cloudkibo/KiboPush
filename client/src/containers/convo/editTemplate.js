@@ -589,7 +589,8 @@ class EditTemplate extends React.Component {
   }
   goBack () {
     this.props.history.push({
-      pathname: `/welcomeMessage`
+      pathname: `/settings`,
+      state: {module: 'welcome'}
     })
   }
   handleRadioButton (e) {

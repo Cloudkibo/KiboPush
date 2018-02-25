@@ -2,9 +2,13 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
-import { Link } from 'react-router'
+import { browserHistory } from 'react-router'
 
 class ViewWelcomeMessage extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.goBack = this.goBack.bind(this)
+  }
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -21,7 +25,12 @@ class ViewWelcomeMessage extends React.Component {
     addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
     document.body.appendChild(addScript)
   }
-
+  goBack () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'welcome'}
+    })
+  }
   render () {
     console.log('View Welcome Message', this.props.location.state)
     return (
@@ -35,7 +44,7 @@ class ViewWelcomeMessage extends React.Component {
                 <div className='col-xl-6'>
                   <h3>View Welcome Message</h3>
                   <p>Page: {this.props.location.state.payload.pageName}</p>
-                  <Link to='/welcomeMessage' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
+                  <button onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </button>
                 </div>
                 <div className='col-xl-6'>
                   <ViewMessage payload={this.props.location.state.payload.welcomeMessage} />

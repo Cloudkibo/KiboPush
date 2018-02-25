@@ -7,18 +7,22 @@ import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
+import { addPoll, loadPollsList, sendpoll } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { checkConditions } from './utility'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
     props.getuserdetails()
+    props.loadSubscribersList()
     props.loadCustomerLists()
     this.state = {
       page: {
@@ -51,7 +55,8 @@ class CreatePoll extends React.Component {
       steps: [],
       selectedRadio: '',
       listSelected: '',
-      isList: false
+      isList: false,
+      isShowingModal: false
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -66,6 +71,8 @@ class CreatePoll extends React.Component {
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
 
   componentDidMount () {
@@ -115,6 +122,12 @@ class CreatePoll extends React.Component {
       type: 'hover',
       isFixed: true}
     ])
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
@@ -223,6 +236,26 @@ class CreatePoll extends React.Component {
       }
       this.initializeListSelect(options)
     }
+    if (nextProps.pollCreated) {
+      console.log('nexprops polls', nextProps.pollCreated)
+      var res = checkConditions(nextProps.pollCreated.segmentationPageIds, nextProps.pollCreated.segmentationGender, nextProps.pollCreated.segmentationLocale, nextProps.subscribers)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        this.props.sendpoll(nextProps.pollCreated, this.msg)
+        this.setState({
+          pageValue: [],
+          genderValue: [],
+          localeValue: [],
+          statement: '',
+          option1: '',
+          option2: '',
+          option3: '',
+          selectedRadio: '',
+          listSelected: '',
+          isList: false})
+      }
+    }
   }
   handlePageChange (value) {
     var temp = value.split(',')
@@ -276,9 +309,6 @@ class CreatePoll extends React.Component {
         segmentationList: this.state.listSelected
       })
       console.log('Poll added')
-      this.props.history.push({
-        pathname: '/poll'
-      })
     }
   }
 
@@ -346,6 +376,9 @@ class CreatePoll extends React.Component {
       this.setState({listSelected: [], isList: false})
     }
   }
+  goToSend () {
+    this.createPoll()
+  }
   render () {
     const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -384,6 +417,41 @@ class CreatePoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <p>Do you want to send this poll right away or save it for later use? </p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.closeDialog()
+                                      this.goToSend()
+                                    }}>
+                                      Send
+                                    </button>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.createPoll()
+                                      this.props.history.push({
+                                        pathname: '/poll'
+                                      })
+                                    }}>
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       <div className='m-form'>
                         <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>Ask something...</label>
@@ -432,7 +500,7 @@ class CreatePoll extends React.Component {
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                         <button className='btn btn-primary'
-                          onClick={this.createPoll}> Create Poll
+                          onClick={this.showDialog}> Create Poll
                         </button>
                         <Link
                           to='/poll'
@@ -520,10 +588,12 @@ class CreatePoll extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    polls: (state.pollsInfo.polls),
+    pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
+
   }
 }
 
@@ -533,7 +603,9 @@ function mapDispatchToProps (dispatch) {
     addPoll: addPoll,
     pollTourCompleted: pollTourCompleted,
     getuserdetails: getuserdetails,
-    loadCustomerLists: loadCustomerLists
+    loadCustomerLists: loadCustomerLists,
+    sendpoll: sendpoll,
+    loadSubscribersList: loadSubscribersList
   },
     dispatch)
 }

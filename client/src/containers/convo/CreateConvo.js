@@ -111,9 +111,13 @@ class CreateConvo extends React.Component {
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
+    this.scrollToTop()
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
@@ -648,6 +652,8 @@ class CreateConvo extends React.Component {
         }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>

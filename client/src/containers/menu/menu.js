@@ -12,6 +12,7 @@ import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import ViewScreen from './viewScreen'
 
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
@@ -25,6 +26,7 @@ class Menu extends React.Component {
       pageOptions: [],
       setWebUrl: false,
       pageValue: '',
+      pageName: '',
       itemName: '',
       itemType: '',
       itemselected: '',
@@ -40,7 +42,8 @@ class Menu extends React.Component {
       optionSelected: '',
       disabled: true,
       savedisabled: true,
-      selecteditem: null
+      selecteditem: null,
+      isShowingModal: false
     }
 
     this.option1 = 'Add submenu'
@@ -61,6 +64,8 @@ class Menu extends React.Component {
     this.initializeItemMenus = this.initializeItemMenus.bind(this)
     this.handleSaveMenu = this.handleSaveMenu.bind(this)
     this.getItemClicked = this.getItemClicked.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
     props.fetchMenu()
     if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -81,7 +86,12 @@ class Menu extends React.Component {
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Menu'
   }
-
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
@@ -240,7 +250,7 @@ class Menu extends React.Component {
     }
     console.log('Page Value', event.target.value)
     console.log('Page Value', this.state.pageValue)
-    this.setState({pageValue: event.target.value})
+    this.setState({pageValue: event.target.value, pageName: event.target.name})
     this.initializeItemMenus()
     this.props.saveCurrentMenuItem({})
     this.props.getIndexBypage(event.target.value, this.handleIndexByPage)
@@ -574,6 +584,13 @@ class Menu extends React.Component {
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Persistent Menu</h3>
+                </div>
+              </div>
+            </div>
             <div className='m-content'>
               {
                 this.props.pages && this.props.pages.length === 0 &&
@@ -610,7 +627,7 @@ class Menu extends React.Component {
                             (
                               page.connected &&
                               <option
-                                value={page.pageId} key={page.pageId} selected={page.pageId === this.state.pageValue}>{page.pageName}</option>
+                                value={page.pageId} name={page.pageName} key={page.pageId} selected={page.pageId === this.state.pageValue}>{page.pageName}</option>
                             )
                           ))
                           }
@@ -623,6 +640,25 @@ class Menu extends React.Component {
                   </div>
                   <AlertContainer ref={a => this.msg = a} {...alertOptions} />
                   <div className='m-portlet__body'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{top: '100px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{top: '100px'}}
+                              onClose={this.closeDialog}>
+                              <h3>Persistent Menu Preview</h3>
+                              { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
+                                  ? <div>{console.log('notinanisha')}<ViewScreen data={this.state.itemMenus} /></div>
+                                : <div>{console.log('inanisha')}<ViewScreen data={this.props.currentMenuItem.itemMenus} /></div>
+                              }
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
+                      </div>
+                    </div>
                     <div className='tab-content'>
                       <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
                       <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
@@ -777,6 +813,14 @@ class Menu extends React.Component {
                         <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
                 Save Menu
               </button>
+            { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
+              ? <button onClick={this.showDialog} className='btn btn-sm btn-primary pull-right' style={{'marginLeft': '10px'}} disabled>
+                Preview
+              </button>
+              : <button onClick={this.showDialog} className='btn btn-sm btn-primary pull-right' style={{'marginLeft': '10px'}}>
+                Preview
+              </button>
+            }
                       </ul>
                     </div>
                   </div>

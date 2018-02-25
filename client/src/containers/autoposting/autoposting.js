@@ -35,7 +35,10 @@ class Autoposting extends React.Component {
     this.gotoSettings = this.gotoSettings.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
@@ -49,6 +52,7 @@ class Autoposting extends React.Component {
     // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
+    this.scrollToTop()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -102,6 +106,8 @@ class Autoposting extends React.Component {
     return (
       <div>
         <Header />
+          <div style={{float: 'left', clear: 'both'}}
+            ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
