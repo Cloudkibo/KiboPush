@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions} from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -51,6 +51,10 @@ class CustomerMatching extends React.Component {
     this.props.clearAlertMessage()
     this.props.loadCustomerLists()
     this.props.getPendingSubscriptions()
+  }
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
   }
   getSampleFile () {
     this.props.downloadSampleFile()
@@ -295,6 +299,7 @@ class CustomerMatching extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Invite using phone number'
+    this.scrollToTop()
   }
 
   render () {
@@ -302,6 +307,8 @@ class CustomerMatching extends React.Component {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -309,16 +316,16 @@ class CustomerMatching extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="r2z8GV_qWvY"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='r2z8GV_qWvY'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </div>
             </ModalDialog>
           </ModalContainer>

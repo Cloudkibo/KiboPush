@@ -9,10 +9,19 @@ import TemplateBroadcasts from './templateBroadcasts'
 import { Link } from 'react-router'
 
 class templates extends React.Component {
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
+  componentDidMount () {
+    this.scrollToTop()
+  }
   render () {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />

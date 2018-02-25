@@ -32,6 +32,7 @@ export function updatePollsList (data) {
 }
 
 export function createPoll (data) {
+  console.log('createpolldata', data)
   return {
     type: ActionTypes.ADD_POLL,
     data

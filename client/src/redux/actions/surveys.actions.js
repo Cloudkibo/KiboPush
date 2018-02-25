@@ -93,7 +93,7 @@ export function createsurvey (survey) {
   console.log(survey)
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
-      .then(res => dispatch(addSurvey(res)))
+      .then(res => dispatch(addSurvey(res.payload)))
   }
 }
 
@@ -104,7 +104,7 @@ export function addSurvey (data) {
   } else {
     alert('Error occurred in creating surveys')
   } */
-  console.log(data)
+  console.log('createdsurvey', data)
   return {
     type: ActionTypes.ADD_SURVEY,
     data

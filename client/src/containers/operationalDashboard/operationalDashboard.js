@@ -76,7 +76,10 @@ class OperationalDashboard extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
@@ -90,6 +93,7 @@ class OperationalDashboard extends React.Component {
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Operational Dashboard'
+    this.scrollToTop()
   }
   handleClick (e) {
     this.setState({openPopover: !this.state.openPopover})
@@ -447,6 +451,8 @@ class OperationalDashboard extends React.Component {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
