@@ -10,7 +10,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { Picker } from 'emoji-mart'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Popover from '../../components/Popover/popover'
+import Popover from 'react-simple-popover'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from './viewScreen'
 
@@ -200,7 +200,7 @@ class GreetingMessage extends React.Component {
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Popover
-          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative'}}
+          style={{paddingBottom: '100px', left: '12px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative', height: '100px'}}
           placement='left'
           height='390px'
           target={this.target}
@@ -209,7 +209,7 @@ class GreetingMessage extends React.Component {
         >
           <div>
             <Picker
-              style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+              style={{paddingBottom: '100px', marginRight: '12px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
               emojiSize={24}
               perLine={7}
               skin={1}
@@ -222,7 +222,7 @@ class GreetingMessage extends React.Component {
           </div>
         </Popover>
         <Popover
-          style={{paddingBottom: '100px', width: 'auto', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative', lineHeight: '25px'}}
+          style={{paddingBottom: '100px', left: '18px', paddingRight: '20px', height: '100px', width: 'auto', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative', lineHeight: '25px'}}
           placement='left'
           height='100px'
           target={this.userOptions}
