@@ -36,14 +36,23 @@ export function userpageconnect (data) {
     page_connected: data.msg
   }
 }
-
+export function pageNotPublished (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.PAGE_NOT_PUBLISHED,
+    data
+  }
+}
 export function enablePage (page) {
   console.log('enablePage called')
   console.log(page)
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
-        if (res.payload.msg) {
+        console.log('res.status', res)
+        if (res.status === 'failed' && res.description === 'not published') {
+          dispatch(pageNotPublished(res.description))
+        } else if (res.payload && res.payload.msg) {
           // the page is already connected by some other user
           dispatch(userpageconnect(res.payload))
         } else {

@@ -63,13 +63,16 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    if (nextprops.otherPages && nextprops.otherPages.length === 0) {
-      this.setState({showWarning: true})
-    }
-    if (nextprops.page_connected && nextprops.page_connected !== '') {
+    console.log('nextprops in connect page', nextprops)
+    if (nextprops.message && nextprops.message !== '') {
+      this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
+    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
       this.setState({showAlert: false, alertmsg: ''})
+    }
+    if (nextprops.otherPages && nextprops.otherPages.length === 0) {
+      this.setState({showWarning: true})
     }
   }
   gotoSettings () {
@@ -268,7 +271,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),
-    page_connected: (state.pagesInfo.page_connected)
+    page_connected: (state.pagesInfo.page_connected),
+    message: (state.pagesInfo.message)
   }
 }
 
