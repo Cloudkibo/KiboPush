@@ -104,7 +104,7 @@ class Menu extends React.Component {
       })
       this.setState({pageOptions: myPages})
       if (this.state.pageValue === '') {
-        this.setState({pageValue: nextProps.pages[0].pageId})
+        this.setState({pageValue: nextProps.pages[0].pageId, pageName: nextProps.pages[0].pageName })
       }
       if (nextProps.currentMenuItem && nextProps.currentMenuItem.itemMenus) {
         this.setState({itemMenus: nextProps.currentMenuItem.itemMenus})
@@ -248,7 +248,7 @@ class Menu extends React.Component {
       this.setState({pageValue: event})
       return
     }
-    console.log('Page Value', event.target.value)
+    console.log('Page Valuename', event.target.name)
     console.log('Page Value', this.state.pageValue)
     this.setState({pageValue: event.target.value, pageName: event.target.name})
     this.initializeItemMenus()
@@ -651,8 +651,8 @@ class Menu extends React.Component {
                               onClose={this.closeDialog}>
                               <h3>Persistent Menu Preview</h3>
                               { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
-                                  ? <div>{console.log('notinanisha')}<ViewScreen data={this.state.itemMenus} /></div>
-                                : <div>{console.log('inanisha')}<ViewScreen data={this.props.currentMenuItem.itemMenus} /></div>
+                                  ? <div>{console.log('notinanisha')}<ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
+                                : <div>{console.log('inanisha')}<ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
                               }
                             </ModalDialog>
                           </ModalContainer>
