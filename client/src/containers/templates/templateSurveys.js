@@ -274,8 +274,8 @@ class templateSurveys extends React.Component {
                                   style={{width: '150px'}}>{survey.title}</span></td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
-                                {console.log('length', survey.description.length)}
-                                { survey.description.length > 50
+                                { survey.description && console.log('length', survey.description.length)}
+                                { (survey.description && survey.description.length) > 50
                                 ? <span
                                   style={{width: '200px'}}>{survey.description.slice(0, 50)}...</span>
                                 : <span
