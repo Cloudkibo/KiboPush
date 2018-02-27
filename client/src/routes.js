@@ -207,7 +207,6 @@ const routes = (
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
     <Route path='/addPageWizard' component={AddPageWizard} onEnter={requireAuth} />
-
   </Route>
 
 )
