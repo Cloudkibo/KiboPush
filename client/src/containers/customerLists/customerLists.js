@@ -78,7 +78,7 @@ class CustomerLists extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Customer Lists? <a href='#' target='_blank'>Click Here </a>
+                  Need help in understanding Subscribers Lists? <a href='#' target='_blank'>Click Here </a>
                 </div>
               </div>
               <div className='row'>
@@ -88,7 +88,7 @@ class CustomerLists extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Customer Segmentation Lists
+                            Subscribers Segmentation Lists
                           </h3>
                         </div>
                       </div>
@@ -97,7 +97,7 @@ class CustomerLists extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create Segmented Customers List
+                              Create Segmented Subscribers List
                             </span>
                           </span>
                         </Link>
