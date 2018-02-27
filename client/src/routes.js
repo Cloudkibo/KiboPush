@@ -88,6 +88,7 @@ import ViewWelcomeMessage from './containers/welcomeMessage/viewMessage'
 import CustomerLists from './containers/customerLists/customerLists'
 import PhoneList from './containers/customerLists/listDetails'
 import CreateSubList from './containers/customerLists/createSubList'
+import AddPageWizard from './containers/wizard/addPage'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -205,6 +206,7 @@ const routes = (
     <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
+    <Route path='/addPageWizard' component={AddPageWizard} onEnter={requireAuth} />
 
   </Route>
 
