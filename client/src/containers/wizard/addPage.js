@@ -151,64 +151,62 @@ class AddPage extends React.Component {
                                 <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                                   <div className='tab-pane active' id='m_widget4_tab1_content'>
                                     <div className='m-widget4' >
-                        {
-                (this.props.otherPages) &&
-                this.props.otherPages.map((page, i) => (
+                                      {
+                                        (this.props.otherPages) &&
+                                        this.props.otherPages.map((page, i) => (
 
-                  <div className='m-widget4__item' key={i + '-addPageItem'}>
-                    <div className='m-widget4__img m-widget4__img--icon'>
-                      <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                    </div>
-                    <div className='m-widget4__info'>
-                      <span className='m-widget4__text'>
-                        {page.pageName}
-                      </span>
-                    </div>
-                    <div className='m-widget4__ext'>
-                      {(page.connected) &&
+                                          <div className='m-widget4__item' key={i + '-addPageItem'}>
+                                            <div className='m-widget4__img m-widget4__img--icon'>
+                                              <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                                            </div>
+                                            <div className='m-widget4__info'>
+                                              <span className='m-widget4__text'>
+                                                {page.pageName}
+                                              </span>
+                                            </div>
+                                            <div className='m-widget4__ext'>
+                                              {(page.connected) &&
 
-                      <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
-                        <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
-                      </a>
-                            }
-                      {(!page.connected) &&
+                                              <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                                                <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                                              </a>
+                                                    }
+                                              {(!page.connected) &&
 
-                      <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
-                        <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                      </a>
+                                              <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                                                <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                                              </a>
 
-                            }
+                                                    }
 
-                    </div>
-                  </div>
-                ))
-              }
-
+                                            </div>
+                                          </div>
+                                        ))
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                        <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <button onClick={this.goToNext}className='btn m-btn--pill    btn-link'> Continue
+                          </button>
+                          <button className='btn m-btn--pill    btn-link' style={{'margin-left': '10px'}}> Skip
+                          </button>
+                          <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'margin-left': '10px'}}> Cancel
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-              </div>
-            </div>
-            <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-              <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                <button onClick={this.goToNext}className='btn m-btn--pill    btn-primary'> Continue
-                </button>
-                <button className='btn m-btn--pill    btn-primary' style={{'margin-left': '10px'}}> Skip
-                </button>
-                <Link to='/dashboard' className='btn m-btn--pill    btn-secondary' style={{'margin-left': '10px'}}> Cancel
-                </Link>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-          </div>
-
         </div>
       </div>
 
