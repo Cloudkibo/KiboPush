@@ -10,7 +10,6 @@ import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Link } from 'react-router'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
@@ -142,16 +141,17 @@ class GettingStarted extends React.Component {
                 </div>
                 <div className='modal-body'>
                   <p>
-                    Do you want to set up using wizard? Please click on <strong>Start</strong> and follow the steps.
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast messages, polls and surveys.
+                    Please click on <strong>Start</strong> and follow the steps to invite subscribers.
                   </p>
                 </div>
                 <div className='modal-footer'>
                   <button type='button' className='btn btn-secondary' data-dismiss='modal'>
                     Close
                   </button>
-                  <Link to='/addPageWizard' className='btn btn-primary'>
+                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
                     Start
-                  </Link>
+                  </button>
                 </div>
               </div>
               : this.state.step === 1
