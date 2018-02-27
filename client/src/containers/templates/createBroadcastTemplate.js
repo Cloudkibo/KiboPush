@@ -74,7 +74,7 @@ class CreateBroadcastTemplate extends React.Component {
       }
       var options = this.state.categoryValue
       for (var j = 0; j < this.props.template.category.length; j++) {
-        options.push({id: j, text: this.props.template.category[0], selected: true})
+        options.push({id: j, text: this.props.template.category[j], selected: true})
       }
       this.setState({broadcast: this.props.template.payload, list: temp, categoryValue: this.props.template.category})
       this.initializeCategorySelect(options)
