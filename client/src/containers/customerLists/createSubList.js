@@ -59,6 +59,9 @@ class CreateSubList extends React.Component {
         options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
       }
       this.initializeListSelect(options)
+      if (this.props.customerLists.length === 0) {
+        this.state.selectedRadio = 'segmentAll'
+      }
     }
     if (this.props.currentList) {
       this.initializeList()
@@ -363,10 +366,10 @@ class CreateSubList extends React.Component {
                         <div className='m-portlet__head-title'>
                           { !this.state.isEdit
                             ? <h3 className='m-portlet__head-text'>
-                            Create SubList of Customers
+                            Create SubList of Subscribers
                             </h3>
                             : <h3 className='m-portlet__head-text'>
-                            Edit SubList of Customers
+                            Edit SubList of Subscribers
                             </h3>
                           }
                         </div>
@@ -386,7 +389,16 @@ class CreateSubList extends React.Component {
                                 checked={this.state.selectedRadio === 'segmentAll'} />
                               <label>Segment all subscribers</label>
                             </div>
-                            <div className='radio'>
+                            { this.props.customerLists.length === 0
+                              ? <div className='radio'>
+                                <input id='segmentList'
+                                  type='radio'
+                                  value='segmentList'
+                                  name='segmentationType'
+                                  disabled />
+                                <label>Segment an existing List</label>
+                              </div>
+                            : <div className='radio'>
                               <input id='segmentList'
                                 type='radio'
                                 value='segmentList'
@@ -395,6 +407,7 @@ class CreateSubList extends React.Component {
                                 checked={this.state.selectedRadio === 'segmentList'} />
                               <label>Segment an existing List</label>
                             </div>
+                          }
                           </div>
                           <span className='m-form__help'>
                             {

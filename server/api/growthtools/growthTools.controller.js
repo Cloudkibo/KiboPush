@@ -48,7 +48,7 @@ exports.upload = function (req, res) {
       })
     }
     Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
-      listName: 'All customers',
+      listName: 'Subscribers Using Phone Numbers',
       userId: req.user._id,
       companyId: companyUser.companyId,
       conditions: 'initial_list',
@@ -181,7 +181,7 @@ exports.sendNumbers = function (req, res) {
       })
     }
     Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
-      listName: 'All customers',
+      listName: 'Subscribers Using Phone Numbers',
       userId: req.user._id,
       companyId: companyUser.companyId,
       conditions: 'initial_list',
