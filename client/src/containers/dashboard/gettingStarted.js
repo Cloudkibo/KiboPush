@@ -122,13 +122,11 @@ class GettingStarted extends React.Component {
     console.log('In Getting Started', this.state.step)
     return (
       <div>
-        <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden >
+        <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden>
           Launch Modal
         </button>
         <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div className='modal-dialog' role='document'>
-            {
-              this.state.step === 0
               ? <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
@@ -155,130 +153,6 @@ class GettingStarted extends React.Component {
                   </Link>
                 </div>
               </div>
-              : this.state.step === 1
-              ? <div style={{top: '60px'}} className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='exampleModalLabel'>
-                    Step 1:
-                  </h5>
-                  <button style={{marginLeft: '370px'}} type='button' id='m_modal_1_2' className='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>
-                      &times;
-                    </span>
-                  </button>
-                </div>
-                <div className='modal-body'>
-                  <p>
-                    Select a page from the drop down.
-                  </p>
-                  <select onChange={this.selectPage} className='form-control m-input' id='exampleSelect1'>
-                    {
-                      this.props.pages.map((page, i) => (
-                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                      ))
-                    }
-                  </select>
-                </div>
-                <div className='modal-footer'>
-                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
-                    Back
-                  </button>
-                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
-                    Next
-                  </button>
-                </div>
-              </div>
-              : this.state.step === 2
-              ? <div style={{top: '60px'}} className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='exampleModalLabel'>
-                    Step 2:
-                  </h5>
-                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>
-                      &times;
-                    </span>
-                  </button>
-                </div>
-                <div className='modal-body'>
-                  <p>
-                    Become a subscriber of your page.
-                    You need to send a message to your page in order to subscribe it.
-                  </p>
-                  <a href={this.state.inviteUrl} target='_blank' className='btn btn-success'>
-                    Subscribe Now
-                  </a>
-                </div>
-                <div className='modal-footer'>
-                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
-                    Back
-                  </button>
-                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
-                    Next
-                  </button>
-                </div>
-              </div>
-              : this.state.step === 3
-              ? <div style={{top: '60px'}} className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='exampleModalLabel'>
-                    Step 3:
-                  </h5>
-                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>
-                      &times;
-                    </span>
-                  </button>
-                </div>
-                <div className='modal-body'>
-                  <p>
-                    Send a test broadcast to see how it works.
-                  </p>
-                  <button onClick={this.sendTestBroadcast} type='button' className='btn btn-success'>
-                    Send Test Broadcast
-                  </button>
-                </div>
-                <div className='modal-footer'>
-                  <button onClick={this.previousStep} type='button' className='btn btn-secondary'>
-                    Back
-                  </button>
-                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
-                    Next
-                  </button>
-                </div>
-              </div>
-              : <div style={{top: '60px'}} className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='exampleModalLabel'>
-                    Step 4:
-                  </h5>
-                  <button style={{marginLeft: '370px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>
-                      &times;
-                    </span>
-                  </button>
-                </div>
-                <div className='modal-body'>
-                  <p>
-                    Invite other people to subscribe your page by sharing this link:
-                    <a href={this.state.inviteUrl} target='_blank'> {this.state.inviteUrl}</a>
-                  </p>
-                  <CopyToClipboard text={this.state.inviteUrl} onCopy={() => this.generateAlert('success', 'Link copied successfully!')}>
-                    <button href={this.state.inviteUrl} className='btn btn-success'>
-                      Copy Link
-                    </button>
-                  </CopyToClipboard>
-                </div>
-                <div className='modal-footer'>
-                  <button type='button' className='btn btn-secondary' data-dismiss='modal'>
-                    Close
-                  </button>
-                  <button type='button' className='btn btn-primary' data-dismiss='modal'>
-                    Done
-                  </button>
-                </div>
-              </div>
-            }
           </div>
         </div>
       </div>
