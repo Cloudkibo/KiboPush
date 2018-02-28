@@ -109,7 +109,7 @@ class PageLikesSubscribers extends React.Component {
             <div className='m-widget21'>
               <div className='row'>
                 <div className='col-xl-4'>
-                  <Link to='/subscribers' >
+                  <Link to='/addPageWizard' >
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
                         <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>

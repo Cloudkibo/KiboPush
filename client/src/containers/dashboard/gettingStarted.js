@@ -10,7 +10,7 @@ import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
@@ -35,12 +35,12 @@ class GettingStarted extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-    document.title = 'KiboPush | Getting Started'
-    var addScript = document.createElement('script')
-    addScript.setAttribute('type', 'text/javascript')
-    addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
-    addScript.type = 'text/javascript'
-    document.body.appendChild(addScript)
+    // document.title = 'KiboPush | Getting Started'
+    // var addScript = document.createElement('script')
+    // addScript.setAttribute('type', 'text/javascript')
+    // addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    // addScript.type = 'text/javascript'
+    // document.body.appendChild(addScript)
     /* eslint-disable */
     $('#gettingStarted').click()
     /* eslint-enable */
@@ -109,7 +109,12 @@ class GettingStarted extends React.Component {
     }
   }
 /* eslint-enable */
-
+  gotopage () {
+    browserHistory.push({
+      pathname: `/addPageWizard`,
+      state: {showMsg: true}
+    })
+  }
   nextStep () {
     this.setState({step: this.state.step + 1})
   }
@@ -127,7 +132,7 @@ class GettingStarted extends React.Component {
         </button>
         <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div className='modal-dialog' role='document'>
-              ? <div style={{top: '60px'}} className='modal-content'>
+              <div style={{top: '60px'}} className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='exampleModalLabel'>
                     Getting Started
@@ -140,17 +145,16 @@ class GettingStarted extends React.Component {
                 </div>
                 <div className='modal-body'>
                   <p>
-                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast messages, polls and surveys.
-                    Please click on <strong>Start</strong> and follow the steps to invite subscribers.
+                    Do you want to setup using wizard? Please click on <strong>Start</strong> and follow the steps
                   </p>
                 </div>
                 <div className='modal-footer'>
                   <button type='button' className='btn btn-secondary' data-dismiss='modal'>
                     Close
                   </button>
-                  <Link to='/addPageWizard' type='button' className='btn btn-primary'>
+                  <button onClick={this.gotopage} className='btn btn-primary' data-dismiss='modal'>
                     Start
-                  </Link>
+                  </button>
                 </div>
               </div>
           </div>
