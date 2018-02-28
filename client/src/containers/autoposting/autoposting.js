@@ -242,7 +242,7 @@ class Autoposting extends React.Component {
                           <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} />
                         </div>
                     ))
-                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                      : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
                   }
                 </div>
               </div>
