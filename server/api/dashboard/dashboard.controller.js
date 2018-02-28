@@ -133,7 +133,7 @@ exports.sentVsSeen = function (req, res) {
                                         [
                                           {
                                             $group: {
-                                              _id: '$pollId',
+                                              _id: {pollId: '$pollId'},
                                               count: {$sum: 1}
                                             }
                                           }
@@ -145,14 +145,28 @@ exports.sentVsSeen = function (req, res) {
                                                 err)}`
                                           })
                                         }
-                                        var sum = 0
-                                        if (pollResponseCount.length > 0) {
-                                          for (var i = 0; i <
-                                            pollResponseCount.length; i++) {
-                                            sum = sum +
-                                                pollResponseCount[i].count
+                                        let responsesCount = []
+                                        for (let a = 0; a < polls.length; a++) {
+                                          for (let b = 0; b < pollResponseCount.length; b++) {
+                                            if (polls[a]._id.toString() === pollResponseCount[b]._id.pollId.toString()) {
+                                              responsesCount[a].count = pollResponseCount[b].count
+                                            }
                                           }
                                         }
+                                        logger.serverLog(TAG,
+                                            `counts for dashboard poll response ${JSON.stringify(
+                                              pollResponseCount)}`)
+                                        var sum = 0
+                                        if (responsesCount.length > 0) {
+                                          for (var c = 0; c <
+                                            responsesCount.length; c++) {
+                                            sum = sum +
+                                                responsesCount[c].count
+                                          }
+                                        }
+                                        logger.serverLog(TAG,
+                                            `counts for dashboard poll response sum ${JSON.stringify(
+                                              sum)}`)
                                         var sum1 = 0
                                         if (surveyResponseCount.length > 0) {
                                           for (var j = 0; j <
