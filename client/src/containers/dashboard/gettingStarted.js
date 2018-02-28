@@ -10,6 +10,7 @@ import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { Link } from 'react-router'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
@@ -149,9 +150,9 @@ class GettingStarted extends React.Component {
                   <button type='button' className='btn btn-secondary' data-dismiss='modal'>
                     Close
                   </button>
-                  <button onClick={this.nextStep} type='button' className='btn btn-primary'>
+                  <Link to='/addPageWizard' type='button' className='btn btn-primary'>
                     Start
-                  </button>
+                  </Link>
                 </div>
               </div>
               : this.state.step === 1
