@@ -337,7 +337,7 @@ class CustomerMatching extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Customer Matching using
+                  <h3 className='m-subheader__title'>Invite using
                     Phone Number (Experimental Feature)</h3>
                 </div>
               </div>
@@ -395,7 +395,7 @@ class CustomerMatching extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Invite people using phone number
+                            Invite customers using phone number
                           </h3>
                         </div>
                       </div>
