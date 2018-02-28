@@ -133,7 +133,7 @@ exports.sentVsSeen = function (req, res) {
                                         [
                                           {
                                             $group: {
-                                              _id: {pollId: '$pollId'},
+                                              _id: '$pollId',
                                               count: {$sum: 1}
                                             }
                                           }
@@ -145,23 +145,15 @@ exports.sentVsSeen = function (req, res) {
                                                 err)}`
                                           })
                                         }
-                                        let responsesCount = []
-                                        for (let a = 0; a < polls.length; a++) {
-                                          for (let b = 0; b < pollResponseCount.length; b++) {
-                                            if (polls[a]._id.toString() === pollResponseCount[b]._id.pollId.toString()) {
-                                              responsesCount[a].count = pollResponseCount[b].count
-                                            }
-                                          }
-                                        }
                                         logger.serverLog(TAG,
                                             `counts for dashboard poll response ${JSON.stringify(
                                               pollResponseCount)}`)
                                         var sum = 0
-                                        if (responsesCount.length > 0) {
-                                          for (var c = 0; c <
-                                            responsesCount.length; c++) {
+                                        if (pollResponseCount.length > 0) {
+                                          for (var i = 0; i <
+                                            pollResponseCount.length; i++) {
                                             sum = sum +
-                                                responsesCount[c].count
+                                                pollResponseCount[i].count
                                           }
                                         }
                                         logger.serverLog(TAG,
