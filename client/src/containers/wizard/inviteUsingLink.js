@@ -108,14 +108,6 @@ class InviteSubscribers extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a>
-                </div>
-              </div>
               { this.props.pages && this.props.pages.length === 0 &&
                 <div className='alert alert-success'>
                   <h4 className='block'>0 Connected Pages</h4>
