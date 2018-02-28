@@ -23,7 +23,7 @@ class Header extends React.Component {
   }
 
   toggleSidebar (){
-     $('body').addClass(' m-aside-left--minimize m-brand--minimize')
+     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
      console.log("Class Added")
   }
   handleNotificationOnShow () {
