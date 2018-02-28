@@ -104,7 +104,7 @@ class Menu extends React.Component {
       })
       this.setState({pageOptions: myPages})
       if (this.state.pageValue === '') {
-        this.setState({pageValue: nextProps.pages[0].pageId, pageName: nextProps.pages[0].pageName })
+        this.setState({ pageValue: nextProps.pages[0].pageId, pageName: nextProps.pages[0].pageName })
       }
       if (nextProps.currentMenuItem && nextProps.currentMenuItem.itemMenus) {
         this.setState({itemMenus: nextProps.currentMenuItem.itemMenus})

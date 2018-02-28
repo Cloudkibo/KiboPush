@@ -3,11 +3,7 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-//  import Responsive from '../../components/sidebar/responsive'
 import Header from './header'
-import auth from '../../utility/auth.service'
-//  import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -193,11 +189,9 @@ class AddPage extends React.Component {
                       </div>
                       <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                         <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                          <button onClick={this.goToNext}className='btn m-btn--pill    btn-link'> Continue
-                          </button>
-                          <button className='btn m-btn--pill    btn-link' style={{'margin-left': '10px'}}> Skip
-                          </button>
-                          <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'margin-left': '10px'}}> Cancel
+                          <Link to='/inviteUsingLinkWizard' className='btn m-btn--pill    btn-link'> Continue
+                          </Link>
+                          <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'marginLeft': '10px'}}> Cancel
                           </Link>
                         </div>
                       </div>

@@ -89,6 +89,12 @@ import CustomerLists from './containers/customerLists/customerLists'
 import PhoneList from './containers/customerLists/listDetails'
 import CreateSubList from './containers/customerLists/createSubList'
 import AddPageWizard from './containers/wizard/addPage'
+import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
+import InviteUsingNumberWizard from './containers/wizard/inviteUsingNumber'
+import GreetingTextWizard from './containers/wizard/greetingText'
+import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
+import AutopostingWizard from './containers/wizard/autoposting'
+
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -207,6 +213,12 @@ const routes = (
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
     <Route path='/addPageWizard' component={AddPageWizard} onEnter={requireAuth} />
+    <Route path='/inviteUsingLinkWizard' component={InviteUsingLinkWizard} onEnter={requireAuth} />
+    <Route path='/inviteUsingNumberWizard' component={InviteUsingNumberWizard} onEnter={requireAuth} />
+    <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
+    <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
+    <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
+
   </Route>
 
 )
