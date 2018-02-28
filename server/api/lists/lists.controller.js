@@ -52,7 +52,7 @@ exports.viewList = function (req, res) {
         })
       }
       if (list[0].initialList === true) {
-        Subscribers.find({isSubscribedByPhoneNumber: true, companyId: companyUser.companyId}).populate('pageId').exec((err, subscribers) => {
+        Subscribers.find({isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}).populate('pageId').exec((err, subscribers) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
@@ -76,7 +76,7 @@ exports.viewList = function (req, res) {
           })
         })
       } else {
-        let pagesFindCriteria = {}
+        let pagesFindCriteria = {isSubscribed: true}
         pagesFindCriteria = _.merge(pagesFindCriteria, {
           _id: {
             $in: list[0].content
