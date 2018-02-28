@@ -145,6 +145,9 @@ exports.sentVsSeen = function (req, res) {
                                                 err)}`
                                           })
                                         }
+                                        logger.serverLog(TAG,
+                                            `counts for dashboard poll response ${JSON.stringify(
+                                              pollResponseCount)}`)
                                         var sum = 0
                                         if (pollResponseCount.length > 0) {
                                           for (var i = 0; i <
@@ -153,6 +156,9 @@ exports.sentVsSeen = function (req, res) {
                                                 pollResponseCount[i].count
                                           }
                                         }
+                                        logger.serverLog(TAG,
+                                            `counts for dashboard poll response sum ${JSON.stringify(
+                                              sum)}`)
                                         var sum1 = 0
                                         if (surveyResponseCount.length > 0) {
                                           for (var j = 0; j <
