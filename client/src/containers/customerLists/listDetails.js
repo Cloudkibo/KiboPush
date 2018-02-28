@@ -145,9 +145,9 @@ class ListDetails extends React.Component {
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Email</span>
                                   </th>
-                                  <th data-field='Page'
+                                  <th data-field='Source'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Subscribed Using Customer Matching</span>
+                                    <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
                                   </th>
                                   <th data-field='Locale'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -204,11 +204,11 @@ class ListDetails extends React.Component {
                                       {subscriber.email}
                                     </span>
                                   </td>
-                                  <td data-field='isSubscribedByPhoneNumber'
+                                  <td data-field='source'
                                     className='m-datatable__cell'>
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.isSubscribedByPhoneNumber ? 'true' : 'false'}
+                                      {subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other'}
                                     </span>
                                   </td>
                                   <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
