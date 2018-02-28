@@ -12,6 +12,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import ReactPaginate from 'react-paginate'
+import fileDownload from 'js-file-download'
+var json2csv = require('json2csv')
 
 class ListDetails extends React.Component {
   constructor (props, context) {
@@ -25,6 +27,7 @@ class ListDetails extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.exportRecords = this.exportRecords.bind(this)
     if (this.props.currentList) {
       props.loadListDetails(this.props.currentList._id)
     }
@@ -57,7 +60,25 @@ class ListDetails extends React.Component {
     }
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
+  exportRecords () {
+    console.log('download File called')
+    var data = this.state.subscribersData
+    var info = data
+    var keys = []
+    var val = info[0]
 
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+        console.log(err)
+      } else {
+        fileDownload(csv, 'SegmentedList.csv')
+      }
+    })
+  }
   handlePageClick (data) {
     console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -247,6 +268,14 @@ class ListDetails extends React.Component {
                           Back
                         </Link>
                       }
+                        <div className='pull-right' style={{display: 'inline-block'}} onClick={this.exportRecords}>
+                          <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                            <label>Get data in CSV file: </label>
+                          </div>
+                          <div style={{display: 'inline-block', marginLeft: '10px'}}>
+                            <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
