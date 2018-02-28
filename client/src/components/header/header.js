@@ -19,8 +19,13 @@ class Header extends React.Component {
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
+    this.toggleSidebar = this.toggleSidebar.bind(this)
   }
 
+  toggleSidebar (){
+     $('body').addClass(' m-aside-left--minimize m-brand--minimize')
+     console.log("Class Added")
+  }
   handleNotificationOnShow () {
     console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
@@ -110,7 +115,7 @@ class Header extends React.Component {
                     KIBOPUSH</h4>
                 </div>
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
-                  <a href='javascript:;' id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
+                  <a href='javascript:;' onClick={this.toggleSidebar} id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
                     <span />
                   </a>
                   <a href='javascript:;' id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
