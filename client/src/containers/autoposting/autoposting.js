@@ -148,7 +148,7 @@ class Autoposting extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Connect several channels and information sources to send
+                  Connect several feeds and information sources to send
                   updates to your subscribers
                 </div>
               </div>
