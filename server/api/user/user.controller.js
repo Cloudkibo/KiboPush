@@ -117,6 +117,7 @@ exports.updateChecks = function (req, res) {
     if (req.body.mainMenuTourSeen) user.mainMenuTourSeen = req.body.mainMenuTourSeen
     if (req.body.subscribeToMessengerTourSeen) user.subscribeToMessengerTourSeen = req.body.subscribeToMessengerTourSeen
     if (req.body.pagesTourSeen) user.pagesTourSeen = req.body.pagesTourSeen
+    if (req.body.wizardSeen) user.wizardSeen = req.body.wizardSeen
 
     user.save((err) => {
       if (err) {

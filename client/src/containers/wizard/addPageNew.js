@@ -3,10 +3,7 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-//  import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
-//  import HeaderResponsive from '../../components/header/headerResponsive'
+import Header from './header'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -33,6 +30,7 @@ class AddPage extends React.Component {
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
     }
     this.closeDialog = this.closeDialog.bind(this)
+    this.goToNext = this.goToNext.bind(this)
   }
 
   gotoView () {
@@ -75,10 +73,8 @@ class AddPage extends React.Component {
       this.setState({showWarning: true})
     }
   }
-  gotoSettings () {
+  goToNext () {
     browserHistory.push({
-      pathname: `/settings`,
-      state: {module: 'addPages'}
     })
   }
   onDismissAlert () {
@@ -90,12 +86,11 @@ class AddPage extends React.Component {
       <div>
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Manage Pages</h3>
+                  <h3 className='m-subheader__title'>Connect Pages</h3>
                 </div>
               </div>
               {
@@ -128,7 +123,7 @@ class AddPage extends React.Component {
                     { // this.state.descriptionMsg &&
                       <div className='m-alert__text'>
                         This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
-                        To connect the pages click on connect buttons. Click on Done button to save them.
+                        To connect the pages click on connect buttons. Click on continue to move to the next step.
                       </div>
                     }
                   </div>
@@ -143,64 +138,62 @@ class AddPage extends React.Component {
                       </div>
                   }
                   <div className='m-portlet m-portlet--full-height '>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                                Connect Pages
-                              </h3>
+                    <div className='m-portlet__body'>
+                      <div className='tab-content'>
+                        <div className='tab-pane active m-scrollable' role='tabpanel'>
+                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                            <div style={{height: '370px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                                  <div className='tab-pane active' id='m_widget4_tab1_content'>
+                                    <div className='m-widget4' >
+                                      {
+                                        (this.props.otherPages) &&
+                                        this.props.otherPages.map((page, i) => (
+
+                                          <div className='m-widget4__item' key={i + '-addPageItem'}>
+                                            <div className='m-widget4__img m-widget4__img--icon'>
+                                              <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                                            </div>
+                                            <div className='m-widget4__info'>
+                                              <span className='m-widget4__text'>
+                                                {page.pageName}
+                                              </span>
+                                            </div>
+                                            <div className='m-widget4__ext'>
+                                              {(page.connected) &&
+
+                                              <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                                                <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                                              </a>
+                                                    }
+                                              {(!page.connected) &&
+
+                                              <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                                                <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                                              </a>
+
+                                                    }
+
+                                            </div>
+                                          </div>
+                                        ))
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className='m-portlet__head-tools'>
-                        <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                          <li className='nav-item m-tabs__item'>
-                            {this.props.location.state && this.props.location.state.module === 'page'
-                              ? <Link to='/pages' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
-                                  Done
-                                </Link>
-                                : <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab'>
-                                    Done
-                                  </Link>
-                              }
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      <div className='m-widget4'>
-                        {
-                (this.props.otherPages) &&
-                this.props.otherPages.map((page, i) => (
-
-                  <div className='m-widget4__item' key={i + '-addPageItem'}>
-                    <div className='m-widget4__img m-widget4__img--icon'>
-                      <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                    </div>
-                    <div className='m-widget4__info'>
-                      <span className='m-widget4__text'>
-                        {page.pageName}
-                      </span>
-                    </div>
-                    <div className='m-widget4__ext'>
-                      {(page.connected) &&
-
-                      <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
-                        <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
-                      </a>
-                            }
-                      {(!page.connected) &&
-
-                      <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
-                        <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                      </a>
-
-                            }
-
-                    </div>
-                  </div>
-                ))
-              }
-
+                      <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                        <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <Link to='/inviteUsingLinkWizard' className='btn m-btn--pill    btn-link'> Continue
+                          </Link>
+                          <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'marginLeft': '10px'}}> Cancel
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -208,57 +201,6 @@ class AddPage extends React.Component {
               </div>
             </div>
           </div>
-
-          {/*
-             <div className='container'>
-            <br /><br /><br /><br /><br /><br />
-            <div className='row'>
-              <main
-                className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
-                <h3>Add Pages</h3>
-                {this.state.showAlert === true &&
-                <center>
-                  <Alert type='danger' timeout={this.state.timeout}
-                    onDismiss={this.onDismissAlert.bind(this)}>
-                    {this.state.alertmsg}
-                  </Alert>
-                </center>
-
-                    }
-                {
-                (this.props.otherPages) &&
-                this.props.otherPages.map((page, i) => (
-                  <div className='ui-block'>
-                    <div className='birthday-item inline-items'>
-
-                      <div className='birthday-author-name'>
-                        <a href='#'
-                          className='h6 author-name'>{page.pageName} </a>
-
-                      </div>
-                      {(page.connected) &&
-                      <button onClick={() => this.props.removePageInAddPage(page)}
-                        className='btn btn-sm bg-blue'>Disconnect
-                      </button>
-                      }
-                      {(!page.connected) &&
-                      <button onClick={() => this.props.enablePage(page)}
-                        className='btn btn-sm bg-blue'>Connect
-                      </button>
-                      }
-                    </div>
-                  </div>
-                ))
-              }
-                <button onClick={() => this.gotoView()}
-                  className='btn btn-sm bg-blue'>Done
-              </button>
-              </main>
-
-            </div>
-          </div>
-          */}
-
         </div>
       </div>
 

@@ -4,10 +4,11 @@
 
 import React from 'react'
 import Header from './header'
+import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 import {
   addPages,
@@ -63,8 +64,10 @@ class AddPage extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in connect page', nextprops)
     if (nextprops.message && nextprops.message !== '') {
+      this.msg.error('The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.')
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+      this.msg.error(nextprops.page_connected)
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
       this.setState({showAlert: false, alertmsg: ''})
@@ -81,118 +84,103 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
-    console.log('SHow allert state', this.state.showAlert)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Connect Pages</h3>
-                </div>
-              </div>
-              {
-                this.state.showWarning &&
-                <ModalContainer style={{width: '300px'}}
-                  onClose={this.closeDialog}>
-                  <ModalDialog style={{width: '300px'}}
-                    onClose={this.closeDialog}>
-                    <h3><i style={{fontSize: '1.75rem'}} className='fa fa-exclamation-triangle' aria-hidden='true' /> Warning:</h3>
-                    <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
-                  </ModalDialog>
-                </ModalContainer>
-            }
-            </div>
             <div className='m-content'>
-              { this.props.user && !this.props.user.facebookInfo
-                ? <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                  <div className='m-alert__icon'>
-                    <i className='flaticon-exclamation m--font-brand' />
-                  </div>
-                  <div className='m-alert__text'>
-                    This page will help you connect your Facebook pages. To connect Facebook Pages, facebook account must be connected by at least one of your team admins or by you. Click <Link onClick={() => this.gotoSettings()} style={{color: 'blue', cursor: 'pointer'}}>here</Link> to connect with facebook or Click <Link to='/newInvitation' style={{color: 'blue', cursor: 'pointer'}}>here</Link> to invite admins to your company.
-                  </div>
-                </div>
-                : <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                  <div className='m-alert__icon'>
-                    <i className='flaticon-exclamation m--font-brand' />
-                  </div>
-                  <div>
-                    { // this.state.descriptionMsg &&
-                      <div className='m-alert__text'>
-                        This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
-                        To connect the pages click on connect buttons. Click on continue to move to the next step.
-                      </div>
-                    }
-                  </div>
-                </div>
-              }
-              <div className='row'>
-                <div className='col-xl-12'>
-                  {this.state.showAlert === true &&
-                    <div className='alert alert-danger alert-dismissible fade show' role='alert'>
-                      <button type='button' className='close' data-dismiss='alert' aria-label='Close' />
-                      {this.state.alertmsg}
-                      </div>
-                  }
-                  <div className='m-portlet m-portlet--full-height '>
-                    <div className='m-portlet__body'>
-                      <div className='tab-content'>
-                        <div className='tab-pane active m-scrollable' role='tabpanel'>
-                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                            <div style={{height: '370px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                                  <div className='tab-pane active' id='m_widget4_tab1_content'>
-                                    <div className='m-widget4' >
-                                      {
-                                        (this.props.otherPages) &&
-                                        this.props.otherPages.map((page, i) => (
+              <div className='m-portlet m-portlet--full-height'>
+                <div className='m-portlet__body m-portlet__body--no-padding'>
+                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                      <Sidebar step='1' />
+                      <div className='col-xl-9 col-lg-12' style={{paddingLeft: '0', paddingRight: '0', flex: '0 0 75%', maxWidth: '75%', position: 'relative', width: '100%', minHeight: '1px'}}>
+                        <div className='m-wizard__form' style={{padding: '4.2rem 4rem 3rem 4rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5'}}>
+                          <form className='m-form m-form--label-align-left- m-form--state-' id='m_form' novalidate='novalidate'>
+                            <div className='m-portlet__body m-portlet__body--no-padding'>
+                              <div class='m-form__heading'>
+                                <h3 className='m-form__heading-title'>Step 1: Connect Pages </h3>
+                              </div>
+                              <div className='form-group m-form__group row' style={{borderTop: '0.07rem solid #EBEDF2'}}>
+                                <label style={{marginTop: '10px', marginLeft: '20px'}}>This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
+                                  To connect the pages, click on connect buttons.</label>
+                              </div>
+                              <div className='m-portlet__body'>
+                                <div className='tab-content'>
+                                  <div className='tab-pane active m-scrollable' role='tabpanel'>
+                                    <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                                      <div style={{height: '380px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                                        <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                          <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                                            <div className='tab-pane active' id='m_widget4_tab1_content'>
+                                              <div className='m-widget4' >
+                                                {
+                                                  (this.props.otherPages) &&
+                                                  this.props.otherPages.map((page, i) => (
 
-                                          <div className='m-widget4__item' key={i + '-addPageItem'}>
-                                            <div className='m-widget4__img m-widget4__img--icon'>
-                                              <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                                            </div>
-                                            <div className='m-widget4__info'>
-                                              <span className='m-widget4__text'>
-                                                {page.pageName}
-                                              </span>
-                                            </div>
-                                            <div className='m-widget4__ext'>
-                                              {(page.connected) &&
+                                                    <div className='m-widget4__item' key={i + '-addPageItem'}>
+                                                      <div className='m-widget4__img m-widget4__img--icon'>
+                                                        <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                                                      </div>
+                                                      <div className='m-widget4__info'>
+                                                        <span className='m-widget4__text'>
+                                                          {page.pageName}
+                                                        </span>
+                                                      </div>
+                                                      <div className='m-widget4__ext'>
+                                                        {(page.connected) &&
 
-                                              <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
-                                                <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
-                                              </a>
-                                                    }
-                                              {(!page.connected) &&
+                                                        <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                                                          <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                                                        </a>
+                                                              }
+                                                        {(!page.connected) &&
 
-                                              <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
-                                                <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                                              </a>
+                                                        <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                                                          <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                                                        </a>
 
-                                                    }
+                                                              }
 
+                                                      </div>
+                                                    </div>
+                                                  ))
+                                                }
+                                              </div>
                                             </div>
                                           </div>
-                                        ))
-                                      }
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                                <div className='m-form__actions'>
+                                  <div className='row'>
+                                    <div className='col-lg-6 m--align-left' />
+                                    <div className='col-lg-6 m--align-right'>
+                                      <Link to='/inviteUsingLinkWizard' href='#' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                        <span>
+                                          <span>Next</span>&nbsp;&nbsp;
+                                          <i className='la la-arrow-right' />
+                                        </span>
+                                      </Link>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                        <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                          <Link to='/inviteUsingLinkWizard' className='btn m-btn--pill    btn-link'> Continue
-                          </Link>
-                          <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'marginLeft': '10px'}}> Cancel
-                          </Link>
+                          </form>
                         </div>
                       </div>
                     </div>
