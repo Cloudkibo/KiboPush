@@ -51,7 +51,7 @@ class Card extends React.Component {
         id: cardProps.id,
         componentType: 'card',
         title: cardProps.cardDetails.title,
-        imgSrc: cardProps.cardDetails.image_url.url,
+        imgSrc: cardProps.cardDetails.image_url,
         button: cardProps.cardDetails.buttons,
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
