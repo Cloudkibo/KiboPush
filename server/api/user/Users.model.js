@@ -25,6 +25,7 @@ const UserSchema = new Schema({
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
   // tour seen variables
+  wizardSeen: {type: Boolean, default: false},
   getStartedSeen: {type: Boolean, default: false},
   dashboardTourSeen: {type: Boolean, default: false},
   workFlowsTourSeen: {type: Boolean, default: false},
