@@ -164,7 +164,7 @@ exports.sentVsSeen = function (req, res) {
                                                 pollResponseCount)}`)
                                                 for (let a = 0; a < polls.length; a++) {
                                                   for (let b = 0; b < pollResponseCount.length; b++) {
-                                                    if (polls[a]._id.toString() === pollResponseCount[b]._id.pollId.toString()) {
+                                                    if (polls[a]._id.toString() === pollResponseCount[b]._id.toString()) {
                                                       responsesCount.push(pollResponseCount[b].count)
                                                     }
                                                   }
