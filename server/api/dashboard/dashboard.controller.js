@@ -158,15 +158,23 @@ exports.sentVsSeen = function (req, res) {
                                                   err)}`
                                             })
                                           }
+                                          let responsesCount = []
                                           logger.serverLog(TAG,
                                               `counts for dashboard poll response ${JSON.stringify(
                                                 pollResponseCount)}`)
+                                                for (let a = 0; a < polls.length; a++) {
+                                                  for (let b = 0; b < pollResponseCount.length; b++) {
+                                                    if (polls[a]._id.toString() === pollResponseCount[b]._id.toString()) {
+                                                      responsesCount.push(pollResponseCount[b].count)
+                                                    }
+                                                  }
+                                                }
                                           var sum = 0
-                                          if (pollResponseCount.length > 0) {
-                                            for (var i = 0; i <
-                                              pollResponseCount.length; i++) {
+                                          if (responsesCount.length > 0) {
+                                            for (var c = 0; c <
+                                              responsesCount.length; c++) {
                                               sum = sum +
-                                                  pollResponseCount[i].count
+                                                  responsesCount[c]
                                             }
                                           }
                                           logger.serverLog(TAG,
