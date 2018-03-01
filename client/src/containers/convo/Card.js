@@ -23,6 +23,7 @@ class Card extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.setLoading = this.setLoading.bind(this)
+    this.updateCardDetails = this.updateCardDetails.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -50,7 +51,7 @@ class Card extends React.Component {
         id: cardProps.id,
         componentType: 'card',
         title: cardProps.cardDetails.title,
-        imgSrc: cardProps.cardDetails.image_url,
+        imgSrc: cardProps.cardDetails.image_url.url,
         button: cardProps.cardDetails.buttons,
         fileurl: cardProps.cardDetails.fileurl,
         fileName: cardProps.cardDetails.fileName,
