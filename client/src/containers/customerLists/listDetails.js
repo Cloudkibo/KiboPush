@@ -28,6 +28,7 @@ class ListDetails extends React.Component {
     this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.exportRecords = this.exportRecords.bind(this)
+    this.prepareExportData = this.prepareExportData.bind(this)
     if (this.props.currentList) {
       props.loadListDetails(this.props.currentList._id)
     }
@@ -60,9 +61,28 @@ class ListDetails extends React.Component {
     }
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
+  prepareExportData () {
+    var data = []
+    var subscriberObj = {}
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      var subscriber = this.state.subscribersData[i]
+      subscriberObj = {
+        'Profile Picture': subscriber.profilePic,
+        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
+        'Page': subscriber.pageId.pageName,
+        'PhoneNumber': subscriber.phoneNumber,
+        'Email': subscriber.email,
+        'Source': subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other',
+        'Locale': subscriber.locale,
+        'Gender': subscriber.gender
+      }
+      data.push(subscriberObj)
+    }
+    return data
+  }
   exportRecords () {
     console.log('download File called')
-    var data = this.state.subscribersData
+    var data = this.prepareExportData()
     var info = data
     var keys = []
     var val = info[0]
@@ -115,6 +135,16 @@ class ListDetails extends React.Component {
                             {this.state.listName}
                           </h3>
                         </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Export Records in CSV file
+                            </span>
+                          </span>
+                        </button>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -268,14 +298,6 @@ class ListDetails extends React.Component {
                           Back
                         </Link>
                       }
-                        <div className='pull-right' style={{display: 'inline-block'}} onClick={this.exportRecords}>
-                          <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                            <label>Get data in CSV file: </label>
-                          </div>
-                          <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                            <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
