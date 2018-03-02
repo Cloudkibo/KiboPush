@@ -7,7 +7,7 @@ import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { addPoll, loadPollsList, sendpoll } from '../../redux/actions/poll.actions'
+import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
@@ -73,6 +73,7 @@ class CreatePoll extends React.Component {
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.goToSend = this.goToSend.bind(this)
   }
 
   componentDidMount () {
@@ -239,26 +240,6 @@ class CreatePoll extends React.Component {
         this.state.selectedRadio = 'segmentation'
       }
     }
-    if (nextProps.pollCreated) {
-      console.log('nexprops polls', nextProps.pollCreated)
-      var res = checkConditions(nextProps.pollCreated.segmentationPageIds, nextProps.pollCreated.segmentationGender, nextProps.pollCreated.segmentationLocale, nextProps.subscribers)
-      if (res === false) {
-        this.msg.error('No subscribers match the selected criteria')
-      } else {
-        this.props.sendpoll(nextProps.pollCreated, this.msg)
-        this.setState({
-          pageValue: [],
-          genderValue: [],
-          localeValue: [],
-          statement: '',
-          option1: '',
-          option2: '',
-          option3: '',
-          selectedRadio: '',
-          listSelected: '',
-          isList: false})
-      }
-    }
   }
   handlePageChange (value) {
     var temp = value.split(',')
@@ -380,7 +361,48 @@ class CreatePoll extends React.Component {
     }
   }
   goToSend () {
-    this.createPoll()
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var options = []
+    if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '' || this.state.statement === '') {
+      this.setState({alert: true})
+    } else {
+      if (this.state.option1 !== '') {
+        options.push(this.state.option1)
+      }
+      if (this.state.option2 !== '') {
+        options.push(this.state.option2)
+      }
+      if (this.state.option3 !== '') {
+        options.push(this.state.option3)
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        this.props.sendPollDirectly({
+          platform: 'Facebook',
+          datetime: Date.now(),
+          statement: this.state.statement,
+          sent: 0,
+          options: options,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
+        }, this.msg)
+      }
+    }
   }
   render () {
     const { disabled, stayOpen } = this.state
@@ -619,7 +641,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    sendPollDirectly: sendPollDirectly
   },
     dispatch)
 }
