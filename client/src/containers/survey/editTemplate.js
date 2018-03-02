@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { createsurvey, sendsurvey } from '../../redux/actions/surveys.actions'
+import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
@@ -75,6 +75,7 @@ class EditTemplate extends React.Component {
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.goToSend = this.goToSend.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -110,27 +111,6 @@ class EditTemplate extends React.Component {
     if (nextprops.questions) {
       console.log('details', nextprops.questions)
       this.setState({surveyQuestions: nextprops.questions})
-    }
-    if (nextprops.surveyCreated) {
-      console.log('nexprops surveys', nextprops.surveyCreated)
-      var res = checkConditions(nextprops.surveyCreated.segmentationPageIds, nextprops.surveyCreated.segmentationGender, nextprops.surveyCreated.segmentationLocale, nextprops.subscribers)
-      if (res === false) {
-        this.msg.error('No subscribers match the selected criteria')
-      } else {
-        this.props.sendsurvey(nextprops.surveyCreated, this.msg)
-        this.setState({
-          description: '',
-          title: '',
-          surveyQuestions: [],
-          pageValue: [],
-          genderValue: [],
-          localeValue: [],
-          selectedRadio: '',
-          listSelected: '',
-          isList: false,
-          isShowingModal: false
-        })
-      }
     }
   }
   initializeListSelect (lists) {
@@ -573,7 +553,104 @@ class EditTemplate extends React.Component {
     }
   }
   goToSend () {
-    this.createSurvey()
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    let flag = 0
+    if (this.state.surveyQuestions.length === 0) {
+      this.setState({
+        alertMessage: 'A survey form requires atleast one question',
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+      for (let j = 0; j < this.state.surveyQuestions.length; j++) {
+        if (this.state.surveyQuestions[j].options.length > 0) {
+          for (let k = 0; k <
+          this.state.surveyQuestions[j].options.length; k++) {
+            if (this.state.surveyQuestions[j].options[k] === '') {
+              let incompleteChoice = document.getElementById('choice' + j + k)
+              incompleteChoice.classList.add('has-error')
+              flag = 1
+              console.log('empty')
+            } else {
+              let completeChoice = document.getElementById('choice' + j + k)
+              completeChoice.classList.remove('has-error')
+            }
+          }
+        }
+        // Checking if any Question statement is empty.
+        if (this.state.surveyQuestions[j].statement === '') {
+          let incompleteQuestion = document.getElementById('question' + j)
+          incompleteQuestion.classList.add('has-error')
+          flag = 1
+          console.log('empty')
+        } else {
+          let completeChoice = document.getElementById('question' + j)
+          completeChoice.classList.remove('has-error')
+        }
+      }
+      // Checking if Description or Title is empty, and highlighting it
+
+      if (this.state.description === '') {
+        flag = 1
+        let incompleteDesc = document.getElementById('desc')
+        incompleteDesc.classList.add('has-error')
+      } else {
+        let completeDesc = document.getElementById('desc')
+        completeDesc.classList.remove('has-error')
+      }
+
+      if (this.state.title === '') {
+        flag = 1
+        let incompleteTitle = document.getElementById('titl')
+        incompleteTitle.classList.add('has-error')
+      } else {
+        let completeTitle = document.getElementById('titl')
+        completeTitle.classList.remove('has-error')
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      if (flag === 0 && this.state.title !== '' &&
+        this.state.description !== '') {
+        var send = []
+        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
+          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
+        }
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+        if (res === false) {
+          this.msg.error('No subscribers match the selected criteria')
+        } else {
+          var surveybody = {
+            survey: {
+              title: this.state.title, // title of survey
+              description: this.state.description,
+              image: '' // image url
+            },
+            questions: send,
+            isSegmented: isSegmentedValue,
+            segmentationPageIds: this.state.pageValue,
+            segmentationGender: this.state.genderValue,
+            segmentationLocale: this.state.localeValue,
+            isList: isListValue,
+            segmentationList: this.state.listSelected
+          }
+          this.props.sendSurveyDirectly(surveybody, this.msg)
+        }
+      } else {
+        this.setState({
+          alertMessage: 'Please fill all the fields.',
+          alertType: 'danger'
+        })
+      }
+    }
   }
   render () {
     var alertOptions = {
@@ -786,7 +863,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
-    sendsurvey: sendsurvey
+    sendsurvey: sendsurvey,
+    sendSurveyDirectly: sendSurveyDirectly
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)

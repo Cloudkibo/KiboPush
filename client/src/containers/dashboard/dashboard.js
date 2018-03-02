@@ -19,7 +19,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
-import GettingStarted from './gettingStarted'
+import GettingStarted from './gettingStartedOld'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
 
