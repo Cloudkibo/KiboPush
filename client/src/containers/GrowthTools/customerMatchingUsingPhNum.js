@@ -76,6 +76,7 @@ class CustomerMatching extends React.Component {
       }
       if (nameExists) {
         this.showDialogFileName()
+        return
       }
     }
     this.handleSubmit()
