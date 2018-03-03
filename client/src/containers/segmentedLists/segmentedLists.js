@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 
-class CustomerLists extends React.Component {
+class SegmentedList extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -173,24 +173,19 @@ class CustomerLists extends React.Component {
                                             style={{float: 'left', margin: 2}} disabled>
                                             Edit
                                           </Link>
-                                          <button className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}}
-                                            disabled>
-                                            Delete
-                                          </button>
                                         </div>
                                         : <div>
                                           <Link to='/createSubList' className='btn btn-primary btn-sm'
                                             style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                             Edit
                                           </Link>
-                                          <button className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}}
-                                            onClick={() => this.showDialogDelete(list._id)}>
-                                            Delete
-                                          </button>
                                         </div>
                                       }
+                                        <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}}
+                                          onClick={() => this.showDialogDelete(list._id)}>
+                                        Delete
+                                        </button>
                                       </span>
                                     </td>
                                   </tr>
@@ -230,4 +225,4 @@ function mapDispatchToProps (dispatch) {
     clearCurrentList: clearCurrentList
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerLists)
+export default connect(mapStateToProps, mapDispatchToProps)(SegmentedList)

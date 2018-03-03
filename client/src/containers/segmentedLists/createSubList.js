@@ -604,7 +604,7 @@ class CreateSubList extends React.Component {
                       <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
                         { this.state.isSaveEnabled
                           ? <div>
-                            <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
+                            <Link style={{marginRight: '10px'}} to='/segmentedLists' className='btn btn-primary'>
                              Back
                             </Link>
                             { !this.state.isEdit

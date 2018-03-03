@@ -11,6 +11,8 @@ import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import fileDownload from 'js-file-download'
+var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
   constructor (props, context) {
@@ -36,6 +38,8 @@ class Subscriber extends React.Component {
     this.stackGenderFilter = this.stackGenderFilter.bind(this)
     this.stackPageFilter = this.stackPageFilter.bind(this)
     this.stackLocaleFilter = this.stackLocaleFilter.bind(this)
+    this.exportRecords = this.exportRecords.bind(this)
+    this.prepareExportData = this.prepareExportData.bind(this)
     console.log('exeuting subscriber')
   }
 
@@ -91,7 +95,44 @@ class Subscriber extends React.Component {
     }
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
+  prepareExportData () {
+    var data = []
+    var subscriberObj = {}
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      var subscriber = this.state.subscribersData[i]
+      subscriberObj = {
+        'Profile Picture': subscriber.profilePic,
+        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
+        'Page': subscriber.pageId.pageName,
+        'PhoneNumber': subscriber.phoneNumber,
+        'Email': subscriber.email,
+        'Source': subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other',
+        'Locale': subscriber.locale,
+        'Gender': subscriber.gender
+      }
+      data.push(subscriberObj)
+    }
+    return data
+  }
+  exportRecords () {
+    console.log('download File called')
+    var data = this.prepareExportData()
+    var info = data
+    var keys = []
+    var val = info[0]
 
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+        console.log(err)
+      } else {
+        fileDownload(csv, 'SegmentedList.csv')
+      }
+    })
+  }
   handlePageClick (data) {
     console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -467,6 +508,16 @@ class Subscriber extends React.Component {
                               subContainerClassName={'pages pagination'}
                               activeClassName={'active'} />
 
+                          </div>
+                          <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                            <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                              <span>
+                                <i className='fa fa-download' />
+                                <span>
+                                  Export Records in CSV File
+                                </span>
+                              </span>
+                            </button>
                           </div>
                         </div>
                       : <div className='table-responsive'>
