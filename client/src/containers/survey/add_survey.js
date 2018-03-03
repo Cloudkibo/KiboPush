@@ -825,7 +825,7 @@ class AddSurvey extends React.Component {
                             name='segmentationType'
                             disabled />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         : <div className='radio'>
                           <input id='segmentList'
@@ -835,7 +835,7 @@ class AddSurvey extends React.Component {
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'list'} />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         }
                         <div className='m-form'>

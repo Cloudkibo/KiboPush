@@ -136,16 +136,6 @@ class ListDetails extends React.Component {
                           </h3>
                         </div>
                       </div>
-                      <div className='m-portlet__head-tools'>
-                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV file
-                            </span>
-                          </span>
-                        </button>
-                      </div>
                     </div>
                     <div className='m-portlet__body'>
                       { this.props.listDetail && this.props.listDetail.length > 0
@@ -282,6 +272,16 @@ class ListDetails extends React.Component {
                               activeClassName={'active'} />
 
                           </div>
+                          <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                            <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                              <span>
+                                <i className='fa fa-download' />
+                                <span>
+                                  Export Records in CSV File
+                                </span>
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       : <div className='table-responsive'>
                         <p> No data to display </p>
@@ -290,14 +290,9 @@ class ListDetails extends React.Component {
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit'>
                       <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                        { this.props.location && this.props.location.state && this.props.location.state.module === 'customerMatching'
-                        ? <Link to='/customerMatchingUsingPhNum' className='btn btn-primary'>
+                        <Link to='/segmentedLists' className='btn btn-primary'>
                           Back
                         </Link>
-                        : <Link to='/customerLists' className='btn btn-primary'>
-                          Back
-                        </Link>
-                      }
                       </div>
                     </div>
                   </div>

@@ -381,7 +381,7 @@ class Sidebar extends Component {
       if (this.state.createPhoneList && this.props.user && this.props.user.permissions.pagesPermission) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/customerLists' className='m-menu__link m-menu__toggle'>
+            <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-list' />
               <span className='m-menu__link-text'>Segment Subscribers</span>
             </Link>
