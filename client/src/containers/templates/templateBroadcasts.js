@@ -7,7 +7,6 @@ import { handleDate } from '../../utility/utils'
 import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import NotificationBadge, {Effect} from 'react-notification-badge'
 
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {

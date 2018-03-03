@@ -88,6 +88,19 @@ export function sendpoll (poll, msg) {
     )
   }
 }
+export function sendPollDirectly (poll, msg) {
+  return (dispatch) => {
+    callApi('polls/sendPollDirectly', 'post', poll)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Poll sent successfully')
+        } else {
+          msg.error('Poll not sent!')
+        }
+      }
+    )
+  }
+}
 export function addPoll (token, data) {
   // here we will add the broadcast
   console.log('Loading broadcast list')
