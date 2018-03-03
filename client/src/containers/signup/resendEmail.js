@@ -6,11 +6,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { resendEmail } from '../../redux/actions/signup.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 import auth from '../../utility/auth.service'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
 class ResendEmail extends React.Component {
   constructor (props) {
     super(props)
+    props.getuserdetails()
     this.resend = this.resend.bind(this)
   }
   resend () {
@@ -85,6 +88,11 @@ class ResendEmail extends React.Component {
                   <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={this.resend}>
                     Resend Verification Email
                   </button>
+                  {this.props.user && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') &&
+                  <Link id='m_login_signup_cancel' to='/dashboard' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                    Cancel
+                  </Link>
+                }
                 </center>
               </div>
             </div>
@@ -98,13 +106,15 @@ function mapStateToProps (state) {
  // console.log(state)
   return {
     errorMessage: (state.signupInfo.errorMessage),
-    successMessage: (state.signupInfo.successMessage)
+    successMessage: (state.signupInfo.successMessage),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      getuserdetails: getuserdetails,
       resendEmail: resendEmail
     },
     dispatch)

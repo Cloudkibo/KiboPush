@@ -12,9 +12,17 @@ const app = express()
 const httpApp = express()
 const swaggerTools = require('swagger-tools')
 
+const Raven = require('raven')
+Raven.config('https://6c7958e0570f455381d6f17122fbd117:d2041f4406ff4b3cb51290d9b8661a7d@sentry.io/292307', {
+  environment: config.env,
+  parseUser: ['name', 'email', 'domain', 'role', 'emailVerified', 'plan']
+}).install()
+
 mongoose.connect(config.mongo.uri, config.mongo.options)
 
 const appObj = (config.env === 'production' || config.env === 'staging') ? app : httpApp
+
+appObj.use(Raven.requestHandler())
 
 const swaggerDoc = require('./config/swagger/kibopush.json')
 
@@ -33,9 +41,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   httpApp.use(middleware.swaggerUi())
 
   require('./config/express')(appObj)
-  require('./routes')(appObj)
   require('./config/setup')(app, httpApp, config)
   require('./components/utility').setupPlans()
   // require('./config/integrations/pubsubhubbub')()
   require('./config/integrations/twitter').connect()
+  require('./routes')(appObj)
 })

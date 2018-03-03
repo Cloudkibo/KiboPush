@@ -169,7 +169,7 @@ class templatePolls extends React.Component {
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Create Poll
+                        Create Template Poll
                       </span>
                     </span>
                   </button>

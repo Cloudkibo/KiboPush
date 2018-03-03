@@ -32,6 +32,7 @@ export function updatePollsList (data) {
 }
 
 export function createPoll (data) {
+  console.log('createpolldata', data)
   return {
     type: ActionTypes.ADD_POLL,
     data
@@ -70,16 +71,31 @@ export function clearAlertMessage () {
   }
 }
 
-export function sendpoll (poll) {
+export function sendpoll (poll, msg) {
   return (dispatch) => {
     callApi('polls/send', 'post', poll)
       .then(res => {
         dispatch(sendpollresp(res.payload))
         console.log('sendpollresp', res)
         if (res.status === 'success') {
+          msg.success('Poll sent successfully')
           dispatch(sendPollSuccess())
         } else {
+          msg.success('Poll not sent!')
           dispatch(sendPollFailure())
+        }
+      }
+    )
+  }
+}
+export function sendPollDirectly (poll, msg) {
+  return (dispatch) => {
+    callApi('polls/sendPollDirectly', 'post', poll)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Poll sent successfully')
+        } else {
+          msg.error('Poll not sent!')
         }
       }
     )

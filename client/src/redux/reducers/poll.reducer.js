@@ -12,7 +12,7 @@ export function pollsInfo (state = {}, action) {
       })
     case ActionTypes.ADD_POLL:
       return Object.assign({}, state, {
-        polls: [...state.polls, action.data]
+        pollCreated: action.data
       })
     case ActionTypes.ADD_POLL_RESPONSES:
       return Object.assign({}, state, {

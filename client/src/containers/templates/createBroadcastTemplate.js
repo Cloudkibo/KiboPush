@@ -74,7 +74,7 @@ class CreateBroadcastTemplate extends React.Component {
       }
       var options = this.state.categoryValue
       for (var j = 0; j < this.props.template.category.length; j++) {
-        options.push({id: j, text: this.props.template.category[0], selected: true})
+        options.push({id: j, text: this.props.template.category[j], selected: true})
       }
       this.setState({broadcast: this.props.template.payload, list: temp, categoryValue: this.props.template.category})
       this.initializeCategorySelect(options)
@@ -326,6 +326,14 @@ class CreateBroadcastTemplate extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                </div>
+              </div>
               <div className='row'>
 
                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
@@ -413,13 +421,13 @@ class CreateBroadcastTemplate extends React.Component {
                     <div className='row'>
                       <br />
                       <br />
-                      <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                       <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New </button>
                       {
                         this.props.template
                         ? <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.editBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Update </button>
                         : <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.createBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Create </button>
                       }
+                      <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                     </div>
                   </div>
                 </div>

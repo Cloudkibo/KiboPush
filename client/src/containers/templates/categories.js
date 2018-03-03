@@ -72,7 +72,7 @@ class Category extends React.Component {
   }
   exists (newCategory) {
     for (let i = 0; i < this.props.categories.length; i++) {
-      if (this.props.categories[i].name.toLowerCase().includes(newCategory.toLowerCase())) {
+      if (this.props.categories[i].name.toLowerCase() === newCategory.toLowerCase()) {
         return true
       }
     }

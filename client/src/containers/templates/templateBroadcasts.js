@@ -189,7 +189,7 @@ class TemplateBroadcasts extends React.Component {
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Create Broadcast
+                        Create Template Broadcast
                       </span>
                     </span>
                   </button>

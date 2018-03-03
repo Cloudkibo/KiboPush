@@ -7,18 +7,22 @@ import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { addPoll, loadPollsList } from '../../redux/actions/poll.actions'
+import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { checkConditions } from './utility'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
     props.getuserdetails()
+    props.loadSubscribersList()
     props.loadCustomerLists()
     this.state = {
       page: {
@@ -51,7 +55,8 @@ class CreatePoll extends React.Component {
       steps: [],
       selectedRadio: '',
       listSelected: '',
-      isList: false
+      isList: false,
+      isShowingModal: false
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -66,6 +71,9 @@ class CreatePoll extends React.Component {
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSend = this.goToSend.bind(this)
   }
 
   componentDidMount () {
@@ -115,6 +123,12 @@ class CreatePoll extends React.Component {
       type: 'hover',
       isFixed: true}
     ])
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
@@ -222,6 +236,9 @@ class CreatePoll extends React.Component {
         options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
       }
       this.initializeListSelect(options)
+      if (nextProps.customerLists.length === 0) {
+        this.state.selectedRadio = 'segmentation'
+      }
     }
   }
   handlePageChange (value) {
@@ -276,9 +293,6 @@ class CreatePoll extends React.Component {
         segmentationList: this.state.listSelected
       })
       console.log('Poll added')
-      this.props.history.push({
-        pathname: '/poll'
-      })
     }
   }
 
@@ -346,6 +360,50 @@ class CreatePoll extends React.Component {
       this.setState({listSelected: [], isList: false})
     }
   }
+  goToSend () {
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var options = []
+    if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '' || this.state.statement === '') {
+      this.setState({alert: true})
+    } else {
+      if (this.state.option1 !== '') {
+        options.push(this.state.option1)
+      }
+      if (this.state.option2 !== '') {
+        options.push(this.state.option2)
+      }
+      if (this.state.option3 !== '') {
+        options.push(this.state.option3)
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        this.props.sendPollDirectly({
+          platform: 'Facebook',
+          datetime: Date.now(),
+          statement: this.state.statement,
+          sent: 0,
+          options: options,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
+        }, this.msg)
+      }
+    }
+  }
   render () {
     const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -384,6 +442,41 @@ class CreatePoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <p>Do you want to send this poll right away or save it for later use? </p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.closeDialog()
+                                      this.goToSend()
+                                    }}>
+                                      Send
+                                    </button>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.createPoll()
+                                      this.props.history.push({
+                                        pathname: '/poll'
+                                      })
+                                    }}>
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       <div className='m-form'>
                         <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>Ask something...</label>
@@ -432,7 +525,7 @@ class CreatePoll extends React.Component {
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                         <button className='btn btn-primary'
-                          onClick={this.createPoll}> Create Poll
+                          onClick={this.showDialog}> Create Poll
                         </button>
                         <Link
                           to='/poll'
@@ -455,12 +548,12 @@ class CreatePoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <select id='selectPage' />
-                        </div>
+                      <label>Select Page:</label>
+                      <div className='form-group m-form__group'>
+                        <select id='selectPage' style={{minWidth: 75 + '%'}} />
                       </div>
-                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                      <label>Select Segmentation:</label>
+                      <div className='radio-buttons' style={{marginLeft: '20px'}}>
                         <div className='radio'>
                           <input id='segmentAll'
                             type='radio'
@@ -468,42 +561,53 @@ class CreatePoll extends React.Component {
                             name='segmentationType'
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'segmentation'} />
-                          <label>Using Segmentation</label>
+                          <label>Apply Basic Segmentation</label>
+                          { this.state.selectedRadio === 'segmentation'
+                          ? <div className='m-form'>
+                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
+                              <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
+                              <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                            </div>
+                          </div>
+                          : <div className='m-form'>
+                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
+                              <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
+                              <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                          </div>
+                          }
                         </div>
-                        <div className='radio'>
+                        { (this.props.customerLists && this.props.customerLists.length === 0)
+                        ? <div className='radio'>
+                          <input id='segmentList'
+                            type='radio'
+                            value='list'
+                            name='segmentationType'
+                            disabled />
+                          <label>Use Segmented Subscribers List</label>
+                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                        </div>
+                        : <div className='radio'>
                           <input id='segmentList'
                             type='radio'
                             value='list'
                             name='segmentationType'
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'list'} />
-                          <label>Using List</label>
+                          <label>Use Segmented Subscribers List</label>
+                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
-                      </div>
-                      <div className='m-form'>
-                        { this.state.selectedRadio === 'segmentation'
-                        ? <div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectGender' />
-                          </div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectLocale' />
-                          </div>
+                      }
+                        <div className='m-form'>
+                          { this.state.selectedRadio === 'list'
+                          ? <div className='form-group m-form__group'><select id='selectLists' /></div>
+                          : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
+                          }
                         </div>
-                        : <div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectGender' disabled />
-                          </div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectLocale' disabled />
-                          </div>
-                        </div>
-                        }
-                        <br />
-                        { this.state.selectedRadio === 'list'
-                      ? <div className='form-group m-form__group'><select id='selectLists' /></div>
-                    : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
-                    }
                       </div>
                     </div>
                   </div>
@@ -520,10 +624,12 @@ class CreatePoll extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    polls: (state.pollsInfo.polls),
+    pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
+
   }
 }
 
@@ -533,7 +639,10 @@ function mapDispatchToProps (dispatch) {
     addPoll: addPoll,
     pollTourCompleted: pollTourCompleted,
     getuserdetails: getuserdetails,
-    loadCustomerLists: loadCustomerLists
+    loadCustomerLists: loadCustomerLists,
+    sendpoll: sendpoll,
+    loadSubscribersList: loadSubscribersList,
+    sendPollDirectly: sendPollDirectly
   },
     dispatch)
 }

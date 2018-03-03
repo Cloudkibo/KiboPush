@@ -10,11 +10,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadPollDetails } from '../../redux/actions/templates.actions'
-import { addPoll } from '../../redux/actions/poll.actions'
+import { addPoll, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
-
+import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
 
 class EditPoll extends React.Component {
@@ -58,7 +60,8 @@ class EditPoll extends React.Component {
       title: '',
       selectedRadio: '',
       listSelected: '',
-      isList: false
+      isList: false,
+      isShowingModal: false
     }
     this.createPoll = this.createPoll.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
@@ -72,6 +75,9 @@ class EditPoll extends React.Component {
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSend = this.goToSend.bind(this)
   }
 
   componentDidMount () {
@@ -97,6 +103,12 @@ class EditPoll extends React.Component {
       console.log('details', nextprops.pollDetails)
       this.setState({title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category})
     }
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
@@ -247,9 +259,6 @@ class EditPoll extends React.Component {
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
-      this.props.history.push({
-        pathname: '/poll'
-      })
       console.log('Poll added')
     }
   }
@@ -288,7 +297,50 @@ class EditPoll extends React.Component {
       this.setState({listSelected: [], isList: false})
     }
   }
-
+  goToSend () {
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var options = []
+    if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '' || this.state.statement === '') {
+      this.setState({alert: true})
+    } else {
+      if (this.state.option1 !== '') {
+        options.push(this.state.option1)
+      }
+      if (this.state.option2 !== '') {
+        options.push(this.state.option2)
+      }
+      if (this.state.option3 !== '') {
+        options.push(this.state.option3)
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+      if (res === false) {
+        this.msg.error('No subscribers match the selected criteria')
+      } else {
+        this.props.sendPollDirectly({
+          platform: 'Facebook',
+          datetime: Date.now(),
+          statement: this.state.statement,
+          sent: 0,
+          options: options,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
+        }, this.msg)
+      }
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -326,6 +378,41 @@ class EditPoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <p>Do you want to send this poll right away or save it for later use? </p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.closeDialog()
+                                      this.goToSend()
+                                    }}>
+                                      Send
+                                    </button>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.createPoll()
+                                      this.props.history.push({
+                                        pathname: '/poll'
+                                      })
+                                    }}>
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       <div className='m-form'>
                         <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>Ask something...</label>
@@ -373,7 +460,7 @@ class EditPoll extends React.Component {
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                         <button className='btn btn-primary'
-                          onClick={this.createPoll}> Save
+                          onClick={this.showDialog}> Save
                         </button>
                         <Link
                           to='/showTemplatePolls'
@@ -462,10 +549,12 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     pages: (state.pagesInfo.pages),
+    pollCreated: (state.pollsInfo.pollCreated),
     user: (state.basicInfo.user),
     pollDetails: (state.templatesInfo.pollDetails),
     currentPoll: (state.getCurrentPoll.currentPoll),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -474,7 +563,10 @@ function mapDispatchToProps (dispatch) {
     addPoll: addPoll,
     loadPollDetails: loadPollDetails,
     getuserdetails: getuserdetails,
-    loadCustomerLists: loadCustomerLists
+    loadCustomerLists: loadCustomerLists,
+    sendpoll: sendpoll,
+    loadSubscribersList: loadSubscribersList,
+    sendPollDirectly: sendPollDirectly
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditPoll)

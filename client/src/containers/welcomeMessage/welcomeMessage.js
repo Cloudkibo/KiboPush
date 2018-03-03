@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import {
@@ -145,7 +145,10 @@ class WelcomeMessage extends React.Component {
                                          </div>
                                       ))}
                                     </div>
-                                      : <div>No Data to display</div>
+                                      : <div className='alert alert-success'>
+                                        <h4 className='block'>0 Connected Pages</h4>
+                                          You do not have any connected pages. You need to connect facebook pages to set the welcome message for them. Please click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages
+                                        </div>
                                     }
                                   </div>
                                 </div>

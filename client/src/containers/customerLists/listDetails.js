@@ -12,6 +12,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import ReactPaginate from 'react-paginate'
+import fileDownload from 'js-file-download'
+var json2csv = require('json2csv')
 
 class ListDetails extends React.Component {
   constructor (props, context) {
@@ -25,6 +27,8 @@ class ListDetails extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.exportRecords = this.exportRecords.bind(this)
+    this.prepareExportData = this.prepareExportData.bind(this)
     if (this.props.currentList) {
       props.loadListDetails(this.props.currentList._id)
     }
@@ -57,7 +61,44 @@ class ListDetails extends React.Component {
     }
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
+  prepareExportData () {
+    var data = []
+    var subscriberObj = {}
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      var subscriber = this.state.subscribersData[i]
+      subscriberObj = {
+        'Profile Picture': subscriber.profilePic,
+        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
+        'Page': subscriber.pageId.pageName,
+        'PhoneNumber': subscriber.phoneNumber,
+        'Email': subscriber.email,
+        'Source': subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other',
+        'Locale': subscriber.locale,
+        'Gender': subscriber.gender
+      }
+      data.push(subscriberObj)
+    }
+    return data
+  }
+  exportRecords () {
+    console.log('download File called')
+    var data = this.prepareExportData()
+    var info = data
+    var keys = []
+    var val = info[0]
 
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+        console.log(err)
+      } else {
+        fileDownload(csv, 'SegmentedList.csv')
+      }
+    })
+  }
   handlePageClick (data) {
     console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -94,6 +135,16 @@ class ListDetails extends React.Component {
                             {this.state.listName}
                           </h3>
                         </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Export Records in CSV file
+                            </span>
+                          </span>
+                        </button>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -145,9 +196,9 @@ class ListDetails extends React.Component {
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Email</span>
                                   </th>
-                                  <th data-field='Page'
+                                  <th data-field='Source'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Subscribed Using Customer Matching</span>
+                                    <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
                                   </th>
                                   <th data-field='Locale'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -204,11 +255,11 @@ class ListDetails extends React.Component {
                                       {subscriber.email}
                                     </span>
                                   </td>
-                                  <td data-field='isSubscribedByPhoneNumber'
+                                  <td data-field='source'
                                     className='m-datatable__cell'>
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.isSubscribedByPhoneNumber ? 'true' : 'false'}
+                                      {subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other'}
                                     </span>
                                   </td>
                                   <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>

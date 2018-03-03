@@ -9,8 +9,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
-const TAG = 'containers/login/login'
 import AlertContainer from 'react-alert'
+const TAG = 'containers/login/login'
 
 class Login extends React.Component {
   constructor (props, context) {
@@ -22,7 +22,7 @@ class Login extends React.Component {
       redirect: true,
       error: false,
       success: false,
-      account_type: 'none',
+      account_type: 'none'
     }
     this.check = this.check.bind(this)
     this.edit = this.edit.bind(this)
@@ -31,13 +31,13 @@ class Login extends React.Component {
   onSubmit (event) {
     event.preventDefault()
     var data = {}
-    if(this.state.account_type == 'team'){
+    if (this.state.account_type === 'team') {
       data = {
         email: this.refs.email.value.trim(),
         domain: this.refs.domain.value.trim(),
         password: this.refs.password.value.trim()
       }
-    }else{
+    } else {
       data = {
         email: this.refs.email.value.trim(),
         password: this.refs.password.value.trim()
@@ -83,13 +83,13 @@ class Login extends React.Component {
       transition: 'scale'
     }
     return (
-      <div style={{height: 100 + 'vh'}}>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className="fb-customerchat"
-         data-page_id="151990922046256"
-         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
-         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
-        </div>
+        <div className='fb-customerchat'
+          data-page_id='151990922046256'
+          data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
+          data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request'
+        />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login'>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>
@@ -104,53 +104,56 @@ class Login extends React.Component {
                     <div className='m-login__head'>
                       <h3 className='m-login__title'>Sign In To KiboPush</h3>
                     </div>
-                    { (this.state.account_type != 'none') &&
+                    { (this.state.account_type !== 'none') &&
                       <form onSubmit={this.onSubmit} className='m-login__form m-form' >
-                      {this.state.error &&
-                        <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
-                      }
-                      {
-                        (this.state.account_type == 'team') && <div className='form-group m-form__group'>
-                          <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                            onChange={this.check} />
-                          {/* !this.state.domain &&
-                          <div id='email-error' style={{color: 'red'}}>Please enter a valid/unique workspace name</div>
-                           */}
+                        {this.state.error &&
+                          <div id='email-error' style={{color: 'red'}}>{this.props.errorMessage}</div>
+                        }
+                        {
+                          (this.state.account_type === 'team') && <div className='form-group m-form__group'>
+                            <input className='form-control m-input' type='text' placeholder='Workspace name e.g. mycompany' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                              onChange={this.check} />
+                            {/* !this.state.domain &&
+                            <div id='email-error' style={{color: 'red'}}>Please enter a valid/unique workspace name</div>
+                             */}
+                          </div>
+                        }
+                        <div className='form-group m-form__group'>
+                          <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
                         </div>
-                      }
-
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.edit} />
-                      </div>
-                      <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                          onChange={this.edit} />
-                      </div>
-                      <div className='m-login__form-action'>
-                        <span>
-                          <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
-                            Back
-                          </Link>
-                        </span>
-                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
-                          Sign In
-                        </button>
-                      </div>
-                    </form>
+                        <div className='form-group m-form__group'>
+                          <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                            onChange={this.edit} />
+                        </div>
+                        <div className='m-login__form-action'>
+                          <span>
+                            <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
+                              Back
+                            </Link>
+                          </span>
+                          <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                            Sign In
+                          </button>
+                        </div>
+                      </form>
                     }
-
-                    { (this.state.account_type == 'none') &&
+                    { (this.state.account_type === 'none') &&
 
                       <div className='m-login__form m-form'>
                         <center>
-                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'individual'})}}>
-                          Individual Account
-                        </button>
-                        <br />
-                        <br />
-                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => {this.setState({account_type: 'team'})}}>
+                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'individual'}) }}>
+                            Individual Account
+                          </button>
+                          <br />
+                          <br />
+                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'team'}) }}>
                           Team Account
                         </button>
+                          <br />
+                          <br />
+                          <Link to='/' className='btn m-btn--pill btn-secondary'>
+                          Cancel
+                          </Link>
                         </center>
                       </div>
                     }

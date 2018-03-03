@@ -11,15 +11,19 @@ import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { createsurvey } from '../../redux/actions/surveys.actions'
+import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { checkConditions } from '../polls/utility'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
+    props.loadSubscribersList()
     props.loadCustomerLists()
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
@@ -69,6 +73,15 @@ class EditTemplate extends React.Component {
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSend = this.goToSend.bind(this)
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Survey'
@@ -219,7 +232,6 @@ class EditTemplate extends React.Component {
     this.setState({title: e.target.value})
   }
   createSurvey (e) {
-    e.preventDefault()
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -306,9 +318,6 @@ class EditTemplate extends React.Component {
           segmentationList: this.state.listSelected
         }
         this.props.createsurvey(surveybody)
-        this.props.history.push({
-          pathname: '/surveys'
-        })
       } else {
         this.setState({
           alertMessage: 'Please fill all the fields.',
@@ -543,6 +552,106 @@ class EditTemplate extends React.Component {
       this.setState({listSelected: [], isList: false})
     }
   }
+  goToSend () {
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    let flag = 0
+    if (this.state.surveyQuestions.length === 0) {
+      this.setState({
+        alertMessage: 'A survey form requires atleast one question',
+        alertType: 'danger'
+      })
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+      for (let j = 0; j < this.state.surveyQuestions.length; j++) {
+        if (this.state.surveyQuestions[j].options.length > 0) {
+          for (let k = 0; k <
+          this.state.surveyQuestions[j].options.length; k++) {
+            if (this.state.surveyQuestions[j].options[k] === '') {
+              let incompleteChoice = document.getElementById('choice' + j + k)
+              incompleteChoice.classList.add('has-error')
+              flag = 1
+              console.log('empty')
+            } else {
+              let completeChoice = document.getElementById('choice' + j + k)
+              completeChoice.classList.remove('has-error')
+            }
+          }
+        }
+        // Checking if any Question statement is empty.
+        if (this.state.surveyQuestions[j].statement === '') {
+          let incompleteQuestion = document.getElementById('question' + j)
+          incompleteQuestion.classList.add('has-error')
+          flag = 1
+          console.log('empty')
+        } else {
+          let completeChoice = document.getElementById('question' + j)
+          completeChoice.classList.remove('has-error')
+        }
+      }
+      // Checking if Description or Title is empty, and highlighting it
+
+      if (this.state.description === '') {
+        flag = 1
+        let incompleteDesc = document.getElementById('desc')
+        incompleteDesc.classList.add('has-error')
+      } else {
+        let completeDesc = document.getElementById('desc')
+        completeDesc.classList.remove('has-error')
+      }
+
+      if (this.state.title === '') {
+        flag = 1
+        let incompleteTitle = document.getElementById('titl')
+        incompleteTitle.classList.add('has-error')
+      } else {
+        let completeTitle = document.getElementById('titl')
+        completeTitle.classList.remove('has-error')
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
+                    this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      if (flag === 0 && this.state.title !== '' &&
+        this.state.description !== '') {
+        var send = []
+        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
+          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
+        }
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+        if (res === false) {
+          this.msg.error('No subscribers match the selected criteria')
+        } else {
+          var surveybody = {
+            survey: {
+              title: this.state.title, // title of survey
+              description: this.state.description,
+              image: '' // image url
+            },
+            questions: send,
+            isSegmented: isSegmentedValue,
+            segmentationPageIds: this.state.pageValue,
+            segmentationGender: this.state.genderValue,
+            segmentationLocale: this.state.localeValue,
+            isList: isListValue,
+            segmentationList: this.state.listSelected
+          }
+          this.props.sendSurveyDirectly(surveybody, this.msg)
+        }
+      } else {
+        this.setState({
+          alertMessage: 'Please fill all the fields.',
+          alertType: 'danger'
+        })
+      }
+    }
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -572,6 +681,41 @@ class EditTemplate extends React.Component {
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--mobile'>
                     <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-8 order-2 order-xl-1' />
+                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <p>Do you want to send this survey right away or save it for later use? </p>
+                                <div style={{width: '100%', textAlign: 'center'}}>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.closeDialog()
+                                      this.goToSend()
+                                    }}>
+                                      Send
+                                    </button>
+                                  </div>
+                                  <div style={{display: 'inline-block', padding: '5px'}}>
+                                    <button className='btn btn-primary' onClick={() => {
+                                      this.createSurvey()
+                                      this.props.history.push({
+                                        pathname: '/surveys'
+                                      })
+                                    }}>
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                        </div>
+                      </div>
                       <div className='col-xl-12'>
                         <div className='form-group' id='titl'>
                           <label className='control-label'><h5>Title</h5></label>
@@ -612,20 +756,6 @@ class EditTemplate extends React.Component {
                           onClick={this.addClick.bind(this)}> Add Questions
                       </button>
                       </div>
-                      <br /><br />
-                      <div className='add-options-message'>
-
-                        <button className='btn btn-primary pull-right'
-                          onClick={this.createSurvey}> Create Survey
-                      </button>
-                        <Link
-                          to='/showTemplateSurveys'
-                          style={{float: 'right', margin: 2}}
-                          className='btn btn-border-think btn-transparent c-grey pull-right'>
-                        Cancel
-                      </Link>
-                        <br />
-                      </div>
                       {this.state.alertMessage !== '' &&
                       <center>
                         <Alert type={this.state.alertType}>
@@ -634,6 +764,18 @@ class EditTemplate extends React.Component {
                       </center>
 
                     }
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+                        <button className='btn btn-primary'
+                          onClick={this.showDialog}> Create Survey
+                        </button>
+                        <Link
+                          to='/showTemplateSurveys'
+                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                          Cancel
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -705,10 +847,12 @@ function mapStateToProps (state) {
   return {
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
+    surveyCreated: (state.surveysInfo.surveyCreated),
     currentSurvey: (state.getCurrentSurvey.currentSurvey),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
@@ -717,7 +861,10 @@ function mapDispatchToProps (dispatch) {
     createsurvey: createsurvey,
     loadSurveyDetails: loadSurveyDetails,
     getuserdetails: getuserdetails,
-    loadCustomerLists: loadCustomerLists
+    loadCustomerLists: loadCustomerLists,
+    loadSubscribersList: loadSubscribersList,
+    sendsurvey: sendsurvey,
+    sendSurveyDirectly: sendSurveyDirectly
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)

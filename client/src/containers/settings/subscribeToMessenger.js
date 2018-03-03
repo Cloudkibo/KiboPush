@@ -99,7 +99,7 @@ class SubscribeToMessenger extends React.Component {
   }
   render () {
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -107,7 +107,7 @@ class SubscribeToMessenger extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Subscribe To Messenger
+                    HTML Widget
                   </span>
                 </li>
               </ul>
@@ -117,20 +117,30 @@ class SubscribeToMessenger extends React.Component {
             <div className='tab-pane active' id='m_user_profile_tab_1'>
               <form className='m-form m-form--fit m-form--label-align-right'>
                 <div className='m-portlet__body'>
-                  <div className='form-group m-form__group row'>
-                    <div className='input-group'>
-                      <label>Add the facebook messenger button to your website by copying the code below in your website's HTML. This button will send your facebook page
-                      link to your followers on the messenger.</label>
-                      <br />
-                      <br />
-                      <h3 className='m-portlet__head-text'>
-                        Get HTML code
-                      </h3>
-                      <br />
+                  {this.state.showbutton !== true &&
+                    <div className='form-group m-form__group row'>
+                      <div className='input-group'>
+                        <div className='alert alert-success'>
+                        You don't have any connected pages. Please click
+                        <Link to='/addpages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect facebook pages to get the HTML code.
+                        </div>
+                      </div>
                     </div>
+                }
+                  <div className='form-group m-form__group row'>
                     {
-                      this.state.showbutton === true
-                        ? <div>
+                      this.state.showbutton === true &&
+                        <div>
+                          <div className='input-group'>
+                            <label>Add the facebook messenger button to your website by copying the code below in your website's HTML. This button will send your facebook page
+                            link to your followers on the messenger.</label>
+                            <br />
+                            <br />
+                            <h3 className='m-portlet__head-text'>
+                              Get HTML code
+                            </h3>
+                            <br />
+                          </div>
                           { this.props.pages &&
                           <div>
                             <label>
@@ -231,16 +241,7 @@ class SubscribeToMessenger extends React.Component {
                           </div>
 
                         </div>
-                        : <div className='m-portlet__body'>
-                          <div className='alert alert-success'
-                            style={{marginTop: '150px'}}>
-                          You don't have any connected pages. Please connect
-                          pages
-                          first.
-                          <Link to='/addpages' className='btn btn-sm btn-blue'>
-                            Add Pages</Link>
-                          </div>
-                        </div>
+
                     }
                   </div>
                 </div>

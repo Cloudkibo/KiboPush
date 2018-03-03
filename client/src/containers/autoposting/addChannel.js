@@ -105,7 +105,7 @@ class AddChannel extends React.Component {
     let youtubeForeGroundColor = this.state.youtubeForeGroundColor
     return (
       <div>
-        <h3>Add Source Channel</h3>
+        <h3>Connect Feed</h3>
         <div style={{width: '100%', textAlign: 'center'}}>
           <div style={{display: 'inline-block', padding: '5px'}}>
             <button onClick={() => this.onSelectItem('facebook')} style={{backgroundColor: facebookColor, color: facebookForeGroundColor}} className='btn'>

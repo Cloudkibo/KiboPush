@@ -75,6 +75,20 @@ export function sendsurvey (survey, msg) {
       })
   }
 }
+export function sendSurveyDirectly (survey, msg) {
+  console.log('send survey called', survey)
+  return (dispatch) => {
+    callApi(`surveys/sendSurveyDirectly`, 'post', survey)
+      .then(res => {
+        console.log('sendsurveyresponse', res)
+        if (res.status === 'success') {
+          msg.success('Survey sent successfully')
+        } else {
+          msg.error('Survey not sent!')
+        }
+      })
+  }
+}
 export function getsurveyform (id) {
   return (dispatch) => {
     callApi(`surveys/showquestions/${id}`)
@@ -93,7 +107,7 @@ export function createsurvey (survey) {
   console.log(survey)
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
-      .then(res => dispatch(addSurvey(res)))
+      .then(res => dispatch(addSurvey(res.payload)))
   }
 }
 
@@ -104,7 +118,7 @@ export function addSurvey (data) {
   } else {
     alert('Error occurred in creating surveys')
   } */
-  console.log(data)
+  console.log('createdsurvey', data)
   return {
     type: ActionTypes.ADD_SURVEY,
     data

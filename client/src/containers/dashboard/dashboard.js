@@ -19,7 +19,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
-import GettingStarted from './gettingStarted'
+import GettingStarted from './gettingStartedOld'
 import { joinRoom } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
 
@@ -51,7 +51,12 @@ class Dashboard extends React.Component {
       })
     }
     if (nextprops.user) {
-      if (nextprops.pages && nextprops.pages.length === 0) {
+      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_ B') && !nextprops.user.facebookInfo) {
+        browserHistory.push({
+          pathname: '/connectFb',
+          state: { account_type: 'individual' }
+        })
+      } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
         browserHistory.push({
           pathname: '/addPages',

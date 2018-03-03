@@ -31,6 +31,12 @@ router.post('/send',
   auth.doesRolePermitsThisAction('pollsPermission'),
   controller.send)
 
+router.post('/sendPollDirectly',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('polls'),
+    auth.doesRolePermitsThisAction('pollsPermission'),
+    controller.sendPoll)
+
 router.get('/responses/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('polls'),

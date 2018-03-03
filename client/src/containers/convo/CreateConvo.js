@@ -111,9 +111,13 @@ class CreateConvo extends React.Component {
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
+    this.scrollToTop()
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
@@ -152,6 +156,9 @@ class CreateConvo extends React.Component {
         options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
       }
       this.initializeListSelect(options)
+      if (nextProps.customerLists.length === 0) {
+        this.state.selectedRadio = 'segmentation'
+      }
     }
     // if(nextProps.pages.length > 0){
     //   console.log("componentWillReceiveProps pageValue set")
@@ -648,6 +655,8 @@ class CreateConvo extends React.Component {
         }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -657,7 +666,9 @@ class CreateConvo extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                   View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+                  Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  <br />
+                  View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
                 </div>
               </div>
               <div className='row'>
@@ -735,73 +746,95 @@ class CreateConvo extends React.Component {
                   }
                     {
                       this.props.location.state.module === 'convo' &&
-                      <div>
-                        <h3>Select Page:</h3>
-                        <div className='form-group m-form__group'>
-                          <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                        </div>
-                        <fieldset>
-                          <br />
-                          <h3>Set Targeting:</h3>
-                          <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                            <div className='radio'>
-                              <input id='segmentAll'
-                                type='radio'
-                                value='segmentation'
-                                name='segmentationType'
-                                onChange={this.handleRadioButton}
-                                checked={this.state.selectedRadio === 'segmentation'} />
-                              <label>Using Segmentation</label>
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='m-portlet m-portlet--skin-light'>
+                            <div className='m-portlet__head'>
+                              <div className='m-portlet__head-caption'>
+                                <div className='m-portlet__head-title'>
+                                  <h3 className='m-portlet__head-text'>
+                                    Targeting
+                                  </h3>
+                                </div>
+                              </div>
                             </div>
-                            <div className='radio'>
-                              <input id='segmentList'
-                                type='radio'
-                                value='list'
-                                name='segmentationType'
-                                onChange={this.handleRadioButton}
-                                checked={this.state.selectedRadio === 'list'} />
-                              <label>Using List</label>
+                            <div className='m-portlet__body'>
+                              <label>Select Page:</label>
+                              <div className='form-group m-form__group'>
+                                <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                              </div>
+                              <label>Select Segmentation:</label>
+                              <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                                <div className='radio'>
+                                  <input id='segmentAll'
+                                    type='radio'
+                                    value='segmentation'
+                                    name='segmentationType'
+                                    onChange={this.handleRadioButton}
+                                    checked={this.state.selectedRadio === 'segmentation'} />
+                                  <label>Apply Basic Segmentation</label>
+                                </div>
+                                { this.state.selectedRadio === 'segmentation'
+                                  ? <div className='m-form'>
+                                    <div className='form-group m-form__group'>
+                                      <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                                    </div>
+                                    <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                                      <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                                    </div>
+                                  </div>
+                                : <div className='m-form'>
+                                  <div className='form-group m-form__group'>
+                                    <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                                  </div>
+                                  <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                                    <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                                  </div>
+                                </div>
+                                }
+                                { (this.props.customerLists && this.props.customerLists.length === 0)
+                                ? <div className='radio'>
+                                  <input id='segmentList'
+                                    type='radio'
+                                    value='list'
+                                    name='segmentationType'
+                                    disabled />
+                                  <label>Use Segmented Subscribers List</label>
+                                  <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                </div>
+                                : <div className='radio'>
+                                  <input id='segmentList'
+                                    type='radio'
+                                    value='list'
+                                    name='segmentationType'
+                                    onChange={this.handleRadioButton}
+                                    checked={this.state.selectedRadio === 'list'} />
+                                  <label>Use Segmented Subscribers List</label>
+                                  <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                </div>
+                                }
+                                <div className='m-form'>
+                                  { this.state.selectedRadio === 'list'
+                                ? <div className='form-group m-form__group'>
+                                  <select id='selectLists' style={{minWidth: 75 + '%'}} />
+                                </div>
+                                : <div className='form-group m-form__group'>
+                                  <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
+                                </div>
+                                }
+                                </div>
+                              </div>
                             </div>
                           </div>
+
                           <br />
-                          { this.state.selectedRadio === 'segmentation'
-                          ? <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                            </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                              <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                            </div>
+                          <div className='row'>
+                            <br />
+                            <br />
+                            <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
+                            <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
+                            <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
                           </div>
-                        : <div className='m-form'>
-                          <div className='form-group m-form__group'>
-                            <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
-                          </div>
-                          <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                            <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
-                          </div>
-                        </div>
-                        }
-                          <br />
-                          <div className='m-form'>
-                            { this.state.selectedRadio === 'list'
-                          ? <div className='form-group m-form__group'>
-                            <select id='selectLists' style={{minWidth: 75 + '%'}} />
-                          </div>
-                          : <div className='form-group m-form__group'>
-                            <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
-                          </div>
-                          }
-                          </div>
-                          <br />
-                        </fieldset>
-                        <br />
-                        <div className='row'>
-                          <br />
-                          <br />
-                          <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                          <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                          <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
                         </div>
                       </div>
                     }

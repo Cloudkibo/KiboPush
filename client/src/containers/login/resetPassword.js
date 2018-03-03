@@ -35,7 +35,7 @@ class ResetPassword extends React.Component {
   }
   onSubmit (event) {
     event.preventDefault()
-    this.props.forgotPass({email: this.refs.email.value, domain: this.refs.domain.value}, this.msg)
+    this.props.forgotPass({email: this.refs.email.value}, this.msg)
   }
   componentWillReceiveProps (nextprops) {
     console.log(nextprops)
@@ -79,12 +79,6 @@ class ResetPassword extends React.Component {
                       </label>
                       <br /><br />
                       <div className='form-group m-form__group'>
-                        <input className='form-control m-input' type='text' placeholder='Domain e.g www.kibopush.com' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} onChange={this.check} />
-                        { this.state.domain && this.state.isurl === false &&
-                        <div id='email-error' style={{color: 'red'}}>Please enter a valid domain</div>
-                         }
-                      </div>
-                      <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='email' placeholder='Email' ref='email' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
                       </div>
                       <br />
@@ -103,7 +97,7 @@ class ResetPassword extends React.Component {
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Submit
                         </button>
-                        <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                        <Link id='m_login_signup_cancel' to='/login' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                           Cancel
                         </Link>
                       </div>

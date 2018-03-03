@@ -45,6 +45,10 @@ class Convo extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
   }
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   showDialog () {
     console.log('in showDialog')
     this.setState({isShowingModal: true})
@@ -65,6 +69,7 @@ class Convo extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'new_broadcast',
@@ -192,6 +197,8 @@ class Convo extends React.Component {
     return (
       <div>
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -200,7 +207,7 @@ class Convo extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
               <YouTube
-                videoId="htqFmbTBDbk"
+                videoId='htqFmbTBDbk'
                 opts={{
                   height: '390',
                   width: '640',
@@ -226,17 +233,12 @@ class Convo extends React.Component {
             </div>
             <div className='m-content'>
               {
-                this.props.subscribers &&
-                this.props.subscribers.length === 0 &&
-                <div style={{padding: '10px'}}>
-                  <div className='alert alert-success'><i className='fa fa-info icon-0-12' aria-hidden='true' />
-                    <div className='msgContainer-0-11'><h4 className='headline-0-13'>0 Subscribers</h4>
-                      <div className='body-0-14'>Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys. To invite subscribers click
-                      <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-                      </div>
-                    </div>
+                this.props.subscribers && this.props.subscribers.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
                   </div>
-                </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>

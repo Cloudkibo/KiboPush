@@ -35,7 +35,10 @@ class Autoposting extends React.Component {
     this.gotoSettings = this.gotoSettings.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
@@ -49,6 +52,7 @@ class Autoposting extends React.Component {
     // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
+    this.scrollToTop()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -102,6 +106,8 @@ class Autoposting extends React.Component {
     return (
       <div>
         <Header />
+          <div style={{float: 'left', clear: 'both'}}
+            ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -109,16 +115,16 @@ class Autoposting extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="RDOnbzldnoc"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='RDOnbzldnoc'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -142,7 +148,7 @@ class Autoposting extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Connect several channels and information sources to send
+                  Connect several feeds and information sources to send
                   updates to your subscribers
                 </div>
               </div>
@@ -151,8 +157,8 @@ class Autoposting extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the  <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
+                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/autoposting/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>
@@ -160,7 +166,7 @@ class Autoposting extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Connected Channels
+                        Connected Feeds
                       </h3>
                     </div>
                   </div>
@@ -171,7 +177,7 @@ class Autoposting extends React.Component {
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Add Channel
+                            Add Feed
                           </span>
                         </span>
                       </button>
@@ -236,7 +242,7 @@ class Autoposting extends React.Component {
                           <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} />
                         </div>
                     ))
-                      : <p>Currently, you do not have any channels. Click on Add Channel button to add new channels. </p>
+                      : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
                   }
                 </div>
               </div>

@@ -31,184 +31,212 @@ exports.index = function (req, res) {
 }
 
 exports.sentVsSeen = function (req, res) {
-  pageBroadcast.aggregate(
-    [
-      {$match: {userId: req.user._id}},
-      {$group: {_id: null, count: {$sum: 1}}}
-    ], (err, broadcastSentCount) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
       return res.status(404).json({
         status: 'failed',
-        description: `Error in getting broadcastSentCount count ${JSON.stringify(
-            err)}`
+        description: 'The user account does not belong to any company. Please contact support'
       })
     }
     pageBroadcast.aggregate(
       [
-          {$match: {seen: true, userId: req.user._id}},
-          {$group: {_id: null, count: {$sum: 1}}}
-      ], (err, broadcastSeenCount) => {
+        {$match: {userId: req.user._id}},
+        {$group: {_id: null, count: {$sum: 1}}}
+      ], (err, broadcastSentCount) => {
       if (err) {
         return res.status(404).json({
           status: 'failed',
-          description: `Error in getting broadcastSeenCount count ${JSON.stringify(
-                err)}`
+          description: `Error in getting broadcastSentCount count ${JSON.stringify(
+              err)}`
         })
       }
-      pageSurvey.aggregate(
+      pageBroadcast.aggregate(
         [
-              {$match: {userId: req.user._id}},
-              {$group: {_id: null, count: {$sum: 1}}}
-        ], (err, surveySentCount) => {
+            {$match: {seen: true, userId: req.user._id}},
+            {$group: {_id: null, count: {$sum: 1}}}
+        ], (err, broadcastSeenCount) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
-            description: `Error in getting surveySentCount count ${JSON.stringify(
-                    err)}`
+            description: `Error in getting broadcastSeenCount count ${JSON.stringify(
+                  err)}`
           })
         }
         pageSurvey.aggregate(
           [
-                  {$match: {seen: true, userId: req.user._id}},
-                  {$group: {_id: null, count: {$sum: 1}}}
-          ], (err, surveySeenCount) => {
+                {$match: {userId: req.user._id}},
+                {$group: {_id: null, count: {$sum: 1}}}
+          ], (err, surveySentCount) => {
           if (err) {
             return res.status(404).json({
               status: 'failed',
-              description: `Error in getting surveytSeenCount count ${JSON.stringify(
-                        err)}`
+              description: `Error in getting surveySentCount count ${JSON.stringify(
+                      err)}`
             })
           }
-          pagePoll.aggregate(
+          pageSurvey.aggregate(
             [
-                      {$match: {userId: req.user._id}},
-                      {$group: {_id: null, count: {$sum: 1}}}
-            ], (err, pollSentCount) => {
+                    {$match: {seen: true, userId: req.user._id}},
+                    {$group: {_id: null, count: {$sum: 1}}}
+            ], (err, surveySeenCount) => {
             if (err) {
               return res.status(404).json({
                 status: 'failed',
-                description: `Error in getting pollSentCount count ${JSON.stringify(
-                            err)}`
+                description: `Error in getting surveytSeenCount count ${JSON.stringify(
+                          err)}`
               })
             }
             pagePoll.aggregate(
               [
-                          {$match: {seen: true, userId: req.user._id}},
-                          {$group: {_id: null, count: {$sum: 1}}}
-              ], (err, pollSeenCount) => {
+                        {$match: {userId: req.user._id}},
+                        {$group: {_id: null, count: {$sum: 1}}}
+              ], (err, pollSentCount) => {
               if (err) {
                 return res.status(404).json({
                   status: 'failed',
-                  description: `Error in getting pollSeenCount count ${JSON.stringify(
-                                err)}`
+                  description: `Error in getting pollSentCount count ${JSON.stringify(
+                              err)}`
                 })
               }
-              Surveys.find({userId: req.user._id},
-                            (err2, surveyResponseCount) => {
-                              if (err2) {
-                                return res.status(404).json({
-                                  status: 'failed',
-                                  description: 'responses count not found'
-                                })
-                              }
-                              Polls.find({userId: req.user._id},
-                                (err, polls) => {
-                                  if (err) {
-                                    logger.serverLog(TAG, `Error: ${err}`)
-                                    return res.status(500).json({
-                                      status: 'failed',
-                                      description: `Internal Server Error${JSON.stringify(
-                                        err)}`
-                                    })
-                                  }
-                                  PollPage.find({userId: req.user._id},
-                                    (err, pollpages) => {
-                                      if (err) {
-                                        return res.status(404).json({
-                                          status: 'failed',
-                                          description: 'Polls not found'
-                                        })
-                                      }
-                                      PollResponse.aggregate(
-                                        [
-                                          {
-                                            $group: {
-                                              _id: '$pollId',
-                                              count: {$sum: 1}
-                                            }
-                                          }
-                                        ], (err, pollResponseCount) => {
+              pagePoll.aggregate(
+                [
+                            {$match: {seen: true, userId: req.user._id}},
+                            {$group: {_id: null, count: {$sum: 1}}}
+                ], (err, pollSeenCount) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting pollSeenCount count ${JSON.stringify(
+                                  err)}`
+                  })
+                }
+                Surveys.find({userId: req.user._id},
+                              (err2, surveyResponseCount) => {
+                                if (err2) {
+                                  return res.status(404).json({
+                                    status: 'failed',
+                                    description: 'responses count not found'
+                                  })
+                                }
+                                Polls.find({companyId: companyUser.companyId},
+                                  (err, polls) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `Error: ${err}`)
+                                      return res.status(500).json({
+                                        status: 'failed',
+                                        description: `Internal Server Error${JSON.stringify(
+                                          err)}`
+                                      })
+                                    }
+                                    PollPage.find({companyId: companyUser.companyId},
+                                      (err, pollpages) => {
                                         if (err) {
                                           return res.status(404).json({
                                             status: 'failed',
-                                            description: `Error in getting poll response count ${JSON.stringify(
-                                                err)}`
+                                            description: 'Polls not found'
                                           })
                                         }
-                                        var sum = 0
-                                        if (pollResponseCount.length > 0) {
-                                          for (var i = 0; i <
-                                            pollResponseCount.length; i++) {
-                                            sum = sum +
-                                                pollResponseCount[i].count
+                                        PollResponse.aggregate(
+                                          [
+                                            {
+                                              $group: {
+                                                _id: '$pollId',
+                                                count: {$sum: 1}
+                                              }
+                                            }
+                                          ], (err, pollResponseCount) => {
+                                          if (err) {
+                                            return res.status(404).json({
+                                              status: 'failed',
+                                              description: `Error in getting poll response count ${JSON.stringify(
+                                                  err)}`
+                                            })
                                           }
-                                        }
-                                        var sum1 = 0
-                                        if (surveyResponseCount.length > 0) {
-                                          for (var j = 0; j <
-                                            surveyResponseCount.length; j++) {
-                                            sum1 = sum1 +
-                                                surveyResponseCount[j].isresponded
+                                          let responsesCount = []
+                                          logger.serverLog(TAG,
+                                              `counts for dashboard poll response ${JSON.stringify(
+                                                pollResponseCount)}`)
+                                                for (let a = 0; a < polls.length; a++) {
+                                                  for (let b = 0; b < pollResponseCount.length; b++) {
+                                                    if (polls[a]._id.toString() === pollResponseCount[b]._id.toString()) {
+                                                      responsesCount.push(pollResponseCount[b].count)
+                                                    }
+                                                  }
+                                                }
+                                          var sum = 0
+                                          if (responsesCount.length > 0) {
+                                            for (var c = 0; c <
+                                              responsesCount.length; c++) {
+                                              sum = sum +
+                                                  responsesCount[c]
+                                            }
                                           }
-                                        }
+                                          logger.serverLog(TAG,
+                                              `counts for dashboard poll response sum ${JSON.stringify(
+                                                sum)}`)
+                                          var sum1 = 0
+                                          if (surveyResponseCount.length > 0) {
+                                            for (var j = 0; j <
+                                              surveyResponseCount.length; j++) {
+                                              sum1 = sum1 +
+                                                  surveyResponseCount[j].isresponded
+                                            }
+                                          }
 
-                                        let datacounts = {
-                                          broadcast: {
-                                            broadcastSentCount: 0,
-                                            broadcastSeenCount: 0
-                                          },
-                                          survey: {
-                                            surveySentCount: 0,
-                                            surveySeenCount: 0,
-                                            surveyResponseCount: 0
-                                          },
-                                          poll: {
-                                            pollSentCount: 0,
-                                            pollSeenCount: 0,
-                                            pollResponseCount: 0
+                                          let datacounts = {
+                                            broadcast: {
+                                              broadcastSentCount: 0,
+                                              broadcastSeenCount: 0
+                                            },
+                                            survey: {
+                                              surveySentCount: 0,
+                                              surveySeenCount: 0,
+                                              surveyResponseCount: 0
+                                            },
+                                            poll: {
+                                              pollSentCount: 0,
+                                              pollSeenCount: 0,
+                                              pollResponseCount: 0
+                                            }
                                           }
-                                        }
-                                        if (broadcastSentCount.length > 0) {
-                                          datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
-                                          if (broadcastSeenCount.length > 0) {
-                                            datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
+                                          if (broadcastSentCount.length > 0) {
+                                            datacounts.broadcast.broadcastSentCount = broadcastSentCount[0].count
+                                            if (broadcastSeenCount.length > 0) {
+                                              datacounts.broadcast.broadcastSeenCount = broadcastSeenCount[0].count
+                                            }
                                           }
-                                        }
-                                        if (surveySentCount.length > 0) {
-                                          datacounts.survey.surveySentCount = surveySentCount[0].count
-                                          if (surveySeenCount.length > 0) {
-                                            datacounts.survey.surveySeenCount = surveySeenCount[0].count
-                                            datacounts.survey.surveyResponseCount = sum1
+                                          if (surveySentCount.length > 0) {
+                                            datacounts.survey.surveySentCount = surveySentCount[0].count
+                                            if (surveySeenCount.length > 0) {
+                                              datacounts.survey.surveySeenCount = surveySeenCount[0].count
+                                              datacounts.survey.surveyResponseCount = sum1
+                                            }
                                           }
-                                        }
-                                        if (pollSentCount.length > 0) {
-                                          datacounts.poll.pollSentCount = pollSentCount[0].count
-                                          if (pollSeenCount.length > 0) {
-                                            datacounts.poll.pollSeenCount = pollSeenCount[0].count
-                                            datacounts.poll.pollResponseCount = sum
+                                          if (pollSentCount.length > 0) {
+                                            datacounts.poll.pollSentCount = pollSentCount[0].count
+                                            if (pollSeenCount.length > 0) {
+                                              datacounts.poll.pollSeenCount = pollSeenCount[0].count
+                                              datacounts.poll.pollResponseCount = sum
+                                            }
                                           }
-                                        }
-                                        logger.serverLog(TAG,
-                                            `counts for dashboard ${JSON.stringify(
-                                              datacounts)}`)
-                                        res.status(200).json({
-                                          status: 'success',
-                                          payload: datacounts
+                                          logger.serverLog(TAG,
+                                              `counts for dashboard ${JSON.stringify(
+                                                datacounts)}`)
+                                          res.status(200).json({
+                                            status: 'success',
+                                            payload: datacounts
+                                          })
                                         })
                                       })
-                                    })
-                                })
-                            })
+                                  })
+                              })
+              })
             })
           })
         })

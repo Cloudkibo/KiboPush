@@ -28,7 +28,10 @@ class CustomerLists extends React.Component {
     props.loadCustomerLists()
     props.clearCurrentList()
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})
@@ -48,6 +51,9 @@ class CustomerLists extends React.Component {
     })
     this.props.saveCurrentList(list)
   }
+  componentDidMount () {
+    this.scrollToTop()
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -60,6 +66,8 @@ class CustomerLists extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -70,7 +78,7 @@ class CustomerLists extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Customer Lists? <a href='#' target='_blank'>Click Here </a>
+                  Need help in understanding Segmented Subscribers Lists? <a href='#' target='_blank'>Click Here </a>
                 </div>
               </div>
               <div className='row'>
@@ -80,7 +88,7 @@ class CustomerLists extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Customer Segmentation Lists
+                            Subscribers Segmentation Lists
                           </h3>
                         </div>
                       </div>
@@ -89,7 +97,7 @@ class CustomerLists extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create Segmented Customers List
+                              Create Segmented Subscribers List
                             </span>
                           </span>
                         </Link>

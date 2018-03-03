@@ -104,13 +104,13 @@ class Poll extends React.Component {
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
-      this.msg.success(nextProps.successMessage)
+      //  this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage || nextProps.errorMessage) {
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
       })
-      this.msg.error(nextProps.errorMessage)
+      //  this.msg.error(nextProps.errorMessage)
     } else {
       this.setState({
         alertMessage: '',
@@ -224,7 +224,7 @@ class Poll extends React.Component {
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
-      this.props.sendpoll(poll)
+      this.props.sendpoll(poll, this.msg)
     }
   }
   render () {
@@ -246,16 +246,16 @@ class Poll extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId="fY-YEtYtGhA"
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
+                <YouTube
+                  videoId='fY-YEtYtGhA'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                  />
               </div>
             </ModalDialog>
           </ModalContainer>

@@ -10,11 +10,14 @@
 
 const path = require('path')
 const config = require('./config/environment/index')
+const Raven = require('raven')
 const logger = require('./components/logger')
 
 const TAG = 'routes.js'
 
 module.exports = function (app) {
+  const env = app.get('env')
+
   app.use('/api/dashboard/', require('./api/dashboard'))
   app.use('/api/things', require('./api/thing'))
   app.use('/api/users', require('./api/user'))
@@ -27,6 +30,7 @@ module.exports = function (app) {
   app.use('/api/growthtools', require('./api/growthtools'))
   app.use('/api/lists', require('./api/lists'))
   app.use('/api/autoposting', require('./api/autoposting'))
+  app.use('/api/autoposting_messages', require('./api/autoposting_messages'))
   app.use('/api/surveys', require('./api/surveys'))
   app.use('/api/page_poll', require('./api/page_poll'))
   app.use('/api/page_survey', require('./api/page_survey'))
@@ -64,7 +68,13 @@ module.exports = function (app) {
     res.status(404).send({url: `${req.originalUrl} not found`})
   })
 
-  app.use((req, res) => {
+  app.route('/*').get((req, res) => {
+    res.redirect('/')
+  }).post((req, res) => {
     res.redirect('/')
   })
+
+  if (env === 'production' || env === 'staging') {
+    app.use(Raven.errorHandler())
+  }
 }
