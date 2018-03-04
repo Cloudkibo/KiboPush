@@ -11,7 +11,6 @@ const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
 const crypto = require('crypto')
-const mongoose = require('mongoose')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
@@ -48,12 +47,11 @@ exports.upload = function (req, res) {
       })
     }
     Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, fileName: req.files.file.name}, {
-      listName: 'Subscribers Using Phone Numbers',
+      listName: req.files.file.name,
       userId: req.user._id,
       companyId: companyUser.companyId,
       conditions: 'initial_list',
-      initialList: true,
-      fileName: req.files.file.name
+      initialList: true
     }, {upsert: true}, (err2, savedList) => {
       if (err) {
         return res.status(500).json({
@@ -117,23 +115,23 @@ exports.upload = function (req, res) {
                   if (exists(filename, req.files.file.name) === false) {
                     filename.push(req.files.file.name)
                   }
-                PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
-                  name: data.names,
-                  number: result,
-                  userId: req.user._id,
-                  companyId: companyUser.companyId,
-                  pageId: req.body._id,
-                  fileName: filename,
-                  hasSubscribed: false
-                }, {upsert: true}, (err2, phonenumbersaved) => {
-                  if (err2) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: 'phone number create failed'
-                    })
-                  }
-                })
-              }
+                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+                    name: data.names,
+                    number: result,
+                    userId: req.user._id,
+                    companyId: companyUser.companyId,
+                    pageId: req.body._id,
+                    fileName: filename,
+                    hasSubscribed: false
+                  }, {upsert: true}, (err2, phonenumbersaved) => {
+                    if (err2) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: 'phone number create failed'
+                      })
+                    }
+                  })
+                }
               })
 
               let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
@@ -205,7 +203,6 @@ exports.sendNumbers = function (req, res) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters are missing. Put numbers, text fields and pageId in payload.'})
   }
-//
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -298,10 +295,6 @@ exports.sendNumbers = function (req, res) {
 }
 function exists (filename, phonefile) {
   for (let i = 0; i < filename.length; i++) {
-      logger.serverLog(TAG,
-        `Exists function ${filename[i]}`)
-        logger.serverLog(TAG,
-          `Exists function ${phonefile}`)
     if (filename[i] === phonefile) {
       return true
     }
@@ -348,7 +341,7 @@ exports.pendingSubscription = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false}).populate('pageId').exec((err2, phonenumbers) => {
+    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: false, fileName: req.params.name}).populate('pageId').exec((err2, phonenumbers) => {
       if (err2) {
         return res.status(500).json({
           status: 'failed',
