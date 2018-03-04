@@ -91,12 +91,11 @@ exports.upload = function (req, res) {
                 }
                 logger.serverLog(TAG, `phone number find ${JSON.stringify(phone)}`)
                 if (phone.length === 0) {
-                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
                     name: data.names,
                     number: result,
                     userId: req.user._id,
                     companyId: companyUser.companyId,
-                    pageId: req.body._id,
                     fileName: req.files.file.name,
                     hasSubscribed: false
                   }, {upsert: true}, (err2, phonenumbersaved) => {
@@ -115,12 +114,11 @@ exports.upload = function (req, res) {
                   if (exists(filename, req.files.file.name) === false) {
                     filename.push(req.files.file.name)
                   }
-                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
                     name: data.names,
                     number: result,
                     userId: req.user._id,
                     companyId: companyUser.companyId,
-                    pageId: req.body._id,
                     fileName: filename,
                     hasSubscribed: false
                   }, {upsert: true}, (err2, phonenumbersaved) => {
@@ -237,12 +235,11 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId}, {
           name: '',
           number: result,
           userId: req.user._id,
           companyId: companyUser.companyId,
-          pageId: req.body._id,
           hasSubscribed: false
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {

@@ -107,12 +107,12 @@ exports.getfbMessage = function (req, res) {
       `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
       logger.serverLog(TAG,
         `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].id)}`)
-    Pages.find({pageId: req.body.entry[0].id}, (err, page) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
+    // Pages.find({pageId: req.body.entry[0].id}, (err, page) => {
+    //   if (err) {
+    //     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    //   }
       logger.serverLog(TAG, `pagefound ${JSON.stringify(page)}`)
-      PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page[0]._id}, {
+      PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier}, {
         hasSubscribed: true
       }, (err2, phonenumbersaved) => {
         if (err2) {
@@ -121,7 +121,6 @@ exports.getfbMessage = function (req, res) {
         logger.serverLog(TAG,
           `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
       })
-    })
   }
 
   if (req.body.entry && req.body.entry[0].messaging && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.quick_reply) {
