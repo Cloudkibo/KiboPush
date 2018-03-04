@@ -93,7 +93,7 @@ exports.upload = function (req, res) {
                 }
                 logger.serverLog(TAG, `phone number find ${JSON.stringify(phone)}`)
                 if (phone.length === 0) {
-                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id, fileName: req.files.file.name}, {
+                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                     name: data.names,
                     number: result,
                     userId: req.user._id,
@@ -114,7 +114,7 @@ exports.upload = function (req, res) {
                     filename.push(phone[0].fileName[i])
                   }
                   filename.push(req.files.file.name)
-                PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id, fileName: req.files.file.name}, {
+                PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                   name: data.names,
                   number: result,
                   userId: req.user._id,
