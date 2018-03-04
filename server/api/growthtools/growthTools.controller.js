@@ -112,7 +112,9 @@ exports.upload = function (req, res) {
                 } else {
                   let filename = []
                   for (let i = 0; i < phone[0].fileName.length; i++) {
-                    filename.push(phone[0].fileName[i])
+                    if (exists(filename, phone[0].fileName[i]) === false) {
+                      filename.push(phone[0].fileName[i])
+                    }
                   }
                   filename.push(req.files.file.name)
                 PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
@@ -294,6 +296,14 @@ exports.sendNumbers = function (req, res) {
     })
   })
 }
+function exists (filename, phonefile) {
+  for (let i = 0; i < filename.length; i++) {
+    if (filename[i] === phonefile) {
+      return true
+    }
+  }
+  return false
+}
 exports.retrievePhoneNumbers = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -319,6 +329,7 @@ exports.retrievePhoneNumbers = function (req, res) {
     })
   })
 }
+
 exports.pendingSubscription = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
