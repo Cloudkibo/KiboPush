@@ -12,6 +12,7 @@ let phoneNumberSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'pages'
   },
+  pageIdFb: String,
   fileName: [String]
 })
 

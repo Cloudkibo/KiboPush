@@ -105,20 +105,19 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     logger.serverLog(TAG,
       `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
-    PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: req.body.entry[0].id}, {
-      hasSubscribed: true
-    }, (err2, phonenumbersaved) => {
-      if (err2) {
-        logger.serverLog(TAG, err2)
+    Pages.find({pageId: req.body.entry[0].id}, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG,
-        `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
-
-      // Subscribers.update({senderId: req.body.entry[0].messaging[0].sender.id}, {phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier, isSubscribedByPhoneNumber: true}, (err, subscriber) => {
-      //   if (err) logger.serverLog(TAG, err)
-      //   logger.serverLog(TAG,
-      //     `something received from facebook subscrber ${JSON.stringify(subscriber)}`)
-      // })
+      PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page[0]._id}, {
+        hasSubscribed: true
+      }, (err2, phonenumbersaved) => {
+        if (err2) {
+          logger.serverLog(TAG, err2)
+        }
+        logger.serverLog(TAG,
+          `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
+      })
     })
   }
 
