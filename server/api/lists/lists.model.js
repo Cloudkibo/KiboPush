@@ -12,7 +12,8 @@ const listSchema = new Schema({
   conditions: {type: Schema.Types.Mixed},
   initialList: Boolean,
   parentList: { type: Schema.ObjectId },
-  parentListName: { type: String }
+  parentListName: { type: String },
+  fileName: {type: String}
 })
 
 module.exports = mongoose.model('lists', listSchema)
