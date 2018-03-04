@@ -298,6 +298,10 @@ exports.sendNumbers = function (req, res) {
 }
 function exists (filename, phonefile) {
   for (let i = 0; i < filename.length; i++) {
+      logger.serverLog(TAG,
+        `Exists function ${filename[i]}`)
+        logger.serverLog(TAG,
+          `Exists function ${phonefile}`)
     if (filename[i] === phonefile) {
       return true
     }
