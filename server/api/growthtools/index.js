@@ -29,7 +29,7 @@ router.get('/retrievePhoneNumbers',
   auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.retrievePhoneNumbers)
 
-router.get('/pendingSubscription',
+router.get('/pendingSubscription/:name',
     auth.isAuthenticated(),
     auth.doesPlanPermitsThisAction('customer_matching'),
     auth.doesRolePermitsThisAction('customerMatchingPermission'),
