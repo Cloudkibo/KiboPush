@@ -99,7 +99,8 @@ exports.upload = function (req, res) {
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     pageId: req.body._id,
-                    fileName: req.files.file.name
+                    fileName: req.files.file.name,
+                    hasSubscribed: false
                   }, {upsert: true}, (err2, phonenumbersaved) => {
                     if (err2) {
                       return res.status(500).json({
@@ -120,7 +121,8 @@ exports.upload = function (req, res) {
                   userId: req.user._id,
                   companyId: companyUser.companyId,
                   pageId: req.body._id,
-                  fileName: filename
+                  fileName: filename,
+                  hasSubscribed: false
                 }, {upsert: true}, (err2, phonenumbersaved) => {
                   if (err2) {
                     return res.status(500).json({
