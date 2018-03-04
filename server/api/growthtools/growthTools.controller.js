@@ -46,7 +46,7 @@ exports.upload = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, fileName: req.files.file.name}, {
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, listName: req.files.file.name}, {
       listName: req.files.file.name,
       userId: req.user._id,
       companyId: companyUser.companyId,
