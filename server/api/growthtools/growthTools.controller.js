@@ -112,11 +112,11 @@ exports.upload = function (req, res) {
                 } else {
                   let filename = []
                   for (let i = 0; i < phone[0].fileName.length; i++) {
-                    if (exists(filename, phone[0].fileName[i]) === false) {
-                      filename.push(phone[0].fileName[i])
-                    }
+                    filename.push(phone[0].fileName[i])
                   }
-                  filename.push(req.files.file.name)
+                  if (exists(filename, req.files.file.name === false)) {
+                    filename.push(req.files.file.name)
+                  }
                 PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                   name: data.names,
                   number: result,
