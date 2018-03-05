@@ -4,6 +4,9 @@
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 import { socketUpdate } from './../redux/actions/livechat.actions'
+import { loadAutopostingList } from './../redux/actions/autoposting.actions'
+import { loadMyPagesList } from './../redux/actions/pages.actions'
+import { loadWorkFlowList } from './../redux/actions/workflows.actions'
 const socket = io('')
 let store
 
@@ -23,7 +26,7 @@ var callbacks = {
   survey_created: false,
   workflow_created: false,
   workflow_updated: false,
-  new_subscriber: false,
+  new_subscriber: false
 }
 
 export function registerAction (callback) {
@@ -57,9 +60,17 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('New socket event occured ', data)
+
   if (data.action === 'new_chat') {
     store.dispatch(socketUpdate(data.payload))
+  } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
+    store.dispatch(loadAutopostingList())
+  } else if (data.action === 'page_disconnect') {
+    store.dispatch(loadMyPagesList())
+  } else if (data.action === 'workflow_updated') {
+    store.dispatch(loadWorkFlowList())
   }
+
   if (callbacks[data.action]) {
     console.log('New socket event occured: Executing Callback')
     callbacks[data.action](data.payload)

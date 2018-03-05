@@ -5,7 +5,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
@@ -19,6 +19,7 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
+import { registerAction } from '../../utility/socketio'
 
 class Page extends React.Component {
   constructor (props) {
@@ -77,6 +78,14 @@ class Page extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
+    var compProp = this.props
+    registerAction({
+      event: 'page_connect',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.loadMyPagesList()
+      }
+    })
   }
 
   componentWillReceiveProps (nextProps) {
