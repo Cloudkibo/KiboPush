@@ -47,6 +47,7 @@ exports.upload = function (req, res) {
       })
     }
     let newFileName = req.files.file.name.substring(0, req.files.file.name.indexOf('.'))
+
     Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, listName: newFileName}, {
       listName: req.files.file.name,
       userId: req.user._id,
@@ -91,7 +92,9 @@ exports.upload = function (req, res) {
                   })
                 }
                 logger.serverLog(TAG, `phone number find ${JSON.stringify(phone)}`)
+                logger.serverLog(TAG, `phone number find new ${JSON.stringify(req.files.file.name.indexOf('.'))}`)
                 let newFileName = req.files.file.name.substring(0, req.files.file.name.indexOf('.'))
+                logger.serverLog(TAG, `phone number find new ${JSON.stringify(newFileName)}`)
                 if (phone.length === 0) {
                   PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                     name: data.names,
