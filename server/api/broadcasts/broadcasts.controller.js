@@ -105,22 +105,24 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     logger.serverLog(TAG,
       `something received from facebook customer matching ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.source)}`)
-      logger.serverLog(TAG,
+    logger.serverLog(TAG,
         `something received from facebook customer matching ${JSON.stringify()}`)
-    Pages.find({pageId: req.body.entry[0].id}, (err, page) => {
+    Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG, `pagefound ${JSON.stringify(page[0]._id)}`)
-      logger.serverLog(TAG, `pagefoundnumber ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier)}`)
-      PhoneNumber.update({number: JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier), pageId: page[0]._id}, {
-        hasSubscribed: true
-      }, (err2, phonenumbersaved) => {
-        if (err2) {
-          logger.serverLog(TAG, err2)
-        }
-        logger.serverLog(TAG,
-          `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
+      pages.forEach((page) => {
+        logger.serverLog(TAG, `pagefound ${JSON.stringify(page)}`)
+        logger.serverLog(TAG, `pagefoundnumber ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier)}`)
+        PhoneNumber.update({number: JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier), pageId: page._id, companyId: page.companyId}, {
+          hasSubscribed: true
+        }, (err2, phonenumbersaved) => {
+          if (err2) {
+            logger.serverLog(TAG, err2)
+          }
+          logger.serverLog(TAG,
+            `something received from facebook sender ${JSON.stringify(req.body.entry[0].messaging[0].sender.id)}`)
+        })
       })
     })
   }
