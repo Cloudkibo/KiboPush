@@ -679,7 +679,7 @@ class EditTemplate extends React.Component {
               <div className='row'>
                 <div
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile' style={{width: '100%'}}>
+                  <div className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
