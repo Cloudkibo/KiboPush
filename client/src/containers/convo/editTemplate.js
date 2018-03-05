@@ -206,41 +206,40 @@ class EditTemplate extends React.Component {
         console.log('paload[i].buttons', payload[i].buttons)
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'image') {
         temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'audio') {
         temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'video') {
         temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'file') {
         temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
         temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
-        // message.push(payload[i])
-        // this.setState({broadcast: message})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       }
     }
-    this.setState({broadcast: payload})
   }
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
@@ -345,6 +344,7 @@ class EditTemplate extends React.Component {
     })
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        console.log('obj.card', obj.cards)
         temp[i].cards = obj.cards
         isPresent = true
       }
