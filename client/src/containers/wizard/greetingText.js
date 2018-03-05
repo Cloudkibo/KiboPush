@@ -287,7 +287,7 @@ class GreetingMessage extends React.Component {
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
-                              <div className='col-3' ></div>
+                              <div className='col-3' />
                               <div className='col-8 input-group'>
                                 <div className='m-messenger__form'>
                                   <div className='m-messenger__form-controls'>
@@ -335,7 +335,7 @@ class GreetingMessage extends React.Component {
                                 </div>
                               </div>
                               <br />
-                              <div className='col-9'></div>
+                              <div className='col-9' />
                               <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                                 <div>
                                   <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
