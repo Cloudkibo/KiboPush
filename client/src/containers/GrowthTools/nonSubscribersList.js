@@ -20,7 +20,9 @@ class NonSubscribersList extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.searchNonSubscriber = this.searchNonSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    props.getPendingSubscriptions()
+    if (this.props.currentList) {
+      props.getPendingSubscriptions(this.props.currentList.listName)
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -177,9 +179,6 @@ class NonSubscribersList extends React.Component {
           </div>
           <div className='m-portlet__foot m-portlet__foot--fit'>
             <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-              <Link to='/customerLists' className='btn btn-primary'>
-                Back
-              </Link>
             </div>
           </div>
         </div>
@@ -189,7 +188,8 @@ class NonSubscribersList extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData)
+    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData),
+    currentList: (state.listsInfo.currentList)
   }
 }
 function mapDispatchToProps (dispatch) {
