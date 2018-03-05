@@ -271,39 +271,55 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
     `This is body in edit autoposting ${JSON.stringify(req.body)}`)
-  AutoPosting.findById(req.body._id, (err, autoposting) => {
+
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
     }
-    if (!autoposting) {
-      return res.status(404)
-        .json({status: 'failed', description: 'Record not found'})
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
     }
 
-    autoposting.accountTitle = req.body.accountTitle
-    autoposting.isSegmented = req.body.isSegmented
-    autoposting.segmentationPageIds = req.body.segmentationPageIds
-    autoposting.segmentationGender = req.body.segmentationGender
-    autoposting.segmentationLocale = req.body.segmentationLocale
-    autoposting.isActive = req.body.isActive
-    autoposting.save((err2) => {
-      if (err2) {
+    AutoPosting.findById(req.body._id, (err, autoposting) => {
+      if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'AutoPosting update failed'})
+          .json({status: 'failed', description: 'Internal Server Error'})
       }
-      res.status(200).json({status: 'success', payload: autoposting})
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: companyUser.companyId,
-        body: {
-          action: 'autoposting_updated',
-          payload: {
-            autoposting_id: autoposting._id,
-            user_id: req.user._id,
-            user_name: req.user.name,
-            payload: autoposting
-          }
+      if (!autoposting) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Record not found'})
+      }
+
+      autoposting.accountTitle = req.body.accountTitle
+      autoposting.isSegmented = req.body.isSegmented
+      autoposting.segmentationPageIds = req.body.segmentationPageIds
+      autoposting.segmentationGender = req.body.segmentationGender
+      autoposting.segmentationLocale = req.body.segmentationLocale
+      autoposting.isActive = req.body.isActive
+      autoposting.save((err2) => {
+        if (err2) {
+          return res.status(500)
+            .json({status: 'failed', description: 'AutoPosting update failed'})
         }
+        res.status(200).json({status: 'success', payload: autoposting})
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'autoposting_updated',
+            payload: {
+              autoposting_id: autoposting._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              payload: autoposting
+            }
+          }
+        })
       })
     })
   })
