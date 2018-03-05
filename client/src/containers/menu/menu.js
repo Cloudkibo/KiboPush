@@ -88,7 +88,7 @@ class Menu extends React.Component {
 
     var compProp = this.props
     registerAction({
-      event: 'menu_update',
+      event: 'menu_updated',
       action: function (data) {
         console.log('New socket event occured: In Callback')
         compProp.fetchMenu()
