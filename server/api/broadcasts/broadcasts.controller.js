@@ -114,7 +114,7 @@ exports.getfbMessage = function (req, res) {
       pages.forEach((page) => {
         logger.serverLog(TAG, `pagefound ${JSON.stringify(page)}`)
         logger.serverLog(TAG, `pagefoundnumber ${JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier)}`)
-        PhoneNumber.update({number: JSON.stringify(req.body.entry[0].messaging[0].prior_message.identifier), pageId: page._id, companyId: page.companyId}, {
+        PhoneNumber.update({number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page._id, companyId: page.companyId}, {
           hasSubscribed: true
         }, (err2, phonenumbersaved) => {
           if (err2) {
