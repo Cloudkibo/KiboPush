@@ -60,7 +60,7 @@ exports.viewList = function (req, res) {
               description: 'phone number not found'
             })
           }
-          Subscribers.find({isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number}).populate('pageId').exec((err, subscribers) => {
+          Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
             if (err) {
               return res.status(500).json({
                 status: 'failed',
