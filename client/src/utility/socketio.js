@@ -19,7 +19,7 @@ var callbacks = {
   autoposting_created: false,
   autoposting_updated: false,
   autoposting_removed: false,
-  menu_update: false,
+  menu_updated: false,
   page_connect: false,
   page_disconnect: false,
   poll_created: false,
