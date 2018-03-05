@@ -217,7 +217,7 @@ exports.sendNumbers = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, listName: 'Other'}, {
       listName: 'Other',
       userId: req.user._id,
       companyId: companyUser.companyId,
