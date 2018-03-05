@@ -28,7 +28,7 @@ class CustomerListDetails extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.exportRecords = this.exportRecords.bind(this)
+    this.exportRecordsSubcribers = this.exportRecordsSubcribers.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     if (this.props.currentList) {
       props.loadListDetails(this.props.currentList._id)
@@ -81,7 +81,7 @@ class CustomerListDetails extends React.Component {
     }
     return data
   }
-  exportRecords () {
+  exportRecordsSubcribers () {
     console.log('download File called')
     var data = this.prepareExportData()
     var info = data
@@ -96,7 +96,7 @@ class CustomerListDetails extends React.Component {
       if (err) {
         console.log(err)
       } else {
-        fileDownload(csv, 'SegmentedList.csv')
+        fileDownload(csv, 'SubcribersList.csv')
       }
     })
   }
@@ -280,6 +280,16 @@ class CustomerListDetails extends React.Component {
                               activeClassName={'active'} />
 
                           </div>
+                          <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                            <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecordsSubcribers}>
+                              <span>
+                                <i className='fa fa-download' />
+                                <span>
+                                  Export Records in CSV File
+                                </span>
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       : <div className='table-responsive'>
                         <p> No data to display </p>
@@ -288,11 +298,11 @@ class CustomerListDetails extends React.Component {
                     </div>
                   </div>
                   <NonSubscribersList />
-                </div>
-                <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                  <Link to='/customerLists' className='btn btn-primary'>
-                    Back
-                  </Link>
+                  <div className='add-options-message'>
+                    <Link to='/customerLists' className='btn btn-primary btn-sm pull-right'>
+                      Back
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
