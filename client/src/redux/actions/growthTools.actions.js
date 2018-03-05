@@ -76,10 +76,10 @@ export function clearAlertMessage () {
   }
 }
 
-export function getPendingSubscriptions () {
+export function getPendingSubscriptions (name) {
   console.log('Get Pending Subscriptions called')
   return (dispatch) => {
-    callApi(`growthTools/pendingSubscription`)
+    callApi(`growthTools/pendingSubscription/${name}`)
       .then(res => dispatch(showPendingSubscriptions(res.payload)))
   }
 }

@@ -129,7 +129,7 @@ class Subscriber extends React.Component {
       if (err) {
         console.log(err)
       } else {
-        fileDownload(csv, 'SegmentedList.csv')
+        fileDownload(csv, 'SubscriberList.csv')
       }
     })
   }

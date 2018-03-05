@@ -289,6 +289,11 @@ class CustomerListDetails extends React.Component {
                   </div>
                   <NonSubscribersList />
                 </div>
+                <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
+                  <Link to='/customerLists' className='btn btn-primary'>
+                    Back
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
