@@ -48,7 +48,7 @@ class Card extends React.Component {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       console.log(cardProps.cardDetails)
       this.setState({
-        //  id: cardProps.id,
+        id: cardProps.id,
         componentType: 'card',
         title: cardProps.cardDetails.title,
         imgSrc: cardProps.cardDetails.image_url,
