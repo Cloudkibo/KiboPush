@@ -101,82 +101,148 @@ exports.create = function (req, res) {
 }
 
 exports.edit = function (req, res) {
-  Workflows.findById(req.body._id, (err, workflow) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-
-    workflow.condition = req.body.condition
-    workflow.keywords = req.body.keywords
-    workflow.reply = req.body.reply
-    workflow.isActive = (req.body.isActive === 'Yes')
-    workflow.save((err2) => {
-      if (err2) {
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Workflows.findById(req.body._id, (err, workflow) => {
+      if (err) {
         return res.status(500).json({
           status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err2)}`
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: req.body.companyId,
-        body: {
-          action: 'workflow_updated',
-          payload: {
-            workflow_id: workflow._id,
-            user_id: req.user._id,
-            user_name: req.user.name,
-            company_id: req.body.companyId
-          }
+
+      workflow.condition = req.body.condition
+      workflow.keywords = req.body.keywords
+      workflow.reply = req.body.reply
+      workflow.isActive = (req.body.isActive === 'Yes')
+      workflow.save((err2) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
         }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'workflow_updated',
+            payload: {
+              workflow_id: workflow._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
+        return res.status(200).json({status: 'success', payload: req.body})
       })
-      return res.status(200).json({status: 'success', payload: req.body})
     })
   })
 }
 
 exports.enable = function (req, res) {
-  Workflows.findById(req.body._id, (err, workflow) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-
-    workflow.isActive = true
-    workflow.save((err2) => {
-      if (err2) {
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Workflows.findById(req.body._id, (err, workflow) => {
+      if (err) {
         return res.status(500).json({
           status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err2)}`
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.status(200).json({status: 'success', payload: req.body})
+
+      workflow.isActive = true
+      workflow.save((err2) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'workflow_updated',
+            payload: {
+              workflow_id: workflow._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
+        return res.status(200).json({status: 'success', payload: req.body})
+      })
     })
   })
 }
 
 exports.disable = function (req, res) {
-  Workflows.findById(req.body._id, (err, workflow) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-
-    workflow.isActive = false
-    workflow.save((err2) => {
-      if (err2) {
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Workflows.findById(req.body._id, (err, workflow) => {
+      if (err) {
         return res.status(500).json({
           status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err2)}`
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.status(200).json({status: 'success', payload: req.body})
+
+      workflow.isActive = false
+      workflow.save((err2) => {
+        if (err2) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err2)}`
+          })
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'workflow_updated',
+            payload: {
+              workflow_id: workflow._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
+        return res.status(200).json({status: 'success', payload: req.body})
+      })
     })
   })
 }
