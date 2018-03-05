@@ -345,11 +345,12 @@ class EditTemplate extends React.Component {
     temp.map((data, i) => {
       if (data.id === obj.id) {
         console.log('obj.cards', obj.cards)
-        var newObj = {}
-        newObj.image_url = obj.cards.image
-        newObj.subtitle = obj.cards.subtitle
-        newObj.title = obj.cards.title
-        temp[i].cards = newObj
+        // var newObj = {}
+        // newObj.image_url = obj.cards.image
+        // newObj.subtitle = obj.cards.subtitle
+        // newObj.title = obj.cards.title
+
+        temp[i].cards = obj.cards
         isPresent = true
       }
     })
