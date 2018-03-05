@@ -268,7 +268,7 @@ class GreetingMessage extends React.Component {
                               </div>
                             </div>
                           </div>
-                          <div className='m-portlet__body'>
+                          <div className='m-portlet__body' style={{height: 'auto'}}>
                             <br />
                             <div className='form-group m-form__group row'>
                               <label style={{fontWeight: 'normal'}}>This page will help you setup greeting text foryour page. We have set the default text for you. Click on "See how it looks" to see how it would be shown on the welcome screen of your Facebook Page. Modify it and create your desired greeting text for your messenger audience.</label>
