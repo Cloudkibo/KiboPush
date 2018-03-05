@@ -46,7 +46,8 @@ exports.upload = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, listName: req.files.file.name}, {
+    let newFileName = req.files.file.name.substring(0, req.files.file.name.indexOf('.'))
+    Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId, listName: newFileName}, {
       listName: req.files.file.name,
       userId: req.user._id,
       companyId: companyUser.companyId,
@@ -90,6 +91,7 @@ exports.upload = function (req, res) {
                   })
                 }
                 logger.serverLog(TAG, `phone number find ${JSON.stringify(phone)}`)
+                let newFileName = req.files.file.name.substring(0, req.files.file.name.indexOf('.'))
                 if (phone.length === 0) {
                   PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                     name: data.names,
@@ -97,7 +99,7 @@ exports.upload = function (req, res) {
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     pageId: req.body._id,
-                    fileName: req.files.file.name,
+                    fileName: newFileName,
                     hasSubscribed: false
                   }, {upsert: true}, (err2, phonenumbersaved) => {
                     if (err2) {
@@ -113,7 +115,7 @@ exports.upload = function (req, res) {
                     filename.push(phone[0].fileName[i])
                   }
                   if (exists(filename, req.files.file.name) === false) {
-                    filename.push(req.files.file.name)
+                    filename.push(newFileName)
                   }
                   PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
                     name: data.names,
@@ -217,7 +219,7 @@ exports.sendNumbers = function (req, res) {
       })
     }
     Lists.update({initialList: true, userId: req.user._id, companyId: companyUser.companyId}, {
-      listName: 'Subscribers Using Phone Numbers',
+      listName: 'Other',
       userId: req.user._id,
       companyId: companyUser.companyId,
       conditions: 'initial_list',
@@ -243,7 +245,8 @@ exports.sendNumbers = function (req, res) {
           userId: req.user._id,
           companyId: companyUser.companyId,
           pageId: req.body._id,
-          hasSubscribed: false
+          hasSubscribed: false,
+          fileName: 'Other'
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
             logger.serverLog(TAG, err2)
