@@ -46,7 +46,7 @@ exports.sentVsSeen = function (req, res) {
     }
     pageBroadcast.aggregate(
       [
-        {$match: {userId: req.user._id}},
+        {$match: {companyId: companyUser.companyId}},
         {$group: {_id: null, count: {$sum: 1}}}
       ], (err, broadcastSentCount) => {
       if (err) {
@@ -58,7 +58,7 @@ exports.sentVsSeen = function (req, res) {
       }
       pageBroadcast.aggregate(
         [
-            {$match: {seen: true, userId: req.user._id}},
+            {$match: {seen: true, companyId: companyUser.companyId}},
             {$group: {_id: null, count: {$sum: 1}}}
         ], (err, broadcastSeenCount) => {
         if (err) {
@@ -70,7 +70,7 @@ exports.sentVsSeen = function (req, res) {
         }
         pageSurvey.aggregate(
           [
-                {$match: {userId: req.user._id}},
+                {$match: {companyId: companyUser.companyId}},
                 {$group: {_id: null, count: {$sum: 1}}}
           ], (err, surveySentCount) => {
           if (err) {
@@ -82,7 +82,7 @@ exports.sentVsSeen = function (req, res) {
           }
           pageSurvey.aggregate(
             [
-                    {$match: {seen: true, userId: req.user._id}},
+                    {$match: {seen: true, companyId: companyUser.companyId}},
                     {$group: {_id: null, count: {$sum: 1}}}
             ], (err, surveySeenCount) => {
             if (err) {
@@ -94,7 +94,7 @@ exports.sentVsSeen = function (req, res) {
             }
             pagePoll.aggregate(
               [
-                        {$match: {userId: req.user._id}},
+                        {$match: {companyId: companyUser.companyId}},
                         {$group: {_id: null, count: {$sum: 1}}}
               ], (err, pollSentCount) => {
               if (err) {
@@ -106,7 +106,7 @@ exports.sentVsSeen = function (req, res) {
               }
               pagePoll.aggregate(
                 [
-                            {$match: {seen: true, userId: req.user._id}},
+                            {$match: {seen: true, companyId: companyUser.companyId}},
                             {$group: {_id: null, count: {$sum: 1}}}
                 ], (err, pollSeenCount) => {
                 if (err) {
@@ -116,7 +116,7 @@ exports.sentVsSeen = function (req, res) {
                                   err)}`
                   })
                 }
-                Surveys.find({userId: req.user._id},
+                Surveys.find({companyId: companyUser.companyId},
                               (err2, surveyResponseCount) => {
                                 if (err2) {
                                   return res.status(404).json({

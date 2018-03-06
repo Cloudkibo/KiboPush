@@ -87,11 +87,12 @@ class Menu extends React.Component {
     document.title = 'KiboPush | Menu'
 
     var compProp = this.props
+    var self = this
     registerAction({
       event: 'menu_updated',
       action: function (data) {
         console.log('New socket event occured: In Callback')
-        compProp.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
+        compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
       }
     })
   }
