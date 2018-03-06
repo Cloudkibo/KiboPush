@@ -18,7 +18,6 @@ import { Link, browserHistory } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
 import _ from 'underscore'
 
@@ -48,15 +47,6 @@ class Survey extends React.Component {
   }
 
   componentDidMount () {
-    var compProp = this.props
-    registerAction({
-      event: 'survey_created',
-      action: function (data) {
-        console.log('New socket event occured: In Callback')
-        compProp.loadSurveysList()
-      }
-    })
-
     document.title = 'KiboPush | Survey'
   }
   componentWillMount () {

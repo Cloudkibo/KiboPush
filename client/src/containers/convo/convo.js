@@ -19,7 +19,6 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
 
 class Convo extends React.Component {
@@ -70,14 +69,6 @@ class Convo extends React.Component {
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
     this.scrollToTop()
-    var compProp = this.props
-    registerAction({
-      event: 'new_broadcast',
-      action: function (data) {
-        console.log('New socket event occured: In Callback')
-        compProp.loadBroadcastsList()
-      }
-    })
 
     document.title = 'KiboPush | Broadcast'
   }

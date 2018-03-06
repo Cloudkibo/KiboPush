@@ -91,7 +91,7 @@ class Menu extends React.Component {
       event: 'menu_updated',
       action: function (data) {
         console.log('New socket event occured: In Callback')
-        compProp.fetchMenu()
+        compProp.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
       }
     })
   }
