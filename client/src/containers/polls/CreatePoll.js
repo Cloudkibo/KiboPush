@@ -233,7 +233,13 @@ class CreatePoll extends React.Component {
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
-        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+        if (!(nextProps.customerLists[j].initialList)) {
+          options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+        } else {
+          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
+            options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+          }
+        }
       }
       this.initializeListSelect(options)
       if (nextProps.customerLists.length === 0) {

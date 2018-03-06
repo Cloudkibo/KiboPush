@@ -62,7 +62,7 @@ class SegmentedList extends React.Component {
         if (!(nextProps.customerLists[i].initialList)) {
           lists.push(nextProps.customerLists[i])
         } else {
-          if (nextProps.customerLists[i].content && nextProps.customerLists[i].content > 0) {
+          if (nextProps.customerLists[i].content && nextProps.customerLists[i].content.length > 0) {
             lists.push(nextProps.customerLists[i])
           }
         }
