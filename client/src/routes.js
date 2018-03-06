@@ -85,15 +85,18 @@ import Members from './containers/members/members'
 import Connect from './containers/facebookConnect/connect'
 import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
 import ViewWelcomeMessage from './containers/welcomeMessage/viewMessage'
-import CustomerLists from './containers/customerLists/customerLists'
-import PhoneList from './containers/customerLists/listDetails'
-import CreateSubList from './containers/customerLists/createSubList'
+import SegmentedLists from './containers/segmentedLists/segmentedLists'
+import CustomerLists from './containers/GrowthTools/customerLists'
+import CustomerListDetails from './containers/GrowthTools/customerListDetails'
+import PhoneList from './containers/segmentedLists/listDetails'
+import CreateSubList from './containers/segmentedLists/createSubList'
 import AddPageWizard from './containers/wizard/addPage'
 import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
 import InviteUsingNumberWizard from './containers/wizard/inviteUsingNumber'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
+import WorkflowWizard from './containers/wizard/workflow'
 
 import auth from './utility/auth.service'
 
@@ -210,7 +213,9 @@ const routes = (
     <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
     <Route path='/viewWelcomeMessage' component={ViewWelcomeMessage} onEnter={requireAuth} />
     <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
+    <Route path='/segmentedLists' component={SegmentedLists} onEnter={requireAuth} />
     <Route path='/customerLists' component={CustomerLists} onEnter={requireAuth} />
+    <Route path='/customerListDetails' component={CustomerListDetails} onEnter={requireAuth} />
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
     <Route path='/addPageWizard' component={AddPageWizard} onEnter={requireAuth} />
     <Route path='/inviteUsingLinkWizard' component={InviteUsingLinkWizard} onEnter={requireAuth} />
@@ -218,6 +223,7 @@ const routes = (
     <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
+    <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
 
   </Route>
 

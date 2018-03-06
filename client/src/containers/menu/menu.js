@@ -13,7 +13,7 @@ import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
-
+import { registerAction } from '../../utility/socketio'
 //  import RadioGroup from 'react-radio'
 //  import Checkbox from 'react-checkbox'
 //  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
@@ -85,6 +85,15 @@ class Menu extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     document.title = 'KiboPush | Menu'
+
+    var compProp = this.props
+    registerAction({
+      event: 'menu_updated',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.fetchMenu()
+      }
+    })
   }
   showDialog () {
     this.setState({isShowingModal: true})

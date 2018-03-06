@@ -61,7 +61,8 @@ class EditPoll extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      isShowingModal: false
+      isShowingModal: false,
+      lists: []
     }
     this.createPoll = this.createPoll.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
@@ -95,9 +96,19 @@ class EditPoll extends React.Component {
     if (nextprops.customerLists) {
       let options = []
       for (var j = 0; j < nextprops.customerLists.length; j++) {
-        options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+        if (!(nextprops.customerLists[j].initialList)) {
+          options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
+        } else {
+          if (nextprops.customerLists[j].content && nextprops.customerLists[j].content.length > 0) {
+            options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
+          }
+        }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
+      if (options.length === 0) {
+        this.state.selectedRadio = 'segmentation'
+      }
     }
     if (nextprops.pollDetails) {
       console.log('details', nextprops.pollDetails)
@@ -428,21 +439,21 @@ class EditPoll extends React.Component {
                               <input type='text' className='form-control'
                                 value={this.state.option1}
                                 onChange={(e) => this.updateOptions(e, 1)}
-                                placeholder='Response 1' />
+                                placeholder='Response 1' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response2</label>
                               <input type='text' className='form-control'
                                 value={this.state.option2}
                                 onChange={(e) => this.updateOptions(e, 2)}
-                                placeholder='Response 2' />
+                                placeholder='Response 2' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response3</label>
                               <input type='text' className='form-control'
                                 value={this.state.option3}
                                 onChange={(e) => this.updateOptions(e, 3)}
-                                placeholder='Response 3' />
+                                placeholder='Response 3' maxLength='20' />
                             </div>
                           </fieldset>
                         </div>
@@ -483,12 +494,12 @@ class EditPoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <select id='selectPage' />
-                        </div>
+                      <label>Select Page:</label>
+                      <div className='form-group m-form__group'>
+                        <select id='selectPage' style={{minWidth: 75 + '%'}} />
                       </div>
-                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                      <label>Select Segmentation:</label>
+                      <div className='radio-buttons' style={{marginLeft: '20px'}}>
                         <div className='radio'>
                           <input id='segmentAll'
                             type='radio'
@@ -496,42 +507,53 @@ class EditPoll extends React.Component {
                             name='segmentationType'
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'segmentation'} />
-                          <label>Using Segmentation</label>
+                          <label>Apply Basic Segmentation</label>
+                          { this.state.selectedRadio === 'segmentation'
+                          ? <div className='m-form'>
+                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
+                              <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
+                              <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                            </div>
+                          </div>
+                          : <div className='m-form'>
+                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
+                              <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
+                              <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                          </div>
+                          }
                         </div>
-                        <div className='radio'>
+                        { this.state.lists.length === 0
+                        ? <div className='radio' style={{marginTop: '10px'}}>
+                          <input id='segmentList'
+                            type='radio'
+                            value='list'
+                            name='segmentationType'
+                            disabled />
+                          <label>Use Segmented Subscribers List</label>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                        </div>
+                        : <div className='radio'>
                           <input id='segmentList'
                             type='radio'
                             value='list'
                             name='segmentationType'
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'list'} />
-                          <label>Using List</label>
-                        </div>
-                      </div>
-                      <div className='m-form'>
-                        { this.state.selectedRadio === 'segmentation'
-                        ? <div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectGender' />
-                          </div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectLocale' />
-                          </div>
-                        </div>
-                        : <div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectGender' disabled />
-                          </div>
-                          <div className='form-group m-form__group'>
-                            <select id='selectLocale' disabled />
-                          </div>
+                          <label>Use Segmented Subscribers List</label>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         }
-                        <br />
-                        { this.state.selectedRadio === 'list'
-                      ? <div className='form-group m-form__group'><select id='selectLists' /></div>
-                    : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
-                    }
+                        <div className='m-form'>
+                          { this.state.selectedRadio === 'list'
+                          ? <div className='form-group m-form__group'><select id='selectLists' /></div>
+                          : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>

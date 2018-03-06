@@ -10,6 +10,7 @@ import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 import { Link } from 'react-router'
 import Progress from 'react-progressbar'
+import AlertContainer from 'react-alert'
 var taiPasswordStrength = require('tai-password-strength')
 var strengthTester = new taiPasswordStrength.PasswordStrength()
 const TAG = 'containers/login/login'
@@ -54,7 +55,7 @@ class Signup extends React.Component {
       })
     } else if (nextprops.errorSignup) {
       console.log('nextprops.errorSignup', nextprops.errorSignup)
-      this.setState({error: nextprops.errorSignup})
+      //  this.setState({error: nextprops.errorSignup})
     }
   }
   handlePwdChange (event) {
@@ -108,16 +109,15 @@ class Signup extends React.Component {
     event.preventDefault()
     if (this.refs.password.value.length > 6 && this.refs.password.value === this.refs.rpassword.value) {
       let data = {}
-      if(this.state.account_type == 'team') {
-          data = {
+      if (this.state.account_type === 'team') {
+        data = {
           name: this.refs.name.value.trim(),
           email: this.refs.email.value.trim(),
           domain: this.refs.domain.value.trim(),
           password: this.refs.password.value.trim(),
           company_name: this.refs.companyName.value.trim()
         }
-      }
-      else{
+      } else {
         data = {
           name: this.refs.name.value.trim(),
           email: this.refs.email.value.trim(),
@@ -125,7 +125,7 @@ class Signup extends React.Component {
         }
       }
 
-      this.props.signUp(data)
+      this.props.signUp(data, this.msg)
     }
   }
   equal () {
@@ -137,8 +137,16 @@ class Signup extends React.Component {
   }
   render () {
     console.log('In signup JS')
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom left',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div style={{height: 100 + 'vh'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='fb-customerchat'
           data-page_id='151990922046256'
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'

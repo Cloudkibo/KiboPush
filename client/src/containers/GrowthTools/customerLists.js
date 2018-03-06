@@ -19,7 +19,8 @@ class CustomerLists extends React.Component {
     super(props, context)
     this.state = {
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      customerLists: []
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
@@ -46,13 +47,22 @@ class CustomerLists extends React.Component {
   }
   saveCurrentList (list) {
     browserHistory.push({
-      pathname: `/listDetails`,
+      pathname: `/customerListDetails`,
       state: {module: 'customerList'}
     })
     this.props.saveCurrentList(list)
   }
   componentDidMount () {
     this.scrollToTop()
+    var lists = []
+    for (var i = 0; i < this.props.customerLists.length; i++) {
+      if (this.props.customerLists[i].initialList) {
+        lists.push(this.props.customerLists[i])
+      }
+    }
+    this.setState({
+      customerLists: lists
+    })
   }
   render () {
     var alertOptions = {
@@ -73,14 +83,6 @@ class CustomerLists extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Segmented Subscribers Lists? <a href='#' target='_blank'>Click Here </a>
-                </div>
-              </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div className='m-portlet m-portlet-mobile '>
@@ -88,19 +90,9 @@ class CustomerLists extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Subscribers Segmentation Lists
+                            Customer Lists
                           </h3>
                         </div>
-                      </div>
-                      <div className='m-portlet__head-tools'>
-                        <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Create Segmented Subscribers List
-                            </span>
-                          </span>
-                        </Link>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -151,7 +143,7 @@ class CustomerLists extends React.Component {
                             </thead>
                             <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                               {
-                                this.props.customerLists.map((list, i) => (
+                                this.state.customerLists.map((list, i) => (
                                   <tr data-row={i}
                                     className='m-datatable__row m-datatable__row--even'
                                     style={{height: '55px'}} key={i}>
@@ -167,30 +159,11 @@ class CustomerLists extends React.Component {
                                           style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
                                           View
                                         </button>
-                                        {list.initialList
-                                        ? <div>
-                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}} disabled>
-                                            Edit
-                                          </Link>
-                                          <button className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}}
-                                            disabled>
-                                            Delete
-                                          </button>
-                                        </div>
-                                        : <div>
-                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
-                                            Edit
-                                          </Link>
-                                          <button className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}}
-                                            onClick={() => this.showDialogDelete(list._id)}>
-                                            Delete
-                                          </button>
-                                        </div>
-                                      }
+                                        <button className='btn btn-primary btn-sm'
+                                          style={{float: 'left', margin: 2}}
+                                          onClick={() => this.showDialogDelete(list._id)}>
+                                          Delete
+                                        </button>
                                       </span>
                                     </td>
                                   </tr>
@@ -204,6 +177,13 @@ class CustomerLists extends React.Component {
                       <p> No data to display </p>
                     </div>
                     }
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit'>
+                      <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
+                        <Link to='/customerMatchingUsingPhNum' className='btn btn-primary'>
+                          Back
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

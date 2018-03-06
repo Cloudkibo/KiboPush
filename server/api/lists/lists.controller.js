@@ -3,6 +3,7 @@ const Lists = require('./lists.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/surveys/surveys.controller.js'
+const PhoneNumber = require('../growthtools/growthtools.model')
 let _ = require('lodash')
 exports.allLists = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -52,28 +53,43 @@ exports.viewList = function (req, res) {
         })
       }
       if (list[0].initialList === true) {
-        Subscribers.find({isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}).populate('pageId').exec((err, subscribers) => {
+        PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: list[0].listName}, (err, number) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
+              description: 'phone number not found'
             })
           }
-          let temp = []
-          for (let i = 0; i < subscribers.length; i++) {
-            temp.push(subscribers[i]._id)
-          }
-          Lists.update({_id: req.params.id}, {
-            content: temp
-          }, (err2, savedList) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
+          if (number.length > 0) {
+            Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              let temp = []
+              for (let i = 0; i < subscribers.length; i++) {
+                temp.push(subscribers[i]._id)
+              }
+              Lists.update({_id: req.params.id}, {
+                content: temp
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                return res.status(201).json({status: 'success', payload: subscribers})
               })
-            }
-            return res.status(201).json({status: 'success', payload: subscribers})
-          })
+            })
+          } else {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'No subscribers found'
+            })
+          }
         })
       } else {
         let pagesFindCriteria = {isSubscribed: true}

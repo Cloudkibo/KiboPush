@@ -28,7 +28,8 @@ class CreateSubList extends React.Component {
       isEdit: false,
       parentListName: '',
       parentListData: [],
-      allSubscribers: []
+      allSubscribers: [],
+      lists: []
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -56,10 +57,17 @@ class CreateSubList extends React.Component {
     if (this.props.customerLists) {
       let options = []
       for (var i = 0; i < this.props.customerLists.length; i++) {
-        options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
+        if (!(this.props.customerLists[i].initialList)) {
+          options.push({id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName})
+        } else {
+          if (this.props.customerLists[i].content && this.props.customerLists[i].content.length > 0) {
+            options.push({id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName})
+          }
+        }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
-      if (this.props.customerLists.length === 0) {
+      if (options.length === 0) {
         this.state.selectedRadio = 'segmentAll'
       }
     }
@@ -389,7 +397,7 @@ class CreateSubList extends React.Component {
                                 checked={this.state.selectedRadio === 'segmentAll'} />
                               <label>Segment all subscribers</label>
                             </div>
-                            { this.props.customerLists.length === 0
+                            { this.state.lists.length === 0
                               ? <div className='radio'>
                                 <input id='segmentList'
                                   type='radio'
@@ -604,7 +612,7 @@ class CreateSubList extends React.Component {
                       <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
                         { this.state.isSaveEnabled
                           ? <div>
-                            <Link style={{marginRight: '10px'}} to='/customerLists' className='btn btn-primary'>
+                            <Link style={{marginRight: '10px'}} to='/segmentedLists' className='btn btn-primary'>
                              Back
                             </Link>
                             { !this.state.isEdit

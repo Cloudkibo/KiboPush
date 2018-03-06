@@ -14,6 +14,7 @@ import AddChannel from './addChannel'
 import ListItem from './ListItem'
 import { Alert } from 'react-bs-notifier'
 import YouTube from 'react-youtube'
+import { registerAction } from '../../utility/socketio'
 
 class Autoposting extends React.Component {
   constructor (props) {
@@ -53,6 +54,14 @@ class Autoposting extends React.Component {
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
     this.scrollToTop()
+    var compProp = this.props
+    registerAction({
+      event: 'autoposting_created',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.loadAutopostingList()
+      }
+    })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -106,8 +115,8 @@ class Autoposting extends React.Component {
     return (
       <div>
         <Header />
-          <div style={{float: 'left', clear: 'both'}}
-            ref={(el) => { this.top = el }} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}

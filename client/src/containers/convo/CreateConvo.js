@@ -69,7 +69,8 @@ class CreateConvo extends React.Component {
       showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
-      isList: false
+      isList: false,
+      lists: []
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -153,10 +154,17 @@ class CreateConvo extends React.Component {
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
-        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+        if (!(nextProps.customerLists[j].initialList)) {
+          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+        } else {
+          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
+            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+          }
+        }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
-      if (nextProps.customerLists.length === 0) {
+      if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
     }
@@ -677,7 +685,7 @@ class CreateConvo extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>
@@ -792,7 +800,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 }
-                                { (this.props.customerLists && this.props.customerLists.length === 0)
+                                { (this.state.lists.length === 0)
                                 ? <div className='radio'>
                                   <input id='segmentList'
                                     type='radio'
@@ -800,7 +808,7 @@ class CreateConvo extends React.Component {
                                     name='segmentationType'
                                     disabled />
                                   <label>Use Segmented Subscribers List</label>
-                                  <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                  <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                                 </div>
                                 : <div className='radio'>
                                   <input id='segmentList'
@@ -810,7 +818,7 @@ class CreateConvo extends React.Component {
                                     onChange={this.handleRadioButton}
                                     checked={this.state.selectedRadio === 'list'} />
                                   <label>Use Segmented Subscribers List</label>
-                                  <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                  <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                                 </div>
                                 }
                                 <div className='m-form'>

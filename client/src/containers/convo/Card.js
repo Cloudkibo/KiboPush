@@ -48,7 +48,7 @@ class Card extends React.Component {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
       console.log(cardProps.cardDetails)
       this.setState({
-        id: cardProps.id,
+        //  id: cardProps.id,
         componentType: 'card',
         title: cardProps.cardDetails.title,
         imgSrc: cardProps.cardDetails.image_url,
@@ -200,7 +200,7 @@ class Card extends React.Component {
   render () {
     console.log('State: ', this.props.id)
     return (
-      <div className='broadcast-component'>
+      <div className='broadcast-component' style={{marginBottom: 40 +'px'}}>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

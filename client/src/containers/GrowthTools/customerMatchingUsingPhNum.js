@@ -4,7 +4,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -31,12 +31,16 @@ class CustomerMatching extends React.Component {
       phoneNumbers: [],
       numbersError: [],
       loading: false,
-      initialList: '',
-      nonSubscribersList: ''
+      customerLists: [],
+      nonSubscribersList: '',
+      isShowingModalFileName: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
+    this.showDialogFileName = this.showDialogFileName.bind(this)
+    this.closeDialogFileName = this.closeDialogFileName.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
     this.validate = this.validate.bind(this)
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -47,10 +51,35 @@ class CustomerMatching extends React.Component {
     this.removeFile = this.removeFile.bind(this)
     this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
-    this.saveList = this.saveList.bind(this)
     this.props.clearAlertMessage()
     this.props.loadCustomerLists()
     this.props.getPendingSubscriptions()
+  }
+  showDialogFileName () {
+    this.setState({isShowingModalFileName: true})
+  }
+
+  closeDialogFileName () {
+    this.setState({isShowingModalFileName: false})
+  }
+  onSubmit () {
+    var file = this.state.file
+    if (file && file !== '') {
+      var name = (file[0].name).split('.')
+      var nameExists = false
+      for (var i = 0; i < this.state.customerLists.length; i++) {
+        var list = this.state.customerLists[i]
+        if (list.initialList && (list.listName).toLowerCase() === name[0].toLowerCase()) {
+          nameExists = true
+          break
+        }
+      }
+      if (nameExists) {
+        this.showDialogFileName()
+        return
+      }
+    }
+    this.handleSubmit()
   }
   scrollToTop () {
     console.log('in scrollToTop')
@@ -59,13 +88,7 @@ class CustomerMatching extends React.Component {
   getSampleFile () {
     this.props.downloadSampleFile()
   }
-  saveList (list) {
-    browserHistory.push({
-      pathname: `/listDetails`,
-      state: {module: 'customerMatching'}
-    })
-    this.props.saveCurrentList(list)
-  }
+
   enterPhoneNoManually () {
     this.setState({manually: true})
   }
@@ -257,14 +280,16 @@ class CustomerMatching extends React.Component {
       })
     }
     if (nextProps.customerLists && nextProps.customerLists.length > 0) {
+      var customerLists = []
       for (var i = 0; i < nextProps.customerLists.length; i++) {
         var list = nextProps.customerLists[i]
         if (list.initialList) {
-          this.setState({
-            initialList: nextProps.customerLists[i]
-          })
+          customerLists.push(list)
         }
       }
+      this.setState({
+        customerLists: customerLists
+      })
     }
     if (nextProps.nonSubscribersNumbers && nextProps.nonSubscribersNumbers.length > 0) {
       this.setState({
@@ -327,6 +352,30 @@ class CustomerMatching extends React.Component {
                   }}
                 />
               </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalFileName &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogFileName}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogFileName}>
+              <p>A customer list file name with a similar name exists.
+               Do you want to replace the list ?</p>
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.handleSubmit()
+                  this.closeDialogFileName()
+                }}>Yes
+              </button>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.closeDialogFileName()
+                }}>cancel
+              </button>
             </ModalDialog>
           </ModalContainer>
         }
@@ -399,30 +448,30 @@ class CustomerMatching extends React.Component {
                           </h3>
                         </div>
                       </div>
+                      <div className='m-portlet__head-tools'>
+                        {
+                        this.state.customerLists.length === 0
+                          ? <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                            <span>
+                              <i className='la la-list' />
+                              <span>
+                                  View Customers Lists
+                              </span>
+                            </span>
+                          </Link>
+                          : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' to='/customerLists'>
+                            <span>
+                              <i className='la la-list' />
+                              <span>
+                                View Customers Lists
+                              </span>
+                            </span>
+                          </Link>
+                        }
+                      </div>
                     </div>
 
                     <div className='m-portlet__body'>
-                      { (this.state.initialList !== '' || this.state.nonSubscribersList !== '') &&
-                        <div className='form-group m-form__group  row'>
-                          <label className='col-4 col-form-label'>
-                            View Customers List
-                          </label>
-                          <div className='col-8'>
-                            <span style={{float: 'right'}}>
-                              {this.state.initialList !== '' &&
-                              <button className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => this.saveList(this.state.initialList)}>
-                                Customers Subscribed
-                              </button>
-                              }
-                              { this.state.nonSubscribersList !== '' &&
-                              <Link to='/nonSubscribersList' className='btnListDetail btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
-                                Customers With Pending Subscription
-                              </Link>
-                              }
-                            </span>
-                          </div>
-                        </div>
-                      }
                       <div className='form-group m-form__group row'>
                         <label className='col-2 col-form-label'>
                           Change Page
@@ -519,7 +568,7 @@ class CustomerMatching extends React.Component {
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
-                                : <button onClick={this.handleSubmit} type='submit' className='btn btn-primary'>
+                                : <button onClick={this.onSubmit} type='submit' className='btn btn-primary'>
                                   Submit
                                 </button>
                               }

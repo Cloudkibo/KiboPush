@@ -42,7 +42,7 @@ class Gallery extends React.Component {
       var temp = []
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
-        cards[i].id = i
+        //  cards[i].id = i
         card = {element: <Card id={i} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
@@ -120,7 +120,7 @@ class Gallery extends React.Component {
       afterChange: this.handleChange
     }
     return (
-      <div className='broadcast-component'>
+      <div className='broadcast-component' style={{marginBottom: 40 +'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ position: 'absolute', height: 20+'px', zIndex: 6, right: 100+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>

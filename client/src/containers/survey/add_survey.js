@@ -60,7 +60,8 @@ class AddSurvey extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      isShowingModal: false
+      isShowingModal: false,
+      lists: []
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.addSteps = this.addSteps.bind(this)
@@ -243,10 +244,17 @@ class AddSurvey extends React.Component {
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
-        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+        if (!(nextProps.customerLists[j].initialList)) {
+          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+        } else {
+          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
+            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+          }
+        }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
-      if (nextProps.customerLists.length === 0) {
+      if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
     }
@@ -745,7 +753,7 @@ class AddSurvey extends React.Component {
               <div className='row'>
                 <div
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div id='identity' className='m-portlet m-portlet--mobile'>
+                  <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
@@ -847,7 +855,7 @@ class AddSurvey extends React.Component {
                   </div>
                 </div>
                 <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '93%'}}>
+                  <div className='m-portlet' style={{height: '100%'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
@@ -891,7 +899,7 @@ class AddSurvey extends React.Component {
                           </div>
                           }
                         </div>
-                        { (this.props.customerLists && this.props.customerLists.length === 0)
+                        { this.state.lists.length === 0
                         ? <div className='radio' style={{marginTop: '10px'}}>
                           <input id='segmentList'
                             type='radio'
@@ -899,7 +907,7 @@ class AddSurvey extends React.Component {
                             name='segmentationType'
                             disabled />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         : <div className='radio'>
                           <input id='segmentList'
@@ -909,7 +917,7 @@ class AddSurvey extends React.Component {
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'list'} />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         }
                         <div className='m-form'>

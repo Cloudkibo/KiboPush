@@ -56,7 +56,8 @@ class CreatePoll extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      isShowingModal: false
+      isShowingModal: false,
+      lists: []
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -233,10 +234,17 @@ class CreatePoll extends React.Component {
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
-        options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+        if (!(nextProps.customerLists[j].initialList)) {
+          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+        } else {
+          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
+            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
+          }
+        }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
-      if (nextProps.customerLists.length === 0) {
+      if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
     }
@@ -493,21 +501,21 @@ class CreatePoll extends React.Component {
                               <input type='text' className='form-control'
                                 value={this.state.option1}
                                 onChange={(e) => this.updateOptions(e, 1)}
-                                placeholder='Response 1' />
+                                placeholder='Response 1' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response2</label>
                               <input type='text' className='form-control'
                                 value={this.state.option2}
                                 onChange={(e) => this.updateOptions(e, 2)}
-                                placeholder='Response 2' />
+                                placeholder='Response 2' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response3</label>
                               <input type='text' className='form-control'
                                 value={this.state.option3}
                                 onChange={(e) => this.updateOptions(e, 3)}
-                                placeholder='Response 3' />
+                                placeholder='Response 3' maxLength='20' />
                             </div>
                           </fieldset>
                         </div>
@@ -581,7 +589,7 @@ class CreatePoll extends React.Component {
                           </div>
                           }
                         </div>
-                        { (this.props.customerLists && this.props.customerLists.length === 0)
+                        { this.state.lists.length === 0
                         ? <div className='radio'>
                           <input id='segmentList'
                             type='radio'
@@ -589,7 +597,7 @@ class CreatePoll extends React.Component {
                             name='segmentationType'
                             disabled />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                         : <div className='radio'>
                           <input id='segmentList'
@@ -599,7 +607,7 @@ class CreatePoll extends React.Component {
                             onChange={this.handleRadioButton}
                             checked={this.state.selectedRadio === 'list'} />
                           <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/customerLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
                         </div>
                       }
                         <div className='m-form'>

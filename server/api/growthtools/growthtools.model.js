@@ -11,7 +11,9 @@ let phoneNumberSchema = new Schema({
   pageId: {
     type: Schema.ObjectId,
     ref: 'pages'
-  }
+  },
+  pageIdFb: String,
+  fileName: [String]
 })
 
 module.exports = mongoose.model('phoneNumber', phoneNumberSchema)
