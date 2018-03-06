@@ -60,6 +60,7 @@ exports.viewList = function (req, res) {
               description: 'phone number not found'
             })
           }
+          if (number.length > 0) {
           Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
             if (err) {
               return res.status(500).json({
@@ -83,6 +84,7 @@ exports.viewList = function (req, res) {
               return res.status(201).json({status: 'success', payload: subscribers})
             })
           })
+        }
         })
       } else {
         let pagesFindCriteria = {isSubscribed: true}

@@ -98,8 +98,7 @@ exports.upload = function (req, res) {
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     pageId: req.body._id,
-                    fileName: newFileName,
-                    hasSubscribed: false
+                    fileName: newFileName
                   }, {upsert: true}, (err2, phonenumbersaved) => {
                     if (err2) {
                       return res.status(500).json({
@@ -122,8 +121,7 @@ exports.upload = function (req, res) {
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     pageId: req.body._id,
-                    fileName: filename,
-                    hasSubscribed: false
+                    fileName: filename
                   }, {upsert: true}, (err2, phonenumbersaved) => {
                     if (err2) {
                       return res.status(500).json({
@@ -244,7 +242,6 @@ exports.sendNumbers = function (req, res) {
           userId: req.user._id,
           companyId: companyUser.companyId,
           pageId: req.body._id,
-          hasSubscribed: false,
           fileName: 'Other'
         }, {upsert: true}, (err2, phonenumbersaved) => {
           if (err2) {
