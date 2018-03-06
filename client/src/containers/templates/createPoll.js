@@ -254,21 +254,21 @@ class createPoll extends React.Component {
                               <input type='text' className='form-control'
                                 value={this.state.option1}
                                 onChange={(e) => this.updateOptions(e, 1)}
-                                placeholder='Response 1' />
+                                placeholder='Response 1' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response2</label>
                               <input type='text' className='form-control'
                                 value={this.state.option2}
                                 onChange={(e) => this.updateOptions(e, 2)}
-                                placeholder='Response 2' />
+                                placeholder='Response 2' maxLength='20' />
                             </div>
                             <div className='form-group m-form__group'>
                               <label className='sr-only'>Response3</label>
                               <input type='text' className='form-control'
                                 value={this.state.option3}
                                 onChange={(e) => this.updateOptions(e, 3)}
-                                placeholder='Response 3' />
+                                placeholder='Response 3' maxLength='20' />
                             </div>
                           </fieldset>
                         </div>

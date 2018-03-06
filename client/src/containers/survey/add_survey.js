@@ -753,7 +753,7 @@ class AddSurvey extends React.Component {
               <div className='row'>
                 <div
                   className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div id='identity' className='m-portlet m-portlet--mobile'>
+                  <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
                         <div className='col-xl-8 order-2 order-xl-1' />
@@ -855,7 +855,7 @@ class AddSurvey extends React.Component {
                   </div>
                 </div>
                 <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '93%'}}>
+                  <div className='m-portlet' style={{height: '100%'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
