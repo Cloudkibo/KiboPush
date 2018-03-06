@@ -97,7 +97,7 @@ class Text extends React.Component {
 
   render () {
     return (
-      <div className='broadcast-component'>
+      <div className='broadcast-component' style={{marginBottom: 5 +'px'}}>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -148,7 +148,7 @@ class Text extends React.Component {
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, width: 99 + '%'}}>
+        <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
           <Button onAdd={this.addButton} />
 
         </div>
