@@ -14,6 +14,7 @@ import { Link } from 'react-router'
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.loadMyPagesList()
     this.getlink = this.getlink.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
     this.state = {
