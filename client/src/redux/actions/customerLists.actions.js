@@ -41,7 +41,12 @@ export function loadListDetails (id) {
   console.log('loadListDetails called')
   return (dispatch) => {
     callApi(`lists/viewList/${id}`)
-      .then(res => dispatch(showListDetails(res.payload)))
+      .then(res => {
+        console.log('loadListDetails response', res)
+        if (res.status === 'success') {
+          dispatch(showListDetails(res.payload))
+        }
+      })
   }
 }
 
