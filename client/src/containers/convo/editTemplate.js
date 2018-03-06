@@ -190,7 +190,7 @@ class EditTemplate extends React.Component {
           }
         }
       }
-      this.state({lists: options})
+      this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
