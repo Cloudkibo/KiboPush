@@ -56,7 +56,8 @@ class CreatePoll extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      isShowingModal: false
+      isShowingModal: false,
+      list: []
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
@@ -241,6 +242,7 @@ class CreatePoll extends React.Component {
           }
         }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
@@ -587,7 +589,7 @@ class CreatePoll extends React.Component {
                           </div>
                           }
                         </div>
-                        { (this.props.customerLists && this.props.customerLists.length === 0)
+                        { this.state.lists.length === 0
                         ? <div className='radio'>
                           <input id='segmentList'
                             type='radio'
