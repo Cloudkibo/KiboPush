@@ -58,10 +58,10 @@ class CreateSubList extends React.Component {
       let options = []
       for (var i = 0; i < this.props.customerLists.length; i++) {
         if (!(this.props.customerLists[i].initialList)) {
-          options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
+          options.push({id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName})
         } else {
           if (this.props.customerLists[i].content && this.props.customerLists[i].content.length > 0) {
-            options[i] = {id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName}
+            options.push({id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName})
           }
         }
       }

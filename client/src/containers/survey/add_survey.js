@@ -245,10 +245,10 @@ class AddSurvey extends React.Component {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
         if (!(nextProps.customerLists[j].initialList)) {
-          options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
         } else {
           if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
-            options[j] = {id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName}
+            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
           }
         }
       }
