@@ -102,10 +102,10 @@ class EditTemplate extends React.Component {
       let options = []
       for (var j = 0; j < nextprops.customerLists.length; j++) {
         if (!(nextprops.customerLists[j].initialList)) {
-          options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+          options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
         } else {
           if (nextprops.customerLists[j].content && nextprops.customerLists[j].content.length > 0) {
-            options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+            options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
           }
         }
       }
