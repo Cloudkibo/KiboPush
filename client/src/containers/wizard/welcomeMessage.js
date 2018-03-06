@@ -75,9 +75,9 @@ class EditTemplate extends React.Component {
     console.log('in initializeSwitch', id)
     console.log('in initializeSwitch', state)
     var self = this
-    var temp = '#' + id
+    //var temp = '#' + id
     /* eslint-disable */
-    $(temp).bootstrapSwitch({
+    $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
@@ -85,7 +85,7 @@ class EditTemplate extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
+    $("[name='switch']").on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       console.log('event', event.target.attributes.id.nodeValue)
       console.log('state', state)
