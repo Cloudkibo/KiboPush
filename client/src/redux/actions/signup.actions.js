@@ -16,7 +16,7 @@ export function Failure (message) {
   }
 }
 
-export function signUp (data) {
+export function signUp (data, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('users/signup', 'post', data)
@@ -27,6 +27,7 @@ export function signUp (data) {
           auth.putUserId(res.userid)
           dispatch(Success())
         } else {
+          msg.error(res.description)
           dispatch(Failure(res.description))
         }
       })

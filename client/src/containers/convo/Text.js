@@ -33,7 +33,8 @@ class Text extends React.Component {
     this.state = {
       button: props.buttons ? props.buttons : [],
       text: props.txt ? props.txt : '',
-      showEmojiPicker: false
+      showEmojiPicker: false,
+      count: 0
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
@@ -75,7 +76,7 @@ class Text extends React.Component {
   addButton (obj) {
     var temp = this.state.button
     temp.push(obj)
-    this.setState({button: temp})
+    this.setState({button: temp, count: 1})
     this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   editButton (obj) {
@@ -96,13 +97,16 @@ class Text extends React.Component {
   }
 
   render () {
+    console.log('this.state.button', this.state.button)
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 +'px'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px'}}>
-          <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
-          </span>
-        </div>
+      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        {this.props.removeState &&
+          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px' }}>
+            <span style={{cursor: 'pointer'}} className='fa-stack'>
+              <i className='fa fa-times fa-stack-2x' />
+            </span>
+          </div>
+      }
         <div style={{marginBottom: '-14px'}}>
           <textarea value={this.state.text} className='hoverbordersolid form-control m-input' onChange={this.handleChange} rows='4' style={{maxHeight: 100, width: 100 + '%'}} placeholder='Enter your text...' />
           {
@@ -148,10 +152,18 @@ class Text extends React.Component {
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
+        {this.props.removeState
+        ? <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
           <Button onAdd={this.addButton} />
-
         </div>
+        : <div>
+          {this.state.button.length < 1 &&
+          <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
+            <Button onAdd={this.addButton} />
+          </div>
+        }
+        </div>
+      }
       </div>
     )
   }

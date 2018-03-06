@@ -57,7 +57,7 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={temp.length} key={temp.length} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
@@ -341,7 +341,7 @@ class CreateBroadcastTemplate extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)}]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>
