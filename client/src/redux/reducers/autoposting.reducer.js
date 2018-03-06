@@ -4,17 +4,21 @@ export function autopostingInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FETCH_AUTOPOSTING_LIST:
       return Object.assign({}, state, {
-        autopostingData: action.autoposting
+        autopostingData: action.autoposting,
+        errorMessageCreate: '',
+        successMessageCreate: ''
       })
 
     case ActionTypes.CREATE_AUTOPOSTING_SUCCESS:
       return Object.assign({}, state, {
-        successMessageCreate: action.successMessage
+        successMessageCreate: action.successMessage,
+        errorMessageCreate: ''
       })
 
     case ActionTypes.CREATE_AUTOPOSTING_FAILURE:
       return Object.assign({}, state, {
-        errorMessageCreate: action.errorMessage
+        errorMessageCreate: action.errorMessage,
+        successMessageCreate: ''
       })
 
     case ActionTypes.EDIT_AUTOPOSTING_SUCCESS:

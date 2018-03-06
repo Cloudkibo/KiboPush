@@ -215,7 +215,7 @@ class EditTemplate extends React.Component {
       if (payload[i].componentType === 'text') {
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} />)})
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={true} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -658,7 +658,7 @@ class EditTemplate extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)}]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>

@@ -4,6 +4,7 @@
 
 import React from 'react'
 import Header from './header'
+import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import {
   createbroadcast,
@@ -27,7 +28,6 @@ import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
-import StickyDiv from 'react-stickydiv'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
@@ -42,11 +42,14 @@ class EditTemplate extends React.Component {
       disabled: false,
       pageValue: '',
       stay: false,
-      previewMessage: ''
+      previewMessage: '',
+      welcomeMessage: false,
+      switchState: false
     }
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
+    this.initializeSwitch = this.initializeSwitch.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -63,10 +66,35 @@ class EditTemplate extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
     if (this.state.pageValue === '') {
-      this.setState({ pageValue: nextprops.pages[0]._id, pageName: nextprops.pages[0].pageName })
+      this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled })
       this.setEditComponents(nextprops.pages[0].welcomeMessage)
     }
     //  this.setEditComponents(nextprops.pages[0].welcomeMessage)
+  }
+  initializeSwitch (state, id) {
+    console.log('in initializeSwitch', id)
+    console.log('in initializeSwitch', state)
+    var self = this
+    var temp = '#' + id
+    /* eslint-disable */
+    $(temp).bootstrapSwitch({
+      /* eslint-enable */
+      onText: 'Enabled',
+      offText: 'Disabled',
+      offColor: 'danger',
+      state: state
+    })
+    /* eslint-disable */
+    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
+      /* eslint-enable */
+      console.log('event', event.target.attributes.id.nodeValue)
+      console.log('state', state)
+      if (state === true) {
+        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
+      } else {
+        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
+      }
+    })
   }
   pageChange (event) {
     console.log('Selected: ', event.target.value)
@@ -77,6 +105,9 @@ class EditTemplate extends React.Component {
     this.setState({pageValue: event.target.value})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
+        console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
+        this.initializeSwitch(this.props.pages[i].isWelcomeMessageEnabled, this.props.pages[i]._id)
+        this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
       }
     }
@@ -89,7 +120,7 @@ class EditTemplate extends React.Component {
       if (payload[i].componentType === 'text') {
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} />)})
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={false} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -273,7 +304,6 @@ class EditTemplate extends React.Component {
       }
     }
     this.props.createWelcomeMessage({_id: this.state.pageValue, welcomeMessage: this.state.broadcast}, this.msg)
-    this.props.isWelcomeMessageEnabled({_id: this.state.pageValue, isWelcomeMessageEnabled: true})
     this.setState({stay: true})
   }
 
@@ -332,153 +362,114 @@ class EditTemplate extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-          {
-            this.state.showPreview &&
-            <ModalContainer style={{top: '100px'}}
+        {
+          this.state.showPreview &&
+          <ModalContainer style={{top: '100px'}}
+            onClose={this.closePreviewDialog}>
+            <ModalDialog style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
-              <ModalDialog style={{top: '100px'}}
-                onClose={this.closePreviewDialog}>
-                <h3>Greeting Message Preview</h3>
-                <ViewMessage payload={this.state.broadcast} />
-              </ModalDialog>
-            </ModalContainer>
-          }
+              <h3>Greeting Message Preview</h3>
+              <ViewMessage payload={this.state.broadcast} />
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Welcome Message</h3>
-                </div>
-              </div>
-            </div>
             <div className='m-content'>
-              <div className='row'>
-
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='row' />
-                  <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
+              <div className='m-portlet m-portlet--full-height'>
+                <div className='m-portlet__body m-portlet__body--no-padding'>
+                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                      <Sidebar step='4' />
+                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                        <div className='m-portlet__head'>
+                          <div className='m-portlet__head-caption'>
+                            <div className='m-portlet__head-title'>
+                              <h3 className='m-portlet__head-text'>
+                                Step 4: Welcome Message
+                              </h3>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
+                        <div className='m-portlet__body'>
+                          <div className='form-group m-form__group row'>
+                            <label style={{fontWeight: 'normal'}}>This page will help you setup welcome message for your page. Welcome message is sent when a subscriber starts the conversation with you by tapping getting started on messenger. We have set a default message for you. Click on "See how it looks" to see how it would look on messenger. Modify it and create your desired welcome message for your messenger susbcribers. Here you can set a welcome message using text component only but you can set a weclome message using image, audio, video, file, cards, and gallery later from our settings page.</label>
                           </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
+                          <br />
+                          <div className='form-group m-form__group row'>
+                            <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                            <div className='col-8 input-group'>
+                              <select
+                                className='form-control m-input'
+                                placeholder='Select a page...'
+                                onChange={this.pageChange}
+                                style={{width: 'inherit'}}>
+                                { this.props.pages.map((page, i) => (
+                                (
+                                  page.connected &&
+                                  <option
+                                    value={page._id} name={page.pageName} key={page.pageId} selected={page._id === this.state.pageValue}>{page.pageName}</option>
+                                )
+                              ))
+                              }
+                              </select>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <br />
-                    <div className='row'>
-                      <div className='col-12'>
-                        <div className='m-portlet m-portlet--skin-light'>
-                          <div className='m-portlet__body'>
-                            <label>Select Page:</label>
-                            <select style={{marginLeft: '20px'}}
-                              className='custom-select'
-                              placeholder='Select a page...'
-                              onChange={this.pageChange}>
-                              { this.props.pages.map((page, i) => (
-                              (
-                                page.connected &&
-                                <option
-                                  value={page._id} name={page.pageName} key={page.pageId} selected={page._id === this.state.pageValue}>{page.pageName}</option>
-                              )
-                            ))
-                            }
-                            </select>
-                            <br /><br /><br />
-                              <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                          <br />
+                          <center>
+                            <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' style={{width: '560px'}} />
+                          </center>
+                          <div className='row'>
+                            <div className='col-lg-6 m--align-left' >
+                              {this.state.switchState &&
+                                <div className='row'>
+                                  <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Message Status</label>
+                                  <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                    <div className='bootstrap-switch-container'>
+                                      <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
+                                    </div>
+                                  </div>
+                                  {this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue)}
+                                </div>
+                              }
+                            </div>
+                            <div className='col-lg-6 m--align-right'>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                            <br />
-                            <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                              <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                                <Link to='/greetingTextWizard' className='btn m-btn--pill    btn-link'> Back
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                          <div className='m-form__actions'>
+                            <div className='row'>
+                              <div className='col-lg-6 m--align-left' >
+                                <Link to='/greetingTextWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                  <span>
+                                    <i className='la la-arrow-left' />
+                                    <span>Back</span>&nbsp;&nbsp;
+                                  </span>
                                 </Link>
-                                <Link to='/autopostingWizard' className='btn m-btn--pill    btn-link'> Continue
-                                </Link>
-                                <Link to='/dashboard' className='btn m-btn--pill    btn-link' style={{'marginLeft': '10px'}}> Cancel
+                              </div>
+                              <div className='col-lg-6 m--align-right'>
+                                <Link to='/autopostingWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                  <span>
+                                    <span>Next</span>&nbsp;&nbsp;
+                                    <i className='la la-arrow-right' />
+                                  </span>
                                 </Link>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-          </div>
-        </div>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div className='row' />
-                  <StickyDiv offsetTop={70} zIndex={1}>
-                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        <h3>Welcome Message</h3>
-                      </div>
-                    </div>
-                  </StickyDiv>
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
-
-                  </div>
-
-                </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 }
