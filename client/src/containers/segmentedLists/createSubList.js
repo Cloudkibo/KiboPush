@@ -28,7 +28,8 @@ class CreateSubList extends React.Component {
       isEdit: false,
       parentListName: '',
       parentListData: [],
-      allSubscribers: []
+      allSubscribers: [],
+      lists: []
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -64,6 +65,7 @@ class CreateSubList extends React.Component {
           }
         }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentAll'
@@ -395,7 +397,7 @@ class CreateSubList extends React.Component {
                                 checked={this.state.selectedRadio === 'segmentAll'} />
                               <label>Segment all subscribers</label>
                             </div>
-                            { this.props.customerLists.length === 0
+                            { this.state.lists.length === 0
                               ? <div className='radio'>
                                 <input id='segmentList'
                                   type='radio'

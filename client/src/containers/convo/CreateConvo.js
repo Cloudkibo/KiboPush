@@ -69,7 +69,8 @@ class CreateConvo extends React.Component {
       showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
-      isList: false
+      isList: false,
+      lists: []
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -161,6 +162,7 @@ class CreateConvo extends React.Component {
           }
         }
       }
+      this.setState({lists: options})
       this.initializeListSelect(options)
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
@@ -798,7 +800,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 }
-                                { (this.props.customerLists && this.props.customerLists.length === 0)
+                                { (this.state.lists.length === 0)
                                 ? <div className='radio'>
                                   <input id='segmentList'
                                     type='radio'
