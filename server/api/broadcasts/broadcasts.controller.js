@@ -254,6 +254,16 @@ exports.getfbMessage = function (req, res) {
                             logger.serverLog(TAG, 'susbscriber if')
                             createSession(page, subscriberCreated, event)
                           }
+                          require('./../../config/socketio').sendMessageToClient({
+                            room_id: page.companyId,
+                            body: {
+                              action: 'dashboard_updated',
+                              payload: {
+                                subscriber_id: subscriberCreated._id,
+                                company_id: page.companyId
+                              }
+                            }
+                          })
                         })
                       } else {
                         if (subscriberByPhoneNumber === true) {
@@ -1093,6 +1103,15 @@ function sendautomatedmsg (req, page) {
                       })
                   }
                 })
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: page.companyId,
+                body: {
+                  action: 'dashboard_updated',
+                  payload: {
+                    company_id: page.companyId
+                  }
+                }
+              })
             }
           })
       }

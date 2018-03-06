@@ -20,7 +20,6 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { registerAction } from '../../utility/socketio'
 import YouTube from 'react-youtube'
 import _ from 'underscore'
 
@@ -131,14 +130,6 @@ class Poll extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
-    var compProp = this.props
-    registerAction({
-      event: 'poll_created',
-      action: function (data) {
-        console.log('New socket event occured: In Callback')
-        compProp.loadPollsList()
-      }
-    })
   }
 
   gotoView (poll) {

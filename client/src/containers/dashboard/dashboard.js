@@ -20,7 +20,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
-import { joinRoom } from '../../utility/socketio'
+import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
 
 class Dashboard extends React.Component {
@@ -103,6 +103,16 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
+
+    var compProp = this.props
+    registerAction({
+      event: 'dashboard_updated',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.loadMyPagesList()
+        compProp.loadDashboardData()
+      }
+    })
 
     this.addSteps([{
       title: 'Pages',
