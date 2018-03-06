@@ -95,9 +95,18 @@ class EditPoll extends React.Component {
     if (nextprops.customerLists) {
       let options = []
       for (var j = 0; j < nextprops.customerLists.length; j++) {
-        options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+        if (!(nextprops.customerLists[j].initialList)) {
+          options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+        } else {
+          if (nextprops.customerLists[j].content && nextprops.customerLists[j].content.length > 0) {
+            options[j] = {id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName}
+          }
+        }
       }
       this.initializeListSelect(options)
+      if (options.length === 0) {
+        this.state.selectedRadio = 'segmentation'
+      }
     }
     if (nextprops.pollDetails) {
       console.log('details', nextprops.pollDetails)

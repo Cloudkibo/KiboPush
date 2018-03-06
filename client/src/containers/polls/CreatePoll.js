@@ -242,7 +242,7 @@ class CreatePoll extends React.Component {
         }
       }
       this.initializeListSelect(options)
-      if (nextProps.customerLists.length === 0) {
+      if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
     }
