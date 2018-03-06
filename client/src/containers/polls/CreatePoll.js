@@ -57,7 +57,7 @@ class CreatePoll extends React.Component {
       listSelected: '',
       isList: false,
       isShowingModal: false,
-      list: []
+      lists: []
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
