@@ -61,30 +61,35 @@ exports.viewList = function (req, res) {
             })
           }
           if (number.length > 0) {
-          Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              })
-            }
-            let temp = []
-            for (let i = 0; i < subscribers.length; i++) {
-              temp.push(subscribers[i]._id)
-            }
-            Lists.update({_id: req.params.id}, {
-              content: temp
-            }, (err2, savedList) => {
+            Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 return res.status(500).json({
                   status: 'failed',
                   description: `Internal Server Error ${JSON.stringify(err)}`
                 })
               }
-              return res.status(201).json({status: 'success', payload: subscribers})
+              let temp = []
+              for (let i = 0; i < subscribers.length; i++) {
+                temp.push(subscribers[i]._id)
+              }
+              Lists.update({_id: req.params.id}, {
+                content: temp
+              }, (err2, savedList) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                return res.status(201).json({status: 'success', payload: subscribers})
+              })
             })
-          })
-        }
+          } else {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'No subscribers found'
+            })
+          }
         })
       } else {
         let pagesFindCriteria = {isSubscribed: true}
