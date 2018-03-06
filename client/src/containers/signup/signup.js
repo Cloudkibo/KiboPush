@@ -109,16 +109,15 @@ class Signup extends React.Component {
     event.preventDefault()
     if (this.refs.password.value.length > 6 && this.refs.password.value === this.refs.rpassword.value) {
       let data = {}
-      if(this.state.account_type == 'team') {
-          data = {
+      if (this.state.account_type === 'team') {
+        data = {
           name: this.refs.name.value.trim(),
           email: this.refs.email.value.trim(),
           domain: this.refs.domain.value.trim(),
           password: this.refs.password.value.trim(),
           company_name: this.refs.companyName.value.trim()
         }
-      }
-      else{
+      } else {
         data = {
           name: this.refs.name.value.trim(),
           email: this.refs.email.value.trim(),

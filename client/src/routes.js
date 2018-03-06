@@ -96,6 +96,7 @@ import InviteUsingNumberWizard from './containers/wizard/inviteUsingNumber'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
+import WorkflowWizard from './containers/wizard/workflow'
 
 import auth from './utility/auth.service'
 
@@ -222,6 +223,7 @@ const routes = (
     <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
+    <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
 
   </Route>
 
