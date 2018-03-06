@@ -265,38 +265,38 @@ class Settings extends React.Component {
                           <span className='m-nav__section-text'>Section</span>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setAPI}>
+                          <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-share' />
                             <span className='m-nav__link-text'>API</span>
                           </a>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setResetPass} >
+                          <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-lock-1' />
                             <span className='m-nav__link-text'>Reset Password</span>
                           </a>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setGreetingMessage} >
+                          <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-exclamation' />
                             <span className='m-nav__link-text'>Greeting Text</span>
                           </a>
                         </li>
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setSubscribeToMessenger} >
-                            <i className='m-nav__link-icon flaticon-alarm' />
-                            <span className='m-nav__link-text'>HTML Widget</span>
-                          </a>
-                        </li>
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setWelcomeMessage} >
+                          <a className='m-nav__link' onClick={this.setWelcomeMessage} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-menu-button' />
                             <span className='m-nav__link-text'>Welcome Message</span>
                           </a>
                         </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setSubscribeToMessenger} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-alarm' />
+                            <span className='m-nav__link-text'>HTML Widget</span>
+                          </a>
+                        </li>
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setConnectFb} >
+                          <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon fa fa-facebook' />
                             <span className='m-nav__link-text'>Connect with Facebook</span>
                           </a>

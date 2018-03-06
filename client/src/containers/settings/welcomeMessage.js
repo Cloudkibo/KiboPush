@@ -89,14 +89,9 @@ class WelcomeMessage extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcomeMessage/' target='_blank'>Click Here </a>
-                </div>
-              </div>
+              <label style={{fontWeight: 'inherit'}}>
+                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcomeMessage/' target='_blank'>Click Here </a>
+              </label>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
