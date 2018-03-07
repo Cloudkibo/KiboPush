@@ -184,13 +184,13 @@ class AddPage extends React.Component {
                     <div className='m-widget4__ext'>
                       {(page.connected) &&
 
-                      <a href='#' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                      <a onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
                         <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                       </a>
                             }
                       {(!page.connected) &&
 
-                      <a href='#' onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                      <a onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
                         <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                       </a>
 
