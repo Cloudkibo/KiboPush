@@ -92,18 +92,21 @@ exports.upload = function (req, res) {
                   })
                 }
                 if (phone.length === 0) {
-                  PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+                  let phoneNumber = new PhoneNumber({
                     name: data.names,
                     number: result,
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     pageId: req.body._id,
-                    fileName: newFileName
-                  }, {upsert: true}, (err2, phonenumbersaved) => {
+                    fileName: newFileName,
+                    hasSubscribed: false
+                  })
+                  phoneNumber.save((err2) => {
                     if (err2) {
-                      return res.status(500).json({
+                      logger.serverLog(TAG, {
                         status: 'failed',
-                        description: 'phone number create failed'
+                        description: 'PollBroadcast create failed',
+                        err2
                       })
                     }
                   })
@@ -236,19 +239,44 @@ exports.sendNumbers = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
         }
-        PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
-          name: '',
-          number: result,
-          userId: req.user._id,
-          companyId: companyUser.companyId,
-          pageId: req.body._id,
-          fileName: 'Other'
-        }, {upsert: true}, (err2, phonenumbersaved) => {
-          if (err2) {
-            logger.serverLog(TAG, err2)
-            return res.status(500).json({
-              status: 'failed',
-              description: 'phone number create failed'
+        PhoneNumber.find({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, (err, found) => {
+          if (err) {
+          }
+          if (found.length === 0) {
+            let phoneNumber = new PhoneNumber({
+              name: '',
+              number: result,
+              userId: req.user._id,
+              companyId: companyUser.companyId,
+              pageId: req.body._id,
+              fileName: 'Other',
+              hasSubscribed: false
+            })
+            phoneNumber.save((err2) => {
+              if (err2) {
+                logger.serverLog(TAG, {
+                  status: 'failed',
+                  description: 'PollBroadcast create failed',
+                  err2
+                })
+              }
+            })
+          } else {
+            PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
+              name: '',
+              number: result,
+              userId: req.user._id,
+              companyId: companyUser.companyId,
+              pageId: req.body._id,
+              fileName: 'Other'
+            }, {upsert: true}, (err2, phonenumbersaved) => {
+              if (err2) {
+                logger.serverLog(TAG, err2)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'phone number create failed'
+                })
+              }
             })
           }
         })
