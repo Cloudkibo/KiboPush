@@ -68,13 +68,16 @@ exports.viewList = function (req, res) {
             let findNumber = []
             let findPage = []
             for (let a = 0; a < number.length; a++) {
-              findNumber.push(number[a].nuumber)
+              findNumber.push(number[a].number)
               findPage.push(number[a].pageId)
             }
             let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
               phoneNumber: {
                 $in: findNumber
+              },
+              pageId: {
+                $in: findPage
               }
             })
             logger.serverLog(TAG,
