@@ -52,6 +52,8 @@ exports.viewList = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
+      logger.serverLog(TAG,
+        `listFound ${JSON.stringify(list[0])}`)
       if (list[0].initialList === true) {
         PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: list[0].listName}, (err, number) => {
           if (err) {
@@ -60,8 +62,25 @@ exports.viewList = function (req, res) {
               description: 'phone number not found'
             })
           }
+          logger.serverLog(TAG,
+            `listFoundNumber ${JSON.stringify(number)}`)
           if (number.length > 0) {
-            Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
+            let findNumber = []
+            let findPage = []
+            for (let a = 0; a < number.length; a++) {
+              findNumber.push(number[a].nuumber)
+              findPage.push(number[a].pageId)
+            }
+            let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+            subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+              phoneNumber: {
+                $in: findNumber
+              },
+              pageId: {
+                $in: findPage
+              }
+            })
+            Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 return res.status(500).json({
                   status: 'failed',
@@ -81,8 +100,8 @@ exports.viewList = function (req, res) {
                     description: `Internal Server Error ${JSON.stringify(err)}`
                   })
                 }
-                return res.status(201).json({status: 'success', payload: subscribers})
               })
+              return res.status(201).json({status: 'success', payload: subscribers})
             })
           } else {
             return res.status(500).json({
