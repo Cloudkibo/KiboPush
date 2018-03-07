@@ -68,7 +68,17 @@ class ListItem extends React.Component {
               {this.props.item.isActive ? 'Active' : 'Disabled'}
             </span>
           </div>
-          <div className='m-widget5__stats2'>
+          {this.props.marginState
+          ? <div className='m-widget5__stats2'>
+            <span className='m-widget5__number' style={{marginRight: '20px'}}>
+              Filter
+            </span>
+            <br />
+            <span className='m-widget5__votes' style={{marginRight: '16px'}}>
+              {this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
+            </span>
+          </div>
+          : <div className='m-widget5__stats2'>
             <span className='m-widget5__number'>
               Filter
             </span>
@@ -77,6 +87,7 @@ class ListItem extends React.Component {
               {this.props.item.isSegmented ? 'Filtered' : 'No Filter'}
             </span>
           </div>
+        }
         </div>
       </div>
     )

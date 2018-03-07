@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from './sidebar'
 import Header from './header'
 import { connect } from 'react-redux'
@@ -20,6 +19,7 @@ import {
   workflowsTourCompleted
 } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 
 class CreateWorkflow extends React.Component {
   constructor (props) {
@@ -85,21 +85,24 @@ class CreateWorkflow extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
     if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        alertType: 'success'
-      })
+      // this.setState({
+      //   alertMessage: nextProps.successMessage,
+      //   alertType: 'success'
+      // })
+      this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        alertType: 'danger'
-      })
+      // this.setState({
+      //   alertMessage: nextProps.errorMessage,
+      //   alertType: 'danger'
+      // })
+      this.msg.error(nextProps.errorMessage)
     } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
+      // this.setState({
+      //   alertMessage: '',
+      //   alertType: ''
+      // })
     }
   }
 
@@ -115,6 +118,7 @@ class CreateWorkflow extends React.Component {
         alertMessage: 'Please fill the keywords field',
         alertType: 'danger'
       })
+      this.msg.error('Please fill the keywords field')
       return
     }
     if (this.state.reply === '') {
@@ -122,6 +126,7 @@ class CreateWorkflow extends React.Component {
         alertMessage: 'Please fill the reply field',
         alertType: 'danger'
       })
+      this.msg.error('Please fill the reply field')
       return
     }
 
@@ -195,6 +200,7 @@ class CreateWorkflow extends React.Component {
     return (
 
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -271,16 +277,12 @@ class CreateWorkflow extends React.Component {
                             </div>
                           </div>
                           <div className='row'>
-                          <div className='col-lg-3' ></div>
-                            <div className='col-lg-8'>
-                              {
-                                this.state.alertMessage !== '' &&
-                                <center>
-                                  <Alert type={this.state.alertType}>
-                                    {this.state.alertMessage}
-                                  </Alert>
-                                </center>
-                              }
+                            <div className='col-lg-8 m--align-left' >
+                            </div>
+                            <div className='col-lg-4'>
+                              <button className='btn btn-primary' onClick={this.gotoWorkflow} style={{marginLeft: '150px'}}>
+                                <span>Save</span>
+                              </button>
                             </div>
                           </div>
                         </div>
