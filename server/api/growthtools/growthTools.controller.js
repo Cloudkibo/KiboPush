@@ -262,13 +262,20 @@ exports.sendNumbers = function (req, res) {
               }
             })
           } else {
+            let filename = []
+            for (let i = 0; i < found[0].fileName.length; i++) {
+              filename.push(found[0].fileName[i])
+            }
+            if (exists(filename, 'Other') === false) {
+              filename.push('Other')
+            }
             PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
               name: '',
               number: result,
               userId: req.user._id,
               companyId: companyUser.companyId,
               pageId: req.body._id,
-              fileName: 'Other'
+              fileName: filename
             }, {upsert: true}, (err2, phonenumbersaved) => {
               if (err2) {
                 logger.serverLog(TAG, err2)
