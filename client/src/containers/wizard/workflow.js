@@ -283,6 +283,15 @@ class CreateWorkflow extends React.Component {
                               }
                             </div>
                           </div>
+                          <div className='row'>
+                            <div className='col-lg-10 m--align-left' >
+                            </div>
+                            <div className='col-lg-2'>
+                              <button className='btn btn-primary' onClick={this.gotoWorkflow}>
+                                <span>Save</span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                         <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                           <div className='m-form__actions'>
