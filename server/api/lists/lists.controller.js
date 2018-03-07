@@ -75,11 +75,10 @@ exports.viewList = function (req, res) {
             subscriberFindCriteria = _.merge(subscriberFindCriteria, {
               phoneNumber: {
                 $in: findNumber
-              },
-              pageId: {
-                $in: findPage
               }
             })
+            logger.serverLog(TAG,
+              `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
             Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 return res.status(500).json({
@@ -87,6 +86,8 @@ exports.viewList = function (req, res) {
                   description: `Internal Server Error ${JSON.stringify(err)}`
                 })
               }
+              logger.serverLog(TAG,
+                `listFoundCriteria ${JSON.stringify(subscribers)}`)
               let temp = []
               for (let i = 0; i < subscribers.length; i++) {
                 temp.push(subscribers[i]._id)
