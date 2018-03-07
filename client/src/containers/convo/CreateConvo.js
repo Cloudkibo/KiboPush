@@ -70,7 +70,8 @@ class CreateConvo extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      lists: []
+      lists: [],
+      tabActive: 'broadcast'
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -101,7 +102,11 @@ class CreateConvo extends React.Component {
     this.goBack = this.goBack.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.checkConditions = this.checkConditions.bind(this)
-
+    this.onNext = this.onNext.bind(this)
+    this.onPrevious = this.onPrevious.bind(this)
+    this.initTab = this.initTab.bind(this)
+    this.onTargetClick = this.onTargetClick.bind(this)
+    this.onBroadcastClick = this.onBroadcastClick.bind(this)
     props.loadCustomerLists()
   }
 //  sddsdfas
@@ -111,6 +116,24 @@ class CreateConvo extends React.Component {
     //   console.log("componentDidMount pageValue set")
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
+  }
+  onNext () {
+    $('[href="#tab_2"]').tab('show')
+    this.setState({tabActive: 'target'})
+  }
+  onPrevious () {
+    $('[href="#tab_1"]').tab('show')
+    this.setState({tabActive: 'broadcast'})
+  }
+  initTab () {
+    $('[href="#tab_1"]').tab('show')
+    this.setState({tabActive: 'broadcast'})
+  }
+  onBroadcastClick () {
+    this.setState({tabActive: 'broadcast'})
+  }
+  onTargetClick () {
+    this.setState({tabActive: 'target'})
   }
   scrollToTop () {
     console.log('in scrollToTop')
@@ -128,6 +151,7 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    this.initTab()
     if (this.props.pages.length > 0) {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
@@ -680,273 +704,310 @@ class CreateConvo extends React.Component {
                 </div>
               </div>
               <div className='row'>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Create Broadcast
+                          </h3>
                         </div>
                       </div>
                     </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <br />
-                    {this.props.location.state && this.props.location.state.module === 'welcome' &&
-                    <div className='row'>
-                      <br />
-                      <br />
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
-                      <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' onClick={() => this.goBack()}>Back</button>
-                    </div>
-                  }
-                    {
-                      this.props.location.state.module === 'convo' &&
+                    <div className='m-portlet__body'>
                       <div className='row'>
                         <div className='col-12'>
-                          <div className='m-portlet m-portlet--skin-light'>
-                            <div className='m-portlet__head'>
-                              <div className='m-portlet__head-caption'>
-                                <div className='m-portlet__head-title'>
-                                  <h3 className='m-portlet__head-text'>
-                                    Targeting
-                                  </h3>
-                                </div>
-                              </div>
+                          { this.props.location.state && this.props.location.state.module === 'welcome' &&
+                            <div className='pull-right'>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                              <button className='btn btn-primary' onClick={() => this.goBack()}>Back</button>
                             </div>
-                            <div className='m-portlet__body'>
-                              <label>Select Page:</label>
-                              <div className='form-group m-form__group'>
-                                <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                              </div>
-                              <label>Select Segmentation:</label>
-                              <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                                <div className='radio'>
-                                  <input id='segmentAll'
-                                    type='radio'
-                                    value='segmentation'
-                                    name='segmentationType'
-                                    onChange={this.handleRadioButton}
-                                    checked={this.state.selectedRadio === 'segmentation'} />
-                                  <label>Apply Basic Segmentation</label>
-                                </div>
-                                { this.state.selectedRadio === 'segmentation'
-                                  ? <div className='m-form'>
-                                    <div className='form-group m-form__group'>
-                                      <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                                    </div>
-                                    <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                      <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                                    </div>
-                                  </div>
-                                : <div className='m-form'>
-                                  <div className='form-group m-form__group'>
-                                    <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
-                                  </div>
-                                  <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                    <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
-                                  </div>
-                                </div>
-                                }
-                                { (this.state.lists.length === 0)
-                                ? <div className='radio'>
-                                  <input id='segmentList'
-                                    type='radio'
-                                    value='list'
-                                    name='segmentationType'
-                                    disabled />
-                                  <label>Use Segmented Subscribers List</label>
-                                  <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                </div>
-                                : <div className='radio'>
-                                  <input id='segmentList'
-                                    type='radio'
-                                    value='list'
-                                    name='segmentationType'
-                                    onChange={this.handleRadioButton}
-                                    checked={this.state.selectedRadio === 'list'} />
-                                  <label>Use Segmented Subscribers List</label>
-                                  <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                </div>
-                                }
-                                <div className='m-form'>
-                                  { this.state.selectedRadio === 'list'
-                                ? <div className='form-group m-form__group'>
-                                  <select id='selectLists' style={{minWidth: 75 + '%'}} />
-                                </div>
-                                : <div className='form-group m-form__group'>
-                                  <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
-                                </div>
-                                }
-                                </div>
-                              </div>
+                          }
+                          {
+                            this.state.tabActive === 'broadcast' && this.props.location.state.module === 'convo' &&
+                            <div className='pull-right'>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.newConvo}>
+                                Reset
+                              </button>
+                              <button className='btn btn-primary' onClick={this.onNext}>
+                                Next
+                              </button>
                             </div>
-                          </div>
-
-                          <br />
-                          <div className='row'>
-                            <br />
-                            <br />
-                            <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New<br /> Broadcast </button>
-                            <button style={{float: 'left', marginLeft: 20}} className='btn btn-primary btn-sm' disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}> Test<br /> Broadcast </button>
-                            <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.sendConvo} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}>Send<br /> Broadcast </button>
-                          </div>
+                          }
+                          {
+                            this.state.tabActive === 'target' && this.props.location.state.module === 'convo' &&
+                            <div className='pull-right'>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                                Previous
+                              </button>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
+                                Test
+                              </button>
+                              <button id='send' onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary'>
+                                Send
+                              </button>
+                            </div>
+                          }
                         </div>
                       </div>
-                    }
-                  </div>
-                </div>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <StickyDiv offsetTop={70} zIndex={1}>
-                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        {this.props.location.state.module === 'welcome'
-                        ? <h3>Welcome Message</h3>
-                        : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                      }
+                      <div className='row'>
+                        <div className='col-12'>
+                          <ul className='nav nav-tabs'>
+                            <li>
+                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                            </li>
+                            {
+                              this.props.location.state.module === 'convo' &&
+                              <li>
+                                <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              </li>
+                            }
+                          </ul>
+                          <div className='tab-content'>
+                            <div className='tab-pane fade active in' id='tab_1'>
+                              <div className='row'>
+                                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                                  <div className='row' >
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                          <h6>Text</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                          <h6>Image</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                          <h6>Card</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                          <h6>Gallery</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='row'>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                          <h6>Audio</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                          <h6>Video</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                          <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                                  <StickyDiv offsetTop={70} zIndex={1}>
+                                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                                      <div style={{padding: '5px'}}>
+                                        {this.props.location.state.module === 'welcome'
+                                        ? <h3>Welcome Message</h3>
+                                        : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                                      }
+                                      </div>
+                                    </div>
+                                  </StickyDiv>
+                                  {
+                                    this.state.isShowingModal &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeDialog}>
+                                        <h3>Rename:</h3>
+                                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  {
+                                    this.state.isShowingModalGuideLines &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeGuideLinesDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeGuideLinesDialog}>
+                                        <h4>Message Types</h4>
+                                        <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
+                                        <div className='panel-group accordion' id='accordion1'>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+
+                                  {
+                                    this.state.showMessengerModal &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClick={() => { this.setState({showMessengerModal: false}); console.log('Model Clicked') }}
+                                      onClose={() => { this.setState({showMessengerModal: false}) }}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClick={() => { this.setState({showMessengerModal: false}); console.log('Dialog Clicked') }}
+                                        onClose={() => { this.setState({showMessengerModal: false}) }}>
+                                        <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
+                                        <MessengerPlugin
+                                          appId={this.props.fbAppId}
+                                          pageId={this.state.pageValue}
+                                          passthroughParams={this.props.user._id}
+                                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
+                                        />
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                                    {this.state.list}
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                            {
+                              this.props.location.state.module === 'convo' &&
+                              <div className='tab-pane' id='tab_2'>
+                                <div className='row'>
+                                  <div className='col-12' style={{paddingLeft: '20px'}}>
+                                    <label>Select Page:</label>
+                                    <div className='form-group m-form__group'>
+                                      <select id='selectPage' style={{minWidth: 75 + '%'}} />
+                                    </div>
+                                    <label>Select Segmentation:</label>
+                                    <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                                      <div className='radio'>
+                                        <input id='segmentAll'
+                                          type='radio'
+                                          value='segmentation'
+                                          name='segmentationType'
+                                          onChange={this.handleRadioButton}
+                                          checked={this.state.selectedRadio === 'segmentation'} />
+                                        <label>Apply Basic Segmentation</label>
+                                      </div>
+                                      { this.state.selectedRadio === 'segmentation'
+                                        ? <div className='m-form'>
+                                          <div className='form-group m-form__group'>
+                                            <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                                          </div>
+                                          <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                                            <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                                          </div>
+                                        </div>
+                                      : <div className='m-form'>
+                                        <div className='form-group m-form__group'>
+                                          <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+                                        </div>
+                                        <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                                          <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                                        </div>
+                                      </div>
+                                      }
+                                      { (this.state.lists.length === 0)
+                                      ? <div className='radio'>
+                                        <input id='segmentList'
+                                          type='radio'
+                                          value='list'
+                                          name='segmentationType'
+                                          disabled />
+                                        <label>Use Segmented Subscribers List</label>
+                                        <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                      </div>
+                                      : <div className='radio'>
+                                        <input id='segmentList'
+                                          type='radio'
+                                          value='list'
+                                          name='segmentationType'
+                                          onChange={this.handleRadioButton}
+                                          checked={this.state.selectedRadio === 'list'} />
+                                        <label>Use Segmented Subscribers List</label>
+                                        <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
+                                      </div>
+                                      }
+                                      <div className='m-form'>
+                                        { this.state.selectedRadio === 'list'
+                                      ? <div className='form-group m-form__group'>
+                                        <select id='selectLists' style={{minWidth: 75 + '%'}} />
+                                      </div>
+                                      : <div className='form-group m-form__group'>
+                                        <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
+                                      </div>
+                                      }
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              }
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </StickyDiv>
-                  {
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Rename:</h3>
-                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-                  {
-                    this.state.isShowingModalGuideLines &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeGuideLinesDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeGuideLinesDialog}>
-                        <h4>Message Types</h4>
-                        <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
-                        <div className='panel-group accordion' id='accordion1'>
-                          <div className='panel panel-default'>
-                            <div className='panel-heading guidelines-heading'>
-                              <h4 className='panel-title'>
-                                <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
-                              </h4>
-                            </div>
-                            <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                              <div className='panel-body'>
-                                <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className='panel panel-default'>
-                            <div className='panel-heading guidelines-heading'>
-                              <h4 className='panel-title'>
-                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
-                              </h4>
-                            </div>
-                            <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                              <div className='panel-body'>
-                                Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
-                              </div>
-                            </div>
-                          </div>
-                          <div className='panel panel-default'>
-                            <div className='panel-heading guidelines-heading'>
-                              <h4 className='panel-title'>
-                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
-                              </h4>
-                            </div>
-                            <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                              <div className='panel-body'>
-                                After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-
-                  {
-                    this.state.showMessengerModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClick={() => { this.setState({showMessengerModal: false}); console.log('Model Clicked') }}
-                      onClose={() => { this.setState({showMessengerModal: false}) }}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClick={() => { this.setState({showMessengerModal: false}); console.log('Dialog Clicked') }}
-                        onClose={() => { this.setState({showMessengerModal: false}) }}>
-                        <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
-                        <MessengerPlugin
-                          appId={this.props.fbAppId}
-                          pageId={this.state.pageValue}
-                          passthroughParams={this.props.user._id}
-                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
-                        />
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    {this.state.list}
                   </div>
-
                 </div>
-
               </div>
             </div>
           </div>

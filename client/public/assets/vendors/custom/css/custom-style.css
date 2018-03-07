@@ -121,3 +121,10 @@ i.greetingMessage.fa.fa-smile-o:hover {
   margin-bottom: 6px;
   padding: 0 15px;
 }
+a.broadcastTabs.active {
+  color: #555;
+  background-color: #fff !important;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
