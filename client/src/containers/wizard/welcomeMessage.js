@@ -30,6 +30,7 @@ import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 
 class EditTemplate extends React.Component {
@@ -66,6 +67,7 @@ class EditTemplate extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('nextprops in', nextprops)
     if (this.state.pageValue === '') {
+      this.initializeSwitch(nextprops.pages[0].isWelcomeMessageEnabled, nextprops.pages[0]._id)
       this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled })
       this.setEditComponents(nextprops.pages[0].welcomeMessage)
     }
@@ -75,9 +77,9 @@ class EditTemplate extends React.Component {
     console.log('in initializeSwitch', id)
     console.log('in initializeSwitch', state)
     var self = this
-    var temp = '#' + id
+    //var temp = '#' + id
     /* eslint-disable */
-    $(temp).bootstrapSwitch({
+    $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
@@ -85,7 +87,7 @@ class EditTemplate extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
+    $("[name='switch']").on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       console.log('event', event.target.attributes.id.nodeValue)
       console.log('state', state)
@@ -106,7 +108,11 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
         console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
-        this.initializeSwitch(this.props.pages[i].isWelcomeMessageEnabled, this.props.pages[i]._id)
+        console.log($("[name='switch']").bootstrapSwitch('state'))
+        //if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
+          $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
+        //}
+        // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
       }
@@ -118,8 +124,6 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-        console.log('paload[i].text', payload[i].text)
-        console.log('paload[i].buttons', payload[i].buttons)
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={false} />)})
         this.setState({list: temp})
         message.push(payload[i])
@@ -421,7 +425,7 @@ class EditTemplate extends React.Component {
                           </center>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              {this.state.switchState &&
+                              {//this.state.switchState &&
                                 <div className='row'>
                                   <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Message Status</label>
                                   <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
@@ -429,7 +433,7 @@ class EditTemplate extends React.Component {
                                       <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                     </div>
                                   </div>
-                                  {this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue)}
+                                  {/*this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue)*/}
                                 </div>
                               }
                             </div>
@@ -504,7 +508,8 @@ function mapDispatchToProps (dispatch) {
       createWelcomeMessage: createWelcomeMessage,
       loadCustomerLists: loadCustomerLists,
       loadSubscribersList: loadSubscribersList,
-      isWelcomeMessageEnabled: isWelcomeMessageEnabled
+      isWelcomeMessageEnabled: isWelcomeMessageEnabled,
+      loadMyPagesList: loadMyPagesList
     },
     dispatch)
 }

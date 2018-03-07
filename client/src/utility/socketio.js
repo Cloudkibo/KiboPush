@@ -7,6 +7,10 @@ import { socketUpdate } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { loadWorkFlowList } from './../redux/actions/workflows.actions'
+import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
+import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
+import { loadPollsList } from './../redux/actions/poll.actions'
+import { loadSurveysList } from './../redux/actions/surveys.actions'
 const socket = io('')
 let store
 
@@ -26,7 +30,8 @@ var callbacks = {
   survey_created: false,
   workflow_created: false,
   workflow_updated: false,
-  new_subscriber: false
+  new_subscriber: false,
+  dashboard_updated: false
 }
 
 export function registerAction (callback) {
@@ -63,12 +68,23 @@ socket.on('message', (data) => {
 
   if (data.action === 'new_chat') {
     store.dispatch(socketUpdate(data.payload))
+    store.dispatch(loadDashboardData())
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
-  } else if (data.action === 'page_disconnect') {
+  } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
     store.dispatch(loadMyPagesList())
+    store.dispatch(loadDashboardData())
   } else if (data.action === 'workflow_updated') {
     store.dispatch(loadWorkFlowList())
+  } else if (data.action === 'new_broadcast') {
+    store.dispatch(loadBroadcastsList())
+    store.dispatch(sentVsSeen())
+  } else if (data.action === 'poll_created') {
+    store.dispatch(loadPollsList())
+    store.dispatch(sentVsSeen())
+  } else if (data.action === 'survey_created') {
+    store.dispatch(loadSurveysList())
+    store.dispatch(sentVsSeen())
   }
 
   if (callbacks[data.action]) {
