@@ -114,6 +114,10 @@ class AddPage extends React.Component {
                             </div>
                           </div>
                           <div className='m-portlet__body'>
+                            <div className='form-group m-form__group row'>
+                              <label style={{fontWeight: 'normal'}}>This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
+                              To connect the pages click on connect buttons.</label>
+                            </div>
                             <div className='tab-content'>
                               <div className='tab-pane active m-scrollable' role='tabpanel'>
                                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
