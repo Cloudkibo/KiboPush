@@ -1053,8 +1053,50 @@ exports.deleteSurvey = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'survey update failed'})
       }
-      return res.status(200)
-      .json({status: 'success'})
+      SurveyPage.find({surveyId: req.params.id}, (err, surveypages) => {
+        if (err) {
+          return res.status(404)
+          .json({status: 'failed', description: 'Polls not found'})
+        }
+        surveypages.forEach(surveypage => {
+          surveypage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+        SurveyResponses.find({surveyId: req.params.id}, (err, surveyresponses) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Polls not found'})
+          }
+          surveyresponses.forEach(surveyresponse => {
+            surveyresponse.remove((err2) => {
+              if (err2) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'poll update failed'})
+              }
+            })
+          })
+          SurveyQuestions.find({surveyId: req.params.id}, (err, surveyquestions) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Polls not found'})
+            }
+            surveyquestions.forEach(surveyquestion => {
+              surveyquestion.remove((err2) => {
+                if (err2) {
+                  return res.status(500)
+                    .json({status: 'failed', description: 'poll update failed'})
+                }
+              })
+            })
+            return res.status(200)
+            .json({status: 'success'})
+          })
+        })
+      })
     })
   })
 }

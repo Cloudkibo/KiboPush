@@ -512,8 +512,36 @@ exports.deletePoll = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})
       }
-      return res.status(200)
-      .json({status: 'success'})
+      PollPage.find({pollId: req.params.id}, (err, pollpages) => {
+        if (err) {
+          return res.status(404)
+          .json({status: 'failed', description: 'Polls not found'})
+        }
+        pollpages.forEach(pollpage => {
+          pollpage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+        PollResponse.find({pollId: req.params.id}, (err, pollresponses) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Polls not found'})
+          }
+          pollresponses.forEach(pollresponse => {
+            pollresponse.remove((err2) => {
+              if (err2) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'poll update failed'})
+              }
+            })
+          })
+          return res.status(200)
+          .json({status: 'success'})
+        })
+      })
     })
   })
 }

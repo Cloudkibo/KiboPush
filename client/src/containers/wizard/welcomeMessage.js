@@ -372,8 +372,8 @@ class EditTemplate extends React.Component {
             onClose={this.closePreviewDialog}>
             <ModalDialog style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
-              <h3>Greeting Message Preview</h3>
-              <ViewMessage payload={this.state.broadcast} />
+              <h3>Welcome Message Preview</h3>
+              <ViewMessage user={this.props.user} payload={this.state.broadcast} />
             </ModalDialog>
           </ModalContainer>
         }
@@ -427,7 +427,7 @@ class EditTemplate extends React.Component {
                             <div className='col-lg-6 m--align-left' >
                               {//this.state.switchState &&
                                 <div className='row'>
-                                  <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Message Status</label>
+                                  <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
                                   <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
                                     <div className='bootstrap-switch-container'>
                                       <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />

@@ -52,11 +52,13 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-date m--font-info'>
                 &nbsp;&nbsp;
               </span>
+              {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
                 <Link onClick={() => this.props.openSettings(item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-gear' />
                 </Link>
               </span>
+            }
             </div>
           </div>
           <div className='m-widget5__stats1'>

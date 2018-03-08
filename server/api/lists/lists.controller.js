@@ -52,6 +52,8 @@ exports.viewList = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
+      logger.serverLog(TAG,
+        `listFound ${JSON.stringify(list[0])}`)
       if (list[0].initialList === true) {
         PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: list[0].listName}, (err, number) => {
           if (err) {
@@ -61,17 +63,34 @@ exports.viewList = function (req, res) {
             })
           }
           logger.serverLog(TAG,
-            `listFound ${JSON.stringify(list[0])}`)
-          logger.serverLog(TAG,
             `listFoundNumber ${JSON.stringify(number)}`)
           if (number.length > 0) {
-            Subscribers.find({ isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true, phoneNumber: number[0].number, pageId: number[0].pageId }).populate('pageId').exec((err, subscribers) => {
+            let findNumber = []
+            let findPage = []
+            for (let a = 0; a < number.length; a++) {
+              findNumber.push(number[a].number)
+              findPage.push(number[a].pageId)
+            }
+            let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+            subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+              phoneNumber: {
+                $in: findNumber
+              },
+              pageId: {
+                $in: findPage
+              }
+            })
+            logger.serverLog(TAG,
+              `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
+            Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 return res.status(500).json({
                   status: 'failed',
                   description: `Internal Server Error ${JSON.stringify(err)}`
                 })
               }
+              logger.serverLog(TAG,
+                `listFoundCriteria ${JSON.stringify(subscribers)}`)
               let temp = []
               for (let i = 0; i < subscribers.length; i++) {
                 temp.push(subscribers[i]._id)

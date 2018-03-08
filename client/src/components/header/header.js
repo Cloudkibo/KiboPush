@@ -17,6 +17,7 @@ class Header extends React.Component {
     this.state = {
       ignore: true
     }
+
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
     this.toggleSidebar = this.toggleSidebar.bind(this)
@@ -73,7 +74,7 @@ class Header extends React.Component {
       });
       console.log("FS identify Executed");
     }
-   
+
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -281,12 +282,14 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
-                                <li className='m-nav__item'>
-                                  <Link to='/live' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
-                                </li>
+                                {this.props.user && this.props.user.isSuperUser &&
+                                  <li className='m-nav__item'>
+                                    <Link to='/live' className='m-nav__link'>
+                                      <i className='m-nav__link-icon flaticon-chat-1' />
+                                      <span className='m-nav__link-text'>Messages</span>
+                                    </Link>
+                                  </li>
+                                }
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' className='m-nav__link'>

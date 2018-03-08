@@ -820,18 +820,22 @@ class Menu extends React.Component {
                           </div>
                         </li>
                         <p><b>Note: </b>Only two menu items can be added.</p>
-                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary pull-right'>
-                Save Menu
-              </button>
-            { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
-              ? <button onClick={this.showDialog} className='btn btn-sm btn-primary pull-right' style={{'marginLeft': '10px'}} disabled>
-                Preview
-              </button>
-              : <button onClick={this.showDialog} className='btn btn-sm btn-primary pull-right' style={{'marginLeft': '10px'}}>
-                Preview
-              </button>
-            }
                       </ul>
+                    </div>
+                    <div className='row' style={{marginLeft: '5px'}}>
+                      <div className='col-lg-6 m--align-left' >
+                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary'>
+                          Save Menu
+                        </button>
+                        { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
+                          ? <button onClick={this.showDialog} className='btn btn-sm btn-primary' disabled style={{marginLeft: '15px'}}>
+                            Preview
+                          </button>
+                          : <button onClick={this.showDialog} className='btn btn-sm btn-primary' style={{marginLeft: '15px'}}>
+                            Preview
+                          </button>
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>

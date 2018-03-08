@@ -793,7 +793,7 @@ class AddSurvey extends React.Component {
                       <div className='col-xl-12'>
                         <div className='form-group' id='titl'>
                           <label className='control-label'><h5>Survey Title</h5></label>
-                          <input className='form-control'
+                          <input className='form-control' placeholder='Enter form title here'
                             value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                         </div>
                       </div>
