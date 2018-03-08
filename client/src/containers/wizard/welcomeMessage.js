@@ -372,8 +372,8 @@ class EditTemplate extends React.Component {
             onClose={this.closePreviewDialog}>
             <ModalDialog style={{top: '100px'}}
               onClose={this.closePreviewDialog}>
-              <h3>Greeting Message Preview</h3>
-              <ViewMessage payload={this.state.broadcast} />
+              <h3>Welcome Message Preview</h3>
+              <ViewMessage user={this.props.user} payload={this.state.broadcast} />
             </ModalDialog>
           </ModalContainer>
         }
