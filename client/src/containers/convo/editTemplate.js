@@ -687,21 +687,20 @@ class EditTemplate extends React.Component {
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Create Broadcast
-                          </h3>
+                          { !(this.props.location.state && this.props.location.state.module === 'welcome')
+                          ? <h3 className='m-portlet__head-text'>
+                              Create Broadcast
+                            </h3>
+                          : <h3 className='m-portlet__head-text'>
+                              Welcome Message
+                            </h3>
+                          }
                         </div>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row' >
                         <div className='col-12'>
-                          { this.props.location.state && this.props.location.state.module === 'welcome' &&
-                            <div className='pull-right'>
-                              <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
-                              <button className='btn btn-primary' onClick={() => this.goBack()}>Back</button>
-                            </div>
-                          }
                           {
                             this.state.tabActive === 'broadcast' && !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                             <div className='pull-right'>
@@ -731,16 +730,16 @@ class EditTemplate extends React.Component {
                       </div>
                       <div className='row'>
                         <div className='col-12'>
+                          { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                           <ul className='nav nav-tabs'>
                             <li>
                               <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
-                            { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                             <li>
                               <a href='#tab_2' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
                             </li>
-                            }
                           </ul>
+                          }
                           <div className='tab-content'>
                             <div className='tab-pane fade active in' id='tab_1'>
                               <div className='row'>
@@ -805,6 +804,14 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                   </div>
+                                  { this.props.location.state && this.props.location.state.module === 'welcome' &&
+                                  <div className='row'>
+                                    <div className='col-12' style={{paddingTop: '50px'}}>
+                                      <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                                      <button className='btn btn-primary' onClick={() => this.goBack()}>Back</button>
+                                    </div>
+                                  </div>
+                                  }
                                 </div>
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <StickyDiv zIndex={1}>
