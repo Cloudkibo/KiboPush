@@ -118,21 +118,26 @@ class CreateConvo extends React.Component {
     // }
   }
   onNext () {
+    $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
     this.setState({tabActive: 'target'})
   }
   onPrevious () {
+    $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
+    $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
+    $('[href="#tab_2"]').removeClass('active')
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
+    $('[href="#tab_1"]').removeClass('active')
     this.setState({tabActive: 'target'})
   }
   scrollToTop () {
@@ -830,7 +835,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                                  <StickyDiv offsetTop={70} zIndex={1}>
+                                  <StickyDiv zIndex={1}>
                                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                                       <div style={{padding: '5px'}}>
                                         {this.props.location.state.module === 'welcome'

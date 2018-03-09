@@ -335,154 +335,165 @@ class CreateBroadcastTemplate extends React.Component {
                 </div>
               </div>
               <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            {this.props.template
+                            ? 'Edit Broadcast Template'
+                            : 'Create Broadcast Template'
+                            }
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='row'>
+                        <div className='col-12'>
+                          <div className='row'>
+                            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                              <div className='row' >
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                      <h6>Text</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                      <h6>Image</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                      <h6>Card</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                      <h6>Gallery</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='row'>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                      <h6>Audio</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                      <h6>Video</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                      <h6>File</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='row'>
+                                <div className='col-md-12' style={{paddingTop: '20px'}}>
+                                  <label>Category</label>
+                                </div>
+                                <div className='col-md-10'>
+                                  <select id='selectCategory' />
+                                </div>
+                                <div className='col-md-2'>
+                                  <button onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
+                                    Add category
+                                  </button>
+                                </div>
+                              </div>
+                              <div className='row'>
+                                <div className='col-12' style={{paddingTop: '50px'}}>
+                                  <button onClick={this.newConvo} style={{marginRight: '10px'}} className='btn btn-primary'>Reset</button>
+                                  {
+                                    this.props.template
+                                    ? <button style={{marginRight: '10px'}} id='send' onClick={this.editBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Update </button>
+                                    : <button style={{marginRight: '10px'}} id='send' onClick={this.createBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Create </button>
+                                  }
+                                  <Link to='/templates' className='btn btn-secondary'>Back</Link>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                              <StickyDiv offsetTop={70} zIndex={1}>
+                                <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                                  <div style={{padding: '5px'}}>
+                                    <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                                  </div>
+                                </div>
+                              </StickyDiv>
+                              {
+                                this.state.isShowingModal &&
+                                <ModalContainer style={{width: '500px'}}
+                                  onClose={this.closeDialog}>
+                                  <ModalDialog style={{width: '500px'}}
+                                    onClose={this.closeDialog}>
+                                    <h3>Rename:</h3>
+                                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                                    <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
 
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
+                              {
+                                this.state.showAddCategoryDialog &&
+                                <ModalContainer style={{width: '500px'}}
+                                  onClose={this.closeAddCategoryDialog}>
+                                  <ModalDialog style={{width: '500px'}}
+                                    onClose={this.closeAddCategoryDialog}>
+                                    <h3>Add Category</h3>
+                                    <input className='form-control'
+                                      placeholder='Enter category' ref='newCategory' />
+                                    <br />
+                                    <button style={{float: 'right'}}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.closeAddCategoryDialog()
+                                        this.saveCategory()
+                                      }}>Save
+                                    </button>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
+
+                              <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+
+                                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <fieldset>
-                      <br />
-                      <h5>Category:</h5>
-                      <br />
-                      <div className='m-form'>
-                        <div className='form-group m-form__group'>
-                          <div style={{display: 'inline-block'}} className='col-md-10'>
-                            <select id='selectCategory' />
-                          </div>
-                          <div style={{display: 'inline-block'}} className='col-md-2'>
-                            <button onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
-                              Add category
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <br />
-                    </fieldset>
-                    <br />
-                    <div className='row'>
-                      <br />
-                      <br />
-                      <button style={{float: 'left', marginLeft: 20}} onClick={this.newConvo} className='btn btn-primary btn-sm'> New </button>
-                      {
-                        this.props.template
-                        ? <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.editBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Update </button>
-                        : <button style={{float: 'left', marginLeft: 20}} id='send' onClick={this.createBroadcastTemplate} className='btn m-btn m-btn--gradient-from-primary m-btn--gradient-to-accent' disabled={(this.state.broadcast.length === 0)}> Create </button>
-                      }
-                      <Link to='/templates' style={{float: 'left', marginLeft: 20, lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                     </div>
                   </div>
                 </div>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <StickyDiv offsetTop={70} zIndex={1}>
-                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                      </div>
-                    </div>
-                  </StickyDiv>
-                  {
-                    this.state.isShowingModal &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeDialog}>
-                        <h3>Rename:</h3>
-                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-
-                  {
-                    this.state.showAddCategoryDialog &&
-                    <ModalContainer style={{width: '500px'}}
-                      onClose={this.closeAddCategoryDialog}>
-                      <ModalDialog style={{width: '500px'}}
-                        onClose={this.closeAddCategoryDialog}>
-                        <h3>Add Category</h3>
-                        <input className='form-control'
-                          placeholder='Enter category' ref='newCategory' />
-                        <br />
-                        <button style={{float: 'right'}}
-                          className='btn btn-primary btn-sm'
-                          onClick={() => {
-                            this.closeAddCategoryDialog()
-                            this.saveCategory()
-                          }}>Save
-                        </button>
-                      </ModalDialog>
-                    </ModalContainer>
-                  }
-
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
-
-                  </div>
-
-                </div>
-
               </div>
             </div>
           </div>
