@@ -92,7 +92,6 @@ import PhoneList from './containers/segmentedLists/listDetails'
 import CreateSubList from './containers/segmentedLists/createSubList'
 import AddPageWizard from './containers/wizard/addPage'
 import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
-import InviteUsingNumberWizard from './containers/wizard/inviteUsingNumber'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
@@ -220,7 +219,6 @@ const routes = (
     <Route path='/createSubList' component={CreateSubList} onEnter={requireAuth} />
     <Route path='/addPageWizard' component={AddPageWizard} onEnter={requireAuth} />
     <Route path='/inviteUsingLinkWizard' component={InviteUsingLinkWizard} onEnter={requireAuth} />
-    <Route path='/inviteUsingNumberWizard' component={InviteUsingNumberWizard} onEnter={requireAuth} />
     <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
