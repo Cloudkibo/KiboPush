@@ -29,10 +29,10 @@ import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import _ from 'underscore'
 import { Link } from 'react-router'
-
+import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -75,6 +75,8 @@ class EditTemplate extends React.Component {
       tabActive: 'broadcast'
     }
     props.getuserdetails()
+    props.getFbAppId()
+    props.getAdminSubscriptions()
     props.loadSubscribersList()
     props.loadCustomerLists()
     console.log('props.templatesInfo', props.currentBroadcast)
@@ -297,6 +299,17 @@ class EditTemplate extends React.Component {
       console.log('componentDidMount pageValue set')
       this.setState({pageValue: this.props.pages[0].pageId})
     }
+    var compProp = this.props
+    var comp = this
+    registerAction({
+      event: 'admin_subscriber',
+      action: function (data) {
+        console.log('New socket event occured: In Callback')
+        compProp.getAdminSubscriptions()
+        comp.setState({showMessengerModal: false})
+        comp.msg.success('Subscribed successfully. Click on the test button again to test')
+      }
+    })
   }
 
   showDialog () {
@@ -502,30 +515,52 @@ class EditTemplate extends React.Component {
   }
 
   testConvo () {
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageId === this.state.pageValue) {
-        if (!this.props.pages[i].adminSubscriberId) {
-          this.setState({showMessengerModal: true})
-          console.log('Setting Messenger Modal to True')
-          return
-        }
-      }
+    console.log('in test convo')
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue })
+    console.log('Check', check)
+    if (check.length <= 0) {
+      this.setState({showMessengerModal: true})
+      console.log('Setting Messenger Modal to True')
+      return
     }
-
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (this.props.pages[i].pageId === this.state.pageValue) {
+    //     if (!this.props.pages[i].adminSubscriberId) {
+          // this.setState({showMessengerModal: true})
+          // console.log('Setting Messenger Modal to True')
+          // return
+    //     }
+    //   }
+    // }
+    //
     if (this.state.broadcast.length === 0) {
       return
     }
     console.log(this.state.broadcast)
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var isSegmentedValue = false
+    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmentedValue = true
+    }
     var data = {
       platform: 'facebook',
-      self: 'true',
+      self: true,
       payload: this.state.broadcast,
-      title: this.state.convoTitle
+      title: this.state.convoTitle,
+      isSegmented: isSegmentedValue,
+      segmentationPageIds: [this.state.pageValue],
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
+      segmentationTimeZone: '',
+      segmentationList: this.state.listSelected,
+      isList: isListValue
 
     }
     console.log('Data sent: ', data)
     this.props.sendBroadcast(data, this.msg)
-    this.setState({broadcast: [], list: []})
   }
 
   newConvo () {
@@ -845,10 +880,10 @@ class EditTemplate extends React.Component {
                                         onClose={() => { this.setState({showMessengerModal: false}) }}>
                                         <h3>Connect to Messenger:</h3>
                                         <MessengerPlugin
-                                          appId='132767517443810'
+                                          appId={this.props.fbAppId}
                                           pageId={this.state.pageValue}
                                           passthroughParams={this.props.user._id}
-                                          onClick={() => { this.setState({showMessengerModal: false}) }}
+                                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
                                         />
                                       </ModalDialog>
                                     </ModalContainer>
@@ -961,8 +996,9 @@ function mapStateToProps (state) {
     broadcastDetails: (state.templatesInfo.broadcastDetails),
     currentBroadcast: (state.templatesInfo.currentBroadcast),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
-
+    subscribers: (state.subscribersInfo.subscribers),
+    fbAppId: state.basicInfo.fbAppId,
+    adminPageSubscription: state.basicInfo.adminPageSubscription
   }
 }
 
@@ -979,7 +1015,9 @@ function mapDispatchToProps (dispatch) {
       saveBroadcastInformation: saveBroadcastInformation,
       createWelcomeMessage: createWelcomeMessage,
       loadCustomerLists: loadCustomerLists,
-      loadSubscribersList: loadSubscribersList
+      loadSubscribersList: loadSubscribersList,
+      getAdminSubscriptions: getAdminSubscriptions,
+      getFbAppId: getFbAppId
     },
     dispatch)
 }
