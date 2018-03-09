@@ -98,7 +98,7 @@ import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
 import WorkflowWizard from './containers/wizard/workflow'
 import MenuWizard from './containers/wizard/menu'
-
+import FinishWizard from './containers/wizard/finish'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -226,6 +226,7 @@ const routes = (
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
     <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
+    <Route path='/finishWizard' component={FinishWizard} onEnter={requireAuth} />
   </Route>
 
 )

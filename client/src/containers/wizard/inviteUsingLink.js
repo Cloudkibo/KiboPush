@@ -10,6 +10,10 @@ import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
+import {
+  sendBroadcast, clearAlertMessage
+} from '../../redux/actions/broadcast.actions'
+import AlertContainer from 'react-alert'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -21,10 +25,15 @@ class InviteSubscribers extends React.Component {
       fblink: '',
       copied: false,
       selectPage: {},
-      selectedTab: 'sharePage'
+      selectedTab: 'becomeSubscriber',
+      sendTestMessage: false
     }
     this.setPage = this.setPage.bind(this)
     this.setLink = this.setLink.bind(this)
+    this.setSubscriber = this.setSubscriber.bind(this)
+    this.sendTestMessage = this.sendTestMessage.bind(this)
+    this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
+    this.generateAlert = this.generateAlert.bind(this)
   }
 
   getlink () {
@@ -33,8 +42,56 @@ class InviteSubscribers extends React.Component {
       this.state.selectPage.pageId + '%2F&amp;src=sdkpreparse'
     return linkurl
   }
-
+  componentWillReceiveProps (nextprops) {
+    // if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
+    //   this.setState({
+    //     fblink: `https://m.me/${this.props.pages[0].pageUserName}`,
+    //     selectPage: this.props.pages[0]
+    //   })
+    // } else {
+    //   this.setState({
+    //     fblink: `https://m.me/${this.props.pages[0].pageId}`,
+    //     selectPage: this.props.pages[0]
+    //   })
+    // }
+    if (nextprops.successMessage && this.state.step !== 0) {
+      //  this.generateAlert('success', nextprops.successMessage)
+      this.msg.success('Message sent successfully!')
+    } else if (nextprops.errorMessage && this.state.step !== 0) {
+      this.msg.success('Message not sent!')
+      //  this.generateAlert('danger', nextprops.errorMessage)
+    }
+  }
+  generateAlert (type, message) {
+    toastr.options = {
+      'closeButton': true,
+      'debug': false,
+      'newestOnTop': false,
+      'progressBar': false,
+      'positionClass': 'toast-bottom-right',
+      'preventDuplicates': false,
+      'showDuration': '300',
+      'hideDuration': '1000',
+      'timeOut': '5000',
+      'extendedTimeOut': '1000',
+      'showEasing': 'swing',
+      'hideEasing': 'linear',
+      'showMethod': 'fadeIn',
+      'hideMethod': 'fadeOut'
+    }
+    if (type === 'success') {
+      toastr.success('Message sent successfully.', 'Success!')
+    } else {
+      toastr.error('Message not sent', 'Failed!')
+    }
+  }
   componentDidMount () {
+    document.title = 'KiboPush | Getting Started'
+    var addScript = document.createElement('script')
+    addScript.setAttribute('type', 'text/javascript')
+    addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    addScript.type = 'text/javascript'
+    document.body.appendChild(addScript)
     if (this.props.location.state && this.props.location.state.pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageUserName}`,
@@ -85,15 +142,45 @@ class InviteSubscribers extends React.Component {
       })
     }
   }
+  sendTestBroadcast () {
+    this.props.clearAlertMessage()
+    var data = {
+      platform: 'facebook',
+      payload: [{ text: 'Hello! this is a test broadcast.', componentType: 'text' }],
+      isSegmented: false,
+      segmentationPageIds: [],
+      segmentationLocale: '',
+      segmentationGender: '',
+      segmentationTimeZone: '',
+      title: 'Test Broadcast',
+      segmentationList: '',
+      isList: false
+    }
+    this.props.sendBroadcast(data, this.msg)
+  }
   setPage () {
     this.setState({selectedTab: 'sharePage'})
+  }
+  sendTestMessage () {
+    this.setState({sendTestMessage: true})
   }
   setLink () {
     this.setState({selectedTab: 'shareLink'})
   }
+  setSubscriber () {
+    this.setState({selectedTab: 'becomeSubscriber'})
+  }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -115,7 +202,12 @@ class InviteSubscribers extends React.Component {
                           <div className='m-portlet__head-tools'>
                             <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist'>
                               <li className='nav-item m-tabs__item'>
-                                <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
+                                <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
+                                  Become a Subscriber
+                                </a>
+                              </li>
+                              <li className='nav-item m-tabs__item'>
+                                <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
                                   Share Your Page
                                 </a>
                               </li>
@@ -134,9 +226,44 @@ class InviteSubscribers extends React.Component {
                               You do not have any connected pages. Please click <Link to='/addPageWizard' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages.
                             </div>
                           }
+                          {this.state.selectedTab === 'becomeSubscriber' &&
+                            <div>
+                              <br /><br />
+                              <label style={{fontWeight: 'normal'}}>You can become a subscriber of your page by sending a message to your page on messenger.</label>
+                              <br /><br /><br /><br />
+                              <div className='form-group m-form__group row'>
+                                <label className='col-2 col-form-label'>
+                                  Change Page
+                                </label>
+                                <div className='col-10'>
+                                  <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                                    {
+                                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                              <br /><br /><br /><br />
+                              <center>
+                                <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
+                                  <span>Subscribe Now</span>
+                                </a>
+                                <br /><br /><br /><br />
+                                {this.state.sendTestMessage &&
+                                  <button className='btn btn-primary' onClick={this.sendTestBroadcast}>
+                                    <span>Send Test Message</span>
+                                  </button>
+                                }
+                              </center>
+                            </div>
+                          }
                           {this.state.selectedTab === 'sharePage' &&
                             <div>
                               <br /><br />
+                              <label style={{fontWeight: 'normal'}}>Become a subscriber of your own page
+                              This will let your friends know about your Facebook page.</label>
                               <label style={{fontWeight: 'normal'}}>Build your audience by sharing the page on your timeline.
                               This will let your friends know about your Facebook page.</label>
                               <br /><br /><br /><br />
@@ -256,12 +383,14 @@ class InviteSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    successMessage: (state.broadcastsInfo.successMessage),
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList}, dispatch)
+  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteSubscribers)
