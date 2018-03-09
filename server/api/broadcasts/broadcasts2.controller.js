@@ -62,10 +62,10 @@ exports.sendConversation = function (req, res) {
       let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
       if (req.body.isSegmented) {
-        if (req.body.pageIds) {
+        if (req.body.segmentationPageIds) {
           pagesFindCriteria = _.merge(pagesFindCriteria, {
             pageId: {
-              $in: req.body.pageIds
+              $in: req.body.segmentationPageIds
             }
           })
         }
