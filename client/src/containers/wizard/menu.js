@@ -7,13 +7,14 @@ import Sidebar from './sidebar'
 import Header from './header'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl } from '../menu/utility'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from '../menu/viewScreen'
 import { registerAction } from '../../utility/socketio'
+import swal from 'sweetalert'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -63,6 +64,7 @@ class Menu extends React.Component {
     this.getItemClicked = this.getItemClicked.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.show = this.show.bind(this)
     props.fetchMenu()
     if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -91,6 +93,18 @@ class Menu extends React.Component {
         console.log('New socket event occured: In Callback')
         compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
       }
+    })
+  }
+  show () {
+    swal({title: 'Congratulations!',
+      text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
+      icon: 'success',
+      button: {
+        className: 'btn btn-primary btn-lg' }
+    }).then((value) => {
+      browserHistory.push({
+        pathname: `/dashboard`
+      })
     })
   }
   showDialog () {
@@ -799,11 +813,12 @@ class Menu extends React.Component {
                                 </Link>
                               </div>
                               <div className='col-lg-6 m--align-right'>
-                                <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
                                   <span>
-                                    <span>Finish</span>
+                                    <span>Next</span>&nbsp;&nbsp;
+                                    <i className='la la-arrow-right' />
                                   </span>
-                                </Link>
+                                </button>
                               </div>
                             </div>
                           </div>

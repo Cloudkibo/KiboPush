@@ -32,7 +32,7 @@ const pageSchema = new Schema({
     type: Schema.Types.Mixed
   },
   isWelcomeMessageEnabled: {
-    type: Boolean, default: false
+    type: Boolean, default: true
   }
 })
 

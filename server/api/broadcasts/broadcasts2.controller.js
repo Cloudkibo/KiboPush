@@ -334,8 +334,6 @@ exports.sendConversation = function (req, res) {
 
                 logger.serverLog(TAG,
                   `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
-                logger.serverLog(TAG,
-                  `isList ${JSON.stringify(req.body.listNumbers)}`)
                 req.body.payload.forEach(payloadItem => {
                   subscribers.forEach(subscriber => {
                     logger.serverLog(TAG,
