@@ -815,7 +815,7 @@ class Menu extends React.Component {
                               <div className='col-lg-6 m--align-right'>
                                 <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
                                   <span>
-                                    <span>Next</span>&nbsp;&nbsp;
+                                    <span>Finish</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
                                 </button>
