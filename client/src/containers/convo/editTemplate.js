@@ -283,6 +283,7 @@ class EditTemplate extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
+    this.scrollToTop()
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
@@ -635,6 +636,10 @@ class EditTemplate extends React.Component {
       console.log('change Locale', selected)
     })
   }
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   goBack () {
     this.props.history.push({
       pathname: `/settings`,
@@ -677,6 +682,8 @@ class EditTemplate extends React.Component {
         }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
