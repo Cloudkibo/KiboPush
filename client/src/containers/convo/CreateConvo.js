@@ -469,7 +469,8 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue })
+    console.log('in test convo')
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue })
     console.log('Check', check)
     if (check.length <= 0) {
       this.setState({showMessengerModal: true})
@@ -490,11 +491,26 @@ class CreateConvo extends React.Component {
       return
     }
     console.log(this.state.broadcast)
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var isSegmentedValue = false
+    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmentedValue = true
+    }
     var data = {
       platform: 'facebook',
       self: true,
       payload: this.state.broadcast,
-      title: this.state.convoTitle
+      title: this.state.convoTitle,
+      isSegmented: isSegmentedValue,
+      segmentationPageIds: [this.state.pageValue],
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
+      segmentationTimeZone: '',
+      segmentationList: this.state.listSelected,
+      isList: isListValue
 
     }
     console.log('Data sent: ', data)
