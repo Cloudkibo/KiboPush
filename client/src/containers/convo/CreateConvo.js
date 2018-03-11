@@ -118,21 +118,26 @@ class CreateConvo extends React.Component {
     // }
   }
   onNext () {
+    $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
     this.setState({tabActive: 'target'})
   }
   onPrevious () {
+    $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
+    $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
+    $('[href="#tab_2"]').removeClass('active')
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
+    $('[href="#tab_1"]').removeClass('active')
     this.setState({tabActive: 'target'})
   }
   scrollToTop () {
@@ -464,7 +469,8 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId == this.state.pageValue })
+    console.log('in test convo')
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue })
     console.log('Check', check)
     if (check.length <= 0) {
       this.setState({showMessengerModal: true})
@@ -485,11 +491,26 @@ class CreateConvo extends React.Component {
       return
     }
     console.log(this.state.broadcast)
+    var isListValue = false
+    if (this.state.listSelected.length > 0) {
+      isListValue = true
+    }
+    var isSegmentedValue = false
+    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      isSegmentedValue = true
+    }
     var data = {
       platform: 'facebook',
       self: true,
       payload: this.state.broadcast,
-      title: this.state.convoTitle
+      title: this.state.convoTitle,
+      isSegmented: isSegmentedValue,
+      segmentationPageIds: [this.state.pageValue],
+      segmentationLocale: this.state.localeValue,
+      segmentationGender: this.state.genderValue,
+      segmentationTimeZone: '',
+      segmentationList: this.state.listSelected,
+      isList: isListValue
 
     }
     console.log('Data sent: ', data)
@@ -830,7 +851,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                                  <StickyDiv offsetTop={70} zIndex={1}>
+                                  <StickyDiv zIndex={1}>
                                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                                       <div style={{padding: '5px'}}>
                                         {this.props.location.state.module === 'welcome'

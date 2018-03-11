@@ -144,6 +144,7 @@
     "sort-array": "^2.0.0",
     "superagent": "^3.6.3",
     "swagger-tools": "^0.10.3",
+    "sweetalert": "^2.1.0",
     "tai-password-strength": "^1.1.1",
     "twit": "^2.2.9",
     "underscore": "^1.8.3",

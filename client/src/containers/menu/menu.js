@@ -661,8 +661,8 @@ class Menu extends React.Component {
                               onClose={this.closeDialog}>
                               <h3>Persistent Menu Preview</h3>
                               { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
-                                  ? <div>{console.log('notinanisha')}<ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
-                                : <div>{console.log('inanisha')}<ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
+                                  ? <div><ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
+                                : <div><ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
                               }
                             </ModalDialog>
                           </ModalContainer>
