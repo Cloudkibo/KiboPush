@@ -1047,67 +1047,71 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
-                      <i onClick={this.showEmojiPicker} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center',
-                          color: '#787878'
-                        }} className='fa fa-smile-o' />
-                      </i>
-                    </div>
+                    {
+                      /*
+                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                        <i onClick={this.showEmojiPicker} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center',
+                            color: '#787878'
+                          }} className='fa fa-smile-o' />
+                        </i>
+                      </div>
 
-                    <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                      <i onClick={this.showStickers} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center'
-                        }} className='fa fa-file-o' />
-                        <i style={{
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          textAlign: 'center',
-                          margin: '5px',
-                          fontSize: '12px',
-                          bottom: -4
-                        }}
-                          className='center fa fa-smile-o' />
-                      </i>
-                    </div>
-                    <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
-                      <i onClick={this.showGif} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center'
-                        }} className='fa fa-file-o' />
-                        <p style={{
-                          position: 'absolute',
-                          text: 'GIF',
-                          left: '0',
-                          width: '100%',
-                          textAlign: 'center',
-                          margin: '5px',
-                          fontSize: '8px',
-                          bottom: -5
-                        }}>GIF</p>
-                      </i>
-                    </div>
+                      <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
+                        <i onClick={this.showStickers} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center'
+                          }} className='fa fa-file-o' />
+                          <i style={{
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            textAlign: 'center',
+                            margin: '5px',
+                            fontSize: '12px',
+                            bottom: -4
+                          }}
+                            className='center fa fa-smile-o' />
+                        </i>
+                      </div>
+                      <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                        <i onClick={this.showGif} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center'
+                          }} className='fa fa-file-o' />
+                          <p style={{
+                            position: 'absolute',
+                            text: 'GIF',
+                            left: '0',
+                            width: '100%',
+                            textAlign: 'center',
+                            margin: '5px',
+                            fontSize: '8px',
+                            bottom: -5
+                          }}>GIF</p>
+                        </i>
+                      </div>
+                      */
+                    }
                   </div>
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
