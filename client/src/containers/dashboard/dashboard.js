@@ -106,7 +106,6 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
-    this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',
