@@ -267,7 +267,7 @@ class ChatBox extends React.Component {
     } else if (component === 'thumbsUp') {
       payload = {
         componentType: 'thumbsUp',
-        fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+        fileurl: 'https://app.kibopush.com/img/thumbsup.png'
       }
     }
     return payload
@@ -325,7 +325,7 @@ class ChatBox extends React.Component {
         payload = this.setDataPayload('thumbsUp')
         data = this.setMessageData(session, payload)
         console.log(data)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, session.companyId)
         data.format = 'convos'
         this.props.userChat.push(data)
         this.setState({textAreaValue: ''})
@@ -392,6 +392,7 @@ class ChatBox extends React.Component {
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
     }
+    this.textInput.focus()
   }
   handleUpload (res) {
     console.log('handleUpload', res)
@@ -469,8 +470,8 @@ class ChatBox extends React.Component {
         elemnet: (<div>
           <div style={{width: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
             <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-              <a href={cards[i].iamge_url} target='_blank'>
-                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].iamge_url} />
+              <a href={cards[i].image_url} target='_blank'>
+                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].image_url} />
               </a>
             </div>
             <div style={{marginTop: '10px', padding: '5px'}}>
@@ -971,7 +972,7 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
@@ -1046,67 +1047,71 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
-                      <i onClick={this.showEmojiPicker} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center',
-                          color: '#787878'
-                        }} className='fa fa-smile-o' />
-                      </i>
-                    </div>
+                    {
+                      /*
+                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                        <i onClick={this.showEmojiPicker} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center',
+                            color: '#787878'
+                          }} className='fa fa-smile-o' />
+                        </i>
+                      </div>
 
-                    <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                      <i onClick={this.showStickers} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center'
-                        }} className='fa fa-file-o' />
-                        <i style={{
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          textAlign: 'center',
-                          margin: '5px',
-                          fontSize: '12px',
-                          bottom: -4
-                        }}
-                          className='center fa fa-smile-o' />
-                      </i>
-                    </div>
-                    <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
-                      <i onClick={this.showGif} style={styles.iconclass}>
-                        <i style={{
-                          fontSize: '20px',
-                          position: 'absolute',
-                          left: '0',
-                          width: '100%',
-                          height: '2em',
-                          margin: '5px',
-                          textAlign: 'center'
-                        }} className='fa fa-file-o' />
-                        <p style={{
-                          position: 'absolute',
-                          text: 'GIF',
-                          left: '0',
-                          width: '100%',
-                          textAlign: 'center',
-                          margin: '5px',
-                          fontSize: '8px',
-                          bottom: -5
-                        }}>GIF</p>
-                      </i>
-                    </div>
+                      <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
+                        <i onClick={this.showStickers} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center'
+                          }} className='fa fa-file-o' />
+                          <i style={{
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            textAlign: 'center',
+                            margin: '5px',
+                            fontSize: '12px',
+                            bottom: -4
+                          }}
+                            className='center fa fa-smile-o' />
+                        </i>
+                      </div>
+                      <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
+                        <i onClick={this.showGif} style={styles.iconclass}>
+                          <i style={{
+                            fontSize: '20px',
+                            position: 'absolute',
+                            left: '0',
+                            width: '100%',
+                            height: '2em',
+                            margin: '5px',
+                            textAlign: 'center'
+                          }} className='fa fa-file-o' />
+                          <p style={{
+                            position: 'absolute',
+                            text: 'GIF',
+                            left: '0',
+                            width: '100%',
+                            textAlign: 'center',
+                            margin: '5px',
+                            fontSize: '8px',
+                            bottom: -5
+                          }}>GIF</p>
+                        </i>
+                      </div>
+                      */
+                    }
                   </div>
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&

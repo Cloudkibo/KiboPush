@@ -85,6 +85,7 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -143,7 +144,12 @@ class CreateConvo extends React.Component {
     $('[href="#tab_1"]').removeClass('active')
     this.setState({tabActive: 'target'})
   }
-
+  handleSendBroadcast (res) {
+    this.initTab()
+    if (res.status === 'success') {
+      this.setState({broadcast: [], list: []})
+    }
+  }
   scrollToTop () {
     console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
@@ -476,7 +482,7 @@ class CreateConvo extends React.Component {
           isList: isListValue
         }
         console.log('Data sent: ', data)
-        this.props.sendBroadcast(data, this.msg)
+        this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }
     }
