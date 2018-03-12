@@ -802,6 +802,7 @@ exports.broadcastsByDays = function (req, res) {
       console.log('tempPage', tempPage)
       console.log('temp', temp)
       console.log('tempUser', tempUser)
+      console.log('tempCompany', tempCompany)
       Users.find({_id: {
         $in: tempUser
       }}, (err, user) => {
@@ -813,9 +814,21 @@ exports.broadcastsByDays = function (req, res) {
             description: 'internal server error' + JSON.stringify(err)
           })
         }
+        CompanyUsers.find({_id: {
+          $in: tempCompany
+        }}, (err, companies) => {
+          if (err) {
+            logger.serverLog(TAG,
+              'user object sent to client failed ' + JSON.stringify(err))
+            return res.status(500).json({
+              status: 'failed',
+              description: 'internal server error' + JSON.stringify(err)
+            })
+          }
       return res.status(200)
-      .json({status: 'success', payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, users: user}})
+      .json({status: 'success', payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, users: user, companies: companies}})
     })
   })
   })
+})
 }
