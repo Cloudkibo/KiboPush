@@ -267,7 +267,7 @@ class ChatBox extends React.Component {
     } else if (component === 'thumbsUp') {
       payload = {
         componentType: 'thumbsUp',
-        fileurl: 'https://scontent.xx.fbcdn.net/v/t39.1997-6/851557_369239266556155_759568595_n.png?_nc_ad=z-m&_nc_cid=0&oh=8bfd127ce3a4ae8c53f87b0e29eb6de5&oe=5A761DDC'
+        fileurl: 'https://drive.google.com/file/d/1eu40SAG0_WvTFjZiR3mnhmcsp845npd6/view'
       }
     }
     return payload
@@ -325,7 +325,7 @@ class ChatBox extends React.Component {
         payload = this.setDataPayload('thumbsUp')
         data = this.setMessageData(session, payload)
         console.log(data)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, session.companyId)
         data.format = 'convos'
         this.props.userChat.push(data)
         this.setState({textAreaValue: ''})
@@ -469,8 +469,8 @@ class ChatBox extends React.Component {
         elemnet: (<div>
           <div style={{width: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
             <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-              <a href={cards[i].iamge_url} target='_blank'>
-                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].iamge_url} />
+              <a href={cards[i].image_url} target='_blank'>
+                <img style={{maxWidth: 180, borderRadius: '5px'}} src={cards[i].image_url} />
               </a>
             </div>
             <div style={{marginTop: '10px', padding: '5px'}}>
@@ -971,7 +971,7 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      <input autoFocus type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>

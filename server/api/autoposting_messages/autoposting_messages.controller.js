@@ -1,4 +1,4 @@
-const AutoPosting = require('./autoposting_messages.model')
+const AutopostingMessages = require('./autoposting_messages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.index = function (req, res) {
@@ -15,14 +15,14 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    AutoPosting.find({companyId: companyUser.companyId}, (err, autoposting) => {
+    AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id}, (err, autopostingMessages) => {
       if (err) {
         return res.status(500)
         .json({status: 'failed', description: 'Autoposting query failed'})
       }
       res.status(200).json({
         status: 'success',
-        payload: autoposting
+        payload: autopostingMessages
       })
     })
   })
