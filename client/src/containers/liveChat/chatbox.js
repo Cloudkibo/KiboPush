@@ -267,7 +267,7 @@ class ChatBox extends React.Component {
     } else if (component === 'thumbsUp') {
       payload = {
         componentType: 'thumbsUp',
-        fileurl: 'https://drive.google.com/open?id=1eu40SAG0_WvTFjZiR3mnhmcsp845npd6'
+        fileurl: 'https://app.kibopush.com/img/thumbsup.png'
       }
     }
     return payload
