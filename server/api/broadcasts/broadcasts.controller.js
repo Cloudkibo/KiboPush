@@ -806,7 +806,7 @@ function updateseenstatus (req) {
       updateResult = updated[0]
     })
   AutopostingMessages.update(
-    {page_fb_id: updateResult.pageId},
+    {_id: updateResult.autoposting_messages_id},
     {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
