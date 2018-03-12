@@ -44,6 +44,8 @@ class CreateBroadcastTemplate extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
+    this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
+    this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.showAddCategoryDialog = this.showAddCategoryDialog.bind(this)
     this.closeAddCategoryDialog = this.closeAddCategoryDialog.bind(this)
     this.saveCategory = this.saveCategory.bind(this)
@@ -129,6 +131,16 @@ class CreateBroadcastTemplate extends React.Component {
     this.setState({showAddCategoryDialog: false})
   }
 
+  showResetAlertDialog () {
+    console.log('in showDialog')
+    if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
+      this.setState({isShowingModalResetAlert: true})
+    }
+  }
+
+  closeResetAlertDialog () {
+    this.setState({isShowingModalResetAlert: false})
+  }
   saveCategory () {
     if (this.refs.newCategory.value) {
       if (!this.exists(this.refs.newCategory.value)) {
@@ -429,7 +441,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                               <div className='row'>
                                 <div className='col-12' style={{paddingTop: '50px'}}>
-                                  <button onClick={this.newConvo} style={{marginRight: '10px'}} className='btn btn-primary'>Reset</button>
+                                  <button onClick={this.showResetAlertDialog} style={{marginRight: '10px'}} className='btn btn-primary'>Reset</button>
                                   {
                                     this.props.template
                                     ? <button style={{marginRight: '10px'}} id='send' onClick={this.editBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Update </button>
@@ -447,6 +459,29 @@ class CreateBroadcastTemplate extends React.Component {
                                   </div>
                                 </div>
                               </StickyDiv>
+                              {
+                                this.state.isShowingModalResetAlert &&
+                                <ModalContainer style={{width: '500px'}}
+                                  onClose={this.closeResetAlertDialog}>
+                                  <ModalDialog style={{width: '500px'}}
+                                    onClose={this.closeResetAlertDialog}>
+                                    <p>Are you sure you want to reset the message ?</p>
+                                    <button style={{float: 'right', marginLeft: '10px'}}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.newConvo()
+                                        this.closeResetAlertDialog()
+                                      }}>Yes
+                                    </button>
+                                    <button style={{float: 'right'}}
+                                      className='btn btn-primary btn-sm'
+                                      onClick={() => {
+                                        this.closeResetAlertDialog()
+                                      }}>Cancel
+                                    </button>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
                               {
                                 this.state.isShowingModal &&
                                 <ModalContainer style={{width: '500px'}}
