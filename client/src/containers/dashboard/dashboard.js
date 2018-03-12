@@ -41,7 +41,10 @@ class Dashboard extends React.Component {
     this.addTooltip = this.addTooltip.bind(this)
     this.tourFinished = this.tourFinished.bind(this)
   }
-
+  scrollToTop () {
+    console.log('in scrollToTop')
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentWillReceiveProps (nextprops) {
     console.log('NextProps :', nextprops)
     if (nextprops.user && nextprops.user.emailVerified === false &&
@@ -103,7 +106,7 @@ class Dashboard extends React.Component {
     // addScript = document.createElement('script')
     // addScript.setAttribute('src', '../../../js/fb.js')
     // document.body.appendChild(addScript)
-
+    this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'dashboard_updated',

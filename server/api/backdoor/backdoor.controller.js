@@ -17,6 +17,7 @@ const SurveyQuestions = require('../surveys/surveyquestions.model')
 const SurveyResponses = require('../surveys/surveyresponse.model')
 const Sessions = require('../sessions/sessions.model')
 const sortBy = require('sort-array')
+const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 // const mongoose = require('mongoose')
 var json2csv = require('json2csv')
 
@@ -754,5 +755,61 @@ exports.sessionsGraph = function (req, res) {
     }
     return res.status(200)
     .json({status: 'success', payload: {sessionsgraphdata}})
+  })
+}
+exports.broadcastsByDays = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  Broadcasts.aggregate([
+    {
+      $match: {
+        'datetime': {
+          $gte: new Date(
+            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        }
+      }
+    }
+  ], (err, broadcasts) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting surveys count ${JSON.stringify(err)}`
+      })
+    }
+    let temp = []
+    let tempUser = []
+    let tempCompany = []
+    let tempPage = []
+    for (let i = 0; i < broadcasts.length; i++) {
+      temp.push(broadcasts[i]._id)
+      tempUser.push(broadcasts[i].userId)
+      tempCompany.push(broadcasts[i].companyId)
+      tempPage.push(broadcasts[i].segmentationPageIds)
+    }
+    BroadcastPage.find({broadcastId: {
+      $in: temp
+    }}, (err, broadcastpages) => {
+      if (err) {
+        return res.status(404)
+        .json({status: 'failed', description: 'Broadcasts not found'})
+      }
+      Pages.find({pageId: {
+        $in: tempPage
+      }}, (err, pages) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(404)
+          .json({status: 'failed', description: 'Pages not found'})
+        }
+      return res.status(200)
+      .json({status: 'success', payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, pages: pages}})
+    })
+  })
   })
 }
