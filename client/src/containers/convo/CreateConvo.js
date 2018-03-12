@@ -64,6 +64,7 @@ class CreateConvo extends React.Component {
       localeValue: [],
       isShowingModal: false,
       isShowingModalGuideLines: false,
+      isShowingModalResetAlert: false,
       convoTitle: 'Broadcast Title',
       steps: [],
       showMessengerModal: false,
@@ -78,6 +79,8 @@ class CreateConvo extends React.Component {
     props.getAdminSubscriptions()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+    this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
+    this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -140,6 +143,7 @@ class CreateConvo extends React.Component {
     $('[href="#tab_1"]').removeClass('active')
     this.setState({tabActive: 'target'})
   }
+
   scrollToTop () {
     console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
@@ -209,6 +213,16 @@ class CreateConvo extends React.Component {
 
   closeGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: false})
+  }
+  showResetAlertDialog () {
+    console.log('in showDialog')
+    if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
+      this.setState({isShowingModalResetAlert: true})
+    }
+  }
+
+  closeResetAlertDialog () {
+    this.setState({isShowingModalResetAlert: false})
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -463,7 +477,7 @@ class CreateConvo extends React.Component {
         }
         console.log('Data sent: ', data)
         this.props.sendBroadcast(data, this.msg)
-        this.setState({broadcast: [], list: []})
+        // this.setState({broadcast: [], list: []})
       }
     }
   }
@@ -748,7 +762,7 @@ class CreateConvo extends React.Component {
                           {
                             this.state.tabActive === 'broadcast' && this.props.location.state.module === 'convo' &&
                             <div className='pull-right'>
-                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.newConvo}>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
                               <button className='btn btn-primary' onClick={this.onNext}>
@@ -870,6 +884,29 @@ class CreateConvo extends React.Component {
                                         <h3>Rename:</h3>
                                         <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
                                         <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  {
+                                    this.state.isShowingModalResetAlert &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeResetAlertDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeResetAlertDialog}>
+                                        <p>Are you sure you want to reset the message ?</p>
+                                        <button style={{float: 'right', marginLeft: '10px'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.newConvo()
+                                            this.closeResetAlertDialog()
+                                          }}>Yes
+                                        </button>
+                                        <button style={{float: 'right'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.closeResetAlertDialog()
+                                          }}>Cancel
+                                        </button>
                                       </ModalDialog>
                                     </ModalContainer>
                                   }

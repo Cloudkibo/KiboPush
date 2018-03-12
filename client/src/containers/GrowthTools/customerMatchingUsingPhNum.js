@@ -374,7 +374,7 @@ class CustomerMatching extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.closeDialogFileName()
-                }}>cancel
+                }}>Cancel
               </button>
             </ModalDialog>
           </ModalContainer>

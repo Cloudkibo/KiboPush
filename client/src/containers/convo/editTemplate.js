@@ -99,6 +99,8 @@ class EditTemplate extends React.Component {
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
+    this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
+    this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -123,6 +125,16 @@ class EditTemplate extends React.Component {
     //   console.log("componentDidMount pageValue set")
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
+  }
+  showResetAlertDialog () {
+    console.log('in showDialog')
+    if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
+      this.setState({isShowingModalResetAlert: true})
+    }
+  }
+
+  closeResetAlertDialog () {
+    this.setState({isShowingModalResetAlert: false})
   }
   onNext () {
     $('[href="#tab_1"]').removeClass('active')
@@ -746,7 +758,7 @@ class EditTemplate extends React.Component {
                           {
                             this.state.tabActive === 'broadcast' && !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                             <div className='pull-right'>
-                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.newConvo}>
+                              <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
                               <button className='btn btn-primary' onClick={this.onNext}>
@@ -878,7 +890,29 @@ class EditTemplate extends React.Component {
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
-
+                                  {
+                                    this.state.isShowingModalResetAlert &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeResetAlertDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeResetAlertDialog}>
+                                        <p>Are you sure you want to reset the message ?</p>
+                                        <button style={{float: 'right', marginLeft: '10px'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.newConvo()
+                                            this.closeResetAlertDialog()
+                                          }}>Yes
+                                        </button>
+                                        <button style={{float: 'right'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.closeResetAlertDialog()
+                                          }}>Cancel
+                                        </button>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
                                   {
                                     this.state.showMessengerModal &&
                                     <ModalContainer style={{width: '500px'}}
