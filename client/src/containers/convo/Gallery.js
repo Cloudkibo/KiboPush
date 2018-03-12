@@ -31,9 +31,10 @@ class Gallery extends React.Component {
     if (this.props.cards && this.props.cards.length > 0) {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
+        this.props.cards[k].id = k
         tmp.push({element: <Card id={k} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
       }
-      this.setState({cards: tmp})
+      this.setState({cards: tmp, broadcast: this.props.cards})
     }
     if (this.props.galleryDetails && this.props.galleryDetails !== '') {
       console.log(this.props.galleryDetails)
@@ -82,6 +83,7 @@ class Gallery extends React.Component {
   handleCard (obj) {
     var temp = this.state.broadcast
     console.log('Handle Card Object Receeived', obj)
+    console.log('Original broadcast', this.state.broadcast)
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
@@ -95,6 +97,7 @@ class Gallery extends React.Component {
     if (!isPresent) {
       temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
     }
+    console.log('Updated broadcast (temp)', temp)
     this.setState({broadcast: temp})
     this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: JSON.parse(JSON.stringify(this.state.broadcast))})
   }
