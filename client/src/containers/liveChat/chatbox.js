@@ -267,7 +267,7 @@ class ChatBox extends React.Component {
     } else if (component === 'thumbsUp') {
       payload = {
         componentType: 'thumbsUp',
-        fileurl: 'https://drive.google.com/file/d/1eu40SAG0_WvTFjZiR3mnhmcsp845npd6/view'
+        fileurl: 'https://drive.google.com/open?id=1eu40SAG0_WvTFjZiR3mnhmcsp845npd6'
       }
     }
     return payload
@@ -392,6 +392,7 @@ class ChatBox extends React.Component {
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
     }
+    this.textInput.focus()
   }
   handleUpload (res) {
     console.log('handleUpload', res)
@@ -971,7 +972,7 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input autoFocus type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
