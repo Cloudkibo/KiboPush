@@ -160,7 +160,7 @@ export function uploadRequest (data) {
   }
 }
 
-export function sendBroadcast (data, msg) {
+export function sendBroadcast (data, msg, handleSendBroadcast) {
   console.log('Sending Broadcast')
   console.log(data)
   return (dispatch) => {
@@ -187,6 +187,7 @@ export function sendBroadcast (data, msg) {
             dispatch(sendBroadcastFailure())
           }
         }
+        handleSendBroadcast(res)
         dispatch(loadBroadcastsList())
       })
   }

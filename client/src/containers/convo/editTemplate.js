@@ -99,6 +99,7 @@ class EditTemplate extends React.Component {
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
+    this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
@@ -135,6 +136,9 @@ class EditTemplate extends React.Component {
 
   closeResetAlertDialog () {
     this.setState({isShowingModalResetAlert: false})
+  }
+  handleSendBroadcast () {
+    this.initTab()
   }
   onNext () {
     $('[href="#tab_1"]').removeClass('active')
@@ -520,7 +524,7 @@ class EditTemplate extends React.Component {
           isList: isListValue
         }
         console.log('Data sent: ', data)
-        this.props.sendBroadcast(data, this.msg)
+        this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         //  this.setState({broadcast: [], list: []})
       }
     }
