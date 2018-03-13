@@ -27,5 +27,7 @@ router.get('/pollsGraph/:days', auth.isAuthorizedSuperUser(), controller.pollsGr
 router.get('/surveysGraph/:days', auth.isAuthorizedSuperUser(), controller.surveysGraph)
 router.get('/sessionsGraph/:days', auth.isAuthorizedSuperUser(), controller.sessionsGraph)
 router.get('/broadcastsByDays/:days', auth.isAuthorizedSuperUser(), controller.broadcastsByDays)
+router.get('/surveysByDays/:days', auth.isAuthorizedSuperUser(), controller.surveysByDays)
+router.get('/pollsByDays/:days', auth.isAuthorizedSuperUser(), controller.pollsByDays)
 
 module.exports = router

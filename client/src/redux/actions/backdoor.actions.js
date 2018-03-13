@@ -98,6 +98,54 @@ export function loadPollsGraphData (days) {
       .then(res => dispatch(updatePollsGraphData(res.payload)))
   }
 }
+export function updatePollsByDays (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_POLLS_BY_DAYS,
+    data
+  }
+}
+
+export function loadPollsByDays (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/pollsByDays/${days}`)
+      .then(res => dispatch(updatePollsByDays(res.payload)))
+  }
+}
+export function updateSurveysByDays (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_SURVEYS_BY_DAYS,
+    data
+  }
+}
+
+export function loadSurveysByDays (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/surveysByDays/${days}`)
+      .then(res => dispatch(updateSurveysByDays(res.payload)))
+  }
+}
+export function updateBroadcastsByDays (data) {
+  console.log('Chats Count From Server', data)
+  return {
+    type: ActionTypes.UPDATE_BROADCASTS_BY_DAYS,
+    data
+  }
+}
+
+export function loadBroadcastsByDays (days) {
+  // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsGraphData called', days)
+  return (dispatch) => {
+    callApi(`backdoor/broadcastsByDays/${days}`)
+      .then(res => dispatch(updateBroadcastsByDays(res.payload)))
+  }
+}
 export function updateBroadcastsGraphData (data) {
   console.log('Broadcasts Count From Server', data)
   return {
