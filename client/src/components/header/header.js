@@ -15,12 +15,14 @@ class Header extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      ignore: true
+      ignore: true,
+      planInfo: ''
     }
 
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
     this.toggleSidebar = this.toggleSidebar.bind(this)
+    this.getPlanInfo = this.getPlanInfo.bind(this)
   }
 
   toggleSidebar (){
@@ -73,8 +75,24 @@ class Header extends React.Component {
         reviewsWritten_int: 14,
       });
       console.log("FS identify Executed");
+      var plan = nextProps.user.currentPlan
+      this.getPlanInfo(plan)
     }
-
+  }
+  getPlanInfo (plan) {
+    var planInfo
+    if (plan === 'plan_A') {
+      planInfo = 'Individual, Premium Account'
+    } else if (plan === 'plan_B') {
+      planInfo = 'Individual, Free Account'
+    } else if (plan === 'plan_C') {
+      planInfo = 'Team, Premium Account'
+    } else if (plan === 'plan_C') {
+      planInfo = 'Team, Free Account)'
+    } else {
+      planInfo = ''
+    }
+    this.setState({planInfo: planInfo})
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -272,6 +290,9 @@ class Header extends React.Component {
                                 </span>
                                 <span className='m-card-user__email'>
                                   {(this.props.user) ? this.props.user.email : ''}
+                                </span>
+                                <span className='m-card-user__email'>
+                                  {this.state.planInfo}
                                 </span>
                               </div>
                             </div>

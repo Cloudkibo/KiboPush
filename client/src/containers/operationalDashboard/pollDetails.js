@@ -17,7 +17,11 @@ class ViewPollDetail extends React.Component {
       totalSent: 0
     }
     console.log('Poll Detail', props.currentPoll)
-    props.loadPollDetails(props.currentPoll._id)
+    if (this.props.location.state) {
+      this.props.loadPollDetails(this.props.location.state._id)
+    } else {
+      props.loadPollDetails(props.currentPoll._id)
+    }
     this.backToUserDetails = this.backToUserDetails.bind(this)
   }
 
@@ -98,12 +102,18 @@ class ViewPollDetail extends React.Component {
     }
   }
   backToUserDetails () {
-    const user = this.props.currentUser
-    console.log('back to user details', user, this.props)
-    this.props.history.push({
-      pathname: `/userDetails`,
-      state: user
-    })
+    if (this.props.location.state) {
+      this.props.history.push({
+        pathname: `/operationalDashboard`
+      })
+    } else {
+      const user = this.props.currentUser
+      console.log('back to user details', user, this.props)
+      this.props.history.push({
+        pathname: `/userDetails`,
+        state: user
+      })
+    }
   }
 
   render () {
@@ -116,6 +126,7 @@ class ViewPollDetail extends React.Component {
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
               <div className='row'>
+                {this.props.pollDetails &&
                 <div className='col-xl-12'>
                   <div className='m-portlet'>
                     <div className='m-portlet__head'>
@@ -123,7 +134,7 @@ class ViewPollDetail extends React.Component {
                         <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12' style={{marginTop: '20px'}}>
                           <div className='m-section'>
                             <h3 className='m-section__heading' style={{marginTop: '15px'}}>
-                            Q. {this.props.currentPoll.statement}
+                            Q. {this.props.pollDetails.poll.statement}
                             </h3>
                             <div className='m-section__content'>
                               <div data-code-preview='true' data-code-html='true' data-code-js='false'>
@@ -133,19 +144,19 @@ class ViewPollDetail extends React.Component {
                                       <div className='m-list-timeline__item'>
                                         <span className='m-list-timeline__badge m-list-timeline__badge--success' />
                                         <span className='m-list-timeline__text'>
-                                          {this.props.currentPoll.options[0]}
+                                          {this.props.pollDetails.poll.options[0]}
                                         </span>
                                       </div>
                                       <div className='m-list-timeline__item'>
                                         <span className='m-list-timeline__badge m-list-timeline__badge--danger' />
                                         <span className='m-list-timeline__text'>
-                                          {this.props.currentPoll.options[1]}
+                                          {this.props.pollDetails.poll.options[1]}
                                         </span>
                                       </div>
                                       <div className='m-list-timeline__item'>
                                         <span className='m-list-timeline__badge m-list-timeline__badge--warning' />
                                         <span className='m-list-timeline__text'>
-                                          {this.props.currentPoll.options[2]}
+                                          {this.props.pollDetails.poll.options[2]}
                                         </span>
                                       </div>
                                     </div>
@@ -171,7 +182,7 @@ class ViewPollDetail extends React.Component {
                       <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
                         <div className='m-widget26'>
                           <div className='m-widget26__number'>
-                            { this.props.responses
+                            { this.props.pollDetails.pollResponses
                             ? <div className='count-stat'>{this.state.totalResponses}
                             </div>
                             : <div className='count-stat'>{this.state.totalResponses}
@@ -186,6 +197,7 @@ class ViewPollDetail extends React.Component {
                     </div>
                   </div>
                 </div>
+              }
               </div>
               <div className='row'>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>

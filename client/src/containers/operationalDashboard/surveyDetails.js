@@ -51,12 +51,18 @@ class SurveyDetails extends React.Component {
   }
 
   backToUserDetails () {
-    const user = this.props.currentUser
-    console.log('back to user details', user, this.props)
-    this.props.history.push({
-      pathname: `/userDetails`,
-      state: user
-    })
+    if (this.props.location.state) {
+      this.props.history.push({
+        pathname: `/operationalDashboard`
+      })
+    } else {
+      const user = this.props.currentUser
+      console.log('back to user details', user, this.props)
+      this.props.history.push({
+        pathname: `/userDetails`,
+        state: user
+      })
+    }
   }
 
   componentDidMount () {
@@ -71,8 +77,9 @@ class SurveyDetails extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-
-    if (this.props.currentSurvey) {
+    if (this.props.location.state) {
+      this.props.loadSurveyDetails(this.props.location.state._id)
+    } else if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       this.props.loadSurveyDetails(id)
     }

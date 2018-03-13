@@ -225,3 +225,21 @@ export function sessionsGraphInfo (state = initialState, action) {
       return state
   }
 }
+export function surveysPollsBroadcasts (state = initialState, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_BROADCASTS_BY_DAYS:
+      return Object.assign({}, state, {
+        broadcasts: action.data
+      })
+    case ActionTypes.UPDATE_POLLS_BY_DAYS:
+      return Object.assign({}, state, {
+        polls: action.data
+      })
+    case ActionTypes.UPDATE_SURVEYS_BY_DAYS:
+      return Object.assign({}, state, {
+        surveys: action.data
+      })
+    default:
+      return state
+  }
+}

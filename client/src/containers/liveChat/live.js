@@ -15,9 +15,11 @@ import { fetchSessions,
   showChatSessions,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 import ChatBox from './chatbox'
 import Profile from './profile'
 import Halogen from 'halogen'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
@@ -44,9 +46,12 @@ class LiveChat extends React.Component {
       searchValue: '',
       filterValue: '',
       sortValue: '',
-      showDropDown: false
+      showDropDown: false,
+      isShowingModalGuideLines: false
     }
     props.fetchSessions({ company_id: this.props.user._id })
+    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
+    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
     this.handleSort = this.handleSort.bind(this)
@@ -284,6 +289,15 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
   }
 
+  showGuideLinesDialog () {
+    console.log('in showDialog')
+    this.setState({isShowingModalGuideLines: true})
+  }
+
+  closeGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: false})
+  }
+
   render () {
     console.log('sessions: ', this.props.sessions)
     console.log('state: ', this.state)
@@ -305,6 +319,16 @@ class LiveChat extends React.Component {
                   <h3>Right now you dont have any chat sessions</h3>
                 </div>
                 : <div className='row'>
+                  <div className='col-12'>
+                    <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                      <div className='m-alert__icon'>
+                        <i className='flaticon-exclamation m--font-brand' />
+                      </div>
+                      <div className='m-alert__text'>
+                        View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+                      </div>
+                    </div>
+                  </div>
                   <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>
@@ -456,6 +480,55 @@ class LiveChat extends React.Component {
             </div>
           </div>
         </div>
+        {
+          this.state.isShowingModalGuideLines &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeGuideLinesDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeGuideLinesDialog}>
+              <h4>Message Types</h4>
+              <p> Following are the types of messages that can be sent to facebook messenger.</p>
+              <div className='panel-group accordion' id='accordion1'>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </div>
     )
   }
