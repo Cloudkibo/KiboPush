@@ -473,9 +473,6 @@ class OperationalDashboard extends React.Component {
                   selectedDays={this.state.selectedDays}
                   />
               </div>
-              <BroadcastsByDays />
-              <SurveysByDays />
-              <PollsByDays />
               <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
                 <div className='col-xl-6'>
@@ -599,6 +596,9 @@ class OperationalDashboard extends React.Component {
                   </div>
                 </div>
               </div>
+              <BroadcastsByDays />
+              <SurveysByDays />
+              <PollsByDays />
             </div>
           </div>
         </div>
