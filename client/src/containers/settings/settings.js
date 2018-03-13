@@ -36,7 +36,8 @@ class Settings extends React.Component {
       saveState: null,
       showGreetingMessage: false,
       showSubscribeToMessenger: false,
-      showWelcomeMessage: false
+      showWelcomeMessage: false,
+      planInfo: ''
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -47,6 +48,7 @@ class Settings extends React.Component {
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
+    this.getPlanInfo = this.getPlanInfo.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
@@ -57,6 +59,21 @@ class Settings extends React.Component {
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
+  }
+  getPlanInfo (plan) {
+    var planInfo
+    if (plan === 'plan_A') {
+      planInfo = 'Individual, Premium Account'
+    } else if (plan === 'plan_B') {
+      planInfo = 'Individual, Free Account'
+    } else if (plan === 'plan_C') {
+      planInfo = 'Team, Premium Account'
+    } else if (plan === 'plan_C') {
+      planInfo = 'Team, Free Account)'
+    } else {
+      planInfo = ''
+    }
+    this.setState({planInfo: planInfo})
   }
   setAPI () {
     this.props.saveSwitchState()
@@ -148,6 +165,10 @@ class Settings extends React.Component {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
+    }
+    if (nextProps.user) {
+      var plan = nextProps.user.currentPlan
+      this.getPlanInfo(plan)
     }
     if (nextProps.apiEnable) {
       console.log('this.state.disabled', this.state.disable)
@@ -256,6 +277,9 @@ class Settings extends React.Component {
                           </span>
                           <span className='m-card-profile__email'>
                             {(this.props.user) ? this.props.user.email : ''}
+                          </span>
+                          <span className='m-card-profile__details' style={{display: 'block'}}>
+                            {this.state.planInfo}
                           </span>
                         </div>
                       </div>
