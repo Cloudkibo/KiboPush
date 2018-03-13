@@ -140,18 +140,16 @@ class PollsInfo extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item'>
                     <form className='m-form m-form--fit m-form--label-align-right'>
-                      <div className='m-portlet__body'>
-                        <div className='form-group m-form__group row'>
-                          <label htmlFor='example-text-input' className='col-form-label'>
-                            Show records for last:&nbsp;&nbsp;
-                          </label>
-                          <div>
-                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
-                          </div>
-                          <label htmlFor='example-text-input' className='col-form-label'>
-                          &nbsp;&nbsp;days
+                      <div className='form-group m-form__group row'>
+                        <label htmlFor='example-text-input' className='col-form-label'>
+                          Show records for last:&nbsp;&nbsp;
                         </label>
+                        <div>
+                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
                         </div>
+                        <label htmlFor='example-text-input' className='col-form-label'>
+                        &nbsp;&nbsp;days
+                      </label>
                       </div>
                     </form>
                   </li>
