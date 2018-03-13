@@ -249,15 +249,6 @@ class Settings extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding settings? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-                </div>
-              </div>
               <div className='row'>
                 <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height'>
