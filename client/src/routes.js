@@ -45,9 +45,13 @@ import UserDetails from './containers/operationalDashboard/userDetails'
 import ViewPollDetail from './containers/operationalDashboard/pollDetails'
 import UserBroadcasts from './containers/operationalDashboard/userBroadcasts'
 import SurveyDetails from './containers/operationalDashboard/surveyDetails'
+import ViewBroadcastDetail from './containers/operationalDashboard/broadcastDetails'
 import PageSubscribers from './containers/operationalDashboard/pageSubscribers'
 import UserPolls from './containers/operationalDashboard/userPolls'
 import UserSurveys from './containers/operationalDashboard/userSurveys'
+import SurveysByDays from './containers/operationalDashboard/surveysByDays'
+import PollsByDays from './containers/operationalDashboard/pollsByDays'
+import BroadcastsByDays from './containers/operationalDashboard/broadcastsByDays'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
 import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
 import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
@@ -167,6 +171,7 @@ const routes = (
     <Route path='/viewsurvey/:id/:subscriberid' component={ViewSurvey} onEnter={requireAuth} />
     <Route path='/viewsurveydetail' component={ViewSurveyDetail} onEnter={requireAuth} />
     <Route path='/viewPollDetail' component={ViewPollDetail} onEnter={requireAuth} />
+    <Route path='/viewBroadcastDetail' component={ViewBroadcastDetail} onEnter={requireAuth} />
     <Route path='/submitsurveyresponse' component={SubmitSurvey} />
     <Route path='/invitesubscribers' component={InviteSubscribers} onEnter={requireAuth} />
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />
@@ -225,6 +230,9 @@ const routes = (
     <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
     <Route path='/finishWizard' component={FinishWizard} onEnter={requireAuth} />
+    <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
+    <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
+    <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />
   </Route>
 
 )

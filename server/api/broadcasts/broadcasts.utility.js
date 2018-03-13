@@ -282,14 +282,14 @@ function prepareBroadCastPayload (req, companyId) {
   }
   if (req.body.isSegmented) {
     broadcastPayload.isSegmented = true
-    broadcastPayload.segmentationPageIds = (req.body.pageIds)
-      ? req.body.pageIds
+    broadcastPayload.segmentationPageIds = (req.body.segmentationPageIds)
+      ? req.body.segmentationPageIds
       : null
-    broadcastPayload.segmentationGender = (req.body.gender)
-      ? req.body.gender
+    broadcastPayload.segmentationGender = (req.body.segmentationGender)
+      ? req.body.segmentationGender
       : null
-    broadcastPayload.segmentationLocale = (req.body.locale)
-      ? req.body.locale
+    broadcastPayload.segmentationLocale = (req.body.segmentationLocale)
+      ? req.body.segmentationLocale
       : null
   }
   if (req.body.isList) {

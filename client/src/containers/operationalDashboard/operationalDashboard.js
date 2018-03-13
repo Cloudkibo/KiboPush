@@ -6,6 +6,9 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import DataObjectsCount from './dataObjectsCount'
+import SurveysByDays from './surveysByDays'
+import BroadcastsByDays from './broadcastsByDays'
+import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import Reports from './reports'
 import Select from 'react-select'
@@ -470,6 +473,9 @@ class OperationalDashboard extends React.Component {
                   selectedDays={this.state.selectedDays}
                   />
               </div>
+              <BroadcastsByDays />
+              <SurveysByDays />
+              <PollsByDays />
               <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
                 <div className='col-xl-6'>
