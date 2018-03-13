@@ -20,7 +20,7 @@ const logger = new winston.Logger({
   ]
 })
 
-exports.serverLog = function (label, data) {
+exports.serverLog = function (label, data, hideFromProduction) {
   const namespace = `kibopush:${label}`
   const debug = require('debug')(namespace)
 
@@ -29,7 +29,9 @@ exports.serverLog = function (label, data) {
     // todo use log levels like info, warn, error and debug
     // logger.info(`${namespace} - ${data}`)
   } else {
-    logger.info(`${namespace} - ${data}`)
+    if (!hideFromProduction) {
+      logger.info(`${namespace} - ${data}`)
+    }
   }
 }
 

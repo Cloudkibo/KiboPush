@@ -99,7 +99,7 @@ exports.getfbMessage = function (req, res) {
   let subscriberByPhoneNumber = false
   let phoneNumber = ''
   logger.serverLog(TAG,
-    `something received from facebook ${JSON.stringify(req.body)}`)
+    `something received from facebook ${JSON.stringify(req.body)}`, true)
   if (req.body.entry && req.body.entry[0].messaging && req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].prior_message && req.body.entry[0].messaging[0].prior_message.source === 'customer_matching') {
     subscriberByPhoneNumber = true
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
