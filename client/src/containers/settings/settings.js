@@ -278,7 +278,7 @@ class Settings extends React.Component {
                           <span className='m-card-profile__email'>
                             {(this.props.user) ? this.props.user.email : ''}
                           </span>
-                          <span className='m-card-profile__details' style={{display: 'block'}}>
+                          <span className='m-card-profile__email' style={{display: 'block'}}>
                             {this.state.planInfo}
                           </span>
                         </div>
