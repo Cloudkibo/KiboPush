@@ -739,7 +739,7 @@ class CreateConvo extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
                   <br />
                   View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
                 </div>
