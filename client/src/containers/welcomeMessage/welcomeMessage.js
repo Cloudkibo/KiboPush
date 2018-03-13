@@ -94,7 +94,7 @@ class WelcomeMessage extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcomeMessage/' target='_blank'>Click Here </a>
+                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
                 </div>
               </div>
               <div className='row'>
