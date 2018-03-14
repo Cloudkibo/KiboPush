@@ -99,7 +99,7 @@ class BroadcastsInfo extends React.Component {
   onBroadcastClick (broadcast) {
     browserHistory.push({
       pathname: `/viewBroadcastDetail`,
-      state: {title: broadcast.title, payload: broadcast.payload}
+      state: {title: broadcast.title, payload: broadcast.payload, data: broadcast}
     })
   }
 
