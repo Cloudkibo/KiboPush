@@ -249,7 +249,6 @@ class ViewPollDetail extends React.Component {
                 </div>
               }
               </div>
-              {this.props.pollDetails && this.props.pollDetails.pollResponses && this.props.pollDetails.pollResponses.length > 0 &&
               <div className='row'>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                   <div className='m-portlet' style={{height: '100%'}}>
@@ -273,7 +272,6 @@ class ViewPollDetail extends React.Component {
                   </div>
                 </div>
               </div>
-            }
               <br />
               {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
               <div className='row'>
