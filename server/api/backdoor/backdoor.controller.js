@@ -831,38 +831,60 @@ exports.broadcastsByDays = function (req, res) {
                 description: 'internal server error' + JSON.stringify(err)
               })
             }
-            let data = []
-            for (let j = 0; j < broadcasts.length; j++) {
-              let pagebroadcast = broadcastpages.filter((c) => JSON.stringify(c.broadcastId) === JSON.stringify(broadcasts[j]._id))
-              let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
-              let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].userId))
-              let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].companyId))
-              let pageSend = []
-              if (broadcasts[j].segmentationPageIds && broadcasts[j].segmentationPageIds.length > 0) {
-                for (let k = 0; k < broadcasts[j].segmentationPageIds.length; k++) {
-                  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
-                  pageSend.push(page[0].pageName)
-                }
-              } else {
-                let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
-                for (let a = 0; a < page.length; a++) {
-                  pageSend.push(page[a].pageName)
-                }
+            Subscribers.find({}, (err, subscribers) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting subscribers ${JSON.stringify(err)}`
+                })
               }
-              //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
-              data.push({_id: broadcasts[j]._id,
-                title: broadcasts[j].title,
-                datetime: broadcasts[j].datetime,
-                payload: broadcasts[j].payload,
-                page: pageSend,
-                user: user,
-                company: company,
-                sent: pagebroadcast.length,
-                seen: pagebroadcastTapped.length}) // total tapped
-            }
-            var newBroadcast = data.reverse()
-            return res.status(200)
-            .json({status: 'success', payload: newBroadcast})
+              let data = []
+              for (let j = 0; j < broadcasts.length; j++) {
+                let pagebroadcast = broadcastpages.filter((c) => JSON.stringify(c.broadcastId) === JSON.stringify(broadcasts[j]._id))
+                let subscriberData = []
+                for (let n = 0; n < pagebroadcast.length; n++) {
+                  let subscriber = subscribers.filter((c) => c.senderId === pagebroadcast[n].subscriberId)
+                  let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                  subscriberData.push({_id: subscriber[0]._id,
+                    firstName: subscriber[0].firstName,
+                    lastName: subscriber[0].lastName,
+                    locale: subscriber[0].locale,
+                    gender: subscriber[0].gender,
+                    profilePic: subscriber[0].profilePic,
+                    page: subscriberPage[0].pageName,
+                    seen: pagebroadcast[n].seen})
+                }
+                let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+                let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].userId))
+                let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].companyId))
+                let pageSend = []
+                if (broadcasts[j].segmentationPageIds && broadcasts[j].segmentationPageIds.length > 0) {
+                  for (let k = 0; k < broadcasts[j].segmentationPageIds.length; k++) {
+                    let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
+                    pageSend.push(page[0].pageName)
+                  }
+                } else {
+                  let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                  for (let a = 0; a < page.length; a++) {
+                    pageSend.push(page[a].pageName)
+                  }
+                }
+                //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                data.push({_id: broadcasts[j]._id,
+                  title: broadcasts[j].title,
+                  datetime: broadcasts[j].datetime,
+                  payload: broadcasts[j].payload,
+                  page: pageSend,
+                  user: user,
+                  company: company,
+                  sent: pagebroadcast.length,
+                  seen: pagebroadcastTapped.length,
+                  subscriber: subscriberData}) // total tapped
+              }
+              var newBroadcast = data.reverse()
+              return res.status(200)
+              .json({status: 'success', payload: newBroadcast})
+            })
           })
         })
       })
@@ -909,20 +931,16 @@ exports.surveysByDays = function (req, res) {
         return res.status(404)
         .json({status: 'failed', description: 'Broadcasts not found'})
       }
-      Users.find({_id: {
-        $in: tempUser
-      }}, (err, users) => {
+      SurveyResponses.find({surveyId: {
+        $in: temp
+      }}, (err, surveyResponses) => {
         if (err) {
-          logger.serverLog(TAG,
-            'user object sent to client failed ' + JSON.stringify(err))
-          return res.status(500).json({
-            status: 'failed',
-            description: 'internal server error' + JSON.stringify(err)
-          })
+          return res.status(404)
+          .json({status: 'failed', description: 'Broadcasts not found'})
         }
-        CompanyUsers.find({_id: {
-          $in: tempCompany
-        }}, (err, companies) => {
+        Users.find({_id: {
+          $in: tempUser
+        }}, (err, users) => {
           if (err) {
             logger.serverLog(TAG,
               'user object sent to client failed ' + JSON.stringify(err))
@@ -931,7 +949,9 @@ exports.surveysByDays = function (req, res) {
               description: 'internal server error' + JSON.stringify(err)
             })
           }
-          Pages.find({}, (err, pages) => {
+          CompanyUsers.find({_id: {
+            $in: tempCompany
+          }}, (err, companies) => {
             if (err) {
               logger.serverLog(TAG,
                 'user object sent to client failed ' + JSON.stringify(err))
@@ -940,38 +960,79 @@ exports.surveysByDays = function (req, res) {
                 description: 'internal server error' + JSON.stringify(err)
               })
             }
-            let data = []
-            for (let j = 0; j < surveys.length; j++) {
-              let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
-              let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
-              let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
-              let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
-              let pageSend = []
-              if (surveys[j].segmentationPageIds && surveys[j].segmentationPageIds.length > 0) {
-                for (let k = 0; k < surveys[j].segmentationPageIds.length; k++) {
-                  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(surveys[j].segmentationPageIds[k]))
-                  pageSend.push(page[0].pageName)
-                }
-              } else {
-                let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
-                for (let a = 0; a < page.length; a++) {
-                  pageSend.push(page[a].pageName)
-                }
+            Pages.find({}, (err, pages) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  'user object sent to client failed ' + JSON.stringify(err))
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'internal server error' + JSON.stringify(err)
+                })
               }
-              //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
-              data.push({_id: surveys[j]._id,
-                title: surveys[j].title,
-                datetime: surveys[j].datetime,
-                page: pageSend,
-                user: user,
-                company: company,
-                sent: pagesurvey.length,
-                seen: pagesurveyTapped.length,
-                responded: surveys[j].isresponded}) // total tapped
-            }
-            var newSurvey = data.reverse()
-            return res.status(200)
-            .json({status: 'success', payload: newSurvey})
+              Subscribers.find({}, (err, subscribers) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting subscribers ${JSON.stringify(err)}`
+                  })
+                }
+                let data = []
+                for (let j = 0; j < surveys.length; j++) {
+                  let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                  let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                  let subscriberData = []
+                  for (let n = 0; n < pagesurvey.length; n++) {
+                    let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
+                    let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                    let res = false
+                    if (responsesurvey[n]) {
+                      let subscriber = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
+                      if (subscriber.length > 0) {
+                        res = true
+                      }
+                    }
+                    subscriberData.push({_id: subscriber[0]._id,
+                      firstName: subscriber[0].firstName,
+                      lastName: subscriber[0].lastName,
+                      locale: subscriber[0].locale,
+                      gender: subscriber[0].gender,
+                      profilePic: subscriber[0].profilePic,
+                      page: subscriberPage[0].pageName,
+                      seen: pagesurvey[n].seen,
+                      responded: res})
+                  }
+                  let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+                  let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
+                  let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
+                  let pageSend = []
+                  if (surveys[j].segmentationPageIds && surveys[j].segmentationPageIds.length > 0) {
+                    for (let k = 0; k < surveys[j].segmentationPageIds.length; k++) {
+                      let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(surveys[j].segmentationPageIds[k]))
+                      pageSend.push(page[0].pageName)
+                    }
+                  } else {
+                    let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                    for (let a = 0; a < page.length; a++) {
+                      pageSend.push(page[a].pageName)
+                    }
+                  }
+                  //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                  data.push({_id: surveys[j]._id,
+                    title: surveys[j].title,
+                    datetime: surveys[j].datetime,
+                    page: pageSend,
+                    user: user,
+                    company: company,
+                    sent: pagesurvey.length,
+                    seen: pagesurveyTapped.length,
+                    responded: surveys[j].isresponded,
+                    subscriber: subscriberData}) // total tapped
+                }
+                var newSurvey = data.reverse()
+                return res.status(200)
+                .json({status: 'success', payload: newSurvey})
+              })
+            })
           })
         })
       })
@@ -1064,39 +1125,70 @@ exports.pollsByDays = function (req, res) {
                   description: 'internal server error' + JSON.stringify(err)
                 })
               }
-              let data = []
-              for (let j = 0; j < polls.length; j++) {
-                let pagepoll = pollpages.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
-                let pagepollTapped = pagepoll.filter((c) => c.seen === true)
-                let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].userId))
-                let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].companyId))
-                let responsepoll = pollResponses.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
-                let pageSend = []
-                if (polls[j].segmentationPageIds && polls[j].segmentationPageIds.length > 0) {
-                  for (let k = 0; k < polls[j].segmentationPageIds.length; k++) {
-                    let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(polls[j].segmentationPageIds[k]))
-                    pageSend.push(page[0].pageName)
-                  }
-                } else {
-                  let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
-                  for (let a = 0; a < page.length; a++) {
-                    pageSend.push(page[a].pageName)
-                  }
+              Subscribers.find({}, (err, subscribers) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting subscribers ${JSON.stringify(err)}`
+                  })
                 }
-                //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
-                data.push({_id: polls[j]._id,
-                  statement: polls[j].statement,
-                  datetime: polls[j].datetime,
-                  page: pageSend,
-                  user: user,
-                  company: company,
-                  sent: pagepoll.length,
-                  seen: pagepollTapped.length,
-                  responded: responsepoll.length }) // total tapped
-              }
-              var newPoll = data.reverse()
-              return res.status(200)
-              .json({status: 'success', payload: newPoll})
+                let data = []
+                for (let j = 0; j < polls.length; j++) {
+                  let pagepoll = pollpages.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                  let responsepoll = pollResponses.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                  let subscriberData = []
+                  for (let n = 0; n < pagepoll.length; n++) {
+                    let subscriber = subscribers.filter((c) => c.senderId === pagepoll[n].subscriberId)
+                    let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                    let res = false
+                    if (responsepoll[n]) {
+                      let subscriber = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsepoll[n].subscriberId))
+                      if (subscriber.length > 0) {
+                        res = true
+                      }
+                    }
+                    subscriberData.push({_id: subscriber[0]._id,
+                      firstName: subscriber[0].firstName,
+                      lastName: subscriber[0].lastName,
+                      locale: subscriber[0].locale,
+                      gender: subscriber[0].gender,
+                      profilePic: subscriber[0].profilePic,
+                      page: subscriberPage[0].pageName,
+                      seen: pagepoll[n].seen,
+                      responded: res
+                    })
+                  }
+                  let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+                  let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].userId))
+                  let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].companyId))
+                  let pageSend = []
+                  if (polls[j].segmentationPageIds && polls[j].segmentationPageIds.length > 0) {
+                    for (let k = 0; k < polls[j].segmentationPageIds.length; k++) {
+                      let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(polls[j].segmentationPageIds[k]))
+                      pageSend.push(page[0].pageName)
+                    }
+                  } else {
+                    let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                    for (let a = 0; a < page.length; a++) {
+                      pageSend.push(page[a].pageName)
+                    }
+                  }
+                  //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                  data.push({_id: polls[j]._id,
+                    statement: polls[j].statement,
+                    datetime: polls[j].datetime,
+                    page: pageSend,
+                    user: user,
+                    company: company,
+                    sent: pagepoll.length,
+                    seen: pagepollTapped.length,
+                    responded: responsepoll.length,
+                    subscriber: subscriberData }) // total tapped
+                }
+                var newPoll = data.reverse()
+                return res.status(200)
+                .json({status: 'success', payload: newPoll})
+              })
             })
           })
         })

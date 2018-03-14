@@ -139,7 +139,7 @@ class SurveysInfo extends React.Component {
   onSurveyClick (survey) {
     browserHistory.push({
       pathname: `/surveyDetails`,
-      state: {_id: survey._id}
+      state: {_id: survey._id, data: survey}
     })
   }
 
