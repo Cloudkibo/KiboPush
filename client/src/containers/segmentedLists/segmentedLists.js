@@ -95,7 +95,7 @@ class SegmentedList extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Segmented Subscribers Lists? <a href='#' target='_blank'>Click Here </a>
+                  Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segment-subscribers/' target='_blank'>Click Here </a>
                 </div>
               </div>
               <div className='row'>

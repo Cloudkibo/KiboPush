@@ -272,7 +272,7 @@ class Subscriber extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
+                  <a href='http://kibopush.com/subscribers/' target='_blank'>Click Here </a> to learn how you can get more subscribers.
                 </div>
               </div>
               <div className='row'>

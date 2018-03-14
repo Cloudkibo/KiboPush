@@ -749,6 +749,7 @@ class EditTemplate extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-exclamation m--font-brand' />
@@ -759,6 +760,7 @@ class EditTemplate extends React.Component {
                   View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
                 </div>
               </div>
+              }
               <div className='row'>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                   <div className='m-portlet m-portlet--mobile'>
