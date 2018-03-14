@@ -116,7 +116,7 @@ class PollsInfo extends React.Component {
     this.props.saveCurrentPoll(poll)
     browserHistory.push({
       pathname: `/viewPollDetail`,
-      state: {_id: poll._id}
+      state: {_id: poll._id, data: poll}
     })
   }
 
