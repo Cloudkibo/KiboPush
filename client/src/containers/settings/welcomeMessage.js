@@ -90,7 +90,7 @@ class WelcomeMessage extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <label style={{fontWeight: 'inherit'}}>
-                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcomeMessage/' target='_blank'>Click Here </a>
+                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
               </label>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
