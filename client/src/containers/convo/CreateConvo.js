@@ -983,13 +983,12 @@ class CreateConvo extends React.Component {
                                         onClick={() => { this.setState({showMessengerModal: false}); console.log('Dialog Clicked') }}
                                         onClose={() => { this.setState({showMessengerModal: false}) }}>
                                         <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
-                                      {this.state.pageValue.map((page, i) => {
                                         <MessengerPlugin
                                           appId={this.props.fbAppId}
-                                          pageId={JSON.stringify(page)}
+                                          pageId={JSON.stringify(this.state.pageValue[0])}
                                           passthroughParams={this.props.user._id}
                                           onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
-                                        />  })}
+                                        />
                                       </ModalDialog>
                                     </ModalContainer>
                                   }
