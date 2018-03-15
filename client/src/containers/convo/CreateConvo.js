@@ -170,7 +170,7 @@ class CreateConvo extends React.Component {
     if (this.props.pages.length > 0) {
       console.log('componentDidMount pageValue set')
       var temp = []
-      for (var j = 0; j < this.props.page.length; j++) {
+      for (var j = 0; j < this.props.pages.length; j++) {
         temp.push(this.props.pages[j].pageId)
       }
       this.setState({pageValue: temp})
