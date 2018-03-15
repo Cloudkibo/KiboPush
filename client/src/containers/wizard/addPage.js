@@ -7,6 +7,7 @@ import Header from './header'
 import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
+import { updateChecks } from '../../redux/actions/wizard.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 
@@ -55,6 +56,7 @@ class AddPage extends React.Component {
     // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Pages'
+    this.props.updateChecks({wizardSeen: true})
   }
 
   closeDialog () {
@@ -103,7 +105,7 @@ class AddPage extends React.Component {
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
                       <Sidebar step='1' />
-                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>
                             <div className='m-portlet__head-title'>
@@ -172,7 +174,7 @@ class AddPage extends React.Component {
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' />
                               <div className='col-lg-6 m--align-right'>
-                                <Link to='/inviteUsingLinkWizard' href='#' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
@@ -210,7 +212,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
-    addPages: addPages
+    addPages: addPages,
+    updateChecks: updateChecks
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddPage)

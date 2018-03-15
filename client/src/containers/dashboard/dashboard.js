@@ -217,7 +217,7 @@ class Dashboard extends React.Component {
           }
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
-            this.state.isShowingModal &&
+            this.props.user && !this.props.user.wizardSeen &&
             <GettingStarted pages={this.props.pages} />
           }
           <div className='row'>
