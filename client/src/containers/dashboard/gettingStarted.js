@@ -9,14 +9,12 @@ import { bindActionCreators } from 'redux'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 
 class GettingStarted extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      inviteUrl: props.pages[0].pageUserName ? `https://m.me/${props.pages[0].pageUserName}` : `https://m.me/${props.pages[0].pageId}`,
       alerts: [],
       step: 0
     }
@@ -132,31 +130,31 @@ class GettingStarted extends React.Component {
         </button>
         <div className='modal fade' id='m_modal_1_2' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div className='modal-dialog' role='document'>
-              <div style={{top: '60px'}} className='modal-content'>
-                <div className='modal-header'>
-                  <h5 className='modal-title' id='exampleModalLabel'>
-                    Getting Started
-                  </h5>
-                  <button style={{marginLeft: '300px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>
-                      &times;
-                    </span>
-                  </button>
-                </div>
-                <div className='modal-body'>
-                  <p>
-                    Do you want to setup using wizard? Please click on <strong>Start</strong> and follow the steps
-                  </p>
-                </div>
-                <div className='modal-footer'>
-                  <button type='button' className='btn btn-secondary' data-dismiss='modal'>
-                    Close
-                  </button>
-                  <button onClick={this.gotopage} className='btn btn-primary' data-dismiss='modal'>
-                    Start
-                  </button>
-                </div>
+            <div style={{top: '60px'}} className='modal-content'>
+              <div className='modal-header'>
+                <h5 className='modal-title' id='exampleModalLabel'>
+                  Getting Started
+                </h5>
+                <button style={{marginLeft: '300px'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <span aria-hidden='true'>
+                    &times;
+                  </span>
+                </button>
               </div>
+              <div className='modal-body'>
+                <p>
+                  Do you want to setup using wizard? Please click on <strong>Start</strong> and follow the steps
+                </p>
+              </div>
+              <div className='modal-footer'>
+                <button type='button' className='btn btn-secondary' data-dismiss='modal'>
+                  Close
+                </button>
+                <button onClick={this.gotopage} className='btn btn-primary' data-dismiss='modal'>
+                  Start
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

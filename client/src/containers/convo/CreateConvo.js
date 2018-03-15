@@ -59,7 +59,7 @@ class CreateConvo extends React.Component {
       },
       stayOpen: false,
       disabled: false,
-      pageValue: '',
+      pageValue: [],
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
@@ -167,10 +167,10 @@ class CreateConvo extends React.Component {
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initTab()
-    if (this.props.pages.length > 0) {
-      console.log('componentDidMount pageValue set')
-      this.setState({pageValue: this.props.pages[0].pageId})
-    }
+    // if (this.props.pages.length > 0) {
+    //   console.log('componentDidMount pageValue set')
+    //   this.setState({pageValue: this.props.pages[0].pageId})
+    // }
 
     var compProp = this.props
     var comp = this
@@ -370,6 +370,7 @@ class CreateConvo extends React.Component {
     this.setState({list: temp, broadcast: temp2})
   }
   checkConditions (pageValue, genderValue, localeValue) {
+    console.log('values', pageValue, genderValue, localeValue)
     let subscribersMatchPages = []
     let subscribersMatchLocale = []
     let subscribersMatchGender = []
@@ -465,7 +466,7 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var res = this.checkConditions([this.state.pageValue], this.state.genderValue, this.state.localeValue)
+      var res = this.checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -473,7 +474,7 @@ class CreateConvo extends React.Component {
           platform: 'facebook',
           payload: this.state.broadcast,
           isSegmented: isSegmentedValue,
-          segmentationPageIds: [this.state.pageValue],
+          segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
@@ -525,7 +526,7 @@ class CreateConvo extends React.Component {
       payload: this.state.broadcast,
       title: this.state.convoTitle,
       isSegmented: isSegmentedValue,
-      segmentationPageIds: [this.state.pageValue],
+      segmentationPageIds: this.state.pageValue,
       segmentationLocale: this.state.localeValue,
       segmentationGender: this.state.genderValue,
       segmentationTimeZone: '',
@@ -605,7 +606,8 @@ class CreateConvo extends React.Component {
       /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
-      allowClear: false
+      allowClear: true,
+      multiple: true
     })
 
     console.log('In initializePageSelect')
@@ -617,15 +619,17 @@ class CreateConvo extends React.Component {
       /* eslint-enable */
       // var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
-      var selectedOptions = e.target.selectedOptions[0].value
-      // var selected = []
-      // for (var i = 0; i < selectedOptions.length; i++) {
-      //   var selectedOption = selectedOptions[i].value
-      //   selected.push(selectedOption)
-      // }
-      console.log('Setting a new pageValue', selectedOptions)
-      self.setState({ pageValue: selectedOptions })
-      // }
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('e.target.selectedOptions', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
       console.log('change Page', selectedOptions)
     })
   }

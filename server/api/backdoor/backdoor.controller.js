@@ -1154,13 +1154,6 @@ exports.pollsByDays = function (req, res) {
                   for (let n = 0; n < pagepoll.length; n++) {
                     let subscriber = subscribers.filter((c) => c.senderId === pagepoll[n].subscriberId)
                     let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
-                    let res = false
-                    if (responsepoll[n]) {
-                      let subscriber = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsepoll[n].subscriberId))
-                      if (subscriber.length > 0) {
-                        res = true
-                      }
-                    }
                     subscriberData.push({_id: subscriber[0]._id,
                       firstName: subscriber[0].firstName,
                       lastName: subscriber[0].lastName,
@@ -1169,8 +1162,16 @@ exports.pollsByDays = function (req, res) {
                       profilePic: subscriber[0].profilePic,
                       page: subscriberPage[0].pageName,
                       seen: pagepoll[n].seen,
-                      responded: res
+                      responded: false
                     })
+                  }
+                  for (let m = 0; m < responsepoll.length; m++) {
+                    let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsepoll[m].subscriberId))
+                    for (let o = 0; o < subscriberData.length; o++) {
+                      if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                        subscriberData[o].responded = true
+                      }
+                    }
                   }
                   let pagepollTapped = pagepoll.filter((c) => c.seen === true)
                   let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].userId))
