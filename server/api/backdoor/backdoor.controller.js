@@ -986,17 +986,16 @@ exports.surveysByDays = function (req, res) {
                   for (let n = 0; n < pagesurvey.length; n++) {
                     let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
                     let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
-                    let res = false
-                    if (responsesurvey[n]) {
-                      let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId) && c.senderId === pagesurvey[n].subscriberId)
-                      logger.serverLog(TAG,
-                        'response of survey second ' + JSON.stringify(subscriberNew))
-                      if (subscriberNew.length > 0) {
-                        logger.serverLog(TAG,
-                          'response of survey inside if')
-                        res = true
-                      }
-                    }
+                    // if (responsesurvey[n]) {
+                    //   let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
+                    //   logger.serverLog(TAG,
+                    //     'response of survey second ' + JSON.stringify(subscriberNew))
+                    //   if (subscriberNew.length > 0) {
+                    //     logger.serverLog(TAG,
+                    //       'response of survey inside if')
+                    //     res = true
+                    //   }
+                    // }
                     subscriberData.push({_id: subscriber[0]._id,
                       firstName: subscriber[0].firstName,
                       lastName: subscriber[0].lastName,
@@ -1005,9 +1004,15 @@ exports.surveysByDays = function (req, res) {
                       profilePic: subscriber[0].profilePic,
                       page: subscriberPage[0].pageName,
                       seen: pagesurvey[n].seen,
-                      responded: res})
-                      logger.serverLog(TAG,
-                        'response of survey subscriberData ' + JSON.stringify(subscriberData))
+                      responded: false})
+                  }
+                  for (let m = 0; m < responsesurvey.length; m++) {
+                    let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
+                    for (let o = 0; o < subscriberData.length; o++) {
+                      if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                        subscriberData[0].responded = true
+                      }
+                    }
                   }
                   logger.serverLog(TAG, 'response of survey subscriber ' + JSON.stringify(subscriberData))
                   let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
