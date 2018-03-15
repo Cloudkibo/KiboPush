@@ -18,7 +18,6 @@ import {
   getuserdetails,
   workflowsTourCompleted
 } from '../../redux/actions/basicinfo.actions'
-import { Alert } from 'react-bs-notifier'
 import AlertContainer from 'react-alert'
 
 class CreateWorkflow extends React.Component {

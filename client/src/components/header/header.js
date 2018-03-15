@@ -282,6 +282,12 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
+                                <li className='m-nav__item'>
+                                  <Link to='/addPageWizard' className='m-nav__link'>
+                                    <i className='m-nav__link-icon flaticon-list-2' />
+                                    <span className='m-nav__link-text'>Setup Using Wizard</span>
+                                  </Link>
+                                </li>
                                 {this.props.user && this.props.user.isSuperUser &&
                                   <li className='m-nav__item'>
                                     <Link to='/live' className='m-nav__link'>
