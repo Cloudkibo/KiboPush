@@ -1010,7 +1010,7 @@ exports.surveysByDays = function (req, res) {
                     let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
                     for (let o = 0; o < subscriberData.length; o++) {
                       if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
-                        subscriberData[0].responded = true
+                        subscriberData[o].responded = true
                       }
                     }
                   }
