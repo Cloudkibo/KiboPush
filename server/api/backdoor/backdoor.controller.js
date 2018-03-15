@@ -981,12 +981,16 @@ exports.surveysByDays = function (req, res) {
                   let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let subscriberData = []
+                  logger.serverLog(TAG,
+                    'response of survey first ' + JSON.stringify(responsesurvey))
                   for (let n = 0; n < pagesurvey.length; n++) {
                     let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
                     let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
                     let res = false
                     if (responsesurvey[n]) {
                       let subscriber = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
+                      logger.serverLog(TAG,
+                        'response of survey second ' + JSON.stringify(subscriber))
                       if (subscriber.length > 0) {
                         res = true
                       }
