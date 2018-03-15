@@ -1005,6 +1005,7 @@ exports.surveysByDays = function (req, res) {
                       seen: pagesurvey[n].seen,
                       responded: res})
                   }
+                  logger.serverLog(TAG, 'response of survey subscriber ' + JSON.stringify(subscriberData))
                   let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
                   let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
                   let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
