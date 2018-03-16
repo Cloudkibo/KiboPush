@@ -383,7 +383,7 @@ class Settings extends React.Component {
                         </form>
                         <div className='form-group m-form__group'>
                           <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                            For API documentation, please visit <a href='https://app.kibopush.com/docs'>https://app.kibopush.com/docs</a>
+                            For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank'>https://app.kibopush.com/docs</a>
                           </div>
                         </div>
                       </div>
