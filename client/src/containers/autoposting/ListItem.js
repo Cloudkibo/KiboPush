@@ -58,7 +58,12 @@ class ListItem extends React.Component {
                   <i className='la la-gear' />
                 </Link>
               </span>
-            }
+              }
+              <span className='m-widget5__info-date m--font-info'>
+                <Link onClick={() => this.props.gotoMessages(this.props.item._id)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                  <i className='la la-envelope' />
+                </Link>
+              </span>
             </div>
           </div>
           <div className='m-widget5__stats1'>

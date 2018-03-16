@@ -15,7 +15,9 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id}, (err, autopostingMessages) => {
+    AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id})
+    .populate('pageId companyId autopostingId')
+    .exec((err, autopostingMessages) => {
       if (err) {
         return res.status(500)
         .json({status: 'failed', description: 'Autoposting query failed'})
