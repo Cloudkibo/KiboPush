@@ -445,7 +445,7 @@ class CreateConvo extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     console.log(this.state.broadcast)
@@ -521,7 +521,7 @@ class CreateConvo extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     var data = {

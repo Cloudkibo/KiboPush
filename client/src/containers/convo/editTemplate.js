@@ -60,7 +60,7 @@ class EditTemplate extends React.Component {
       },
       stayOpen: false,
       disabled: false,
-      pageValue: '',
+      pageValue: [],
       genderValue: [],
       localeValue: [],
       isShowingModal: false,
@@ -496,7 +496,7 @@ class EditTemplate extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     console.log(this.state.broadcast)
@@ -521,7 +521,7 @@ class EditTemplate extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var res = this.checkConditions([this.state.pageValue], this.state.genderValue, this.state.localeValue)
+      var res = this.checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -529,7 +529,7 @@ class EditTemplate extends React.Component {
           platform: 'facebook',
           payload: this.state.broadcast,
           isSegmented: isSegmentedValue,
-          segmentationPageIds: [this.state.pageValue],
+          segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
@@ -573,7 +573,7 @@ class EditTemplate extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     var data = {
@@ -582,7 +582,7 @@ class EditTemplate extends React.Component {
       payload: this.state.broadcast,
       title: this.state.convoTitle,
       isSegmented: isSegmentedValue,
-      segmentationPageIds: [this.state.pageValue],
+      segmentationPageIds: this.state.pageValue,
       segmentationLocale: this.state.localeValue,
       segmentationGender: this.state.genderValue,
       segmentationTimeZone: '',
@@ -628,32 +628,38 @@ class EditTemplate extends React.Component {
   initializePageSelect (pageOptions) {
     console.log(pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+      /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
-      allowClear: true
+      allowClear: true,
+      multiple: true
     })
 
     console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
 
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
-      var selectedIndex = e.target.selectedIndex
+      /* eslint-enable */
+      // var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
-      var selectedOptions = e.target.selectedOptions[0].value
-      // var selected = []
-      // for (var i = 0; i < selectedOptions.length; i++) {
-      //   var selectedOption = selectedOptions[i].value
-      //   selected.push(selectedOption)
-      // }
-      console.log('Setting a new pageValue', selectedOptions)
-      self.setState({ pageValue: selectedOptions })
-      // }
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        console.log('e.target.selectedOptions', e.target.selectedOptions)
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
       console.log('change Page', selectedOptions)
     })
   }
-
   initializeGenderSelect (genderOptions) {
     var self = this
     $('#selectGender').select2({
