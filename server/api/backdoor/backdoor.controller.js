@@ -981,6 +981,7 @@ exports.surveysByDays = function (req, res) {
                   let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let subscriberData = []
+                  let responded = 0
                   logger.serverLog(TAG,
                     'response of survey first ' + JSON.stringify(responsesurvey))
                   for (let n = 0; n < pagesurvey.length; n++) {
@@ -1011,6 +1012,7 @@ exports.surveysByDays = function (req, res) {
                     for (let o = 0; o < subscriberData.length; o++) {
                       if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
                         subscriberData[o].responded = true
+                        responded = responded + 1
                       }
                     }
                   }
@@ -1039,7 +1041,7 @@ exports.surveysByDays = function (req, res) {
                     company: company,
                     sent: pagesurvey.length,
                     seen: pagesurveyTapped.length,
-                    responded: subscriberData.length,
+                    responded: responded,
                     subscriber: subscriberData}) // total tapped
                 }
                 var newSurvey = data.reverse()
