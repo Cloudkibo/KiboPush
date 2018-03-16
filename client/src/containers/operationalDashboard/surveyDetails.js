@@ -241,10 +241,6 @@ class SurveyDetails extends React.Component {
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                   <span style={{width: '100px', overflow: 'inherit'}}>Responded</span>
                                 </th>
-                                <th data-field='sent'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '100px', overflow: 'inherit'}}>Sent</span>
-                                </th>
                                 <th data-field='Locale'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                   <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
@@ -311,11 +307,6 @@ class SurveyDetails extends React.Component {
                                     false
                                   </span>
                                 }
-                                </td>
-                                <td data-field='sent'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{width: '100px', overflow: 'inherit'}}>{subscriber.sent}</span>
                                 </td>
                                 <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
                                 <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
