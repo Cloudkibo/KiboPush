@@ -495,7 +495,7 @@ class CreateConvo extends React.Component {
 
   testConvo () {
     console.log('in test convo')
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue })
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
     console.log('Check', check)
     if (check.length <= 0) {
       this.setState({showMessengerModal: true})

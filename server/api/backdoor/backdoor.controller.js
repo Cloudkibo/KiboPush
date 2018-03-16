@@ -1039,7 +1039,7 @@ exports.surveysByDays = function (req, res) {
                     company: company,
                     sent: pagesurvey.length,
                     seen: pagesurveyTapped.length,
-                    responded: surveys[j].isresponded,
+                    responded: responsesurvey.length,
                     subscriber: subscriberData}) // total tapped
                 }
                 var newSurvey = data.reverse()
