@@ -89,3 +89,24 @@ export function editautoposting (data) {
       })
   }
 }
+
+export function showAutopostingMessages (data) {
+  console.log('showautopostingmessages')
+  console.log(data)
+  return {
+    type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
+    autoposting_messages: data
+  }
+}
+
+export function loadAutopostingMessages (id) {
+  return (dispatch) => {
+    callApi(`autoposting/${id}`)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(showAutopostingMessages(res.payload))
+        }
+      })
+  }
+}

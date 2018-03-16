@@ -58,6 +58,7 @@ import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
 import UserGuidePolls from './containers/userGuide/userGuidePolls'
 import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
+import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
 import Settings from './containers/settings/settings'
@@ -145,6 +146,7 @@ const routes = (
     <Route path='/broadcasts' component={Broadcast} onEnter={requireAuth} />
     <Route path='/convos' component={Convo} onEnter={requireAuth} />
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
+    <Route path='/autoposting-messages' component={AutopostingMessages} onEnter={requireAuth} />
     <Route path='/autoposting-itemsettings' component={ItemSettings} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
