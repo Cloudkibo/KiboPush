@@ -891,14 +891,6 @@ exports.broadcastsByDays = function (req, res) {
     })
   })
 }
-function exists (subscriberData, subscriber) {
-  for (let i = 0; i < subscriberData; i++) {
-    if (subscriberData[i]._id === subscriber._id) {
-      return true
-    }
-  }
-  return false
-}
 exports.surveysByDays = function (req, res) {
   var days = 0
   if (req.params.days === '0') {
@@ -989,7 +981,6 @@ exports.surveysByDays = function (req, res) {
                   let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let subscriberData = []
-                  let sent = 0
                   logger.serverLog(TAG,
                     'response of survey first ' + JSON.stringify(responsesurvey))
                   for (let n = 0; n < pagesurvey.length; n++) {
@@ -1005,24 +996,15 @@ exports.surveysByDays = function (req, res) {
                     //     res = true
                     //   }
                     // }
-                    if (exists(subscriberData, subscriber[0]) === false) {
-                      subscriberData.push({_id: subscriber[0]._id,
-                        firstName: subscriber[0].firstName,
-                        lastName: subscriber[0].lastName,
-                        locale: subscriber[0].locale,
-                        gender: subscriber[0].gender,
-                        profilePic: subscriber[0].profilePic,
-                        page: subscriberPage[0].pageName,
-                        seen: pagesurvey[n].seen,
-                        responded: false,
-                        sent: sent + 1})
-                    } else {
-                      for (let a = 0; a < subscriberData.length; a++) {
-                        if (subscriberData[a]._id === subscriber[0]._id) {
-                          subscriberData[a].sent = subscriberData[a].sent + 1
-                        }
-                      }
-                    }
+                    subscriberData.push({_id: subscriber[0]._id,
+                      firstName: subscriber[0].firstName,
+                      lastName: subscriber[0].lastName,
+                      locale: subscriber[0].locale,
+                      gender: subscriber[0].gender,
+                      profilePic: subscriber[0].profilePic,
+                      page: subscriberPage[0].pageName,
+                      seen: pagesurvey[n].seen,
+                      responded: false})
                   }
                   for (let m = 0; m < responsesurvey.length; m++) {
                     let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
@@ -1057,7 +1039,7 @@ exports.surveysByDays = function (req, res) {
                     company: company,
                     sent: pagesurvey.length,
                     seen: pagesurveyTapped.length,
-                    responded: responsesurvey.length,
+                    responded: subscriberData.length,
                     subscriber: subscriberData}) // total tapped
                 }
                 var newSurvey = data.reverse()
