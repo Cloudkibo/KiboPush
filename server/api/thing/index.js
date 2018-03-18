@@ -20,7 +20,6 @@ router.get('/', (req, res) => {
     pages.forEach((page) => {
 
       Subscribers.find({firstName : null, pageId: page._id}, (err, subs) => {
-        logger.serverLog(TAG, `TOTAL SUBS FOUND ${subs.length}`)
         subs.forEach((sub) => {
           const options = {
             url: `https://graph.facebook.com/v2.6/${sub.senderId}?access_token=${page.accessToken}`,
@@ -30,6 +29,7 @@ router.get('/', (req, res) => {
           }
           needle.get(options.url, options, (error, response) => {
             const subsriber = response.body
+            logger.serverLog(TAG, `NEW SUB DATA ${JSON.stringify(subsriber)}`)
             if (!error) {
 
               const payload = {
