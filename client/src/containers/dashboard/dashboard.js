@@ -69,10 +69,10 @@ class Dashboard extends React.Component {
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
-        browserHistory.push({
-          pathname: '/addPages',
-          state: {showMsg: true}
-        })
+        // browserHistory.push({
+          // pathname: '/addPages',
+          // state: {showMsg: true}
+        // })
       }
       if (nextprops.user) {
         console.log('fetchSession in dashboard')
