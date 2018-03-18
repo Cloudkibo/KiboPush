@@ -115,7 +115,7 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
-  console.log('auth', auth.getNext())
+  // console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
     // if (auth.getNext() === 'addPages') {
     //   auth.removeNext()
