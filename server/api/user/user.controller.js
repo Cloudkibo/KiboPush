@@ -78,8 +78,6 @@ exports.index = function (req, res) {
           user.permissions = permissions
           user.currentPlan = req.user.plan
           user.plan = plan[req.user.plan]
-          logger.serverLog(TAG,
-            'user details sent to client ' + JSON.stringify(user))
           res.status(200).json({status: 'success', payload: user})
         })
       })
