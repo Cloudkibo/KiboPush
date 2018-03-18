@@ -42,11 +42,7 @@ We need to set the following variables: (Just copy paste and then change the val
     FACEBOOK_ID=<YOUR FB ID>
     FACEBOOK_SECRET=<YOUR FB SECRET>
     DOMAIN=<YOUR DOMAIN>
-    DB_SCHEMA=<YOUR DB NAME>
-    DB_USER=<YOUR DB USER>
-    DB_PASSWORD=<YOUR DB PASSWORD>
-    DB_HOST=localhost
-    DB_PORT=3306
+    MONGO_URI=<DATABASE STRING>
     
 
 Now, run the following command to install dependencies:

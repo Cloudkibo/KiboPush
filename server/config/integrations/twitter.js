@@ -69,10 +69,10 @@ function connect () {
                     logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
                   logger.serverLog(TAG,
-                    `Pages records got for tweet : ${pages.length}`)
+                    `Pages records got for tweet : ${pages.length}`, true)
                   pages.forEach(page => {
                     logger.serverLog(TAG,
-                      `Page in the loop for tweet ${page.pageName}`)
+                      `Page in the loop for tweet ${page.pageName}`, true)
 
                     let subscriberFindCriteria = {
                       pageId: page._id,
@@ -100,7 +100,7 @@ function connect () {
 
                     logger.serverLog(TAG,
                       `Subscribers Criteria for segmentation ${JSON.stringify(
-                        subscriberFindCriteria)}`)
+                        subscriberFindCriteria)}`, true)
                     Subscribers.find(subscriberFindCriteria,
                       (err, subscribers) => {
                         if (err) {
@@ -109,7 +109,7 @@ function connect () {
                         }
 
                         logger.serverLog(TAG,
-                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`, true)
 
                         if (subscribers.length > 0) {
                           let newMsg = new AutopostingMessages({
@@ -125,7 +125,7 @@ function connect () {
 
                           newMsg.save((err, savedMsg) => {
                             if (err) logger.serverLog(TAG, err)
-                            logger.serverLog(TAG, 'autoposting message saved')
+                            logger.serverLog(TAG, 'autoposting message saved', true)
 
                             subscribers.forEach(subscriber => {
                               let messageData = createFbPayload(subscriber, tweet)
@@ -164,7 +164,7 @@ function connect () {
                                     } else {
                                       logger.serverLog(TAG,
                                         `At send tweet broadcast response ${JSON.stringify(
-                                        res.body.message_id)}`)
+                                        res.body.message_id)}`, true)
                                     }
                                   }
                                 })
