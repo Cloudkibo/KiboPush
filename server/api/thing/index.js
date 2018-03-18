@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
                 subscriber.timezone = subsriber.timezone
                 subscriber.profilePic = subsriber.profile_pic
                 subscriber.save((err, result) => {
-                  logger.serverLog(TAG, `SUB UPDATED ${result}`)
+                  logger.serverLog(TAG, `SUB UPDATED ${JSON.stringify(result)}`)
                 })
               })
             } else {
