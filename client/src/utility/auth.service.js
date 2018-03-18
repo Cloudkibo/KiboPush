@@ -21,9 +21,9 @@ const auth = {
     cookie.save('userid', val)
   },
 
-  getNext () {
-    return cookie.load('next')
-  },
+  // getNext () {
+    // return cookie.load('next')
+  // },
 
   removeNext () {
     cookie.remove('next')
