@@ -182,7 +182,6 @@ exports.getfbMessage = function (req, res) {
                 needle.get(options.url, options, (error, response) => {
                   const subsriber = response.body
                   if (!error) {
-                    logger.serverLog(TAG, '!error')
 
                     if (event.sender && event.recipient && event.postback && event.postback.payload &&
                       event.postback.payload === '<GET_STARTED_PAYLOAD>') {
@@ -423,146 +422,148 @@ function handleThePagePostsForAutoPosting (event, status) {
               logger.serverLog(TAG,
                 `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
-              let newMsg = new AutopostingMessages({
-                pageId: page._id,
-                companyId: postingItem.companyId,
-                autoposting_type: 'facebook',
-                payload: event,
-                autopostingId: postingItem._id,
-                sent: subscribers.length,
-                seen: 0,
-                clicked: 0
-              })
-
-              newMsg.save((err, savedMsg) => {
-                if (err) logger.serverLog(TAG, err)
-                logger.serverLog(TAG, 'autoposting message saved')
-
-                subscribers.forEach(subscriber => {
-                  let messageData = {}
-                  let newSubscriberMsg = new AutopostingSubscriberMessages({
-                    pageId: page.pageId,
-                    companyId: postingItem.companyId,
-                    autopostingId: postingItem._id,
-                    autoposting_messages_id: savedMsg._id,
-                    subscriberId: subscriber.senderId,
-                    payload: event
-                  })
-
-                  newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                    if (err) logger.serverLog(TAG, err)
-                    logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
-                  })
-
-                  if (event.value.item === 'status' || status) {
-                    messageData = {
-                      'recipient': JSON.stringify({
-                        'id': subscriber.senderId
-                      }),
-                      'message': JSON.stringify({
-                        'text': event.value.message,
-                        'metadata': 'This is metadata'
-                      })
-                    }
-                  } else if (event.value.item === 'share') {
-                    messageData = {
-                      'recipient': JSON.stringify({
-                        'id': subscriber.senderId
-                      }),
-                      'message': JSON.stringify({
-                        'attachment': {
-                          'type': 'template',
-                          'payload': {
-                            'template_type': 'generic',
-                            'elements': [
-                              {
-                                'title': (event.value.message) ? event.value.message : event.value.sender_name,
-                                'image_url': event.value.image,
-                                'subtitle': 'kibopush.com',
-                                'buttons': [
-                                  {
-                                    'type': 'web_url',
-                                    'url': event.value.link,
-                                    'title': 'View Link'
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        }
-                      })
-                    }
-                  } else if (event.value.item === 'photo') {
-                    messageData = {
-                      'recipient': JSON.stringify({
-                        'id': subscriber.senderId
-                      }),
-                      'message': JSON.stringify({
-                        'attachment': {
-                          'type': 'template',
-                          'payload': {
-                            'template_type': 'generic',
-                            'elements': [
-                              {
-                                'title': (event.value.message) ? event.value.message : event.value.sender_name,
-                                'image_url': event.value.link,
-                                'subtitle': 'kibopush.com',
-                                'buttons': [
-                                  {
-                                    'type': 'web_url',
-                                    'url': 'https://www.facebook.com/' + event.value.sender_id,
-                                    'title': 'View Page'
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        }
-                      })
-                    }
-                  } else if (event.value.item === 'video') {
-                    messageData = {
-                      'recipient': JSON.stringify({
-                        'id': subscriber.senderId
-                      }),
-                      'message': JSON.stringify({
-                        'attachment': {
-                          'type': 'video',
-                          'payload': {
-                            'url': event.value.link,
-                            'is_reusable': false
-                          }
-                        }
-                      })
-                    }
-                  }
-                  request(
-                    {
-                      'method': 'POST',
-                      'json': true,
-                      'formData': messageData,
-                      'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                      page.accessToken
-                    },
-                    function (err, res) {
-                      if (err) {
-                        return logger.serverLog(TAG,
-                        `At send fb post broadcast ${JSON.stringify(
-                          err)}`)
-                      } else {
-                        if (res.statusCode !== 200) {
-                          logger.serverLog(TAG,
-                          `At send fb post broadcast response ${JSON.stringify(
-                            res.body.error)}`)
-                        } else {
-                          logger.serverLog(TAG,
-                          `At send fb post broadcast response ${JSON.stringify(
-                            res.body.message_id)}`)
-                        }
-                      }
-                    })
+              if (subscribers.length > 0) {
+                let newMsg = new AutopostingMessages({
+                  pageId: page._id,
+                  companyId: postingItem.companyId,
+                  autoposting_type: 'facebook',
+                  payload: event,
+                  autopostingId: postingItem._id,
+                  sent: subscribers.length,
+                  seen: 0,
+                  clicked: 0
                 })
-              })
+
+                newMsg.save((err, savedMsg) => {
+                  if (err) logger.serverLog(TAG, err)
+                  logger.serverLog(TAG, 'autoposting message saved')
+
+                  subscribers.forEach(subscriber => {
+                    let messageData = {}
+                    let newSubscriberMsg = new AutopostingSubscriberMessages({
+                      pageId: page.pageId,
+                      companyId: postingItem.companyId,
+                      autopostingId: postingItem._id,
+                      autoposting_messages_id: savedMsg._id,
+                      subscriberId: subscriber.senderId,
+                      payload: event
+                    })
+
+                    newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                      if (err) logger.serverLog(TAG, err)
+                      logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                    })
+
+                    if (event.value.item === 'status' || status) {
+                      messageData = {
+                        'recipient': JSON.stringify({
+                          'id': subscriber.senderId
+                        }),
+                        'message': JSON.stringify({
+                          'text': event.value.message,
+                          'metadata': 'This is metadata'
+                        })
+                      }
+                    } else if (event.value.item === 'share') {
+                      messageData = {
+                        'recipient': JSON.stringify({
+                          'id': subscriber.senderId
+                        }),
+                        'message': JSON.stringify({
+                          'attachment': {
+                            'type': 'template',
+                            'payload': {
+                              'template_type': 'generic',
+                              'elements': [
+                                {
+                                  'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                                  'image_url': event.value.image,
+                                  'subtitle': 'kibopush.com',
+                                  'buttons': [
+                                    {
+                                      'type': 'web_url',
+                                      'url': event.value.link,
+                                      'title': 'View Link'
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        })
+                      }
+                    } else if (event.value.item === 'photo') {
+                      messageData = {
+                        'recipient': JSON.stringify({
+                          'id': subscriber.senderId
+                        }),
+                        'message': JSON.stringify({
+                          'attachment': {
+                            'type': 'template',
+                            'payload': {
+                              'template_type': 'generic',
+                              'elements': [
+                                {
+                                  'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                                  'image_url': event.value.link,
+                                  'subtitle': 'kibopush.com',
+                                  'buttons': [
+                                    {
+                                      'type': 'web_url',
+                                      'url': 'https://www.facebook.com/' + event.value.sender_id,
+                                      'title': 'View Page'
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        })
+                      }
+                    } else if (event.value.item === 'video') {
+                      messageData = {
+                        'recipient': JSON.stringify({
+                          'id': subscriber.senderId
+                        }),
+                        'message': JSON.stringify({
+                          'attachment': {
+                            'type': 'video',
+                            'payload': {
+                              'url': event.value.link,
+                              'is_reusable': false
+                            }
+                          }
+                        })
+                      }
+                    }
+                    request(
+                      {
+                        'method': 'POST',
+                        'json': true,
+                        'formData': messageData,
+                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                        page.accessToken
+                      },
+                      function (err, res) {
+                        if (err) {
+                          return logger.serverLog(TAG,
+                          `At send fb post broadcast ${JSON.stringify(
+                            err)}`)
+                        } else {
+                          if (res.statusCode !== 200) {
+                            logger.serverLog(TAG,
+                            `At send fb post broadcast response ${JSON.stringify(
+                              res.body.error)}`)
+                          } else {
+                            logger.serverLog(TAG,
+                            `At send fb post broadcast response ${JSON.stringify(
+                              res.body.message_id)}`)
+                          }
+                        }
+                      })
+                  })
+                })
+              }
             })
         })
       })

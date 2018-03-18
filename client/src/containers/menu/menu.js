@@ -554,7 +554,7 @@ class Menu extends React.Component {
               (this.state.setWebUrl) && <div id='popover-option3' className='container'>
                 <div id='popover-option3-row' className='row'>
                   <label id='popover-website-label'><b id='popover-bold'>Website URL to open</b></label>
-                  <input id='popover-website-input' style={{marginBottom: '20px'}} value={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
+                  <input id='popover-website-input' placeholder='Enter URL' style={{marginBottom: '20px'}} value={getUrl(this.state.itemMenus, this.clickIndex).placeholder} onChange={this.setUrl.bind(this)} type='url' className='form-control' />
                 </div>
                 <button onClick={this.handleClick} className='btn btn-primary pull-right' disabled={(this.state.disabled)}> Done </button>
                 <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>

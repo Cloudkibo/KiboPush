@@ -34,6 +34,7 @@ class Autoposting extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
+    this.gotoMessages = this.gotoMessages.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
   scrollToTop () {
@@ -111,6 +112,13 @@ class Autoposting extends React.Component {
     })
   }
 
+  gotoMessages (id) {
+    this.props.history.push({
+      pathname: `/autoposting-messages`,
+      state: {id: id}
+    })
+  }
+
   render () {
     return (
       <div>
@@ -166,7 +174,7 @@ class Autoposting extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/autoposting/' target='_blank'>documentation</a>.
+                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
                   Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
@@ -248,7 +256,7 @@ class Autoposting extends React.Component {
                     this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
                         <div className='m-widget5'>
-                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} />
+                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} />
                         </div>
                     ))
                       : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>

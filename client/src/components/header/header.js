@@ -319,7 +319,7 @@ class Header extends React.Component {
                                 }
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a href='http://kibopush.com/faq/' className='m-nav__link'>
+                                  <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>FAQ</span>
                                   </a>

@@ -215,7 +215,7 @@ class Page extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding pages? Here is the <a href='http://kibopush.com/user-guide/' target='_blank'>documentation</a>.
+                  Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank'>documentation</a>.
                   Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>

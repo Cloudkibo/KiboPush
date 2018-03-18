@@ -89,3 +89,28 @@ export function editautoposting (data) {
       })
   }
 }
+
+export function showAutopostingMessages (data) {
+  console.log('showautopostingmessages')
+  console.log(data)
+  var sorted = data.sort(function (a, b) {
+    return new Date(b.datetime) - new Date(a.datetime)
+  })
+  console.log('sorted data', sorted)
+  return {
+    type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
+    autoposting_messages: sorted
+  }
+}
+
+export function loadAutopostingMessages (id) {
+  return (dispatch) => {
+    callApi(`autoposting_messages/${id}`)
+      .then(res => {
+        console.log(res)
+        if (res.status === 'success') {
+          dispatch(showAutopostingMessages(res.payload))
+        }
+      })
+  }
+}

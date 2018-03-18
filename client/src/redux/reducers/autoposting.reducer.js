@@ -9,6 +9,11 @@ export function autopostingInfo (state = {}, action) {
         successMessageCreate: ''
       })
 
+    case ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST:
+      return Object.assign({}, state, {
+        autoposting_messages: action.autoposting_messages
+      })
+
     case ActionTypes.CREATE_AUTOPOSTING_SUCCESS:
       return Object.assign({}, state, {
         successMessageCreate: action.successMessage,

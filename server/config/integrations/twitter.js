@@ -69,10 +69,10 @@ function connect () {
                     logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
                   logger.serverLog(TAG,
-                    `Pages records got for tweet : ${pages.length}`)
+                    `Pages records got for tweet : ${pages.length}`, true)
                   pages.forEach(page => {
                     logger.serverLog(TAG,
-                      `Page in the loop for tweet ${page.pageName}`)
+                      `Page in the loop for tweet ${page.pageName}`, true)
 
                     let subscriberFindCriteria = {
                       pageId: page._id,
@@ -100,7 +100,7 @@ function connect () {
 
                     logger.serverLog(TAG,
                       `Subscribers Criteria for segmentation ${JSON.stringify(
-                        subscriberFindCriteria)}`)
+                        subscriberFindCriteria)}`, true)
                     Subscribers.find(subscriberFindCriteria,
                       (err, subscribers) => {
                         if (err) {
@@ -109,66 +109,68 @@ function connect () {
                         }
 
                         logger.serverLog(TAG,
-                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`, true)
 
-                        let newMsg = new AutopostingMessages({
-                          pageId: page._id,
-                          companyId: postingItem.companyId,
-                          autoposting_type: 'twitter',
-                          payload: tweet,
-                          autopostingId: postingItem._id,
-                          sent: subscribers.length,
-                          seen: 0,
-                          clicked: 0
-                        })
-
-                        newMsg.save((err, savedMsg) => {
-                          if (err) logger.serverLog(TAG, err)
-                          logger.serverLog(TAG, 'autoposting message saved')
-
-                          subscribers.forEach(subscriber => {
-                            let messageData = createFbPayload(subscriber, tweet)
-                            let newSubscriberMsg = new AutopostingSubscriberMessages({
-                              pageId: page.pageId,
-                              companyId: postingItem.companyId,
-                              autopostingId: postingItem._id,
-                              autoposting_messages_id: savedMsg._id,
-                              subscriberId: subscriber.senderId,
-                              payload: tweet
-                            })
-
-                            newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                              if (err) logger.serverLog(TAG, err)
-                              logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
-                            })
-
-                            request(
-                              {
-                                'method': 'POST',
-                                'json': true,
-                                'formData': messageData,
-                                'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                                page.accessToken
-                              },
-                              function (err, res) {
-                                if (err) {
-                                  return logger.serverLog(TAG,
-                                    `At send tweet broadcast ${JSON.stringify(
-                                    err)}`)
-                                } else {
-                                  if (res.statusCode !== 200) {
-                                    logger.serverLog(TAG,
-                                    `At send tweet broadcast response ${JSON.stringify(
-                                      res.body.error)}`)
-                                  } else {
-                                    logger.serverLog(TAG,
-                                      `At send tweet broadcast response ${JSON.stringify(
-                                      res.body.message_id)}`)
-                                  }
-                                }
-                              })
+                        if (subscribers.length > 0) {
+                          let newMsg = new AutopostingMessages({
+                            pageId: page._id,
+                            companyId: postingItem.companyId,
+                            autoposting_type: 'twitter',
+                            payload: tweet,
+                            autopostingId: postingItem._id,
+                            sent: subscribers.length,
+                            seen: 0,
+                            clicked: 0
                           })
-                        })
+
+                          newMsg.save((err, savedMsg) => {
+                            if (err) logger.serverLog(TAG, err)
+                            logger.serverLog(TAG, 'autoposting message saved', true)
+
+                            subscribers.forEach(subscriber => {
+                              let messageData = createFbPayload(subscriber, tweet)
+                              let newSubscriberMsg = new AutopostingSubscriberMessages({
+                                pageId: page.pageId,
+                                companyId: postingItem.companyId,
+                                autopostingId: postingItem._id,
+                                autoposting_messages_id: savedMsg._id,
+                                subscriberId: subscriber.senderId,
+                                payload: tweet
+                              })
+
+                              newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                                if (err) logger.serverLog(TAG, err)
+                                logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                              })
+
+                              request(
+                                {
+                                  'method': 'POST',
+                                  'json': true,
+                                  'formData': messageData,
+                                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                                  page.accessToken
+                                },
+                                function (err, res) {
+                                  if (err) {
+                                    return logger.serverLog(TAG,
+                                      `At send tweet broadcast ${JSON.stringify(
+                                      err)}`)
+                                  } else {
+                                    if (res.statusCode !== 200) {
+                                      logger.serverLog(TAG,
+                                      `At send tweet broadcast response ${JSON.stringify(
+                                        res.body.error)}`)
+                                    } else {
+                                      logger.serverLog(TAG,
+                                        `At send tweet broadcast response ${JSON.stringify(
+                                        res.body.message_id)}`, true)
+                                    }
+                                  }
+                                })
+                            })
+                          })
+                        }
                       })
                   })
                 })

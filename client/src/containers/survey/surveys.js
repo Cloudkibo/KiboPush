@@ -274,7 +274,7 @@ class Survey extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/survey/' target='_blank'>documentation</a>.
+                  Need help in understanding surveys? Here is the <a href='http://kibopush.com/surveys/' target='_blank'>documentation</a>.
                   Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>

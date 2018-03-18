@@ -58,6 +58,7 @@ import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
 import UserGuidePolls from './containers/userGuide/userGuidePolls'
 import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
+import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
 import Settings from './containers/settings/settings'
@@ -114,7 +115,7 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
-  console.log('auth', auth.getNext())
+  // console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
     // if (auth.getNext() === 'addPages') {
     //   auth.removeNext()
@@ -145,6 +146,7 @@ const routes = (
     <Route path='/broadcasts' component={Broadcast} onEnter={requireAuth} />
     <Route path='/convos' component={Convo} onEnter={requireAuth} />
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
+    <Route path='/autoposting-messages' component={AutopostingMessages} onEnter={requireAuth} />
     <Route path='/autoposting-itemsettings' component={ItemSettings} onEnter={requireAuth} />
     <Route path='/pages' component={Page} onEnter={requireAuth} />
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
@@ -211,6 +213,7 @@ const routes = (
     <Route path='/ShowTemplateBroadcasts' component={ShowTemplateBroadcasts} onEnter={requireAuth} />
     <Route path='/categories' component={Categories} onEnter={requireAuth} />
     <Route path='/editTemplateBroadcast' component={EditTemplateBroadcast} onEnter={requireAuth} />
+    <Route path='/editWelcomeMessage' component={EditTemplateBroadcast} onEnter={requireAuth} />
     <Route path='/inviteMembers' component={Invitations} onEnter={requireAuth} />
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />

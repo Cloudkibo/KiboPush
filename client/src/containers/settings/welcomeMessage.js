@@ -23,7 +23,13 @@ class WelcomeMessage extends React.Component {
     this.gotoEdit = this.gotoEdit.bind(this)
     this.gotoView = this.gotoView.bind(this)
   }
-
+  componentDidMount () {
+    if (this.props.pages) {
+      for (var i = 0; i < this.props.pages.length; i++) {
+        this.initializeSwitch(this.props.pages[i].isWelcomeMessageEnabled, this.props.pages[i]._id)
+      }
+    }
+  }
   initializeSwitch (state, id) {
     var self = this
     var temp = '#' + id
@@ -36,10 +42,11 @@ class WelcomeMessage extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
+    $(temp).on('switchChange.bootstrapSwitch', function (event) {
       /* eslint-enable */
+      var state = event.target.checked
       console.log('event', event.target.attributes.id.nodeValue)
-      console.log('state', state)
+      console.log('state', event.target.checked)
       if (state === true) {
         self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
       } else {
@@ -58,7 +65,7 @@ class WelcomeMessage extends React.Component {
   gotoEdit (page) {
     console.log('gotoEdit called', page)
     browserHistory.push({
-      pathname: `/editTemplateBroadcast`,
+      pathname: `/editWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page.welcomeMessage}
     })
   }
@@ -90,7 +97,7 @@ class WelcomeMessage extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <label style={{fontWeight: 'inherit'}}>
-                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcomeMessage/' target='_blank'>Click Here </a>
+                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
               </label>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
@@ -121,10 +128,9 @@ class WelcomeMessage extends React.Component {
                                              <span className='m-widget4__sub'>
                                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
                                                  <div className='bootstrap-switch-container'>
-                                                   <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
+                                                   <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={page.isWelcomeMessageEnabled} />
                                                  </div>
                                                </div>
-                                               {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
                                              </span>
                                            </div>
                                            <div className='m-widget4__ext'>

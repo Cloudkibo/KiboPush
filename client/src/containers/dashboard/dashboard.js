@@ -59,12 +59,6 @@ class Dashboard extends React.Component {
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if (nextprops.pages && nextprops.pages.length === 0) {
-      // this means connected pages in 0
-        browserHistory.push({
-          pathname: '/addPages',
-          state: {showMsg: true}
-        })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         console.log('More than 0 subscribers')
@@ -73,6 +67,12 @@ class Dashboard extends React.Component {
         // this means 0 subscribers
         console.log('0 subscribers')
         this.setState({isShowingModal: true})
+      } else if (nextprops.pages && nextprops.pages.length === 0) {
+      // this means connected pages in 0
+        // browserHistory.push({
+          // pathname: '/addPages',
+          // state: {showMsg: true}
+        // })
       }
       if (nextprops.user) {
         console.log('fetchSession in dashboard')

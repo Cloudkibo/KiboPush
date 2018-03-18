@@ -167,10 +167,14 @@ class CreateConvo extends React.Component {
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initTab()
-    // if (this.props.pages.length > 0) {
-    //   console.log('componentDidMount pageValue set')
-    //   this.setState({pageValue: this.props.pages[0].pageId})
-    // }
+    if (this.props.pages.length > 0) {
+      console.log('componentDidMount pageValue set')
+      var temp = []
+      for (var j = 0; j < this.props.pages.length; j++) {
+        temp.push(this.props.pages[j].pageId)
+      }
+      this.setState({pageValue: temp})
+    }
 
     var compProp = this.props
     var comp = this
@@ -441,7 +445,7 @@ class CreateConvo extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     console.log(this.state.broadcast)
@@ -491,7 +495,7 @@ class CreateConvo extends React.Component {
 
   testConvo () {
     console.log('in test convo')
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue })
+    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
     console.log('Check', check)
     if (check.length <= 0) {
       this.setState({showMessengerModal: true})
@@ -517,7 +521,7 @@ class CreateConvo extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue !== '' || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
     var data = {
@@ -743,7 +747,7 @@ class CreateConvo extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcast/' target='_blank'>documentation</a>.
+                  Need help in understanding how to create broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
                   <br />
                   View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
                 </div>
@@ -981,7 +985,7 @@ class CreateConvo extends React.Component {
                                         <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
                                         <MessengerPlugin
                                           appId={this.props.fbAppId}
-                                          pageId={this.state.pageValue}
+                                          pageId={JSON.stringify(this.state.pageValue[0])}
                                           passthroughParams={this.props.user._id}
                                           onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
                                         />
