@@ -188,7 +188,6 @@ exports.getfbMessage = function (req, res) {
                     needle.get(options.url, options, (error, response) => {
                       const subsriber = response.body
                       if (!error) {
-
                         if (event.sender && event.recipient && event.postback && event.postback.payload &&
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                           if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
