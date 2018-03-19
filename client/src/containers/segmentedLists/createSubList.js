@@ -449,7 +449,7 @@ class CreateSubList extends React.Component {
                             {
                               this.state.errorMessages.map((m, i) => (
                                 m.error === 'selection' &&
-                                  <span style={{color: 'red'}}>{m.message}</span>
+                                  <span style={{color: 'red', paddingLeft: '14px'}}>{m.message}</span>
                               ))
                             }
                           </span>
@@ -484,7 +484,7 @@ class CreateSubList extends React.Component {
                             {
                               this.state.errorMessages.map((m, i) => (
                                 m.error === 'listName' &&
-                                  <span style={{color: 'red'}}>{m.message}</span>
+                                  <span style={{color: 'red', paddingLeft: '14px'}}>{m.message}</span>
                               ))
                             }
                           </span>
