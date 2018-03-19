@@ -3,6 +3,7 @@ import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
 export const API_URL = '/api'
+import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 var json2csv = require('json2csv')
 
 export function sendresp (data) {
@@ -30,6 +31,7 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
       console.log(data)
       handleResponse()
       dispatch(sendresp(data))
+      dispatch(loadCustomerLists())
     })
   }
 }
@@ -40,6 +42,7 @@ export function sendPhoneNumbers (data) {
       .then(res => {
         console.log('Response', res)
         dispatch(sendresp(res))
+        dispatch(loadCustomerLists())
       }
     )
   }

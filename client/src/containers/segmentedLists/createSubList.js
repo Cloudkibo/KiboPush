@@ -315,6 +315,10 @@ class CreateSubList extends React.Component {
     if (e.currentTarget.value === 'segmentList') {
       this.setState({listSelected: ''})
     }
+    if (e.currentTarget.value === 'segmentAll') {
+      this.setState({listSelected: ''})
+      $("#selectLists").val('').trigger('change')
+    }
   }
 
   handleNameText (e) {

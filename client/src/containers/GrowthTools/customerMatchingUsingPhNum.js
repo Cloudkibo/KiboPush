@@ -560,7 +560,7 @@ class CustomerMatching extends React.Component {
                       <div className='m-form'>
                         <div className='m-portlet__body'>
                           <div className='m-portlet__foot m-portlet__foot--fit'>
-                            <div className='m-form__actions m-form__actions' style={{paddingleft: '0px !important'}}>
+                            <div style={{paddingTop: '30px'}}>
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
