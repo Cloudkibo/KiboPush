@@ -198,7 +198,7 @@ exports.getfbMessage = function (req, res) {
                                 }
                               }
                               let messageData = utility.prepareSendAPIPayload(
-                                response.body.id,
+                                subsriber.id,
                                 payloadItem, false)
 
                               logger.serverLog(TAG,
