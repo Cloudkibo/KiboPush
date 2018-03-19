@@ -54,10 +54,12 @@ class CustomerLists extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
+  }
+  componentWillReceiveProps (nextProps) {
     var lists = []
-    for (var i = 0; i < this.props.customerLists.length; i++) {
-      if (this.props.customerLists[i].initialList) {
-        lists.push(this.props.customerLists[i])
+    for (var i = 0; i < nextProps.customerLists.length; i++) {
+      if (nextProps.customerLists[i].initialList) {
+        lists.push(nextProps.customerLists[i])
       }
     }
     this.setState({
@@ -119,7 +121,7 @@ class CustomerLists extends React.Component {
                           }
                         </div>
                       </div>
-                      { this.props.customerLists && this.props.customerLists.length > 0
+                      { this.state.customerLists && this.state.customerLists.length > 0
                       ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                         <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                           <table className='m-datatable__table'

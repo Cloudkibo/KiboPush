@@ -300,7 +300,7 @@ class CustomerListDetails extends React.Component {
                   </div>
                   <NonSubscribersList />
                   <div className='add-options-message'>
-                    <Link to='/customerLists' className='btn btn-primary btn-sm pull-right'>
+                    <Link to='/customerLists' className='btn btn-primary'>
                       Back
                     </Link>
                   </div>
