@@ -45,36 +45,21 @@ class Header extends React.Component {
     this.setState({ignore: true})
   }
 
-  componentDidMount () {
-      // require('../../../public/js/jquery-3.2.0.min.js')
-      // require('../../../public/js/jquery.min.js')
-      // var addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-      // document.body.appendChild(addScript)
-  }
-
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in header called', this.state.ignore)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
-    if(nextProps.user){
+    if (nextProps.user) {
       FS.identify(nextProps.user.email, {
         displayName: nextProps.user.name,
         email: nextProps.user.email,
         // TODO: Add your own custom user variables here, details at
         // http://help.fullstory.com/develop-js/setuservars.
-        reviewsWritten_int: 14,
-      });
-      console.log("FS identify Executed");
+        reviewsWritten_int: 14
+      })
+      console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }

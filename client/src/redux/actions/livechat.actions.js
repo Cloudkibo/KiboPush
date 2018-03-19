@@ -83,19 +83,6 @@ export function fetchUserChats (sessionid) {
   }
 }
 
-export function getSession (data) {
-  // here we will fetch list of subscribers from endpoint
-  data = {
-
-  }
-  console.log('Sending Chat to Server')
-  return (dispatch) => {
-    // callApi('sessions')
-    //   .then(res => dispatch(updateDashboard(res.payload)))
-  //  dispatch(updateSession(data))
-  }
-}
-
 export function uploadAttachment (fileData, handleUpload) {
   console.log('In Live Action', fileData)
   return (dispatch) => {
