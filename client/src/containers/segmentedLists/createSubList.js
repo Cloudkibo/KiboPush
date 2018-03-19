@@ -315,6 +315,10 @@ class CreateSubList extends React.Component {
     if (e.currentTarget.value === 'segmentList') {
       this.setState({listSelected: ''})
     }
+    if (e.currentTarget.value === 'segmentAll') {
+      this.setState({listSelected: ''})
+      $("#selectLists").val('').trigger('change')
+    }
   }
 
   handleNameText (e) {
@@ -335,17 +339,18 @@ class CreateSubList extends React.Component {
 
     $('#selectLists').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
+      if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
         console.log('selected options', e.target.selectedOptions)
         var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
         }
+      } else {
+        self.setState({ listSelected: '' })
       }
       console.log('change List Selection', selected)
     })
-
     $("#selectLists").val('').trigger('change')
   }
 
@@ -444,7 +449,7 @@ class CreateSubList extends React.Component {
                             {
                               this.state.errorMessages.map((m, i) => (
                                 m.error === 'selection' &&
-                                  <span style={{color: 'red'}}>{m.message}</span>
+                                  <span style={{color: 'red', paddingLeft: '14px'}}>{m.message}</span>
                               ))
                             }
                           </span>
@@ -479,7 +484,7 @@ class CreateSubList extends React.Component {
                             {
                               this.state.errorMessages.map((m, i) => (
                                 m.error === 'listName' &&
-                                  <span style={{color: 'red'}}>{m.message}</span>
+                                  <span style={{color: 'red', paddingLeft: '14px'}}>{m.message}</span>
                               ))
                             }
                           </span>
