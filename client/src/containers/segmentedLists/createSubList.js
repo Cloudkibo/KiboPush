@@ -339,17 +339,18 @@ class CreateSubList extends React.Component {
 
     $('#selectLists').on('change', function (e) {
       var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
+      if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
         console.log('selected options', e.target.selectedOptions)
         var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
         }
+      } else {
+        self.setState({ listSelected: '' })
       }
       console.log('change List Selection', selected)
     })
-
     $("#selectLists").val('').trigger('change')
   }
 
