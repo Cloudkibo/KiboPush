@@ -164,7 +164,7 @@ class CreatePoll extends React.Component {
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
-      placeholder: 'Select Pages',
+      placeholder: 'Select Pages - Default: All Pages',
       allowClear: true,
       multiple: true
     })

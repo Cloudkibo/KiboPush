@@ -459,7 +459,7 @@ class OperationalDashboard extends React.Component {
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: '300%'}}>
             <div className='m-content'>
               { this.state.objectsLength > 0 &&
                 <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
