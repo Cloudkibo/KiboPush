@@ -172,7 +172,7 @@ class AddSurvey extends React.Component {
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
-      placeholder: 'Select Pages',
+      placeholder: 'Select Pages - Default: All Pages',
       allowClear: true,
       multiple: true
     })
@@ -741,7 +741,7 @@ class AddSurvey extends React.Component {
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: '500%'}}>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>

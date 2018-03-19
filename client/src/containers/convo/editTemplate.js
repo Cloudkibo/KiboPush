@@ -322,14 +322,14 @@ class EditTemplate extends React.Component {
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initTab()
-    if (this.props.pages.length > 0) {
-      console.log('componentDidMount pageValue set')
-      var temp = []
-      for (var j = 0; j < this.props.pages.length; j++) {
-        temp.push(this.props.pages[j].pageId)
-      }
-      this.setState({pageValue: temp})
-    }
+    // if (this.props.pages.length > 0) {
+    //   console.log('componentDidMount pageValue set')
+    //   var temp = []
+    //   for (var j = 0; j < this.props.pages.length; j++) {
+    //     temp.push(this.props.pages[j].pageId)
+    //   }
+    //   this.setState({pageValue: temp})
+    // }
     var compProp = this.props
     var comp = this
     registerAction({
@@ -547,51 +547,55 @@ class EditTemplate extends React.Component {
 
   testConvo () {
     console.log('in test convo')
-    var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
-    console.log('Check', check)
-    if (check.length <= 0) {
-      this.setState({showMessengerModal: true})
-      console.log('Setting Messenger Modal to True')
-      return
-    }
-    // for (let i = 0; i < this.props.pages.length; i++) {
-    //   if (this.props.pages[i].pageId === this.state.pageValue) {
-    //     if (!this.props.pages[i].adminSubscriberId) {
-          // this.setState({showMessengerModal: true})
-          // console.log('Setting Messenger Modal to True')
-          // return
-    //     }
-    //   }
-    // }
-    //
-    if (this.state.broadcast.length === 0) {
-      return
-    }
-    console.log(this.state.broadcast)
-    var isListValue = false
-    if (this.state.listSelected.length > 0) {
-      isListValue = true
-    }
-    var isSegmentedValue = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
-      isSegmentedValue = true
-    }
-    var data = {
-      platform: 'facebook',
-      self: true,
-      payload: this.state.broadcast,
-      title: this.state.convoTitle,
-      isSegmented: isSegmentedValue,
-      segmentationPageIds: this.state.pageValue,
-      segmentationLocale: this.state.localeValue,
-      segmentationGender: this.state.genderValue,
-      segmentationTimeZone: '',
-      segmentationList: this.state.listSelected,
-      isList: isListValue
+    if (this.state.pageValue.length > 1 || this.state.pageValue.length === 0) {
+      this.msg.error('Only one page should be selected to test the broadcast')
+    } else {
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
+      console.log('Check', check)
+      if (check.length <= 0) {
+        this.setState({showMessengerModal: true})
+        console.log('Setting Messenger Modal to True')
+        return
+      }
+      // for (let i = 0; i < this.props.pages.length; i++) {
+      //   if (this.props.pages[i].pageId === this.state.pageValue) {
+      //     if (!this.props.pages[i].adminSubscriberId) {
+            // this.setState({showMessengerModal: true})
+            // console.log('Setting Messenger Modal to True')
+            // return
+      //     }
+      //   }
+      // }
+      //
+      if (this.state.broadcast.length === 0) {
+        return
+      }
+      console.log(this.state.broadcast)
+      var isListValue = false
+      if (this.state.listSelected.length > 0) {
+        isListValue = true
+      }
+      var isSegmentedValue = false
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+        isSegmentedValue = true
+      }
+      var data = {
+        platform: 'facebook',
+        self: true,
+        payload: this.state.broadcast,
+        title: this.state.convoTitle,
+        isSegmented: isSegmentedValue,
+        segmentationPageIds: this.state.pageValue,
+        segmentationLocale: this.state.localeValue,
+        segmentationGender: this.state.genderValue,
+        segmentationTimeZone: '',
+        segmentationList: this.state.listSelected,
+        isList: isListValue
 
+      }
+      console.log('Data sent: ', data)
+      this.props.sendBroadcast(data, this.msg)
     }
-    console.log('Data sent: ', data)
-    this.props.sendBroadcast(data, this.msg)
   }
 
   newConvo () {
@@ -632,7 +636,7 @@ class EditTemplate extends React.Component {
     $('#selectPage').select2({
       /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages',
+      placeholder: 'Select Pages - Default: All Pages',
       allowClear: true,
       multiple: true
     })
