@@ -154,7 +154,7 @@ class EditPoll extends React.Component {
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })

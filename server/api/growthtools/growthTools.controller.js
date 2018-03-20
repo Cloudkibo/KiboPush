@@ -4,6 +4,7 @@
 
 //  const GrowthTools = require('./growthTools.model')
 const PhoneNumber = require('./growthtools.model')
+const Subscribers = require('../subscribers/Subscribers.model')
 const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
@@ -132,6 +133,59 @@ exports.upload = function (req, res) {
                         description: 'phone number create failed'
                       })
                     }
+                    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: newFileName}, (err, number) => {
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: 'phone number not found'
+                        })
+                      }
+                      logger.serverLog(TAG,
+                        `listFoundNumber ${JSON.stringify(number)}`)
+                      if (number.length > 0) {
+                        let findNumber = []
+                        let findPage = []
+                        for (let a = 0; a < number.length; a++) {
+                          findNumber.push(number[a].number)
+                          findPage.push(number[a].pageId)
+                        }
+                        let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                          phoneNumber: {
+                            $in: findNumber
+                          },
+                          pageId: {
+                            $in: findPage
+                          }
+                        })
+                        logger.serverLog(TAG,
+                          `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
+                        Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
+                          if (err) {
+                            return res.status(500).json({
+                              status: 'failed',
+                              description: `Internal Server Error ${JSON.stringify(err)}`
+                            })
+                          }
+                          logger.serverLog(TAG,
+                            `listFoundCriteria ${JSON.stringify(subscribers)}`)
+                          let temp = []
+                          for (let i = 0; i < subscribers.length; i++) {
+                            temp.push(subscribers[i]._id)
+                          }
+                          Lists.update({listName: newFileName}, {
+                            content: temp
+                          }, (err2, savedList) => {
+                            if (err) {
+                              return res.status(500).json({
+                                status: 'failed',
+                                description: `Internal Server Error ${JSON.stringify(err)}`
+                              })
+                            }
+                          })
+                        })
+                      }
+                    })
                   })
                 }
               })
@@ -284,6 +338,59 @@ exports.sendNumbers = function (req, res) {
                   description: 'phone number create failed'
                 })
               }
+              PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: 'Other'}, (err, number) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'phone number not found'
+                  })
+                }
+                logger.serverLog(TAG,
+                  `listFoundNumber ${JSON.stringify(number)}`)
+                if (number.length > 0) {
+                  let findNumber = []
+                  let findPage = []
+                  for (let a = 0; a < number.length; a++) {
+                    findNumber.push(number[a].number)
+                    findPage.push(number[a].pageId)
+                  }
+                  let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                    phoneNumber: {
+                      $in: findNumber
+                    },
+                    pageId: {
+                      $in: findPage
+                    }
+                  })
+                  logger.serverLog(TAG,
+                    `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
+                  Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
+                    if (err) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: `Internal Server Error ${JSON.stringify(err)}`
+                      })
+                    }
+                    logger.serverLog(TAG,
+                      `listFoundCriteria ${JSON.stringify(subscribers)}`)
+                    let temp = []
+                    for (let i = 0; i < subscribers.length; i++) {
+                      temp.push(subscribers[i]._id)
+                    }
+                    Lists.update({listName: 'Other'}, {
+                      content: temp
+                    }, (err2, savedList) => {
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
+                    })
+                  })
+                }
+              })
             })
           }
         })
