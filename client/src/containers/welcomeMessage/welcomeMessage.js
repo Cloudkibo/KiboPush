@@ -49,7 +49,7 @@ class WelcomeMessage extends React.Component {
 
   gotoCreate (page) {
     browserHistory.push({
-      pathname: `/createconvo`,
+      pathname: `/createBroadcast`,
       state: {module: 'welcome', _id: page}
     })
   }

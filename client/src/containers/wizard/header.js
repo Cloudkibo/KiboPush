@@ -122,11 +122,11 @@ class Header extends React.Component {
                                     {
                                     (this.props.subscribers &&
                                     this.props.subscribers.length === 0)
-                                    ? <Link to='/convos' className='m-nav-grid__item'>
+                                    ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/convos' className='m-nav-grid__item'>
+                                    : <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>

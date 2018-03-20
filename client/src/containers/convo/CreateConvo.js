@@ -243,7 +243,7 @@ class CreateConvo extends React.Component {
 
   gotoView (event) {
     this.props.history.push({
-      pathname: `/convos`
+      pathname: `/broadcasts`
 
     })
   }

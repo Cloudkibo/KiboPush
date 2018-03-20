@@ -200,7 +200,7 @@ class Sidebar extends Component {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/convos' className='m-menu__link m-menu__toggle'>
+            <Link to='/broadcasts' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-paper-plane' />
               <span className='m-menu__link-text'>Broadcasts</span>
             </Link>
