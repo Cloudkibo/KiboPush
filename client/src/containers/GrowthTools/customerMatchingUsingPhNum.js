@@ -401,15 +401,15 @@ class CustomerMatching extends React.Component {
                   </div>
             }
 
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                Need help in understanding Invite Using Phone Numbers? Here is the            <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding Invite Using Phone Numbers? Here is the  <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
-              </div>
-            </div>
 
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'

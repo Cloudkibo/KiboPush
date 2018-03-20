@@ -276,7 +276,7 @@ class InviteMembers extends React.Component {
                           <div className='m-radio-list'>
                             <label className='m-radio m-radio--bold'>
                               <input type='radio' name='example_5_1' value='agent'
-                                     onChange={this.changeRadio} />
+                                onChange={this.changeRadio} />
                               Agent
                               <span />
                             </label>

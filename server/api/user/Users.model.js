@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   timezone: Number,
   profilePic: String,
   plan: {type: String,
-    enum : ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
+    enum: ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
     default: 'plan_B'},
   isSuperUser: {type: Boolean, default: false},
   createdAt: {type: Date, default: Date.now},
