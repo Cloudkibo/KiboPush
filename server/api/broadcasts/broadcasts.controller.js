@@ -3,6 +3,7 @@
  */
 //
 const PhoneNumber = require('../growthtools/growthtools.model')
+const Lists = require('../lists/lists.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -256,6 +257,9 @@ exports.getfbMessage = function (req, res) {
                               if (err2) {
                                 logger.serverLog(TAG, err2)
                               }
+                              if (subscriberByPhoneNumber) {
+                                updateList(phoneNumber, sender, page)
+                              }
                               logger.serverLog(TAG, 'new Subscriber added')
                               if (!(event.postback && event.postback.title === 'Get Started')) {
                                 logger.serverLog(TAG, 'susbscriber if')
@@ -357,7 +361,35 @@ exports.getfbMessage = function (req, res) {
 
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
-
+function updateList (phoneNumber, sender, page) {
+  PhoneNumber.find({number: phoneNumber, hasSubscribed: true, pageId: page, companyId: page.companyId}, (err, number) => {
+    if (err) {
+    }
+    logger.serverLog(TAG,
+      `listFoundNumber ${JSON.stringify(number)}`)
+    if (number.length > 0) {
+      let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, senderId: sender, isSubscribed: true, phoneNumber: phoneNumber, pageId: page._id}
+      logger.serverLog(TAG,
+        `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
+      Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
+        if (err) {
+        }
+        logger.serverLog(TAG,
+          `listFoundCriteria ${JSON.stringify(subscribers)}`)
+        let temp = []
+        for (let i = 0; i < subscribers.length; i++) {
+          temp.push(subscribers[i]._id)
+        }
+        Lists.update({listName: number[0].fileName, companyId: page.companyId}, {
+          content: temp
+        }, (err2, savedList) => {
+          if (err) {
+          }
+        })
+      })
+    }
+  })
+}
 function handleThePagePostsForAutoPosting (event, status) {
   AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
   .populate('userId')
