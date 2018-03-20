@@ -7,7 +7,6 @@ import React from 'react'
 
 class CardBoxes extends React.Component {
   render () {
-    console.log('cardboxes', this.props.data)
     return (
       <div className='col-xl-6'>
         <div className='row m-row--full-height'>

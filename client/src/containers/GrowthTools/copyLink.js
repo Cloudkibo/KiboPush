@@ -60,7 +60,6 @@ class CopyLink extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps is called')
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -158,7 +157,6 @@ class CopyLink extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages)
 

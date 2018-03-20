@@ -18,7 +18,6 @@ class GettingStarted extends React.Component {
       alerts: [],
       step: 0
     }
-    console.log('constructor in getting started')
     this.selectPage = this.selectPage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.nextStep = this.nextStep.bind(this)
@@ -122,7 +121,6 @@ class GettingStarted extends React.Component {
   }
 
   render () {
-    console.log('In Getting Started', this.state.step)
     return (
       <div>
         <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden>
@@ -163,7 +161,6 @@ class GettingStarted extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
     successMessage: (state.broadcastsInfo.successMessage),

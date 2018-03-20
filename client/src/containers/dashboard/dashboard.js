@@ -42,11 +42,9 @@ class Dashboard extends React.Component {
     this.tourFinished = this.tourFinished.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentWillReceiveProps (nextprops) {
-    console.log('NextProps :', nextprops)
     if (nextprops.user && nextprops.user.emailVerified === false &&
       (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
       browserHistory.push({
@@ -61,11 +59,9 @@ class Dashboard extends React.Component {
         })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
-        console.log('More than 0 subscribers')
         this.setState({isShowingModal: false})
       } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
         // this means 0 subscribers
-        console.log('0 subscribers')
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
@@ -75,16 +71,12 @@ class Dashboard extends React.Component {
         // })
       }
       if (nextprops.user) {
-        console.log('fetchSession in dashboard')
         joinRoom(nextprops.user.companyId)
       }
       if (nextprops.sentseendata) {
-        console.log('sentseendata', nextprops.sentseendata)
         var temp = []
         temp.push(nextprops.sentseendata)
-        console.log('temp', temp)
         this.setState({sentseendata1: nextprops.sentseendata})
-        console.log('sentseendata1', this.state.sentseendata1)
       }
     }
   }
@@ -110,7 +102,6 @@ class Dashboard extends React.Component {
     registerAction({
       event: 'dashboard_updated',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.loadMyPagesList()
         compProp.loadDashboardData()
       }
@@ -162,10 +153,7 @@ class Dashboard extends React.Component {
   }
 
   tourFinished (data) {
-    console.log('Next Tour Step')
     if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
       this.props.dashboardTourCompleted({
         'dashboardTourSeen': true
       })
@@ -200,7 +188,6 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>

@@ -28,9 +28,7 @@ class NonSubscribersList extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in listDetails', nextProps)
     if (nextProps.nonSubscribersNumbers) {
-      console.log('Non-Subscribers Updated', nextProps.nonSubscribersNumbers)
       this.displayData(0, nextProps.nonSubscribersNumbers)
       this.setState({ totalLength: nextProps.nonSubscribersNumbers.length })
     }
@@ -51,7 +49,6 @@ class NonSubscribersList extends React.Component {
   }
 
   exportRecordsNonSubscribers () {
-    console.log('download File called')
     var data = this.prepareExportData()
     var info = data
     var keys = []
@@ -63,15 +60,12 @@ class NonSubscribersList extends React.Component {
     }
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
-        console.log(err)
       } else {
         fileDownload(csv, 'NonSubscribersList.csv')
       }
     })
   }
   displayData (n, nonSubscribers) {
-    console.log('displaying subscribers')
-    console.log(nonSubscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -89,12 +83,10 @@ class NonSubscribersList extends React.Component {
   }
 
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.nonSubscribersDataAll)
   }
 
   searchNonSubscriber (event) {
-    console.log('exeuting subscriber')
     var filtered = []
     for (let i = 0; i < this.props.nonSubscribersNumbers.length; i++) {
       if (this.props.nonSubscribersNumbers[i].number.includes(event.target.value) || this.props.nonSubscribersNumbers[i].number.includes(event.target.value)) {

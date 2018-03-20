@@ -378,6 +378,13 @@ exports.sendNumbers = function (req, res) {
                     for (let i = 0; i < subscribers.length; i++) {
                       temp.push(subscribers[i]._id)
                     }
+                    logger.serverLog(TAG,
+                      `temp push ${JSON.stringify(temp)}`)
+                      Lists.find({listName: 'Other'}, (err, listfound) => {
+                        if (err) {}
+                        logger.serverLog(TAG,
+                          `listFoundCriteriaName ${JSON.stringify(listfound)}`)
+                      })
                     Lists.update({listName: 'Other'}, {
                       content: temp
                     }, (err2, savedList) => {
@@ -387,6 +394,8 @@ exports.sendNumbers = function (req, res) {
                           description: `Internal Server Error ${JSON.stringify(err)}`
                         })
                       }
+                      logger.serverLog(TAG,
+                        `savedList ${JSON.stringify(savedList)}`)
                     })
                   })
                 }

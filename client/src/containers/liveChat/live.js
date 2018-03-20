@@ -83,11 +83,9 @@ class LiveChat extends React.Component {
   }
 
   componentWillMount () {
-    console.log('Fetch Sessions')
   }
 
   changeActiveSession (session) {
-    console.log('active session updated')
     this.setState({activeSession: session})
     var temp = this.state.sessionsData
     for (var i = 0; i < temp.length; i++) {
@@ -109,21 +107,18 @@ class LiveChat extends React.Component {
   }
 
   handleSearch (e) {
-    console.log('handle search', e.target.value)
     this.setState({searchValue: e.target.value}, function () {
       this.filterSession()
     })
   }
 
   handleSort (value) {
-    console.log('handle sort', value)
     this.setState({sortValue: value}, function () {
       this.filterSession()
     })
   }
 
   handleFilter (value) {
-    console.log('handle filter', value)
     if (value !== this.state.filterValue) {
       this.setState({filterValue: value}, function () {
         this.filterSession()
@@ -136,7 +131,6 @@ class LiveChat extends React.Component {
   }
 
   filterSession () {
-    console.log('filter sessions', this.state)
     var temp = this.props.sessions
 
     // For Search
@@ -148,23 +142,19 @@ class LiveChat extends React.Component {
           return item
         }
       })
-      console.log('Array After Search', temp)
     }
 
     // For Sort
     if (this.state.sortValue !== '') {
       if (this.state.sortValue === 'old') {
-        console.log('Sorting Oldest to Newest')
         temp = temp.sort(function (a, b) {
           return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
         })
       } else {
-        console.log('Sorting Newest to Oldest')
         temp = temp.sort(function (a, b) {
           return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
         })
       }
-      console.log('Array After Sorting', temp)
     }
 
     // For Filter
@@ -175,7 +165,6 @@ class LiveChat extends React.Component {
           return item
         }
       })
-      console.log('Array After Page Filter', temp)
     }
 
     this.setState({sessionsData: temp})
@@ -190,7 +179,6 @@ class LiveChat extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     this.setState({ignore: true})
 
     if (nextProps.sessions) {
@@ -198,7 +186,6 @@ class LiveChat extends React.Component {
       this.setState({sessionsData: nextProps.sessions})
       if (this.state.activeSession === '') {
         if (this.props.location.state && this.props.location.state.session_id) {
-          console.log(this.props.location.state.session_id)
           for (var p = 0; p < nextProps.sessions.length; p++) {
             if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
               this.setState({activeSession: nextProps.sessions[p]})
@@ -217,13 +204,11 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
-      console.log('unreadSession')
       var temp = this.state.sessionsData
       for (var i = 0; i < temp.length; i++) {
         if (temp[i]._id === nextProps.unreadSession) {
           temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
           this.setState({sessionsData: temp}, () => {
-            console.log(this.state.sessionsData)
           })
         }
       }
@@ -244,7 +229,6 @@ class LiveChat extends React.Component {
             _id: sess[j]._id
           }
           this.setState({sessionsData: sess}, () => {
-            console.log(this.state.sessionsData)
           })
         }
       }
@@ -255,8 +239,6 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.sessions) {
-      console.log('New Message Received at following session id', nextProps.socketSession)
-      console.log('New Message data', nextProps.socketData)
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
       } else if (nextProps.socketSession !== '') {
@@ -268,11 +250,9 @@ class LiveChat extends React.Component {
         })
 
         if (isPresent) {
-          console.log('Session exists ignoring the message')
           this.props.fetchSessions({ company_id: this.props.user._id })
           // this.props.resetSocket()
         } else {
-          console.log('New Session Detected, initiating session fetch')
           this.props.fetchSessions({ company_id: this.props.user._id })
         }
       }
@@ -285,12 +265,10 @@ class LiveChat extends React.Component {
 
   onNotificationClick () {
     window.focus()
-    console.log('Notificaation was clicked')
     this.setState({ignore: true})
   }
 
   showGuideLinesDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModalGuideLines: true})
   }
 
@@ -299,8 +277,6 @@ class LiveChat extends React.Component {
   }
 
   render () {
-    console.log('sessions: ', this.props.sessions)
-    console.log('state: ', this.state)
     return (
       <div>
         <Header />

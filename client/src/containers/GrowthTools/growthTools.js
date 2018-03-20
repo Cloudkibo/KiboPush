@@ -31,7 +31,6 @@ class GrowthTools extends React.Component {
     })
   }
   componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps is called')
   }
 
   componentDidMount () {

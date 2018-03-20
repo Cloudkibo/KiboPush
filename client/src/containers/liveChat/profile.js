@@ -31,11 +31,9 @@ class Profile extends React.Component {
     // document.body.appendChild(addScript)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
   }
 
   render () {
-    console.log('session in profile', this.props.currentSession)
     return (
       <div className='col-xl-3'>
         <div className='m-portlet m-portlet--full-height'>

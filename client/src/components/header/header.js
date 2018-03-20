@@ -25,19 +25,16 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
   }
 
-  toggleSidebar () {
-    $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
-    console.log('Class Added')
+  toggleSidebar (){
+     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
   }
   handleNotificationOnShow () {
-    console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
     this.props.resetSocket()
   }
 
   onNotificationClick () {
     window.focus()
-    console.log('Notificaation is clicked')
     browserHistory.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
@@ -46,9 +43,7 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in header called', this.state.ignore)
     if (nextProps.socketSession !== '' && this.state.ignore) {
-      console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
     if (nextProps.user) {
@@ -59,7 +54,6 @@ class Header extends React.Component {
         // http://help.fullstory.com/develop-js/setuservars.
         reviewsWritten_int: 14
       })
-      console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
@@ -83,16 +77,16 @@ class Header extends React.Component {
     this.props.getuserdetails()
   }
   render () {
-    console.log('This user details', this.props.user)
 
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
-        <div className='fb-customerchat'
-          data-page_id='151990922046256'
-          data-minimized='true'
-          data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
-          data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
+        <div className="fb-customerchat"
+         data-page_id="151990922046256"
+         data-minimized = "true"
+         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
+         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
+        </div>
 
         <Notification
           ignore={this.state.ignore}
@@ -342,7 +336,6 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
