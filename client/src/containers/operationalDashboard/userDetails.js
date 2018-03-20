@@ -110,7 +110,7 @@ class UserDetails extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    pages: state.PagesInfo.pages
+    pages: state.backdoorInfo.pages
   }
 }
 

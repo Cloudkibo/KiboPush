@@ -341,11 +341,11 @@ class SurveyDetails extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    survey: (state.SurveyDetailsInfo.survey),
-    responses: (state.SurveyDetailsInfo.responses),
-    questions: (state.SurveyDetailsInfo.questions),
-    currentUser: (state.getCurrentUser.currentUser),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey)
+    survey: (state.backdoorInfo.survey),
+    responses: (state.backdoorInfo.responses),
+    questions: (state.backdoorInfo.questions),
+    currentUser: (state.backdoorInfo.currentUser),
+    currentSurvey: (state.backdoorInfo.currentSurvey)
   }
 }
 

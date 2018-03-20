@@ -241,7 +241,7 @@ class SurveysInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    surveys: state.SurveysInfo.surveys
+    surveys: state.backdoorInfo.surveys
   }
 }
 

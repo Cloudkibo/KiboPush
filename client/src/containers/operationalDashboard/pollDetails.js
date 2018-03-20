@@ -435,9 +435,9 @@ class ViewPollDetail extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    currentPoll: (state.getCurrentPoll.currentPoll),
-    currentUser: (state.getCurrentUser.currentUser),
-    pollDetails: (state.PollDetailsInfo.pollDetails)
+    currentPoll: (state.backdoorInfo.currentPoll),
+    currentUser: (state.backdoorInfo.currentUser),
+    pollDetails: (state.backdoorInfo.pollDetails)
   }
 }
 

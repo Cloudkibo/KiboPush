@@ -278,10 +278,10 @@ class PageSubscribers extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
-    locales: (state.PageSubscribersInfo.locales),
-    currentUser: (state.getCurrentUser.currentUser),
-    currentPage: (state.getCurrentPage.currentPage)
+    pageSubscribers: (state.backdoorInfo.pageSubscribers),
+    locales: (state.backdoorInfo.locales),
+    currentUser: (state.backdoorInfo.currentUser),
+    currentPage: (state.backdoorInfo.currentPage)
   }
 }
 

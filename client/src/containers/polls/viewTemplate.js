@@ -122,7 +122,7 @@ class viewPoll extends React.Component {
 function mapStateToProps (state) {
   return {
     pollDetails: (state.templatesInfo.pollDetails),
-    currentPoll: (state.getCurrentPoll.currentPoll)
+    currentPoll: (state.backdoorInfo.currentPoll)
   }
 }
 

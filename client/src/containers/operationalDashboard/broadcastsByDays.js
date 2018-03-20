@@ -253,7 +253,7 @@ class BroadcastsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: state.surveysPollsBroadcasts.broadcasts
+    broadcasts: state.backdoorInfo.broadcasts
   }
 }
 

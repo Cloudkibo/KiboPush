@@ -543,7 +543,7 @@ function mapStateToProps (state) {
     categories: (state.templatesInfo.categories),
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey)
+    currentSurvey: (state.backdoorInfo.currentSurvey)
   }
 }
 

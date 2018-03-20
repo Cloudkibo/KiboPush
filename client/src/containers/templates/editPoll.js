@@ -330,7 +330,7 @@ function mapStateToProps (state) {
   return {
     categories: (state.templatesInfo.categories),
     pollDetails: (state.templatesInfo.pollDetails),
-    currentPoll: (state.getCurrentPoll.currentPoll)
+    currentPoll: (state.backdoorInfo.currentPoll)
   }
 }
 
