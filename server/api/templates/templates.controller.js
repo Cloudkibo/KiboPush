@@ -73,8 +73,6 @@ exports.createPoll = function (req, res) {
 }
 
 exports.createSurvey = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
   let surveyPayload = {
     title: req.body.survey.title,
     description: req.body.survey.description,
@@ -238,8 +236,6 @@ exports.pollDetails = function (req, res) {
   })
 }
 exports.deletePoll = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   TemplatePolls.findById(req.params.id, (err, poll) => {
     if (err) {
       return res.status(500)
@@ -260,8 +256,6 @@ exports.deletePoll = function (req, res) {
   })
 }
 exports.deleteCategory = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   Category.findById(req.params.id, (err, category) => {
     if (err) {
       return res.status(500)
@@ -282,8 +276,6 @@ exports.deleteCategory = function (req, res) {
   })
 }
 exports.deleteSurvey = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete survey ${JSON.stringify(req.params)}`)
   TemplateSurveys.findById(req.params.id, (err, survey) => {
     if (err) {
       return res.status(500)
@@ -304,8 +296,6 @@ exports.deleteSurvey = function (req, res) {
   })
 }
 exports.editSurvey = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in edit autoposting ${JSON.stringify(req.body)}`)
   TemplateSurveys.findById(req.body.survey._id, (err, survey) => {
     if (err) {
       return res.status(500)
@@ -331,9 +321,7 @@ exports.editSurvey = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err2)}`
           })
         }
-        logger.serverLog(TAG, `anishachhatlength: ${questions.length}`)
         for (let i = 0; i < questions.length; i++) {
-          logger.serverLog(TAG, `anishachhat: ${questions[i]}`)
           questions[i].remove((err2) => {
             if (err2) {
               return res.status(500)

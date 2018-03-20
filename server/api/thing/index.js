@@ -28,7 +28,6 @@ router.get('/', (req, res) => {
           }
           needle.get(options.url, options, (error, response) => {
             const subsriber = response.body
-            logger.serverLog(TAG, `NEW SUB DATA ${JSON.stringify(subsriber)}`)
             if (!error) {
               const payload = {
                 firstName: subsriber.first_name,
@@ -39,7 +38,6 @@ router.get('/', (req, res) => {
                 profilePic: subsriber.profile_pic
               }
               Subscribers.findOne({senderId: sub.senderId}, (err, subscriber) => {
-                logger.serverLog(TAG, `SUB TO UPDATE ${JSON.stringify(subscriber)}`)
                 if (err) logger.serverLog(TAG, err)
                 subscriber.firstName = subsriber.first_name
                 subscriber.lastName = subsriber.last_name
@@ -48,7 +46,6 @@ router.get('/', (req, res) => {
                 subscriber.timezone = subsriber.timezone
                 subscriber.profilePic = subsriber.profile_pic
                 subscriber.save((err, result) => {
-                  logger.serverLog(TAG, `SUB UPDATED ${JSON.stringify(result)}`)
                 })
               })
             } else {

@@ -78,7 +78,6 @@ exports.upload = function (req, res) {
           .pipe(csv())
           .on('data', function (data) {
             if (data.phone_numbers && data.names) {
-              logger.serverLog(TAG, `data.names ${JSON.stringify(data.names)}`)
               var result = data.phone_numbers.replace(/[- )(]/g, '')
               // var savePhoneNumber = new PhoneNumber({
               //   name: data.name,
@@ -140,8 +139,6 @@ exports.upload = function (req, res) {
                           description: 'phone number not found'
                         })
                       }
-                      logger.serverLog(TAG,
-                        `listFoundNumber ${JSON.stringify(number)}`)
                       if (number.length > 0) {
                         let findNumber = []
                         let findPage = []
@@ -158,8 +155,6 @@ exports.upload = function (req, res) {
                             $in: findPage
                           }
                         })
-                        logger.serverLog(TAG,
-                          `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
                         Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
                           if (err) {
                             return res.status(500).json({
@@ -167,8 +162,6 @@ exports.upload = function (req, res) {
                               description: `Internal Server Error ${JSON.stringify(err)}`
                             })
                           }
-                          logger.serverLog(TAG,
-                            `listFoundCriteria ${JSON.stringify(subscribers)}`)
                           let temp = []
                           for (let i = 0; i < subscribers.length; i++) {
                             temp.push(subscribers[i]._id)
@@ -195,7 +188,6 @@ exports.upload = function (req, res) {
                 if (err) {
                   logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                logger.serverLog(TAG, `Pages ${JSON.stringify(pages)}`)
                 pages.forEach(page => {
                   let messageData = {
                     'recipient': JSON.stringify({
@@ -220,9 +212,6 @@ exports.upload = function (req, res) {
                           `At invite to messenger using phone ${JSON.stringify(
                             err)}`)
                       } else {
-                        logger.serverLog(TAG,
-                          `At invite to messenger using phone ${JSON.stringify(
-                            res)}`)
                       }
                     })
                 })
@@ -249,7 +238,6 @@ exports.upload = function (req, res) {
 }
 
 exports.sendNumbers = function (req, res) {
-  logger.serverLog(TAG, `pageIdanisha ${JSON.stringify(req.body)}`)
   let parametersMissing = false
 
   if (!_.has(req.body, 'numbers')) parametersMissing = true
@@ -345,8 +333,6 @@ exports.sendNumbers = function (req, res) {
                     description: 'phone number not found'
                   })
                 }
-                logger.serverLog(TAG,
-                  `listFoundNumber ${JSON.stringify(number)}`)
                 if (number.length > 0) {
                   let findNumber = []
                   let findPage = []
@@ -363,8 +349,6 @@ exports.sendNumbers = function (req, res) {
                       $in: findPage
                     }
                   })
-                  logger.serverLog(TAG,
-                    `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
                   Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
                     if (err) {
                       return res.status(500).json({
@@ -372,14 +356,10 @@ exports.sendNumbers = function (req, res) {
                         description: `Internal Server Error ${JSON.stringify(err)}`
                       })
                     }
-                    logger.serverLog(TAG,
-                      `listFoundCriteria ${JSON.stringify(subscribers)}`)
                     let temp = []
                     for (let i = 0; i < subscribers.length; i++) {
                       temp.push(subscribers[i]._id)
                     }
-                    logger.serverLog(TAG,
-                      `temp push ${JSON.stringify(temp)}`)
                     Lists.update({listName: 'Other', userId: req.user._id, companyId: companyUser.companyId}, {
                       content: temp
                     }, (err2, savedList) => {
@@ -389,8 +369,6 @@ exports.sendNumbers = function (req, res) {
                           description: `Internal Server Error ${JSON.stringify(err)}`
                         })
                       }
-                      logger.serverLog(TAG,
-                        `savedList ${JSON.stringify(savedList)}`)
                     })
                   })
                 }
@@ -399,7 +377,6 @@ exports.sendNumbers = function (req, res) {
           }
         })
         pages.forEach(page => {
-          logger.serverLog(TAG, `number where message is going ${result}`)
           let messageData = {
             'recipient': JSON.stringify({
               'phone_number': result
@@ -423,9 +400,6 @@ exports.sendNumbers = function (req, res) {
                   `Error At invite to messenger using phone ${JSON.stringify(
                     err)}`)
               } else {
-                logger.serverLog(TAG,
-                  `At invite to messenger using phone ${JSON.stringify(
-                    res)}`)
               }
             })
         })

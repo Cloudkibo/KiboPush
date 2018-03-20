@@ -101,8 +101,6 @@ exports.updateChecks = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'User not found'})
     }
-    logger.serverLog(TAG, `user object being update with : ${JSON.stringify(
-      req.body)}`)
 
     if (req.body.getStartedSeen) user.getStartedSeen = req.body.getStartedSeen
     if (req.body.dashboardTourSeen) user.dashboardTourSeen = req.body.dashboardTourSeen

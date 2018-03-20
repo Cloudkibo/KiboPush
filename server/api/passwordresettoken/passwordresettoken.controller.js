@@ -84,7 +84,6 @@ exports.forgot = function (req, res) {
 }
 
 exports.reset = function (req, res) {
-  logger.serverLog(TAG, `body ${JSON.stringify(req.body)}`)
   let token = req.body.token
 
   Passwordresettoken.findOne({token: token}, function (err, doc) {

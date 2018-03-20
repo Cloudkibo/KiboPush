@@ -62,8 +62,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -160,8 +158,6 @@ exports.edit = function (req, res) {
    options: Array of String
    },...]
    } */
-  logger.serverLog(TAG,
-    `This is body in edit survey ${JSON.stringify(req.body)}`)
   Surveys.findById(req.body.survey._id, (err, survey) => {
     if (err) {
       return res.status(500).json({
@@ -279,8 +275,6 @@ exports.showQuestions = function (req, res) {
 
 // Submit response of survey
 exports.submitresponse = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in submit survey response ${JSON.stringify(req.body)}`)
   // expected body will be
 
   /*
@@ -322,7 +316,6 @@ function exists (list, content) {
   return false
 }
 exports.send = function (req, res) {
-  logger.serverLog(TAG, `Inside sendsurvey ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -336,7 +329,6 @@ exports.send = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    logger.serverLog(TAG, `company users found`)
 
     /* Getting the company user who has connected the facebook account */
     Pages.findOne({companyId: companyUser.companyId, connected: true}, (err, userPage) => {
@@ -361,7 +353,6 @@ exports.send = function (req, res) {
         } else {
           currentUser = connectedUser
         }
-        logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
         /*
         Expected request body
         { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
@@ -377,13 +368,11 @@ exports.send = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err2)}`
             })
           }
-          logger.serverLog(TAG, `survey questions found ${JSON.stringify(questions)}`)
           Surveys.findOne({_id: req.body._id}, (err, survey) => {
             if (err) {
               return logger.serverLog(TAG,
               `At surveys ${JSON.stringify(err)}`)
             }
-            logger.serverLog(TAG, `survey found ${JSON.stringify(survey)}`)
             if (questions.length > 0) {
               let first_question = questions[0]
               // create buttons
@@ -424,10 +413,8 @@ exports.send = function (req, res) {
                     description: `Internal Server Error ${JSON.stringify(err)}`
                   })
                 }
-                logger.serverLog(TAG, `pages found ${JSON.stringify(pages)}`)
                 for (let z = 0; z < pages.length; z++) {
                   if (req.body.isList === true) {
-                    logger.serverLog(TAG, `inside isList`)
                     let ListFindCriteria = {}
                     ListFindCriteria = _.merge(ListFindCriteria,
                       {
@@ -490,7 +477,6 @@ exports.send = function (req, res) {
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                               message: messageData
                             }
-                            logger.serverLog(TAG, messageData)
                             needle.post(
                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                             data, (err, resp) => {
@@ -500,9 +486,6 @@ exports.send = function (req, res) {
                                   description: JSON.stringify(err)
                                 })
                               }
-                              logger.serverLog(TAG,
-                                `Sending survey to subscriber response ${JSON.stringify(
-                                    resp.body)}`)
                               let surveyPage = new SurveyPage({
                                 pageId: pages[z].pageId,
                                 userId: req.user._id,
@@ -578,7 +561,6 @@ exports.send = function (req, res) {
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                             message: messageData
                           }
-                          logger.serverLog(TAG, messageData)
                           needle.post(
                           `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                           data, (err, resp) => {
@@ -588,9 +570,6 @@ exports.send = function (req, res) {
                                 description: JSON.stringify(err)
                               })
                             }
-                            logger.serverLog(TAG,
-                              `Sending survey to subscriber response ${JSON.stringify(
-                                resp.body)}`)
                             let surveyPage = new SurveyPage({
                               pageId: pages[z].pageId,
                               userId: req.user._id,
@@ -665,8 +644,6 @@ exports.send = function (req, res) {
   })
 }
 exports.sendSurvey = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Create Survey, req body = ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -767,7 +744,6 @@ exports.sendSurvey = function (req, res) {
           } else {
             currentUser = connectedUser
           }
-          logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
           /*
           Expected request body
           { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
@@ -783,13 +759,11 @@ exports.sendSurvey = function (req, res) {
                 description: `Internal Server Error ${JSON.stringify(err2)}`
               })
             }
-            logger.serverLog(TAG, `survey questions found ${JSON.stringify(questions)}`)
             Surveys.findOne({_id: survey._id}, (err, survey) => {
               if (err) {
                 return logger.serverLog(TAG,
                 `At surveys ${JSON.stringify(err)}`)
               }
-              logger.serverLog(TAG, `survey found ${JSON.stringify(survey)}`)
               if (questions.length > 0) {
                 let first_question = questions[0]
                 // create buttons
@@ -830,10 +804,8 @@ exports.sendSurvey = function (req, res) {
                       description: `Internal Server Error ${JSON.stringify(err)}`
                     })
                   }
-                  logger.serverLog(TAG, `pages found ${JSON.stringify(pages)}`)
                   for (let z = 0; z < pages.length; z++) {
                     if (req.body.isList === true) {
-                      logger.serverLog(TAG, `inside isList`)
                       let ListFindCriteria = {}
                       ListFindCriteria = _.merge(ListFindCriteria,
                         {
@@ -896,7 +868,6 @@ exports.sendSurvey = function (req, res) {
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
-                              logger.serverLog(TAG, messageData)
                               needle.post(
                               `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                               data, (err, resp) => {
@@ -906,9 +877,6 @@ exports.sendSurvey = function (req, res) {
                                     description: JSON.stringify(err)
                                   })
                                 }
-                                logger.serverLog(TAG,
-                                  `Sending survey to subscriber response ${JSON.stringify(
-                                      resp.body)}`)
                                 let surveyPage = new SurveyPage({
                                   pageId: pages[z].pageId,
                                   userId: req.user._id,
@@ -984,7 +952,6 @@ exports.sendSurvey = function (req, res) {
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                               message: messageData
                             }
-                            logger.serverLog(TAG, messageData)
                             needle.post(
                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                             data, (err, resp) => {
@@ -994,9 +961,6 @@ exports.sendSurvey = function (req, res) {
                                   description: JSON.stringify(err)
                                 })
                               }
-                              logger.serverLog(TAG,
-                                `Sending survey to subscriber response ${JSON.stringify(
-                                  resp.body)}`)
                               let surveyPage = new SurveyPage({
                                 pageId: pages[z].pageId,
                                 userId: req.user._id,
@@ -1037,8 +1001,6 @@ exports.sendSurvey = function (req, res) {
 }
 
 exports.deleteSurvey = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete survey ${JSON.stringify(req.params)}`)
   Surveys.findById(req.params.id, (err, survey) => {
     if (err) {
       return res.status(500)
