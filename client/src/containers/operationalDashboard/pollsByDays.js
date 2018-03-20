@@ -275,7 +275,7 @@ class PollsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    polls: state.surveysPollsBroadcasts.polls
+    polls: state.backdoorInfo.polls
   }
 }
 

@@ -582,15 +582,15 @@ class OperationalDashboard extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    users: (state.UsersInfo.users),
-    locales: (state.UsersInfo.locales),
-    currentUser: (state.getCurrentUser.currentUser),
-    dataobjects: (state.dataObjectsInfo.dataobjects),
-    toppages: (state.topPagesInfo.toppages),
-    broadcastsGraphData: (state.broadcastsGraphInfo),
-    pollsGraphData: (state.pollsGraphInfo),
-    surveysGraphData: (state.surveysGraphInfo),
-    sessionsGraphData: (state.sessionsGraphInfo)
+    users: (state.backdoorInfo.users),
+    locales: (state.backdoorInfo.locales),
+    currentUser: (state.backdoorInfo.currentUser),
+    dataobjects: (state.backdoorInfo.dataobjects),
+    toppages: (state.backdoorInfo.toppages),
+    broadcastsGraphData: (state.backdoorInfo),
+    pollsGraphData: (state.backdoorInfo),
+    surveysGraphData: (state.backdoorInfo),
+    sessionsGraphData: (state.backdoorInfo)
   }
 }
 

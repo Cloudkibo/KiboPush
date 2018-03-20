@@ -610,10 +610,10 @@ class CustomerMatching extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    uploadResponse: state.getFileUploadResponse,
+    uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
-    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData)
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
     // uploadResponse: {status :'success'}
     // uploadResponse: {status :'failed' , description: 'Some problem'}
   }

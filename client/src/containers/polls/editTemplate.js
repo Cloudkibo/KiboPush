@@ -561,7 +561,7 @@ function mapStateToProps (state) {
     pollCreated: (state.pollsInfo.pollCreated),
     user: (state.basicInfo.user),
     pollDetails: (state.templatesInfo.pollDetails),
-    currentPoll: (state.getCurrentPoll.currentPoll),
+    currentPoll: (state.backdoorInfo.currentPoll),
     customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers)
   }

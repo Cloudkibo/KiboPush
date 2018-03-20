@@ -15,22 +15,17 @@ const initialState = {
     }
   }
 }
-export function sentSeenInfo (state = {}, action) {
-  switch (action.type) {
-    case ActionTypes.UPDATE_SENT_VS_SEEN:
-      return Object.assign({}, state, {
-        sentseendata: action.data
-      })
 
-    default:
-      return state
-  }
-}
 export function dashboardInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_DASHBOARD:
       return Object.assign({}, state, {
         dashboard: action.data
+      })
+
+    case ActionTypes.UPDATE_SENT_VS_SEEN:
+      return Object.assign({}, state, {
+        sentseendata: action.data
       })
 
     default:

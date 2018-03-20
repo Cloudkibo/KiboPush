@@ -821,8 +821,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    indexByPage: (state.indexByPage.menuitems),
-    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem),
+    indexByPage: (state.menuInfo.menuitems),
+    currentMenuItem: (state.menuInfo.currentMenuItem),
     successMessage: (state.menuInfo.successMessage),
     errorMessage: (state.menuInfo.errorMessage)
     //  items: (state.menuInfo.menuitems)

@@ -221,7 +221,7 @@ class NonSubscribersList extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData),
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
     currentList: (state.listsInfo.currentList)
   }
 }

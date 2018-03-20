@@ -841,7 +841,7 @@ function mapStateToProps (state) {
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
     surveyCreated: (state.surveysInfo.surveyCreated),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey),
+    currentSurvey: (state.backdoorInfo.currentSurvey),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),

@@ -232,7 +232,7 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     dashboard: (state.dashboardInfo.dashboard),
-    sentseendata: (state.sentSeenInfo.sentseendata),
+    sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
     subscribers: (state.subscribersInfo.subscribers)
   }

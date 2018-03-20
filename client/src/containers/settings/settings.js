@@ -406,12 +406,12 @@ class Settings extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    apiEnable: (state.APIInfo.apiEnable),
-    apiDisable: (state.APIInfo.apiDisable),
-    resetData: (state.APIInfo.resetData),
-    apiSuccess: (state.APIInfo.apiSuccess),
-    apiFailure: (state.APIInfo.apiFailure),
-    switchState: (state.APIInfo.switchState)
+    apiEnable: (state.settingsInfo.apiEnable),
+    apiDisable: (state.settingsInfo.apiDisable),
+    resetData: (state.settingsInfo.resetData),
+    apiSuccess: (state.settingsInfo.apiSuccess),
+    apiFailure: (state.settingsInfo.apiFailure),
+    switchState: (state.settingsInfo.switchState)
   }
 }
 

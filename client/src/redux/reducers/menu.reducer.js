@@ -22,27 +22,13 @@ export function menuInfo (state = initialState, action) {
       return Object.assign({}, state, {
         errorMessage: action.data
       })
-    default:
-      return state
-  }
-}
 
-export function indexByPage (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_INDEX_BY_PAGE:
-      console.log('Reducer', action.data)
       return Object.assign({}, state, {
         menuitems: action.data
       })
-    default:
-      return state
-  }
-}
 
-export function getCurrentMenuItem (state = initialState1, action) {
-  switch (action.type) {
     case ActionTypes.SAVE_CURRENT_MENUITEM:
-      console.log('getCurrentMenuItem', action.data)
       return Object.assign({}, state, {
         currentMenuItem: action.data
       })

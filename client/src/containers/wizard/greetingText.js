@@ -381,7 +381,7 @@ class GreetingMessage extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    greetingMessage: (state.APIInfo.greetingMessage),
+    greetingMessage: (state.settingsInfo.greetingMessage),
     user: (state.basicInfo.user)
     // changeFailure: (state.APIInfo.changeFailure)
   }

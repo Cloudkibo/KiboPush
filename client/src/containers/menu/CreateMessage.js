@@ -485,7 +485,7 @@ class CreateMessage extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
+    currentMenuItem: (state.menuInfo.currentMenuItem)
   }
 }
 

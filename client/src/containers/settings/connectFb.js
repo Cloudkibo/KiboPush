@@ -91,8 +91,8 @@ class ConnectFB extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    // changeSuccess: (state.APIInfo.changeSuccess),
-    // changeFailure: (state.APIInfo.changeFailure)
+    // changeSuccess: (state.settingsInfo.changeSuccess),
+    // changeFailure: (state.settingsInfo.changeFailure)
   }
 }
 
