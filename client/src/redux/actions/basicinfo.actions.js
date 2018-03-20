@@ -47,13 +47,6 @@ export function setSocketStatus (data) {
   }
 }
 
-
-export function getStartedCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
-  }
-}
-
 export function getuserdetails () {
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
@@ -69,12 +62,5 @@ export function getFbAppId () {
 export function getAdminSubscriptions () {
   return (dispatch) => {
     callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
-  }
-}
-
-
-export function getStartedCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
   }
 }
