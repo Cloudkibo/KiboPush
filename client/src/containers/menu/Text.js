@@ -39,7 +39,6 @@ class Text extends React.Component {
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
   }
   componentDidMount () {
-    console.log('buttons in text', this.props.buttons)
     if (this.props.message && this.props.message !== '') {
       this.setState({text: this.props.message})
     }
@@ -61,7 +60,6 @@ class Text extends React.Component {
   }
 
   setEmoji (emoji) {
-    console.log('selected emoji', emoji)
     this.setState({
       text: this.state.text + emoji.native
 
@@ -91,9 +89,7 @@ class Text extends React.Component {
     this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   removeButton (obj) {
-    console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
-    console.log('Filter', temp)
     this.setState({button: temp})
     this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
@@ -164,7 +160,6 @@ class Text extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 

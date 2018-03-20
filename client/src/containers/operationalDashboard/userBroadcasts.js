@@ -7,7 +7,6 @@ import { handleDate } from '../../utility/utils'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor', props.userID)
     props.loadBroadcastsList(props.userID)
     this.state = {
       broadcastsData: [],
@@ -23,7 +22,6 @@ class BroadcastsInfo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
   }
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -35,10 +33,8 @@ class BroadcastsInfo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
   displayData (n, broadcasts) {
-    console.log('one', broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -52,17 +48,13 @@ class BroadcastsInfo extends React.Component {
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({broadcastsData: data, broadcastsDataAll: broadcasts})
-    console.log('in displayData', this.state.broadcastsData)
   }
   handlePageClick (data) {
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('userbroadcasts componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
@@ -83,7 +75,6 @@ class BroadcastsInfo extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
@@ -226,7 +217,6 @@ class BroadcastsInfo extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('user broadcasts', state)
   return {
     broadcasts: state.BroadcastsInfo.broadcasts
   }

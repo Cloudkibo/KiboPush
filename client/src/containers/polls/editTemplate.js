@@ -25,7 +25,6 @@ class EditPoll extends React.Component {
     props.getuserdetails()
     if (this.props.currentPoll) {
       const id = this.props.currentPoll._id
-      console.log('id', id)
       props.loadPollDetails(id)
       props.loadCustomerLists()
     }
@@ -111,7 +110,6 @@ class EditPoll extends React.Component {
       }
     }
     if (nextprops.pollDetails) {
-      console.log('details', nextprops.pollDetails)
       this.setState({title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category})
     }
   }
@@ -122,7 +120,6 @@ class EditPoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     $('#selectLists').select2({
       data: lists,
@@ -136,7 +133,6 @@ class EditPoll extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -144,13 +140,11 @@ class EditPoll extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
 
     $("#selectLists").val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
-    console.log('Page Options in select', pageOptions)
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
@@ -169,7 +163,6 @@ class EditPoll extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
@@ -192,7 +185,6 @@ class EditPoll extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -215,7 +207,6 @@ class EditPoll extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
 
@@ -270,7 +261,6 @@ class EditPoll extends React.Component {
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
-      console.log('Poll added')
     }
   }
 
@@ -297,11 +287,9 @@ class EditPoll extends React.Component {
     }
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -568,7 +556,6 @@ class EditPoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     pollCreated: (state.pollsInfo.pollCreated),

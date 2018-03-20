@@ -53,7 +53,6 @@ class ViewPollDetail extends React.Component {
     }
   }
   searchSubscriber (event) {
-    console.log('exeuting subscriber')
     this.setState({searchValue: event.target.value})
     var filtered = []
     var data = this.props.location.state.data.subscriber
@@ -71,8 +70,6 @@ class ViewPollDetail extends React.Component {
   }
 
   displayData (n, subscribers) {
-    console.log('exeuting subscriber')
-    console.log(subscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -89,11 +86,9 @@ class ViewPollDetail extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('Poll Details Receive Props', nextProps.pollDetails)
     if (nextProps.pollDetails) {
       let pollResponses = nextProps.pollDetails.pollResponses
       let pollPages = nextProps.pollDetails.pollpages
@@ -158,7 +153,6 @@ class ViewPollDetail extends React.Component {
       })
     } else {
       const user = this.props.currentUser
-      console.log('back to user details', user, this.props)
       this.props.history.push({
         pathname: `/userDetails`,
         state: user
@@ -440,7 +434,6 @@ class ViewPollDetail extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     currentPoll: (state.getCurrentPoll.currentPoll),
     currentUser: (state.getCurrentUser.currentUser),

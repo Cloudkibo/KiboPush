@@ -12,7 +12,6 @@ const moment = extendMoment(Moment)
 class SurveysInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor surveyinfo', props.userID)
     props.loadSurveysByDays(0)
     this.state = {
       SurveyData: [],
@@ -33,7 +32,6 @@ class SurveysInfo extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -45,11 +43,9 @@ class SurveysInfo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
 
   displayData (n, surveys) {
-    console.log('surveys:', surveys)
     let offset = n * 4
     let data = []
     let limit
@@ -63,18 +59,14 @@ class SurveysInfo extends React.Component {
       data[index] = surveys[i]
       index++
     }
-    console.log('data', data)
     this.setState({SurveyData: data})
-    console.log('in displayData', this.state.SurveyData)
   }
 
   handlePageClick (data) {
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('userSurveys componentWillReceiveProps is called')
     if (nextProps.surveys) {
-      console.log('Surveys Updated', nextProps.surveys)
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
     }
@@ -82,7 +74,6 @@ class SurveysInfo extends React.Component {
   searchSurveys (event) {
     var filtered = []
     for (let i = 0; i < this.props.surveys.length; i++) {
-      console.log('props surveys', this.props.surveys[i])
       if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.surveys[i])
       }
@@ -97,7 +88,6 @@ class SurveysInfo extends React.Component {
       this.displayData(0, this.props.surveys)
       this.setState({ totalLength: this.props.surveys.length })
     } else if (val.value === 10) {
-      console.log('Selected:', val)
       this.filterByDays(10)
       this.setState({ selectedFilterValue: val })
     } else if (val.value === 30) {
@@ -109,7 +99,6 @@ class SurveysInfo extends React.Component {
     var defaultVal = 10
     var value = e.target.value
     this.setState({selectedDays: value})
-    console.log('On days change', value)
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -304,7 +293,6 @@ class SurveysInfo extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('user survey', state)
   return {
     surveys: state.surveysPollsBroadcasts.surveys
   }

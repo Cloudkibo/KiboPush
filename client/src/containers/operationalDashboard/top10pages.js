@@ -10,7 +10,6 @@ class top10pages extends React.Component {
     this.onPageClick = this.onPageClick.bind(this)
   }
   onPageClick (e, page) {
-    console.log('Page Click', page)
     this.props.savePageInformation(page)
   }
   render () {

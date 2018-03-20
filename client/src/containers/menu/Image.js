@@ -60,9 +60,7 @@ class Image extends React.Component {
         imgSrc: [reader.result]
       })
     }.bind(this)
-    console.log(url) // Would see a path?
 
-    console.log('Images in OnChange', file)
     this.setState({
       showPreview: false,
       loading: true
@@ -123,7 +121,6 @@ class Image extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),

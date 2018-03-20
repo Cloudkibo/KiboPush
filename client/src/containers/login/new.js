@@ -59,13 +59,10 @@ class Login extends React.Component {
     log(TAG, 'Login Container Mounted')
   }
   componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps called', nextprops)
     if (nextprops.errorMessage) {
-      console.log('nextprops.errorMessage', nextprops.errorMessage)
       //  this.setState({error: true})
     }
     if (nextprops.successMessage) {
-      console.log('succes', nextprops.successMessage)
       this.setState({success: true, error: false})
       this.props.history.push({
         pathname: '/dashboard'
@@ -74,7 +71,6 @@ class Login extends React.Component {
     }
   }
   render () {
-    console.log('In Login new JS')
     var alertOptions = {
       offset: 14,
       position: 'bottom left',
@@ -193,7 +189,6 @@ class Login extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     errorMessage: (state.loginInfo.errorMessage),
     successMessage: (state.loginInfo.successMessage)

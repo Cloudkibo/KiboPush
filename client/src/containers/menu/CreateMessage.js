@@ -56,25 +56,24 @@ class CreateMessage extends React.Component {
     var currentMenuItem = this.props.currentMenuItem
     switch (index[0]) {
       case 'item':
-        console.log('An Item was Clicked position ', index[1])
+        //  console.log('An Item was Clicked position ', index[1])
         if (currentMenuItem.itemMenus[index[1]].payload && currentMenuItem.itemMenus[index[1]].payload !== '') {
           payload = currentMenuItem.itemMenus[index[1]].payload
         }
         break
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
+        //  console.log('A Submenu was Clicked position ', index[1], index[2])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload !== '') {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
         }
         break
       case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        //  console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
         break
       default:
-        console.log('In switch', index[0])
         break
     }
     return JSON.parse(payload)
@@ -135,9 +134,7 @@ class CreateMessage extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log('next props', nextProps)
     if (nextProps.currentMenuItem) {
-      console.log('Current MenuItem', nextProps.currentMenuItem)
       //  this.setState({ itemMenus: true })
     }
   }
@@ -244,7 +241,6 @@ class CreateMessage extends React.Component {
     }
     //  var temp = obj
     this.setState({ message: temp })
-    console.log('Image Uploaded', this.state.message)
   }
 
   handleFile (obj) {
@@ -262,7 +258,6 @@ class CreateMessage extends React.Component {
     }
 
     this.setState({ message: temp })
-    console.log('Image Uploaded', this.state.message)
   }
 
   removeComponent (obj) {
@@ -275,22 +270,17 @@ class CreateMessage extends React.Component {
   }
 
   setCreateMessage (clickedIndex, payload) {
-    console.log('In set Create Message ', clickedIndex)
-    console.log('In set Create Message ', payload)
     var temp = this.props.currentMenuItem.itemMenus
     var index = clickedIndex.split('-')
     switch (index[0]) {
       case 'item':
-        console.log('An Item was Clicked position ', index[1])
         var temp1 = []
         for (var i = 0; i < payload.length; i++) {
           temp1.push(payload[i])
         }
-        console.log('temp1', temp1)
         temp[index[1]].payload = JSON.stringify(temp1)
         break
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
         var temp2 = []
         for (var j = 0; j < payload.length; j++) {
           temp2.push(payload[j])
@@ -302,18 +292,15 @@ class CreateMessage extends React.Component {
         for (var k = 0; k < payload.length; k++) {
           temp3.push(payload[k])
         }
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = JSON.stringify(temp3)
         break
       default:
-        console.log('In switch', index[0])
         break
     }
     return temp
   }
 
   saveMessage () {
-    console.log('this.state.message', this.state.message)
     if (this.state.message.length === 0) {
       return
     }
@@ -350,8 +337,6 @@ class CreateMessage extends React.Component {
     var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message)
     var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
     this.props.saveCurrentMenuItem(currentState)
-    console.log('Current Menu Items', this.props.currentMenuItem.menuitems)
-    console.log('Payload', this.state.message)
     this.msg.success('Message Saved Successfully')
   }
 
@@ -499,7 +484,6 @@ class CreateMessage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('mapStateToProps', state)
   return {
     currentMenuItem: (state.getCurrentMenuItem.currentMenuItem)
   }

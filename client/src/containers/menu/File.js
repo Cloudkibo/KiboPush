@@ -77,7 +77,6 @@ class File extends React.Component {
   }
 
   onFilesChange (files) {
-    console.log(files)
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
@@ -93,14 +92,12 @@ class File extends React.Component {
         type: file.type,
         size: file.size
       }
-      console.log(fileInfo)
       this.setState({loading: true})
       this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
     }
   }
 
   onFilesError (error, file) {
-    console.log('error code ' + error.code + ': ' + error.message)
     this.setState({errorMsg: error.message, showDialog: true})
   }
 
@@ -156,7 +153,6 @@ class File extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),

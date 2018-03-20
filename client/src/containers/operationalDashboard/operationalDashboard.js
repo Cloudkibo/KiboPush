@@ -80,7 +80,6 @@ class OperationalDashboard extends React.Component {
     this.handleClose = this.handleClose.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
@@ -107,26 +106,18 @@ class OperationalDashboard extends React.Component {
   }
   displayData (n, users) {
     this.setState({usersData: users, usersDataAll: users})
-    console.log('in displayData', this.state.usersData)
   }
 
   displayObjects (n, users) {
-    console.log('users', users)
     var temp = []
     temp.push(users)
-    console.log('temp', temp)
     this.setState({objects: users})
-    console.log('new object', this.state.objects)
     this.setState({objectsLength: 1})
 
     // this.setState({objectsData: temp}, () => {
-    //   console.log('inside', this.state.objectsData)
     // }
     // )
     // this.setState({objectsLength: 1})
-    // console.log('in displayData of diplayObjects1', this.state.objectsData)
-    // console.log('in displayData of diplayObjects2', this.state.objectsData[0].PagesCount)
-  //  console.log('in displayData of diplayObjects3', this.state.objectsData[0].PagesCount.count)
   }
 
   handlePageClick (data) {
@@ -144,7 +135,6 @@ class OperationalDashboard extends React.Component {
     var defaultVal = 10
     var value = e.target.value
     this.setState({selectedDays: value})
-    console.log('On days change', value)
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -160,21 +150,16 @@ class OperationalDashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
-      console.log('Users Updated', nextProps.users)
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
     }
     if (nextProps.dataobjects !== null) {
-      console.log('data objects Updated', nextProps.dataobjects)
       this.displayObjects(0, nextProps.dataobjects)
     }
     if (nextProps.toppages) {
-      console.log('top pages Updated', nextProps.toppages)
     }
     if (nextProps.broadcastsGraphData) {
-      console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
       if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
         var broadcastData = graphInfoBroadcast.broadcastsgraphdata
@@ -182,7 +167,6 @@ class OperationalDashboard extends React.Component {
       }
     }
     if (nextProps.pollsGraphData) {
-      console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
       var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
       if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
         var pollsData = graphInfoPolls.pollsgraphdata
@@ -190,16 +174,13 @@ class OperationalDashboard extends React.Component {
       }
     }
     if (nextProps.surveysGraphData) {
-      console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
       var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
       if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
         var surveysData = graphInfoSurveys.surveysgraphdata
         surveysData = this.includeZeroCounts(surveysData)
-        console.log('surveys data', surveysData)
       }
     }
     if (nextProps.sessionsGraphData) {
-      console.log('Sessions Graph Data', nextProps.sessionsGraphData.sessionsGraphInfo)
       var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
       if (graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
         var sessionsData = graphInfoSessions.sessionsgraphdata
@@ -336,14 +317,11 @@ class OperationalDashboard extends React.Component {
   }
 
   goToBroadcasts (user) {
-    console.log(this.props.user)
     this.props.saveUserInformation(user)
     this.props.history.push({
       pathname: `/userDetails`,
       state: user
     })
-    console.log('State', this.state)
-    console.log('goToBroadcasts', user._id, user.name)
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
 
@@ -367,7 +345,6 @@ class OperationalDashboard extends React.Component {
       this.setState({selectedValue: null})
       this.props.loadDataObjectsCount(0)
     } else if (e.target.value === '10') {
-      console.log('Selected:', e.target.value)
       this.setState({selectedValue: e.target.value})
       this.props.loadDataObjectsCount(10)
     } else if (e.target.value === '30') {
@@ -379,10 +356,8 @@ class OperationalDashboard extends React.Component {
     }
   }
   onFilterByGender (e) {
-    console.log('event', e.target.value)
     var filtered = []
     if (!e.target.value) {
-      console.log('!e')
       if (this.state.localeValue !== '') {
         for (var a = 0; a < this.props.users.length; a++) {
           if (this.props.users[a].locale === this.state.localeValue) {
@@ -394,7 +369,6 @@ class OperationalDashboard extends React.Component {
       }
       this.setState({genderValue: ''})
     } else {
-      console.log('here')
       if (this.state.localeValue !== '') {
         for (var i = 0; i < this.props.users.length; i++) {
           if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
@@ -417,7 +391,6 @@ class OperationalDashboard extends React.Component {
   }
 
   onFilterByLocale (data) {
-    console.log(data)
     var filtered = []
     if (!data) {
       if (this.state.genderValue !== '') {
