@@ -161,7 +161,7 @@ class EditTemplate extends React.Component {
       /* eslint-enable */
 
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
