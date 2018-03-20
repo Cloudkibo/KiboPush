@@ -37,8 +37,6 @@ function exists (list, content) {
 }
 
 exports.sendConversation = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Send Broadcast, req body = ${JSON.stringify(req.body)}`)
 
   if (!utility.validateInput(req.body)) {
     return res.status(400)
@@ -170,8 +168,6 @@ exports.sendConversation = function (req, res) {
             }
           }
         }
-        logger.serverLog(TAG,
-          `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
 
         Pages.find(pagesFindCriteria, (err, pages) => {
           if (err) {
@@ -181,10 +177,8 @@ exports.sendConversation = function (req, res) {
           }
 
           pages.forEach(page => {
-            logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
 
             if (req.body.isList === true) {
-              logger.serverLog(TAG, `inside isList`)
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
                 {
@@ -224,8 +218,6 @@ exports.sendConversation = function (req, res) {
                   }
                   req.body.payload.forEach(payloadItem => {
                     subscribers.forEach(subscriber => {
-                      logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
 
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
@@ -323,22 +315,14 @@ exports.sendConversation = function (req, res) {
                   })
                 }
               }
-              logger.serverLog(TAG,
-                `Subscribers Criteria for segmentation ${JSON.stringify(
-                  subscriberFindCriteria)}`)
 
               Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
 
-                logger.serverLog(TAG,
-                  `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
                 req.body.payload.forEach(payloadItem => {
                   subscribers.forEach(subscriber => {
-                    logger.serverLog(TAG,
-                      `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
-
                     Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                       if (err) {
                         return logger.serverLog(TAG,
@@ -363,7 +347,6 @@ exports.sendConversation = function (req, res) {
                           return logger.serverLog(TAG,
                             `At get session ${JSON.stringify(err)}`)
                         }
-                        logger.serverLog(TAG, 'Chat message saved for broadcast sent')
                       })
                     })
                     // update broadcast sent field
@@ -418,13 +401,9 @@ exports.sendConversation = function (req, res) {
                         //   logger.serverLog(TAG,
                         //     `payloaditem ${JSON.stringify(payloadItem)}`)
                         // }
-                        logger.serverLog(TAG,
-                          `payloaditem ${JSON.stringify(payloadItem)}`)
                         let messageData = utility.prepareSendAPIPayload(
                           subscriber.senderId,
                           payloadItem)
-                        logger.serverLog(TAG,
-                          `messageData ${JSON.stringify(messageData)}`)
                         request(
                           {
                             'method': 'POST',
@@ -465,8 +444,6 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-  logger.serverLog(TAG,
-    `upload file route called. file is: ${JSON.stringify(req.files)}`)
 
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
@@ -525,8 +502,6 @@ exports.download = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside delete file Broadcast`)
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   // unlink file
   fs.unlink(dir + '/' + req.params.id, function (err) {
@@ -535,7 +510,6 @@ exports.delete = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'File not found'})
     } else {
-      logger.serverLog(TAG, 'file deleted')
       return res.status(200)
         .json({status: 'success', payload: 'File deleted successfully'})
     }
