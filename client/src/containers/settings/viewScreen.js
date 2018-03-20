@@ -7,7 +7,6 @@ class ViewScreen extends React.Component {
   }
 
   render () {
-    console.log('View Message Component', this.props.payload)
     var settings = {
       arrows: true,
       dots: false,

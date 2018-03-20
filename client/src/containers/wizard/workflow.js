@@ -84,7 +84,6 @@ class CreateWorkflow extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
     if (nextProps.successMessage) {
       // this.setState({
       //   alertMessage: nextProps.successMessage,
@@ -106,12 +105,6 @@ class CreateWorkflow extends React.Component {
   }
 
   gotoWorkflow () {
-    console.log('Request Object', {
-      condition: this.state.condition,
-      keywords: this.state.keywords,
-      reply: this.state.reply,
-      isActive: this.state.isActive
-    })
     if (this.state.keywords.length === 0) {
       this.setState({
         alertMessage: 'Please fill the keywords field',
@@ -157,10 +150,7 @@ class CreateWorkflow extends React.Component {
   }
 
   tourFinished (data) {
-    console.log('Next Tour Step')
     if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
       this.props.workflowsTourCompleted({
         'workFlowsTourSeen': true
       })
@@ -195,7 +185,6 @@ class CreateWorkflow extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('Alert Message:', this.state.alertMessage)
     return (
 
       <div>
@@ -321,7 +310,6 @@ class CreateWorkflow extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows),
     user: (state.basicInfo.user),

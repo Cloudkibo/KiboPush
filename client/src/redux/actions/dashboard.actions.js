@@ -2,7 +2,6 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function updateDashboard (data) {
-  console.log('Data Fetched From Server', data)
   return {
     type: ActionTypes.UPDATE_DASHBOARD,
     data
@@ -11,7 +10,6 @@ export function updateDashboard (data) {
 
 export function loadDashboardData () {
   // here we will fetch list of subscribers from endpoint
-  console.log('loading dashboard data')
   return (dispatch) => {
     callApi('dashboard/stats')
       .then(res => dispatch(updateDashboard(res.payload)))
@@ -31,7 +29,6 @@ export function loadDashboardData () {
   }
 }
 export function updateSentVsSeen (data) {
-  console.log('Data Fetched From Server', data)
   return {
     type: ActionTypes.UPDATE_SENT_VS_SEEN,
     data

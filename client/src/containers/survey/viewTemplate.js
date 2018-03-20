@@ -17,7 +17,6 @@ class viewSurvey extends React.Component {
   }
 
   displayData (n, pageSubscribers) {
-    console.log(n, pageSubscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -32,12 +31,10 @@ class viewSurvey extends React.Component {
       index++
     }
     this.setState({surveyDetailsData: data})
-    console.log('in displayData', this.state.surveyDetailsData)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.questions) {
-      console.log('Survey details Updated', nextProps.questions)
       this.displayData(0, nextProps.questions)
       this.setState({ totalLength: nextProps.questions.length })
     }
@@ -63,7 +60,6 @@ class viewSurvey extends React.Component {
     document.body.appendChild(addScript)
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
-      console.log('id', id)
       this.props.loadSurveyDetails(id)
     }
   }
@@ -77,8 +73,6 @@ class viewSurvey extends React.Component {
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
               <div className='row'>
-                {console.log('survey', this.props.survey)}
-                {console.log('surveyques', this.props.questions)}
 
                 {this.props.survey &&
                 <div className='col-xl-12'>
@@ -103,7 +97,6 @@ class viewSurvey extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='col-xl-12'>
                         <h4>Survey Questions</h4>
-                        {console.log('gi', this.state.surveyDetailsData)}
                         <ul className='list-group'>
                           {
                             this.props.questions &&
@@ -155,7 +148,6 @@ class viewSurvey extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for surveyDetails', state)
   return {
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),

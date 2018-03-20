@@ -45,16 +45,13 @@ class Signup extends React.Component {
     log(TAG, 'signup Container Mounted')
   }
   componentWillReceiveProps (nextprops) {
-    console.log('props', nextprops)
     this.setState({error: false})
     if (nextprops.successSignup) {
-      console.log('i am called')
       this.props.history.push({
         pathname: '/connectFb',
         state: { account_type: this.state.account_type }
       })
     } else if (nextprops.errorSignup) {
-      console.log('nextprops.errorSignup', nextprops.errorSignup)
       //  this.setState({error: nextprops.errorSignup})
     }
   }
@@ -136,7 +133,6 @@ class Signup extends React.Component {
     }
   }
   render () {
-    console.log('In signup JS')
     var alertOptions = {
       offset: 14,
       position: 'bottom left',
@@ -267,7 +263,6 @@ class Signup extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log('state', state)
   return {
     errorMessage: (state.signupInfo.errorMessage),
     successMessage: (state.signupInfo.successMessage),

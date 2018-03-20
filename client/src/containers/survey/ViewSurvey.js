@@ -32,8 +32,6 @@ class ViewSurvey extends React.Component {
         response: this.refs[this.props.questions[j]._id].value
       })
     }
-    console.log('submited responses')
-    console.log(responses)
     this.props.submitsurvey({
       'responses': responses,
       surveyId: this.props.params.id,
@@ -120,7 +118,6 @@ class ViewSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     survey: (state.surveysInfo.survey),
     questions: (state.surveysInfo.questions),

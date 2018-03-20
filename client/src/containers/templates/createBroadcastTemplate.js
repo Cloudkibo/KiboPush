@@ -85,7 +85,6 @@ class CreateBroadcastTemplate extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
         options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
@@ -95,7 +94,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   initializeCategorySelect (categoryOptions) {
-    console.log('Category options', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectCategory').select2({
@@ -111,7 +109,6 @@ class CreateBroadcastTemplate extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -119,7 +116,6 @@ class CreateBroadcastTemplate extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
 
@@ -132,7 +128,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   showResetAlertDialog () {
-    console.log('in showDialog')
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
     }
@@ -205,8 +200,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   handleCard (obj) {
-    console.log('handleCard in CreateConvo is called: ')
-    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -260,7 +253,6 @@ class CreateBroadcastTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   handleFile (obj) {
@@ -278,7 +270,6 @@ class CreateBroadcastTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
@@ -539,7 +530,6 @@ class CreateBroadcastTemplate extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories)
   }

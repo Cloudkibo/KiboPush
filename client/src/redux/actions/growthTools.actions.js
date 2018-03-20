@@ -7,7 +7,6 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 var json2csv = require('json2csv')
 
 export function sendresp (data) {
-  console.log('sendresp', data)
   return {
     type: ActionTypes.SAVE_PHONE_NUMBERS,
     data
@@ -16,7 +15,6 @@ export function sendresp (data) {
 
 export function saveFileForPhoneNumbers (filedata, handleResponse) {
   return (dispatch) => {
-    console.log('In dispatch', filedata.get('file'))
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
       method: 'post',
@@ -28,7 +26,6 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
       var data = {status: res.status, description: res.description}
-      console.log(data)
       handleResponse()
       dispatch(sendresp(data))
       dispatch(loadCustomerLists())
@@ -49,7 +46,6 @@ export function sendPhoneNumbers (data) {
 }
 
 export function downloadSampleFile () {
-  console.log('download Sample File called')
   let users = []
   let user1 = {'names': 'Sania Siddiqui', 'phone_numbers': '+923312443100'}
   let user2 = {'names': 'Anisha Chatwani', 'phone_numbers': '+923322846897'}
@@ -67,7 +63,6 @@ export function downloadSampleFile () {
   }
   json2csv({ data: info, fields: keys }, function (err, csv) {
     if (err) {
-      console.log(err)
     } else {
       fileDownload(csv, 'sampleFile.csv')
     }
@@ -80,7 +75,6 @@ export function clearAlertMessage () {
 }
 
 export function getPendingSubscriptions (name) {
-  console.log('Get Pending Subscriptions called')
   return (dispatch) => {
     callApi(`growthTools/pendingSubscription/${name}`)
       .then(res => dispatch(showPendingSubscriptions(res.payload)))
@@ -88,7 +82,6 @@ export function getPendingSubscriptions (name) {
 }
 
 export function showPendingSubscriptions (data) {
-  console.log('showPendingSubscriptions', data)
   return {
     type: ActionTypes.LOAD_NON_SUBSCRIBERS_DATA,
     data

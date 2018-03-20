@@ -3,8 +3,6 @@ import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 export function enable (API) {
-  console.log('Enabling API')
-  console.log(API)
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
       .then(res => {
@@ -16,8 +14,6 @@ export function enable (API) {
   }
 }
 export function disable (API) {
-  console.log('Disabling API')
-  console.log(API.company_id)
   return (dispatch) => {
     callApi('api_settings/disable', 'post', API)
       .then(res => {
@@ -42,8 +38,6 @@ export function disableSuccess (data) {
   }
 }
 export function reset (API) {
-  console.log('Disabling API')
-  console.log(API.company_id)
   return (dispatch) => {
     callApi('api_settings/reset', 'post', API)
       .then(res => {
@@ -61,8 +55,6 @@ export function resetSuccess (data) {
   }
 }
 export function getAPI (API) {
-  console.log('fetching API credentials')
-  console.log(API.company_id)
   return (dispatch) => {
     callApi('api_settings/', 'post', API)
       .then(res => {
@@ -70,7 +62,6 @@ export function getAPI (API) {
           console.log('reset', res.payload)
           dispatch(getAPISuccess(res.payload))
         } else if (res.status === 'failed') {
-          console.log('reset', res.description)
           dispatch(getAPIFailure(res.description))
         }
       })
@@ -89,14 +80,12 @@ export function getAPIFailure (data) {
   }
 }
 export function saveSwitchState () {
-  console.log('saveSwitchState called')
   return {
     type: ActionTypes.SAVE_SWITCH_STATE,
     data: 'changed'
   }
 }
 export function changePass (data, msg) {
-  console.log(data)
   return (dispatch) => {
     callApi('reset_password/change', 'post', data)
       .then(res => {
@@ -111,7 +100,6 @@ export function changePass (data, msg) {
 }
 
 export function showGreetingMessage (data) {
-  console.log('Saving Greeting Message')
   return {
     type: ActionTypes.GET_GREETING_MESSAGE,
     data: data
@@ -119,12 +107,10 @@ export function showGreetingMessage (data) {
 }
 
 export function saveGreetingMessage (data, msg) {
-  console.log(data)
   return (dispatch) => {
     callApi('pages/saveGreetingText', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          console.log('success greeting text', res.payload)
           msg.success('Greeting message saved successfully')
         } else {
           msg.error(res.description)

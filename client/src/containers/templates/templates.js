@@ -10,7 +10,6 @@ import { Link } from 'react-router'
 
 class templates extends React.Component {
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
@@ -54,7 +53,6 @@ class templates extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user)
   }

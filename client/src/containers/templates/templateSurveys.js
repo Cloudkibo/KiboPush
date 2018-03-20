@@ -33,7 +33,6 @@ class templateSurveys extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -45,14 +44,11 @@ class templateSurveys extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
   onSurveyClick (e, survey) {
-    console.log('Survey Click', survey)
     this.props.saveSurveyInformation(survey)
   }
   displayData (n, broadcasts) {
-    console.log('one', broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -66,17 +62,13 @@ class templateSurveys extends React.Component {
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({surveysData: data, surveysDataAll: broadcasts})
-    console.log('in displayData', this.state.surveysData)
   }
   handlePageClick (data) {
     this.displayData(data.selected, this.state.surveysDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('userbroadcasts componentWillReceiveProps is called')
     if (nextProps.surveys) {
-      console.log('surveys Updated', nextProps.surveys)
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
     }
@@ -110,7 +102,6 @@ class templateSurveys extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value, searchValue: ''})
     var filtered = []
     if (e.target.value !== '') {
@@ -144,7 +135,6 @@ class templateSurveys extends React.Component {
   }
 
   render () {
-    console.log('surevys')
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -274,7 +264,6 @@ class templateSurveys extends React.Component {
                                   style={{width: '150px'}}>{survey.title}</span></td>
                               <td data-field='description'
                                 className='m-datatable__cell'>
-                                { survey.description && console.log('length', survey.description.length)}
                                 { (survey.description && survey.description.length) > 50
                                 ? <span
                                   style={{width: '200px'}}>{survey.description.slice(0, 50)}...</span>

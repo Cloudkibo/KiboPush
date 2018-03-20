@@ -77,9 +77,7 @@ class CreateSubList extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in CreateSublist', nextProps)
     if (nextProps.subscribers) {
-      console.log('Subscribers Updated', nextProps.subscribers)
       this.setState({ allSubscribers: nextProps.subscribers })
     }
   }
@@ -104,7 +102,6 @@ class CreateSubList extends React.Component {
       conditions: tempConditions
     })
     var id = this.props.currentList._id
-    console.log(id)
   }
   onSave () {
     var isValid = this.validateNewList()
@@ -271,7 +268,6 @@ class CreateSubList extends React.Component {
   }
 
   changeCondition (e, index) {
-    console.log('Change Condition')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -281,7 +277,6 @@ class CreateSubList extends React.Component {
     this.setState({conditions: conditions})
   }
   changeCriteria (e, index) {
-    console.log('Change Criteria')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -291,7 +286,6 @@ class CreateSubList extends React.Component {
     this.setState({conditions: conditions})
   }
   changeText (e, index) {
-    console.log('Change Text')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -328,7 +322,6 @@ class CreateSubList extends React.Component {
   }
 
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     $('#selectLists').select2({
       data: lists,
@@ -341,7 +334,6 @@ class CreateSubList extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
@@ -349,7 +341,6 @@ class CreateSubList extends React.Component {
       } else {
         self.setState({ listSelected: '' })
       }
-      console.log('change List Selection', selected)
     })
     $("#selectLists").val('').trigger('change')
   }

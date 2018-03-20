@@ -102,8 +102,6 @@ class AddSurvey extends React.Component {
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
-    console.log('gender options', this.state.Gender.options)
-    console.log('locale', this.state.Locale.options)
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
@@ -140,7 +138,6 @@ class AddSurvey extends React.Component {
     ])
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     $('#selectLists').select2({
       data: lists,
@@ -154,7 +151,6 @@ class AddSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -162,13 +158,11 @@ class AddSurvey extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
 
     $('#selectLists').val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
-    console.log('asd', pageOptions)
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
@@ -180,7 +174,6 @@ class AddSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -188,7 +181,6 @@ class AddSurvey extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
@@ -211,7 +203,6 @@ class AddSurvey extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -234,13 +225,10 @@ class AddSurvey extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in add survey', nextProps)
-    console.log('nextpropscustomer', nextProps.customerLists)
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
@@ -259,12 +247,10 @@ class AddSurvey extends React.Component {
       }
     }
     if (nextProps.createwarning) {
-      console.log('i am called')
       this.props.history.push({
         pathname: '/surveys'
 
       })
-      console.log('nextprops', nextProps)
     }
   }
   updateDescription (e) {
@@ -298,7 +284,6 @@ class AddSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -310,7 +295,6 @@ class AddSurvey extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -356,7 +340,6 @@ class AddSurvey extends React.Component {
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
-        console.log('surveybody', surveybody)
         this.props.createsurvey(surveybody)
       } else {
         this.setState({
@@ -383,14 +366,12 @@ class AddSurvey extends React.Component {
       'options': choiceValues
     })
     this.setState({surveyQuestions: surveyQuestions})
-    console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
         alertType: ''
       })
     }
-    console.log(this.state.surveyQuestions)
   }
 
   addChoices (qindex) {
@@ -410,8 +391,6 @@ class AddSurvey extends React.Component {
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log(
-      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
     if (surveyQuestions[qindex].choiceCount === 2) {
       this.setState({
@@ -420,11 +399,7 @@ class AddSurvey extends React.Component {
       })
     } else {
       let choices = surveyQuestions[qindex].options.slice()
-      console.log('choices before')
-      console.log(choices)
       choices.splice(choiceIndex, 1)
-      console.log('choices after')
-      console.log(choices)
       surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
         1
       surveyQuestions[qindex].options = choices
@@ -434,16 +409,13 @@ class AddSurvey extends React.Component {
 
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
-      console.log('A survey form requires atleast one question')
       this.setState({
         alertMessage: 'A survey form requires atleast one question',
         alertType: 'danger'
       })
     } else {
-      console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
-      console.log(surveyQuestions)
       this.setState({
         surveyQuestions: surveyQuestions
       })
@@ -454,19 +426,12 @@ class AddSurvey extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
-    console.log('onhandleChoiceChange is called')
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('qindex is ' + qindex)
-    console.log('choiceIndex is ' + choiceIndex)
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   /* handleQuestionType (e) {
@@ -476,10 +441,8 @@ class AddSurvey extends React.Component {
    } */
 
   createOptionsList (qindex) {
-    console.log('qindex' + qindex)
     let choiceItems = []
     var choiceCount = this.state.surveyQuestions[qindex].choiceCount
-    console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -500,10 +463,7 @@ class AddSurvey extends React.Component {
   }
 
   tourFinished (data) {
-    console.log('Next Tour Step')
     if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
       this.props.surveyTourCompleted({
         'surveyTourSeen': true
       })
@@ -614,11 +574,9 @@ class AddSurvey extends React.Component {
     return uiItems || null
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -649,7 +607,6 @@ class AddSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -661,7 +618,6 @@ class AddSurvey extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -711,7 +667,6 @@ class AddSurvey extends React.Component {
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
-          console.log('surveybody', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
         }
       } else {
@@ -940,7 +895,6 @@ class AddSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     surveys: (state.surveysInfo.surveys),
     surveyCreated: (state.surveysInfo.surveyCreated),

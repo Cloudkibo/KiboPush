@@ -5,7 +5,6 @@ export const API_URL = '/api'
 // import store from '../store/store'
 
 export function showChatSessions (sessions) {
-  console.log(sessions)
   var sorted = sessions.sort(function (a, b) {
     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
   })
@@ -17,7 +16,6 @@ export function showChatSessions (sessions) {
 }
 
 export function updateChatSessions (session, sessions) {
-  console.log(session)
   var temp = sessions
   for (var i = 0; i < temp.length; i++) {
     if (temp[i]._id === session._id) {
@@ -31,7 +29,6 @@ export function updateChatSessions (session, sessions) {
 }
 
 export function socketUpdate (data) {
-  console.log(data.session_id)
   return {
     type: ActionTypes.SOCKET_UPDATE,
     data
@@ -39,8 +36,6 @@ export function socketUpdate (data) {
 }
 
 export function fetchSessions (companyid) {
-  console.log('Fetching Chat Sessions')
-  console.log(companyid)
   return (dispatch) => {
     callApi('sessions', 'post', companyid)
       .then(res => dispatch(showChatSessions(res.payload)))
@@ -48,7 +43,6 @@ export function fetchSessions (companyid) {
 }
 
 export function fetchSingleSession (sessionid, sessions) {
-  console.log('Fetching single Chat Session', sessionid)
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)
       .then(res => dispatch(updateChatSessions(res.payload, sessions)))
@@ -56,7 +50,6 @@ export function fetchSingleSession (sessionid, sessions) {
 }
 
 export function showUserChats (userChat) {
-  console.log(userChat)
   return {
     type: ActionTypes.SHOW_USER_CHAT,
     userChat
@@ -76,7 +69,6 @@ export function resetUnreadSession () {
 }
 
 export function fetchUserChats (sessionid) {
-  console.log('Fetching User Chats')
   return (dispatch) => {
     callApi(`livechat/${sessionid}`)
       .then(res => dispatch(showUserChats(res.payload)))
@@ -84,9 +76,7 @@ export function fetchUserChats (sessionid) {
 }
 
 export function uploadAttachment (fileData, handleUpload) {
-  console.log('In Live Action', fileData)
   return (dispatch) => {
-    console.log('In dispatch', fileData)
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {
       method: 'post',
@@ -106,27 +96,22 @@ export function deletefile (data, handleRemove) {
   return (dispatch) => {
     callApi(`broadcasts/delete/${data}`)
       .then(res => {
-        console.log('delete file', res)
         handleRemove(res)
       })
   }
 }
 
 export function sendAttachment (data, handleSendAttachment) {
-  console.log('Sending attachment on Live Chat', data)
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      console.log('Send Attachment Response', res)
       handleSendAttachment(res)
     })
   }
 }
 
 export function sendChatMessage (data, companyId) {
-  console.log('Sending chat message on Live Chat', data)
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      console.log('Send Attachment Response', res)
       dispatch(fetchSessions(companyId))
     })
   }
@@ -149,7 +134,6 @@ export function urlMetaReceived (meta) {
 }
 
 export function fetchUrlMeta (url) {
-  console.log('Fetching url meta', url)
   return (dispatch) => {
     dispatch(loadingUrlMeta(url))
     callApi('livechat/geturlmeta', 'post', {url: url}).then(res => {
@@ -164,7 +148,6 @@ export function fetchUrlMeta (url) {
 }
 
 export function markRead (sessionid, sessions) {
-  console.log('Mark unread messages as read', sessionid)
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)

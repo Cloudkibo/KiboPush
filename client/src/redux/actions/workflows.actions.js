@@ -10,7 +10,6 @@ export function loadWorkFlowList () {
 }
 
 export function updateWorkFlowList (data) {
-  console.log('Data Fetched From Workflows', data)
   return {
     type: ActionTypes.LOAD_WORKFLOW_LIST,
     data: data.payload
@@ -28,7 +27,6 @@ export function addWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/create', 'post', data)
       .then(res => {
-        console.log(res)
         if (res.status === 'success') {
           dispatch(workFlowSuccess('Workflow Created Successfully!'))
           dispatch(updateWorkFlow(res.payload))
@@ -63,7 +61,6 @@ export function editWorkFlow (data) {
   return (dispatch) => {
     callApi('workflows/edit', 'post', data)
       .then(res => {
-        console.log(res)
         if (res.status === 'success') {
           dispatch(workFlowSuccess('Changes Saved Successfully!'))
           dispatch(loadWorkFlowList())

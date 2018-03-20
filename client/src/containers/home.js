@@ -13,7 +13,6 @@ class Home extends Component {
   }
 
   render () {
-    console.log('Hello')
     return (
       <div>
         <Header />
@@ -27,7 +26,6 @@ class Home extends Component {
 }
 
 function mapStateToProps (state) {
-  // console.log(state);
   return {
     connectInfo: (state.basicInfo)
   }

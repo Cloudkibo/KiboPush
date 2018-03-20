@@ -46,11 +46,9 @@ class templatePolls extends React.Component {
     document.body.appendChild(addScript)
   }
   onPollClick (e, poll) {
-    console.log('Poll Click', poll)
     this.props.saveCurrentPoll(poll)
   }
   displayData (n, broadcasts) {
-    console.log('one', broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -61,21 +59,16 @@ class templatePolls extends React.Component {
       limit = offset + 4
     }
     for (var i = offset; i < limit; i++) {
-      console.log('b[i]', broadcasts[i])
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({pollsData: data, pollsDataAll: broadcasts})
-    console.log('in displayData', this.state.pollsData)
   }
   handlePageClick (data) {
     this.displayData(data.selected, this.state.pollsDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('userbroadcasts componentWillReceiveProps is called')
     if (nextProps.polls) {
-      console.log('polls Updated', nextProps.polls)
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
     }
@@ -109,7 +102,6 @@ class templatePolls extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value, searchValue: ''})
     var filtered = []
     if (e.target.value !== '') {
@@ -256,7 +248,6 @@ class templatePolls extends React.Component {
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                        {console.log('pollsData', this.state.pollsData)}
                         {
                           this.state.pollsData.map((poll, i) => (
                             <tr data-row={i}

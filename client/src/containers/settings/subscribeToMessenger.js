@@ -254,7 +254,6 @@ class SubscribeToMessenger extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages)
 

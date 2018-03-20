@@ -54,7 +54,6 @@ class GreetingMessage extends React.Component {
     props.loadMyPagesList()
   }
   showPreviewDialog () {
-    console.log('in showDialog')
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
     var fullname = this.props.user.facebookInfo.name
@@ -95,7 +94,6 @@ class GreetingMessage extends React.Component {
   }
 
   getName (e, name) {
-    console.log('selected name', name)
     var message = this.state.greetingMessage + `{{${name}}}`
     var textCount = 160 - message.length
     if (textCount > 0) {
@@ -110,7 +108,6 @@ class GreetingMessage extends React.Component {
   }
   saveGreetingMessage (e) {
     e.preventDefault()
-    console.log('Save Message')
     if (this.state.greetingMessage.length > 0) {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
       this.props.saveGreetingMessage(payload, this.msg)
@@ -145,7 +142,6 @@ class GreetingMessage extends React.Component {
   }
 
   setEmoji (emoji) {
-    console.log('selected emoji', emoji)
     var message = this.state.greetingMessage + emoji.native
     var textCount = 160 - message.length
     if (textCount > 0) {
@@ -178,7 +174,6 @@ class GreetingMessage extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps.greetingMessage)
     if (nextProps.greetingMessage) {
       this.setState({greetingMessage: nextProps.greetingMessage.greetingText})
       for (var i = 0; i < nextProps.pages.length; i++) {
@@ -352,7 +347,6 @@ class GreetingMessage extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     greetingMessage: (state.APIInfo.greetingMessage)

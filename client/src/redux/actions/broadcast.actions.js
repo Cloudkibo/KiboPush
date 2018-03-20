@@ -5,8 +5,6 @@ export const API_URL = '/api'
 
 export function showbroadcasts (data) {
   // we will have broadcast and page_broadcast_pages
-  console.log('showbroadcasts')
-  console.log(data)
   let broadcasts = data.broadcasts
   let pagebroadcasts = data.broadcastpages
 
@@ -23,15 +21,12 @@ export function showbroadcasts (data) {
   }
 }
 export function loadBroadcastsList () {
-  console.log('Loading broadcast list')
   return (dispatch) => {
     callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
   }
 }
 
 export function createbroadcast (broadcast) {
-  console.log('Creating broadcast message')
-  console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
       .then(res => {
@@ -52,7 +47,6 @@ export function deletefile (data) {
   }
 }
 export function uploadBroadcastfile (filedata) {
-  console.log('Uploading broadcast file')
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/uploadfile`, {
@@ -75,7 +69,6 @@ export function updatefileuploadStatus (status) {
 
 export function addBroadcast (data) {
   // here we will add the broadcast
-  console.log(data)
   return {
     type: ActionTypes.ADD_BROADCAST,
     data
@@ -89,8 +82,6 @@ export function getbroadcast (data) {
 }
 
 export function editbroadcast (broadcast) {
-  console.log('Editing broadcast message')
-  console.log(broadcast)
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
       .then(res => dispatch(loadBroadcastsList()))
@@ -124,7 +115,6 @@ export function clearAlertMessage () {
 }
 
 export function sendbroadcast (broadcast) {
-  console.log('Sending broadcast message', broadcast)
   return (dispatch) => {
     callApi('broadcasts/send', 'post', broadcast).then(res => {
       if (res.status === 'success') {
@@ -132,7 +122,6 @@ export function sendbroadcast (broadcast) {
       } else {
         dispatch(sendBroadcastFailure())
       }
-      console.log('Send Broadcast Response', res)
     })
   }
 }
@@ -141,7 +130,6 @@ export function downloadFile (broadcast) {
   return (dispatch) => {
     callApi(`broadcasts/downloadfile/${broadcast._id}`).then(res => {
       // dispatch(editBroadcast(res.payload));
-      console.log('Send Broadcast Response', res)
     })
   }
 }
@@ -152,17 +140,13 @@ export function uploadRequest (data) {
         // dispatch(editBroadcast(res.payload));
       console.log('Upload Action Response', res)
       if (res.status === 'success') {
-        console.log('File Upload successfully')
       } else {
-        console.log('Failed to upload')
       }
     })
   }
 }
 
 export function sendBroadcast (data, msg, handleSendBroadcast) {
-  console.log('Sending Broadcast')
-  console.log(data)
   return (dispatch) => {
     callApi('broadcasts/sendConversation', 'post', data)
       .then(res => {
@@ -172,7 +156,6 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
             msg.success('Conversation successfully sent')
             // dispatch(sendBroadcastSuccess())
           } else {
-            console.log(res.description)
             if (res.description) {
               msg.error(`Failed to send conversation. ${res.description}`)
             } else {

@@ -2,12 +2,9 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function updatePollsList (data) {
-  console.log('updatePollsList')
-  console.log(data)
   let polls = data.polls
   let pagepolls = data.pollpages
   let responsesCount = data.responsesCount
-  console.log('updated')
   for (let j = 0; j < polls.length; j++) {
     let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
     polls[j].sent = pagepoll.length// total sent
@@ -21,8 +18,6 @@ export function updatePollsList (data) {
         polls[j].responses = 0
       }
     }
-    console.log('updated polls')
-    console.log(polls[j])
   }
   var newPoll = polls.reverse()
   return {
@@ -32,7 +27,6 @@ export function updatePollsList (data) {
 }
 
 export function createPoll (data) {
-  console.log('createpolldata', data)
   return {
     type: ActionTypes.ADD_POLL,
     data
@@ -47,7 +41,6 @@ export function sendpollresp (data) {
 }
 
 export function loadPollsList () {
-  console.log('Loading broadcast list')
   return (dispatch) => {
     callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
   }
@@ -102,8 +95,6 @@ export function sendPollDirectly (poll, msg) {
   }
 }
 export function addPoll (token, data) {
-  // here we will add the broadcast
-  console.log('Loading broadcast list')
   return (dispatch) => {
     callApi('polls/create', 'post', data)
       .then(res => dispatch(createPoll(res.payload)))
@@ -160,9 +151,7 @@ export function showresponses (data) {
    ,{'response': 'lmn', //response submitted by subscriber
    'pollId': '10010',
    'subscriberid':'102012'}]; */
-  console.log('res', data)
   var sorted = rank(data, 'response')
-  console.log('sorted', sorted)
   return {
     type: ActionTypes.ADD_POLL_RESPONSES,
     sorted
@@ -201,10 +190,8 @@ export function getpollresults (pollid) {
 }
 export function deletePoll (id, msg) {
   return (dispatch) => {
-    console.log('id', id)
     callApi(`polls/deletePoll/${id}`, 'delete')
       .then(res => {
-        console.log('Response Delete', res)
         if (res.status === 'success') {
           msg.success('Poll deleted successfully')
           dispatch(loadPollsList())
