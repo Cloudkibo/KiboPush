@@ -507,7 +507,6 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

@@ -27,7 +27,6 @@ class ShowTemplates extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
   }
   onBroadcastClick (e, page) {
-    console.log('Page Click', page)
     this.props.saveBroadcastInformation(page)
   }
   showDropDown () {
@@ -38,19 +37,15 @@ class ShowTemplates extends React.Component {
     this.setState({showDropDown: false})
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps called')
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
   }
   displayData (n, broadcasts) {
-    console.log(broadcasts)
     this.setState({broadcastsData: broadcasts})
-    console.log('broadcastsDatainside', this.state.broadcastsData)
   }
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
@@ -79,7 +74,6 @@ class ShowTemplates extends React.Component {
     })
   }
   gotoCreate (broadcast) {
-    console.log('gotoEdit called', broadcast)
     browserHistory.push({
       pathname: `/createconvo`,
       state: {module: 'convo'}

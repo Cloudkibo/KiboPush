@@ -25,7 +25,6 @@ class AutopostingMessages extends React.Component {
   }
 
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
@@ -47,7 +46,6 @@ class AutopostingMessages extends React.Component {
   }
 
   displayData (n, messages) {
-    console.log(messages)
     let offset = n * 4
     let data = []
     let limit
@@ -69,16 +67,13 @@ class AutopostingMessages extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.autoposting_messages) {
-      console.log('Autoposting Messages Updated', nextProps.autoposting_messages)
       this.displayData(0, nextProps.autoposting_messages)
       this.setState({ totalLength: nextProps.autoposting_messages.length })
     }
   }
 
   render () {
-    console.log('AutopostingMessages', this.state.messagesData)
     return (
       <div>
         <Header />

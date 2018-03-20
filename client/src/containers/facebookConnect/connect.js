@@ -5,15 +5,10 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-import { log } from './../../utility/socketio'
-const TAG = 'containers/login/login'
-
 class Connect extends React.Component {
   componentDidMount () {
-    log(TAG, 'Login Container Mounted')
   }
   render () {
-    console.log('In Login JS')
     return (
       <div style={{height: 100 + 'vh'}}>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>

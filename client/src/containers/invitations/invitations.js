@@ -38,7 +38,6 @@ class Invitations extends React.Component {
   }
 
   displayData (n, invitations) {
-    console.log(invitations)
     let offset = n * 4
     let data = []
     let limit
@@ -82,7 +81,6 @@ class Invitations extends React.Component {
   }
 
   render () {
-    console.log('Invitations', this.props.invitations)
     return (
       <div>
         <Header />
@@ -286,7 +284,6 @@ class Invitations extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     invitations: (state.invitationsInfo.invitations)

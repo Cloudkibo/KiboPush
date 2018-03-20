@@ -85,13 +85,11 @@ class InviteMembers extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
-      console.log(nextProps.successMessage)
       this.setState({
         alertMessage: nextProps.successMessage,
         alertType: 'success'
       })
     } else if (nextProps.errorMessage) {
-      console.log(nextProps.errorMessage)
       this.setState({
         alertMessage: nextProps.errorMessage,
         alertType: 'danger'
@@ -138,7 +136,6 @@ class InviteMembers extends React.Component {
   }
 
   clearAlert () {
-    console.log('clear Alert called')
     this.setState({
       alertMessage: '',
       alertType: ''
@@ -155,15 +152,11 @@ class InviteMembers extends React.Component {
   }
 
   changeRadio (event) {
-    console.log(event.target.value)
     this.setState({role: event.target.value})
   }
 
   tourFinished (data) {
-    console.log('Next Tour Step')
     if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
       this.props.workflowsTourCompleted({
         'workFlowsTourSeen': true
       })
@@ -341,7 +334,6 @@ class InviteMembers extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     invitations: (state.invitationsInfo.invitations),
     user: (state.basicInfo.user),

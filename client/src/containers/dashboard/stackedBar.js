@@ -8,7 +8,6 @@ import {ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'
 class StackedBar extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('StackedBar')
   }
 
   componentDidMount () {
@@ -27,8 +26,6 @@ class StackedBar extends React.Component {
   render () {
     var data = []
     var temp = {}
-    console.log('new 5')
-    console.log(this.props.sentseendata)
     // if (this.props.sentseendata.broadcastSentCount && this.props.sentseendata.broadcastSentCount.length > 0 && this.props.sentseendata.broadcastSeenCount.length) {
     //   var temp = {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count}
     //   data.push(temp)
