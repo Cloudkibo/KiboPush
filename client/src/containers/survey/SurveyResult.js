@@ -25,7 +25,6 @@ class SurveyResult extends React.Component {
   }
 
   componentDidMount () {
-    console.log('Survey ID: ', this.props.location.state)
     this.props.loadsurveyresponses(this.props.location.state)
   }
 
@@ -53,7 +52,6 @@ class SurveyResult extends React.Component {
     }
     for (var i = 0; i < this.props.responses.length; i++) {
       if (this.props.responses[i].subscriberId._id === subscriber) {
-        console.log('this.props.responses[i].response', this.props.responses[i].response)
         temp.q1.push(this.props.responses[i].response)
         temp.statement.push(this.props.responses[i].questionId.statement)
       }
@@ -62,14 +60,9 @@ class SurveyResult extends React.Component {
     return temp
   }
   getFile () {
-    console.log('this.props.pages', this.props.pages[0])
-    console.log('this.props.responses', this.props.responses)
-    console.log('this.props.questions', this.props.questions)
     let usersPayload = []
     for (let i = 0; i < this.props.responses.length; i++) {
       var jsonStructure = {}
-      console.log('this.props.responses[i].subscriberId._id', this.props.responses[i].subscriberId.firstName)
-      console.log('etes', this.exists(this.props.responses[i].subscriberId._id))
       if (this.exists(this.props.responses[i].subscriberId._id) === false) {
         var temp = this.sortData(this.props.responses[i].subscriberId._id)
         for (let l = 0; l < this.props.pages.length; l++) {
@@ -87,7 +80,6 @@ class SurveyResult extends React.Component {
         jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId
         jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
         usersPayload.push(jsonStructure)
-        console.log('this.sortData', usersPayload)
       }
     }
     var info = usersPayload
@@ -98,9 +90,7 @@ class SurveyResult extends React.Component {
       var subKey = j
       keys.push(subKey)
     }
-    console.log('polls', this.props.survey)
     var data = json2csv({data: usersPayload, fields: keys})
-    console.log('data', data)
     fileDownload(data, this.props.survey.title + '-report.csv')
   }
   render () {
@@ -181,7 +171,6 @@ class SurveyResult extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {

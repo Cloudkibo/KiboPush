@@ -103,7 +103,6 @@ class ResendEmail extends React.Component {
   }
 }
 function mapStateToProps (state) {
- // console.log(state)
   return {
     errorMessage: (state.signupInfo.errorMessage),
     successMessage: (state.signupInfo.successMessage),

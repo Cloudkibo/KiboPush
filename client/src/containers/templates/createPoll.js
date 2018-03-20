@@ -42,7 +42,6 @@ class createPoll extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
         options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
@@ -51,7 +50,6 @@ class createPoll extends React.Component {
     }
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -59,7 +57,6 @@ class createPoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeCategorySelect (categoryOptions) {
-    console.log('asd', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectcategory').select2({
@@ -75,7 +72,6 @@ class createPoll extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -83,7 +79,6 @@ class createPoll extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
   exists (newCategory) {
@@ -128,14 +123,12 @@ class createPoll extends React.Component {
       if (this.state.option3 !== '') {
         options.push(this.state.option3)
       }
-      console.log('categoryvalue', this.state.categoryValue)
       this.props.createpoll({
         title: this.refs.title.value,
         category: this.state.categoryValue,
         statement: this.state.statement,
         options: options
       })
-      console.log('Poll added')
       this.props.history.push({
         pathname: '/templates'
       })
@@ -171,7 +164,6 @@ class createPoll extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('renderrrrr')
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -309,7 +301,6 @@ class createPoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories)
   }

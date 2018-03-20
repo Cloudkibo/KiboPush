@@ -16,7 +16,6 @@ export function updateSubscribersList (data) {
       locale.push(data[i].locale)
     }
   }
-  // console.log('localeData', locale)
   return {
     type: ActionTypes.LOAD_SUBSCRIBERS_LIST,
     data,
@@ -26,7 +25,6 @@ export function updateSubscribersList (data) {
 
 export function loadSubscribersList () {
   // here we will fetch list of subscribers from endpoint
-  console.log('loadSubscribersList called')
   return (dispatch) => {
     callApi('subscribers').then(res => dispatch(updateSubscribersList(res)))
   }

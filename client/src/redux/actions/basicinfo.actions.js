@@ -18,8 +18,6 @@ export function showuserdetails (data) {
 }
 
 export function getuserdetails () {
-  console.log('getuserdetails')
-
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
   }
@@ -27,7 +25,6 @@ export function getuserdetails () {
 
 export function storeFbAppId (data) {
   // NOTE: don't remove following auth method call
-  console.log(data)
   return {
     type: ActionTypes.STORE_FB_APP_ID,
     data
@@ -36,7 +33,6 @@ export function storeFbAppId (data) {
 
 export function storeAdminSubscriptions (data) {
   // NOTE: don't remove following auth method call
-  console.log(data)
   return {
     type: ActionTypes.STORE_ADMIN_SUB_ID,
     data
@@ -44,16 +40,12 @@ export function storeAdminSubscriptions (data) {
 }
 
 export function getFbAppId () {
-  console.log('getfbappId')
-
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
   }
 }
 
 export function getAdminSubscriptions () {
-  console.log('getAdminSubscriptions')
-
   return (dispatch) => {
     callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }

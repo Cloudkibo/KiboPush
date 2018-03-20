@@ -17,7 +17,6 @@ export function Failure (message) {
 }
 
 export function signUp (data, msg) {
-  console.log('data', data)
   return (dispatch) => {
     callApi('users/signup', 'post', data)
       .then(res => {

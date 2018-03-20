@@ -20,7 +20,6 @@ class EditBroacastTemplate extends React.Component {
   }
 
   render () {
-    console.log('Edit broadcast template', this.props.location.state)
     return (
       <div>
         <CreateBroadcastTemplate template={this.props.location.state} />

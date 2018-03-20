@@ -54,7 +54,6 @@ class Survey extends React.Component {
     this.props.loadSurveysList()
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -62,7 +61,6 @@ class Survey extends React.Component {
     this.setState({isShowingModal: false})
   }
   displayData (n, surveys) {
-    console.log(surveys)
     let offset = n * 5
     let data = []
     let limit
@@ -98,9 +96,7 @@ class Survey extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps called')
     if (nextProps.surveys) {
-      console.log('Broadcasts Updated', nextProps.surveys)
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.surveys.length })
     }
@@ -123,7 +119,6 @@ class Survey extends React.Component {
   }
 
   showAlert (message, type) {
-    console.log('in showAlert')
     this.msg.show(message, {
       time: 1500,
       type: type
@@ -181,10 +176,8 @@ class Survey extends React.Component {
       }
     }
     if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
       var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
       if (result.length === 0) {
-        console.log('inside if')
         return false
       }
     } else if (pageValue.length > 0 && genderValue.length) {
@@ -217,7 +210,6 @@ class Survey extends React.Component {
     }
   }
   render () {
-    console.log('render method survey')
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -479,7 +471,6 @@ class Survey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     surveys: (state.surveysInfo.surveys),
     subscribers: (state.subscribersInfo.subscribers),

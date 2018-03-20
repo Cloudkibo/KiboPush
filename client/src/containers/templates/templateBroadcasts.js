@@ -35,7 +35,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -50,7 +49,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   gotoEditBroadcast (broadcast) {
-    console.log('Broadcast', broadcast)
     browserHistory.push({
       pathname: `/editBroadcastTemplate`,
       state: broadcast
@@ -58,7 +56,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   gotoViewBroadcast (broadcast) {
-    console.log('Broadcast', broadcast)
     browserHistory.push({
       pathname: `/viewBroadcastTemplate`,
       state: broadcast
@@ -66,7 +63,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    console.log('one', broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -80,9 +76,7 @@ class TemplateBroadcasts extends React.Component {
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({broadcastsData: data, broadcastsDataAll: broadcasts})
-    console.log('in displayData', this.state.surveysData)
   }
 
   handlePageClick (data) {
@@ -90,9 +84,7 @@ class TemplateBroadcasts extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('userbroadcasts componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
-      console.log('broadcasts Updated', nextProps.broadcasts)
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
@@ -127,7 +119,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value, searchValue: ''})
     var filtered = []
     if (e.target.value !== '') {
@@ -169,7 +160,6 @@ class TemplateBroadcasts extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('broadcasts')
     return (
       <div className='template-broadcasts row'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

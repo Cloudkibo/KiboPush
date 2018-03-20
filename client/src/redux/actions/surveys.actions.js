@@ -3,8 +3,6 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function showSurveys (data) {
-  console.log('updateSurveysList')
-  console.log(data)
   let surveys = data.surveys
   let pagesurveys = data.surveypages
   // let responsesCount = data.responsesCount
@@ -28,8 +26,6 @@ export function showSurveys (data) {
     //     surveys[j].responses = responsesCount[i].count
     //   }
     // }
-    console.log('updated surveys')
-    console.log(surveys[j])
   }
   var newSurvey = surveys.reverse()
   return {
@@ -54,13 +50,11 @@ export function showSurveyQuestions (data) {
 
 export function loadSurveysList () {
   // here we will fetch list of subscribers from endpoint
-  console.log('loadSurveysList called')
   return (dispatch) => {
     callApi('surveys').then(res => dispatch(showSurveys(res.payload)))
   }
 }
 export function sendsurvey (survey, msg) {
-  console.log('send survey called', survey)
   return (dispatch) => {
     callApi(`surveys/send`, 'post', survey)
       .then(res => {
@@ -76,7 +70,6 @@ export function sendsurvey (survey, msg) {
   }
 }
 export function sendSurveyDirectly (survey, msg) {
-  console.log('send survey called', survey)
   return (dispatch) => {
     callApi(`surveys/sendSurveyDirectly`, 'post', survey)
       .then(res => {
@@ -103,8 +96,6 @@ export function submitsurvey (survey) {
   }
 }
 export function createsurvey (survey) {
-  console.log('Creating survey')
-  console.log(survey)
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
       .then(res => dispatch(addSurvey(res.payload)))
@@ -118,7 +109,6 @@ export function addSurvey (data) {
   } else {
     alert('Error occurred in creating surveys')
   } */
-  console.log('createdsurvey', data)
   return {
     type: ActionTypes.ADD_SURVEY,
     data
@@ -139,7 +129,202 @@ export function sendSurveyFailure () {
 }
 
 export function showSurveyResponse (data) {
-  console.log('show survey responses', data)
+  /* const survey =
+   {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   }
+
+   const questions = [
+   {
+   _id: '10',
+   statement: 'How would you rate our new product?',
+   options: ['Excellent', 'Good', 'Bad'],
+   type: 'multichoice',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   }
+   },
+   {
+   _id: '11',
+   statement: 'Any feedback you want to give?',
+   options: [],
+   type: 'text',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   }
+   },
+   {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   }
+   }
+   ]
+   const responses = [
+   {
+   _id: '20',
+   response: 'Excellent',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '10',
+   statement: 'How would you rate our new product?',
+   options: ['Excellent', 'Good', 'Bad'],
+   type: 'multichoice'
+   },
+   subscriberId: {
+   _id: 'a',
+   firstName: 'Zarmeen',
+   lastName: 'Nasim',
+   gender: 'Female'
+   }
+   },
+   {
+   _id: '21',
+   response: 'Feedback from the customer X',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '11',
+   statement: 'Any feedback you want to give?',
+   options: [],
+   type: 'text'
+   },
+
+   subscriberId: {
+   _id: 'b',
+   firstName: 'Sojharo',
+   lastName: 'Mangi',
+   gender: 'Male'
+   }
+   },
+   {
+   _id: '23',
+   response: 'Good',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '10',
+   statement: 'How would you rate our new product?',
+   options: ['Excellent', 'Good', 'Bad'],
+   type: 'multichoice'
+   },
+   subscriberId: {
+   _id: 'b',
+   firstName: 'Sojharo',
+   lastName: 'Mangi',
+   gender: 'Male'
+   }
+   },
+   {
+   _id: '22',
+   response: 'Feedback from the customer Y',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '11',
+   statement: 'Any feedback you want to give?',
+   options: [],
+   type: 'text'
+   },
+
+   subscriberId: {
+   _id: 'c',
+   firstName: 'Sumaira',
+   lastName: 'Saeed',
+   gender: 'Female'
+   }
+   },
+   {
+   _id: '24',
+   response: 'Red',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice'
+
+   },
+   subscriberId: {
+   _id: 'b',
+   firstName: 'Sojharo',
+   lastName: 'Mangi',
+   gender: 'Male'
+   }
+   },
+   {
+   _id: '25',
+   response: 'Red',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice'
+
+   },
+   subscriberId: {
+   _id: 'c',
+   firstName: 'Sumaira',
+   lastName: 'Saeed',
+   gender: 'Female'
+   }
+   },
+   {
+   _id: '26',
+   response: 'Orange',
+   surveyId: {
+   _id: '1',
+   title: 'Product Satisfaction',
+   description: 'The survey to check our new product satisfaction from customers'
+   },
+   questionId: {
+   _id: '12',
+   statement: 'Which color do you like?',
+   options: ['Peach', 'Orange', 'Red'],
+   type: 'multichoice'
+
+   },
+   subscriberId: {
+   _id: 'a',
+   firstName: 'Zarmeen',
+   lastName: 'Nasim',
+   gender: 'Female'
+   }
+   }
+   ] */
   return {
     type: ActionTypes.ADD_RESPONSES,
     survey: data.survey,
@@ -149,7 +334,6 @@ export function showSurveyResponse (data) {
 }
 export function loadsurveyresponses (surveyid) {
   // surveyid is the _id of survey
-  console.log('loadsurveyresponses called')
   return (dispatch) => {
     callApi(`surveys/${surveyid}`)
       .then(res => dispatch(showSurveyResponse(res.payload)))
@@ -157,10 +341,8 @@ export function loadsurveyresponses (surveyid) {
 }
 export function deleteSurvey (id, msg) {
   return (dispatch) => {
-    console.log('id', id)
     callApi(`surveys/deleteSurvey/${id}`, 'delete')
       .then(res => {
-        console.log('Response Delete', res)
         if (res.status === 'success') {
           msg.success('Survey deleted successfully')
           dispatch(loadSurveysList())

@@ -39,9 +39,6 @@ class WelcomeMessage extends React.Component {
     })
     /* eslint-disable */
     $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
-      /* eslint-enable */
-      console.log('event', event.target.attributes.id.nodeValue)
-      console.log('state', state)
       if (state === true) {
         self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
       } else {
@@ -58,7 +55,6 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoEdit (page) {
-    console.log('gotoEdit called', page)
     browserHistory.push({
       pathname: `/editTemplateBroadcast`,
       state: {module: 'welcome', _id: page._id, payload: page.welcomeMessage}
@@ -66,7 +62,6 @@ class WelcomeMessage extends React.Component {
   }
 
   gotoView (page) {
-    console.log('gotoEdit called', page)
     browserHistory.push({
       pathname: `/viewWelcomeMessage`,
       state: {module: 'welcome', _id: page._id, payload: page}

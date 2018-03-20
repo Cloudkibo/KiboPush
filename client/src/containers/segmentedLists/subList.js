@@ -1,7 +1,4 @@
 export function getSubList (data, conditions, pages) {
-  console.log('conditions', conditions)
-  console.log('pages', pages)
-  console.log('data', data)
   var filteredData = []
   var field = ''
   var text = ''

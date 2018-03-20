@@ -3,8 +3,6 @@ import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 export function showautoposting (data) {
-  console.log('showautoposting')
-  console.log(data)
   return {
     type: ActionTypes.FETCH_AUTOPOSTING_LIST,
     autoposting: data
@@ -52,11 +50,10 @@ export function loadAutopostingList () {
 }
 
 export function createautoposting (data) {
-  console.log(data)
   return (dispatch) => {
     callApi('autoposting/create', 'post', data)
       .then(res => {
-        console.log(res)
+        console.log('response from server', res)
         if (res.status === 'success') {
           dispatch(createAutopostingSuccess())
           dispatch(loadAutopostingList())
@@ -75,7 +72,6 @@ export function deleteautoposting (id) {
 }
 
 export function editautoposting (data) {
-  console.log(data)
   return (dispatch) => {
     callApi('autoposting/edit', 'post', data)
       .then(res => {
@@ -91,12 +87,9 @@ export function editautoposting (data) {
 }
 
 export function showAutopostingMessages (data) {
-  console.log('showautopostingmessages')
-  console.log(data)
   var sorted = data.sort(function (a, b) {
     return new Date(b.datetime) - new Date(a.datetime)
   })
-  console.log('sorted data', sorted)
   return {
     type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
     autoposting_messages: sorted

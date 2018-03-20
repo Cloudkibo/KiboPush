@@ -411,7 +411,6 @@ class Stats extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     subscribers: (state.subscribersInfo.subscribers)
   }

@@ -114,7 +114,6 @@ function requireAuth (nextState, replace) {
 }
 
 function redirectAuthUsers (nextState, replace) {
-  // console.log('auth', auth.getNext())
   if (auth.loggedIn()) {
     // if (auth.getNext() === 'addPages') {
     //   auth.removeNext()
@@ -123,7 +122,6 @@ function redirectAuthUsers (nextState, replace) {
     //     state: { nextPathname: nextState.location.pathname }
     //   })
     // }
-    console.log('you are logged in. You cant go here.', nextState)
     replace({
       pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
