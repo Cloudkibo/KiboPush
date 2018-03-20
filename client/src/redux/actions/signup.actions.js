@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
+
 export function Success () {
   return {
     type: ActionTypes.SIGNUP_SUCCESS,
@@ -13,6 +14,20 @@ export function Failure (message) {
   return {
     type: ActionTypes.SIGNUP_FAILURE,
     errorMessage: message
+  }
+}
+
+export function resendSuccess (msg) {
+  return {
+    type: ActionTypes.RESEND_SUCCESS,
+    successMessage: msg
+  }
+}
+
+export function resendFailure () {
+  return {
+    type: ActionTypes.RESEND_FAILURE,
+    errorMessage: 'error'
   }
 }
 
@@ -32,19 +47,7 @@ export function signUp (data, msg) {
       })
   }
 }
-export function resendSuccess (msg) {
-  return {
-    type: ActionTypes.RESEND_SUCCESS,
-    successMessage: msg
-  }
-}
 
-export function resendFailure () {
-  return {
-    type: ActionTypes.RESEND_FAILURE,
-    errorMessage: 'error'
-  }
-}
 export function resendEmail () {
   return (dispatch) => {
     callApi('email_verification/resend')

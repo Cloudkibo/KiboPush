@@ -43,6 +43,16 @@ export function editAutopostingFailure (message) {
   }
 }
 
+export function showAutopostingMessages (data) {
+  var sorted = data.sort(function (a, b) {
+    return new Date(b.datetime) - new Date(a.datetime)
+  })
+  return {
+    type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
+    autoposting_messages: sorted
+  }
+}
+
 export function loadAutopostingList () {
   return (dispatch) => {
     callApi('autoposting').then(res => dispatch(showautoposting(res.payload)))
@@ -83,16 +93,6 @@ export function editautoposting (data) {
           dispatch(editAutopostingFailure(res.description))
         }
       })
-  }
-}
-
-export function showAutopostingMessages (data) {
-  var sorted = data.sort(function (a, b) {
-    return new Date(b.datetime) - new Date(a.datetime)
-  })
-  return {
-    type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
-    autoposting_messages: sorted
   }
 }
 

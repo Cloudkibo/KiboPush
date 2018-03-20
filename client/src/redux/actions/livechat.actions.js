@@ -35,20 +35,6 @@ export function socketUpdate (data) {
   }
 }
 
-export function fetchSessions (companyid) {
-  return (dispatch) => {
-    callApi('sessions', 'post', companyid)
-      .then(res => dispatch(showChatSessions(res.payload)))
-  }
-}
-
-export function fetchSingleSession (sessionid, sessions) {
-  return (dispatch) => {
-    callApi(`sessions/${sessionid}`)
-      .then(res => dispatch(updateChatSessions(res.payload, sessions)))
-  }
-}
-
 export function showUserChats (userChat) {
   return {
     type: ActionTypes.SHOW_USER_CHAT,
@@ -65,6 +51,36 @@ export function resetSocket () {
 export function resetUnreadSession () {
   return {
     type: ActionTypes.RESET_UNREAD_SESSION
+  }
+}
+
+export function loadingUrlMeta (url) {
+  return {
+    type: ActionTypes.LOADING_URL_META,
+    urlValue: url,
+    loadingUrl: true
+  }
+}
+
+export function urlMetaReceived (meta) {
+  return {
+    type: ActionTypes.GET_URL_META,
+    urlMeta: meta,
+    loadingUrl: false
+  }
+}
+
+export function fetchSessions (companyid) {
+  return (dispatch) => {
+    callApi('sessions', 'post', companyid)
+      .then(res => dispatch(showChatSessions(res.payload)))
+  }
+}
+
+export function fetchSingleSession (sessionid, sessions) {
+  return (dispatch) => {
+    callApi(`sessions/${sessionid}`)
+      .then(res => dispatch(updateChatSessions(res.payload, sessions)))
   }
 }
 
@@ -114,22 +130,6 @@ export function sendChatMessage (data, companyId) {
     callApi('livechat/', 'post', data).then(res => {
       dispatch(fetchSessions(companyId))
     })
-  }
-}
-
-export function loadingUrlMeta (url) {
-  return {
-    type: ActionTypes.LOADING_URL_META,
-    urlValue: url,
-    loadingUrl: true
-  }
-}
-
-export function urlMetaReceived (meta) {
-  return {
-    type: ActionTypes.GET_URL_META,
-    urlMeta: meta,
-    loadingUrl: false
   }
 }
 
