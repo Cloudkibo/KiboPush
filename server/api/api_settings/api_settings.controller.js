@@ -58,7 +58,6 @@ exports.enable = function (req, res) {
           return res.status(500)
             .json({status: 'failed', description: 'API save failed'})
         }
-        logger.serverLog(TAG, 'api enabled')
         res.status(201).json({
           status: 'success',
           payload: savedSettings

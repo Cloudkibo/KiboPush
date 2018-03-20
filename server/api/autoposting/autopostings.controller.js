@@ -113,7 +113,6 @@ exports.create = function (req, res) {
                   description: err
                 })
               }
-              logger.serverLog(TAG, `Twitter user found ${data.screen_name}`)
               autoPostingPayload.accountUniqueName = data.screen_name
               let payload = {
                 id: data.id,
@@ -154,9 +153,7 @@ exports.create = function (req, res) {
             let urlAfterDot = url.substring(url.indexOf('.') + 1)
             let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
             while (screenName.indexOf('-') > -1) screenName = screenName.substring(screenName.indexOf('-') + 1)
-            logger.serverLog(TAG, `screenName ${screenName}`)
             if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
-            logger.serverLog(TAG, `the parse got as ${screenName}`)
             Page.findOne({
               userId: req.user._id,
               $or: [{pageId: screenName}, {pageUserName: screenName}]
@@ -203,8 +200,6 @@ exports.create = function (req, res) {
                     description: 'Failed to insert record'
                   })
                 } else {
-                  logger.serverLog(TAG,
-                    `FB Page added ${JSON.stringify(createdRecord)}`)
                   res.status(201)
                   .json({status: 'success', payload: createdRecord})
                   require('./../../config/socketio').sendMessageToClient({
@@ -228,7 +223,6 @@ exports.create = function (req, res) {
             let urlAfterDot = url.substring(url.indexOf('.') + 1)
             let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
             let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
-            logger.serverLog(TAG, `the parse got as ${channelName}`)
             let autoPostingPayload = {
               userId: req.user._id,
               companyId: companyUser.companyId,
@@ -257,8 +251,6 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
-                logger.serverLog(TAG,
-                  `Youtube added ${JSON.stringify(createdRecord)}`)
                 res.status(201).json({status: 'success', payload: createdRecord})
               }
             })
@@ -269,9 +261,6 @@ exports.create = function (req, res) {
 }
 
 exports.edit = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in edit autoposting ${JSON.stringify(req.body)}`)
-
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -326,8 +315,6 @@ exports.edit = function (req, res) {
 }
 
 exports.destroy = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   AutoPosting.findById(req.params.id, (err, autoposting) => {
     if (err) {
       return res.status(500)
@@ -361,21 +348,16 @@ exports.destroy = function (req, res) {
 
 // todo for new twitter activity api version
 exports.twitterwebhook = function (req, res) {
-  logger.serverLog(TAG, 'Twitter Webhook Called')
-  logger.serverLog(TAG, JSON.stringify(req.body))
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 
 exports.twitterverify = function (req, res) {
-  logger.serverLog(TAG, 'Twitter verify webhook called')
-  logger.serverLog(TAG, JSON.stringify(req.params))
 
   const hmac = crypto.createHmac('sha256', config.twitter.consumerSecret)
 
   hmac.on('readable', () => {
     const data = hmac.read()
     if (data) {
-      logger.serverLog(TAG, data.toString('hex'))
       return res.status(200).json({
         response_token: `sha256=${data.toString('hex')}`
       })
@@ -387,10 +369,7 @@ exports.twitterverify = function (req, res) {
 }
 
 exports.pubsubhook = function (req, res) {
-  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Called')
   let params = urllib.parse(req.url, true, true)
-
-  logger.serverLog(TAG, JSON.stringify(params.query))
 
   // Does not seem to be a valid PubSubHubbub request
   if (!params.query['hub.topic'] || !params.query['hub.mode']) {
@@ -415,8 +394,6 @@ exports.pubsubhook = function (req, res) {
 }
 
 exports.pubsubhookPost = function (req, res) {
-  logger.serverLog(TAG, 'PUBSUBHUBBUB Webhook Post Called')
-  logger.serverLog(TAG, JSON.stringify(req.headers))
   let bodyChunks = []
   let params = urllib.parse(req.url, true, true)
   let topic = params && params.query && params.query.topic
@@ -441,9 +418,6 @@ exports.pubsubhookPost = function (req, res) {
           break
       }
     })
-
-  logger.serverLog(TAG, 'topic found')
-  logger.serverLog(TAG, topic)
   if (!topic) {
     return _sendError(req, res, 400, 'Bad Request')
   }
