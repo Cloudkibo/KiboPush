@@ -70,12 +70,12 @@ class ShowTemplates extends React.Component {
   }
   gotoView () {
     this.props.history.push({
-      pathname: `/convos`
+      pathname: `/broadcasts`
     })
   }
   gotoCreate (broadcast) {
     browserHistory.push({
-      pathname: `/createconvo`,
+      pathname: `/createBroadcast`,
       state: {module: 'convo'}
     })
   }

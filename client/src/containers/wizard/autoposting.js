@@ -101,7 +101,7 @@ class Autoposting extends React.Component {
 
   gotoSettings (item) {
     this.props.history.push({
-      pathname: `/autoposting-itemsettings`,
+      pathname: `/autopostingItemSettings`,
       state: item
     })
   }
