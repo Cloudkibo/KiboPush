@@ -30,7 +30,14 @@ class Dashboard extends React.Component {
     props.loadDashboardData()
     props.sentVsSeen()
     props.loadSubscribersList()
+
+    this.state = {
+      isShowingModal: false,
+      steps: [],
+      sentseendata1: []
+    }
   }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
