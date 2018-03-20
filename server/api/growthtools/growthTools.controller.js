@@ -173,7 +173,7 @@ exports.upload = function (req, res) {
                           for (let i = 0; i < subscribers.length; i++) {
                             temp.push(subscribers[i]._id)
                           }
-                          Lists.update({listName: newFileName}, {
+                          Lists.update({listName: newFileName, userId: req.user._id, companyId: companyUser.companyId}, {
                             content: temp
                           }, (err2, savedList) => {
                             if (err) {
@@ -380,12 +380,7 @@ exports.sendNumbers = function (req, res) {
                     }
                     logger.serverLog(TAG,
                       `temp push ${JSON.stringify(temp)}`)
-                      Lists.find({listName: 'Other'}, (err, listfound) => {
-                        if (err) {}
-                        logger.serverLog(TAG,
-                          `listFoundCriteriaName ${JSON.stringify(listfound)}`)
-                      })
-                    Lists.update({listName: 'Other'}, {
+                    Lists.update({listName: 'Other', userId: req.user._id, companyId: companyUser.companyId}, {
                       content: temp
                     }, (err2, savedList) => {
                       if (err) {
