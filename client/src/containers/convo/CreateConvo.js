@@ -29,7 +29,7 @@ import Gallery from './Gallery'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import _ from 'underscore'
 import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -100,9 +100,6 @@ class CreateConvo extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.checkConditions = this.checkConditions.bind(this)
@@ -523,33 +520,6 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
-  tourFinished (data) {
-    if (data.type === 'finished') {
-      this.props.convoTourCompleted({
-        'convoTourSeen': true
-      })
-    }
-  }
   initializeListSelect (lists) {
     var self = this
     $('#selectLists').select2({
@@ -674,7 +644,6 @@ class CreateConvo extends React.Component {
     }
   }
   render () {
-
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -1073,7 +1042,6 @@ function mapDispatchToProps (dispatch) {
       addPages: addPages,
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
-      convoTourCompleted: convoTourCompleted,
       getFbAppId: getFbAppId,
       createWelcomeMessage: createWelcomeMessage,
       getAdminSubscriptions: getAdminSubscriptions,

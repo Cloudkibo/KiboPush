@@ -47,39 +47,10 @@ export function setSocketStatus (data) {
   }
 }
 
-export function updateDashboardTour () {
-  return {
-    type: ActionTypes.DASHBOARD_TOUR_COMPLETED
-  }
-}
 
-export function updateWorkflowsTour () {
-  return {
-    type: ActionTypes.WORKFLOWS_TOUR_COMPLETED
-  }
-}
-
-export function updateSurveyTour () {
-  return {
-    type: ActionTypes.SURVEY_TOUR_COMPLETED
-  }
-}
-
-export function updateConvoTour () {
-  return {
-    type: ActionTypes.CONVO_TOUR_COMPLETED
-  }
-}
-
-export function updatePollTour () {
-  return {
-    type: ActionTypes.POLL_TOUR_COMPLETED
-  }
-}
-
-export function updateGetStarted () {
-  return {
-    type: ActionTypes.POLL_TOUR_COMPLETED
+export function getStartedCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
   }
 }
 
@@ -101,35 +72,6 @@ export function getAdminSubscriptions () {
   }
 }
 
-export function dashboardTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateDashboardTour()))
-  }
-}
-
-export function workflowsTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateWorkflowsTour()))
-  }
-}
-
-export function surveyTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateSurveyTour()))
-  }
-}
-
-export function convoTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateConvoTour()))
-  }
-}
-
-export function pollTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updatePollTour()))
-  }
-}
 
 export function getStartedCompleted (tour) {
   return (dispatch) => {
