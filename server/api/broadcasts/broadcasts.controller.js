@@ -192,10 +192,11 @@ exports.getfbMessage = function (req, res) {
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                           if (page.welcomeMessage && page.isWelcomeMessageEnabled) {
                             page.welcomeMessage.forEach(payloadItem => {
-                              logger.serverLog(TAG,
-                                `Payload item: ${JSON.stringify(
-                                  payloadItem)}`)
-                              logger.serverLog(TAG, `Before messageData`)
+                              if (payloadItem.componentType === 'text') {
+                                if (payloadItem.text.includes('[Username]')) {
+                                  payloadItem.text = payloadItem.text.replace('[Username]', response.body.first_name + ' ' + response.body.last_name)
+                                }
+                              }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
                                 payloadItem, false)

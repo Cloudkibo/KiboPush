@@ -8,6 +8,8 @@
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
+const logger = require('../../components/logger')
+const TAG = 'api/broadcast/broadcasts.utility.js'
 const utility = require('../../components/utility')
 
 function validateInput (body) {
@@ -98,8 +100,11 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
+    logger.serverLog(TAG, `Before dir ${JSON.stringify(payload)}`)
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+    logger.serverLog(TAG, `After dir ${JSON.stringify(dir)}`)
     let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
+    logger.serverLog(TAG, `Before fileReaderStream ${JSON.stringify(fileReaderStream)}`)
     payload = {
       'recipient': JSON.stringify({
         'id': subscriberId
