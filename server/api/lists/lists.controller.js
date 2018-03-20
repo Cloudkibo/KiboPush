@@ -52,8 +52,6 @@ exports.viewList = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      logger.serverLog(TAG,
-        `listFound ${JSON.stringify(list[0])}`)
       if (list[0].initialList === true) {
         PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: list[0].listName}, (err, number) => {
           if (err) {
@@ -62,8 +60,6 @@ exports.viewList = function (req, res) {
               description: 'phone number not found'
             })
           }
-          logger.serverLog(TAG,
-            `listFoundNumber ${JSON.stringify(number)}`)
           if (number.length > 0) {
             let findNumber = []
             let findPage = []
@@ -80,8 +76,6 @@ exports.viewList = function (req, res) {
                 $in: findPage
               }
             })
-            logger.serverLog(TAG,
-              `listFoundCriteria ${JSON.stringify(subscriberFindCriteria)}`)
             Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
               if (err) {
                 return res.status(500).json({
@@ -89,8 +83,6 @@ exports.viewList = function (req, res) {
                   description: `Internal Server Error ${JSON.stringify(err)}`
                 })
               }
-              logger.serverLog(TAG,
-                `listFoundCriteria ${JSON.stringify(subscribers)}`)
               let temp = []
               for (let i = 0; i < subscribers.length; i++) {
                 temp.push(subscribers[i]._id)
@@ -170,8 +162,6 @@ exports.createList = function (req, res) {
   })
 }
 exports.deleteList = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   Lists.findById(req.params.id, (err, list) => {
     if (err) {
       return res.status(500)

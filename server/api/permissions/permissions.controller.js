@@ -35,7 +35,6 @@ exports.fetch = function (req, res) {
 
 // Update the company profile and settings
 exports.updatecompanyprofile = function (req, res) {
-  logger.serverLog('info', 'This is body in companyprofile ' + JSON.stringify(req.body))
 
   if (req.user.isOwner == 'Yes') {
     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {

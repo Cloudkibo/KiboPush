@@ -189,7 +189,6 @@ function exists (list, content) {
   return false
 }
 exports.send = function (req, res) {
-  logger.serverLog(TAG, `Inside sendpoll ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -227,7 +226,6 @@ exports.send = function (req, res) {
         } else {
           currentUser = connectedUser
         }
-        logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
         /*
         Expected request body
         { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
@@ -256,7 +254,6 @@ exports.send = function (req, res) {
           ]
         }
 
-        logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
         let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
         if (req.body.isSegmented) {
           if (req.body.segmentationPageIds.length > 0) {
@@ -275,11 +272,8 @@ exports.send = function (req, res) {
               description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
           for (let z = 0; z < pages.length; z++) {
-            logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
             if (req.body.isList === true) {
-              logger.serverLog(TAG, `inside isList`)
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
                 {
@@ -326,9 +320,6 @@ exports.send = function (req, res) {
                       `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                     }
                     for (let j = 0; j < subscribers.length; j++) {
-                      logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
                       const data = {
                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                         message: messageData
@@ -343,9 +334,6 @@ exports.send = function (req, res) {
                           `Error occured at subscriber :${JSON.stringify(
                             subscribers[j])}`)
                         }
-                        logger.serverLog(TAG,
-                        `Sending poll to subscriber response ${JSON.stringify(
-                          resp.body)}`)
                         let pollBroadcast = new PollPage({
                           pageId: pages[z].pageId,
                           userId: req.user._id,
@@ -403,13 +391,7 @@ exports.send = function (req, res) {
                     `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                   }
                   if (subscribers.length > 0) {
-                    logger.serverLog(TAG,
-                    `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
-
                     for (let j = 0; j < subscribers.length; j++) {
-                      logger.serverLog(TAG,
-                      `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
                       const data = {
                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                         message: messageData
@@ -424,9 +406,6 @@ exports.send = function (req, res) {
                           `Error occured at subscriber :${JSON.stringify(
                             subscribers[j])}`)
                         }
-                        logger.serverLog(TAG,
-                        `Sending poll to subscriber response ${JSON.stringify(
-                          resp.body)}`)
                         let pollBroadcast = new PollPage({
                           pageId: pages[z].pageId,
                           userId: req.user._id,
@@ -496,8 +475,6 @@ exports.send = function (req, res) {
   })
 }
 exports.deletePoll = function (req, res) {
-  logger.serverLog(TAG,
-    `This is body in delete autoposting ${JSON.stringify(req.params)}`)
   Polls.findById(req.params.id, (err, poll) => {
     if (err) {
       return res.status(500)
@@ -630,7 +607,6 @@ exports.sendPoll = function (req, res) {
           } else {
             currentUser = connectedUser
           }
-          logger.serverLog(TAG, `current User ${JSON.stringify(currentUser)}`)
           /*
           Expected request body
           { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
@@ -659,7 +635,6 @@ exports.sendPoll = function (req, res) {
             ]
           }
 
-          logger.serverLog(TAG, `Poll to be sent ${JSON.stringify(messageData)}`)
           let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
           if (req.body.isSegmented) {
             if (req.body.segmentationPageIds.length > 0) {
@@ -678,11 +653,8 @@ exports.sendPoll = function (req, res) {
                 description: `Internal Server Error${JSON.stringify(err)}`
               })
             }
-            logger.serverLog(TAG, `Total pages to receive poll are ${pages.length}`)
             for (let z = 0; z < pages.length; z++) {
-              logger.serverLog(TAG, `Page at Z ${pages[z].pageName}`)
               if (req.body.isList === true) {
-                logger.serverLog(TAG, `inside isList`)
                 let ListFindCriteria = {}
                 ListFindCriteria = _.merge(ListFindCriteria,
                   {
@@ -729,9 +701,6 @@ exports.sendPoll = function (req, res) {
                         `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                       }
                       for (let j = 0; j < subscribers.length; j++) {
-                        logger.serverLog(TAG,
-                          `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
                         const data = {
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                           message: messageData
@@ -746,9 +715,6 @@ exports.sendPoll = function (req, res) {
                             `Error occured at subscriber :${JSON.stringify(
                               subscribers[j])}`)
                           }
-                          logger.serverLog(TAG,
-                          `Sending poll to subscriber response ${JSON.stringify(
-                            resp.body)}`)
                           let pollBroadcast = new PollPage({
                             pageId: pages[z].pageId,
                             userId: req.user._id,
@@ -806,13 +772,7 @@ exports.sendPoll = function (req, res) {
                       `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                     }
                     if (subscribers.length > 0) {
-                      logger.serverLog(TAG,
-                      `Total Subscribers of page ${pages[z].pageName} are ${subscribers.length}`)
-
                       for (let j = 0; j < subscribers.length; j++) {
-                        logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscribers[j].firstName} ${subscribers[j].lastName}`)
-
                         const data = {
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                           message: messageData
@@ -827,9 +787,6 @@ exports.sendPoll = function (req, res) {
                             `Error occured at subscriber :${JSON.stringify(
                               subscribers[j])}`)
                           }
-                          logger.serverLog(TAG,
-                          `Sending poll to subscriber response ${JSON.stringify(
-                            resp.body)}`)
                           let pollBroadcast = new PollPage({
                             pageId: pages[z].pageId,
                             userId: req.user._id,

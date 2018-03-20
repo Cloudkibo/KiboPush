@@ -35,8 +35,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  logger.serverLog(TAG, 'Workflows create payload ' + JSON.stringify(req.body))
-
   let parametersMissing = false
 
   if (!_.has(req.body, 'condition')) parametersMissing = true
@@ -81,7 +79,6 @@ exports.create = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
-        logger.serverLog(TAG, 'Workflows created successfully ' + JSON.stringify(req.workflow))
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {

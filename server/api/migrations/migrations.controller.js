@@ -21,7 +21,6 @@ exports.createLinks = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, 'previous migrations removed ' + count)
     Users.find({}, (err, users) => {
       if (err) {
         return res.status(500).json({
