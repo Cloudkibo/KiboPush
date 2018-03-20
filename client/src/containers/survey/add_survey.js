@@ -4,12 +4,11 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
-import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
@@ -64,9 +63,6 @@ class AddSurvey extends React.Component {
       lists: []
     }
     this.createSurvey = this.createSurvey.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -106,36 +102,6 @@ class AddSurvey extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    this.addSteps([
-      {
-        title: 'Surveys',
-        text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
-        selector: 'h3#survey',
-        position: 'top-right',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Title and Introduction',
-        text: `Give your survey a title and description for easy identification`,
-        selector: 'div#identity',
-        position: 'right',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Add Questions',
-        text: 'Add questions, and create a set of responses for your subscriber to reply with',
-        selector: 'div#questions',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Targetting',
-        text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
-        selector: 'div#target',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-    ])
   }
   initializeListSelect (lists) {
     var self = this
@@ -462,34 +428,6 @@ class AddSurvey extends React.Component {
     return choiceItems || null
   }
 
-  tourFinished (data) {
-    if (data.type === 'finished') {
-      this.props.surveyTourCompleted({
-        'surveyTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
   createUI () {
     let uiItems = []
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
@@ -689,10 +627,6 @@ class AddSurvey extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-      (this.props.user && this.props.user.surveyTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-      }
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -909,7 +843,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     getuserdetails: getuserdetails,
-    surveyTourCompleted: surveyTourCompleted,
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
