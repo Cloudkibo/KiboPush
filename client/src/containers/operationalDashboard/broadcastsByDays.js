@@ -27,7 +27,6 @@ class BroadcastsInfo extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -39,7 +38,6 @@ class BroadcastsInfo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
 
   displayData (n, broadcasts) {
@@ -56,9 +54,7 @@ class BroadcastsInfo extends React.Component {
       data[index] = broadcasts[i]
       index++
     }
-    console.log('data', data)
     this.setState({BroadcastData: data})
-    console.log('in displayData', this.state.BroadcastData)
   }
 
   handlePageClick (data) {
@@ -85,7 +81,6 @@ class BroadcastsInfo extends React.Component {
     var defaultVal = 10
     var value = e.target.value
     this.setState({selectedDays: value})
-    console.log('On days change', value)
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)

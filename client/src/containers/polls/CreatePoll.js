@@ -132,7 +132,6 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     $('#selectLists').select2({
       data: lists,
@@ -146,7 +145,6 @@ class CreatePoll extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -154,13 +152,11 @@ class CreatePoll extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
 
     $('#selectLists').val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
-    console.log('Page Options in select', pageOptions)
     var self = this
     $('#selectPage').select2({
       data: pageOptions,
@@ -179,7 +175,6 @@ class CreatePoll extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
@@ -202,7 +197,6 @@ class CreatePoll extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -225,12 +219,9 @@ class CreatePoll extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in add survey', nextProps)
-    console.log('nextpropscustomer', nextProps.customerLists)
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
@@ -300,7 +291,6 @@ class CreatePoll extends React.Component {
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
-      console.log('Poll added')
     }
   }
 
@@ -326,11 +316,7 @@ class CreatePoll extends React.Component {
   }
 
   tourFinished (data) {
-    console.log('Next Tour Step')
     if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      console.log(this.props)
       this.props.pollTourCompleted({
         'pollTourSeen': true
       })
@@ -357,11 +343,9 @@ class CreatePoll extends React.Component {
     this.refs.joyride.addTooltip(data)
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -630,7 +614,6 @@ class CreatePoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),

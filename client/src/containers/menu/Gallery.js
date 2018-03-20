@@ -37,7 +37,6 @@ class Gallery extends React.Component {
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
     if (this.props.galleryDetails && this.props.galleryDetails !== '') {
-      console.log(this.props.galleryDetails)
       var cards = this.props.galleryDetails.cards
       var card = {}
       var temp = []
@@ -70,7 +69,6 @@ class Gallery extends React.Component {
 
   handleCard (obj) {
     var temp = this.state.broadcast
-    console.log('Handle Card Object Receeived', obj)
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
@@ -89,8 +87,6 @@ class Gallery extends React.Component {
   }
 
   render () {
-    console.log('Gallary State', this.state)
-
     var settings = {
       arrows: true,
       dots: true,
@@ -133,7 +129,6 @@ class Gallery extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 

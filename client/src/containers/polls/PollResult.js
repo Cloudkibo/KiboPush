@@ -25,21 +25,17 @@ class PollResult extends React.Component {
       show: false
     }
     this.getFile = this.getFile.bind(this)
-    console.log('this.props.location.state', this.props.location.state._id)
     this.props.getpollresults(this.props.location.state._id)
   }
   getFile () {
     let usersPayload = []
-    console.log('pagesname', this.props.pages)
     for (let i = 0; i < this.props.responsesfull.length; i++) {
       var jsonStructure = {}
-      console.log('this.props.responsesfull[i].subscriberId.firstName', this.props.responsesfull[i].subscriberId.firstName)
       for (let j = 0; j < this.props.pages.length; j++) {
         if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
           jsonStructure.PageName = this.props.pages[j].pageName
         }
       }
-      console.log('this.props.responsesfull[i].subscriberId.firstName', this.props.responsesfull[i].subscriberId.firstName)
       jsonStructure['Statement'] = this.props.responsesfull[i].pollId.statement
       jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
       jsonStructure['Response'] = this.props.responsesfull[i].response
@@ -52,7 +48,6 @@ class PollResult extends React.Component {
     //  var keys = []
     // keys.push('Subscriber Name')
     // keys.push(this.props.responsesfull[0].pollId.statement)
-    // console.log('this.props', this.props.polls.statement)
     var info = usersPayload
     var keys = []
     var val = info[0]
@@ -62,9 +57,6 @@ class PollResult extends React.Component {
       keys.push(subKey)
     }
     var data = json2csv({data: usersPayload, fields: keys})
-    console.log('data', data)
-    console.log('data', this.props.responsesfull[0].pollId.statement)
-    console.log('data', this.props.polls)
     fileDownload(data, this.props.responsesfull[0].pollId.statement + '-report.csv')
     //  if (this.props.responses) {
     //  fileDownload(data, 'users.csv')
@@ -90,11 +82,9 @@ class PollResult extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     this.setState({show: true})
-    console.log('in componentWillReceiveProps', nextprops.responses)
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
-      console.log('after if', nextprops.responses)
       if (nextprops.responses.length > 0) {
         let totalResponses = 0
         for (let i = 0; i < nextprops.responses.length; i++) {
@@ -244,7 +234,6 @@ class PollResult extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('mapStateToProps pollresult', state)
   return {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses),

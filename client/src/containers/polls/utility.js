@@ -34,7 +34,6 @@ export function checkConditions (pageValue, genderValue, localeValue, subscriber
   if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
     var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
     if (result.length === 0) {
-      console.log('inside if')
       return false
     }
   } else if (pageValue.length > 0 && genderValue.length) {

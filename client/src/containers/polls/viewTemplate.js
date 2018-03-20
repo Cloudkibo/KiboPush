@@ -17,7 +17,6 @@ class viewPoll extends React.Component {
   }
 
   displayData (n, pageSubscribers) {
-    console.log(n, pageSubscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -32,7 +31,6 @@ class viewPoll extends React.Component {
       index++
     }
     this.setState({pollDetailsData: data})
-    console.log('in displayData', this.state.pollDetailsData)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -58,13 +56,11 @@ class viewPoll extends React.Component {
     document.body.appendChild(addScript)
     if (this.props.currentPoll) {
       const id = this.props.currentPoll._id
-      console.log('id', id)
       this.props.loadPollDetails(id)
     }
   }
 
   render () {
-    console.log('props', this.props.pollDetails)
 
     return (
       <div>
@@ -124,7 +120,6 @@ class viewPoll extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for surveyDetails', state)
   return {
     pollDetails: (state.templatesInfo.pollDetails),
     currentPoll: (state.getCurrentPoll.currentPoll)

@@ -38,7 +38,6 @@ class Members extends React.Component {
   }
 
   displayData (n, members) {
-    console.log(members)
     let offset = n * 4
     let data = []
     let limit
@@ -94,11 +93,9 @@ class Members extends React.Component {
     })
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   render () {
-    console.log('Members', this.props.members)
     return (
       <div>
         <Header />
@@ -353,7 +350,6 @@ class Members extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     members: (state.membersInfo.members)

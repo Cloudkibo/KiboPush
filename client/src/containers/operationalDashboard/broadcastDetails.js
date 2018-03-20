@@ -44,7 +44,6 @@ class ViewBroadcastTemplate extends React.Component {
     }
   }
   searchSubscriber (event) {
-    console.log('exeuting subscriber')
     this.setState({searchValue: event.target.value})
     var filtered = []
     var data = this.props.location.state.data.subscriber
@@ -62,8 +61,6 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   displayData (n, subscribers) {
-    console.log('exeuting subscriber')
-    console.log(subscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -80,7 +77,6 @@ class ViewBroadcastTemplate extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
   onTestURLVideo (url) {
@@ -88,7 +84,6 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -97,11 +92,9 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
   render () {
-    console.log('View broadcast template', this.props.location.state)
     return (
       <div>
         <Header />

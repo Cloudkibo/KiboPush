@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 
 class LoginSignup extends React.Component {
   render () {
-    console.log('In LoginSignup JS')
     return (
       <div>
         <div className='fb-customerchat'
@@ -69,7 +68,6 @@ class LoginSignup extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 

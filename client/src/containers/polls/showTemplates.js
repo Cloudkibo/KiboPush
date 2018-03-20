@@ -26,7 +26,6 @@ class ShowTemplates extends React.Component {
     this.gotoView = this.gotoView.bind(this)
   }
   onPollClick (e, poll) {
-    console.log('Page Click', poll)
     this.props.saveCurrentPoll(poll)
   }
   showDropDown () {
@@ -37,7 +36,6 @@ class ShowTemplates extends React.Component {
     this.setState({showDropDown: false})
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps called')
     if (nextProps.polls) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
@@ -49,11 +47,9 @@ class ShowTemplates extends React.Component {
     })
   }
   displayData (n, polls) {
-    console.log(polls)
     this.setState({pollsData: polls})
   }
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {

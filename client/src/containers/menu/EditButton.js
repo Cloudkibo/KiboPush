@@ -97,7 +97,6 @@ class EditButton extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 
