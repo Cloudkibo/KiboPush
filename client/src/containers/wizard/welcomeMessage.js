@@ -77,7 +77,7 @@ class EditTemplate extends React.Component {
     console.log('in initializeSwitch', id)
     console.log('in initializeSwitch', state)
     var self = this
-    //var temp = '#' + id
+    // var temp = '#' + id
     /* eslint-disable */
     $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
@@ -109,9 +109,9 @@ class EditTemplate extends React.Component {
       if (event.target.value === this.props.pages[i]._id) {
         console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
         console.log($("[name='switch']").bootstrapSwitch('state'))
-        //if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
-          $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
-        //}
+        // if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
+        $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
+        // }
         // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
@@ -425,7 +425,7 @@ class EditTemplate extends React.Component {
                           </center>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              {//this.state.switchState &&
+                              {// this.state.switchState &&
                                 <div className='row'>
                                   <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
                                   <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
@@ -433,7 +433,7 @@ class EditTemplate extends React.Component {
                                       <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                     </div>
                                   </div>
-                                  {/*this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue)*/}
+                                  {/* this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue) */}
                                 </div>
                               }
                             </div>

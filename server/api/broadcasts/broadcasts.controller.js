@@ -202,9 +202,6 @@ exports.getfbMessage = function (req, res) {
                                 subsriber.id,
                                 payloadItem, false)
 
-                              logger.serverLog(TAG,
-                                `Payload for Messenger Send API for test: ${JSON.stringify(
-                                  messageData)}`)
                               request(
                                 {
                                   'method': 'POST',

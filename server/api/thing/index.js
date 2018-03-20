@@ -18,8 +18,7 @@ router.get('/', (req, res) => {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
     pages.forEach((page) => {
-
-      Subscribers.find({firstName : null, pageId: page._id}, (err, subs) => {
+      Subscribers.find({firstName: null, pageId: page._id}, (err, subs) => {
         subs.forEach((sub) => {
           const options = {
             url: `https://graph.facebook.com/v2.6/${sub.senderId}?access_token=${page.accessToken}`,
@@ -31,7 +30,6 @@ router.get('/', (req, res) => {
             const subsriber = response.body
             logger.serverLog(TAG, `NEW SUB DATA ${JSON.stringify(subsriber)}`)
             if (!error) {
-
               const payload = {
                 firstName: subsriber.first_name,
                 lastName: subsriber.last_name,
@@ -43,7 +41,7 @@ router.get('/', (req, res) => {
               Subscribers.findOne({senderId: sub.senderId}, (err, subscriber) => {
                 logger.serverLog(TAG, `SUB TO UPDATE ${JSON.stringify(subscriber)}`)
                 if (err) logger.serverLog(TAG, err)
-                subscriber.firstName =subsriber.first_name
+                subscriber.firstName = subsriber.first_name
                 subscriber.lastName = subsriber.last_name
                 subscriber.locale = subsriber.locale
                 subscriber.gender = subsriber.gender
@@ -59,8 +57,6 @@ router.get('/', (req, res) => {
           })
         })
       })
-
-
     })
   })
   res.status(200).json({status: 'success', payload: []})

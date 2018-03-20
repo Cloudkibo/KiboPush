@@ -46,7 +46,7 @@ export function initiateSocket (storeObj) {
 
 socket.on('connect', () => {
   console.log('Setting Socket Status to true')
-  if(my_id !== ''){
+  if (my_id !== '') {
     joinRoom(my_id)
   }
   store.dispatch(setSocketStatus(true))

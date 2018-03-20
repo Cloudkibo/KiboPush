@@ -30,7 +30,7 @@ export function menuInfo (state = initialState, action) {
 export function indexByPage (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_INDEX_BY_PAGE:
-      console.log('Reducer': action.data)
+      console.log('Reducer', action.data)
       return Object.assign({}, state, {
         menuitems: action.data
       })

@@ -71,8 +71,8 @@ class Image extends React.Component {
 
   render () {
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 +'px'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
+      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

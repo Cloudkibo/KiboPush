@@ -186,7 +186,7 @@ class CreateSubList extends React.Component {
   handleCreateSubList (res) {
     if (res.status === 'success') {
       this.resetPage()
-      $("#selectLists").val('').trigger('change')
+      $('#selectLists').val('').trigger('change')
     } else {
       this.setState({
         errorMessages: [],
@@ -317,7 +317,7 @@ class CreateSubList extends React.Component {
     }
     if (e.currentTarget.value === 'segmentAll') {
       this.setState({listSelected: ''})
-      $("#selectLists").val('').trigger('change')
+      $('#selectLists').val('').trigger('change')
     }
   }
 
@@ -351,7 +351,7 @@ class CreateSubList extends React.Component {
       }
       console.log('change List Selection', selected)
     })
-    $("#selectLists").val('').trigger('change')
+    $('#selectLists').val('').trigger('change')
   }
 
   render () {

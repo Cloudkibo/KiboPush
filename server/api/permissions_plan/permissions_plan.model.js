@@ -13,5 +13,3 @@ var PermissionsSchema = new Schema({
 })
 
 module.exports = mongoose.model('permissions_plan', PermissionsSchema)
-
-
