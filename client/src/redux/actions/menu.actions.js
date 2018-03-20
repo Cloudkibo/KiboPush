@@ -7,15 +7,7 @@ export function createMenuItem (data) {
     data
   }
 }
-export function addMenuItem (data) {
-  return (dispatch) => {
-    callApi('menu/createWebLink', 'post', data)
-      .then(res => {
-        dispatch(createMenuItem(res.payload))
-        console.log('addMenuItemResponse', res)
-      })
-  }
-}
+
 export function saveMenuSuccess (res) {
   return {
     type: ActionTypes.SAVE_MENU_SUCCESS,
@@ -30,6 +22,30 @@ export function saveMenuFailure (res) {
   }
 }
 
+export function updateIndexByPage (data) {
+  return {
+    type: ActionTypes.UPDATE_INDEX_BY_PAGE,
+    data
+  }
+}
+
+export function saveCurrentMenuItem (data) {
+  return {
+    type: ActionTypes.SAVE_CURRENT_MENUITEM,
+    data: data
+  }
+}
+
+export function addMenuItem (data) {
+  return (dispatch) => {
+    callApi('menu/createWebLink', 'post', data)
+      .then(res => {
+        dispatch(createMenuItem(res.payload))
+        console.log('addMenuItemResponse', res)
+      })
+  }
+}
+
 export function fetchMenu (setMenu) {
   return (dispatch) => {
     callApi('menu').then(res => {
@@ -41,13 +57,6 @@ export function fetchMenu (setMenu) {
         console.log('Error Fetching Menu', res)
       }
     })
-  }
-}
-
-export function updateIndexByPage (data) {
-  return {
-    type: ActionTypes.UPDATE_INDEX_BY_PAGE,
-    data
   }
 }
 
@@ -72,11 +81,5 @@ export function saveMenu (data, handleSaveMenu, msg) {
         msg.error('Failed to save Menu')
       }
     })
-  }
-}
-export function saveCurrentMenuItem (data) {
-  return {
-    type: ActionTypes.SAVE_CURRENT_MENUITEM,
-    data: data
   }
 }

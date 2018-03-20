@@ -1,14 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function loadWorkFlowList () {
-  // here we will fetch list of subscribers from endpoint
-
-  return (dispatch) => {
-    callApi('workflows').then(res => dispatch(updateWorkFlowList(res)))
-  }
-}
-
 export function updateWorkFlowList (data) {
   return {
     type: ActionTypes.LOAD_WORKFLOW_LIST,
@@ -20,20 +12,6 @@ export function updateWorkFlow (data) {
   return {
     type: ActionTypes.ADD_WORKFLOW,
     data
-  }
-}
-
-export function addWorkFlow (data) {
-  return (dispatch) => {
-    callApi('workflows/create', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(workFlowSuccess('Workflow Created Successfully!'))
-          dispatch(updateWorkFlow(res.payload))
-        } else {
-          dispatch(editWorkFlowFailure(res.description))
-        }
-      })
   }
 }
 
@@ -54,6 +32,28 @@ export function editWorkFlowFailure (message) {
 export function clearAlertMessages () {
   return {
     type: ActionTypes.CLEAR_WORKFLOW_ALERT_MESSAGES
+  }
+}
+
+export function loadWorkFlowList () {
+  // here we will fetch list of subscribers from endpoint
+
+  return (dispatch) => {
+    callApi('workflows').then(res => dispatch(updateWorkFlowList(res)))
+  }
+}
+
+export function addWorkFlow (data) {
+  return (dispatch) => {
+    callApi('workflows/create', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(workFlowSuccess('Workflow Created Successfully!'))
+          dispatch(updateWorkFlow(res.payload))
+        } else {
+          dispatch(editWorkFlowFailure(res.description))
+        }
+      })
   }
 }
 

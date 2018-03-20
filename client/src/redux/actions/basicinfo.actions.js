@@ -17,12 +17,6 @@ export function showuserdetails (data) {
   }
 }
 
-export function getuserdetails () {
-  return (dispatch) => {
-    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
-  }
-}
-
 export function storeFbAppId (data) {
   // NOTE: don't remove following auth method call
   return {
@@ -36,18 +30,6 @@ export function storeAdminSubscriptions (data) {
   return {
     type: ActionTypes.STORE_ADMIN_SUB_ID,
     data
-  }
-}
-
-export function getFbAppId () {
-  return (dispatch) => {
-    callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
-  }
-}
-
-export function getAdminSubscriptions () {
-  return (dispatch) => {
-    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }
 }
 
@@ -65,13 +47,34 @@ export function setSocketStatus (data) {
   }
 }
 
+
 export function getStartedCompleted (tour) {
   return (dispatch) => {
     callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
   }
 }
-export function updateGetStarted () {
-  return {
-    type: ActionTypes.POLL_TOUR_COMPLETED
+
+export function getuserdetails () {
+  return (dispatch) => {
+    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
+  }
+}
+
+export function getFbAppId () {
+  return (dispatch) => {
+    callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
+  }
+}
+
+export function getAdminSubscriptions () {
+  return (dispatch) => {
+    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
+  }
+}
+
+
+export function getStartedCompleted (tour) {
+  return (dispatch) => {
+    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
   }
 }

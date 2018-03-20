@@ -3,7 +3,7 @@ import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function showbroadcasts (data) {
+export function appendSentSeenData (data) {
   // we will have broadcast and page_broadcast_pages
   let broadcasts = data.broadcasts
   let pagebroadcasts = data.broadcastpages
@@ -15,11 +15,63 @@ export function showbroadcasts (data) {
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
   var newBroadcast = broadcasts.reverse()
+  return newBroadcast
+}
+
+export function showbroadcasts (data) {
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts: newBroadcast
+    broadcasts: appendSentSeenData(data)
   }
 }
+
+export function updatefileuploadStatus (status) {
+  return {
+    showFileUploading: status,
+    type: ActionTypes.SHOW_FILE_UPLOAD_INDICATOR
+  }
+}
+
+export function addBroadcast (data) {
+  // here we will add the broadcast
+  return {
+    type: ActionTypes.ADD_BROADCAST,
+    data
+  }
+}
+export function getbroadcast (data) {
+  return {
+    type: ActionTypes.GET_BROADCAST,
+    data
+  }
+}
+
+export function editBroadcast (data) {
+  // here we will edit the broadcast
+  return {
+    type: ActionTypes.EDIT_BROADCAST,
+    data
+  }
+}
+
+export function sendBroadcastSuccess () {
+  return {
+    type: ActionTypes.SEND_BROADCAST_SUCCESS
+  }
+}
+
+export function sendBroadcastFailure () {
+  return {
+    type: ActionTypes.SEND_BROADCAST_FAILURE
+  }
+}
+
+export function clearAlertMessage () {
+  return {
+    type: ActionTypes.CLEAR_ALERT
+  }
+}
+
 export function loadBroadcastsList () {
   return (dispatch) => {
     callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
@@ -60,57 +112,10 @@ export function uploadBroadcastfile (filedata) {
   }
 }
 
-export function updatefileuploadStatus (status) {
-  return {
-    showFileUploading: status,
-    type: ActionTypes.SHOW_FILE_UPLOAD_INDICATOR
-  }
-}
-
-export function addBroadcast (data) {
-  // here we will add the broadcast
-  return {
-    type: ActionTypes.ADD_BROADCAST,
-    data
-  }
-}
-export function getbroadcast (data) {
-  return {
-    type: ActionTypes.GET_BROADCAST,
-    data
-  }
-}
-
 export function editbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
       .then(res => dispatch(loadBroadcastsList()))
-  }
-}
-
-export function editBroadcast (data) {
-  // here we will edit the broadcast
-  return {
-    type: ActionTypes.EDIT_BROADCAST,
-    data
-  }
-}
-
-export function sendBroadcastSuccess () {
-  return {
-    type: ActionTypes.SEND_BROADCAST_SUCCESS
-  }
-}
-
-export function sendBroadcastFailure () {
-  return {
-    type: ActionTypes.SEND_BROADCAST_FAILURE
-  }
-}
-
-export function clearAlertMessage () {
-  return {
-    type: ActionTypes.CLEAR_ALERT
   }
 }
 

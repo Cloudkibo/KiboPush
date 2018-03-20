@@ -4,14 +4,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function loadMembersList () {
-  // here we will fetch list of subscribers from endpoint
-
-  return (dispatch) => {
-    callApi('company/members').then(res => dispatch(updateMembersList(res)))
-  }
-}
-
 export function updateMembersList (data) {
   return {
     type: ActionTypes.LOAD_MEMBERS,
@@ -33,6 +25,20 @@ export function memberFailure (message) {
   }
 }
 
+export function clearAlertMessages () {
+  return {
+    type: ActionTypes.CLEAR_MEMBERS_ALERT_MESSAGES
+  }
+}
+
+export function loadMembersList () {
+  // here we will fetch list of subscribers from endpoint
+
+  return (dispatch) => {
+    callApi('company/members').then(res => dispatch(updateMembersList(res)))
+  }
+}
+
 export function deleteMember (data) {
   return (dispatch) => {
     callApi('company/removeMember', 'post', data)
@@ -44,11 +50,5 @@ export function updateMember (data) {
   return (dispatch) => {
     callApi('company/updateRole', 'post', data)
     .then(res => dispatch(loadMembersList()))
-  }
-}
-
-export function clearAlertMessages () {
-  return {
-    type: ActionTypes.CLEAR_MEMBERS_ALERT_MESSAGES
   }
 }
