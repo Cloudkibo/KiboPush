@@ -20,7 +20,7 @@ import {
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
-import { getuserdetails, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -168,7 +168,6 @@ function mapDispatchToProps (dispatch) {
       createbroadcast: createbroadcast,
       fetchSessions: fetchSessions,
       getuserdetails: getuserdetails,
-      getStartedCompleted: getStartedCompleted,
       sentVsSeen: sentVsSeen
     },
     dispatch)
