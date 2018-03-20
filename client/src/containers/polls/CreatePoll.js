@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -64,9 +64,6 @@ class CreatePoll extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -315,33 +312,6 @@ class CreatePoll extends React.Component {
     }
   }
 
-  tourFinished (data) {
-    if (data.type === 'finished') {
-      this.props.pollTourCompleted({
-        'pollTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
   handleRadioButton (e) {
     this.setState({
       selectedRadio: e.currentTarget.value
@@ -628,7 +598,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPollsList: loadPollsList,
     addPoll: addPoll,
-    pollTourCompleted: pollTourCompleted,
     getuserdetails: getuserdetails,
     loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,

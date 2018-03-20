@@ -5,11 +5,6 @@ const initialState = {
   browserVersion: '',
   socketStatus: false,
   getStartedSeen: true,
-  dashboardTourSeen: true,
-  workFlowsTourSeen: true,
-  surveyTourSeen: true,
-  convoTourSeen: true,
-  pollTourSeen: true,
   fbAppId: '',
   adminPageSubscription: []
 }
@@ -34,26 +29,6 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.SET_SOCKET_STATUS:
       return Object.assign({}, state, {
         socketStatus: action.data
-      })
-    case ActionTypes.DASHBOARD_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        dashboardTourSeen: true
-      })
-    case ActionTypes.WORKFLOWS_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        workFlowsTourSeen: true
-      })
-    case ActionTypes.SURVEY_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        surveyTourSeen: true
-      })
-    case ActionTypes.CONVO_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        convoTourSeen: true
-      })
-    case ActionTypes.POLL_TOUR_COMPLETED:
-      return Object.assign({}, state, {
-        pollTourSeen: true
       })
     case ActionTypes.GET_STARTED_COMPLETED:
       return Object.assign({}, state, {
