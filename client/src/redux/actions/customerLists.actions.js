@@ -10,6 +10,35 @@ export function showCustomerLists (data) {
     data
   }
 }
+
+export function showListDetails (data) {
+  return {
+    type: ActionTypes.LOAD_LIST_DETAILS,
+    data
+  }
+}
+
+export function addList (data, msg) {
+  return {
+    type: ActionTypes.ADD_NEW_LIST,
+    data
+  }
+}
+
+export function saveCurrentList (list) {
+  return {
+    type: ActionTypes.CURRENT_CUSTOMER_LIST,
+    data: list
+  }
+}
+
+export function clearCurrentList () {
+  return {
+    type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
+    data: null
+  }
+}
+
 export function loadCustomerLists () {
   return (dispatch) => {
     callApi('lists/allLists')
@@ -46,19 +75,6 @@ export function loadListDetails (id) {
   }
 }
 
-export function showListDetails (data) {
-  return {
-    type: ActionTypes.LOAD_LIST_DETAILS,
-    data
-  }
-}
-
-export function addList (data, msg) {
-  return {
-    type: ActionTypes.ADD_NEW_LIST,
-    data
-  }
-}
 export function createSubList (list, msg, handleCreateSubList) {
   return (dispatch) => {
     callApi('lists/createList', 'post', list)
@@ -96,12 +112,7 @@ export function editList (list, msg, handleEditList) {
       })
   }
 }
-export function saveCurrentList (list) {
-  return {
-    type: ActionTypes.CURRENT_CUSTOMER_LIST,
-    data: list
-  }
-}
+
 export function deleteList (id, msg) {
   return (dispatch) => {
     callApi(`lists/deleteList/${id}`, 'delete')
@@ -117,11 +128,5 @@ export function deleteList (id, msg) {
           }
         }
       })
-  }
-}
-export function clearCurrentList () {
-  return {
-    type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
-    data: null
   }
 }

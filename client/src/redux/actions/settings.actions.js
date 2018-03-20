@@ -2,6 +2,55 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
+export function enableSuccess (data) {
+  return {
+    type: ActionTypes.ENABLE_SUCCESS,
+    data
+  }
+}
+
+export function disableSuccess (data) {
+  return {
+    type: ActionTypes.DISABLE_SUCCESS,
+    data
+  }
+}
+
+export function resetSuccess (data) {
+  return {
+    type: ActionTypes.RESET_SUCCESS,
+    data
+  }
+}
+
+export function getAPISuccess (data) {
+  return {
+    type: ActionTypes.GET_API_SUCCESS,
+    data
+  }
+}
+
+export function getAPIFailure (data) {
+  return {
+    type: ActionTypes.GET_API_FAILURE,
+    data
+  }
+}
+
+export function saveSwitchState () {
+  return {
+    type: ActionTypes.SAVE_SWITCH_STATE,
+    data: 'changed'
+  }
+}
+
+export function showGreetingMessage (data) {
+  return {
+    type: ActionTypes.GET_GREETING_MESSAGE,
+    data: data
+  }
+}
+
 export function enable (API) {
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
@@ -24,19 +73,7 @@ export function disable (API) {
       })
   }
 }
-export function enableSuccess (data) {
-  return {
-    type: ActionTypes.ENABLE_SUCCESS,
-    data
-  }
-}
 
-export function disableSuccess (data) {
-  return {
-    type: ActionTypes.DISABLE_SUCCESS,
-    data
-  }
-}
 export function reset (API) {
   return (dispatch) => {
     callApi('api_settings/reset', 'post', API)
@@ -48,12 +85,7 @@ export function reset (API) {
       })
   }
 }
-export function resetSuccess (data) {
-  return {
-    type: ActionTypes.RESET_SUCCESS,
-    data
-  }
-}
+
 export function getAPI (API) {
   return (dispatch) => {
     callApi('api_settings/', 'post', API)
@@ -67,24 +99,7 @@ export function getAPI (API) {
       })
   }
 }
-export function getAPISuccess (data) {
-  return {
-    type: ActionTypes.GET_API_SUCCESS,
-    data
-  }
-}
-export function getAPIFailure (data) {
-  return {
-    type: ActionTypes.GET_API_FAILURE,
-    data
-  }
-}
-export function saveSwitchState () {
-  return {
-    type: ActionTypes.SAVE_SWITCH_STATE,
-    data: 'changed'
-  }
-}
+
 export function changePass (data, msg) {
   return (dispatch) => {
     callApi('reset_password/change', 'post', data)
@@ -96,13 +111,6 @@ export function changePass (data, msg) {
           msg.error(res.description)
         }
       })
-  }
-}
-
-export function showGreetingMessage (data) {
-  return {
-    type: ActionTypes.GET_GREETING_MESSAGE,
-    data: data
   }
 }
 

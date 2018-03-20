@@ -1,7 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function updatePollsList (data) {
+export function appendSentSeenResponsesData (data) {
   let polls = data.polls
   let pagepolls = data.pollpages
   let responsesCount = data.responsesCount
@@ -20,9 +20,13 @@ export function updatePollsList (data) {
     }
   }
   var newPoll = polls.reverse()
+  return newPoll
+}
+
+export function updatePollsList (data) {
   return {
     type: ActionTypes.FETCH_POLLS_LIST,
-    data: newPoll
+    data: appendSentSeenResponsesData(data)
   }
 }
 
@@ -37,12 +41,6 @@ export function sendpollresp (data) {
   return {
     type: ActionTypes.SEND_POLL,
     data
-  }
-}
-
-export function loadPollsList () {
-  return (dispatch) => {
-    callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 
@@ -61,6 +59,27 @@ export function sendPollFailure () {
 export function clearAlertMessage () {
   return {
     type: ActionTypes.CLEAR_ALERT
+  }
+}
+
+export function showresponses (data) {
+  var sorted = rank(data, 'response')
+  return {
+    type: ActionTypes.ADD_POLL_RESPONSES,
+    sorted
+  }
+}
+
+export function showresponsesfull (data) {
+  return {
+    type: ActionTypes.ADD_POLL_RESPONSES_FULL,
+    data
+  }
+}
+
+export function loadPollsList () {
+  return (dispatch) => {
+    callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 
@@ -134,51 +153,7 @@ function rank (items, prop) {
   // sort by count descending
   return ranked.sort(function (a, b) { return b.count - a.count })
 }
-export function showresponses (data) {
-  /* var d = [{'response': 'abc', //response submitted by subscriber
-   'pollId': '110',
-   'subscriberid':'1212'},{'response': 'abc', //response submitted by subscriber
-   'pollId': '1100',
-   'subscriberid':'12112'},{'response': 'xyz', //response submitted by subscriber
-   'pollId': '1010',
-   'subscriberid':'10212'},
-   {'response': 'lmn', //response submitted by subscriber
-   'pollId': '10190',
-   'subscriberid':'109212'},
-   {'response': 'lmn', //response submitted by subscriber
-   'pollId': '10810',
-   'subscriberid':'1212'}
-   ,{'response': 'lmn', //response submitted by subscriber
-   'pollId': '10010',
-   'subscriberid':'102012'}]; */
-  var sorted = rank(data, 'response')
-  return {
-    type: ActionTypes.ADD_POLL_RESPONSES,
-    sorted
-  }
-}
-export function showresponsesfull (data) {
-  /* var d = [{'response': 'abc', //response submitted by subscriber
-   'pollId': '110',
-   'subscriberid':'1212'},{'response': 'abc', //response submitted by subscriber
-   'pollId': '1100',
-   'subscriberid':'12112'},{'response': 'xyz', //response submitted by subscriber
-   'pollId': '1010',
-   'subscriberid':'10212'},
-   {'response': 'lmn', //response submitted by subscriber
-   'pollId': '10190',
-   'subscriberid':'109212'},
-   {'response': 'lmn', //response submitted by subscriber
-   'pollId': '10810',
-   'subscriberid':'1212'}
-   ,{'response': 'lmn', //response submitted by subscriber
-   'pollId': '10010',
-   'subscriberid':'102012'}]; */
-  return {
-    type: ActionTypes.ADD_POLL_RESPONSES_FULL,
-    data
-  }
-}
+
 export function getpollresults (pollid) {
   return (dispatch) => {
     callApi(`polls/responses/${pollid}`)
@@ -205,12 +180,3 @@ export function deletePoll (id, msg) {
       })
   }
 }
-/* A poll should NOT be allowed to edit */
-
-// export function editPoll (token, data) {
-//   // here we will edit the broadcast
-//   return {
-//     type: ActionTypes.EDIT_POLL,
-//     data
-//   }
-// }
