@@ -51,7 +51,6 @@ module.exports = function (app) {
      * HTTP headers appropriately.
      */
     app.use(helmet())
-
   }
 
   if (env === 'development' || env === 'test') {

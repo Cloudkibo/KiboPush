@@ -306,11 +306,11 @@ class Members extends React.Component {
                                         {
                                           member.role !== 'buyer' && member.role === 'agent' && this.props.user.permissions.deleteAgentPermission &&
                                           <button className='btn btn-primary'
-                                                  style={{
-                                                    float: 'left',
-                                                    margin: 2
-                                                  }}
-                                                  onClick={() => this.removeMember(
+                                            style={{
+                                              float: 'left',
+                                              margin: 2
+                                            }}
+                                            onClick={() => this.removeMember(
                                                     member)}>Delete
                                           </button>
                                         }

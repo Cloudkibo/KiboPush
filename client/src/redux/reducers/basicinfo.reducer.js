@@ -11,7 +11,7 @@ const initialState = {
   convoTourSeen: true,
   pollTourSeen: true,
   fbAppId: '',
-  adminPageSubscription: [],
+  adminPageSubscription: []
 }
 
 export function basicInfo (state = initialState, action) {
@@ -67,7 +67,7 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         adminPageSubscription: action.data
       })
-    
+
     default:
       return state
   }

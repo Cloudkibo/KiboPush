@@ -142,7 +142,7 @@ class EditTemplate extends React.Component {
       }
     })
 
-    $("#selectLists").val('').trigger('change')
+    $('#selectLists').val('').trigger('change')
   }
 
   initializePageSelect (pageOptions) {

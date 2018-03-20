@@ -142,7 +142,7 @@ class EditPoll extends React.Component {
       }
     })
 
-    $("#selectLists").val('').trigger('change')
+    $('#selectLists').val('').trigger('change')
   }
   initializePageSelect (pageOptions) {
     var self = this

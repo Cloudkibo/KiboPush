@@ -219,7 +219,7 @@ class Autoposting extends React.Component {
                                     this.props.autopostingData && this.props.autopostingData.length > 0
                                       ? this.props.autopostingData.map((item, i) => (
                                         <div className='m-widget5'>
-                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={true} />
+                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState />
                                         </div>
                                     ))
                                       : <div>

@@ -53,8 +53,8 @@ router.post('/', function (req, res, next) {
       email: req.body.email.toLowerCase()
     }, (err, user) => {
       if (err) {
-        return res.status(501).
-          json({status: 'failed', description: 'Internal Server Error'})
+        return res.status(501)
+          .json({status: 'failed', description: 'Internal Server Error'})
       }
       if (!user) {
         return res.status(401).json({
