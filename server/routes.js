@@ -11,9 +11,6 @@
 const path = require('path')
 const config = require('./config/environment/index')
 const Raven = require('raven')
-const logger = require('./components/logger')
-
-const TAG = 'routes.js'
 
 module.exports = function (app) {
   const env = app.get('env')
@@ -40,6 +37,7 @@ module.exports = function (app) {
   app.use('/api/menu', require('./api/menu'))
   app.use('/api/api_settings', require('./api/api_settings'))
   app.use('/api/templates', require('./api/templates'))
+  app.use('/api/URL', require('./api/URLforClickedCount'))
   app.use('/api/company', require('./api/companyprofile'))
   app.use('/api/reset_password', require('./api/passwordresettoken'))
   app.use('/api/email_verification', require('./api/verificationtoken'))

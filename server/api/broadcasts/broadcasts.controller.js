@@ -22,6 +22,7 @@ const LiveChat = require('../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 const Users = require('./../user/Users.model')
+const URL = require('./../URLforClickedCount/URL.model')
 const AutopostingMessages = require('./../autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('./../autoposting_messages/autoposting_subscriber_messages.model')
 const utility = require('./broadcasts.utility')
@@ -31,6 +32,7 @@ let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const request = require('request')
+let config = require('./../../config/environment')
 var array = []
 
 exports.index = function (req, res) {
@@ -421,35 +423,22 @@ function handleThePagePostsForAutoPosting (event, status) {
               logger.serverLog(TAG,
                 `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
 
-              if (subscribers.length > 0) {
-                let newMsg = new AutopostingMessages({
-                  pageId: page._id,
-                  companyId: postingItem.companyId,
-                  autoposting_type: 'facebook',
-                  payload: event,
-                  autopostingId: postingItem._id,
-                  sent: subscribers.length,
-                  seen: 0,
-                  clicked: 0
-                })
+              let newMsg = new AutopostingMessages({
+                pageId: page._id,
+                companyId: postingItem.companyId,
+                autoposting_type: 'facebook',
+                autopostingId: postingItem._id,
+                sent: subscribers.length,
+                seen: 0,
+                clicked: 0
+              })
 
-                newMsg.save((err, savedMsg) => {
-                  if (err) logger.serverLog(TAG, err)
+              newMsg.save((err, savedMsg) => {
+                if (err) logger.serverLog(TAG, err)
 
+                if (subscribers.length > 0) {
                   subscribers.forEach(subscriber => {
                     let messageData = {}
-                    let newSubscriberMsg = new AutopostingSubscriberMessages({
-                      pageId: page.pageId,
-                      companyId: postingItem.companyId,
-                      autopostingId: postingItem._id,
-                      autoposting_messages_id: savedMsg._id,
-                      subscriberId: subscriber.senderId,
-                      payload: event
-                    })
-
-                    newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                      if (err) logger.serverLog(TAG, err)
-                    })
 
                     if (event.value.item === 'status' || status) {
                       messageData = {
@@ -462,61 +451,91 @@ function handleThePagePostsForAutoPosting (event, status) {
                         })
                       }
                     } else if (event.value.item === 'share') {
-                      messageData = {
-                        'recipient': JSON.stringify({
-                          'id': subscriber.senderId
-                        }),
-                        'message': JSON.stringify({
-                          'attachment': {
-                            'type': 'template',
-                            'payload': {
-                              'template_type': 'generic',
-                              'elements': [
-                                {
-                                  'title': (event.value.message) ? event.value.message : event.value.sender_name,
-                                  'image_url': event.value.image,
-                                  'subtitle': 'kibopush.com',
-                                  'buttons': [
-                                    {
-                                      'type': 'web_url',
-                                      'url': event.value.link,
-                                      'title': 'View Link'
-                                    }
-                                  ]
-                                }
-                              ]
+                      let URLObject = new URL({
+                        originalURL: event.value.link,
+                        moduleId: {
+                          id: savedMsg._id,
+                          type: 'autoposting'
+                        }
+                      })
+
+                      URLObject.save((err, savedurl) => {
+                        if (err) logger.serverLog(TAG, err)
+
+                        let newURL = config.domain + '/api/URL/' + savedurl._id
+
+                        messageData = {
+                          'recipient': JSON.stringify({
+                            'id': subscriber.senderId
+                          }),
+                          'message': JSON.stringify({
+                            'attachment': {
+                              'type': 'template',
+                              'payload': {
+                                'template_type': 'generic',
+                                'elements': [
+                                  {
+                                    'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                                    'image_url': event.value.image,
+                                    'subtitle': 'kibopush.com',
+                                    'buttons': [
+                                      {
+                                        'type': 'web_url',
+                                        'url': newURL,
+                                        'title': 'View Link'
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
                             }
-                          }
-                        })
-                      }
+                          })
+                        }
+                      })
                     } else if (event.value.item === 'photo') {
-                      messageData = {
-                        'recipient': JSON.stringify({
-                          'id': subscriber.senderId
-                        }),
-                        'message': JSON.stringify({
-                          'attachment': {
-                            'type': 'template',
-                            'payload': {
-                              'template_type': 'generic',
-                              'elements': [
-                                {
-                                  'title': (event.value.message) ? event.value.message : event.value.sender_name,
-                                  'image_url': event.value.link,
-                                  'subtitle': 'kibopush.com',
-                                  'buttons': [
-                                    {
-                                      'type': 'web_url',
-                                      'url': 'https://www.facebook.com/' + event.value.sender_id,
-                                      'title': 'View Page'
-                                    }
-                                  ]
-                                }
-                              ]
+                      let URLObject = new URL({
+                        originalURL: 'https://www.facebook.com/' + event.value.sender_id,
+                        moduleId: {
+                          id: savedMsg._id,
+                          type: 'autoposting'
+                        }
+                      })
+
+                      URLObject.save((err, savedurl) => {
+                        if (err) logger.serverLog(TAG, err)
+
+                        let newURL = config.domain + '/api/URL/' + savedurl._id
+
+                        console.log(savedurl)
+
+                        messageData = {
+                          'recipient': JSON.stringify({
+                            'id': subscriber.senderId
+                          }),
+                          'message': JSON.stringify({
+                            'attachment': {
+                              'type': 'template',
+                              'payload': {
+                                'template_type': 'generic',
+                                'elements': [
+                                  {
+                                    'title': (event.value.message) ? event.value.message : event.value.sender_name,
+                                    'image_url': event.value.link,
+                                    'subtitle': 'kibopush.com',
+                                    'buttons': [
+                                      {
+                                        'type': 'web_url',
+                                        'url': newURL,
+                                        'title': 'View Page'
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
                             }
-                          }
-                        })
-                      }
+                          })
+                        }
+                      })
                     } else if (event.value.item === 'video') {
                       messageData = {
                         'recipient': JSON.stringify({
@@ -544,23 +563,41 @@ function handleThePagePostsForAutoPosting (event, status) {
                       function (err, res) {
                         if (err) {
                           return logger.serverLog(TAG,
-                          `At send fb post broadcast ${JSON.stringify(
-                            err)}`)
+                            `At send fb post broadcast ${JSON.stringify(
+                              err)}`)
                         } else {
                           if (res.statusCode !== 200) {
                             logger.serverLog(TAG,
-                            `At send fb post broadcast response ${JSON.stringify(
-                              res.body.error)}`)
+                              `At send fb post broadcast response ${JSON.stringify(
+                                res.body.error)}`)
                           } else {
                             logger.serverLog(TAG,
-                            `At send fb post broadcast response ${JSON.stringify(
-                              res.body.message_id)}`)
+                              `At send fb post broadcast response ${JSON.stringify(
+                                res.body.message_id)}`)
                           }
                         }
+                        AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+                          if (err) {
+                            logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+                          }
+                        })
                       })
+
+                    let newSubscriberMsg = new AutopostingSubscriberMessages({
+                      pageId: page.pageId,
+                      companyId: postingItem.companyId,
+                      autopostingId: postingItem._id,
+                      autoposting_messages_id: savedMsg._id,
+                      subscriberId: subscriber.senderId,
+                      payload: event
+                    })
+
+                    newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                      if (err) logger.serverLog(TAG, err)
+                    })
                   })
-                })
-              }
+                }
+              })
             })
         })
       })

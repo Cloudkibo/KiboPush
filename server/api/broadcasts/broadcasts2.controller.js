@@ -5,7 +5,6 @@
 const logger = require('../../components/logger')
 const TAG = 'api/broadcast/broadcasts2.controller.js'
 const Broadcasts = require('./broadcasts.model')
-const URL = require('./URL.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
 
@@ -37,7 +36,6 @@ function exists (list, content) {
 }
 
 exports.sendConversation = function (req, res) {
-
   if (!utility.validateInput(req.body)) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters or components are missing'})
@@ -177,7 +175,6 @@ exports.sendConversation = function (req, res) {
           }
 
           pages.forEach(page => {
-
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
@@ -218,7 +215,6 @@ exports.sendConversation = function (req, res) {
                   }
                   req.body.payload.forEach(payloadItem => {
                     subscribers.forEach(subscriber => {
-
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -367,68 +363,33 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      if (payloadItem.buttons) {
-                        for (var i = 0; i < payloadItem.buttons.length; i++) {
-                          let url = new URL({
-                            broadcastId: savedpagebroadcast._id,
-                            originalURL: payloadItem.buttons[i].url
-                          })
-                          url.save((err2, savedurl) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'url create failed',
-                                err2
-                              })
-                            }
-                            // logger.serverLog(TAG,
-                            //   `url saved ${JSON.stringify(savedurl)}`)
-                            // payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/' + savedurl._id
-                          })
-                        }
-                      }
-                      URL.find({}, (err, urls) => {
-                        if (err) {
-                          return res.status(500).json({
-                            status: 'failed',
-                            description: `Internal Server Error ${JSON.stringify(err)}`
-                          })
-                        }
-                        // if (payloadItem.buttons && urls.length > 0) {
-                        //   logger.serverLog(TAG,
-                        //     `inside if ${JSON.stringify(payloadItem)}`)
-                        //   payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
-                        //   logger.serverLog(TAG,
-                        //     `payloaditem ${JSON.stringify(payloadItem)}`)
-                        // }
-                        let messageData = utility.prepareSendAPIPayload(
-                          subscriber.senderId,
-                          payloadItem)
-                        request(
-                          {
-                            'method': 'POST',
-                            'json': true,
-                            'formData': messageData,
-                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                            page.accessToken
-                          },
-                          function (err, resp) {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At send message broadcast ${JSON.stringify(err)}`)
+                      let messageData = utility.prepareSendAPIPayload(
+                        subscriber.senderId,
+                        payloadItem)
+                      request(
+                        {
+                          'method': 'POST',
+                          'json': true,
+                          'formData': messageData,
+                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                          page.accessToken
+                        },
+                        function (err, resp) {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `At send message broadcast ${JSON.stringify(err)}`)
+                          } else {
+                            if (resp.statusCode !== 200) {
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp.body.error)}`)
                             } else {
-                              if (resp.statusCode !== 200) {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.error)}`)
-                              } else {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.message_id)}`)
-                              }
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp.body.message_id)}`)
                             }
-                          })
-                      })
+                          }
+                        })
                     })
                   })
                 })
@@ -444,7 +405,6 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
