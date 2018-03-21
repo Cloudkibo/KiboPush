@@ -599,7 +599,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                       autopostingId: postingItem._id,
                       autoposting_messages_id: savedMsg._id,
                       subscriberId: subscriber.senderId,
-                      payload: event
+                      payload: messageData
                     })
 
                     newSubscriberMsg.save((err, savedSubscriberMsg) => {
