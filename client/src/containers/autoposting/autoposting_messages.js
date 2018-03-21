@@ -11,6 +11,7 @@ import { loadAutopostingMessages } from '../../redux/actions/autoposting.actions
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { Link } from 'react-router'
 
 class AutopostingMessages extends React.Component {
   constructor (props, context) {
@@ -112,7 +113,7 @@ class AutopostingMessages extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div>
+                      <div className='tab-content'>
                         { this.state.messagesData && this.state.messagesData.length > 0
                           ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                             <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
@@ -176,6 +177,10 @@ class AutopostingMessages extends React.Component {
                             <p> No data to display </p>
                           </span>
                         }
+                        <div className='add-options-message' style={{marginBottom: '35px'}}>
+                          <Link to='/autoposting' className='btn btn-primary pull-right'>Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
