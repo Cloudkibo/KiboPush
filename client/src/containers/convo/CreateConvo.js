@@ -122,26 +122,36 @@ class CreateConvo extends React.Component {
     // }
   }
   onNext () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   onPrevious () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   handleSendBroadcast (res) {
@@ -581,15 +591,18 @@ class CreateConvo extends React.Component {
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -603,8 +616,9 @@ class CreateConvo extends React.Component {
       }
       console.log('change List Selection', selected)
     })
-
-    $("#selectLists").val('').trigger('change')
+    /* eslint-disable */
+    $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
     console.log(pageOptions)
@@ -823,7 +837,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <div className='row' >
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}) }}>
                                         <div className='align-center'>
                                           <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                           <h6>Text</h6>

@@ -121,13 +121,17 @@ class Workflows extends React.Component {
 
   initializeConditionSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#conditionSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Condition',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#conditionSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -144,13 +148,17 @@ class Workflows extends React.Component {
 
   initializeActiveSelect (activeOptions) {
     var self = this
+    /* eslint-disable */
     $('#isActiveSelect').select2({
+    /* eslint-enable */
       data: activeOptions,
       placeholder: 'Select Status',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#isActiveSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions

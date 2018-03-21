@@ -997,7 +997,8 @@ function sendautomatedmsg (req, page) {
                 `Page token error from graph api ${JSON.stringify(err3)}`)
             }
             let messageData = {}
-            const Yes = 'yes', No = 'no'
+            const Yes = 'yes'
+            const No = 'no'
             let unsubscribeResponse = false
             if (index === -101) {
               let buttonsInPayload = []

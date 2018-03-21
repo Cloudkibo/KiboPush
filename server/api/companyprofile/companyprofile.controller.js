@@ -6,7 +6,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Invitations = require('./../invitations/invitations.model')
 const Permissions = require('./../permissions/permissions.model')
 const Users = require('./../user/Users.model')
-const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
+const Inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const config = require('./../../config/environment/index')
 
 const logger = require('../../components/logger')
@@ -113,14 +113,14 @@ exports.invite = function (req, res) {
                       } else {
                         let today = new Date()
                         let uid = Math.random().toString(36).substring(7)
-                        let uniqueToken_id = 'k' + uid + '' + today.getFullYear() +
+                        let uniqueTokenId = 'k' + uid + '' + today.getFullYear() +
                           '' + (today.getMonth() + 1) + '' + today.getDate() + '' +
                           today.getHours() + '' + today.getMinutes() + '' +
                           today.getSeconds()
 
-                        let inviteeData = new inviteagenttoken({
+                        let inviteeData = new Inviteagenttoken({
                           email: req.body.email,
-                          token: uniqueToken_id,
+                          token: uniqueTokenId,
                           companyId: companyUser.companyId._id,
                           domain: req.user.domain,
                           companyName: companyUser.companyId.companyName,
@@ -172,9 +172,9 @@ exports.invite = function (req, res) {
                           '<li>Workspace name: ' + req.user.domain +
                           ' </li> </ul> </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
                           '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/invite_verification/verify/' +
-                          uniqueToken_id +
+                          uniqueTokenId +
                           '">' + config.domain + '/api/invite_verification/verify/' +
-                          uniqueToken_id +
+                          uniqueTokenId +
                           '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
                           '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
                         sendgrid.send(email, function (err, json) {

@@ -39,13 +39,6 @@ class ConnectFB extends React.Component {
   componentWillReceiveProps (nextProps) {
   }
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>

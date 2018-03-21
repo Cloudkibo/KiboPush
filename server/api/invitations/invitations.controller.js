@@ -2,13 +2,8 @@
  * Created by sojharo on 28/12/2017.
  */
 const Invitations = require('./invitations.model')
-const Users = require('./../user/Users.model')
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
-const config = require('./../../config/environment/index')
 const CompanyUsers = require('./../companyuser/companyuser.model')
-
-const logger = require('../../components/logger')
-const TAG = 'api/invitations/invitations.controller.js'
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},

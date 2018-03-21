@@ -74,7 +74,7 @@
 //             department.count({companyid: clientUser.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
 //
 //               if (gotCount > req.body.maxnumberofdepartment) {
-//                 res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
+//                 res.send({status: 'danger',msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
 //               }
 //               else { */
 //
@@ -151,7 +151,7 @@
 //           department.count({companyid: req.user.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
 //
 //             if (gotCount > req.body.maxnumberofdepartment) {
-//               res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
+//               res.send({status: 'danger',msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
 //             }
 //             else {
 //             */

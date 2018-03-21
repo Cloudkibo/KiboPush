@@ -9,19 +9,19 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 
-const styles = {
-  iconclass: {
-    height: 24,
-    padding: '0 15px',
-    width: 24,
-    position: 'relative',
-    display: 'inline-block',
-    cursor: 'pointer'
-  },
-  inputf: {
-    display: 'none'
-  }
-}
+// const styles = {
+//   iconclass: {
+//     height: 24,
+//     padding: '0 15px',
+//     width: 24,
+//     position: 'relative',
+//     display: 'inline-block',
+//     cursor: 'pointer'
+//   },
+//   inputf: {
+//     display: 'none'
+//   }
+// }
 
 class Text extends React.Component {
   constructor (props, context) {

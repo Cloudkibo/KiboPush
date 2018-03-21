@@ -2,7 +2,6 @@
 
 var _ = require('lodash')
 var Companyprofile = require('./permissions.model')
-var department = require('../department/department.model')
 var configuration = require('../configuration/configuration.model')
 var User = require('../user/user.model')
 var logger = require('../../components/logger/logger')
@@ -17,7 +16,7 @@ exports.index = function (req, res) {
 
 // Get specific company's profile
 exports.fetch = function (req, res) {
-  if (req.user.isOwner == 'Yes') {
+  if (req.user.isOwner === 'Yes') {
     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {
       if (clientUser == null) return res.json(200, {})
       Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, companyprofile) {
@@ -37,7 +36,7 @@ exports.fetch = function (req, res) {
 exports.updatecompanyprofile = function (req, res) {
   logger.serverLog('info', 'This is body in companyprofile ' + JSON.stringify(req.body))
 
-  if (req.user.isOwner == 'Yes') {
+  if (req.user.isOwner === 'Yes') {
     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {
       Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, gotSaveChangedCompanySettingsData) {
         configuration.findOne({}, function (err, gotConfig) {
@@ -75,7 +74,7 @@ exports.updatecompanyprofile = function (req, res) {
             department.count({companyid: clientUser.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
 
               if (gotCount > req.body.maxnumberofdepartment) {
-                res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
+                res.send({status: 'danger',msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
               }
               else { */
 
@@ -116,7 +115,7 @@ exports.updatecompanyprofile = function (req, res) {
         })
       })
     })
-  } else if (req.user.isAdmin == 'Yes') {
+  } else if (req.user.isAdmin === 'Yes') {
     Companyprofile.findOne({companyid: req.user.uniqueid}, function (err, gotSaveChangedCompanySettingsData) {
       configuration.findOne({}, function (err, gotConfig) {
         if (err) return console.log(err)
@@ -152,7 +151,7 @@ exports.updatecompanyprofile = function (req, res) {
           department.count({companyid: req.user.uniqueid, deleteStatus: "No"}, function (err, gotCount) {
 
             if (gotCount > req.body.maxnumberofdepartment) {
-              res.send({status: 'danger',	msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
+              res.send({status: 'danger',msg: 'You already have ' + gotCount + ' Groups. Cannot decrease number of groups'});
             }
             else {
             */

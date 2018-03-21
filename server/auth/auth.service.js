@@ -221,7 +221,6 @@ function setTokenCookie (req, res) {
  */
 function fbConnectDone (req, res) {
   let fbPayload = req.user
-  let token = req.cookies.token
   let userid = req.cookies.userid
   if (!req.user) {
     return res.status(404).json({

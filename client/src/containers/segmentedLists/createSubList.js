@@ -186,7 +186,9 @@ class CreateSubList extends React.Component {
   handleCreateSubList (res) {
     if (res.status === 'success') {
       this.resetPage()
-      $("#selectLists").val('').trigger('change')
+      /* eslint-disable */
+      $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     } else {
       this.setState({
         errorMessages: [],
@@ -317,7 +319,9 @@ class CreateSubList extends React.Component {
     }
     if (e.currentTarget.value === 'segmentAll') {
       this.setState({listSelected: ''})
-      $("#selectLists").val('').trigger('change')
+      /* eslint-disable */
+      $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     }
   }
 
@@ -330,14 +334,17 @@ class CreateSubList extends React.Component {
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
@@ -351,7 +358,9 @@ class CreateSubList extends React.Component {
       }
       console.log('change List Selection', selected)
     })
-    $("#selectLists").val('').trigger('change')
+    /* eslint-disable */
+    $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
 
   render () {

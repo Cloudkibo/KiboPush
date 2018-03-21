@@ -1,7 +1,6 @@
 'use strict'
 const logger = require('../../components/logger')
 const TAG = 'api/passwordresettoken/passwordresettoken.controller.js'
-let _ = require('lodash')
 let Passwordresettoken = require('./passwordresettoken.model')
 let User = require('./../user/Users.model')
 const config = require('./../../config/environment/index')

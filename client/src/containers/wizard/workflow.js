@@ -276,8 +276,7 @@ class CreateWorkflow extends React.Component {
                             </div>
                           </div>
                           <div className='row'>
-                            <div className='col-lg-8 m--align-left' >
-                            </div>
+                            <div className='col-lg-8 m--align-left' />
                             <div className='col-lg-4'>
                               <button className='btn btn-primary' onClick={this.gotoWorkflow} style={{marginLeft: '150px'}}>
                                 <span>Save</span>

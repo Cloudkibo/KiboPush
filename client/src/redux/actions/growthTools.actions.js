@@ -2,8 +2,8 @@ import * as ActionTypes from '../constants/constants'
 import auth from '../../utility/auth.service'
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
-export const API_URL = '/api'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
+export const API_URL = '/api'
 var json2csv = require('json2csv')
 
 export function sendresp (data) {

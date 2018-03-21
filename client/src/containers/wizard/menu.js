@@ -100,12 +100,12 @@ class Menu extends React.Component {
     //   text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
     //   icon: 'success',
     //   buttons: ['Join Our Community', 'OK', 'Become Our Subscriber']
-      swal({
-  type: 'success',
-  title: 'Congratulations!',
-  text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
-  confirmButtonColor: '#337ab7',
-  footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
+    swal({
+      type: 'success',
+      title: 'Congratulations!',
+      text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
+      confirmButtonColor: '#337ab7',
+      footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
   //       roll: {
   //     text: "Join Our Community",
   //     value: "roll"
@@ -115,8 +115,8 @@ class Menu extends React.Component {
   // },   roll2: {
   // text: "Become Our Subscriber",
 //    value: "roll2"
-//}
-  //}
+// }
+  // }
     }).then((value) => {
       console.log('Value of promise', value)
       browserHistory.push({
@@ -610,7 +610,7 @@ class Menu extends React.Component {
                             </div>
                           </div>
                           <div className='row align-items-center'>
-                            <div className='col-xl-8 order-2 order-xl-1' ></div>
+                            <div className='col-xl-8 order-2 order-xl-1' />
                             <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                               {
                                 this.state.isShowingModal &&
@@ -801,8 +801,7 @@ class Menu extends React.Component {
                           </div>
                           <br /><br /><br />
                           <div className='row'>
-                            <div className='col-lg-6 m--align-left' >
-                            </div>
+                            <div className='col-lg-6 m--align-left' />
                             <div className='col-lg-6 m--align-right'>
                               { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
                                 ? <button onClick={this.showDialog} className='btn btn-primary' style={{'marginRight': '20px'}} disabled>

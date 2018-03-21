@@ -15,7 +15,7 @@ const socket = io('')
 let store
 
 var joined = false
-var my_id = ''
+var myId = ''
 
 var callbacks = {
   new_chat: false,
@@ -46,8 +46,8 @@ export function initiateSocket (storeObj) {
 
 socket.on('connect', () => {
   console.log('Setting Socket Status to true')
-  if(my_id !== ''){
-    joinRoom(my_id)
+  if (myId !== '') {
+    joinRoom(myId)
   }
   store.dispatch(setSocketStatus(true))
 })
@@ -103,7 +103,7 @@ export function log (tag, data) {
 
 export function joinRoom (data) {
   console.log('Trying to join room socket', data)
-  my_id = data
+  myId = data
   if (joined) {
     console.log('Socket Already Joined')
     return

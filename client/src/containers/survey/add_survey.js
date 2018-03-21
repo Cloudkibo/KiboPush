@@ -142,15 +142,18 @@ class AddSurvey extends React.Component {
   initializeListSelect (lists) {
     console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -164,19 +167,24 @@ class AddSurvey extends React.Component {
       }
       console.log('change List Selection', selected)
     })
-
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
     console.log('asd', pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+    /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages - Default: All Pages',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -194,13 +202,17 @@ class AddSurvey extends React.Component {
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+    /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -217,13 +229,17 @@ class AddSurvey extends React.Component {
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+    /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -730,7 +746,7 @@ class AddSurvey extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const { disabled, stayOpen } = this.state
+    // const { disabled, stayOpen } = this.state
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
