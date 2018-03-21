@@ -51,7 +51,8 @@ const subscriberSchema = new Schema({
   isEnabledByPage: {
     type: Boolean,
     default: true
-  }
+  },
+  datetime: { type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model('subscribers', subscriberSchema)
