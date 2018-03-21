@@ -65,7 +65,6 @@ class EditTemplate extends React.Component {
     this.pageChange = this.pageChange.bind(this)
   }
   componentWillReceiveProps (nextprops) {
-    console.log('nextprops in', nextprops)
     if (this.state.pageValue === '') {
       this.initializeSwitch(nextprops.pages[0].isWelcomeMessageEnabled, nextprops.pages[0]._id)
       this.setState({ switchState: true, pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled })
@@ -74,8 +73,6 @@ class EditTemplate extends React.Component {
     //  this.setEditComponents(nextprops.pages[0].welcomeMessage)
   }
   initializeSwitch (state, id) {
-    console.log('in initializeSwitch', id)
-    console.log('in initializeSwitch', state)
     var self = this
     // var temp = '#' + id
     /* eslint-disable */
@@ -89,8 +86,6 @@ class EditTemplate extends React.Component {
     /* eslint-disable */
     $("[name='switch']").on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
-      console.log('event', event.target.attributes.id.nodeValue)
-      console.log('state', state)
       if (state === true) {
         self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
       } else {
@@ -99,7 +94,6 @@ class EditTemplate extends React.Component {
     })
   }
   pageChange (event) {
-    console.log('Selected: ', event.target.value)
     if (event === null) {
       this.setState({pageValue: event})
       return
@@ -107,6 +101,7 @@ class EditTemplate extends React.Component {
     this.setState({pageValue: event.target.value})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
+<<<<<<< HEAD
         console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
         /* eslint-disable */
         console.log($("[name='switch']").bootstrapSwitch('state'))
@@ -115,6 +110,11 @@ class EditTemplate extends React.Component {
         /* eslint-enable */
         // }
         // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
+=======
+        //if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
+          $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
+        //}
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
       }
@@ -173,7 +173,6 @@ class EditTemplate extends React.Component {
     this.setState({page: {options: options}})
     //  this.initializePageSelect(options)
     // if (this.props.pages.length > 0) {
-    //   console.log('componentDidMount pageValue set')
     //   this.setState({pageValue: this.props.pages[0].pageId})
     //   this.setEditComponents(this.props.pages[0].welcomeMessage)
     // }
@@ -203,8 +202,6 @@ class EditTemplate extends React.Component {
   }
 
   handleCard (obj) {
-    console.log('handleCard in CreateConvo is called: ')
-    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -259,7 +256,6 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    console.log('Image Uploaded', this.state.broadcast)
   }
 
   handleFile (obj) {
@@ -277,7 +273,6 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
@@ -290,7 +285,6 @@ class EditTemplate extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
-    console.log(this.state.broadcast)
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
@@ -314,7 +308,6 @@ class EditTemplate extends React.Component {
   }
 
   initializePageSelect (pageOptions) {
-    console.log(pageOptions)
     var self = this
     /* eslint-disable */
     $('#selectPage').select2({
@@ -323,11 +316,13 @@ class EditTemplate extends React.Component {
       placeholder: 'Select Pages',
       allowClear: true
     })
-
-    console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
+<<<<<<< HEAD
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
     /* eslint-disable */
+=======
+
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     $('#selectPage').on('change', function (e) {
     /* eslint-enable */
       // var selectedIndex = e.target.selectedIndex
@@ -338,14 +333,12 @@ class EditTemplate extends React.Component {
       //   var selectedOption = selectedOptions[i].value
       //   selected.push(selectedOption)
       // }
-      console.log('Setting a new pageValue', selectedOptions)
       self.setState({ pageValue: selectedOptions })
       for (var i = 0; i < self.props.pages.length; i++) {
         if (selectedOptions === self.props.pages[i].pageId) {
           self.setEditComponents(this.props.pages[0].welcomeMessage)
         }
       }
-      console.log('change Page', selectedOptions)
     })
   }
   viewGreetingMessage (e) {
@@ -355,8 +348,6 @@ class EditTemplate extends React.Component {
     this.setState({showPreview: false})
   }
   render () {
-    console.log('Pages ', this.props.pages)
-    console.log('Page Value', this.state.pageValue)
 
     var alertOptions = {
       offset: 14,
@@ -484,7 +475,6 @@ class EditTemplate extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     showFileUploading: (state.broadcastsInfo.showFileUploading),

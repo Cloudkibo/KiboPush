@@ -32,7 +32,6 @@ class Category extends React.Component {
     this.editCategory = this.editCategory.bind(this)
   }
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -44,7 +43,6 @@ class Category extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -109,7 +107,6 @@ class Category extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('surevys')
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

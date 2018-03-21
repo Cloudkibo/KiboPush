@@ -29,17 +29,14 @@ class Header extends React.Component {
     /* eslint-disable */
       $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
-    console.log('Class Added')
   }
   handleNotificationOnShow () {
-    console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
     this.props.resetSocket()
   }
 
   onNotificationClick () {
     window.focus()
-    console.log('Notificaation is clicked')
     browserHistory.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
@@ -48,9 +45,7 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in header called', this.state.ignore)
     if (nextProps.socketSession !== '' && this.state.ignore) {
-      console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
     if (nextProps.user) {
@@ -85,7 +80,6 @@ class Header extends React.Component {
     this.props.getuserdetails()
   }
   render () {
-    console.log('This user details', this.props.user)
 
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
@@ -200,11 +194,11 @@ class Header extends React.Component {
                                     {
                                     (this.props.subscribers &&
                                     this.props.subscribers.length === 0)
-                                    ? <Link to='/convos' className='m-nav-grid__item'>
+                                    ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/convos' className='m-nav-grid__item'>
+                                    : <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
@@ -344,7 +338,6 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),

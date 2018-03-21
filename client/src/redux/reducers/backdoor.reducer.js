@@ -19,7 +19,7 @@ const initialState = {
   sessionsGraphInfo: []
 }
 
-export function UsersInfo (state = initialState, action) {
+export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_USERS_LIST:
       return Object.assign({}, state, {
@@ -27,218 +27,109 @@ export function UsersInfo (state = initialState, action) {
         locales: action.locale
       })
 
-    default:
-      return state
-  }
-}
-export function dataObjectsInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_DATA_OBJECTS_LIST:
       return Object.assign({}, state, {
         dataobjects: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function topPagesInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_TOP_PAGES_LIST:
       return Object.assign({}, state, {
         toppages: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function PagesInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:
       return Object.assign({}, state, {
         pages: action.data
       })
-    default:
-      return state
-  }
-}
 
-export function BroadcastsInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_BROADCASTS_LIST:
       return Object.assign({}, state, {
         broadcasts: action.data
       })
 
-    default:
-      return state
-  }
-}
-
-export function PageSubscribersInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
         pageSubscribers: action.data,
         locales: action.locale
       })
 
-    default:
-      return state
-  }
-}
-export function PollsInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_POLLS_LIST:
       return Object.assign({}, state, {
         polls: action.data
       })
 
-    default:
-      return state
-  }
-}
-
-export function SurveysInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_SURVEYS_LIST:
       return Object.assign({}, state, {
         surveys: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function SurveyDetailsInfo (state = {}, action) {
-  switch (action.type) {
     case ActionTypes.LOAD_SURVEY_DETAILS:
       return Object.assign({}, state, {
         survey: action.survey,
         questions: action.questions,
         responses: action.responses
       })
-    default:
-      return state
-  }
-}
-export function PollDetailsInfo (state = {}, action) {
-  switch (action.type) {
+
     case ActionTypes.LOAD_POLL_DETAILS:
       return Object.assign({}, state, {
         pollDetails: action.data
       })
-    default:
-      return state
-  }
-}
-export function getCurrentUser (state = initialState, action) {
-  switch (action.type) {
+
     case ActionTypes.SAVE_USER_INFORMATION:
-      console.log('getCurrentUser', action.data)
       return Object.assign({}, state, {
         currentUser: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function getCurrentPage (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.SAVE_PAGE_INFORMATION:
-      console.log('getCurrentPage', action.data)
       return Object.assign({}, state, {
         currentPage: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function getCurrentSurvey (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.SAVE_SURVEY_INFORMATION:
-      console.log('getCurrentSurvey', action.data)
       return Object.assign({}, state, {
         currentSurvey: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function getCurrentPoll (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.SAVE_CURRENT_POLL:
-      console.log('getCurrentPoll', action.data)
       return Object.assign({}, state, {
         currentPoll: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function surveysGraphInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_SURVEYS_GRAPH:
       return Object.assign({}, state, {
         surveysGraphInfo: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function pollsGraphInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_POLLS_GRAPH:
       return Object.assign({}, state, {
         pollsGraphInfo: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function broadcastsGraphInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_BROADCASTS_GRAPH:
       return Object.assign({}, state, {
         broadcastsGraphInfo: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function sessionsGraphInfo (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_SESSIONS_GRAPH:
       return Object.assign({}, state, {
         sessionsGraphInfo: action.data
       })
 
-    default:
-      return state
-  }
-}
-export function surveysPollsBroadcasts (state = initialState, action) {
-  switch (action.type) {
     case ActionTypes.UPDATE_BROADCASTS_BY_DAYS:
       return Object.assign({}, state, {
         broadcasts: action.data
       })
+
     case ActionTypes.UPDATE_POLLS_BY_DAYS:
       return Object.assign({}, state, {
         polls: action.data
       })
+
     case ActionTypes.UPDATE_SURVEYS_BY_DAYS:
       return Object.assign({}, state, {
         surveys: action.data
       })
+
     default:
       return state
   }

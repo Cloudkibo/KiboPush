@@ -154,9 +154,6 @@ exports.create = function (req, res) {
                       `Internal Server Error ${JSON.stringify(err)}`)
                   }
                   if (!err) {
-                    logger.serverLog(TAG,
-                      `Menu added to page ${page.pageName}`)
-                    logger.serverLog(TAG, `responses from facebook1 ${JSON.stringify(resp.body)}`)
                   }
                   if (JSON.stringify(resp.body.error)) {
                     return res.status(404).json({
@@ -194,9 +191,6 @@ exports.create = function (req, res) {
               needle.request('post', requestUrl, req.body.payload, {json: true},
                 (err, resp) => {
                   if (!err) {
-                    logger.serverLog(TAG,
-                      `Menu added to page ${page.pageName}`)
-                    logger.serverLog(TAG, `responses from facebook2 ${JSON.stringify(resp.body)}`)
                   }
                   if (err) {
                     logger.serverLog(TAG,

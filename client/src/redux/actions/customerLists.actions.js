@@ -5,14 +5,41 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function showCustomerLists (data) {
-  console.log('customerLists', data)
   return {
     type: ActionTypes.LOAD_CUSTOMER_LISTS,
     data
   }
 }
+
+export function showListDetails (data) {
+  return {
+    type: ActionTypes.LOAD_LIST_DETAILS,
+    data
+  }
+}
+
+export function addList (data, msg) {
+  return {
+    type: ActionTypes.ADD_NEW_LIST,
+    data
+  }
+}
+
+export function saveCurrentList (list) {
+  return {
+    type: ActionTypes.CURRENT_CUSTOMER_LIST,
+    data: list
+  }
+}
+
+export function clearCurrentList () {
+  return {
+    type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
+    data: null
+  }
+}
+
 export function loadCustomerLists () {
-  console.log('loadCustomerLists called')
   return (dispatch) => {
     callApi('lists/allLists')
       .then(res => dispatch(showCustomerLists(res.payload)))
@@ -20,7 +47,6 @@ export function loadCustomerLists () {
 }
 
 export function getParentList (id, handleResponse, msg) {
-  console.log('getParentList called')
   return (dispatch) => {
     callApi(`lists/viewList/${id}`)
       .then(res => {
@@ -38,7 +64,6 @@ export function getParentList (id, handleResponse, msg) {
 }
 
 export function loadListDetails (id) {
-  console.log('loadListDetails called')
   return (dispatch) => {
     callApi(`lists/viewList/${id}`)
       .then(res => {
@@ -50,24 +75,7 @@ export function loadListDetails (id) {
   }
 }
 
-export function showListDetails (data) {
-  console.log('showListDetails', data)
-  return {
-    type: ActionTypes.LOAD_LIST_DETAILS,
-    data
-  }
-}
-
-export function addList (data, msg) {
-  console.log('response from createList', data)
-  return {
-    type: ActionTypes.ADD_NEW_LIST,
-    data
-  }
-}
 export function createSubList (list, msg, handleCreateSubList) {
-  console.log('Creating list')
-  console.log(list)
   return (dispatch) => {
     callApi('lists/createList', 'post', list)
       .then(res => {
@@ -87,8 +95,6 @@ export function createSubList (list, msg, handleCreateSubList) {
 }
 
 export function editList (list, msg, handleEditList) {
-  console.log('Editing list')
-  console.log(list)
   return (dispatch) => {
     callApi('lists/editList', 'post', list)
       .then(res => {
@@ -106,18 +112,11 @@ export function editList (list, msg, handleEditList) {
       })
   }
 }
-export function saveCurrentList (list) {
-  console.log('Saving Current List', list)
-  return {
-    type: ActionTypes.CURRENT_CUSTOMER_LIST,
-    data: list
-  }
-}
+
 export function deleteList (id, msg) {
   return (dispatch) => {
     callApi(`lists/deleteList/${id}`, 'delete')
       .then(res => {
-        console.log('Response Delete', res)
         if (res.status === 'success') {
           msg.success('List deleted')
           dispatch(loadCustomerLists())
@@ -129,12 +128,5 @@ export function deleteList (id, msg) {
           }
         }
       })
-  }
-}
-export function clearCurrentList () {
-  console.log('Clear Current List')
-  return {
-    type: ActionTypes.CLEAR_CURRENT_CUSTOMER_LIST,
-    data: null
   }
 }

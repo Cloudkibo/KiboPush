@@ -27,7 +27,6 @@ export function transformData (data) {
 }
 
 export function getUrl (data, str) {
-  // console.log('In setUrl ', event.target.value, str)
   var temp = data
   var index = str.split('-')
   switch (index[0]) {
@@ -93,6 +92,5 @@ function JSONstringify (json) {
   })
 
   arr.unshift(json)
-  console.log('hello')
   console.log.apply(console, arr)
 }

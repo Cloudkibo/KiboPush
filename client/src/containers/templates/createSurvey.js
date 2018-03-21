@@ -43,7 +43,6 @@ class createSurvey extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
         options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
@@ -59,7 +58,6 @@ class createSurvey extends React.Component {
     this.setState({isShowingModal: false})
   }
   showDialogDelete () {
-    console.log('in showDialog')
     this.setState({isShowingModalDelete: true})
   }
 
@@ -67,7 +65,6 @@ class createSurvey extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   initializeCategorySelect (categoryOptions) {
-    console.log('asd', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectcategory').select2({
@@ -83,7 +80,6 @@ class createSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -91,7 +87,6 @@ class createSurvey extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
   exists (newCategory) {
@@ -155,7 +150,6 @@ class createSurvey extends React.Component {
               let incompleteQuestion = document.getElementById('question' + j)
               incompleteQuestion.classList.add('has-error')
               flag = 1
-              console.log('empty')
               this.msg.error('Please add a statement')
               break
             } else if (this.state.surveyQuestions[j].options[k] === '') {
@@ -164,7 +158,6 @@ class createSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
               this.msg.error('Please add all the choices')
               break
             } else {
@@ -177,7 +170,6 @@ class createSurvey extends React.Component {
       }
       if (flag === 0 && this.refs.title.value !== '' &&
         this.refs.description.value !== '' && this.state.categoryValue.length > 0) {
-        console.log('category', this.state.categoryValue)
         var surveybody = {
           survey: {
             title: this.refs.title.value, // title of survey
@@ -209,14 +201,12 @@ class createSurvey extends React.Component {
       'options': choiceValues
     })
     this.setState({surveyQuestions: surveyQuestions})
-    console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
         alertType: ''
       })
     }
-    console.log(this.state.surveyQuestions)
   }
 
   addChoices (qindex) {
@@ -236,18 +226,12 @@ class createSurvey extends React.Component {
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log(
-      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
     if (surveyQuestions[qindex].choiceCount <= 2) {
       this.msg.error('Atleast 2 options are required for each question')
     } else {
       let choices = surveyQuestions[qindex].options.slice()
-      console.log('choices before')
-      console.log(choices)
       choices.splice(choiceIndex, 1)
-      console.log('choices after')
-      console.log(choices)
       surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
         1
       surveyQuestions[qindex].options = choices
@@ -257,13 +241,10 @@ class createSurvey extends React.Component {
 
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
-      console.log('A survey form requires atleast one question')
       this.msg.error('A survey form requires atleast one question')
     } else {
-      console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
-      console.log(surveyQuestions)
       this.setState({
         surveyQuestions: surveyQuestions
       })
@@ -274,19 +255,12 @@ class createSurvey extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
-    console.log('onhandleChoiceChange is called')
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('qindex is ' + qindex)
-    console.log('choiceIndex is ' + choiceIndex)
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   /* handleQuestionType (e) {
@@ -296,10 +270,8 @@ class createSurvey extends React.Component {
    } */
 
   createOptionsList (qindex) {
-    console.log('qindex' + qindex)
     let choiceItems = []
     var choiceCount = this.state.surveyQuestions[qindex].choiceCount
-    console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -461,8 +433,7 @@ class createSurvey extends React.Component {
                             onClose={this.closeDialogDelete}>
                             {this.props.categories.map((d) => (
                               <div className='form-group m-form__group'>
-                                { console.log('removeCategory', d._id)
-}
+
                                 <div className='m-input-icon m-input-icon--left m-input-icon--right'>
                                   <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
                                   <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
@@ -574,7 +545,6 @@ class createSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories)
   }

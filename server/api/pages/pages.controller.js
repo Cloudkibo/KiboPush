@@ -126,7 +126,6 @@ exports.allpages = function (req, res) {
 }
 
 exports.enable = function (req, res) {
-  logger.serverLog(TAG, `Enable page API called ${JSON.stringify(req.body)}`)
   needle.get(
   `https://graph.facebook.com/v2.10/${req.body.pageId}?fields=is_published&access_token=${req.user.facebookInfo.fbToken}`,
   (err, resp) => {
@@ -135,9 +134,6 @@ exports.enable = function (req, res) {
       `Page access token from graph api error ${JSON.stringify(
       err)}`)
     }
-    logger.serverLog(TAG,
-    `response from connect page ${JSON.stringify(
-    resp.body)}`)
     if (resp.body.is_published === false) {
       return res.status(404).json({
         status: 'failed',
@@ -168,8 +164,6 @@ exports.enable = function (req, res) {
                 description: 'Failed to update record'
               })
             }
-            logger.serverLog(TAG,
-              `Page connected by other user ${JSON.stringify(pagesbyOther)}`)
             if (pagesbyOther.length === 0) {
               Pages.update({_id: req.body._id},
                 {connected: true, isWelcomeMessageEnabled: true, welcomeMessage: [{id: 0, componentType: 'text', text: 'Hi [Username]! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'}]}, {multi: true}, (err) => {
@@ -205,7 +199,6 @@ exports.enable = function (req, res) {
                               }
                             }
                           }
-                          logger.serverLog(TAG, `Pages: ${JSON.stringify(pages)}`)
                           const options = {
                             url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
                             qs: {access_token: req.body.accessToken},
@@ -224,8 +217,6 @@ exports.enable = function (req, res) {
 
                           needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
                             if (!err) {
-                              logger.serverLog(TAG,
-                              `Menu added to page ${req.body.pageName}`)
                             }
                             if (err) {
                               logger.serverLog(TAG,
@@ -284,7 +275,6 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-  logger.serverLog(TAG, `disable page API called ${JSON.stringify(req.body)}`)
 
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -309,7 +299,7 @@ exports.disable = function (req, res) {
           })
         } else {
           // remove subscribers of the page
-          logger.serverLog(TAG, `pageId coming: ${req.body._id}`)
+           rLog(TAG, `pageId coming: ${req.body._id}`)
           Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, {multi: true}, (err) => {
             Subscribers.find({ pageId: req.body._id }, (err, subscribers) => {
               if (err) {
@@ -317,7 +307,6 @@ exports.disable = function (req, res) {
                 return res.status(404)
                 .json({status: 'failed', description: 'Subscribers not found'})
               }
-              logger.serverLog(TAG, `fetching subscribers: ${subscribers}`)
             })
             Pages.find({userId: req.user._id, companyId: companyUser.companyId}, (err2, pages) => {
               if (err2) {
@@ -373,7 +362,6 @@ exports.disable = function (req, res) {
                         }
                       }
                     }
-                    logger.serverLog(TAG, `Pages: ${JSON.stringify(pages)}`)
                     let pagesPayload = []
                     for (let i = 0; i < pages.length; i++) {
                       pagesPayload.push({
@@ -459,7 +447,6 @@ exports.addPages = function (req, res) {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
-        logger.serverLog(TAG, `Pages returned ${JSON.stringify(pages)}`)
         Pages.find({companyId: companyUser.companyId, connected: true}, (err, connectedPages) => {
           if (err) {
             return res.status(500).json({status: 'failed', description: err})
@@ -545,8 +532,6 @@ exports.saveGreetingText = function (req, res) {
 
           needle.request('post', requesturl, valueForMenu, {json: true}, function (err, resp) {
             if (!err) {
-              logger.serverLog(TAG,
-              `Menu added to page ${req.body.pageName}`)
             }
             if (err) {
               logger.serverLog(TAG,

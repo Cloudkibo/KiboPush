@@ -45,91 +45,11 @@ class Sidebar extends Component {
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
     this.showBroadcastTemplates = this.showBroadcastTemplates.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
   }
   componentDidMount () {
-    this.addSteps([
-      {
-        title: 'Dashboard',
-        text: 'The Dashboard provides you with a summary of information regarding your pages',
-        selector: 'li#dashboard',
-        position: 'top-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Growth Tools',
-        text: 'The growth tools allow you to upload csv files of customers, to integrate with messenger',
-        selector: 'li#growthTools',
-        position: 'left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Subscribers',
-        text: 'It allows you to see the list of subscribers',
-        selector: 'li#subscribers',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Conversation',
-        text: 'Allow you to broadcast a totally customizable message to your subscribers',
-        selector: 'li#convos',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Auto-Posting',
-        text: 'Details of Auto-Posting',
-        selector: 'li#autoposting',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Polls',
-        text: 'Allows you to send Polls to your subscribers',
-        selector: 'li#polls',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Surveys',
-        text: 'Allows you to send multiple polls',
-        selector: 'li#surveys',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Workflows',
-        text: 'Workflows allow you to auto-reply to certain keywords or messages to your page',
-        selector: 'li#workflows',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Pages',
-        text: 'Allows you to connect or disconnect pages',
-        selector: 'li#pages',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'UserGuide',
-        text: 'Still confused? Check our User Guide',
-        selector: 'li#userguide',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-
-    ])
-
     if (!this.state.ignore) {
       this.setState({ignore: true})
     }
@@ -140,25 +60,6 @@ class Sidebar extends Component {
 
   closeUserGuide () {
     this.setState({isShowingModal: false})
-  }
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
   }
 
   showOperationalDashboard () {
@@ -200,7 +101,7 @@ class Sidebar extends Component {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/convos' className='m-menu__link m-menu__toggle'>
+            <Link to='/broadcasts' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-paper-plane' />
               <span className='m-menu__link-text'>Broadcasts</span>
             </Link>
@@ -507,7 +408,6 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

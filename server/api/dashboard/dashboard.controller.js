@@ -159,9 +159,12 @@ exports.sentVsSeen = function (req, res) {
                                             })
                                           }
                                           let responsesCount = []
+<<<<<<< HEAD
                                           logger.serverLog(TAG,
                                               `counts for dashboard poll response ${JSON.stringify(
                                                 pollResponseCount)}`)
+=======
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
                                           for (let a = 0; a < polls.length; a++) {
                                             for (let b = 0; b < pollResponseCount.length; b++) {
                                               if (polls[a]._id.toString() === pollResponseCount[b]._id.toString()) {
@@ -177,9 +180,6 @@ exports.sentVsSeen = function (req, res) {
                                                   responsesCount[c]
                                             }
                                           }
-                                          logger.serverLog(TAG,
-                                              `counts for dashboard poll response sum ${JSON.stringify(
-                                                sum)}`)
                                           var sum1 = 0
                                           if (surveyResponseCount.length > 0) {
                                             for (var j = 0; j <
@@ -225,9 +225,6 @@ exports.sentVsSeen = function (req, res) {
                                               datacounts.poll.pollResponseCount = sum
                                             }
                                           }
-                                          logger.serverLog(TAG,
-                                              `counts for dashboard ${JSON.stringify(
-                                                datacounts)}`)
                                           res.status(200).json({
                                             status: 'success',
                                             payload: datacounts
@@ -271,8 +268,6 @@ exports.likesVsSubscribers = function (req, res) {
             err2)}`
         })
       }
-      logger.serverLog(TAG,
-        `counts for dashboard ${JSON.stringify(gotSubscribersCount)}`)
       let pagesPayload = []
       for (let i = 0; i < pages.length; i++) {
         pagesPayload.push({
@@ -291,10 +286,6 @@ exports.likesVsSubscribers = function (req, res) {
         for (let j = 0; j < gotSubscribersCount.length; j++) {
           if (pagesPayload[i]._id.toString() ===
             gotSubscribersCount[j]._id.pageId.toString()) {
-            logger.serverLog(TAG,
-              `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-            logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-            logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
             pagesPayload[i].subscribers = gotSubscribersCount[j].count
           }
         }
@@ -316,13 +307,11 @@ exports.enable = function (req, res) {
 //     connected: false
 //   }
 //   Pages.update({_id: req.body._id}, updateData, (err, affected) => {
-//     logger.serverLog(TAG, `affected rows ${affected}`)
 //   })
 // }
 
 exports.otherPages = function (req, res) {
   Pages.find({connected: false}, (err, pages) => {
-    logger.serverLog(TAG, pages)
     logger.serverLog(TAG, `Error: ${err}`)
     res.status(200).json(pages)
   })
@@ -388,7 +377,6 @@ exports.stats = function (req, res) {
                           return res.status(500).json(
                             {status: 'failed', description: JSON.stringify(err2)})
                         }
-                        logger.serverLog(TAG, `subscribersCOunt: ${subscribersCount}`)
                         payload.subscribers = subscribersCount
                         Broadcasts.find({companyId: companyUser.companyId})
                           .sort('datetime')

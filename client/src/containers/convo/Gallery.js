@@ -37,7 +37,6 @@ class Gallery extends React.Component {
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
     if (this.props.galleryDetails && this.props.galleryDetails !== '') {
-      console.log(this.props.galleryDetails)
       var cards = this.props.galleryDetails.cards
       var card = {}
       var temp = []
@@ -65,9 +64,7 @@ class Gallery extends React.Component {
 
   removeSlide () {
     var temp = this.state.cards
-    console.log('Cards Before Removing', temp)
     temp.splice(this.state.pageNumber - 1, 1)
-    console.log('Cards After Removing', temp)
     this.setState({cards: temp})
   }
 
@@ -82,8 +79,6 @@ class Gallery extends React.Component {
 
   handleCard (obj) {
     var temp = this.state.broadcast
-    console.log('Handle Card Object Receeived', obj)
-    console.log('Original broadcast', this.state.broadcast)
     var isPresent = false
     temp.map((data) => {
       if (data.id === obj.id) {
@@ -97,13 +92,11 @@ class Gallery extends React.Component {
     if (!isPresent) {
       temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
     }
-    console.log('Updated broadcast (temp)', temp)
     this.setState({broadcast: temp})
     this.props.handleGallery({id: this.props.id, componentType: 'gallery', cards: JSON.parse(JSON.stringify(this.state.broadcast))})
   }
 
   render () {
-    console.log('Gallary State', this.state)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -125,7 +118,11 @@ class Gallery extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+<<<<<<< HEAD
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', height: 20 + 'px', zIndex: 6, right: 100 + 'px'}}>
+=======
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ position: 'absolute', height: 20 + 'px', zIndex: 6, right: 100 + 'px'}}>
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

@@ -12,7 +12,6 @@ import { Link } from 'react-router'
 class ViewPoll extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('Poll View', this.props.location.state)
   }
 
   componentDidMount () {
@@ -85,7 +84,6 @@ class ViewPoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     polls: (state.pollsInfo.polls)
   }

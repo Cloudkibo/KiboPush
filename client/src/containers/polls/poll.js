@@ -49,7 +49,6 @@ class Poll extends React.Component {
     this.sendPoll = this.sendPoll.bind(this)
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -70,7 +69,6 @@ class Poll extends React.Component {
   }
 
   displayData (n, polls) {
-    console.log(polls)
     let offset = n * 5
     let data = []
     let limit
@@ -93,7 +91,6 @@ class Poll extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.polls.length > 0) {
-      console.log('Polls Updated', nextProps.polls)
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
@@ -186,7 +183,6 @@ class Poll extends React.Component {
     if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
       var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
       if (result.length === 0) {
-        console.log('inside if')
         return false
       }
     } else if (pageValue.length > 0 && genderValue.length) {
@@ -487,7 +483,6 @@ class Poll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     polls: (state.pollsInfo.polls),
     successMessage: (state.pollsInfo.successMessage),

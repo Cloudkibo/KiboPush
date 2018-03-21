@@ -51,9 +51,7 @@ class Image extends React.Component {
         imgSrc: [reader.result]
       })
     }.bind(this)
-    console.log(url) // Would see a path?
 
-    console.log('Images in OnChange', file)
     this.setState({
       showPreview: false,
       loading: true
@@ -74,7 +72,11 @@ class Image extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+<<<<<<< HEAD
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+=======
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -114,7 +116,6 @@ class Image extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),

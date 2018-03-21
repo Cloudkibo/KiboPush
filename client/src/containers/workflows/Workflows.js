@@ -52,7 +52,6 @@ class Workflows extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in workflows is called')
     if (nextProps.workflows) {
       this.displayData(0, nextProps.workflows)
       this.setState({ totalLength: nextProps.workflows.length })
@@ -60,7 +59,6 @@ class Workflows extends React.Component {
   }
 
   displayData (n, workflows) {
-    console.log(workflows)
     let offset = n * 4
     let data = []
     let limit
@@ -142,7 +140,6 @@ class Workflows extends React.Component {
         }
         self.setState({ filterByCondition: selected })
       }
-      console.log('change condition', selected)
     })
   }
 
@@ -169,7 +166,6 @@ class Workflows extends React.Component {
         }
         self.setState({ filterByStatus: selected })
       }
-      console.log('change active', selected)
     })
   }
 
@@ -240,7 +236,6 @@ class Workflows extends React.Component {
   }
 
   render () {
-    console.log('Workflows', this.props.workflows)
     return (
       <div>
         <Header />
@@ -472,7 +467,6 @@ class Workflows extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows)
   }

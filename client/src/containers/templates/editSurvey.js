@@ -19,7 +19,6 @@ class createSurvey extends React.Component {
     super(props, context)
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
-      console.log('id', id)
       props.loadSurveyDetails(id)
     }
     props.loadCategoriesList()
@@ -63,26 +62,21 @@ class createSurvey extends React.Component {
       this.initializeCategorySelect(options)
     }
     if (nextprops.survey) {
-      console.log('details', nextprops.survey)
       this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
     }
     if (nextprops.questions) {
-      console.log('details', nextprops.questions)
       this.setState({surveyQuestions: nextprops.questions})
     }
   }
   exists (options, category) {
     for (var i = 0; i < options.length; i++) {
       if (options[i].text === category.name) {
-        console.log('options[i]', options[i].text)
-        console.log('category.name', category.name)
         return true
       }
     }
     return false
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -90,7 +84,6 @@ class createSurvey extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeCategorySelect (categoryOptions) {
-    console.log('asd', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectcategory').select2({
@@ -106,7 +99,6 @@ class createSurvey extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -114,7 +106,6 @@ class createSurvey extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
   updateDescription (e) {
@@ -179,7 +170,6 @@ class createSurvey extends React.Component {
               let incompleteQuestion = document.getElementById('question' + j)
               incompleteQuestion.classList.add('has-error')
               flag = 1
-              console.log('empty')
               this.msg.error('Please add a statement')
               break
             } else if (this.state.surveyQuestions[j].options[k] === '') {
@@ -188,7 +178,6 @@ class createSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
               this.msg.error('Please add all the choices')
               break
             } else {
@@ -201,7 +190,6 @@ class createSurvey extends React.Component {
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
-        console.log('category', this.state.categoryValue)
         var surveybody = {
           survey: {
             _id: this.props.currentSurvey._id,
@@ -231,14 +219,12 @@ class createSurvey extends React.Component {
       'options': choiceValues
     })
     this.setState({surveyQuestions: surveyQuestions})
-    console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
         alertType: ''
       })
     }
-    console.log(this.state.surveyQuestions)
   }
 
   addChoices (qindex) {
@@ -258,20 +244,12 @@ class createSurvey extends React.Component {
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log(
-      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('surveyQuestions', surveyQuestions)
-    console.log('surveyQuestions[qindex].choiceCount', surveyQuestions[qindex].choiceCount)
     if (surveyQuestions[qindex].options.length <= 2) {
       this.msg.error('Atleast 2 options are required for each question')
     } else {
       let choices = surveyQuestions[qindex].options.slice()
-      console.log('choices before')
-      console.log(choices)
       choices.splice(choiceIndex, 1)
-      console.log('choices after')
-      console.log(choices)
       surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
         1
       surveyQuestions[qindex].options = choices
@@ -281,13 +259,10 @@ class createSurvey extends React.Component {
 
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
-      console.log('A survey form requires atleast one question')
       this.msg.error('A survey form requires atleast one question')
     } else {
-      console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
-      console.log(surveyQuestions)
       this.setState({
         surveyQuestions: surveyQuestions
       })
@@ -298,19 +273,12 @@ class createSurvey extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
-    console.log('onhandleChoiceChange is called')
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('qindex is ' + qindex)
-    console.log('choiceIndex is ' + choiceIndex)
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   /* handleQuestionType (e) {
@@ -320,10 +288,8 @@ class createSurvey extends React.Component {
    } */
 
   createOptionsList (qindex) {
-    console.log('qindex' + qindex)
     let choiceItems = []
     var choiceCount = this.state.surveyQuestions[qindex].options.length
-    console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -345,7 +311,6 @@ class createSurvey extends React.Component {
 
   createUI () {
     let uiItems = []
-    console.log('createUI', this.state.surveyQuestions)
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
       if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
@@ -574,12 +539,11 @@ class createSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories),
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey)
+    currentSurvey: (state.backdoorInfo.currentSurvey)
   }
 }
 

@@ -68,16 +68,11 @@ class Response extends React.Component {
   }
 
   createChart () {
-    console.log('i am called in Response.js')
     if (this.props.responses && this.props.question.type === 'multichoice') {
       var sorted = rank(this.props.responses, 'response')
-      console.log('sorted data is ')
-      console.log(sorted)
       // this.setState({responseVal:sorted});
 
       var radarChart = document.getElementById(this.props.question._id)
-      console.log('radarChart of ' + this.props.question._id)
-      console.log(radarChart)
       var counts = []
       var vals = []
       var colors = ['#38a9ff', '#ff5e3a', '#ffdc1b']

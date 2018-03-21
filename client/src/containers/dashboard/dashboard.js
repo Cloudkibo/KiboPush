@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
@@ -21,7 +20,7 @@ import {
 import AlertContainer from 'react-alert'
 import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
-import { getuserdetails, dashboardTourCompleted, getStartedCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -37,16 +36,12 @@ class Dashboard extends React.Component {
       steps: [],
       sentseendata1: []
     }
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
   }
+
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentWillReceiveProps (nextprops) {
-    console.log('NextProps :', nextprops)
     if (nextprops.user && nextprops.user.emailVerified === false &&
       (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
       browserHistory.push({
@@ -61,11 +56,9 @@ class Dashboard extends React.Component {
         })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
-        console.log('More than 0 subscribers')
         this.setState({isShowingModal: false})
       } else if (nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
         // this means 0 subscribers
-        console.log('0 subscribers')
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
       // this means connected pages in 0
@@ -75,16 +68,12 @@ class Dashboard extends React.Component {
         // })
       }
       if (nextprops.user) {
-        console.log('fetchSession in dashboard')
         joinRoom(nextprops.user.companyId)
       }
       if (nextprops.sentseendata) {
-        console.log('sentseendata', nextprops.sentseendata)
         var temp = []
         temp.push(nextprops.sentseendata)
-        console.log('temp', temp)
         this.setState({sentseendata1: nextprops.sentseendata})
-        console.log('sentseendata1', this.state.sentseendata1)
       }
     }
   }
@@ -110,86 +99,10 @@ class Dashboard extends React.Component {
     registerAction({
       event: 'dashboard_updated',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.loadMyPagesList()
         compProp.loadDashboardData()
       }
     })
-
-    this.addSteps([{
-      title: 'Pages',
-      text: 'This shows the number of pages currently connected',
-      selector: 'div#pages',
-      position: 'top-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Subscribers',
-      text: 'These are the total number of subscribers you have',
-      selector: 'div#subscribers',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'New Messages',
-      text: 'The number of unread message',
-      selector: 'div#newMessages',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Survey',
-      text: 'The number of surveys you have created',
-      selector: 'div#surveys',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Polls',
-      text: 'The Polls you have made till now',
-      selector: 'div#polls',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Broadcasts',
-      text: 'Broadcasts you have made to your subscribers',
-      selector: 'div#broadcasts',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}
-    ])
-  }
-
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      this.props.dashboardTourCompleted({
-        'dashboardTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
   }
 
   render () {
@@ -200,7 +113,6 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('props', this.props)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -211,10 +123,6 @@ class Dashboard extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          {
-            !(this.props.user && this.props.user.dashboardTourSeen) &&
-            <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-          }
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
             this.props.user && !this.props.user.wizardSeen &&
@@ -245,7 +153,7 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     dashboard: (state.dashboardInfo.dashboard),
-    sentseendata: (state.sentSeenInfo.sentseendata),
+    sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
     subscribers: (state.subscribersInfo.subscribers)
   }
@@ -260,8 +168,6 @@ function mapDispatchToProps (dispatch) {
       createbroadcast: createbroadcast,
       fetchSessions: fetchSessions,
       getuserdetails: getuserdetails,
-      dashboardTourCompleted: dashboardTourCompleted,
-      getStartedCompleted: getStartedCompleted,
       sentVsSeen: sentVsSeen
     },
     dispatch)

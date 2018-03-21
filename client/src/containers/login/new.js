@@ -59,13 +59,10 @@ class Login extends React.Component {
     log(TAG, 'Login Container Mounted')
   }
   componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps called', nextprops)
     if (nextprops.errorMessage) {
-      console.log('nextprops.errorMessage', nextprops.errorMessage)
       //  this.setState({error: true})
     }
     if (nextprops.successMessage) {
-      console.log('succes', nextprops.successMessage)
       this.setState({success: true, error: false})
       this.props.history.push({
         pathname: '/dashboard'
@@ -74,7 +71,6 @@ class Login extends React.Component {
     }
   }
   render () {
-    console.log('In Login new JS')
     var alertOptions = {
       offset: 14,
       position: 'bottom left',
@@ -123,6 +119,7 @@ class Login extends React.Component {
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+<<<<<<< HEAD
                           onChange={this.edit} />
                       </div>
                       <div className='m-login__form-action'>
@@ -131,6 +128,16 @@ class Login extends React.Component {
                               Back
                             </Link>
                         </span>
+=======
+                        onChange={this.edit} />
+                      </div>
+                      <div className='m-login__form-action'>
+                        <span>
+                        <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
+                              Back
+                            </Link>
+                      </span>
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                             Sign In
                           </button>
@@ -193,7 +200,6 @@ class Login extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     errorMessage: (state.loginInfo.errorMessage),
     successMessage: (state.loginInfo.successMessage)

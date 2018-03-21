@@ -45,11 +45,9 @@ class Convo extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -74,7 +72,6 @@ class Convo extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    console.log(broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -104,7 +101,7 @@ class Convo extends React.Component {
 
   gotoCreate (broadcast) {
     browserHistory.push({
-      pathname: `/createconvo`,
+      pathname: `/createBroadcast`,
       state: {module: 'convo', subscribers: this.props.subscribers}
     })
   }
@@ -121,9 +118,7 @@ class Convo extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
@@ -161,7 +156,6 @@ class Convo extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
@@ -184,7 +178,6 @@ class Convo extends React.Component {
   }
 
   render () {
-    console.log('Broadcasts', this.state.broadcastsData)
     return (
       <div>
         <Header />

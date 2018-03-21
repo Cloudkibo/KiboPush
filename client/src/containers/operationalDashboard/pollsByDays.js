@@ -28,7 +28,6 @@ class PollsInfo extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -40,11 +39,9 @@ class PollsInfo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
 
   displayData (n, polls) {
-    console.log('polls:', polls)
     let offset = n * 4
     let data = []
     let limit
@@ -58,9 +55,7 @@ class PollsInfo extends React.Component {
       data[index] = polls[i]
       index++
     }
-    console.log('data', data)
     this.setState({PollData: data})
-    console.log('in displayData', this.state.PollData)
   }
 
   handlePageClick (data) {
@@ -89,7 +84,6 @@ class PollsInfo extends React.Component {
       this.displayData(0, this.props.polls)
       this.setState({ totalLength: this.props.polls.length })
     } else if (val.value === 10) {
-      console.log('Selected:', val)
       this.filterByDays(10)
       this.setState({ selectedFilterValue: val })
     } else if (val.value === 30) {
@@ -101,7 +95,6 @@ class PollsInfo extends React.Component {
     var defaultVal = 10
     var value = e.target.value
     this.setState({selectedDays: value})
-    console.log('On days change', value)
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -282,7 +275,7 @@ class PollsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    polls: state.surveysPollsBroadcasts.polls
+    polls: state.backdoorInfo.polls
   }
 }
 

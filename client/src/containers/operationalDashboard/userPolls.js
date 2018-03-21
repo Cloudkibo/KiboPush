@@ -12,7 +12,6 @@ const moment = extendMoment(Moment)
 class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor pollsinfo', props.userID)
     props.loadPollsList(props.userID)
     this.state = {
       PollData: [],
@@ -31,7 +30,6 @@ class PollsInfo extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount called in ViewSurveyDetail')
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     var addScript = document.createElement('script')
@@ -43,11 +41,9 @@ class PollsInfo extends React.Component {
     addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/main.js')
     document.body.appendChild(addScript)
-    console.log('componentDidMount called in ViewSurveyDetail Finished')
   }
 
   displayData (n, poll) {
-    console.log('one', poll)
     let offset = n * 4
     let data = []
     let limit
@@ -61,18 +57,14 @@ class PollsInfo extends React.Component {
       data[index] = poll[i]
       index++
     }
-    console.log('data', data)
     this.setState({PollData: data})
-    console.log('in displayData of userPolls', this.state.PollData)
   }
 
   handlePageClick (data) {
     this.displayData(data.selected, this.props.polls)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('userPolls componentWillReceiveProps is called')
     if (nextProps.polls) {
-      console.log('Polls Updated', nextProps.polls)
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
     }
@@ -90,13 +82,11 @@ class PollsInfo extends React.Component {
   }
 
   onFilter (val) {
-    //  console.log('Selected: ' + JSON.stringify(val))
     if (!val) {
       this.setState({selectedFilterValue: null})
       this.displayData(0, this.props.polls)
       this.setState({ totalLength: this.props.polls.length })
     } else if (val === 10) {
-      console.log('Selected:', val.value)
       this.filterByDays(10)
       this.setState({ selectedFilterValue: val })
     } else if (val === 30) {
@@ -123,7 +113,6 @@ class PollsInfo extends React.Component {
   }
 
   gotoViewPoll (poll) {
-    console.log(poll)
     this.props.saveCurrentPoll(poll)
   }
 
@@ -254,9 +243,8 @@ class PollsInfo extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('user polls', state)
   return {
-    polls: state.PollsInfo.polls
+    polls: state.backdoorInfo.polls
   }
 }
 

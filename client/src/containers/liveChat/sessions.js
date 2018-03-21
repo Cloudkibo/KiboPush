@@ -54,9 +54,7 @@ class Sessions extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
-      console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
         if (page.connected) {
@@ -76,7 +74,6 @@ class Sessions extends React.Component {
         if (sess[j]._id === nextProps.userChat[0].session_id) {
           sess[j].unreadCount = 0
           this.setState({list: sess}, () => {
-            console.log(this.state.list)
           })
         }
       }
@@ -88,7 +85,6 @@ class Sessions extends React.Component {
         if (temp[i]._id === nextProps.unreadSession) {
           temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
           this.setState({list: temp}, () => {
-            console.log(this.state.list)
           })
         }
       }
@@ -113,13 +109,11 @@ class Sessions extends React.Component {
 
     if (this.pageValue !== null) {
       let search = this.pageValue
-      console.log('Page Value', search)
       temp = _.filter(temp, function (item) {
         if (item.page_id.pageId === search) {
           return item
         }
       })
-      console.log('Array After Page Filter', temp)
     }
 
     if (this.searchValue !== '') {
@@ -130,29 +124,24 @@ class Sessions extends React.Component {
           return item
         }
       })
-      console.log('Array After Search', temp)
     }
 
     if (this.logValue !== null) {
       if (this.logValue === 'old') {
-        console.log('Sorting using new')
         temp = temp.sort(function (a, b) {
           return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
         })
       } else {
-        console.log('Sorting using old')
         temp = temp.sort(function (a, b) {
           return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
         })
       }
-      console.log('Array After Sorting', temp)
     }
 
     this.setState({list: temp})
   }
 
   logChange (val) {
-    console.log('(In Log Change) Val', val)
     if (val === null) {
       this.logValue = val
     } else {
@@ -161,7 +150,6 @@ class Sessions extends React.Component {
     this.filterSession()
   }
   pageChange (val) {
-    console.log('(In Page Change) Val', val)
     if (val === null) {
       this.pageValue = val
     } else {
@@ -171,7 +159,6 @@ class Sessions extends React.Component {
   }
 
   handleSearch (event) {
-    console.log('(In Handle Search) Search', event.target.value)
     // this.setState({searchValue: event.target.value})
     this.searchValue = event.target.value
     this.filterSession()

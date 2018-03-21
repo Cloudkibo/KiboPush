@@ -33,7 +33,6 @@ class ViewMessage extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -42,12 +41,10 @@ class ViewMessage extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
 
   render () {
-    console.log('View Message Component', this.props.payload)
     var settings = {
       arrows: true,
       dots: false,

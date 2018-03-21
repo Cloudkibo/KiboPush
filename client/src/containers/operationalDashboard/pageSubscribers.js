@@ -38,7 +38,6 @@ class PageSubscribers extends React.Component {
   }
 
   displayData (n, pageSubscribers) {
-    console.log(n, pageSubscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -52,9 +51,7 @@ class PageSubscribers extends React.Component {
       data[index] = pageSubscribers[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({pageSubscribersData: data, pageSubscribersDataAll: pageSubscribers})
-    console.log('in displayData', this.state.pageSubscribersData)
   }
 
   handlePageClick (data) {
@@ -62,16 +59,13 @@ class PageSubscribers extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.pageSubscribers) {
-      console.log('Page Subscribers Updated', nextProps.pageSubscribers)
       this.displayData(0, nextProps.pageSubscribers)
       this.setState({ totalLength: nextProps.pageSubscribers.length })
     }
   }
   searchSubscribers (event) {
     var filtered = []
-    console.log('length', this.props.pageSubscribers)
     for (let i = 0; i < this.props.pageSubscribers.length; i++) {
       if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
         filtered.push(this.props.pageSubscribers[i])
@@ -83,7 +77,6 @@ class PageSubscribers extends React.Component {
 
   backToUserDetails () {
     const user = this.props.currentUser
-    console.log('back to user details', user, this.props)
     this.props.history.push({
       pathname: `/userDetails`,
       state: user
@@ -366,10 +359,10 @@ class PageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: (state.PageSubscribersInfo.pageSubscribers),
-    locales: (state.PageSubscribersInfo.locales),
-    currentUser: (state.getCurrentUser.currentUser),
-    currentPage: (state.getCurrentPage.currentPage)
+    pageSubscribers: (state.backdoorInfo.pageSubscribers),
+    locales: (state.backdoorInfo.locales),
+    currentUser: (state.backdoorInfo.currentUser),
+    currentPage: (state.backdoorInfo.currentPage)
   }
 }
 

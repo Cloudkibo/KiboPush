@@ -77,9 +77,7 @@ class CreateSubList extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in CreateSublist', nextProps)
     if (nextProps.subscribers) {
-      console.log('Subscribers Updated', nextProps.subscribers)
       this.setState({ allSubscribers: nextProps.subscribers })
     }
   }
@@ -104,7 +102,6 @@ class CreateSubList extends React.Component {
       conditions: tempConditions
     })
     var id = this.props.currentList._id
-    console.log(id)
   }
   onSave () {
     var isValid = this.validateNewList()
@@ -186,9 +183,13 @@ class CreateSubList extends React.Component {
   handleCreateSubList (res) {
     if (res.status === 'success') {
       this.resetPage()
+<<<<<<< HEAD
       /* eslint-disable */
       $('#selectLists').val('').trigger('change')
       /* eslint-enable */
+=======
+      $('#selectLists').val('').trigger('change')
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     } else {
       this.setState({
         errorMessages: [],
@@ -273,7 +274,6 @@ class CreateSubList extends React.Component {
   }
 
   changeCondition (e, index) {
-    console.log('Change Condition')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -283,7 +283,6 @@ class CreateSubList extends React.Component {
     this.setState({conditions: conditions})
   }
   changeCriteria (e, index) {
-    console.log('Change Criteria')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -293,7 +292,6 @@ class CreateSubList extends React.Component {
     this.setState({conditions: conditions})
   }
   changeText (e, index) {
-    console.log('Change Text')
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -319,9 +317,13 @@ class CreateSubList extends React.Component {
     }
     if (e.currentTarget.value === 'segmentAll') {
       this.setState({listSelected: ''})
+<<<<<<< HEAD
       /* eslint-disable */
       $('#selectLists').val('').trigger('change')
       /* eslint-enable */
+=======
+      $('#selectLists').val('').trigger('change')
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     }
   }
 
@@ -332,7 +334,6 @@ class CreateSubList extends React.Component {
   }
 
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     /* eslint-disable */
     $('#selectLists').select2({
@@ -348,7 +349,6 @@ class CreateSubList extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
@@ -356,11 +356,14 @@ class CreateSubList extends React.Component {
       } else {
         self.setState({ listSelected: '' })
       }
-      console.log('change List Selection', selected)
     })
+<<<<<<< HEAD
     /* eslint-disable */
     $('#selectLists').val('').trigger('change')
     /* eslint-enable */
+=======
+    $('#selectLists').val('').trigger('change')
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
   }
 
   render () {

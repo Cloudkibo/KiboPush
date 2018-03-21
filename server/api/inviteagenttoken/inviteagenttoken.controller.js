@@ -10,7 +10,6 @@ const logger = require('../../components/logger')
 const TAG = 'api/inviteagenttoken/inviteagenttoken.controller.js'
 
 exports.verify = function (req, res) {
-  logger.serverLog(TAG, req.params)
   Inviteagenttoken.findOne({token: req.params.id}, function (err, verificationtoken) {
     if (err) {
       return res.status(500)

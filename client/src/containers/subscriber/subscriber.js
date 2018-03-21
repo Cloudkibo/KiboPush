@@ -40,11 +40,9 @@ class Subscriber extends React.Component {
     this.stackLocaleFilter = this.stackLocaleFilter.bind(this)
     this.exportRecords = this.exportRecords.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
-    console.log('exeuting subscriber')
   }
 
   componentDidMount () {
-    console.log('exeuting subscriber')
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
     // var addScript = document.createElement('script')
@@ -60,7 +58,6 @@ class Subscriber extends React.Component {
   }
 
   searchSubscriber (event) {
-    console.log('exeuting subscriber')
     this.setState({searchValue: event.target.value})
     var filtered = []
     var data = this.props.subscribers
@@ -78,8 +75,6 @@ class Subscriber extends React.Component {
   }
 
   displayData (n, subscribers) {
-    console.log('exeuting subscriber')
-    console.log(subscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -115,7 +110,6 @@ class Subscriber extends React.Component {
     return data
   }
   exportRecords () {
-    console.log('download File called')
     var data = this.prepareExportData()
     var info = data
     var keys = []
@@ -127,22 +121,17 @@ class Subscriber extends React.Component {
     }
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
-        console.log(err)
       } else {
         fileDownload(csv, 'SubscriberList.csv')
       }
     })
   }
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('exeuting subscriber')
-    console.log('componentWillReceiveProps is called in sub', nextProps)
     if (nextProps.subscribers) {
-      console.log('Subscribers Updated', nextProps.subscribers)
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.subscribers.length })
     }
@@ -185,7 +174,6 @@ class Subscriber extends React.Component {
     return filteredData
   }
   handleFilterByPage (e) {
-    console.log('Filter By Page')
     this.setState({filterByPage: e.target.value, searchValue: ''})
     var filteredData = this.props.subscribers
     filteredData = this.stackGenderFilter(filteredData)
@@ -205,7 +193,6 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByGender (e) {
-    console.log('Filter By Gender')
     this.setState({filterByGender: e.target.value, searchValue: ''})
     var filteredData = this.props.subscribers
     filteredData = this.stackPageFilter(filteredData)
@@ -225,7 +212,6 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByLocale (e) {
-    console.log('Filter By Locale')
     this.setState({filterByLocale: e.target.value, searchValue: ''})
     var filteredData = this.props.subscribers
     filteredData = this.stackPageFilter(filteredData)
@@ -245,7 +231,6 @@ class Subscriber extends React.Component {
   }
 
   render () {
-    console.log('In render of subscriber')
     return (
       <div>
         <Header />
@@ -541,7 +526,6 @@ class Subscriber extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     subscribers: (state.subscribersInfo.subscribers),
     locales: (state.subscribersInfo.locales),

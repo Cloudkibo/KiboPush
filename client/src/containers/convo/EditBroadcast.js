@@ -19,7 +19,6 @@ import { bindActionCreators } from 'redux'
 class EditBroadcast extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('props.params.id' + props.location.state)
     props.getbroadcast(props.location.state)
     // this.editPage = this.editPage.bind(this);
   }

@@ -1,6 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
-export function APIInfo (state = {}, action) {
+export function settingsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.ENABLE_SUCCESS:
       return Object.assign({}, state, {

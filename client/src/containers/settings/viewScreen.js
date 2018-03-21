@@ -7,6 +7,7 @@ class ViewScreen extends React.Component {
   }
 
   render () {
+<<<<<<< HEAD
     console.log('View Message Component', this.props.payload)
     // var settings = {
     //   arrows: true,
@@ -18,6 +19,18 @@ class ViewScreen extends React.Component {
     //   nextArrow: <RightArrow />,
     //   prevArrow: <LeftArrow />
     // }
+=======
+    var settings = {
+      arrows: true,
+      dots: false,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      nextArrow: <RightArrow />,
+      prevArrow: <LeftArrow />
+    }
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     return (
       <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: '317px', height: '550px', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
         <div style={{border: '1px solid #f2f2f2', borderRadius: '2px', display: 'block', height: '100%', position: 'relative', width: '100%', textAlign: 'center', zIndex: 2, overflow: 'hidden'}}>

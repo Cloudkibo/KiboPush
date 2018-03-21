@@ -45,7 +45,6 @@ class Card extends React.Component {
   }
   updateCardDetails (cardProps) {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
-      console.log(cardProps.cardDetails)
       this.setState({
         id: cardProps.id,
         componentType: 'card',
@@ -92,8 +91,6 @@ class Card extends React.Component {
         imgSrc: [reader.result]
       })
     }.bind(this)
-    console.log(url) // Would see a path?
-    console.log('Card Image in OnChange', file)
     this.setState({loading: true})
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
@@ -171,9 +168,7 @@ class Card extends React.Component {
       buttons: this.state.button})
   }
   removeButton (obj) {
-    console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
-    console.log('Filter', temp)
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
@@ -188,8 +183,6 @@ class Card extends React.Component {
   }
 
   updateImageUrl (data) {
-    console.log('Update Card Image Url')
-    console.log(data)
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
       image_url: data.image_url,
@@ -209,7 +202,6 @@ class Card extends React.Component {
   }
 
   render () {
-    console.log('State: ', this.props.id)
     return (
       <div>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
@@ -260,7 +252,6 @@ class Card extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 

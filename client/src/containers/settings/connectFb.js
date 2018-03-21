@@ -12,7 +12,6 @@ class ConnectFB extends React.Component {
   }
   save (event) {
     event.preventDefault()
-    console.log('ismatch', this.state.ismatch)
     if (this.state.ismatch) {
       this.props.changePass({old_password: this.refs.current.value, new_password: this.refs.new.value}, this.msg)
     }
@@ -84,10 +83,9 @@ class ConnectFB extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
-    // changeSuccess: (state.APIInfo.changeSuccess),
-    // changeFailure: (state.APIInfo.changeFailure)
+    // changeSuccess: (state.settingsInfo.changeSuccess),
+    // changeFailure: (state.settingsInfo.changeFailure)
   }
 }
 

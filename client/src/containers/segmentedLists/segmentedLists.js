@@ -30,7 +30,6 @@ class SegmentedList extends React.Component {
     props.clearCurrentList()
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialogDelete (id) {

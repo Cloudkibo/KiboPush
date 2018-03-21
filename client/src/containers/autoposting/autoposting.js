@@ -38,7 +38,6 @@ class Autoposting extends React.Component {
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
@@ -59,7 +58,6 @@ class Autoposting extends React.Component {
     registerAction({
       event: 'autoposting_created',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.loadAutopostingList()
       }
     })
@@ -107,14 +105,14 @@ class Autoposting extends React.Component {
 
   gotoSettings (item) {
     this.props.history.push({
-      pathname: `/autoposting-itemsettings`,
+      pathname: `/autopostingItemSettings`,
       state: item
     })
   }
 
   gotoMessages (id) {
     this.props.history.push({
-      pathname: `/autoposting-messages`,
+      pathname: `/autopostingMessages`,
       state: {id: id}
     })
   }

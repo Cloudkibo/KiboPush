@@ -95,7 +95,6 @@ class Settings extends React.Component {
     this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
@@ -115,7 +114,6 @@ class Settings extends React.Component {
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
     this.scrollToTop()
-    console.log('componentDidMount')
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
     }
@@ -143,12 +141,9 @@ class Settings extends React.Component {
       /* eslint-enable */
       self.setState({buttonState: state})
       if (state === true) {
-        console.log('true')
         self.setState({disable: false, buttonState: true})
-        console.log('self.state.disabled', self.state.disable)
         self.props.enable({company_id: self.props.user._id})
       } else {
-        console.log('false')
         self.setState({disable: true, buttonState: false})
         self.props.disable({company_id: self.props.user._id})
       }
@@ -159,7 +154,6 @@ class Settings extends React.Component {
     this.props.reset({company_id: this.props.user._id})
   }
   componentWillReceiveProps (nextProps) {
-    console.log('hello', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
       browserHistory.push({
@@ -171,15 +165,12 @@ class Settings extends React.Component {
       this.getPlanInfo(plan)
     }
     if (nextProps.apiEnable) {
-      console.log('this.state.disabled', this.state.disable)
       if (this.state.disable === false) {
-        console.log('api enabled', nextProps.apiEnable)
         this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
       }
     }
     if (nextProps.apiDisable) {
       if (this.state.disable === true) {
-        console.log('api disabled', nextProps.apiDisable)
         this.setState({APIKey: '', APISecret: ''})
       }
     }
@@ -191,18 +182,15 @@ class Settings extends React.Component {
       }
     }
     if (nextProps.apiSuccess) {
-      console.log('in apisuccess', nextProps.apiSuccess)
       if (this.state.count === 1) {
         this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
         if (this.state.count1 !== 1) {
-          console.log('apisuccess')
           this.initializeSwitch(nextProps.apiSuccess.enabled)
           this.setState({saveState: nextProps.apiSuccess.enabled})
         }
         this.setState({count: 2})
       }
     } else if (nextProps.apiFailure) {
-      console.log('apifailure')
       if (this.state.firstTime === true) {
         this.initializeSwitch(false)
         this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
@@ -416,15 +404,14 @@ class Settings extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
-    apiEnable: (state.APIInfo.apiEnable),
-    apiDisable: (state.APIInfo.apiDisable),
-    resetData: (state.APIInfo.resetData),
-    apiSuccess: (state.APIInfo.apiSuccess),
-    apiFailure: (state.APIInfo.apiFailure),
-    switchState: (state.APIInfo.switchState)
+    apiEnable: (state.settingsInfo.apiEnable),
+    apiDisable: (state.settingsInfo.apiDisable),
+    resetData: (state.settingsInfo.resetData),
+    apiSuccess: (state.settingsInfo.apiSuccess),
+    apiFailure: (state.settingsInfo.apiFailure),
+    switchState: (state.settingsInfo.switchState)
   }
 }
 

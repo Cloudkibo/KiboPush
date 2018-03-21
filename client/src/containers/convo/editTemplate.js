@@ -80,12 +80,10 @@ class EditTemplate extends React.Component {
     props.getAdminSubscriptions()
     props.loadSubscribersList()
     props.loadCustomerLists()
-    console.log('props.templatesInfo', props.currentBroadcast)
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (props.currentBroadcast) {
       const id = this.props.currentBroadcast._id
-      console.log('id', id)
       props.loadBroadcastDetails(id)
     }
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
@@ -126,12 +124,10 @@ class EditTemplate extends React.Component {
   componentWillMount () {
     // this.props.loadMyPagesList();
     // if(this.props.pages.length > 0){
-    //   console.log("componentDidMount pageValue set")
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
   showResetAlertDialog () {
-    console.log('in showDialog')
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
     }
@@ -144,7 +140,6 @@ class EditTemplate extends React.Component {
     this.initTab()
   }
   showGuideLinesDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModalGuideLines: true})
   }
   closeGuideLinesDialog () {
@@ -215,7 +210,6 @@ class EditTemplate extends React.Component {
       }
     }
     if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
       var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
       if (result.length === 0) {
         return false
@@ -239,13 +233,9 @@ class EditTemplate extends React.Component {
     } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
       return false
     }
-    console.log('subscribersMatchPages', subscribersMatchPages)
-    console.log('genderValue', subscribersMatchGender)
-    console.log('subscribersMatchLocale', subscribersMatchLocale)
     return true
   }
   componentWillReceiveProps (nextprops) {
-    console.log('nextprops in', nextprops)
     if (nextprops.customerLists) {
       let options = []
       for (var j = 0; j < nextprops.customerLists.length; j++) {
@@ -267,7 +257,6 @@ class EditTemplate extends React.Component {
       this.setEditComponents(this.props.location.state.payload)
     } else if (nextprops.broadcastDetails) {
       if (this.state.stay === false) {
-        console.log('details', nextprops.broadcastDetails)
         this.setState({convoTitle: nextprops.broadcastDetails.title})
         this.setEditComponents(nextprops.broadcastDetails.payload)
       }
@@ -280,9 +269,13 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
+<<<<<<< HEAD
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
+=======
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={true} />)})
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -333,7 +326,6 @@ class EditTemplate extends React.Component {
     this.initializePageSelect(options)
     this.initTab()
     // if (this.props.pages.length > 0) {
-    //   console.log('componentDidMount pageValue set')
     //   var temp = []
     //   for (var j = 0; j < this.props.pages.length; j++) {
     //     temp.push(this.props.pages[j].pageId)
@@ -345,7 +337,6 @@ class EditTemplate extends React.Component {
     registerAction({
       event: 'admin_subscriber',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.getAdminSubscriptions()
         comp.setState({showMessengerModal: false})
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
@@ -408,8 +399,6 @@ class EditTemplate extends React.Component {
   }
 
   handleCard (obj) {
-    console.log('handleCard in CreateConvo is called: ')
-    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -439,7 +428,6 @@ class EditTemplate extends React.Component {
     })
     temp.map((data, i) => {
       if (data.id === obj.id) {
-        console.log('obj.cards', obj.cards)
         // var newObj = {}
         // newObj.image_url = obj.cards.image
         // newObj.subtitle = obj.cards.subtitle
@@ -470,7 +458,6 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    console.log('Image Uploaded', this.state.broadcast)
   }
 
   handleFile (obj) {
@@ -488,7 +475,6 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
@@ -509,7 +495,6 @@ class EditTemplate extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
-    console.log(this.state.broadcast)
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
@@ -547,7 +532,6 @@ class EditTemplate extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
-        console.log('Data sent: ', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         //  this.setState({broadcast: [], list: []})
       }
@@ -556,22 +540,18 @@ class EditTemplate extends React.Component {
   }
 
   testConvo () {
-    console.log('in test convo')
     if (this.state.pageValue.length > 1 || this.state.pageValue.length === 0) {
       this.msg.error('Only one page should be selected to test the broadcast')
     } else {
       var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
-      console.log('Check', check)
       if (check.length <= 0) {
         this.setState({showMessengerModal: true})
-        console.log('Setting Messenger Modal to True')
         return
       }
       // for (let i = 0; i < this.props.pages.length; i++) {
       //   if (this.props.pages[i].pageId === this.state.pageValue) {
       //     if (!this.props.pages[i].adminSubscriberId) {
             // this.setState({showMessengerModal: true})
-            // console.log('Setting Messenger Modal to True')
             // return
       //     }
       //   }
@@ -580,7 +560,6 @@ class EditTemplate extends React.Component {
       if (this.state.broadcast.length === 0) {
         return
       }
-      console.log(this.state.broadcast)
       var isListValue = false
       if (this.state.listSelected.length > 0) {
         isListValue = true
@@ -603,7 +582,6 @@ class EditTemplate extends React.Component {
         isList: isListValue
 
       }
-      console.log('Data sent: ', data)
       this.props.sendBroadcast(data, this.msg)
     }
   }
@@ -612,7 +590,6 @@ class EditTemplate extends React.Component {
     this.setState({broadcast: [], list: []})
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     /* eslint-disable */
     $('#selectLists').select2({
@@ -629,7 +606,6 @@ class EditTemplate extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -637,14 +613,12 @@ class EditTemplate extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
     /* eslint-disable */
     $('#selectLists').val('').trigger('change')
     /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
-    console.log(pageOptions)
     var self = this
     /* eslint-disable */
     $('#selectPage').select2({
@@ -655,9 +629,7 @@ class EditTemplate extends React.Component {
       multiple: true
     })
 
-    console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
-    // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
 
     /* eslint-disable */
     $('#selectPage').on('change', function (e) {
@@ -667,7 +639,6 @@ class EditTemplate extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -675,7 +646,6 @@ class EditTemplate extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selectedOptions)
     })
   }
   initializeGenderSelect (genderOptions) {
@@ -689,8 +659,11 @@ class EditTemplate extends React.Component {
       multiple: true
     })
 
+<<<<<<< HEAD
     console.log('In Initialize Gender Select', genderOptions)
     /* eslint-disable */
+=======
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     $('#selectGender').on('change', function (e) {
     /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
@@ -703,7 +676,6 @@ class EditTemplate extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -730,11 +702,9 @@ class EditTemplate extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   goBack () {
@@ -744,11 +714,9 @@ class EditTemplate extends React.Component {
     })
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: [], isList: true})
     } if (e.currentTarget.value === 'segmentation') {
@@ -756,8 +724,6 @@ class EditTemplate extends React.Component {
     }
   }
   render () {
-    console.log('Pages ', this.props.pages)
-    console.log('Page Value', this.state.pageValue)
 
     var alertOptions = {
       offset: 14,
@@ -1035,7 +1001,7 @@ class EditTemplate extends React.Component {
                                           appId={this.props.fbAppId}
                                           pageId={JSON.stringify(this.state.pageValue[0])}
                                           passthroughParams={this.props.user._id}
-                                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
+                                          onClick={() => { this.setState({showMessengerModal: false}) }}
                                         />
                                       </ModalDialog>
                                     </ModalContainer>

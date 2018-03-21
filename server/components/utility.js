@@ -21,8 +21,6 @@ function setupPlans () {
     if (err) {
       return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
     }
-    logger.serverLog(TAG, 'plans are :')
-    logger.serverLog(TAG, JSON.stringify(plan))
     if (!plan) {
       let payload = new Plans({
         plan_A: config.plans.plan_A, // Individual Paid
@@ -34,8 +32,6 @@ function setupPlans () {
         if (err) {
           return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
         }
-        logger.serverLog(TAG, 'New Plan saved.')
-        logger.serverLog(TAG, JSON.stringify(savedPlan))
       })
     }
   })

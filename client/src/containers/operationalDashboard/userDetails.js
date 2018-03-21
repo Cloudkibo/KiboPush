@@ -12,8 +12,6 @@ import { connect } from 'react-redux'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor UserDetails', this.props.location.state._id)
-    console.log('constructor', this.props)
     const userID = this.props.location.state._id
     props.loadPagesList(userID)
     this.state = {
@@ -26,7 +24,6 @@ class UserDetails extends React.Component {
   }
 
   search (event, name) {
-    console.log(name)
     var filtered = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
@@ -39,7 +36,6 @@ class UserDetails extends React.Component {
   }
 
   displayData (n, pages) {
-    console.log(n, pages)
     let offset = n * 4
     let data = []
     let limit
@@ -53,20 +49,15 @@ class UserDetails extends React.Component {
       data[index] = pages[i]
       index++
     }
-    console.log('data[index]', data)
     this.setState({pagesData: data})
-    console.log('in displayData', this.state.pagesData)
   }
 
   handleClickEvent (data) {
-    console.log(data.name)
     this.displayData(data.selected, this.props.pages)
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
-      console.log('Pages Updated', nextProps.pages)
       this.displayData(0, nextProps.pages)
       this.setState({ totalLength: nextProps.pages.length })
     }
@@ -118,9 +109,8 @@ class UserDetails extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for pages, current', state)
   return {
-    pages: state.PagesInfo.pages
+    pages: state.backdoorInfo.pages
   }
 }
 

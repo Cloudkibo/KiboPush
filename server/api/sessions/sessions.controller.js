@@ -73,8 +73,6 @@ exports.index = function (req, res) {
 
 // get fb session
 exports.show = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside show session, req body = ${JSON.stringify(req.params)}`)
   Sessions.findOne({_id: req.params.id})
     .populate('subscriber_id page_id')
     .exec(function (err, session) {

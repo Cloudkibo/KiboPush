@@ -58,7 +58,6 @@ module.exports = function (app) {
   })
 
   app.get('/dashboard2', (req, res) => {
-    logger.serverLog(TAG, 'going to serve landing page')
     res.sendFile(path.join(config.root, 'client/landing.html'))
   })
 

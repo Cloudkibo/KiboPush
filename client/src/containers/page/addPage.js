@@ -63,7 +63,6 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('nextprops in connect page', nextprops)
     if (nextprops.message && nextprops.message !== '') {
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
@@ -85,7 +84,6 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
-    console.log('SHow allert state', this.state.showAlert)
     return (
       <div>
         <Header />
@@ -267,7 +265,6 @@ class AddPage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),

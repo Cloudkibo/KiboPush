@@ -27,7 +27,6 @@ class EditTemplate extends React.Component {
     props.loadCustomerLists()
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
-      console.log('id', id)
       props.loadSurveyDetails(id)
     }
     this.state = {
@@ -90,8 +89,6 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
-    console.log('gender options', this.state.Gender.options)
-    console.log('locale', this.state.Locale.options)
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
@@ -116,16 +113,13 @@ class EditTemplate extends React.Component {
       }
     }
     if (nextprops.survey) {
-      console.log('details', nextprops.survey)
       this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
     }
     if (nextprops.questions) {
-      console.log('details', nextprops.questions)
       this.setState({surveyQuestions: nextprops.questions})
     }
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
     /* eslint-disable */
     $('#selectLists').select2({
@@ -142,7 +136,6 @@ class EditTemplate extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -150,22 +143,25 @@ class EditTemplate extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
+<<<<<<< HEAD
     /* eslint-disable */
     $('#selectLists').val('').trigger('change')
     /* eslint-enable */
+=======
+
+    $('#selectLists').val('').trigger('change')
+>>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
   }
 
   initializePageSelect (pageOptions) {
-    console.log('asd', pageOptions)
     var self = this
     /* eslint-disable */
     $('#selectPage').select2({
       /* eslint-enable */
 
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
@@ -182,7 +178,6 @@ class EditTemplate extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
@@ -209,7 +204,6 @@ class EditTemplate extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -236,7 +230,6 @@ class EditTemplate extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
 
@@ -270,7 +263,6 @@ class EditTemplate extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -282,7 +274,6 @@ class EditTemplate extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -357,14 +348,12 @@ class EditTemplate extends React.Component {
       'options': choiceValues
     })
     this.setState({surveyQuestions: surveyQuestions})
-    console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
         alertType: ''
       })
     }
-    console.log(this.state.surveyQuestions)
   }
 
   addChoices (qindex) {
@@ -384,8 +373,6 @@ class EditTemplate extends React.Component {
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log(
-      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
     if (surveyQuestions[qindex].choiceCount === 2) {
       this.setState({
@@ -394,11 +381,7 @@ class EditTemplate extends React.Component {
       })
     } else {
       let choices = surveyQuestions[qindex].options.slice()
-      console.log('choices before')
-      console.log(choices)
       choices.splice(choiceIndex, 1)
-      console.log('choices after')
-      console.log(choices)
       surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
         1
       surveyQuestions[qindex].options = choices
@@ -408,16 +391,13 @@ class EditTemplate extends React.Component {
 
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
-      console.log('A survey form requires atleast one question')
       this.setState({
         alertMessage: 'A survey form requires atleast one question',
         alertType: 'danger'
       })
     } else {
-      console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
-      console.log(surveyQuestions)
       this.setState({
         surveyQuestions: surveyQuestions
       })
@@ -428,19 +408,12 @@ class EditTemplate extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
-    console.log('onhandleChoiceChange is called')
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('qindex is ' + qindex)
-    console.log('choiceIndex is ' + choiceIndex)
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   /* handleQuestionType (e) {
@@ -450,10 +423,8 @@ class EditTemplate extends React.Component {
    } */
 
   createOptionsList (qindex) {
-    console.log('qindex' + qindex)
     let choiceItems = []
     var choiceCount = this.state.surveyQuestions[qindex].options.length
-    console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -475,7 +446,6 @@ class EditTemplate extends React.Component {
 
   createUI () {
     let uiItems = []
-    console.log('createUI', this.state.surveyQuestions)
     for (let i = 0; i < this.state.surveyQuestions.length; i++) {
       if (this.state.surveyQuestions[i].type === 'text') {
         uiItems.push(
@@ -556,11 +526,9 @@ class EditTemplate extends React.Component {
     return uiItems || null
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -591,7 +559,6 @@ class EditTemplate extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -603,7 +570,6 @@ class EditTemplate extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -880,12 +846,11 @@ class EditTemplate extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     survey: (state.templatesInfo.survey),
     questions: (state.templatesInfo.questions),
     surveyCreated: (state.surveysInfo.surveyCreated),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey),
+    currentSurvey: (state.backdoorInfo.currentSurvey),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),

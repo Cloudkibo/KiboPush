@@ -10,17 +10,32 @@ export function Failure (message) {
     errorMessage: message
   }
 }
+
 export function Success () {
   return {
     type: ActionTypes.LOGIN_SUCCESS,
     successMessage: 'success'
   }
 }
+
+export function forgotFailure (message) {
+  return {
+    type: ActionTypes.FORGOT_FAILURE,
+    errorMessage: message
+  }
+}
+
+export function forgotSuccess () {
+  return {
+    type: ActionTypes.FORGOT_SUCCESS,
+    successMessage: 'success'
+  }
+}
+
 export function logIn (data, msg) {
   let headers1 = {
     'content-type': 'application/json'
   }
-  console.log('data', data)
   return (dispatch) => {
     fetch(`/auth/local`, {
       method: 'post',
@@ -28,7 +43,6 @@ export function logIn (data, msg) {
       // eslint-disable-next-line no-undef
       headers: headers1
     }).then((res) => res.json()).then((res) => res).then((res) => {
-      console.log('res', res)
       if (res.token) {
         auth.putCookie(res.token)
         dispatch(Success())
@@ -40,20 +54,7 @@ export function logIn (data, msg) {
   }
 }
 
-export function forgotFailure (message) {
-  return {
-    type: ActionTypes.FORGOT_FAILURE,
-    errorMessage: message
-  }
-}
-export function forgotSuccess () {
-  return {
-    type: ActionTypes.FORGOT_SUCCESS,
-    successMessage: 'success'
-  }
-}
 export function forgotPass (data, msg) {
-  console.log('data', data)
   return (dispatch) => {
     callApi('reset_password/forgot', 'post', data)
       .then(res => {

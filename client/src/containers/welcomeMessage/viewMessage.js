@@ -32,7 +32,6 @@ class ViewWelcomeMessage extends React.Component {
     })
   }
   render () {
-    console.log('View Welcome Message', this.props.location.state)
     return (
       <div>
         <Header />

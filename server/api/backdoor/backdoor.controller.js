@@ -99,16 +99,10 @@ exports.allpages = function (req, res) {
           for (let j = 0; j < gotSubscribersCount.length; j++) {
             if (pagesPayload[i]._id.toString() ===
               gotSubscribersCount[j]._id.pageId.toString()) {
-              logger.serverLog(TAG,
-                `MATCH ${pagesPayload[i]._id} ${gotSubscribersCount[j]._id.pageId}`)
-              logger.serverLog(TAG, `${JSON.stringify(gotSubscribersCount[j])}`)
-              logger.serverLog(TAG, `${JSON.stringify(pagesPayload[i])}`)
               pagesPayload[i].subscribers = gotSubscribersCount[j].count
             }
           }
         }
-        logger.serverLog(TAG,
-          `Total pages in after double loop ${pagesPayload.length}`)
         res.status(200).json({
           status: 'success',
           payload: pagesPayload
@@ -126,7 +120,6 @@ exports.allsubscribers = function (req, res) {
         description: `Error in getting subscribers ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total subscribers ${subscribers.length}`)
     res.status(200).json({
       status: 'success',
       payload: subscribers
@@ -143,7 +136,6 @@ exports.allbroadcasts = function (req, res) {
         description: `Error in getting broadcasts ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Total broadcasts ${broadcasts.length}`)
     res.status(200).json({
       status: 'success',
       payload: broadcasts
@@ -263,7 +255,6 @@ exports.toppages = function (req, res) {
       let sorted = sortBy(pagesPayload, 'subscribers')
       let top10 = _.takeRight(sorted, 10)
       top10 = top10.reverse()
-      logger.serverLog(TAG, `top10 pages ${JSON.stringify(top10)}`)
       res.status(200).json({
         status: 'success',
         payload: top10
@@ -365,8 +356,6 @@ exports.datacount = function (req, res) {
                     PollsCount: gotPollsCount,
                     SurveysCount: gotSurveysCount
                   }
-                  logger.serverLog(TAG,
-                                `counts ${JSON.stringify(datacounts)}`)
                   res.status(200).json({
                     status: 'success',
                     payload: datacounts
@@ -497,8 +486,6 @@ exports.datacount = function (req, res) {
                     PollsCount: gotPollsCount,
                     SurveysCount: gotSurveysCount
                   }
-                  logger.serverLog(TAG,
-                                `counts ${JSON.stringify(datacounts)}`)
                   res.status(200).json({
                     status: 'success',
                     payload: datacounts
@@ -546,13 +533,10 @@ exports.uploadFile = function (req, res) {
           }
         }
       }
-      logger.serverLog(TAG,
-                    `File data ${JSON.stringify(usersPayload)}`)
       //  let dir = path.resolve(__dirname, './my-file.csv')
       // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
       // csvdata.write(dir, usersPayload,
       //   {header: 'Name,Gender,Email,Locale,Timezone'})
-      // logger.serverLog(TAG, 'created file')
       // try {
       //   return res.status(201).json({
       //     status: 'success',
@@ -567,8 +551,6 @@ exports.uploadFile = function (req, res) {
       //   })
       //   res.send(dir)
       // } catch (err) {
-      //   logger.serverLog(TAG,
-      //     `Inside Download file, err = ${JSON.stringify(err)}`)
       //   res.status(201)
       //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
       // }
@@ -804,8 +786,6 @@ exports.broadcastsByDays = function (req, res) {
         $in: tempUser
       }}, (err, users) => {
         if (err) {
-          logger.serverLog(TAG,
-            'user object sent to client failed ' + JSON.stringify(err))
           return res.status(500).json({
             status: 'failed',
             description: 'internal server error' + JSON.stringify(err)
@@ -815,8 +795,6 @@ exports.broadcastsByDays = function (req, res) {
           $in: tempCompany
         }}, (err, companies) => {
           if (err) {
-            logger.serverLog(TAG,
-              'user object sent to client failed ' + JSON.stringify(err))
             return res.status(500).json({
               status: 'failed',
               description: 'internal server error' + JSON.stringify(err)
@@ -824,8 +802,6 @@ exports.broadcastsByDays = function (req, res) {
           }
           Pages.find({}, (err, pages) => {
             if (err) {
-              logger.serverLog(TAG,
-                'user object sent to client failed ' + JSON.stringify(err))
               return res.status(500).json({
                 status: 'failed',
                 description: 'internal server error' + JSON.stringify(err)
@@ -942,8 +918,6 @@ exports.surveysByDays = function (req, res) {
           $in: tempUser
         }}, (err, users) => {
           if (err) {
-            logger.serverLog(TAG,
-              'user object sent to client failed ' + JSON.stringify(err))
             return res.status(500).json({
               status: 'failed',
               description: 'internal server error' + JSON.stringify(err)
@@ -953,8 +927,6 @@ exports.surveysByDays = function (req, res) {
             $in: tempCompany
           }}, (err, companies) => {
             if (err) {
-              logger.serverLog(TAG,
-                'user object sent to client failed ' + JSON.stringify(err))
               return res.status(500).json({
                 status: 'failed',
                 description: 'internal server error' + JSON.stringify(err)
@@ -962,8 +934,6 @@ exports.surveysByDays = function (req, res) {
             }
             Pages.find({}, (err, pages) => {
               if (err) {
-                logger.serverLog(TAG,
-                  'user object sent to client failed ' + JSON.stringify(err))
                 return res.status(500).json({
                   status: 'failed',
                   description: 'internal server error' + JSON.stringify(err)
@@ -982,18 +952,12 @@ exports.surveysByDays = function (req, res) {
                   let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
                   let subscriberData = []
                   let responded = 0
-                  logger.serverLog(TAG,
-                    'response of survey first ' + JSON.stringify(responsesurvey))
                   for (let n = 0; n < pagesurvey.length; n++) {
                     let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
                     let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
                     // if (responsesurvey[n]) {
                     //   let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
-                    //   logger.serverLog(TAG,
-                    //     'response of survey second ' + JSON.stringify(subscriberNew))
                     //   if (subscriberNew.length > 0) {
-                    //     logger.serverLog(TAG,
-                    //       'response of survey inside if')
                     //     res = true
                     //   }
                     // }
@@ -1016,7 +980,6 @@ exports.surveysByDays = function (req, res) {
                       }
                     }
                   }
-                  logger.serverLog(TAG, 'response of survey subscriber ' + JSON.stringify(subscriberData))
                   let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
                   let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
                   let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
@@ -1114,8 +1077,6 @@ exports.pollsByDays = function (req, res) {
           $in: tempUser
         }}, (err, users) => {
           if (err) {
-            logger.serverLog(TAG,
-              'user object sent to client failed ' + JSON.stringify(err))
             return res.status(500).json({
               status: 'failed',
               description: 'internal server error' + JSON.stringify(err)
@@ -1125,8 +1086,6 @@ exports.pollsByDays = function (req, res) {
             $in: tempCompany
           }}, (err, companies) => {
             if (err) {
-              logger.serverLog(TAG,
-                'user object sent to client failed ' + JSON.stringify(err))
               return res.status(500).json({
                 status: 'failed',
                 description: 'internal server error' + JSON.stringify(err)
@@ -1134,8 +1093,6 @@ exports.pollsByDays = function (req, res) {
             }
             Pages.find({}, (err, pages) => {
               if (err) {
-                logger.serverLog(TAG,
-                  'user object sent to client failed ' + JSON.stringify(err))
                 return res.status(500).json({
                   status: 'failed',
                   description: 'internal server error' + JSON.stringify(err)
