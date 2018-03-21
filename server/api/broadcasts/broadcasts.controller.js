@@ -361,6 +361,40 @@ function updateList (phoneNumber, sender, page) {
     }
   })
 }
+
+function sendAutopostingMessage (messageData, page, savedMsg) {
+  request(
+    {
+      'method': 'POST',
+      'json': true,
+      'formData': messageData,
+      'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+      page.accessToken
+    },
+    function (err, res) {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At send fb post broadcast ${JSON.stringify(
+            err)}`)
+      } else {
+        if (res.statusCode !== 200) {
+          logger.serverLog(TAG,
+            `At send fb post broadcast response ${JSON.stringify(
+              res.body.error)}`)
+        } else {
+          logger.serverLog(TAG,
+            `At send fb post broadcast response ${JSON.stringify(
+              res.body.message_id)}`)
+        }
+      }
+      AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+        }
+      })
+    })
+}
+
 function handleThePagePostsForAutoPosting (event, status) {
   AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
   .populate('userId')
@@ -450,10 +484,12 @@ function handleThePagePostsForAutoPosting (event, status) {
                           'metadata': 'This is metadata'
                         })
                       }
+                      sendAutopostingMessage(messageData, page, savedMsg)
                     } else if (event.value.item === 'share') {
                       let URLObject = new URL({
                         originalURL: event.value.link,
-                        moduleId: {
+                        subscriberId: subscriber._id,
+                        module: {
                           id: savedMsg._id,
                           type: 'autoposting'
                         }
@@ -491,11 +527,13 @@ function handleThePagePostsForAutoPosting (event, status) {
                             }
                           })
                         }
+                        sendAutopostingMessage(messageData, page, savedMsg)
                       })
                     } else if (event.value.item === 'photo') {
                       let URLObject = new URL({
                         originalURL: 'https://www.facebook.com/' + event.value.sender_id,
-                        moduleId: {
+                        subscriberId: subscriber._id,
+                        module: {
                           id: savedMsg._id,
                           type: 'autoposting'
                         }
@@ -535,6 +573,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                             }
                           })
                         }
+                        sendAutopostingMessage(messageData, page, savedMsg)
                       })
                     } else if (event.value.item === 'video') {
                       messageData = {
@@ -551,37 +590,8 @@ function handleThePagePostsForAutoPosting (event, status) {
                           }
                         })
                       }
+                      sendAutopostingMessage(messageData, page, savedMsg)
                     }
-                    request(
-                      {
-                        'method': 'POST',
-                        'json': true,
-                        'formData': messageData,
-                        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                        page.accessToken
-                      },
-                      function (err, res) {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At send fb post broadcast ${JSON.stringify(
-                              err)}`)
-                        } else {
-                          if (res.statusCode !== 200) {
-                            logger.serverLog(TAG,
-                              `At send fb post broadcast response ${JSON.stringify(
-                                res.body.error)}`)
-                          } else {
-                            logger.serverLog(TAG,
-                              `At send fb post broadcast response ${JSON.stringify(
-                                res.body.message_id)}`)
-                          }
-                        }
-                        AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
-                          if (err) {
-                            logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
-                          }
-                        })
-                      })
 
                     let newSubscriberMsg = new AutopostingSubscriberMessages({
                       pageId: page.pageId,
@@ -790,7 +800,7 @@ function addAdminAsSubscriber (payload) {
 
 function updateseenstatus (req) {
   BroadcastPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
     {seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
@@ -798,7 +808,7 @@ function updateseenstatus (req) {
       }
     })
   PollPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
     {seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
@@ -806,7 +816,7 @@ function updateseenstatus (req) {
       }
     })
   SurveyPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
     {seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
@@ -814,31 +824,40 @@ function updateseenstatus (req) {
       }
     })
   LiveChat.update(
-    {sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id},
+    {sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id, status: 'unseen'},
     {status: 'seen'},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
-  let updateResult = {}
-  AutopostingSubscriberMessages.update(
-    {susbscriberId: req.sender.id, pageId: req.recipient.id, datetime: {$lte: new Date(req.read.watermark)}},
+
+// updating seen count for autoposting
+  AutopostingSubscriberMessages.distinct('autoposting_messages_id',
+  {subscriberId: req.sender.id, pageId: req.recipient.id, seen: false}, (err, AutopostingMessagesIds) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    AutopostingSubscriberMessages.update(
+    {subscriberId: req.sender.id, pageId: req.recipient.id, seen: false, datetime: {$lte: new Date(req.read.watermark)}},
     {seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      updateResult = updated[0]
+
+      AutopostingMessagesIds.forEach(autopostingMessagesId => {
+        AutopostingMessages.update(
+          {_id: autopostingMessagesId},
+          {$inc: {seen: 1}},
+          {multi: true}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
+      })
     })
-  AutopostingMessages.update(
-    {_id: updateResult.autoposting_messages_id},
-    {$inc: {seen: 1}},
-    {multi: true}, (err, updated) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-    })
+  })
 }
 
 function sendReply (req) {
