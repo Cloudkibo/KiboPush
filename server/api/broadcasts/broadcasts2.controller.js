@@ -34,7 +34,13 @@ function exists (list, content) {
   }
   return false
 }
-
+function prepareButttonLink (payload) {
+  payload.forEach(payloadItem => {
+    if (payloadItem.buttons) {
+      buttons.forEach
+    }
+  })
+}
 exports.sendConversation = function (req, res) {
   if (!utility.validateInput(req.body)) {
     return res.status(400)
