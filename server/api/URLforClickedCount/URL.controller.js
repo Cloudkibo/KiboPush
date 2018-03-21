@@ -10,14 +10,17 @@ exports.index = function (req, res) {
       })
     }
 
-    AutopostingMessages.update({_id: URLObject.module.id}, {clicked: {$inc: 1}}, (err, URLObject) => {
+    console.log('got this url object', URLObject)
+
+    AutopostingMessages.update({_id: URLObject.module.id}, {$inc: {clicked: 1}}, (err, updatedData) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.redirect(`/${URLObject.originalURL}`)
+      res.writeHead(301, {Location: URLObject.originalURL})
+      res.end()
     })
   })
 }

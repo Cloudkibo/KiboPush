@@ -9,6 +9,7 @@ let Schema = mongoose.Schema
 
 let urlSchema = new Schema({
   originalURL: String,
+  subscriberId: {type: Schema.ObjectId, ref: 'subscribers'},
   module: Schema.Types.Mixed
 })
 
