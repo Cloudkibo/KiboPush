@@ -344,6 +344,10 @@ class Convo extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span>Seen</span>
                               </th>
+                              <th data-field='clicks' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Clicks</span>
+                              </th>
                             </tr>
                           </thead>
                           <tbody className='m-datatable__body'>
@@ -362,6 +366,7 @@ class Convo extends React.Component {
 
                                   </span>
                                 </td>
+                                <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks}</span></td>
                               </tr>
                             ))
                           }
