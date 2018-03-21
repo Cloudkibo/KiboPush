@@ -25,7 +25,7 @@ let broadcastSchema = new Schema({
   userId: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
-  clicks: {type: Number}
+  clicks: {type: Number, default: 0}
 })
 
 module.exports = mongoose.model('broadcasts', broadcastSchema)
