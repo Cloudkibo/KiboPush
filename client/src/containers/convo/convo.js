@@ -366,7 +366,7 @@ class Convo extends React.Component {
 
                                   </span>
                                 </td>
-                                <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks}</span></td>
+                                <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks ? broadcast.clicks : 0}</span></td>
                               </tr>
                             ))
                           }
