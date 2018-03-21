@@ -101,7 +101,6 @@ class EditTemplate extends React.Component {
     this.setState({pageValue: event.target.value})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
-<<<<<<< HEAD
         console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
         /* eslint-disable */
         console.log($("[name='switch']").bootstrapSwitch('state'))
@@ -110,11 +109,6 @@ class EditTemplate extends React.Component {
         /* eslint-enable */
         // }
         // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
-=======
-        //if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
-          $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
-        //}
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
       }
@@ -317,12 +311,8 @@ class EditTemplate extends React.Component {
       allowClear: true
     })
     // this.setState({pageValue: pageOptions[0].id})
-<<<<<<< HEAD
     // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
     /* eslint-disable */
-=======
-
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     $('#selectPage').on('change', function (e) {
     /* eslint-enable */
       // var selectedIndex = e.target.selectedIndex
@@ -348,7 +338,6 @@ class EditTemplate extends React.Component {
     this.setState({showPreview: false})
   }
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',

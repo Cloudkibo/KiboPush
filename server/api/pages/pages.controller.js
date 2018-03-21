@@ -275,7 +275,6 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -299,7 +298,7 @@ exports.disable = function (req, res) {
           })
         } else {
           // remove subscribers of the page
-           rLog(TAG, `pageId coming: ${req.body._id}`)
+          rLog(TAG, `pageId coming: ${req.body._id}`)
           Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false}, {multi: true}, (err) => {
             Subscribers.find({ pageId: req.body._id }, (err, subscribers) => {
               if (err) {

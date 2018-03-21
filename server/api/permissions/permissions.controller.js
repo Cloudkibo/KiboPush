@@ -34,7 +34,6 @@ exports.fetch = function (req, res) {
 
 // Update the company profile and settings
 exports.updatecompanyprofile = function (req, res) {
-
   if (req.user.isOwner === 'Yes') {
     User.findOne({email: req.user.ownerAs}, function (err, clientUser) {
       Companyprofile.findOne({companyid: clientUser.uniqueid}, function (err, gotSaveChangedCompanySettingsData) {

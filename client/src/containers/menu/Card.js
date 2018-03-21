@@ -83,7 +83,7 @@ class Card extends React.Component {
   // Assuming only image
     var file = this.refs.file.files[0]
     var reader = new FileReader()
-    var url = reader.readAsDataURL(file)
+    // var url = reader.readAsDataURL(file)
 
     reader.onloadend = function (e) {
       // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})

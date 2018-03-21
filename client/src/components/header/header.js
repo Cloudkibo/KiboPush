@@ -80,7 +80,6 @@ class Header extends React.Component {
     this.props.getuserdetails()
   }
   render () {
-
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 

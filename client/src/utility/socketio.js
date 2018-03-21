@@ -44,14 +44,9 @@ export function initiateSocket (storeObj) {
 }
 
 socket.on('connect', () => {
-<<<<<<< HEAD
   console.log('Setting Socket Status to true')
   if (myId !== '') {
     joinRoom(myId)
-=======
-  if(my_id !== ''){
-    joinRoom(my_id)
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
   }
   store.dispatch(setSocketStatus(true))
 })
@@ -66,7 +61,6 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
-
   if (data.action === 'new_chat') {
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
@@ -102,12 +96,8 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
-<<<<<<< HEAD
   console.log('Trying to join room socket', data)
   myId = data
-=======
-  my_id = data
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
   if (joined) {
     return
   }

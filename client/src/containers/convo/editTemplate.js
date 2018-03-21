@@ -269,13 +269,9 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-<<<<<<< HEAD
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
         temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
-=======
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={true} />)})
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -659,11 +655,8 @@ class EditTemplate extends React.Component {
       multiple: true
     })
 
-<<<<<<< HEAD
     console.log('In Initialize Gender Select', genderOptions)
     /* eslint-disable */
-=======
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
     $('#selectGender').on('change', function (e) {
     /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
@@ -724,7 +717,6 @@ class EditTemplate extends React.Component {
     }
   }
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',

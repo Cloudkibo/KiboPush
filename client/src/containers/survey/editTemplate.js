@@ -144,14 +144,10 @@ class EditTemplate extends React.Component {
         self.setState({ listSelected: selected })
       }
     })
-<<<<<<< HEAD
+
     /* eslint-disable */
     $('#selectLists').val('').trigger('change')
     /* eslint-enable */
-=======
-
-    $('#selectLists').val('').trigger('change')
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
   }
 
   initializePageSelect (pageOptions) {

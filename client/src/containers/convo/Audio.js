@@ -115,11 +115,7 @@ class Audio extends React.Component {
     return (
       <div className='broadcast-component'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-<<<<<<< HEAD
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
-=======
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

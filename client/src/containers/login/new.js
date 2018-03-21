@@ -119,25 +119,14 @@ class Login extends React.Component {
                       </div>
                       <div className='form-group m-form__group'>
                         <input className='form-control m-input' type='password' placeholder='Password' ref='password' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-<<<<<<< HEAD
                           onChange={this.edit} />
                       </div>
                       <div className='m-login__form-action'>
                         <span>
                           <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
-                              Back
-                            </Link>
+                            Back
+                          </Link>
                         </span>
-=======
-                        onChange={this.edit} />
-                      </div>
-                      <div className='m-login__form-action'>
-                        <span>
-                        <Link id='m_login_signup_cancel' href='#' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom' onClick={() => { this.setState({account_type: 'none'}) }}>
-                              Back
-                            </Link>
-                      </span>
->>>>>>> 64dfe80d7c0cfca5c21655fe559fcf7ea3dbcc94
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                             Sign In
                           </button>
