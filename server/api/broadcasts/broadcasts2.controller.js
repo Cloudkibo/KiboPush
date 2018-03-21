@@ -7,6 +7,7 @@ const TAG = 'api/broadcast/broadcasts2.controller.js'
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
+const URL = require('./../URLforClickedCount/URL.model')
 
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
@@ -34,13 +35,7 @@ function exists (list, content) {
   }
   return false
 }
-function prepareButttonLink (payload) {
-  payload.forEach(payloadItem => {
-    if (payloadItem.buttons) {
-      buttons.forEach
-    }
-  })
-}
+
 exports.sendConversation = function (req, res) {
   if (!utility.validateInput(req.body)) {
     return res.status(400)
@@ -142,7 +137,25 @@ exports.sendConversation = function (req, res) {
           return res.status(500)
           .json({status: 'failed', description: 'Broadcasts not created'})
         }
-
+        let newPayload = req.body.payload
+        req.body.payload.forEach((payloadItem, pindex) => {
+          if (payloadItem.buttons) {
+            payloadItem.buttons.forEach((button, bindex) => {
+              let URLObject = new URL({
+                originalURL: button.url,
+                module: {
+                  id: broadcast._id,
+                  type: 'broadcast'
+                }
+              })
+              URLObject.save((err, savedurl) => {
+                if (err) logger.serverLog(TAG, err)
+                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                newPayload[pindex].buttons[bindex].url = newURL
+              })
+            })
+          }
+        })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -322,8 +335,8 @@ exports.sendConversation = function (req, res) {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-
-                req.body.payload.forEach(payloadItem => {
+                newPayload.forEach(payloadItem => {
+                  console.log('paylodItem', payloadItem.buttons)
                   subscribers.forEach(subscriber => {
                     Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                       if (err) {
