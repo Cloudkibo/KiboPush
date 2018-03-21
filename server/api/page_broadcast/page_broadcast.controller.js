@@ -2,11 +2,8 @@
  * Created by sojharo on 01/08/2017.
  */
 
-const logger = require('../../components/logger')
 const PageBroadcasts = require('./page_broadcast.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
-
-const TAG = 'api/page_broadcast/page_broadcast.controller.js'
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {

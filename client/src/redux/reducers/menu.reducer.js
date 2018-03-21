@@ -4,9 +4,9 @@ const initialState = {
   successMessage: null,
   errorMessage: null
 }
-const initialState1 = {
-  currentMenuItem: null
-}
+// const initialState1 = {
+//   currentMenuItem: null
+// }
 export function menuInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.ADD_MENU_ITEM:

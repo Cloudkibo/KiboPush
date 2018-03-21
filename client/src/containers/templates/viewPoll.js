@@ -61,7 +61,6 @@ class viewPoll extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <Header />

@@ -159,6 +159,9 @@ exports.sentVsSeen = function (req, res) {
                                             })
                                           }
                                           let responsesCount = []
+                                          logger.serverLog(TAG,
+                                              `counts for dashboard poll response ${JSON.stringify(
+                                                pollResponseCount)}`)
                                           for (let a = 0; a < polls.length; a++) {
                                             for (let b = 0; b < pollResponseCount.length; b++) {
                                               if (polls[a]._id.toString() === pollResponseCount[b]._id.toString()) {

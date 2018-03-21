@@ -113,14 +113,18 @@ class ItemSettings extends React.Component {
 
   initializePageSelect (pageOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+    /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -136,14 +140,18 @@ class ItemSettings extends React.Component {
 
   initializeGenderSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#genderSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#genderSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -159,14 +167,18 @@ class ItemSettings extends React.Component {
 
   initializeLocaleSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#localeSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#localeSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -242,7 +254,6 @@ class ItemSettings extends React.Component {
   }
 
   render () {
-    const { disabled, stayOpen } = this.state
     return (
       <div>
         <Header />

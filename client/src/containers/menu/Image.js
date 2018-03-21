@@ -53,7 +53,7 @@ class Image extends React.Component {
   // Assuming only image
     var file = this.refs.file.files[0]
     var reader = new FileReader()
-    var url = reader.readAsDataURL(file)
+    // var url = reader.readAsDataURL(file)
 
     reader.onloadend = function (e) {
       this.setState({

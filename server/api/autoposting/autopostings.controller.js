@@ -352,7 +352,6 @@ exports.twitterwebhook = function (req, res) {
 }
 
 exports.twitterverify = function (req, res) {
-
   const hmac = crypto.createHmac('sha256', config.twitter.consumerSecret)
 
   hmac.on('readable', () => {

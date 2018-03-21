@@ -471,7 +471,6 @@ class Menu extends React.Component {
     this.setState({setWebUrl: !this.state.setWebUrl})
   }
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',

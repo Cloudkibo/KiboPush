@@ -10,7 +10,7 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
 import NonSubscribersList from './nonSubscribersList'

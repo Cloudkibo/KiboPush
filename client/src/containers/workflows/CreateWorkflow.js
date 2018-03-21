@@ -110,13 +110,7 @@ class CreateWorkflow extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
+    console.log('Alert Message:', this.state.alertMessage)
     return (
 
       <div>

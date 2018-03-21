@@ -25,8 +25,10 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
   }
 
-  toggleSidebar (){
-     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
+  toggleSidebar () {
+    /* eslint-disable */
+      $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
+    /* eslint-enable */
   }
   handleNotificationOnShow () {
     this.setState({ignore: true})
@@ -47,13 +49,14 @@ class Header extends React.Component {
       this.setState({ignore: false})
     }
     if (nextProps.user) {
-      FS.identify(nextProps.user.email, {
-        displayName: nextProps.user.name,
-        email: nextProps.user.email,
-        // TODO: Add your own custom user variables here, details at
-        // http://help.fullstory.com/develop-js/setuservars.
-        reviewsWritten_int: 14
-      })
+      // FS.identify(nextProps.user.email, {
+      //   displayName: nextProps.user.name,
+      //   email: nextProps.user.email,
+      //   // TODO: Add your own custom user variables here, details at
+      //   // http://help.fullstory.com/develop-js/setuservars.
+      //   reviewsWritten_int: 14
+      // })
+      // console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
@@ -77,16 +80,14 @@ class Header extends React.Component {
     this.props.getuserdetails()
   }
   render () {
-
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
-        <div className="fb-customerchat"
-         data-page_id="151990922046256"
-         data-minimized = "true"
-         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
-         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
-        </div>
+        <div className='fb-customerchat'
+          data-page_id='151990922046256'
+          data-minimized='true'
+          data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
+          data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
 
         <Notification
           ignore={this.state.ignore}

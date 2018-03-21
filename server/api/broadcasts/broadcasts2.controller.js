@@ -37,7 +37,6 @@ function exists (list, content) {
 }
 
 exports.sendConversation = function (req, res) {
-
   if (!utility.validateInput(req.body)) {
     return res.status(400)
     .json({status: 'failed', description: 'Parameters or components are missing'})
@@ -177,7 +176,6 @@ exports.sendConversation = function (req, res) {
           }
 
           pages.forEach(page => {
-
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
@@ -218,7 +216,6 @@ exports.sendConversation = function (req, res) {
                   }
                   req.body.payload.forEach(payloadItem => {
                     subscribers.forEach(subscriber => {
-
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -444,7 +441,6 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +

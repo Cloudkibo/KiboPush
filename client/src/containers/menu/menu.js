@@ -456,7 +456,6 @@ class Menu extends React.Component {
     this.setState({setWebUrl: !this.state.setWebUrl})
   }
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -618,7 +617,7 @@ class Menu extends React.Component {
                       </ul>
                     </div>
                   </div>
-                  <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+                  <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
                   <div className='m-portlet__body'>
                     <div className='row align-items-center'>
                       <div className='col-xl-8 order-2 order-xl-1' />

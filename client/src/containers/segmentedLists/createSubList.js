@@ -101,7 +101,7 @@ class CreateSubList extends React.Component {
       newListName: this.props.currentList.listName,
       conditions: tempConditions
     })
-    var id = this.props.currentList._id
+    // var id = this.props.currentList._id
   }
   onSave () {
     var isValid = this.validateNewList()
@@ -183,7 +183,9 @@ class CreateSubList extends React.Component {
   handleCreateSubList (res) {
     if (res.status === 'success') {
       this.resetPage()
+      /* eslint-disable */
       $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     } else {
       this.setState({
         errorMessages: [],
@@ -311,7 +313,9 @@ class CreateSubList extends React.Component {
     }
     if (e.currentTarget.value === 'segmentAll') {
       this.setState({listSelected: ''})
+      /* eslint-disable */
       $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     }
   }
 
@@ -323,18 +327,21 @@ class CreateSubList extends React.Component {
 
   initializeListSelect (lists) {
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== -1) {
         var selectedOptions = e.target.selectedOptions
-        var selected = []
+        // var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
         }
@@ -342,7 +349,9 @@ class CreateSubList extends React.Component {
         self.setState({ listSelected: '' })
       }
     })
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
 
   render () {

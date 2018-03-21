@@ -121,15 +121,18 @@ class EditPoll extends React.Component {
   }
   initializeListSelect (lists) {
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -142,17 +145,23 @@ class EditPoll extends React.Component {
       }
     })
 
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+    /* eslint-enable */
       data: pageOptions,
       placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -168,13 +177,17 @@ class EditPoll extends React.Component {
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+    /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -190,13 +203,17 @@ class EditPoll extends React.Component {
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+    /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions

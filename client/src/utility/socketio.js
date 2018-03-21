@@ -15,7 +15,7 @@ const socket = io('')
 let store
 
 var joined = false
-var my_id = ''
+var myId = ''
 
 var callbacks = {
   new_chat: false,
@@ -44,8 +44,9 @@ export function initiateSocket (storeObj) {
 }
 
 socket.on('connect', () => {
-  if(my_id !== ''){
-    joinRoom(my_id)
+  console.log('Setting Socket Status to true')
+  if (myId !== '') {
+    joinRoom(myId)
   }
   store.dispatch(setSocketStatus(true))
 })
@@ -60,7 +61,6 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
-
   if (data.action === 'new_chat') {
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
@@ -96,7 +96,8 @@ export function log (tag, data) {
 }
 
 export function joinRoom (data) {
-  my_id = data
+  console.log('Trying to join room socket', data)
+  myId = data
   if (joined) {
     return
   }

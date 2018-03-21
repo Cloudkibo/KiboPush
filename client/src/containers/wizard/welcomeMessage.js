@@ -74,7 +74,7 @@ class EditTemplate extends React.Component {
   }
   initializeSwitch (state, id) {
     var self = this
-    //var temp = '#' + id
+    // var temp = '#' + id
     /* eslint-disable */
     $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
@@ -101,9 +101,14 @@ class EditTemplate extends React.Component {
     this.setState({pageValue: event.target.value})
     for (var i = 0; i < this.props.pages.length; i++) {
       if (event.target.value === this.props.pages[i]._id) {
-        //if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
-          $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
-        //}
+        console.log('this.props.pages[i].isWelcomeMessageEnabled', this.props.pages[i].isWelcomeMessageEnabled)
+        /* eslint-disable */
+        console.log($("[name='switch']").bootstrapSwitch('state'))
+        // if ($("[name='switch']").bootstrapSwitch('state') !== this.props.pages[i].isWelcomeMessageEnabled) {
+        $("[name='switch']").bootstrapSwitch('state', this.props.pages[i].isWelcomeMessageEnabled, true)
+        /* eslint-enable */
+        // }
+        // console.log($("[name='switch']").bootstrapSwitch('toggleState'))
         this.setState({welcomeMessage: this.props.pages[i].isWelcomeMessageEnabled})
         this.setEditComponents(this.props.pages[i].welcomeMessage)
       }
@@ -298,15 +303,19 @@ class EditTemplate extends React.Component {
 
   initializePageSelect (pageOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+   /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true
     })
     // this.setState({pageValue: pageOptions[0].id})
-
+    // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
-      var selectedIndex = e.target.selectedIndex
+    /* eslint-enable */
+      // var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
       var selectedOptions = e.target.selectedOptions[0].value
       // var selected = []
@@ -329,7 +338,6 @@ class EditTemplate extends React.Component {
     this.setState({showPreview: false})
   }
   render () {
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -337,7 +345,7 @@ class EditTemplate extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const { disabled, stayOpen } = this.state
+    // const { disabled, stayOpen } = this.state
 
     return (
       <div>
@@ -402,7 +410,7 @@ class EditTemplate extends React.Component {
                           </center>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              {//this.state.switchState &&
+                              {// this.state.switchState &&
                                 <div className='row'>
                                   <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
                                   <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
@@ -410,7 +418,7 @@ class EditTemplate extends React.Component {
                                       <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                     </div>
                                   </div>
-                                  {/*this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue)*/}
+                                  {/* this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue) */}
                                 </div>
                               }
                             </div>

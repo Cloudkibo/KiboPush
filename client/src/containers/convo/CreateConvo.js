@@ -118,26 +118,36 @@ class CreateConvo extends React.Component {
     // }
   }
   onNext () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   onPrevious () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   handleSendBroadcast (res) {
@@ -522,15 +532,18 @@ class CreateConvo extends React.Component {
 
   initializeListSelect (lists) {
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -543,7 +556,9 @@ class CreateConvo extends React.Component {
       }
     })
 
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
     var self = this

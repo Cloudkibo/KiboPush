@@ -121,15 +121,18 @@ class EditTemplate extends React.Component {
   }
   initializeListSelect (lists) {
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -142,7 +145,9 @@ class EditTemplate extends React.Component {
       }
     })
 
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
 
   initializePageSelect (pageOptions) {

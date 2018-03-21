@@ -58,7 +58,6 @@ export function getUrl (data, str) {
 
     default:
       return 'default'
-      break
   }
 }
 
@@ -67,13 +66,12 @@ function JSONstringify (json) {
     json = JSON.stringify(json, undefined, '\t')
   }
 
-  var
-    arr = [],
-    _string = 'color:green',
-    _number = 'color:darkorange',
-    _boolean = 'color:blue',
-    _null = 'color:magenta',
-    _key = 'color:red'
+  var arr = []
+  var _string = 'color:green'
+  var _number = 'color:darkorange'
+  var _boolean = 'color:blue'
+  var _null = 'color:magenta'
+  var _key = 'color:red'
 
   json = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
     var style = _number

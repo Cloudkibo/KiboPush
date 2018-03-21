@@ -8,7 +8,6 @@ const express = require('express')
 const router = express.Router()
 
 // const logger = require('../components/logger')
-const auth = require('../auth/auth.service')
 const config = require('../config/environment')
 const Users = require('../api/user/Users.model')
 

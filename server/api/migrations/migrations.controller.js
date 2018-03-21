@@ -6,7 +6,6 @@ const logger = require('../../components/logger')
 const Migrations = require('./migrations.model')
 const TAG = 'api/migrations/migrations.controller.js'
 const Users = require('./../user/Users.model')
-const Page = require('./../pages/Pages.model')
 
 const crypto = require('crypto')
 const path = require('path')

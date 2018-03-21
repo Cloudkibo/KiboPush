@@ -6,10 +6,6 @@
 import React from 'react'
 import {ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'
 class StackedBar extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-  }
-
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')

@@ -102,7 +102,7 @@ class AddChannel extends React.Component {
     let youtubeColor = this.state.youtubeColor
     let facebookForeGroundColor = this.state.facebookForeGroundColor
     let twitterForeGroundColor = this.state.twitterForeGroundColor
-    let youtubeForeGroundColor = this.state.youtubeForeGroundColor
+    // let youtubeForeGroundColor = this.state.youtubeForeGroundColor
     return (
       <div>
         <h3>Connect Feed</h3>
