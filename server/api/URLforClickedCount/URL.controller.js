@@ -41,7 +41,7 @@ exports.broadcast = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      res.writeHead(301, {Location: URLObject.originalURL})
+      res.writeHead(301, {Location: URLObject.originalURL.startsWith('http') ? URLObject.originalURL : `https://${URLObject.originalURL}`})
       res.end()
     })
   })
