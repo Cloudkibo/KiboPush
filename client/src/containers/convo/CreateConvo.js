@@ -163,8 +163,10 @@ class CreateConvo extends React.Component {
     document.title = 'KiboPush | Create Broadcast'
     this.scrollToTop()
     let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+    if (this.props.pages) {
+      for (var i = 0; i < this.props.pages.length; i++) {
+        options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+      }
     }
 
     this.setState({page: {options: options}})
