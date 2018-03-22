@@ -302,3 +302,15 @@ export function downloadFile () {
     })
   }
 }
+export function sendEmail (msg) {
+  return (dispatch) => {
+    callApi(`backdoor/sendEmail`)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Email sent successfully!')
+        } else {
+          msg.error('Email not sent')
+        }
+      })
+  }
+}
