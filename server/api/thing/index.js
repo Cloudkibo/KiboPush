@@ -72,8 +72,8 @@ router.get('/subscriptionDate', (req, res) => {
         }
       })
     })
-  res.status(200).json({status: 'success', payload: []})
-})
+    res.status(200).json({status: 'success', payload: []})
+  })
 })
 
 module.exports = router

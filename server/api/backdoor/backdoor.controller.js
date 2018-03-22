@@ -1213,95 +1213,95 @@ exports.sendEmail = function (req, res) {
                   $lt: new Date(
                     (new Date().getTime()))
                 }
-              }, {companyId: companyUser.companyId},
+                }, {companyId: companyUser.companyId},
             {isEnabledByPage: true}, {isSubscribed: true}]
             }}
-          ], (err, subscribers) => {
+        ], (err, subscribers) => {
+          if (err) {
+            logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+          }
+          data.subscribers = subscribers.length
+            // if (subscribers.length > 50) {
+          Polls.aggregate([
+            {
+              $match: {
+                $and: [
+                  {'datetime': {
+                    $gte: new Date(
+                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                    $lt: new Date(
+                      (new Date().getTime()))
+                  }
+                  }, {companyId: companyUser.companyId}]
+              }}
+          ], (err, polls) => {
             if (err) {
-              logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting surveys count ${JSON.stringify(err)}`
+              })
             }
-            data.subscribers = subscribers.length
-            //if (subscribers.length > 50) {
-            Polls.aggregate([
-              {
-                $match: {
-                  $and: [
+            data.polls = polls.length
+          })
+          Surveys.aggregate([
+            {
+              $match: {
+                $and: [
                   {'datetime': {
                     $gte: new Date(
                       (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
                     $lt: new Date(
                       (new Date().getTime()))
                   }
-                }, {companyId: companyUser.companyId}]
+                  }, {companyId: companyUser.companyId}]
               }}
-            ], (err, polls) => {
-              if (err) {
-                return res.status(404).json({
-                  status: 'failed',
-                  description: `Error in getting surveys count ${JSON.stringify(err)}`
-                })
-              }
-              data.polls = polls.length
-            })
-            Surveys.aggregate([
-              {
-                $match: {
-                  $and: [
+          ], (err, surveys) => {
+            if (err) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting surveys count ${JSON.stringify(err)}`
+              })
+            }
+            data.surveys = surveys.length
+          })
+          Broadcasts.aggregate([
+            {
+              $match: {
+                $and: [
                   {'datetime': {
                     $gte: new Date(
                       (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
                     $lt: new Date(
                       (new Date().getTime()))
                   }
-                }, {companyId: companyUser.companyId}]
+                  }, {companyId: companyUser.companyId}]
               }}
-            ], (err, surveys) => {
-              if (err) {
-                return res.status(404).json({
-                  status: 'failed',
-                  description: `Error in getting surveys count ${JSON.stringify(err)}`
-                })
-              }
-              data.surveys = surveys.length
-            })
-            Broadcasts.aggregate([
+          ], (err, broadcasts) => {
+            if (err) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting surveys count ${JSON.stringify(err)}`
+              })
+            }
+            LiveChat.aggregate([
               {
                 $match: {
                   $and: [
-                  {'datetime': {
-                    $gte: new Date(
-                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
-                    $lt: new Date(
-                      (new Date().getTime()))
-                  }
-                }, {companyId: companyUser.companyId}]
-              }}
-            ], (err, broadcasts) => {
-              if (err) {
-                return res.status(404).json({
-                  status: 'failed',
-                  description: `Error in getting surveys count ${JSON.stringify(err)}`
-                })
-              }
-              LiveChat.aggregate([
-                {
-                  $match: {
-                    $and: [
                     {'datetime': {
                       $gte: new Date(
                         (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
                       $lt: new Date(
                         (new Date().getTime()))
                     }
-                  }, {companyId: companyUser.companyId}]
+                    }, {companyId: companyUser.companyId}]
                 }}
-              ], (err, livechat) => {
-                if (err) {
-                  return res.status(404).json({
-                    status: 'failed',
-                    description: `Error in getting surveys count ${JSON.stringify(err)}`
-                  })
-                }
+            ], (err, livechat) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting surveys count ${JSON.stringify(err)}`
+                })
+              }
               data.liveChat = livechat.length
               let sendgrid = require('sendgrid')(config.sendgrid.username,
                 config.sendgrid.password)
@@ -1335,7 +1335,7 @@ exports.sendEmail = function (req, res) {
                 }
               })
             })
-            //}
+            // }
           })
         })
       })
