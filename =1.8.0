@@ -1,0 +1,8 @@
+kibopush@1.0.0 /Users/baqarjafri/Desktop/KiboPush
+├── bootstrap-sass@3.3.7  extraneous
+├── bootstrap-select@1.12.4  extraneous
+├── jquery@3.3.1 
+├── UNMET PEER DEPENDENCY react@15.6.2
+├── UNMET PEER DEPENDENCY react-dom@15.6.2
+└── react-gif-picker@1.0.0 
+
