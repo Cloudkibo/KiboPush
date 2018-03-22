@@ -35,21 +35,6 @@ class Header extends React.Component {
     this.setState({ignore: true})
   }
 
-  componentDidMount () {
-      // require('../../../public/js/jquery-3.2.0.min.js')
-      // require('../../../public/js/jquery.min.js')
-      // var addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-      // document.body.appendChild(addScript)
-  }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ignore: false})

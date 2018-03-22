@@ -31,7 +31,6 @@ import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
 import CreateWorkflow from './containers/workflows/CreateWorkflow'
 import EditWorkflow from './containers/workflows/EditWorkflow'
-import UserGuide from './containers/userGuide/userGuide'
 import Workflows from './containers/workflows/Workflows'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
@@ -49,10 +48,6 @@ import SurveysByDays from './containers/operationalDashboard/surveysByDays'
 import PollsByDays from './containers/operationalDashboard/pollsByDays'
 import BroadcastsByDays from './containers/operationalDashboard/broadcastsByDays'
 import SubscribeToMessenger from './containers/subscribeToMessenger/subscribeToMessenger'
-import UserGuideBroadcasts from './containers/userGuide/userGuideBroadcasts'
-import UserGuideSurveys from './containers/userGuide/userGuideSurveys'
-import UserGuidePolls from './containers/userGuide/userGuidePolls'
-import UserGuideWorkflows from './containers/userGuide/userGuideWorkflows'
 import Autoposting from './containers/autoposting/autoposting'
 import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
@@ -149,11 +144,6 @@ const routes = (
     <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/createPoll' component={CreatePoll} onEnter={requireAuth} />
     <Route path='/editWorkflow' component={EditWorkflow} onEnter={requireAuth} />
-    <Route path='/userGuide' component={UserGuide} />
-    <Route path='/userGuideBroadcasts' component={UserGuideBroadcasts} />
-    <Route path='/userGuideSurveys' component={UserGuideSurveys} />
-    <Route path='/userGuidePolls' component={UserGuidePolls} />
-    <Route path='/userGuideWorkflows' component={UserGuideWorkflows} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />

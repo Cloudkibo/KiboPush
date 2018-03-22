@@ -43,17 +43,6 @@ class InviteSubscribers extends React.Component {
     return linkurl
   }
   componentWillReceiveProps (nextprops) {
-    // if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
-    //   this.setState({
-    //     fblink: `https://m.me/${this.props.pages[0].pageUserName}`,
-    //     selectPage: this.props.pages[0]
-    //   })
-    // } else {
-    //   this.setState({
-    //     fblink: `https://m.me/${this.props.pages[0].pageId}`,
-    //     selectPage: this.props.pages[0]
-    //   })
-    // }
     if (nextprops.successMessage && this.state.step !== 0) {
       //  this.generateAlert('success', nextprops.successMessage)
       this.msg.success('Message sent successfully!')

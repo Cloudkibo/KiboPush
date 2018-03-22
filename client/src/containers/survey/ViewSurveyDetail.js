@@ -12,11 +12,6 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 
-// var handleDate = function (d) {
-//   var c = new Date(d)
-//   return c.toDateString()
-// }
-
 class ViewSurveyDetail extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -24,28 +19,6 @@ class ViewSurveyDetail extends React.Component {
     // this.submitSurvey = this.submitSurvey.bind(this);
   }
 
-  componentDidMount () {
-  }
-
-  // submitSurvey (e) {
-  //   e.preventDefault()
-  //   var responses = []
-  //   for (var j = 0; j < this.props.questions.length; j++) {
-  //     responses.push({
-  //       qid: this.props.questions[j]._id,
-  //       response: this.refs[this.props.questions[j]._id].value,
-  //     })
-  //   }
-  //   this.props.submitsurvey({
-  //     'responses': responses,
-  //     surveyId: this.props.params.id,
-  //     subscriberId: this.props.params.subscriberid,
-  //   })
-  // }
-  //
-  // componentDidMount () {
-  //   browserHistory.push(`/viewsurveydetail/${this.props.params.id}`)
-  // }
   gotoView () {
     this.props.history.push({
       pathname: `/surveys`

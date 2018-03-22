@@ -40,17 +40,6 @@ class Autoposting extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
     this.scrollToTop()
     var compProp = this.props
@@ -64,16 +53,8 @@ class Autoposting extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
-      // this.setState({
-      //   alertMessage: nextProps.successMessage,
-      //   alertType: 'success'
-      // })
       this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
-      // this.setState({
-      //   alertMessage: nextProps.errorMessage,
-      //   alertType: 'danger'
-      // })
       this.msg.error(nextProps.errorMessage)
     }
   }

@@ -149,61 +149,6 @@ class Members extends React.Component {
                   }
                 </div>
                 <div className='m-portlet__body'>
-                  <div
-                    className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                    <div className='row align-items-center'>
-                      <div className='col-xl-12 order-2 order-xl-1'>
-                        {/* { */}
-                        {/* this.props.invitations && */}
-                        {/* this.props.invitations.length > 0 && */}
-                        {/* <div */}
-                        {/* className='form-group m-form__group row align-items-center'> */}
-                        {/* <div className='col-md-5'> */}
-                        {/* <div */}
-                        {/* className='m-form__group m-form__group--inline'> */}
-                        {/* <div className='m-form__label'> */}
-                        {/* <label> */}
-                        {/* Condition: */}
-                        {/* </label> */}
-                        {/* </div> */}
-                        {/* <div className='m-form__control'> */}
-                        {/* <select className='custom-select' id='conditionSelect' value={this.state.filterByCondition} onChange={this.handleFilterByCondition} > */}
-                        {/* <option value='' disabled>Filter by Condition...</option> */}
-                        {/* <option value='message_is'>message_is</option> */}
-                        {/* <option value='message_contains'>message_contains</option> */}
-                        {/* <option value='message_begins'>message_begins</option> */}
-                        {/* <option value=''>all</option> */}
-                        {/* </select> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* <div */}
-                        {/* className='d-md-none m--margin-bottom-10' /> */}
-                        {/* </div> */}
-                        {/* <div className='col-md-3'> */}
-                        {/* <div */}
-                        {/* className='m-form__group m-form__group--inline'> */}
-                        {/* <div className='m-form__label'> */}
-                        {/* <label> */}
-                        {/* Active: */}
-                        {/* </label> */}
-                        {/* </div> */}
-                        {/* <div className='m-form__control'> */}
-                        {/* <select className='custom-select' id='isActiveSelect' value={this.state.filterByStatus} onChange={this.handleFilterByStatus}> */}
-                        {/* <option value='' disabled>Filter by Status...</option> */}
-                        {/* <option value='yes'>yes</option> */}
-                        {/* <option value='no'>no</option> */}
-                        {/* <option value=''>all</option> */}
-                        {/* </select> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* <div */}
-                        {/* className='d-md-none m--margin-bottom-10' /> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* } */}
-                      </div>
-                    </div>
-                  </div>
                   {
                     this.props.members && this.props.members.length > 0
                       ? <div>

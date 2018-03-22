@@ -106,16 +106,6 @@ class ShareOptions extends React.Component {
 
       })
     }
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // adddScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Subscribe to Messenger'
   }
 

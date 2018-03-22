@@ -10,11 +10,6 @@ import ReactPaginate from 'react-paginate'
 class SurveyDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // const pageId = this.props.params.pageId
-    // if (this.props.currentSurvey) {
-    //   const id = this.props.currentSurvey._id
-    //   this.props.loadSurveyDetails(id)
-    // }
     this.state = {
       surveyDetailsData: [],
       totalLength: 0,
@@ -65,12 +60,6 @@ class SurveyDetails extends React.Component {
   }
   handlePageClick (data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
-  }
-  componentWillReceiveProps (nextProps) {
-        // if (nextProps.surveyDetails) {
-    //   this.displayData(0, nextProps.surveyDetails)
-    //   this.setState({ totalLength: nextProps.surveyDetails.length })
-    // }
   }
 
   backToUserDetails () {

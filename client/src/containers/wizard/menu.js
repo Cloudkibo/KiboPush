@@ -95,27 +95,12 @@ class Menu extends React.Component {
     })
   }
   show () {
-    // swal({title: 'Congratulations!',
-    //   text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
-    //   icon: 'success',
-    //   buttons: ['Join Our Community', 'OK', 'Become Our Subscriber']
     swal({
       type: 'success',
       title: 'Congratulations!',
       text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
       confirmButtonColor: '#337ab7',
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
-  //       roll: {
-  //     text: "Join Our Community",
-  //     value: "roll"
-  //   },   roll1: {
-  //   text: "OK",
-  //   value: "roll1"
-  // },   roll2: {
-  // text: "Become Our Subscriber",
-//    value: "roll2"
-// }
-  // }
     }).then((value) => {
       browserHistory.push({
         pathname: `/dashboard`

@@ -3,11 +3,6 @@
  */
 
 import React from 'react'
-// var handleDate = function (d) {
-//   var c = new Date(d)
-//   return c.toDateString()
-// }
-
 class SubmitSurvey extends React.Component {
   componentDidMount () {
   }
