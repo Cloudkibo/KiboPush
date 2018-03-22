@@ -485,20 +485,6 @@ class createSurvey extends React.Component {
                         <h5> Add Questions </h5>
                         {this.createUI()}
                       </div>
-
-                      {/*
-                     <div className='col-xl-12'>
-                     <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
-                     <div className='col-sm-6 col-md-4'>
-                     <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
-                     <option value='text'>Text</option>
-                     <option value='multichoice'>Multi Choice Question</option>
-                     </select>
-                     <br />
-                     </div>
-                     </div>
-                     */}
-
                       <div className='col-sm-6 col-md-4'>
                         <button id='questions' className='btn btn-primary btn-sm'
                           onClick={this.addClick.bind(this)}> Add Questions

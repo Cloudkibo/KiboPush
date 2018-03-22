@@ -14,9 +14,6 @@ import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
 import { registerAction } from '../../utility/socketio'
-//  import RadioGroup from 'react-radio'
-//  import Checkbox from 'react-checkbox'
-//  import {Checkbox, CheckboxGroup} from 'react-checkbox-group'
 
 class Menu extends React.Component {
   constructor (props, context) {

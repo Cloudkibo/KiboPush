@@ -46,41 +46,6 @@ class InviteMembers extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Invite Member'
-
-    // this.addSteps([
-    //   {
-    //     title: 'Workflows',
-    //     text: `Workflows allow you to automatically respond to messages to your page, which meet a certain criteria`,
-    //     selector: 'div#workflow',
-    //     position: 'top-left',
-    //     type: 'hover',
-    //     isFixed: true
-    //   },
-    //   {
-    //     title: 'Keywords',
-    //     text: `Keywords are the specific strings, on which you want a particular action to take place `,
-    //     selector: 'div#keywords',
-    //     position: 'bottom-left',
-    //     type: 'hover',
-    //     isFixed: true
-    //   },
-    //   {
-    //     title: 'Rules',
-    //     text: 'Rules are applied on the message recieved together with the given keyword, to trigger the auto-reply',
-    //     selector: 'div#rules',
-    //     position: 'bottom-left',
-    //     type: 'hover',
-    //     isFixed: true
-    //   },
-    //   {
-    //     title: 'Reply',
-    //     text: 'Here you can write the automated message that get sent if above conditions are met',
-    //     selector: 'div#reply',
-    //     position: 'bottom-left',
-    //     type: 'hover',
-    //     isFixed: true
-    //   }
-    // ])
   }
 
   componentWillReceiveProps (nextProps) {
@@ -164,8 +129,6 @@ class InviteMembers extends React.Component {
   }
 
   addSteps (steps) {
-    // let joyride = this.refs.joyride
-
     if (!Array.isArray(steps)) {
       steps = [steps]
     }
@@ -184,13 +147,6 @@ class InviteMembers extends React.Component {
   }
 
   render () {
-    // var alertOptions = {
-    //   offset: 14,
-    //   position: 'bottom right',
-    //   theme: 'dark',
-    //   time: 5000,
-    //   transition: 'scale'
-    // }
     return (
 
       <div>

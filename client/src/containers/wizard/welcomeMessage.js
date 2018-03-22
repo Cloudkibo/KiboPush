@@ -165,11 +165,6 @@ class EditTemplate extends React.Component {
     }
 
     this.setState({page: {options: options}})
-    //  this.initializePageSelect(options)
-    // if (this.props.pages.length > 0) {
-    //   this.setState({pageValue: this.props.pages[0].pageId})
-    //   this.setEditComponents(this.props.pages[0].welcomeMessage)
-    // }
   }
   handleText (obj) {
     var temp = this.state.broadcast

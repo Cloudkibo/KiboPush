@@ -83,17 +83,6 @@ class OperationalDashboard extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Operational Dashboard'
     this.scrollToTop()
   }
@@ -113,11 +102,6 @@ class OperationalDashboard extends React.Component {
     temp.push(users)
     this.setState({objects: users})
     this.setState({objectsLength: 1})
-
-    // this.setState({objectsData: temp}, () => {
-    // }
-    // )
-    // this.setState({objectsLength: 1})
   }
 
   handlePageClick (data) {

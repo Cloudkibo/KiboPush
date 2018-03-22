@@ -11,11 +11,6 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 
-// var handleDate = function (d) {
-//   var c = new Date(d)
-//   return c.toDateString()
-// }
-
 class ViewSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)

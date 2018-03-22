@@ -614,8 +614,6 @@ function mapStateToProps (state) {
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
     nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
-    // uploadResponse: {status :'success'}
-    // uploadResponse: {status :'failed' , description: 'Some problem'}
   }
 }
 

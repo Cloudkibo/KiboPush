@@ -26,18 +26,6 @@ class GettingStarted extends React.Component {
   }
 
   componentDidMount () {
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // document.title = 'KiboPush | Getting Started'
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('type', 'text/javascript')
-    // addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
-    // addScript.type = 'text/javascript'
-    // document.body.appendChild(addScript)
     /* eslint-disable */
     $('#gettingStarted').click()
     /* eslint-enable */

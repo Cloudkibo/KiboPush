@@ -133,45 +133,6 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
-              {/*
-              <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark ' >
-                <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                    <a href='#' className='m-menu__link m-menu__toggle'>
-                      <i className='m-menu__link-icon flaticon-add' />
-                      <span className='m-menu__link-text'>Quick Actions</span>
-                      <i className='m-menu__hor-arrow la la-angle-down' />
-                      <i className='m-menu__ver-arrow la la-angle-right' />
-                    </a>
-                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                      <span className='m-menu__arrow m-menu__arrow--adjust' />
-                      <ul className='m-menu__subnav'>
-                        <li className='m-menu__item ' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-tool-1' />
-                            <span className='m-menu__link-text'>Send Page Invites</span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-interface-8' />
-                            <span className='m-menu__link-text'>Setup Messenger Menu</span>
-                          </a>
-                        </li>
-
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-users' />
-                            <span className='m-menu__link-text'>Subscribe to Messenger</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-          */}
-
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>

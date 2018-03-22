@@ -40,7 +40,6 @@ class Sidebar extends Component {
       welcomeMessage: true,
       createPhoneList: true
     }
-    // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
@@ -354,27 +353,10 @@ class Sidebar extends Component {
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
               {this.showSubscribersItem()}
-              {/* this.showWelcomeMessageItem() */}
               {this.showCreatePhoneList()}
-              {/* this.props.user && this.state.subscribeToMessenger && this.props.user.plan.subscribe_to_messenger &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-alarm' />
-                  <span className='m-menu__link-text'>Subscribe to Messenger</span>
-                </Link>
-              </li> */
-              }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
               {this.showBroadcastTemplates()}
-              {/* this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-share' />
-                  <span className='m-menu__link-text'>Messenger Link</span>
-                </Link>
-              </li>
-              */}
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>

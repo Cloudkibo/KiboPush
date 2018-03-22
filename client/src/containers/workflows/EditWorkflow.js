@@ -64,9 +64,6 @@ class EditWorkflow extends React.Component {
       isActive: this.state.isActive,
       _id: this.props.location.state._id
     })
-    // this.props.history.push({
-    //   pathname: '/workflows'
-    // })
   }
 
   changeCondition (event) {

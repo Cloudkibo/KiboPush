@@ -152,20 +152,6 @@ class CreateMessage extends React.Component {
   }
 
   handleText (obj) {
-    // var payload = {}
-    // if (obj.button.length < 1) {
-    //   payload = {
-    //     componentType: 'text',
-    //     text: obj.text
-    //   }
-    // } else {
-    //   payload = {
-    //     componentType: 'text',
-    //     text: obj.text,
-    //     buttons: obj.button
-    //   }
-    // }
-    // this.setState({message: payload})
     var temp = this.state.message
     var isPresent = false
     temp.map((data, i) => {

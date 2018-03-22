@@ -92,18 +92,6 @@ class Workflows extends React.Component {
     })
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-
     var compProp = this.props
     registerAction({
       event: 'workflow_created',
@@ -112,9 +100,6 @@ class Workflows extends React.Component {
       }
     })
     document.title = 'KiboPush | Workflows'
-
-    // this.initializeConditionSelect(this.state.conditionSelect.options)
-    // this.initializeActiveSelect(this.state.activeSelect.options)
   }
 
   initializeConditionSelect (conditionOptions) {

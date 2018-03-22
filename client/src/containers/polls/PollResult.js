@@ -58,23 +58,9 @@ class PollResult extends React.Component {
     }
     var data = json2csv({data: usersPayload, fields: keys})
     fileDownload(data, this.props.responsesfull[0].pollId.statement + '-report.csv')
-    //  if (this.props.responses) {
-    //  fileDownload(data, 'users.csv')
-    //  }
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/Chart.min.js')
     document.body.appendChild(addScript)
