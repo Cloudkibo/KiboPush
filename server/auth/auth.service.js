@@ -93,10 +93,10 @@ function hasRole (roleRequired) {
 
 function hasRequiredPlan (planRequired) {
   if (!planRequired) throw new Error('Required plan needs to be set')
-  if (!(typeof planRequired === 'object' && planRequired.length)) throw new Error('Required plan must be of type array')
+  if (!(typeof planRequired === 'object' &&
+    planRequired.length)) throw new Error('Required plan must be of type array')
 
-  return compose()
-  .use(function meetsRequirements (req, res, next) {
+  return compose().use(function meetsRequirements (req, res, next) {
     if (planRequired.indexOf(req.user.plan) > -1) {
       next()
     } else {
@@ -108,22 +108,27 @@ function hasRequiredPlan (planRequired) {
 function doesPlanPermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
-  return compose()
-  .use(function meetsRequirements (req, res, next) {
+  return compose().use(function meetsRequirements (req, res, next) {
     Plans.findOne({}, (err, plan) => {
       if (err) {
         return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+          .json({status: 'failed', description: 'Internal Server Error'})
       }
       if (!plan) {
         return res.status(500)
-        .json({status: 'failed', description: 'Fatal Error. Plan not set. Please contact support.'})
+          .json({
+            status: 'failed',
+            description: 'Fatal Error. Plan not set. Please contact support.'
+          })
       }
       if (plan[req.user.plan][action]) {
         next()
       } else {
         res.status(403)
-        .json({status: 'failed', description: 'Your current plan does not support this action. Please upgrade or contact support.'})
+          .json({
+            status: 'failed',
+            description: 'Your current plan does not support this action. Please upgrade or contact support.'
+          })
       }
     })
   })
@@ -132,22 +137,27 @@ function doesPlanPermitsThisAction (action) {
 function doesRolePermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
-  return compose()
-  .use(function meetsRequirements (req, res, next) {
+  return compose().use(function meetsRequirements (req, res, next) {
     Permissions.findOne({userId: req.user._id}, (err, plan) => {
       if (err) {
         return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+          .json({status: 'failed', description: 'Internal Server Error'})
       }
       if (!plan) {
         return res.status(500)
-        .json({status: 'failed', description: 'Fatal Error. Permissions not set. Please contact support.'})
+          .json({
+            status: 'failed',
+            description: 'Fatal Error. Permissions not set. Please contact support.'
+          })
       }
       if (plan[action]) {
         next()
       } else {
         res.status(403)
-        .json({status: 'failed', description: 'You do not have permissions for this action. Please contact admin.'})
+          .json({
+            status: 'failed',
+            description: 'You do not have permissions for this action. Please contact admin.'
+          })
       }
     })
   })
@@ -172,20 +182,21 @@ function validateApiKeys (req, res, next) {
         if (err) return next(err)
         if (setting) {
           // todo this is for now buyer user id but it should be company id as thought
-          Users.findOne({_id: setting.company_id, role: 'buyer'}, (err, user) => {
-            if (err) {
-              return res.status(500)
-                .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            if (!user) {
-              return res.status(401).json({
-                status: 'failed',
-                description: 'User not found for the API keys'
-              })
-            }
-            req.user = {_id: user._id}
-            next()
-          })
+          Users.findOne({_id: setting.company_id, role: 'buyer'},
+            (err, user) => {
+              if (err) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'Internal Server Error'})
+              }
+              if (!user) {
+                return res.status(401).json({
+                  status: 'failed',
+                  description: 'User not found for the API keys'
+                })
+              }
+              req.user = {_id: user._id}
+              next()
+            })
         } else {
           return res.status(401).json({
             status: 'failed',
@@ -232,11 +243,11 @@ function fbConnectDone (req, res) {
   Users.findOne({_id: userid}, (err, user) => {
     if (err) {
       return res.status(500)
-      .json({status: 'failed', description: 'Internal Server Error'})
+        .json({status: 'failed', description: 'Internal Server Error'})
     }
     if (!user) {
       return res.status(401)
-      .json({status: 'failed', description: 'Unauthorized'})
+        .json({status: 'failed', description: 'Unauthorized'})
     }
 
     req.user = user
@@ -244,12 +255,12 @@ function fbConnectDone (req, res) {
     user.save((err) => {
       if (err) {
         return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+          .json({status: 'failed', description: 'Internal Server Error'})
       }
       fetchPages(`https://graph.facebook.com/v2.10/${
         fbPayload.fbId}/accounts?access_token=${
         fbPayload.fbToken}`, user)
-      res.cookie('next', 'addPages', { expires: new Date(Date.now() + 60000) })
+      res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
       res.redirect('/')
     })
   })
@@ -317,63 +328,68 @@ function fetchPages (url, user) {
         } else {
           // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
           //   fanCount.body.fan_count)}`)
-          CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyUser) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              })
-            }
-            if (!companyUser) {
-              return res.status(404).json({
-                status: 'failed',
-                description: 'The user account does not belong to any company. Please contact support'
-              })
-            }
-            Pages.findOne({pageId: item.id, userId: user._id, companyId: companyUser.companyId}, (err, page) => {
+          CompanyUsers.findOne({domain_email: user.domain_email},
+            (err, companyUser) => {
               if (err) {
-                logger.serverLog(TAG,
-                  `Internal Server Error ${JSON.stringify(err)}`)
+                return logger.serverLog(TAG, {
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
               }
-              if (!page) {
-                let payloadPage = {
-                  pageId: item.id,
-                  pageName: item.name,
-                  accessToken: item.access_token,
-                  userId: user._id,
-                  companyId: companyUser.companyId,
-                  likes: fanCount.body.fan_count,
-                  pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
-                  connected: false
-                }
-                if (fanCount.body.username) {
-                  payloadPage = _.merge(payloadPage,
-                    {pageUserName: fanCount.body.username})
-                }
-                var pageItem = new Pages(payloadPage)
-                // save model to MongoDB
-                pageItem.save((err, page) => {
-                  if (err) {
-                    logger.serverLog(TAG, `Error occurred ${err}`)
-                  }
+              if (!companyUser) {
+                return logger.serverLog(TAG, {
+                  status: 'failed',
+                  description: 'The user account does not belong to any company. Please contact support'
+                })
+              }
+              Pages.findOne({
+                pageId: item.id,
+                userId: user._id,
+                companyId: companyUser.companyId
+              }, (err, page) => {
+                if (err) {
                   logger.serverLog(TAG,
-                    `Page ${item.name} created with id ${page.pageId}`)
-                })
-              } else {
-                page.likes = fanCount.body.fan_count
-                page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
-                page.accessToken = item.access_token
-                if (fanCount.body.username) page.pageUserName = fanCount.body.username
-                page.save((err) => {
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Internal Server Error ${JSON.stringify(err)}`)
+                    `Internal Server Error ${JSON.stringify(err)}`)
+                }
+                if (!page) {
+                  let payloadPage = {
+                    pageId: item.id,
+                    pageName: item.name,
+                    accessToken: item.access_token,
+                    userId: user._id,
+                    companyId: companyUser.companyId,
+                    likes: fanCount.body.fan_count,
+                    pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
+                    connected: false
                   }
-                  // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
-                })
-              }
+                  if (fanCount.body.username) {
+                    payloadPage = _.merge(payloadPage,
+                      {pageUserName: fanCount.body.username})
+                  }
+                  var pageItem = new Pages(payloadPage)
+                  // save model to MongoDB
+                  pageItem.save((err, page) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error occurred ${err}`)
+                    }
+                    logger.serverLog(TAG,
+                      `Page ${item.name} created with id ${page.pageId}`)
+                  })
+                } else {
+                  page.likes = fanCount.body.fan_count
+                  page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+                  page.accessToken = item.access_token
+                  if (fanCount.body.username) page.pageUserName = fanCount.body.username
+                  page.save((err) => {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Internal Server Error ${JSON.stringify(err)}`)
+                    }
+                    // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+                  })
+                }
+              })
             })
-          })
         }
       })
     })

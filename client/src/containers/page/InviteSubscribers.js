@@ -1,6 +1,7 @@
 /**
  * Created by sojharo on 20/07/2017.
  */
+/* eslint-disable no-undef */
 
 import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'

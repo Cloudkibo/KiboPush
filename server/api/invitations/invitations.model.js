@@ -3,14 +3,14 @@
  */
 'use strict'
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
-var InvitationsSchema = new Schema({
+let InvitationsSchema = new Schema({
   name: String,
   email: String,
-  companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
-  createdAt: { type: Date, required: true, default: Date.now }
+  companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
+  createdAt: {type: Date, required: true, default: Date.now}
 })
 
 module.exports = mongoose.model('invitations', InvitationsSchema)

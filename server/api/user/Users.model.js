@@ -150,7 +150,7 @@ UserSchema.methods = {
    */
   encryptPassword: function (password) {
     if (!password || !this.salt) return ''
-    let salt = new Buffer(this.salt, 'base64')
+    let salt = Buffer.from(this.salt, 'base64')
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64')
   }
 }
