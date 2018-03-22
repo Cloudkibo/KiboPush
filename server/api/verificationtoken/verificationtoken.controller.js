@@ -105,6 +105,7 @@ exports.verify = function (req, res) {
         })
 
         user.save(function (err) {
+          if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
           return res.sendFile(path.join(config.root, 'client/pages/verification_success.html'))
         })
       }
