@@ -46,11 +46,16 @@ class EditButton extends React.Component {
   }
 
   changeTitle (event) {
+    if (isWebURL(this.state.url) && event.target.value !== '') {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
     this.setState({title: event.target.value})
   }
 
   changeUrl (event) {
-    if (isWebURL(event.target.value)) {
+    if (isWebURL(event.target.value) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
