@@ -425,7 +425,8 @@ function handleThePagePostsForAutoPosting (event, status) {
         pages.forEach(page => {
           let subscriberFindCriteria = {
             pageId: page._id,
-            isSubscribed: true
+            isSubscribed: true,
+            isEnabledByPage: true
           }
 
           if (postingItem.isSegmented) {
@@ -726,15 +727,17 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  let urlInText = utility.parseUrl(event.message.text)
-  if (urlInText !== null && urlInText !== '') {
-    og(urlInText, function (err, meta) {
-      if (err) return logger.serverLog(TAG, err)
-      chatPayload.url_meta = meta
+  if (event.message && event.message.text) {
+    let urlInText = utility.parseUrl(event.message.text)
+    if (urlInText !== null && urlInText !== '') {
+      og(urlInText, function (err, meta) {
+        if (err) return logger.serverLog(TAG, err)
+        chatPayload.url_meta = meta
+        saveChatInDb(page, session, chatPayload, subscriber, event)
+      })
+    } else {
       saveChatInDb(page, session, chatPayload, subscriber, event)
-    })
-  } else {
-    saveChatInDb(page, session, chatPayload, subscriber, event)
+    }
   }
 }
 
