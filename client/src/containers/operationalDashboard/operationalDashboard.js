@@ -25,10 +25,12 @@ import {
   loadBroadcastsGraphData,
   loadPollsGraphData,
   loadSurveysGraphData,
-  loadSessionsGraphData
+  loadSessionsGraphData,
+  sendEmail
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -78,6 +80,7 @@ class OperationalDashboard extends React.Component {
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.sendEmail = this.sendEmail.bind(this)
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -406,10 +409,20 @@ class OperationalDashboard extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
-
+  sendEmail () {
+    this.props.sendEmail(this.msg)
+  }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -556,6 +569,8 @@ class OperationalDashboard extends React.Component {
               <BroadcastsByDays />
               <SurveysByDays />
               <PollsByDays />
+              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.sendEmail}>Send Weekly Email
+              </button>
             </div>
           </div>
         </div>
@@ -587,7 +602,8 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsGraphData: loadBroadcastsGraphData,
     loadSurveysGraphData: loadSurveysGraphData,
     loadPollsGraphData: loadPollsGraphData,
-    loadSessionsGraphData: loadSessionsGraphData},
+    loadSessionsGraphData: loadSessionsGraphData,
+    sendEmail: sendEmail},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)

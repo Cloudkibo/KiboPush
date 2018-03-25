@@ -1173,6 +1173,21 @@ exports.pollsByDays = function (req, res) {
     })
   })
 }
+function formatAMPM (date) {
+  let hours = date.getHours()
+  let minutes = date.getMinutes()
+  let ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  hours = hours || 12 // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  return hours + ':' + minutes + ' ' + ampm
+}
+function handleDate (d) {
+  if (d) {
+    let c = new Date(d)
+    return c.toDateString() + ' ' + formatAMPM(c)
+  }
+}
 exports.sendEmail = function (req, res) {
   var days = 7
   Users.find({}, (err, users) => {
@@ -1184,6 +1199,7 @@ exports.sendEmail = function (req, res) {
     }
     users.forEach((user) => {
       let data = {
+        date: handleDate(user.createdAt),
         subscribers: 0,
         polls: 0,
         broadcasts: 0,
@@ -1203,87 +1219,15 @@ exports.sendEmail = function (req, res) {
             description: 'The user account does not belong to any company. Please contact support'
           })
         }
-        Subscribers.aggregate([
-          {
-            $match: {
-              $and: [
-                {'datetime': {
-                  $gte: new Date(
-                    (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
-                  $lt: new Date(
-                    (new Date().getTime()))
-                }
-                }, {companyId: companyUser.companyId},
-            {isEnabledByPage: true}, {isSubscribed: true}]
-            }}
-        ], (err, subscribers) => {
+        Subscribers.find({isSubscribed: true, isEnabledByPage: true}, (err, subs) => {
           if (err) {
-            logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
           }
-          data.subscribers = subscribers.length
-            // if (subscribers.length > 50) {
-          Polls.aggregate([
-            {
-              $match: {
-                $and: [
-                  {'datetime': {
-                    $gte: new Date(
-                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
-                    $lt: new Date(
-                      (new Date().getTime()))
-                  }
-                  }, {companyId: companyUser.companyId}]
-              }}
-          ], (err, polls) => {
-            if (err) {
-              return res.status(404).json({
-                status: 'failed',
-                description: `Error in getting surveys count ${JSON.stringify(err)}`
-              })
-            }
-            data.polls = polls.length
-          })
-          Surveys.aggregate([
-            {
-              $match: {
-                $and: [
-                  {'datetime': {
-                    $gte: new Date(
-                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
-                    $lt: new Date(
-                      (new Date().getTime()))
-                  }
-                  }, {companyId: companyUser.companyId}]
-              }}
-          ], (err, surveys) => {
-            if (err) {
-              return res.status(404).json({
-                status: 'failed',
-                description: `Error in getting surveys count ${JSON.stringify(err)}`
-              })
-            }
-            data.surveys = surveys.length
-          })
-          Broadcasts.aggregate([
-            {
-              $match: {
-                $and: [
-                  {'datetime': {
-                    $gte: new Date(
-                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
-                    $lt: new Date(
-                      (new Date().getTime()))
-                  }
-                  }, {companyId: companyUser.companyId}]
-              }}
-          ], (err, broadcasts) => {
-            if (err) {
-              return res.status(404).json({
-                status: 'failed',
-                description: `Error in getting surveys count ${JSON.stringify(err)}`
-              })
-            }
-            LiveChat.aggregate([
+          if (subs.length > 1) {
+            Subscribers.aggregate([
               {
                 $match: {
                   $and: [
@@ -1293,50 +1237,133 @@ exports.sendEmail = function (req, res) {
                       $lt: new Date(
                         (new Date().getTime()))
                     }
-                    }, {companyId: companyUser.companyId}]
+                    }, {companyId: companyUser.companyId},
+                {isEnabledByPage: true}, {isSubscribed: true}]
                 }}
-            ], (err, livechat) => {
+            ], (err, subscribers) => {
               if (err) {
-                return res.status(404).json({
-                  status: 'failed',
-                  description: `Error in getting surveys count ${JSON.stringify(err)}`
-                })
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
               }
-              data.liveChat = livechat.length
-              let sendgrid = require('sendgrid')(config.sendgrid.username,
-                config.sendgrid.password)
-
-              let email = new sendgrid.Email({
-                to: user.email,
-                from: 'support@cloudkibo.com',
-                subject: 'KiboPush: Weekly Summary',
-                text: 'Welcome to KiboPush'
-              })
-
-              email.setHtml(
-                '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-                '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-                '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-                '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-                '<p style="color: #ffffff">Weekly Summary</p> </td></tr> </table> </td> </tr> </table> ' +
-                '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-                '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-                '<tr> <td class="wrapper last"> <p> Hello ' + user.name + ', <br> Thank you for joining KiboPush. <br></p><p>Here is your weekly Summary <br> Subscribers: ' + data.subscribers + '<br> Live Chat: ' + data.liveChat + '<br> Broadcasts: ' + data.broadcasts + ' <br> Surveys: ' + data.surveys + ' <br> Polls: ' + data.polls + ' </p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-                '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-                '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-
-              // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
-
-              sendgrid.send(email, function (err, json) {
+              data.subscribers = subscribers.length
+                // if (subscribers.length > 50) {
+              Polls.aggregate([
+                {
+                  $match: {
+                    $and: [
+                      {'datetime': {
+                        $gte: new Date(
+                          (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                        $lt: new Date(
+                          (new Date().getTime()))
+                      }
+                      }, {companyId: companyUser.companyId}]
+                  }}
+              ], (err, polls) => {
                 if (err) {
-                  logger.serverLog(TAG,
-                    `Internal Server Error on sending email : ${JSON.stringify(
-                      err)}`)
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err)}`
+                  })
                 }
+                data.polls = polls.length
+              })
+              Surveys.aggregate([
+                {
+                  $match: {
+                    $and: [
+                      {'datetime': {
+                        $gte: new Date(
+                          (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                        $lt: new Date(
+                          (new Date().getTime()))
+                      }
+                      }, {companyId: companyUser.companyId}]
+                  }}
+              ], (err, surveys) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err)}`
+                  })
+                }
+                data.surveys = surveys.length
+              })
+              Broadcasts.aggregate([
+                {
+                  $match: {
+                    $and: [
+                      {'datetime': {
+                        $gte: new Date(
+                          (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                        $lt: new Date(
+                          (new Date().getTime()))
+                      }
+                      }, {companyId: companyUser.companyId}]
+                  }}
+              ], (err, broadcasts) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting surveys count ${JSON.stringify(err)}`
+                  })
+                }
+                LiveChat.aggregate([
+                  {
+                    $match: {
+                      $and: [
+                        {'datetime': {
+                          $gte: new Date(
+                            (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                          $lt: new Date(
+                            (new Date().getTime()))
+                        }
+                        }, {companyId: companyUser.companyId}]
+                    }}
+                ], (err, livechat) => {
+                  if (err) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting surveys count ${JSON.stringify(err)}`
+                    })
+                  }
+                  data.liveChat = livechat.length
+                  let sendgrid = require('sendgrid')(config.sendgrid.username,
+                    config.sendgrid.password)
+
+                  let email = new sendgrid.Email({
+                    to: user.email,
+                    from: 'support@cloudkibo.com',
+                    subject: 'KiboPush: Weekly Summary',
+                    text: 'Welcome to KiboPush'
+                  })
+
+                /*  email.setHtml(
+                    '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                    '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                    '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                    '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                    '<p style="color: #ffffff">Weekly Summary</p> </td></tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                    '<tr> <td class="wrapper last"> <p> Hello ' + user.name + ', <br> Thank you for joining KiboPush. <br></p><p>Here is your weekly Summary <br> Subscribers: ' + data.subscribers + '<br> Live Chat: ' + data.liveChat + '<br> Broadcasts: ' + data.broadcasts + ' <br> Surveys: ' + data.surveys + ' <br> Polls: ' + data.polls + ' </p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                    '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                    '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')*/
+
+                  // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
+
+                  email.setHtml('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/> <meta http-equiv="X-UA-Compatible" content="IE=Edge"/><!--[if (gte mso 9)|(IE)]> <xml> <o:OfficeDocumentSettings> <o:AllowPNG/> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--><!--[if (gte mso 9)|(IE)]> <style type="text/css"> body{width: 600px;margin: 0 auto;}table{border-collapse: collapse;}table, td{mso-table-lspace: 0pt;mso-table-rspace: 0pt;}img{-ms-interpolation-mode: bicubic;}</style><![endif]--> <style type="text/css"> body, p, div{font-family: arial; font-size: 14px;}body{color: #000000;}body a{color: #1188E6; text-decoration: none;}p{margin: 0; padding: 0;}table.wrapper{width:100% !important; table-layout: fixed; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}img.max-width{max-width: 100% !important;}.column.of-2{width: 50%;}.column.of-3{width: 33.333%;}.column.of-4{width: 25%;}@media screen and (max-width:480px){.preheader .rightColumnContent, .footer .rightColumnContent{text-align: left !important;}.preheader .rightColumnContent div, .preheader .rightColumnContent span, .footer .rightColumnContent div, .footer .rightColumnContent span{text-align: left !important;}.preheader .rightColumnContent, .preheader .leftColumnContent{font-size: 80% !important; padding: 5px 0;}table.wrapper-mobile{width: 100% !important; table-layout: fixed;}img.max-width{height: auto !important; max-width: 480px !important;}a.bulletproof-button{display: block !important; width: auto !important; font-size: 80%; padding-left: 0 !important; padding-right: 0 !important;}.columns{width: 100% !important;}.column{display: block !important; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important;}}</style> </head> <body> <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size: 14px; font-family: arial; color: #000000; background-color: #ebebeb;"> <div class="webkit"> <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#ebebeb"> <tr> <td valign="top" bgcolor="#ebebeb" width="100%"> <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0"> <tr> <td width="100%"> <table width="100%" cellpadding="0" cellspacing="0" border="0"> <tr> <td><!--[if mso]> <center> <table><tr><td width="600"><![endif]--> <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width:600px;" align="center"> <tr> <td role="modules-container" style="padding: 0px 0px 0px 0px; color: #000000; text-align: left;" bgcolor="#ffffff" width="100%" align="left"> <table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;"> <tr> <td role="module-content"> <p></p></td></tr></table> <table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="font-size:6px;line-height:10px;padding:35px 0px 0px 0px;background-color:#ffffff;" valign="top" align="center"> <img class="max-width" border="0" style="display:block;color:#000000;text-decoration:none;font-family:Helvetica, arial, sans-serif;font-size:16px;" width="500" height="90" src="https://marketing-image-production.s3.amazonaws.com/uploads/63fe9859761f80dce4c7d46736baaa15ca671ce6533ec000c93401c7ac150bbec5ddae672e81ff4f6686750ed8e3fad14a60fc562df6c6fdf70a6ef40b2d9c56.png" alt="Logo"> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <h1 style="text-align: center;"><span style="color:#B7451C;"><span style="font-size:20px;"><span style="font-family:arial,helvetica,sans-serif;">Weekly Summary</span></span></span></h1> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:0px 45px 45px 045px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;"><strong>Hello ' + user.name + ',</strong></span></div><div style="font-family: georgia; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;">&nbsp;</div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;">Thank&nbsp;you for joining KiboPush. You have become an important part of our community. You have been very active on KiboPush. Here is the summary of your activities on KiboPush this week.</span></div><div style="font-family: courier; font-size: 20px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;">&nbsp;</div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 500; text-align: center;"><span style="font-size:14px;">New Subscribers => ' + data.subscribers + '</span></div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;">New Broadcasts => ' + data.broadcasts + '</span></div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;">New Chats => ' + data.liveChat + '</span></div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;">New Surveys => ' + data.surveys + '</span></div><div style="font-family: courier; font-size: 14px; color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; text-align: center;"><span style="font-size:14px;">New Polls => ' + data.polls + '</span></div></div></td></tr></table> <table class="module" role="module" data-type="social" align="right" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tbody> <tr> <td valign="top" style="padding:10px 0px 30px 0px;font-size:6px;line-height:10px;background-color:#f5f5f5;"> <table align="right"> <tbody> <tr> <td style="padding: 0px 5px;"> <a role="social-icon-link" href="https://www.facebook.com/kibopush/" target="_blank" alt="Facebook" data-nolink="false" title="Facebook " style="-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;display:inline-block;background-color:#3B579D;"> <img role="social-icon" alt="Facebook" title="Facebook " height="30" width="30" style="height: 30px, width: 30px" src="https://marketing-image-production.s3.amazonaws.com/social/white/facebook.png"/> </a> </td></tr></tbody> </table> </td></tr></tbody> </table> </td></tr></table><!--[if mso]> </td></tr></table> </center><![endif]--> </td></tr></table> </td></tr></table> </td></tr></table> </div></center> </body></html>')
+                  sendgrid.send(email, function (err, json) {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Internal Server Error on sending email : ${JSON.stringify(
+                          err)}`)
+                    }
+                  })
+                })
+                // }
               })
             })
-            // }
-          })
+          }
         })
       })
     })
