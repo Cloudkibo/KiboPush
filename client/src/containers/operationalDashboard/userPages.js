@@ -8,11 +8,9 @@ import { savePageInformation } from '../../redux/actions/backdoor.actions'
 class PagesInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('constructor page info')
     this.onPageClick = this.onPageClick.bind(this)
   }
   onPageClick (e, page) {
-    console.log('Page Click', page)
     this.props.savePageInformation(page)
   }
   render () {

@@ -18,7 +18,6 @@ class GettingStarted extends React.Component {
       alerts: [],
       step: 0
     }
-    console.log('constructor in getting started')
     this.selectPage = this.selectPage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.nextStep = this.nextStep.bind(this)
@@ -27,18 +26,6 @@ class GettingStarted extends React.Component {
   }
 
   componentDidMount () {
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // document.title = 'KiboPush | Getting Started'
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('type', 'text/javascript')
-    // addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
-    // addScript.type = 'text/javascript'
-    // document.body.appendChild(addScript)
     /* eslint-disable */
     $('#gettingStarted').click()
     /* eslint-enable */
@@ -122,7 +109,6 @@ class GettingStarted extends React.Component {
   }
 
   render () {
-    console.log('In Getting Started', this.state.step)
     return (
       <div>
         <button type='button' id='gettingStarted' className='btn btn-metal' data-toggle='modal' data-target='#m_modal_1_2' hidden>
@@ -163,7 +149,6 @@ class GettingStarted extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     dashboard: (state.dashboardInfo.dashboard),
     successMessage: (state.broadcastsInfo.successMessage),

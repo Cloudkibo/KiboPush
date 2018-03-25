@@ -45,11 +45,9 @@ class Convo extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -74,7 +72,6 @@ class Convo extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    console.log(broadcasts)
     let offset = n * 4
     let data = []
     let limit
@@ -104,7 +101,7 @@ class Convo extends React.Component {
 
   gotoCreate (broadcast) {
     browserHistory.push({
-      pathname: `/createconvo`,
+      pathname: `/createBroadcast`,
       state: {module: 'convo', subscribers: this.props.subscribers}
     })
   }
@@ -121,9 +118,7 @@ class Convo extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
@@ -161,7 +156,6 @@ class Convo extends React.Component {
   }
 
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
@@ -184,7 +178,6 @@ class Convo extends React.Component {
   }
 
   render () {
-    console.log('Broadcasts', this.state.broadcastsData)
     return (
       <div>
         <Header />
@@ -197,15 +190,15 @@ class Convo extends React.Component {
             <ModalDialog style={{width: '680px'}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
-              <YouTube
-                videoId='htqFmbTBDbk'
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
+                <YouTube
+                  videoId='htqFmbTBDbk'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
               />
               </div>
             </ModalDialog>
@@ -351,6 +344,10 @@ class Convo extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span>Seen</span>
                               </th>
+                              <th data-field='clicks' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Clicks</span>
+                              </th>
                             </tr>
                           </thead>
                           <tbody className='m-datatable__body'>
@@ -369,6 +366,7 @@ class Convo extends React.Component {
 
                                   </span>
                                 </td>
+                                <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks ? broadcast.clicks : 0}</span></td>
                               </tr>
                             ))
                           }

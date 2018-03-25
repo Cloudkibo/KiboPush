@@ -38,12 +38,10 @@ class ResetPassword extends React.Component {
     this.props.forgotPass({email: this.refs.email.value}, this.msg)
   }
   componentWillReceiveProps (nextprops) {
-    console.log(nextprops)
     if (nextprops.successForgot) {
       this.setState({fail: false})
       this.setState({success: true})
     } if (nextprops.errorForgot) {
-      console.log('errorForgot', nextprops.errorForgot)
       this.setState({success: false})
       this.setState({fail: true})
     }
@@ -120,7 +118,6 @@ class ResetPassword extends React.Component {
   }
 }
 function mapStateToProps (state) {
- // console.log(state)
   return {
     errorForgot: (state.loginInfo.errorForgot),
     successForgot: (state.loginInfo.successForgot)

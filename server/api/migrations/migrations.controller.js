@@ -6,7 +6,6 @@ const logger = require('../../components/logger')
 const Migrations = require('./migrations.model')
 const TAG = 'api/migrations/migrations.controller.js'
 const Users = require('./../user/Users.model')
-const Page = require('./../pages/Pages.model')
 
 const crypto = require('crypto')
 const path = require('path')
@@ -21,7 +20,6 @@ exports.createLinks = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, 'previous migrations removed ' + count)
     Users.find({}, (err, users) => {
       if (err) {
         return res.status(500).json({

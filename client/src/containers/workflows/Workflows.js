@@ -52,7 +52,6 @@ class Workflows extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in workflows is called')
     if (nextProps.workflows) {
       this.displayData(0, nextProps.workflows)
       this.setState({ totalLength: nextProps.workflows.length })
@@ -60,7 +59,6 @@ class Workflows extends React.Component {
   }
 
   displayData (n, workflows) {
-    console.log(workflows)
     let offset = n * 4
     let data = []
     let limit
@@ -94,18 +92,6 @@ class Workflows extends React.Component {
     })
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-
     var compProp = this.props
     registerAction({
       event: 'workflow_created',
@@ -114,20 +100,21 @@ class Workflows extends React.Component {
       }
     })
     document.title = 'KiboPush | Workflows'
-
-    // this.initializeConditionSelect(this.state.conditionSelect.options)
-    // this.initializeActiveSelect(this.state.activeSelect.options)
   }
 
   initializeConditionSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#conditionSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Condition',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#conditionSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -138,19 +125,22 @@ class Workflows extends React.Component {
         }
         self.setState({ filterByCondition: selected })
       }
-      console.log('change condition', selected)
     })
   }
 
   initializeActiveSelect (activeOptions) {
     var self = this
+    /* eslint-disable */
     $('#isActiveSelect').select2({
+    /* eslint-enable */
       data: activeOptions,
       placeholder: 'Select Status',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#isActiveSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -161,7 +151,6 @@ class Workflows extends React.Component {
         }
         self.setState({ filterByStatus: selected })
       }
-      console.log('change active', selected)
     })
   }
 
@@ -232,7 +221,6 @@ class Workflows extends React.Component {
   }
 
   render () {
-    console.log('Workflows', this.props.workflows)
     return (
       <div>
         <Header />
@@ -464,7 +452,6 @@ class Workflows extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows)
   }

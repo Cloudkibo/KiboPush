@@ -25,10 +25,12 @@ import {
   loadBroadcastsGraphData,
   loadPollsGraphData,
   loadSurveysGraphData,
-  loadSessionsGraphData
+  loadSessionsGraphData,
+  sendEmail
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -78,23 +80,12 @@ class OperationalDashboard extends React.Component {
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.sendEmail = this.sendEmail.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Operational Dashboard'
     this.scrollToTop()
   }
@@ -107,26 +98,13 @@ class OperationalDashboard extends React.Component {
   }
   displayData (n, users) {
     this.setState({usersData: users, usersDataAll: users})
-    console.log('in displayData', this.state.usersData)
   }
 
   displayObjects (n, users) {
-    console.log('users', users)
     var temp = []
     temp.push(users)
-    console.log('temp', temp)
     this.setState({objects: users})
-    console.log('new object', this.state.objects)
     this.setState({objectsLength: 1})
-
-    // this.setState({objectsData: temp}, () => {
-    //   console.log('inside', this.state.objectsData)
-    // }
-    // )
-    // this.setState({objectsLength: 1})
-    // console.log('in displayData of diplayObjects1', this.state.objectsData)
-    // console.log('in displayData of diplayObjects2', this.state.objectsData[0].PagesCount)
-  //  console.log('in displayData of diplayObjects3', this.state.objectsData[0].PagesCount.count)
   }
 
   handlePageClick (data) {
@@ -144,7 +122,6 @@ class OperationalDashboard extends React.Component {
     var defaultVal = 10
     var value = e.target.value
     this.setState({selectedDays: value})
-    console.log('On days change', value)
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -160,21 +137,16 @@ class OperationalDashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.users) {
-      console.log('Users Updated', nextProps.users)
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.users.length })
     }
     if (nextProps.dataobjects !== null) {
-      console.log('data objects Updated', nextProps.dataobjects)
       this.displayObjects(0, nextProps.dataobjects)
     }
     if (nextProps.toppages) {
-      console.log('top pages Updated', nextProps.toppages)
     }
     if (nextProps.broadcastsGraphData) {
-      console.log('Broadcasts Graph Data', nextProps.broadcastsGraphData.broadcastsGraphInfo)
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
       if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
         var broadcastData = graphInfoBroadcast.broadcastsgraphdata
@@ -182,7 +154,6 @@ class OperationalDashboard extends React.Component {
       }
     }
     if (nextProps.pollsGraphData) {
-      console.log('Polls Graph Data', nextProps.pollsGraphData.pollsGraphInfo)
       var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
       if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
         var pollsData = graphInfoPolls.pollsgraphdata
@@ -190,16 +161,13 @@ class OperationalDashboard extends React.Component {
       }
     }
     if (nextProps.surveysGraphData) {
-      console.log('Surveys Graph Data', nextProps.surveysGraphData.surveysGraphInfo)
       var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
       if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
         var surveysData = graphInfoSurveys.surveysgraphdata
         surveysData = this.includeZeroCounts(surveysData)
-        console.log('surveys data', surveysData)
       }
     }
     if (nextProps.sessionsGraphData) {
-      console.log('Sessions Graph Data', nextProps.sessionsGraphData.sessionsGraphInfo)
       var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
       if (graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
         var sessionsData = graphInfoSessions.sessionsgraphdata
@@ -336,14 +304,11 @@ class OperationalDashboard extends React.Component {
   }
 
   goToBroadcasts (user) {
-    console.log(this.props.user)
     this.props.saveUserInformation(user)
     this.props.history.push({
       pathname: `/userDetails`,
       state: user
     })
-    console.log('State', this.state)
-    console.log('goToBroadcasts', user._id, user.name)
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
 
@@ -367,7 +332,6 @@ class OperationalDashboard extends React.Component {
       this.setState({selectedValue: null})
       this.props.loadDataObjectsCount(0)
     } else if (e.target.value === '10') {
-      console.log('Selected:', e.target.value)
       this.setState({selectedValue: e.target.value})
       this.props.loadDataObjectsCount(10)
     } else if (e.target.value === '30') {
@@ -379,10 +343,8 @@ class OperationalDashboard extends React.Component {
     }
   }
   onFilterByGender (e) {
-    console.log('event', e.target.value)
     var filtered = []
     if (!e.target.value) {
-      console.log('!e')
       if (this.state.localeValue !== '') {
         for (var a = 0; a < this.props.users.length; a++) {
           if (this.props.users[a].locale === this.state.localeValue) {
@@ -394,7 +356,6 @@ class OperationalDashboard extends React.Component {
       }
       this.setState({genderValue: ''})
     } else {
-      console.log('here')
       if (this.state.localeValue !== '') {
         for (var i = 0; i < this.props.users.length; i++) {
           if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
@@ -417,7 +378,6 @@ class OperationalDashboard extends React.Component {
   }
 
   onFilterByLocale (data) {
-    console.log(data)
     var filtered = []
     if (!data) {
       if (this.state.genderValue !== '') {
@@ -449,17 +409,27 @@ class OperationalDashboard extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
-
+  sendEmail () {
+    this.props.sendEmail(this.msg)
+  }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: '300%'}}>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
               { this.state.objectsLength > 0 &&
                 <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
@@ -599,6 +569,8 @@ class OperationalDashboard extends React.Component {
               <BroadcastsByDays />
               <SurveysByDays />
               <PollsByDays />
+              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.sendEmail}>Send Weekly Email
+              </button>
             </div>
           </div>
         </div>
@@ -609,15 +581,15 @@ class OperationalDashboard extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    users: (state.UsersInfo.users),
-    locales: (state.UsersInfo.locales),
-    currentUser: (state.getCurrentUser.currentUser),
-    dataobjects: (state.dataObjectsInfo.dataobjects),
-    toppages: (state.topPagesInfo.toppages),
-    broadcastsGraphData: (state.broadcastsGraphInfo),
-    pollsGraphData: (state.pollsGraphInfo),
-    surveysGraphData: (state.surveysGraphInfo),
-    sessionsGraphData: (state.sessionsGraphInfo)
+    users: (state.backdoorInfo.users),
+    locales: (state.backdoorInfo.locales),
+    currentUser: (state.backdoorInfo.currentUser),
+    dataobjects: (state.backdoorInfo.dataobjects),
+    toppages: (state.backdoorInfo.toppages),
+    broadcastsGraphData: (state.backdoorInfo),
+    pollsGraphData: (state.backdoorInfo),
+    surveysGraphData: (state.backdoorInfo),
+    sessionsGraphData: (state.backdoorInfo)
   }
 }
 
@@ -630,7 +602,8 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsGraphData: loadBroadcastsGraphData,
     loadSurveysGraphData: loadSurveysGraphData,
     loadPollsGraphData: loadPollsGraphData,
-    loadSessionsGraphData: loadSessionsGraphData},
+    loadSessionsGraphData: loadSessionsGraphData,
+    sendEmail: sendEmail},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)

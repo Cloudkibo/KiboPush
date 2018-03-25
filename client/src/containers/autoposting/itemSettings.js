@@ -95,10 +95,6 @@ class ItemSettings extends React.Component {
     let optionsLocale = []
     for (let i = 0; i < this.state.Locale.options.length; i++) {
       if (this.props.location.state.item.segmentationLocale !== '') {
-        console.log('HELLO')
-        console.log(this.props.location.state.item.segmentationGender)
-        console.log(this.state.Gender.options[i])
-        console.log('HELLO')
         if (this.props.location.state.item.segmentationLocale.indexOf(this.state.Locale.options[i].value) !== -1) {
           optionsLocale[i] = {text: this.state.Locale.options[i].value, id: this.state.Locale.options[i].value, selected: true}
         } else {
@@ -116,16 +112,19 @@ class ItemSettings extends React.Component {
   }
 
   initializePageSelect (pageOptions) {
-    console.log(pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+    /* eslint-enable */
       data: pageOptions,
       placeholder: 'Select Pages',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -136,20 +135,23 @@ class ItemSettings extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
   initializeGenderSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#genderSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#genderSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -160,20 +162,23 @@ class ItemSettings extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change condition', selected)
     })
   }
 
   initializeLocaleSelect (conditionOptions) {
     var self = this
+    /* eslint-disable */
     $('#localeSelect').select2({
+    /* eslint-enable */
       data: conditionOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true,
       tags: true
     })
+    /* eslint-disable */
     $('#localeSelect').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -184,7 +189,6 @@ class ItemSettings extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change condition', selected)
     })
   }
 
@@ -223,12 +227,10 @@ class ItemSettings extends React.Component {
   }
 
   handleSelectChange (event) {
-    console.log('isActive changed')
     this.setState({ isActive: event.target.value })
   }
 
   editAutoposting () {
-    console.log(this.accountTitleValue.value)
     var isSegmented = false
     var isActive = false
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
@@ -248,12 +250,10 @@ class ItemSettings extends React.Component {
       segmentationLocale: this.state.localeValue,
       isActive: isActive
     }
-    console.log(autopostingData)
     this.props.editautoposting(autopostingData)
   }
 
   render () {
-    const { disabled, stayOpen } = this.state
     return (
       <div>
         <Header />

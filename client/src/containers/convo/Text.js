@@ -9,19 +9,19 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 
-const styles = {
-  iconclass: {
-    height: 24,
-    padding: '0 15px',
-    width: 24,
-    position: 'relative',
-    display: 'inline-block',
-    cursor: 'pointer'
-  },
-  inputf: {
-    display: 'none'
-  }
-}
+// const styles = {
+//   iconclass: {
+//     height: 24,
+//     padding: '0 15px',
+//     width: 24,
+//     position: 'relative',
+//     display: 'inline-block',
+//     cursor: 'pointer'
+//   },
+//   inputf: {
+//     display: 'none'
+//   }
+// }
 
 class Text extends React.Component {
   constructor (props, context) {
@@ -61,7 +61,6 @@ class Text extends React.Component {
   }
 
   setEmoji (emoji) {
-    console.log('selected emoji', emoji)
     this.setState({
       text: this.state.text + emoji.native
 
@@ -90,14 +89,11 @@ class Text extends React.Component {
     this.setState({button: temp})
   }
   removeButton (obj) {
-    console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
-    console.log('Filter', temp)
     this.setState({button: temp})
   }
 
   render () {
-    console.log('this.state.button', this.state.button)
     let textStyles
     if (this.props.removeState) {
       textStyles = {marginBottom: 40 + 'px'}
@@ -176,7 +172,6 @@ class Text extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {}
 }
 

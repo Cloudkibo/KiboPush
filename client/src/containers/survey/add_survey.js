@@ -4,12 +4,11 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
-import { getuserdetails, surveyTourCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { Link } from 'react-router'
@@ -64,9 +63,6 @@ class AddSurvey extends React.Component {
       lists: []
     }
     this.createSurvey = this.createSurvey.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -83,78 +79,33 @@ class AddSurvey extends React.Component {
     this.setState({isShowingModal: false})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Survey'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
-    console.log('gender options', this.state.Gender.options)
-    console.log('locale', this.state.Locale.options)
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    this.addSteps([
-      {
-        title: 'Surveys',
-        text: `Survey allows creation of set of questions, to be sent to your subscribers, where they can choose from a set of given reponses`,
-        selector: 'h3#survey',
-        position: 'top-right',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Title and Introduction',
-        text: `Give your survey a title and description for easy identification`,
-        selector: 'div#identity',
-        position: 'right',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Add Questions',
-        text: 'Add questions, and create a set of responses for your subscriber to reply with',
-        selector: 'div#questions',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Targetting',
-        text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
-        selector: 'div#target',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-    ])
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -162,25 +113,27 @@ class AddSurvey extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
-
+    /* eslint-disable */
     $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
-    console.log('asd', pageOptions)
     var self = this
+    /* eslint-disable */
     $('#selectPage').select2({
+    /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -188,19 +141,22 @@ class AddSurvey extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+    /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -211,19 +167,22 @@ class AddSurvey extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+    /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -234,13 +193,10 @@ class AddSurvey extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in add survey', nextProps)
-    console.log('nextpropscustomer', nextProps.customerLists)
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
@@ -259,12 +215,10 @@ class AddSurvey extends React.Component {
       }
     }
     if (nextProps.createwarning) {
-      console.log('i am called')
       this.props.history.push({
         pathname: '/surveys'
 
       })
-      console.log('nextprops', nextProps)
     }
   }
   updateDescription (e) {
@@ -298,7 +252,6 @@ class AddSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -310,7 +263,6 @@ class AddSurvey extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -356,7 +308,6 @@ class AddSurvey extends React.Component {
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
-        console.log('surveybody', surveybody)
         this.props.createsurvey(surveybody)
       } else {
         this.setState({
@@ -383,14 +334,12 @@ class AddSurvey extends React.Component {
       'options': choiceValues
     })
     this.setState({surveyQuestions: surveyQuestions})
-    console.log('surveyQuestions')
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
         alertType: ''
       })
     }
-    console.log(this.state.surveyQuestions)
   }
 
   addChoices (qindex) {
@@ -410,8 +359,6 @@ class AddSurvey extends React.Component {
   }
 
   removeChoices (choiceIndex, qindex) {
-    console.log(
-      'removeChoices called qindex ' + qindex + ' choiceIndex ' + choiceIndex)
     let surveyQuestions = this.state.surveyQuestions.slice()
     if (surveyQuestions[qindex].choiceCount === 2) {
       this.setState({
@@ -420,11 +367,7 @@ class AddSurvey extends React.Component {
       })
     } else {
       let choices = surveyQuestions[qindex].options.slice()
-      console.log('choices before')
-      console.log(choices)
       choices.splice(choiceIndex, 1)
-      console.log('choices after')
-      console.log(choices)
       surveyQuestions[qindex].choiceCount = surveyQuestions[qindex].choiceCount -
         1
       surveyQuestions[qindex].options = choices
@@ -434,16 +377,13 @@ class AddSurvey extends React.Component {
 
   removeClick (i) {
     if (this.state.surveyQuestions.length === 1) {
-      console.log('A survey form requires atleast one question')
       this.setState({
         alertMessage: 'A survey form requires atleast one question',
         alertType: 'danger'
       })
     } else {
-      console.log('delete this survey question')
       let surveyQuestions = this.state.surveyQuestions.slice()
       surveyQuestions.splice(i, 1)
-      console.log(surveyQuestions)
       this.setState({
         surveyQuestions: surveyQuestions
       })
@@ -454,19 +394,12 @@ class AddSurvey extends React.Component {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
-    console.log('onhandleChoiceChange is called')
     let surveyQuestions = this.state.surveyQuestions.slice()
-    console.log('qindex is ' + qindex)
-    console.log('choiceIndex is ' + choiceIndex)
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
     this.setState({surveyQuestions})
-    console.log('surveyQuestions')
-    console.log(this.state.surveyQuestions)
   }
 
   /* handleQuestionType (e) {
@@ -476,10 +409,8 @@ class AddSurvey extends React.Component {
    } */
 
   createOptionsList (qindex) {
-    console.log('qindex' + qindex)
     let choiceItems = []
     var choiceCount = this.state.surveyQuestions[qindex].choiceCount
-    console.log('choiceCount is ' + choiceCount)
     for (var j = 0; j < choiceCount; j++) {
       choiceItems.push(
         <div className='input-group' id={'choice' + qindex + j}>
@@ -497,37 +428,6 @@ class AddSurvey extends React.Component {
       )
     }
     return choiceItems || null
-  }
-
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      this.props.surveyTourCompleted({
-        'surveyTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
   }
 
   createUI () {
@@ -614,11 +514,9 @@ class AddSurvey extends React.Component {
     return uiItems || null
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -649,7 +547,6 @@ class AddSurvey extends React.Component {
               let incompleteChoice = document.getElementById('choice' + j + k)
               incompleteChoice.classList.add('has-error')
               flag = 1
-              console.log('empty')
             } else {
               let completeChoice = document.getElementById('choice' + j + k)
               completeChoice.classList.remove('has-error')
@@ -661,7 +558,6 @@ class AddSurvey extends React.Component {
           let incompleteQuestion = document.getElementById('question' + j)
           incompleteQuestion.classList.add('has-error')
           flag = 1
-          console.log('empty')
         } else {
           let completeChoice = document.getElementById('question' + j)
           completeChoice.classList.remove('has-error')
@@ -711,7 +607,6 @@ class AddSurvey extends React.Component {
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
-          console.log('surveybody', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
         }
       } else {
@@ -730,18 +625,14 @@ class AddSurvey extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const { disabled, stayOpen } = this.state
+    // const { disabled, stayOpen } = this.state
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {
-      (this.props.user && this.props.user.surveyTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-      }
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: '500%'}}>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
@@ -940,7 +831,6 @@ class AddSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     surveys: (state.surveysInfo.surveys),
     surveyCreated: (state.surveysInfo.surveyCreated),
@@ -955,7 +845,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     getuserdetails: getuserdetails,
-    surveyTourCompleted: surveyTourCompleted,
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,

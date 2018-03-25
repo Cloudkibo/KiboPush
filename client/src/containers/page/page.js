@@ -44,7 +44,6 @@ class Page extends React.Component {
   }
 
   displayData (n, pages) {
-    console.log(pages)
     let offset = n * 5
     let data = []
     let limit
@@ -80,9 +79,7 @@ class Page extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
-      console.log('Pages Updated', nextProps.pages)
       var connectedPages = []
       nextProps.pages.map((page, i) => {
         if (page.connected) {
@@ -100,7 +97,6 @@ class Page extends React.Component {
   // }
 
   removePage (page) {
-    console.log('This is the page', page)
     this.closeDialog()
     let index
     for (let i = 0; i < this.state.pagesData.length; i++) {
@@ -125,7 +121,6 @@ class Page extends React.Component {
   }
 
   inviteSubscribers (page) {
-    console.log('invite Subscribers')
     this.props.history.push({
       pathname: `/invitesubscribers`,
       state: page
@@ -137,7 +132,6 @@ class Page extends React.Component {
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.pages[i].connected) {
-          console.log('filtered', filtered)
           filtered.push(this.props.pages[i])
         }
       }
@@ -384,7 +378,6 @@ class Page extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),

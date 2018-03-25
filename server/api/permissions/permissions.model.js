@@ -1,7 +1,7 @@
 'use strict'
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
 
 var PermissionsSchema = new Schema({
 
@@ -15,7 +15,7 @@ var PermissionsSchema = new Schema({
   dashboardPermission: { type: Boolean, default: true },
   companyPermission: { type: Boolean, default: true },
   companyUpdatePermission: { type: Boolean, default: true },
-  membersPermission: {type: Boolean, default: true },
+  membersPermission: { type: Boolean, default: true },
   inviteAdminPermission: { type: Boolean, default: true },
   deleteAdminPermission: { type: Boolean, default: true },
   updateRolePermission: { type: Boolean, default: true },

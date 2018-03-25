@@ -11,11 +11,6 @@ import {
 } from '../../redux/actions/surveys.actions'
 import { bindActionCreators } from 'redux'
 
-// var handleDate = function (d) {
-//   var c = new Date(d)
-//   return c.toDateString()
-// }
-
 class ViewSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -32,8 +27,6 @@ class ViewSurvey extends React.Component {
         response: this.refs[this.props.questions[j]._id].value
       })
     }
-    console.log('submited responses')
-    console.log(responses)
     this.props.submitsurvey({
       'responses': responses,
       surveyId: this.props.params.id,
@@ -120,7 +113,6 @@ class ViewSurvey extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     survey: (state.surveysInfo.survey),
     questions: (state.surveysInfo.questions),

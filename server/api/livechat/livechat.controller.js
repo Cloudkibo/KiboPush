@@ -25,9 +25,6 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Send chat, req body = ${JSON.stringify(req.body)}`)
-
   let parametersMissing = false
 
   if (!_.has(req.body, 'sender_id')) parametersMissing = true
@@ -69,7 +66,6 @@ exports.create = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'Pages not found'})
         }
-        logger.serverLog(TAG, `Page got ${session.page_id.pageName}`)
 
         Subscribers.findOne({_id: req.body.recipient_id}, (err, subscriber) => {
           if (err) {
@@ -81,8 +77,6 @@ exports.create = function (req, res) {
             if (err) {
               return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
             }
-            logger.serverLog(TAG,
-              `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${req.body.payload.componentType}`)
             let messageData = utility.prepareSendAPIPayload(
               subscriber.senderId,
               req.body.payload, true)
@@ -105,9 +99,6 @@ exports.create = function (req, res) {
                       `At send message live chat response ${JSON.stringify(
                         res.body.error)}`)
                   } else {
-                    logger.serverLog(TAG,
-                      `At send message live chat response ${JSON.stringify(
-                        res.body.message_id)}`)
                   }
                 }
               })

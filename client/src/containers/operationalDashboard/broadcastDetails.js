@@ -44,7 +44,6 @@ class ViewBroadcastTemplate extends React.Component {
     }
   }
   searchSubscriber (event) {
-    console.log('exeuting subscriber')
     this.setState({searchValue: event.target.value})
     var filtered = []
     var data = this.props.location.state.data.subscriber
@@ -62,8 +61,6 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   displayData (n, subscribers) {
-    console.log('exeuting subscriber')
-    console.log(subscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -80,7 +77,6 @@ class ViewBroadcastTemplate extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
   onTestURLVideo (url) {
@@ -88,7 +84,6 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -97,11 +92,9 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
   render () {
-    console.log('View broadcast template', this.props.location.state)
     return (
       <div>
         <Header />
@@ -114,7 +107,7 @@ class ViewBroadcastTemplate extends React.Component {
                   <h3>Title: {this.props.location.state.title}</h3>
                   <Link to='/operationalDashboard' style={{lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                   <br /><br />
-                    {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
+                  {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
                     <div className='row'>
 
                       <div
@@ -251,7 +244,7 @@ class ViewBroadcastTemplate extends React.Component {
                       </div>
                     </div>
                     }
-              </div>
+                </div>
                 <div className='col-xl-4'>
                   <ViewMessage payload={this.props.location.state.payload} />
                 </div>

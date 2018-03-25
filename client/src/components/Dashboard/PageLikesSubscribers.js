@@ -46,7 +46,6 @@ class PageLikesSubscribers extends React.Component {
   }
 
   render () {
-    console.log('hey')
     var convertRate = this.state.likes ? ((this.state.subscribers / this.state.likes) * 100).toFixed(1) + '%' : '0%'
     return (
       <div className='col-xl-6'>

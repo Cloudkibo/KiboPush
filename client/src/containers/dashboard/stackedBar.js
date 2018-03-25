@@ -6,11 +6,6 @@
 import React from 'react'
 import {ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'
 class StackedBar extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    console.log('StackedBar')
-  }
-
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
@@ -27,20 +22,6 @@ class StackedBar extends React.Component {
   render () {
     var data = []
     var temp = {}
-    console.log('new 5')
-    console.log(this.props.sentseendata)
-    // if (this.props.sentseendata.broadcastSentCount && this.props.sentseendata.broadcastSentCount.length > 0 && this.props.sentseendata.broadcastSeenCount.length) {
-    //   var temp = {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count}
-    //   data.push(temp)
-    // }
-    // if (this.props.sentseendata.surveySentCount && this.props.sentseendata.surveySentCount.length > 0 && this.props.sentseendata.surveySeenCount.length) {
-    //   temp = {name: 'Surveys', sent: this.props.sentseendata.surveySentCount[0].count, seen: this.props.sentseendata.surveySeenCount[0].count}
-    //   data.push(temp)
-    // }
-    // if (this.props.sentseendata.pollSentCount && this.props.sentseendata.pollSentCount.length > 0 && this.props.sentseendata.pollSeenCount.length) {
-    //   temp = {name: 'Polls', sent: this.props.sentseendata.pollSentCount[0].count, seen: this.props.sentseendata.pollSeenCount[0].count}
-    //   data.push(temp)
-    // }
     if (this.props.sentseendata.broadcastSentCount && this.props.sentseendata.broadcastSentCount.length > 0) {
       if (this.props.sentseendata.broadcastSeenCount.length > 0) {
         temp = {name: 'Broadcasts', sent: this.props.sentseendata.broadcastSentCount[0].count, seen: this.props.sentseendata.broadcastSeenCount[0].count}

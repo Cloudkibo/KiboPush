@@ -46,7 +46,6 @@ class Card extends React.Component {
   }
   updateCardDetails (cardProps) {
     if (cardProps.cardDetails && cardProps.cardDetails !== '') {
-      console.log(cardProps.cardDetails)
       this.setState({
         //  id: cardProps.id,
         componentType: 'card',
@@ -70,7 +69,7 @@ class Card extends React.Component {
   // Assuming only image
     var file = this.refs.file.files[0]
     var reader = new FileReader()
-    var url = reader.readAsDataURL(file)
+    reader.readAsDataURL(file)
 
     reader.onloadend = function (e) {
       // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
@@ -78,8 +77,6 @@ class Card extends React.Component {
         imgSrc: [reader.result]
       })
     }.bind(this)
-    console.log(url) // Would see a path?
-    console.log('Card Image in OnChange', file)
     this.setState({loading: true})
     this.props.uploadImage(file, {fileurl: '',
       fileName: file.name,
@@ -157,9 +154,7 @@ class Card extends React.Component {
       buttons: this.state.button})
   }
   removeButton (obj) {
-    console.log(obj)
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
-    console.log('Filter', temp)
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
@@ -177,8 +172,6 @@ class Card extends React.Component {
     this.setState({loading: false})
   }
   updateImageUrl (data) {
-    console.log('Update Card Image Url')
-    console.log(data)
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
       image_url: data.image_url,
@@ -198,10 +191,9 @@ class Card extends React.Component {
   }
 
   render () {
-    console.log('State: ', this.props.id)
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 +'px'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
+      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

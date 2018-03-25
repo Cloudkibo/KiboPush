@@ -1,7 +1,7 @@
 'use strict'
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
 
 var PermissionsSchema = new Schema({
 
@@ -13,5 +13,3 @@ var PermissionsSchema = new Schema({
 })
 
 module.exports = mongoose.model('permissions_plan', PermissionsSchema)
-
-

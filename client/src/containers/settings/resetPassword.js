@@ -80,28 +80,11 @@ class ResetPassword extends React.Component {
   }
   save (event) {
     event.preventDefault()
-    console.log('ismatch', this.state.ismatch)
     if (this.state.ismatch) {
       this.props.changePass({old_password: this.refs.current.value, new_password: this.refs.new.value}, this.msg)
     }
   }
-  componentWillMount () {
-  }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | api_settings'
   }
   componentWillReceiveProps (nextProps) {
@@ -188,10 +171,9 @@ class ResetPassword extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
-    // changeSuccess: (state.APIInfo.changeSuccess),
-    // changeFailure: (state.APIInfo.changeFailure)
+    // changeSuccess: (state.settingsInfo.changeSuccess),
+    // changeFailure: (state.settingsInfo.changeFailure)
   }
 }
 

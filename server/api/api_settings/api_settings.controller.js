@@ -1,9 +1,13 @@
 /**
  * Created by sojharo on 24/11/2017.
  */
+
+// eslint-disable-next-line no-unused-vars
 const logger = require('../../components/logger')
-const ApiSettings = require('./api_settings.model')
+// eslint-disable-next-line no-unused-vars
 const TAG = 'api/api_settings/api_settings.controller.js'
+
+const ApiSettings = require('./api_settings.model')
 const crypto = require('crypto')
 
 exports.index = function (req, res) {
@@ -58,7 +62,6 @@ exports.enable = function (req, res) {
           return res.status(500)
             .json({status: 'failed', description: 'API save failed'})
         }
-        logger.serverLog(TAG, 'api enabled')
         res.status(201).json({
           status: 'success',
           payload: savedSettings

@@ -99,23 +99,11 @@ class ChatBox extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
     this.scrollToTop()
-    // this.props.markRead(this.props.currentSession._id, this.props.sessions)
   }
 
   scrollToBottom () {
@@ -127,7 +115,6 @@ class ChatBox extends React.Component {
   }
 
   removeAttachment () {
-    console.log('remove', this.state.uploadedId)
     if (this.state.uploadedId !== '') {
       this.props.deletefile(this.state.uploadedId, this.handleRemove)
     }
@@ -158,36 +145,29 @@ class ChatBox extends React.Component {
   }
 
   sendSticker (sticker) {
-    console.log('sending sticker', sticker)
     this.state.componentType = 'sticker'
     this.state.stickerUrl = sticker.image.hdpi
-    console.log('state inside sendSticker: ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
   }
 
   sendGif (gif) {
-    console.log('sending Gif', gif)
     this.state.componentType = 'gif'
     this.state.gifUrl = gif.downsized.url
-    console.log('state inside sendGif: ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
   }
 
   sendThumbsUp () {
-    console.log('Sending thumbs up')
     this.state.componentType = 'thumbsUp'
-    console.log('state inside thumbsUp ', this.state)
     let enterEvent = new Event('keypress')
     enterEvent.which = 13
     this.onEnter(enterEvent)
   }
 
   resetFileComponent () {
-    console.log('resettingFileComponent')
     this.setState({
       attachment: [],
       attachmentType: '',
@@ -202,7 +182,6 @@ class ChatBox extends React.Component {
 
   handleTextChange (e) {
     var isUrl = getmetaurl(e.target.value)
-    console.log('isUrl', isUrl)
     if (isUrl !== null && isUrl !== '') {
       this.props.fetchUrlMeta(isUrl)
       this.setState({
@@ -274,25 +253,21 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
-    console.log('event in onEnter' + e)
     var isUrl = getmetaurl(this.state.textAreaValue)
     if (e.which === 13) {
       e.preventDefault()
-      console.log('state in onEnter: ', this.state)
       var payload = {}
       var session = this.props.currentSession
       var data = {}
       if (this.state.uploadedId !== '' && this.state.attachment) {
         payload = this.setDataPayload('attachment')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendAttachment(data, this.handleSendAttachment)
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (isUrl !== null && isUrl !== '') {
         payload = this.setDataPayload('text')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendChatMessage(data)
         this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
         data.format = 'convos'
@@ -300,7 +275,6 @@ class ChatBox extends React.Component {
       } else if (this.state.textAreaValue !== '') {
         payload = this.setDataPayload('text')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendChatMessage(data)
         this.setState({textAreaValue: ''})
         data.format = 'convos'
@@ -308,7 +282,6 @@ class ChatBox extends React.Component {
       } else if (this.state.componentType === 'gif') {
         payload = this.setDataPayload('gif')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendChatMessage(data)
         this.closeGif()
         data.format = 'convos'
@@ -316,7 +289,6 @@ class ChatBox extends React.Component {
       } else if (this.state.componentType === 'sticker') {
         payload = this.setDataPayload('sticker')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendChatMessage(data)
         this.hideStickers()
         data.format = 'convos'
@@ -324,7 +296,6 @@ class ChatBox extends React.Component {
       } else if (this.state.componentType === 'thumbsUp') {
         payload = this.setDataPayload('thumbsUp')
         data = this.setMessageData(session, payload)
-        console.log(data)
         this.props.sendChatMessage(data, session.companyId)
         data.format = 'convos'
         this.props.userChat.push(data)
@@ -340,14 +311,12 @@ class ChatBox extends React.Component {
   }
 
   handleRemove (res) {
-    console.log('handle remove', res)
     if (res.status === 'success') {
       this.resetFileComponent()
     }
     if (res.status === 'failed') {
       this.setState({uploaded: true, removeFileDescription: res.description})
     }
-    console.log(this.state)
   }
 
   setComponentType (file) {
@@ -362,16 +331,13 @@ class ChatBox extends React.Component {
     } else {
       this.setState({componentType: 'Not allowed'})
     }
-    console.log(this.state.componentType)
   }
 
   onFileChange (e) {
-    console.log('onFileChange')
     var files = e.target.files
     var file = e.target.files[files.length - 1]
     if (file) {
       this.resetFileComponent()
-      console.log('OnFileChange', file)
       this.setState({
         attachment: file,
         attachmentType: file.type
@@ -395,7 +361,6 @@ class ChatBox extends React.Component {
     this.textInput.focus()
   }
   handleUpload (res) {
-    console.log('handleUpload', res)
     if (res.status === 'failed') {
       this.setState({
         uploaded: false,
@@ -417,7 +382,6 @@ class ChatBox extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -426,12 +390,10 @@ class ChatBox extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in chatbox')
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -441,12 +403,10 @@ class ChatBox extends React.Component {
       this.setState({urlmeta: nextProps.urlMeta})
     }
     if (nextProps.userChat) {
-      console.log('user chats updated', nextProps.userChat)
     }
   }
 
   setEmoji (emoji) {
-    console.log('selected emoji', emoji)
     this.setState({
       textAreaValue: this.state.textAreaValue + emoji.native,
       showEmojiPicker: false
@@ -454,7 +414,6 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    console.log('componentDidUpdate in chatbox')
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
@@ -483,7 +442,6 @@ class ChatBox extends React.Component {
         key: i
       })
     }
-    console.log(temp)
     return (
       temp.map((card, i) => (
         <div key={card.key}>{card.element}</div>
@@ -500,7 +458,6 @@ class ChatBox extends React.Component {
   }
 
   render () {
-    console.log('current session', this.props.currentSession)
     var settings = {
       arrows: true,
       dots: false,

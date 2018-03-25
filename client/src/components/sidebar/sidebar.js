@@ -4,19 +4,7 @@
  */
 
 import React, {Component} from 'react'
-// import Joyride from 'react-joyride'
 import { Link } from 'react-router'
-// import Icon from 'react-icons-kit'
-//  import {ModalContainer, ModalDialog} from 'react-modal-dialog'
-//  import UserGuide from '../../containers/userGuide/userGuide'
-// import { question } from 'react-icons-kit/icomoon'   // userGuide
-// import { dashboard } from 'react-icons-kit/fa/dashboard'  // dashboard
-// import { bullhorn } from 'react-icons-kit/fa/bullhorn'  // broadcats
-// import { listAlt } from 'react-icons-kit/fa/listAlt'  // poll
-// import { facebook } from 'react-icons-kit/fa/facebook'  // pages
-// import { ic_replay_30 } from 'react-icons-kit/md/ic_replay_30' // workflows
-// import { facebookSquare } from 'react-icons-kit/fa/facebookSquare' // subscribe
-// import { pencilSquareO } from 'react-icons-kit/fa/pencilSquareO'   // Autoposting
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -52,96 +40,15 @@ class Sidebar extends Component {
       welcomeMessage: true,
       createPhoneList: true
     }
-    // props.fetchSessions({ company_id: this.props.user._id })
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
     this.showBroadcastTemplates = this.showBroadcastTemplates.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
   }
   componentDidMount () {
-    this.addSteps([
-      {
-        title: 'Dashboard',
-        text: 'The Dashboard provides you with a summary of information regarding your pages',
-        selector: 'li#dashboard',
-        position: 'top-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Growth Tools',
-        text: 'The growth tools allow you to upload csv files of customers, to integrate with messenger',
-        selector: 'li#growthTools',
-        position: 'left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Subscribers',
-        text: 'It allows you to see the list of subscribers',
-        selector: 'li#subscribers',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Conversation',
-        text: 'Allow you to broadcast a totally customizable message to your subscribers',
-        selector: 'li#convos',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Auto-Posting',
-        text: 'Details of Auto-Posting',
-        selector: 'li#autoposting',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Polls',
-        text: 'Allows you to send Polls to your subscribers',
-        selector: 'li#polls',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Surveys',
-        text: 'Allows you to send multiple polls',
-        selector: 'li#surveys',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-      {
-        title: 'Workflows',
-        text: 'Workflows allow you to auto-reply to certain keywords or messages to your page',
-        selector: 'li#workflows',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'Pages',
-        text: 'Allows you to connect or disconnect pages',
-        selector: 'li#pages',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true},
-
-      {
-        title: 'UserGuide',
-        text: 'Still confused? Check our User Guide',
-        selector: 'li#userguide',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true}
-
-    ])
-
     if (!this.state.ignore) {
       this.setState({ignore: true})
     }
@@ -152,25 +59,6 @@ class Sidebar extends Component {
 
   closeUserGuide () {
     this.setState({isShowingModal: false})
-  }
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
   }
 
   showOperationalDashboard () {
@@ -212,7 +100,7 @@ class Sidebar extends Component {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/convos' className='m-menu__link m-menu__toggle'>
+            <Link to='/broadcasts' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-paper-plane' />
               <span className='m-menu__link-text'>Broadcasts</span>
             </Link>
@@ -465,27 +353,10 @@ class Sidebar extends Component {
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
               {this.showSubscribersItem()}
-              {/* this.showWelcomeMessageItem() */}
               {this.showCreatePhoneList()}
-              {/* this.props.user && this.state.subscribeToMessenger && this.props.user.plan.subscribe_to_messenger &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/subscribeToMessenger' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-alarm' />
-                  <span className='m-menu__link-text'>Subscribe to Messenger</span>
-                </Link>
-              </li> */
-              }
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
               {this.showBroadcastTemplates()}
-              {/* this.props.user && this.state.messengerLink && this.props.user.plan.messenger_links &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/shareOptions' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-share' />
-                  <span className='m-menu__link-text'>Messenger Link</span>
-                </Link>
-              </li>
-              */}
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
@@ -519,7 +390,6 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

@@ -33,7 +33,6 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = videoEXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Video File Format not supported. Please download.')
     }
   }
 
@@ -42,12 +41,10 @@ class ViewBroadcastTemplate extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
 
   render () {
-    console.log('View broadcast template', this.props.location.state)
     return (
       <div>
         <Header />

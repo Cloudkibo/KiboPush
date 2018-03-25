@@ -44,17 +44,6 @@ class AddPage extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Pages'
     this.props.updateChecks({wizardSeen: true})
   }
@@ -64,7 +53,6 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('nextprops in connect page', nextprops)
     if (nextprops.message && nextprops.message !== '') {
       this.msg.error('The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.')
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
@@ -198,7 +186,6 @@ class AddPage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),

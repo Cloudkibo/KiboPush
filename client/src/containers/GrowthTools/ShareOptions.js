@@ -32,14 +32,12 @@ class ShareOptions extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('Next Props', nextprops)
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
           'pageid': nextprops.pages[0].pageId,
           'fblink': 'https://m.me/' + nextprops.pages[0].pageUserName
         })
-        console.log('Value Initialized')
       } else {
         this.setState({
           'pageid': nextprops.pages[0].pageId,
@@ -89,14 +87,12 @@ class ShareOptions extends React.Component {
   componentDidMount () {
     // require('../../../public/js/jquery-3.2.0.min.js')
     // require('../../../public/js/jquery.min.js')
-    console.log('hi anisha', this.props.pages)
     if (this.props.pages && this.props.pages.length > 0) {
       if (this.props.pages[0].pageUserName) {
         this.setState({
           'pageid': this.props.pages[0].pageId,
           'fblink': 'https://m.me/' + this.props.pages[0].pageUserName
         })
-        console.log('Value Initialized')
       } else {
         this.setState({
           'pageid': this.props.pages[0].pageId,
@@ -110,18 +106,7 @@ class ShareOptions extends React.Component {
 
       })
     }
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // adddScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Subscribe to Messenger'
-    console.log('anisha', this.props.pages)
   }
 
   render () {
@@ -258,7 +243,6 @@ class ShareOptions extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages)
 

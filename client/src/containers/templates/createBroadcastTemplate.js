@@ -59,7 +59,7 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)})
+          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={temp.length} key={temp.length} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
@@ -85,7 +85,6 @@ class CreateBroadcastTemplate extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
       let options = []
       for (var i = 0; i < nextprops.categories.length; i++) {
         options[i] = {id: nextprops.categories[i]._id, text: nextprops.categories[i].name}
@@ -95,7 +94,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   initializeCategorySelect (categoryOptions) {
-    console.log('Category options', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectCategory').select2({
@@ -111,7 +109,6 @@ class CreateBroadcastTemplate extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -119,7 +116,6 @@ class CreateBroadcastTemplate extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
 
@@ -132,7 +128,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   showResetAlertDialog () {
-    console.log('in showDialog')
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
     }
@@ -205,8 +200,6 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   handleCard (obj) {
-    console.log('handleCard in CreateConvo is called: ')
-    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -260,7 +253,6 @@ class CreateBroadcastTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   handleFile (obj) {
@@ -278,7 +270,6 @@ class CreateBroadcastTemplate extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
@@ -368,7 +359,7 @@ class CreateBroadcastTemplate extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />)}]}) }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
                                     <div className='align-center'>
                                       <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
@@ -539,7 +530,6 @@ class CreateBroadcastTemplate extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories)
   }

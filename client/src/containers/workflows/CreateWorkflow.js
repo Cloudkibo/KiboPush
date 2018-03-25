@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
@@ -16,8 +15,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import {
-  getuserdetails,
-  workflowsTourCompleted
+  getuserdetails
 } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
 
@@ -47,41 +45,6 @@ class CreateWorkflow extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Create Workflows'
-
-    this.addSteps([
-      {
-        title: 'Workflows',
-        text: `Workflows allow you to automatically respond to messages to your page, which meet a certain criteria`,
-        selector: 'div#workflow',
-        position: 'top-left',
-        type: 'hover',
-        isFixed: true
-      },
-      {
-        title: 'Keywords',
-        text: `Keywords are the specific strings, on which you want a particular action to take place `,
-        selector: 'div#keywords',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true
-      },
-      {
-        title: 'Rules',
-        text: 'Rules are applied on the message recieved together with the given keyword, to trigger the auto-reply',
-        selector: 'div#rules',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true
-      },
-      {
-        title: 'Reply',
-        text: 'Here you can write the automated message that get sent if above conditions are met',
-        selector: 'div#reply',
-        position: 'bottom-left',
-        type: 'hover',
-        isFixed: true
-      }
-    ])
   }
 
   componentWillReceiveProps (nextProps) {
@@ -104,12 +67,6 @@ class CreateWorkflow extends React.Component {
   }
 
   gotoWorkflow () {
-    console.log('Request Object', {
-      condition: this.state.condition,
-      keywords: this.state.keywords,
-      reply: this.state.reply,
-      isActive: this.state.isActive
-    })
     if (this.state.keywords.length === 0) {
       this.setState({
         alertMessage: 'Please fill the keywords field',
@@ -152,56 +109,12 @@ class CreateWorkflow extends React.Component {
     this.setState({isActive: event.target.value})
   }
 
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      this.props.workflowsTourCompleted({
-        'workFlowsTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     console.log('Alert Message:', this.state.alertMessage)
     return (
 
       <div>
-        {
-          (this.props.user && this.props.user.workFlowsTourSeen) &&
-          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps
-            debug={false} type={'continuous'}
-            callback={this.tourFinished} showStepsProgress
-            showSkipButton />
-        }
+
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -335,7 +248,6 @@ class CreateWorkflow extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows),
     user: (state.basicInfo.user),
@@ -350,7 +262,6 @@ function mapDispatchToProps (dispatch) {
       loadWorkFlowList: loadWorkFlowList,
       addWorkFlow: addWorkFlow,
       getuserdetails: getuserdetails,
-      workflowsTourCompleted: workflowsTourCompleted,
       clearAlertMessages: clearAlertMessages
     }, dispatch)
 }

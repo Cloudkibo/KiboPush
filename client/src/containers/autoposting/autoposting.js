@@ -38,28 +38,15 @@ class Autoposting extends React.Component {
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
     this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'autoposting_created',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.loadAutopostingList()
       }
     })
@@ -107,14 +94,14 @@ class Autoposting extends React.Component {
 
   gotoSettings (item) {
     this.props.history.push({
-      pathname: `/autoposting-itemsettings`,
+      pathname: `/autopostingItemSettings`,
       state: item
     })
   }
 
   gotoMessages (id) {
     this.props.history.push({
-      pathname: `/autoposting-messages`,
+      pathname: `/autopostingMessages`,
       state: {id: id}
     })
   }

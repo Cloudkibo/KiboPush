@@ -5,15 +5,34 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
 export function updatePagesList (data) {
-  console.log('Update my Pages', data)
   return {
     type: ActionTypes.LOAD_PAGES_LIST,
     data
   }
 }
-export function loadMyPagesList () {
-  console.log('loadPagesList called')
 
+export function updateOtherPages (data) {
+  return {
+    type: ActionTypes.FETCH_PAGES_LIST,
+    data
+  }
+}
+
+export function userpageconnect (data) {
+  return {
+    type: ActionTypes.PAGE_CONNECT_WARNING,
+    pages: data.pages,
+    page_connected: data.msg
+  }
+}
+export function pageNotPublished (data) {
+  return {
+    type: ActionTypes.PAGE_NOT_PUBLISHED,
+    data
+  }
+}
+
+export function loadMyPagesList () {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
@@ -23,32 +42,7 @@ export function loadMyPagesList () {
   }
 }
 
-export function updateOtherPages (data) {
-  console.log('Other Pages', data)
-  return {
-    type: ActionTypes.FETCH_PAGES_LIST,
-    data
-  }
-}
-
-export function userpageconnect (data) {
-  console.log(data)
-  return {
-    type: ActionTypes.PAGE_CONNECT_WARNING,
-    pages: data.pages,
-    page_connected: data.msg
-  }
-}
-export function pageNotPublished (data) {
-  console.log(data)
-  return {
-    type: ActionTypes.PAGE_NOT_PUBLISHED,
-    data
-  }
-}
 export function enablePage (page) {
-  console.log('enablePage called')
-  console.log(page)
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
@@ -74,7 +68,6 @@ export function addPages () {
 }
 
 export function removePage (page) {
-  console.log('remove page action called')
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
       .then(res => dispatch(updatePagesList(res.payload)))
@@ -82,7 +75,6 @@ export function removePage (page) {
 }
 
 export function removePageInAddPage (page) {
-  console.log('remove page in add page action called')
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
     .then(res => dispatch(updateOtherPages(res.payload)))
@@ -90,7 +82,6 @@ export function removePageInAddPage (page) {
 }
 
 export function loadOtherPagesList () {
-  console.log('loadOtherPagesList called')
   return (dispatch) => {
     callApi('pages/otherPages')
       .then(res => dispatch(updateOtherPages(res.payload)))

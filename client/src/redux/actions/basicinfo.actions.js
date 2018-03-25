@@ -17,17 +17,8 @@ export function showuserdetails (data) {
   }
 }
 
-export function getuserdetails () {
-  console.log('getuserdetails')
-
-  return (dispatch) => {
-    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
-  }
-}
-
 export function storeFbAppId (data) {
   // NOTE: don't remove following auth method call
-  console.log(data)
   return {
     type: ActionTypes.STORE_FB_APP_ID,
     data
@@ -36,26 +27,9 @@ export function storeFbAppId (data) {
 
 export function storeAdminSubscriptions (data) {
   // NOTE: don't remove following auth method call
-  console.log(data)
   return {
     type: ActionTypes.STORE_ADMIN_SUB_ID,
     data
-  }
-}
-
-export function getFbAppId () {
-  console.log('getfbappId')
-
-  return (dispatch) => {
-    callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
-  }
-}
-
-export function getAdminSubscriptions () {
-  console.log('getAdminSubscriptions')
-
-  return (dispatch) => {
-    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }
 }
 
@@ -73,68 +47,20 @@ export function setSocketStatus (data) {
   }
 }
 
-export function dashboardTourCompleted (tour) {
+export function getuserdetails () {
   return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateDashboardTour()))
-  }
-}
-export function updateDashboardTour () {
-  return {
-    type: ActionTypes.DASHBOARD_TOUR_COMPLETED
+    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
   }
 }
 
-export function workflowsTourCompleted (tour) {
+export function getFbAppId () {
   return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateWorkflowsTour()))
-  }
-}
-export function updateWorkflowsTour () {
-  return {
-    type: ActionTypes.WORKFLOWS_TOUR_COMPLETED
+    callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
   }
 }
 
-export function surveyTourCompleted (tour) {
+export function getAdminSubscriptions () {
   return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateSurveyTour()))
-  }
-}
-export function updateSurveyTour () {
-  return {
-    type: ActionTypes.SURVEY_TOUR_COMPLETED
-  }
-}
-
-export function convoTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateConvoTour()))
-  }
-}
-export function updateConvoTour () {
-  return {
-    type: ActionTypes.CONVO_TOUR_COMPLETED
-  }
-}
-
-export function pollTourCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updatePollTour()))
-  }
-}
-export function updatePollTour () {
-  return {
-    type: ActionTypes.POLL_TOUR_COMPLETED
-  }
-}
-
-export function getStartedCompleted (tour) {
-  return (dispatch) => {
-    callApi(`users/updateChecks`, 'post', tour).then(res => dispatch(updateGetStarted()))
-  }
-}
-export function updateGetStarted () {
-  return {
-    type: ActionTypes.POLL_TOUR_COMPLETED
+    callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }
 }

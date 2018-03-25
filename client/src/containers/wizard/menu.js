@@ -90,35 +90,18 @@ class Menu extends React.Component {
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
       }
     })
   }
   show () {
-    // swal({title: 'Congratulations!',
-    //   text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
-    //   icon: 'success',
-    //   buttons: ['Join Our Community', 'OK', 'Become Our Subscriber']
-      swal({
-  type: 'success',
-  title: 'Congratulations!',
-  text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
-  confirmButtonColor: '#337ab7',
-  footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
-  //       roll: {
-  //     text: "Join Our Community",
-  //     value: "roll"
-  //   },   roll1: {
-  //   text: "OK",
-  //   value: "roll1"
-  // },   roll2: {
-  // text: "Become Our Subscriber",
-//    value: "roll2"
-//}
-  //}
+    swal({
+      type: 'success',
+      title: 'Congratulations!',
+      text: 'Your basic setup is complete. You can make further changes by going to our settings page.',
+      confirmButtonColor: '#337ab7',
+      footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
-      console.log('Value of promise', value)
       browserHistory.push({
         pathname: `/dashboard`
       })
@@ -131,9 +114,7 @@ class Menu extends React.Component {
     this.setState({isShowingModal: false})
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.pages) {
-      console.log('Got some pages', nextProps.pages)
       var myPages = []
       nextProps.pages.map((page) => {
         if (page.connected) {
@@ -152,14 +133,11 @@ class Menu extends React.Component {
       }
     }
     if (nextProps.successMessage) {
-      console.log('success', JSON.stringify(nextProps.successMessage))
     } else if (nextProps.errorMessage) {
-      console.log('failure', JSON.stringify(nextProps.errorMessage))
     }
   }
 
   handleOption (option) {
-    console.log('option selected: ', option)
     this.setState({optionSelected: option})
     if (option === 'Add submenu') {
       this.setState({itemType: 'submenu'})
@@ -186,13 +164,11 @@ class Menu extends React.Component {
     }
   }
   setCreateMessage (event) {
-    console.log('In setCreateMessage ', event.target.value, this.clickIndex, this.props.currentMenuItem)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     var payload = []
     switch (index[0]) {
       case 'item':
-        console.log('An Item was Clicked position ', index[1])
         if (temp[index[1]].payload && temp[index[1]].payload !== '') {
           payload = temp[index[1]].payload
         }
@@ -204,7 +180,6 @@ class Menu extends React.Component {
         temp[index[1]].payload = payload
         break
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
         if (temp[index[1]].submenu[index[2]].payload && temp[index[1]].submenu[index[2]].payload !== '') {
           payload = temp[index[1]].submenu[index[2]].payload
         }
@@ -217,7 +192,6 @@ class Menu extends React.Component {
         temp[index[1]].submenu[index[2]].payload = payload
         break
       case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload && temp[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
           payload = temp[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
@@ -231,19 +205,16 @@ class Menu extends React.Component {
         break
 
       default:
-        console.log('In switch', index[0])
         break
     }
 
     this.setState({itemMenus: temp})
-    console.log('Saving menu item..', this.state.itemMenus)
     var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     this.props.saveCurrentMenuItem(currentState)
   }
   addSubmenu () {
     this.setState({openPopover: false})
     var temp = this.state.itemMenus
-    console.log('Target', this.target)
     if (this.target === this.state.indexClicked + '-item') {
       if (temp[this.state.indexClicked].submenu.length >= 5) {
         this.msg.error('Sorry you can add more than 5 submenus')
@@ -281,20 +252,16 @@ class Menu extends React.Component {
   }
 //  275303122985641
   pageChange (event) {
-    console.log('Selected: ', event.target.value)
     if (event === null) {
       this.setState({pageValue: event})
       return
     }
-    console.log('Page Valuename', event.target.name)
-    console.log('Page Value', this.state.pageValue)
     this.setState({pageValue: event.target.value, pageName: event.target.name})
     this.initializeItemMenus()
     this.props.saveCurrentMenuItem({})
     this.props.getIndexBypage(event.target.value, this.handleIndexByPage)
   }
   handleClick (event) {
-    console.log('Handle Click Was Called')
     var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     this.props.saveCurrentMenuItem(currentState)
     // this.props.history.push({
@@ -305,7 +272,6 @@ class Menu extends React.Component {
     this.setState({openPopover: false})
   }
   handleClose (e) {
-    console.log('handleClose', e)
     if (e.target.id === 'popover' ||
         document.getElementById('popover').contains(document.getElementById(e.target.id))) {
       return
@@ -336,13 +302,11 @@ class Menu extends React.Component {
   changeLabel (event, type, indexObject) {
     var temp = this.state.itemMenus
     this.clickedValue = event.target.value
-    console.log('Type is: ', type)
     switch (type) {
       case 'item':
         temp[indexObject.itemIndex].title = event.target.value
         break
       case 'submenu':
-        console.log('SubMenu CHanged')
         temp[indexObject.itemIndex].submenu[indexObject.subIndex].title = event.target.value
         break
       case 'nested':
@@ -357,7 +321,6 @@ class Menu extends React.Component {
   }
 
   removeItem (type, indexObject) {
-    console.log('Remove Item', type)
     var temp = { itemMenus: this.state.itemMenus, clickedIndex: this.clickIndex, currentPage: this.state.pageValue }
     switch (type) {
       case 'item':
@@ -366,8 +329,6 @@ class Menu extends React.Component {
           break
         }
         temp.itemMenus = temp.itemMenus.filter(function (x, i) {
-          console.log('temp filter', x, i)
-          console.log(i !== indexObject.itemIndex)
           return i !== indexObject.itemIndex
         })
         break
@@ -389,21 +350,16 @@ class Menu extends React.Component {
     this.props.saveCurrentMenuItem(currentState)
   }
   getItemClicked () {
-    console.log('In get clicked Item ', this.clickIndex)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     switch (index[0]) {
       case 'item':
-        console.log('An Item was Clicked position ', index[1])
         return temp[index[1]]
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
         return temp[index[1]].submenu[index[2]]
       case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         return temp[index[1]].submenu[index[2]].submenu[index[3]]
       default:
-        console.log('In switch', index[0])
         return null
     }
   }
@@ -412,7 +368,6 @@ class Menu extends React.Component {
     var temp = this.state.itemMenus
     switch (index[0]) {
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
         return temp[index[1]].submenu[index[2]]
       default:
         return false
@@ -429,7 +384,6 @@ class Menu extends React.Component {
   }
 
   setUrl (event) {
-    console.log('In setUrl ', event.target.value, 'in', this.clickIndex)
     var temp = this.state.itemMenus
     var index = this.clickIndex.split('-')
     if (isWebURL(event.target.value)) {
@@ -439,7 +393,6 @@ class Menu extends React.Component {
     }
     switch (index[0]) {
       case 'item':
-        console.log('An Item was Clicked position ', index[1])
         if (temp[index[1]].payload) {
           delete temp[index[1]].payload
         }
@@ -447,7 +400,6 @@ class Menu extends React.Component {
         temp[index[1]].url = event.target.value
         break
       case 'submenu':
-        console.log('A Submenu was Clicked position ', index[1], index[2])
         if (temp[index[1]].submenu[index[2]].payload) {
           delete temp[index[1]].submenu[index[2]].payload
         }
@@ -455,7 +407,6 @@ class Menu extends React.Component {
         temp[index[1]].submenu[index[2]].url = event.target.value
         break
       case 'nested':
-        console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
           delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
         }
@@ -464,14 +415,12 @@ class Menu extends React.Component {
         break
 
       default:
-        console.log('In switch', index[0])
         break
     }
     this.setState({itemMenus: temp})
   }
 
   save () {
-    console.log('Current Item', this.props.currentMenuItem)
     if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       for (var j = 0; j < this.props.currentMenuItem.itemMenus.length; j++) {
         if (!this.props.currentMenuItem.itemMenus[j].type && this.props.currentMenuItem.itemMenus[j].submenu.length === 0) {
@@ -481,7 +430,6 @@ class Menu extends React.Component {
       this.setState({
         itemMenus: this.props.currentMenuItem.itemMenus
       })
-      console.log('this.props.currentMenuItem.itemMenus', this.props.currentMenuItem.itemMenus)
       var temp = []
       for (var k = 0; k < this.props.currentMenuItem.itemMenus.length; k++) {
         temp.push(this.props.currentMenuItem.itemMenus[k])
@@ -489,7 +437,6 @@ class Menu extends React.Component {
       temp.push({url: 'www.kibopush.com', type: 'web_url', submenu: [], title: 'Powered by KiboPush'})
       var data = {}
       if (this.state.pageValue === '') {
-        console.log('empty')
         this.msg.error('Please select a page')
         return
       }
@@ -509,11 +456,6 @@ class Menu extends React.Component {
     this.setState({setWebUrl: !this.state.setWebUrl})
   }
   render () {
-    console.log('This transform data', this.state.itemMenus)
-  //  console.log('This transform data', transformData(this.state.itemMenus))
-    console.log('Page options', this.state.pageOptions)
-    console.log('Page value', this.state.pageValue)
-
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -610,7 +552,7 @@ class Menu extends React.Component {
                             </div>
                           </div>
                           <div className='row align-items-center'>
-                            <div className='col-xl-8 order-2 order-xl-1' ></div>
+                            <div className='col-xl-8 order-2 order-xl-1' />
                             <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
                               {
                                 this.state.isShowingModal &&
@@ -637,7 +579,6 @@ class Menu extends React.Component {
                         if (this.state.itemMenus[index + 1] || index === 1) {
                           return (<li className='nav-item m-tabs__item'>
                             <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
-                              {console.log('first', index)}
                               <form className='m-form m-form--fit m-form--label-align-right'>
                                 {index === 1
                                   ? <div className='m-portlet__body'>
@@ -670,7 +611,6 @@ class Menu extends React.Component {
                             </div>
                             {itm.submenu.map((sub, subindex) => {
                               return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
-                                {console.log('second')}
                                 <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
                                   <form className='m-form m-form--fit m-form--label-align-right'>
                                     <div className='m-portlet__body'>
@@ -801,8 +741,7 @@ class Menu extends React.Component {
                           </div>
                           <br /><br /><br />
                           <div className='row'>
-                            <div className='col-lg-6 m--align-left' >
-                            </div>
+                            <div className='col-lg-6 m--align-left' />
                             <div className='col-lg-6 m--align-right'>
                               { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
                                 ? <button onClick={this.showDialog} className='btn btn-primary' style={{'marginRight': '20px'}} disabled>
@@ -853,12 +792,11 @@ class Menu extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    indexByPage: (state.indexByPage.menuitems),
-    currentMenuItem: (state.getCurrentMenuItem.currentMenuItem),
+    indexByPage: (state.menuInfo.menuitems),
+    currentMenuItem: (state.menuInfo.currentMenuItem),
     successMessage: (state.menuInfo.successMessage),
     errorMessage: (state.menuInfo.errorMessage)
     //  items: (state.menuInfo.menuitems)

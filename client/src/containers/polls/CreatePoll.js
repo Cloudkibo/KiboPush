@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import { getuserdetails, pollTourCompleted } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -64,9 +64,6 @@ class CreatePoll extends React.Component {
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
@@ -78,20 +75,6 @@ class CreatePoll extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Create Poll'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
@@ -132,21 +115,22 @@ class CreatePoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -154,21 +138,25 @@ class CreatePoll extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
 
-    $("#selectLists").val('').trigger('change')
+      /* eslint-disable */
+    $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
-    console.log('Page Options in select', pageOptions)
     var self = this
+      /* eslint-disable */
     $('#selectPage').select2({
+      /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
+      /* eslint-disable */
     $('#selectPage').on('change', function (e) {
+      /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -179,19 +167,22 @@ class CreatePoll extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selected)
     })
   }
 
   initializeGenderSelect (genderOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectGender').select2({
+    /* eslint-enable */
       data: genderOptions,
       placeholder: 'Select Gender',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectGender').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -202,19 +193,22 @@ class CreatePoll extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
   initializeLocaleSelect (localeOptions) {
     var self = this
+    /* eslint-disable */
     $('#selectLocale').select2({
+    /* eslint-enable */
       data: localeOptions,
       placeholder: 'Select Locale',
       allowClear: true,
       multiple: true
     })
+    /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -225,12 +219,9 @@ class CreatePoll extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called in add survey', nextProps)
-    console.log('nextpropscustomer', nextProps.customerLists)
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
@@ -300,7 +291,6 @@ class CreatePoll extends React.Component {
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
-      console.log('Poll added')
     }
   }
 
@@ -325,43 +315,10 @@ class CreatePoll extends React.Component {
     }
   }
 
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      console.log('this: ', this)
-      console.log('Tour Finished')
-      console.log(this.props)
-      this.props.pollTourCompleted({
-        'pollTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: []})
     } if (e.currentTarget.value === 'segmentation') {
@@ -413,7 +370,7 @@ class CreatePoll extends React.Component {
     }
   }
   render () {
-    const { disabled, stayOpen } = this.state
+    // const { disabled, stayOpen } = this.state
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -630,7 +587,6 @@ class CreatePoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),
@@ -645,7 +601,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadPollsList: loadPollsList,
     addPoll: addPoll,
-    pollTourCompleted: pollTourCompleted,
     getuserdetails: getuserdetails,
     loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,

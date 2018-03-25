@@ -11,6 +11,7 @@ import { loadAutopostingMessages } from '../../redux/actions/autoposting.actions
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { Link } from 'react-router'
 
 class AutopostingMessages extends React.Component {
   constructor (props, context) {
@@ -25,29 +26,15 @@ class AutopostingMessages extends React.Component {
   }
 
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     this.scrollToTop()
-
     document.title = 'KiboPush | Autoposting Messages'
   }
 
   displayData (n, messages) {
-    console.log(messages)
     let offset = n * 4
     let data = []
     let limit
@@ -69,16 +56,13 @@ class AutopostingMessages extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called')
     if (nextProps.autoposting_messages) {
-      console.log('Autoposting Messages Updated', nextProps.autoposting_messages)
       this.displayData(0, nextProps.autoposting_messages)
       this.setState({ totalLength: nextProps.autoposting_messages.length })
     }
   }
 
   render () {
-    console.log('AutopostingMessages', this.state.messagesData)
     return (
       <div>
         <Header />
@@ -117,7 +101,7 @@ class AutopostingMessages extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div>
+                      <div className='tab-content'>
                         { this.state.messagesData && this.state.messagesData.length > 0
                           ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                             <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
@@ -181,6 +165,10 @@ class AutopostingMessages extends React.Component {
                             <p> No data to display </p>
                           </span>
                         }
+                        <div className='add-options-message' style={{marginBottom: '35px'}}>
+                          <Link to='/autoposting' className='btn btn-primary pull-right'>Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

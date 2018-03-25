@@ -57,12 +57,6 @@ class EditWorkflow extends React.Component {
   }
 
   gotoWorkflow () {
-    console.log('Request Object', {
-      condition: this.state.condition,
-      keywords: this.state.keywords,
-      reply: this.state.reply,
-      isActive: this.state.isActive
-    })
     this.props.editWorkFlow({
       condition: this.state.condition,
       keywords: this.state.keywords,
@@ -70,9 +64,6 @@ class EditWorkflow extends React.Component {
       isActive: this.state.isActive,
       _id: this.props.location.state._id
     })
-    // this.props.history.push({
-    //   pathname: '/workflows'
-    // })
   }
 
   changeCondition (event) {
@@ -218,7 +209,6 @@ class EditWorkflow extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     workflows: (state.workflowsInfo.workflows),
     successMessage: (state.workflowsInfo.successMessageEdit),

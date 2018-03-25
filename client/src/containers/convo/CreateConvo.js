@@ -29,7 +29,7 @@ import Gallery from './Gallery'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import { getuserdetails, convoTourCompleted, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import _ from 'underscore'
 import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -100,9 +100,6 @@ class CreateConvo extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.checkConditions = this.checkConditions.bind(this)
@@ -117,31 +114,40 @@ class CreateConvo extends React.Component {
   componentWillMount () {
     // this.props.loadMyPagesList();
     // if(this.props.pages.length > 0){
-    //   console.log("componentDidMount pageValue set")
     //   this.setState({pageValue: this.props.pages[0].pageId})
     // }
   }
   onNext () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   onPrevious () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     $('[href="#tab_1"]').tab('show')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
+    /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
+    /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
+    /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
   handleSendBroadcast (res) {
@@ -151,15 +157,16 @@ class CreateConvo extends React.Component {
     }
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
     this.scrollToTop()
     let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+    if (this.props.pages) {
+      for (var i = 0; i < this.props.pages.length; i++) {
+        options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+      }
     }
 
     this.setState({page: {options: options}})
@@ -168,7 +175,6 @@ class CreateConvo extends React.Component {
     this.initializePageSelect(options)
     this.initTab()
     // if (this.props.pages.length > 0) {
-    //   console.log('componentDidMount pageValue set')
     //   var temp = []
     //   for (var j = 0; j < this.props.pages.length; j++) {
     //     temp.push(this.props.pages[j].pageId)
@@ -181,7 +187,6 @@ class CreateConvo extends React.Component {
     registerAction({
       event: 'admin_subscriber',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.getAdminSubscriptions()
         comp.setState({showMessengerModal: false})
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
@@ -191,9 +196,7 @@ class CreateConvo extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
-      console.log('Broadcasts Updated', nextProps.broadcasts)
     }
-    console.log('nextProps.customerLists', nextProps.customerLists)
     if (nextProps.customerLists) {
       let options = []
       for (var j = 0; j < nextProps.customerLists.length; j++) {
@@ -212,12 +215,10 @@ class CreateConvo extends React.Component {
       }
     }
     // if(nextProps.pages.length > 0){
-    //   console.log("componentWillReceiveProps pageValue set")
     //   this.setState({pageValue: nextProps.pages[0].pageId})
     // }
   }
   showGuideLinesDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModalGuideLines: true})
   }
 
@@ -225,7 +226,6 @@ class CreateConvo extends React.Component {
     this.setState({isShowingModalGuideLines: false})
   }
   showResetAlertDialog () {
-    console.log('in showDialog')
     if (this.state.broadcast.length > 0 || this.state.list.length > 0) {
       this.setState({isShowingModalResetAlert: true})
     }
@@ -252,7 +252,7 @@ class CreateConvo extends React.Component {
 
   gotoView (event) {
     this.props.history.push({
-      pathname: `/convos`
+      pathname: `/broadcasts`
 
     })
   }
@@ -292,8 +292,6 @@ class CreateConvo extends React.Component {
   }
 
   handleCard (obj) {
-    console.log('handleCard in CreateConvo is called: ')
-    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -347,7 +345,6 @@ class CreateConvo extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   handleFile (obj) {
@@ -365,7 +362,6 @@ class CreateConvo extends React.Component {
     }
 
     this.setState({broadcast: temp})
-    // console.log("Image Uploaded", obj)
   }
 
   removeComponent (obj) {
@@ -374,7 +370,6 @@ class CreateConvo extends React.Component {
     this.setState({list: temp, broadcast: temp2})
   }
   checkConditions (pageValue, genderValue, localeValue) {
-    console.log('values', pageValue, genderValue, localeValue)
     let subscribersMatchPages = []
     let subscribersMatchLocale = []
     let subscribersMatchGender = []
@@ -406,10 +401,8 @@ class CreateConvo extends React.Component {
       }
     }
     if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      console.log('intersection', _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender))
       var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
       if (result.length === 0) {
-        console.log('inside if')
         return false
       }
     } else if (pageValue.length > 0 && genderValue.length) {
@@ -431,9 +424,6 @@ class CreateConvo extends React.Component {
     } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
       return false
     }
-    console.log('subscribersMatchPages', subscribersMatchPages)
-    console.log('genderValue', subscribersMatchGender)
-    console.log('subscribersMatchLocale', subscribersMatchLocale)
     return true
   }
   sendConvo () {
@@ -448,7 +438,6 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
       isSegmentedValue = true
     }
-    console.log(this.state.broadcast)
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
@@ -486,7 +475,6 @@ class CreateConvo extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
-        console.log('Data sent: ', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }
@@ -494,22 +482,18 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    console.log('in test convo')
     if (this.state.pageValue.length > 1 || this.state.pageValue.length === 0) {
       this.msg.error('Only one page should be selected to test the broadcast')
     } else {
       var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId.pageId === this.state.pageValue[0] })
-      console.log('Check', check)
       if (check.length <= 0) {
         this.setState({showMessengerModal: true})
-        console.log('Setting Messenger Modal to True')
         return
       }
       // for (let i = 0; i < this.props.pages.length; i++) {
       //   if (this.props.pages[i].pageId === this.state.pageValue) {
       //     if (!this.props.pages[i].adminSubscriberId) {
             // this.setState({showMessengerModal: true})
-            // console.log('Setting Messenger Modal to True')
             // return
       //     }
       //   }
@@ -518,7 +502,6 @@ class CreateConvo extends React.Component {
       if (this.state.broadcast.length === 0) {
         return
       }
-      console.log(this.state.broadcast)
       var isListValue = false
       if (this.state.listSelected.length > 0) {
         isListValue = true
@@ -541,7 +524,6 @@ class CreateConvo extends React.Component {
         isList: isListValue
 
       }
-      console.log('Data sent: ', data)
       this.props.sendBroadcast(data, this.msg)
     }
   }
@@ -550,50 +532,23 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
-  addSteps (steps) {
-    // let joyride = this.refs.joyride
-
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
-  tourFinished (data) {
-    console.log('Next Tour Step')
-    if (data.type === 'finished') {
-      this.props.convoTourCompleted({
-        'convoTourSeen': true
-      })
-    }
-  }
   initializeListSelect (lists) {
-    console.log('Initialize Lists', lists)
     var self = this
+    /* eslint-disable */
     $('#selectLists').select2({
+    /* eslint-enable */
       data: lists,
       placeholder: 'Select Lists',
       allowClear: true,
       tags: true,
       multiple: true
     })
-
+    /* eslint-disable */
     $('#selectLists').on('change', function (e) {
+    /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -601,13 +556,13 @@ class CreateConvo extends React.Component {
         }
         self.setState({ listSelected: selected })
       }
-      console.log('change List Selection', selected)
     })
 
-    $("#selectLists").val('').trigger('change')
+    /* eslint-disable */
+    $('#selectLists').val('').trigger('change')
+    /* eslint-enable */
   }
   initializePageSelect (pageOptions) {
-    console.log(pageOptions)
     var self = this
     /* eslint-disable */
     $('#selectPage').select2({
@@ -618,9 +573,7 @@ class CreateConvo extends React.Component {
       multiple: true
     })
 
-    console.log('In initializePageSelect')
     // this.setState({pageValue: pageOptions[0].id})
-    // console.log("Setting pageValue in InitPage Select", this.state.pageValue)
 
     /* eslint-disable */
     $('#selectPage').on('change', function (e) {
@@ -630,7 +583,6 @@ class CreateConvo extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('e.target.selectedOptions', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].value
@@ -638,7 +590,6 @@ class CreateConvo extends React.Component {
         }
         self.setState({ pageValue: selected })
       }
-      console.log('change Page', selectedOptions)
     })
   }
 
@@ -653,7 +604,6 @@ class CreateConvo extends React.Component {
       multiple: true
     })
 
-    console.log('In Initialize Gender Select', genderOptions)
     /* eslint-disable */
     $('#selectGender').on('change', function (e) {
       /* eslint-enable */
@@ -667,7 +617,6 @@ class CreateConvo extends React.Component {
         }
         self.setState({ genderValue: selected })
       }
-      console.log('change Gender', selected)
     })
   }
 
@@ -681,7 +630,6 @@ class CreateConvo extends React.Component {
       allowClear: true,
       multiple: true
     })
-    console.log('initializeLocaleSelect')
     /* eslint-disable */
     $('#selectLocale').on('change', function (e) {
       /* eslint-enable */
@@ -695,7 +643,6 @@ class CreateConvo extends React.Component {
         }
         self.setState({ localeValue: selected })
       }
-      console.log('change Locale', selected)
     })
   }
   goBack () {
@@ -704,11 +651,9 @@ class CreateConvo extends React.Component {
     })
   }
   handleRadioButton (e) {
-    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
-    console.log('e.currentTarget.value', e.currentTarget.value)
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: [], isList: true})
     } if (e.currentTarget.value === 'segmentation') {
@@ -716,10 +661,6 @@ class CreateConvo extends React.Component {
     }
   }
   render () {
-    console.log('Pages ', this.props.pages)
-    console.log('Page Value', this.state.pageValue)
-    console.log('List', this.state)
-
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -823,7 +764,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <div className='row' >
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState={true} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}) }}>
                                         <div className='align-center'>
                                           <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                           <h6>Text</h6>
@@ -981,17 +922,17 @@ class CreateConvo extends React.Component {
                                   {
                                     this.state.showMessengerModal &&
                                     <ModalContainer style={{width: '500px'}}
-                                      onClick={() => { this.setState({showMessengerModal: false}); console.log('Model Clicked') }}
+                                      onClick={() => { this.setState({showMessengerModal: false}) }}
                                       onClose={() => { this.setState({showMessengerModal: false}) }}>
                                       <ModalDialog style={{width: '500px'}}
-                                        onClick={() => { this.setState({showMessengerModal: false}); console.log('Dialog Clicked') }}
+                                        onClick={() => { this.setState({showMessengerModal: false}) }}
                                         onClose={() => { this.setState({showMessengerModal: false}) }}>
-                                        <h3 onClick={() => { this.setState({showMessengerModal: false}); console.log('Text Clicked') }} >Connect to Messenger:</h3>
+                                        <h3 onClick={() => { this.setState({showMessengerModal: false}) }} >Connect to Messenger:</h3>
                                         <MessengerPlugin
                                           appId={this.props.fbAppId}
                                           pageId={JSON.stringify(this.state.pageValue[0])}
                                           passthroughParams={this.props.user._id}
-                                          onClick={() => { console.log('Click on Messenger'); this.setState({showMessengerModal: false}) }}
+                                          onClick={() => { this.setState({showMessengerModal: false}) }}
                                         />
                                       </ModalDialog>
                                     </ModalContainer>
@@ -1118,7 +1059,6 @@ function mapDispatchToProps (dispatch) {
       addPages: addPages,
       sendBroadcast: sendBroadcast,
       getuserdetails: getuserdetails,
-      convoTourCompleted: convoTourCompleted,
       getFbAppId: getFbAppId,
       createWelcomeMessage: createWelcomeMessage,
       getAdminSubscriptions: getAdminSubscriptions,

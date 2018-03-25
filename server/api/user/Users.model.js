@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   timezone: Number,
   profilePic: String,
   plan: {type: String,
-    enum : ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
+    enum: ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
     default: 'plan_B'},
   isSuperUser: {type: Boolean, default: false},
   createdAt: {type: Date, default: Date.now},
@@ -150,7 +150,7 @@ UserSchema.methods = {
    */
   encryptPassword: function (password) {
     if (!password || !this.salt) return ''
-    let salt = new Buffer(this.salt, 'base64')
+    let salt = Buffer.from(this.salt, 'base64')
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64')
   }
 }

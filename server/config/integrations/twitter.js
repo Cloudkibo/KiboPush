@@ -6,6 +6,7 @@ const config = require('../environment/index')
 let Twit = require('twit')
 let AutoPosting = require('../../api/autoposting/autopostings.model')
 let Pages = require('../../api/pages/Pages.model')
+const URL = require('../../api/URLforClickedCount/URL.model')
 let Subscribers = require('../../api/subscribers/Subscribers.model')
 const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
@@ -116,7 +117,6 @@ function connect () {
                             pageId: page._id,
                             companyId: postingItem.companyId,
                             autoposting_type: 'twitter',
-                            payload: tweet,
                             autopostingId: postingItem._id,
                             sent: subscribers.length,
                             seen: 0,
@@ -128,46 +128,76 @@ function connect () {
                             logger.serverLog(TAG, 'autoposting message saved', true)
 
                             subscribers.forEach(subscriber => {
-                              let messageData = createFbPayload(subscriber, tweet)
+                              let messageData = {}
+                              if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
+                                messageData = {
+                                  'recipient': JSON.stringify({
+                                    'id': subscriber.senderId
+                                  }),
+                                  'message': JSON.stringify({
+                                    'text': tweet.text,
+                                    'metadata': 'This is a meta data for tweet'
+                                  })
+                                }
+                                sendAutopostingMessage(messageData, page, savedMsg)
+                              } else {
+                                let URLObject = new URL({
+                                  originalURL: tweet.entities.media[0].url,
+                                  subscriberId: subscriber._id,
+                                  module: {
+                                    id: savedMsg._id,
+                                    type: 'autoposting'
+                                  }
+                                })
+
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+
+                                  let newURL = config.domain + '/api/URL/' + savedurl._id
+                                  messageData = {
+                                    'recipient': JSON.stringify({
+                                      'id': subscriber.senderId
+                                    }),
+                                    'message': JSON.stringify({
+                                      'attachment': {
+                                        'type': 'template',
+                                        'payload': {
+                                          'template_type': 'generic',
+                                          'elements': [
+                                            {
+                                              'title': tweet.text,
+                                              'image_url': tweet.entities.media[0].media_url,
+                                              'subtitle': 'kibopush.com',
+                                              'buttons': [
+                                                {
+                                                  'type': 'web_url',
+                                                  'url': newURL,
+                                                  'title': 'View Tweet'
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    })
+                                  }
+                                  sendAutopostingMessage(messageData, page, savedMsg)
+                                })
+                              }
+
                               let newSubscriberMsg = new AutopostingSubscriberMessages({
                                 pageId: page.pageId,
                                 companyId: postingItem.companyId,
                                 autopostingId: postingItem._id,
                                 autoposting_messages_id: savedMsg._id,
                                 subscriberId: subscriber.senderId,
-                                payload: tweet
+                                payload: messageData
                               })
 
                               newSubscriberMsg.save((err, savedSubscriberMsg) => {
                                 if (err) logger.serverLog(TAG, err)
                                 logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
                               })
-
-                              request(
-                                {
-                                  'method': 'POST',
-                                  'json': true,
-                                  'formData': messageData,
-                                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                                  page.accessToken
-                                },
-                                function (err, res) {
-                                  if (err) {
-                                    return logger.serverLog(TAG,
-                                      `At send tweet broadcast ${JSON.stringify(
-                                      err)}`)
-                                  } else {
-                                    if (res.statusCode !== 200) {
-                                      logger.serverLog(TAG,
-                                      `At send tweet broadcast response ${JSON.stringify(
-                                        res.body.error)}`)
-                                    } else {
-                                      logger.serverLog(TAG,
-                                        `At send tweet broadcast response ${JSON.stringify(
-                                        res.body.message_id)}`, true)
-                                    }
-                                  }
-                                })
                             })
                           })
                         }
@@ -179,6 +209,39 @@ function connect () {
         })
       }
     })
+}
+
+function sendAutopostingMessage (messageData, page, savedMsg) {
+  request(
+    {
+      'method': 'POST',
+      'json': true,
+      'formData': messageData,
+      'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+      page.accessToken
+    },
+    function (err, res) {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At send tweet broadcast ${JSON.stringify(
+          err)}`)
+      } else {
+        if (res.statusCode !== 200) {
+          logger.serverLog(TAG,
+          `At send tweet broadcast response ${JSON.stringify(
+            res.body.error)}`)
+        } else {
+          logger.serverLog(TAG,
+            `At send tweet broadcast response ${JSON.stringify(
+            res.body.message_id)}`, true)
+        }
+      }
+    })
+  AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+    }
+  })
 }
 
 function restart () {
@@ -199,51 +262,6 @@ function findUser (screenName, fn) {
       }
       fn(null, data)
     })
-}
-
-function createFbPayload (subscriber, tweet) {
-  let messageData = {}
-  if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
-    messageData = {
-      'recipient': JSON.stringify({
-        'id': subscriber.senderId
-      }),
-      'message': JSON.stringify({
-        'text': tweet.text,
-        'metadata': 'This is a meta data for tweet'
-      })
-    }
-  } else {
-    messageData = {
-      'recipient': JSON.stringify({
-        'id': subscriber.senderId
-      }),
-      'message': JSON.stringify({
-        'attachment': {
-          'type': 'template',
-          'payload': {
-            'template_type': 'generic',
-            'elements': [
-              {
-                'title': tweet.text,
-                'image_url': tweet.entities.media[0].media_url,
-                'subtitle': 'kibopush.com',
-                'buttons': [
-                  {
-                    'type': 'web_url',
-                    'url': tweet.entities.media[0].url,
-                    'title': 'View Tweet'
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      })
-    }
-  }
-  logger.serverLog(TAG, `payload to send ${JSON.stringify(messageData)}`)
-  return messageData
 }
 
 exports.connect = connect

@@ -8,6 +8,10 @@
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
+// eslint-disable-next-line no-unused-vars
+const logger = require('../../components/logger')
+// eslint-disable-next-line no-unused-vars
+const TAG = 'api/broadcast/broadcasts.utility.js'
 const utility = require('../../components/utility')
 
 function validateInput (body) {

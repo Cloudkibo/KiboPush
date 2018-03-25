@@ -38,7 +38,6 @@ class Members extends React.Component {
   }
 
   displayData (n, members) {
-    console.log(members)
     let offset = n * 4
     let data = []
     let limit
@@ -94,11 +93,9 @@ class Members extends React.Component {
     })
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   render () {
-    console.log('Members', this.props.members)
     return (
       <div>
         <Header />
@@ -152,61 +149,6 @@ class Members extends React.Component {
                   }
                 </div>
                 <div className='m-portlet__body'>
-                  <div
-                    className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                    <div className='row align-items-center'>
-                      <div className='col-xl-12 order-2 order-xl-1'>
-                        {/* { */}
-                        {/* this.props.invitations && */}
-                        {/* this.props.invitations.length > 0 && */}
-                        {/* <div */}
-                        {/* className='form-group m-form__group row align-items-center'> */}
-                        {/* <div className='col-md-5'> */}
-                        {/* <div */}
-                        {/* className='m-form__group m-form__group--inline'> */}
-                        {/* <div className='m-form__label'> */}
-                        {/* <label> */}
-                        {/* Condition: */}
-                        {/* </label> */}
-                        {/* </div> */}
-                        {/* <div className='m-form__control'> */}
-                        {/* <select className='custom-select' id='conditionSelect' value={this.state.filterByCondition} onChange={this.handleFilterByCondition} > */}
-                        {/* <option value='' disabled>Filter by Condition...</option> */}
-                        {/* <option value='message_is'>message_is</option> */}
-                        {/* <option value='message_contains'>message_contains</option> */}
-                        {/* <option value='message_begins'>message_begins</option> */}
-                        {/* <option value=''>all</option> */}
-                        {/* </select> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* <div */}
-                        {/* className='d-md-none m--margin-bottom-10' /> */}
-                        {/* </div> */}
-                        {/* <div className='col-md-3'> */}
-                        {/* <div */}
-                        {/* className='m-form__group m-form__group--inline'> */}
-                        {/* <div className='m-form__label'> */}
-                        {/* <label> */}
-                        {/* Active: */}
-                        {/* </label> */}
-                        {/* </div> */}
-                        {/* <div className='m-form__control'> */}
-                        {/* <select className='custom-select' id='isActiveSelect' value={this.state.filterByStatus} onChange={this.handleFilterByStatus}> */}
-                        {/* <option value='' disabled>Filter by Status...</option> */}
-                        {/* <option value='yes'>yes</option> */}
-                        {/* <option value='no'>no</option> */}
-                        {/* <option value=''>all</option> */}
-                        {/* </select> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* <div */}
-                        {/* className='d-md-none m--margin-bottom-10' /> */}
-                        {/* </div> */}
-                        {/* </div> */}
-                        {/* } */}
-                      </div>
-                    </div>
-                  </div>
                   {
                     this.props.members && this.props.members.length > 0
                       ? <div>
@@ -309,11 +251,11 @@ class Members extends React.Component {
                                         {
                                           member.role !== 'buyer' && member.role === 'agent' && this.props.user.permissions.deleteAgentPermission &&
                                           <button className='btn btn-primary'
-                                                  style={{
-                                                    float: 'left',
-                                                    margin: 2
-                                                  }}
-                                                  onClick={() => this.removeMember(
+                                            style={{
+                                              float: 'left',
+                                              margin: 2
+                                            }}
+                                            onClick={() => this.removeMember(
                                                     member)}>Delete
                                           </button>
                                         }
@@ -353,7 +295,6 @@ class Members extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     members: (state.membersInfo.members)

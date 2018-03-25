@@ -1,7 +1,7 @@
 'use strict'
 
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
 
 var VerificationtokenSchema = new Schema({
   userId: {type: Schema.ObjectId, required: true, ref: 'users'},

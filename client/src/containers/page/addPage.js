@@ -44,17 +44,6 @@ class AddPage extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Add Pages'
   }
 
@@ -63,7 +52,6 @@ class AddPage extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('nextprops in connect page', nextprops)
     if (nextprops.message && nextprops.message !== '') {
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
@@ -85,7 +73,6 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
-    console.log('SHow allert state', this.state.showAlert)
     return (
       <div>
         <Header />
@@ -208,57 +195,6 @@ class AddPage extends React.Component {
               </div>
             </div>
           </div>
-
-          {/*
-             <div className='container'>
-            <br /><br /><br /><br /><br /><br />
-            <div className='row'>
-              <main
-                className='col-xl-6 push-xl-3 col-lg-12 push-lg-0 col-md-12 col-sm-12 col-xs-12'>
-                <h3>Add Pages</h3>
-                {this.state.showAlert === true &&
-                <center>
-                  <Alert type='danger' timeout={this.state.timeout}
-                    onDismiss={this.onDismissAlert.bind(this)}>
-                    {this.state.alertmsg}
-                  </Alert>
-                </center>
-
-                    }
-                {
-                (this.props.otherPages) &&
-                this.props.otherPages.map((page, i) => (
-                  <div className='ui-block'>
-                    <div className='birthday-item inline-items'>
-
-                      <div className='birthday-author-name'>
-                        <a href='#'
-                          className='h6 author-name'>{page.pageName} </a>
-
-                      </div>
-                      {(page.connected) &&
-                      <button onClick={() => this.props.removePageInAddPage(page)}
-                        className='btn btn-sm bg-blue'>Disconnect
-                      </button>
-                      }
-                      {(!page.connected) &&
-                      <button onClick={() => this.props.enablePage(page)}
-                        className='btn btn-sm bg-blue'>Connect
-                      </button>
-                      }
-                    </div>
-                  </div>
-                ))
-              }
-                <button onClick={() => this.gotoView()}
-                  className='btn btn-sm bg-blue'>Done
-              </button>
-              </main>
-
-            </div>
-          </div>
-          */}
-
         </div>
       </div>
 
@@ -267,7 +203,6 @@ class AddPage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),

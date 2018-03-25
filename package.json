@@ -15,7 +15,8 @@
     "start:prod": "cross-env NODE_ENV=production node server/app.js",
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
-    "build:react": "echo 'Build reactjs bundle...' && browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]",
+    "build:react": "echo 'Build reactjs bundle...' && browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ] && npm run uglify",
+    "uglify": "uglifyjs client/public/js/bundle.js --source-map --output client/public/js/bundle.js",
     "lint": "echo 'Pre-commit checks...' && standard --fix && echo \"No code style errors found.\"",
     "test": "echo \"Code tests are under construction by Sojharo\" && exit 0"
   },
@@ -148,6 +149,7 @@
     "sweetalert2": "^7.15.1",
     "tai-password-strength": "^1.1.1",
     "twit": "^2.2.9",
+    "uglify-js": "^3.3.16",
     "underscore": "^1.8.3",
     "valid-url": "^1.0.9",
     "watch": "^1.0.2",

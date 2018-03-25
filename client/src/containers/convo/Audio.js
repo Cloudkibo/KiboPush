@@ -61,7 +61,6 @@ class Audio extends React.Component {
     var truef = AUDIO_EXTENSIONS.test(url)
 
     if (truef === false) {
-      console.log('Audio File Format not supported. Please download.')
     }
   }
   showDialog (page) {
@@ -77,7 +76,6 @@ class Audio extends React.Component {
   }
 
   onFilesChange (files) {
-    console.log(files)
     if (files.length > 0) {
       var file = files[files.length - 1]
       this.setState({file: file})
@@ -96,7 +94,6 @@ class Audio extends React.Component {
           type: file.type,
           size: file.size
         }
-        console.log(fileInfo)
         this.setState({loading: true, showPreview: false})
         this.props.uploadFile(fileData, fileInfo, this.props.handleFile, this.setLoading)
       }
@@ -104,7 +101,6 @@ class Audio extends React.Component {
   }
 
   onFilesError (error, file) {
-    console.log('error code ' + error.code + ': ' + error.message)
     this.setState({errorMsg: error.message, showDialog: true})
   }
 
@@ -119,7 +115,7 @@ class Audio extends React.Component {
     return (
       <div className='broadcast-component'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20+'px', margin: -15+'px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>

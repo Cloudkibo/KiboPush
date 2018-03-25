@@ -5,9 +5,7 @@
 
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
-//  import Responsive from '../../components/sidebar/responsive'
 import Header from '../../components/header/header'
-//  import HeaderResponsive from '../../components/header/headerResponsive'
 import { connect } from 'react-redux'
 import {
   loadMyPagesList
@@ -90,17 +88,6 @@ class SubscribeToMessenger extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Subscribe to Messenger'
   }
 
@@ -272,7 +259,6 @@ class SubscribeToMessenger extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages)
 

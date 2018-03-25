@@ -1,9 +1,8 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { browserHistory } from 'react-router'
 import { loadBroadcastsList, loadCategoriesList, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -27,7 +26,6 @@ class ShowTemplates extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
   }
   onBroadcastClick (e, page) {
-    console.log('Page Click', page)
     this.props.saveBroadcastInformation(page)
   }
   showDropDown () {
@@ -38,19 +36,15 @@ class ShowTemplates extends React.Component {
     this.setState({showDropDown: false})
   }
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps called')
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.length })
     }
   }
   displayData (n, broadcasts) {
-    console.log(broadcasts)
     this.setState({broadcastsData: broadcasts})
-    console.log('broadcastsDatainside', this.state.broadcastsData)
   }
   onFilter (e) {
-    console.log(e.target.value)
     this.setState({filterValue: e.target.value})
     var filtered = []
     if (e.target.value !== '') {
@@ -75,13 +69,12 @@ class ShowTemplates extends React.Component {
   }
   gotoView () {
     this.props.history.push({
-      pathname: `/convos`
+      pathname: `/broadcasts`
     })
   }
   gotoCreate (broadcast) {
-    console.log('gotoEdit called', broadcast)
     browserHistory.push({
-      pathname: `/createconvo`,
+      pathname: `/createBroadcast`,
       state: {module: 'convo'}
     })
   }

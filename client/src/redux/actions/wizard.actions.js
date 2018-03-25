@@ -5,7 +5,6 @@ export function updateChecks (data) {
   return (dispatch) => {
     callApi(`users/updateChecks`, 'post', data).then(res => {
         // dispatch(editBroadcast(res.payload));
-      console.log('Upload Action Response', res)
     })
   }
 }

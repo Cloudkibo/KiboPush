@@ -13,13 +13,11 @@ let crypto = require('crypto')
 
 // Get a single verificationtoken
 exports.verify = function (req, res) {
-  logger.serverLog(TAG, req.params)
   Verificationtoken.findOne({token: req.params.id}, function (err, verificationtoken) {
     if (err) {
       return res.status(500)
       .json({status: 'failed', description: 'Internal Server Error'})
     }
-    logger.serverLog(TAG, verificationtoken)
     if (!verificationtoken) {
       return res.sendFile(path.join(config.root, 'client/pages/verification_failed.html'))
     }
@@ -107,6 +105,7 @@ exports.verify = function (req, res) {
         })
 
         user.save(function (err) {
+          if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
           return res.sendFile(path.join(config.root, 'client/pages/verification_success.html'))
         })
       }

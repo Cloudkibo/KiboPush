@@ -10,12 +10,6 @@ import ReactPaginate from 'react-paginate'
 class SurveyDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // const pageId = this.props.params.pageId
-    // console.log('in construtor id: ', this.props.currentSurvey._id)
-    // if (this.props.currentSurvey) {
-    //   const id = this.props.currentSurvey._id
-    //   this.props.loadSurveyDetails(id)
-    // }
     this.state = {
       surveyDetailsData: [],
       totalLength: 0,
@@ -32,7 +26,6 @@ class SurveyDetails extends React.Component {
   }
 
   searchSubscriber (event) {
-    console.log('exeuting subscriber')
     this.setState({searchValue: event.target.value})
     var filtered = []
     var data = this.props.location.state.data.subscriber
@@ -50,8 +43,6 @@ class SurveyDetails extends React.Component {
   }
 
   displayData (n, subscribers) {
-    console.log('exeuting subscriber')
-    console.log(subscribers)
     let offset = n * 4
     let data = []
     let limit
@@ -68,15 +59,7 @@ class SurveyDetails extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handlePageClick (data) {
-    console.log('exeuting subscriber')
     this.displayData(data.selected, this.state.subscribersDataAll)
-  }
-  componentWillReceiveProps (nextProps) {
-        // if (nextProps.surveyDetails) {
-    //   console.log('Survey details Updated', nextProps.surveyDetails)
-    //   this.displayData(0, nextProps.surveyDetails)
-    //   this.setState({ totalLength: nextProps.surveyDetails.length })
-    // }
   }
 
   backToUserDetails () {
@@ -86,7 +69,6 @@ class SurveyDetails extends React.Component {
       })
     } else {
       const user = this.props.currentUser
-      console.log('back to user details', user, this.props)
       this.props.history.push({
         pathname: `/userDetails`,
         state: user
@@ -347,13 +329,12 @@ class SurveyDetails extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for surveyDetails', state)
   return {
-    survey: (state.SurveyDetailsInfo.survey),
-    responses: (state.SurveyDetailsInfo.responses),
-    questions: (state.SurveyDetailsInfo.questions),
-    currentUser: (state.getCurrentUser.currentUser),
-    currentSurvey: (state.getCurrentSurvey.currentSurvey)
+    survey: (state.backdoorInfo.survey),
+    responses: (state.backdoorInfo.responses),
+    questions: (state.backdoorInfo.questions),
+    currentUser: (state.backdoorInfo.currentUser),
+    currentSurvey: (state.backdoorInfo.currentSurvey)
   }
 }
 

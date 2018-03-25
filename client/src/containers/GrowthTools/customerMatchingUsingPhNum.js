@@ -82,7 +82,6 @@ class CustomerMatching extends React.Component {
     this.handleSubmit()
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   getSampleFile () {
@@ -152,12 +151,10 @@ class CustomerMatching extends React.Component {
         fileErrors: [],
         disabled: false
       })
-      console.log(this.state.file[0])
     }
   }
 
   onFilesError (error, file) {
-    console.log('error code ' + error.code + ': ' + error.message)
     this.setState({
       fileErrors: [{errorMsg: error.message}]
     })
@@ -185,7 +182,6 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        console.log('pageinfo', this.state.selectPage)
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
       }
     }
@@ -197,7 +193,6 @@ class CustomerMatching extends React.Component {
   }
 
   onPhoneNumbersChange (e) {
-    console.log('onPhoneNumbersChange')
     this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
@@ -220,7 +215,6 @@ class CustomerMatching extends React.Component {
 
   validate (type) {
     var errors = false
-    console.log('validate', this.state)
     if (type === 'file') {
       if (this.state.file === '') {
         this.setState({
@@ -237,7 +231,6 @@ class CustomerMatching extends React.Component {
       }
     } else if (type === 'numbers') {
       const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-      console.log('phoneNumbers:', this.state.phoneNumbers)
       let err = []
       for (var i = 0; i < this.state.phoneNumbers.length; i++) {
         if (!this.state.phoneNumbers[i].match(regex)) {
@@ -251,7 +244,6 @@ class CustomerMatching extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps is called', nextProps)
     var res = nextProps.uploadResponse.fileUploadResponse
     if (res.status === 'failed') {
       this.setState({
@@ -328,7 +320,6 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     return (
       <div>
         <Header />
@@ -401,15 +392,15 @@ class CustomerMatching extends React.Component {
                   </div>
             }
 
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding Invite Using Phone Numbers? Here is the  <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={()=>{ this.setState({showVideo: true})}}>video tutorial</a>
-              </div>
-            </div>
 
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
@@ -619,12 +610,10 @@ class CustomerMatching extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
-    uploadResponse: state.getFileUploadResponse,
+    uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
-    nonSubscribersNumbers: (state.nonSubscribersInfo.nonSubscribersData)
-    // uploadResponse: {status :'success'}
-    // uploadResponse: {status :'failed' , description: 'Some problem'}
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
   }
 }
 

@@ -19,7 +19,6 @@ class EditPoll extends React.Component {
     super(props, context)
     if (this.props.currentPoll) {
       const id = this.props.currentPoll._id
-      console.log('id', id)
       props.loadPollDetails(id)
     }
     props.loadCategoriesList()
@@ -48,7 +47,6 @@ class EditPoll extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.categories) {
-      console.log('categories', nextprops.categories)
       let options = []
       for (var j = 0; j < nextprops.pollDetails.category.length; j++) {
         for (var i = 0; i < nextprops.categories.length; i++) {
@@ -65,7 +63,6 @@ class EditPoll extends React.Component {
       this.initializeCategorySelect(options)
     }
     if (nextprops.pollDetails) {
-      console.log('details', nextprops.pollDetails)
       this.setState({title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category})
     }
   }
@@ -78,7 +75,6 @@ class EditPoll extends React.Component {
     return false
   }
   showDialog () {
-    console.log('in showDialog')
     this.setState({isShowingModal: true})
   }
 
@@ -86,7 +82,6 @@ class EditPoll extends React.Component {
     this.setState({isShowingModal: false})
   }
   initializeCategorySelect (categoryOptions) {
-    console.log('asd', categoryOptions)
     var self = this
     /* eslint-disable */
     $('#selectcategory').select2({
@@ -104,7 +99,6 @@ class EditPoll extends React.Component {
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
-        console.log('selected options', e.target.selectedOptions)
         var selected = []
         for (var i = 0; i < selectedOptions.length; i++) {
           var selectedOption = selectedOptions[i].label
@@ -112,7 +106,6 @@ class EditPoll extends React.Component {
         }
         self.setState({ categoryValue: selected })
       }
-      console.log('change category', selected)
     })
   }
   categoryExists (newCategory) {
@@ -157,7 +150,6 @@ class EditPoll extends React.Component {
       if (this.state.option3 !== '') {
         options.push(this.state.option3)
       }
-      console.log('categoryvalue', this.state.categoryValue)
       this.props.editPoll({
         _id: this.props.currentPoll._id,
         title: this.state.title,
@@ -165,7 +157,6 @@ class EditPoll extends React.Component {
         statement: this.state.statement,
         options: options
       }, this.msg)
-      console.log('Poll added')
     }
   }
 
@@ -248,8 +239,6 @@ class EditPoll extends React.Component {
                     </div>
                   </div>
                 </div>
-                {console.log('category', this.state.categoryValue)}
-                {console.log('category', this.state.title)}
 
                 <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                   <div className='m-portlet' style={{height: '100%'}}>
@@ -338,11 +327,10 @@ class EditPoll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     categories: (state.templatesInfo.categories),
     pollDetails: (state.templatesInfo.pollDetails),
-    currentPoll: (state.getCurrentPoll.currentPoll)
+    currentPoll: (state.backdoorInfo.currentPoll)
   }
 }
 

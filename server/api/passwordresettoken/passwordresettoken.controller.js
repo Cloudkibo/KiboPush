@@ -1,7 +1,8 @@
 'use strict'
+// eslint-disable-next-line no-unused-vars
 const logger = require('../../components/logger')
+// eslint-disable-next-line no-unused-vars
 const TAG = 'api/passwordresettoken/passwordresettoken.controller.js'
-let _ = require('lodash')
 let Passwordresettoken = require('./passwordresettoken.model')
 let User = require('./../user/Users.model')
 const config = require('./../../config/environment/index')
@@ -18,11 +19,10 @@ exports.forgot = function (req, res) {
         })
       }
       if (!gotUser) {
-        return res.status(404)
-          .json({
-            status: 'failed',
-            description: 'Sorry! No such account or company exists in our database.'
-          })
+        return res.status(404).json({
+          status: 'failed',
+          description: 'Sorry! No such account or company exists in our database.'
+        })
       }
 
       var today = new Date()
@@ -44,7 +44,8 @@ exports.forgot = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        let sendgrid = require('sendgrid')(config.sendgrid.username, config.sendgrid.password)
+        let sendgrid = require('sendgrid')(config.sendgrid.username,
+          config.sendgrid.password)
 
         var email = new sendgrid.Email({
           to: gotUser.email,
@@ -53,7 +54,8 @@ exports.forgot = function (req, res) {
           text: 'Password Reset'
         })
 
-        email.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+        email.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
           '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
           '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
           '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
@@ -61,9 +63,11 @@ exports.forgot = function (req, res) {
           '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
           '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
           '<tr> <td class="wrapper last"> <p> Hello, <br> This is to inform you that you have requested to change your password for your KiboPush account </p> <p> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-          '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Use the following link to change your password <br><br> <a href="' + config.domain + '/api/reset_password/verify/' +
+          '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Use the following link to change your password <br><br> <a href="' +
+          config.domain + '/api/reset_password/verify/' +
           tokenString +
-          '"> ' + config.domain + '/api/reset_password/verify/' + tokenString + '</a> </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+          '"> ' + config.domain + '/api/reset_password/verify/' + tokenString +
+          '</a> </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
           '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
 
         sendgrid.send(email, function (err, json) {
@@ -84,7 +88,6 @@ exports.forgot = function (req, res) {
 }
 
 exports.reset = function (req, res) {
-  logger.serverLog(TAG, `body ${JSON.stringify(req.body)}`)
   let token = req.body.token
 
   Passwordresettoken.findOne({token: token}, function (err, doc) {
@@ -95,7 +98,8 @@ exports.reset = function (req, res) {
       })
     }
     if (!doc) {
-      res.sendFile(path.join(config.root, 'client/pages/change_password_failed.html'))
+      res.sendFile(
+        path.join(config.root, 'client/pages/change_password_failed.html'))
     }
 
     User.findOne({_id: doc.userId}, function (err, user) {
@@ -106,8 +110,7 @@ exports.reset = function (req, res) {
         })
       }
       if (!user) {
-        return res.status(404)
-        .json({
+        return res.status(404).json({
           status: 'failed',
           description: 'User does not exist'
         })
@@ -147,9 +150,11 @@ exports.verify = function (req, res) {
       })
     }
     if (!doc) {
-      res.sendFile(path.join(config.root, 'client/pages/change_password_failed.html'))
+      res.sendFile(
+        path.join(config.root, 'client/pages/change_password_failed.html'))
     }
-    return res.sendFile(path.join(config.root, 'client/pages/change_password.html'))
+    return res.sendFile(
+      path.join(config.root, 'client/pages/change_password.html'))
   })
 }
 
@@ -174,9 +179,8 @@ exports.change = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        res.status(200)
-          .json(
-            {status: 'success', description: 'Password changed successfully.'})
+        res.status(200).json(
+          {status: 'success', description: 'Password changed successfully.'})
       })
     } else {
       res.status(403)

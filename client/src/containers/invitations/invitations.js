@@ -38,7 +38,6 @@ class Invitations extends React.Component {
   }
 
   displayData (n, invitations) {
-    console.log(invitations)
     let offset = n * 4
     let data = []
     let limit
@@ -60,21 +59,7 @@ class Invitations extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Invitations'
-
-    // this.initializeConditionSelect(this.state.conditionSelect.options)
-    // this.initializeActiveSelect(this.state.activeSelect.options)
   }
 
   cancelInvitation (invitation) {
@@ -82,7 +67,6 @@ class Invitations extends React.Component {
   }
 
   render () {
-    console.log('Invitations', this.props.invitations)
     return (
       <div>
         <Header />
@@ -286,7 +270,6 @@ class Invitations extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     invitations: (state.invitationsInfo.invitations)

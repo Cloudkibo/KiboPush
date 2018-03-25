@@ -4,6 +4,7 @@
 
 //  const GrowthTools = require('./growthTools.model')
 const PhoneNumber = require('./growthtools.model')
+const Subscribers = require('../subscribers/Subscribers.model')
 const Pages = require('../pages/Pages.model')
 const logger = require('../../components/logger')
 const TAG = 'api/growthtools/growthTools.controller.js'
@@ -77,7 +78,6 @@ exports.upload = function (req, res) {
           .pipe(csv())
           .on('data', function (data) {
             if (data.phone_numbers && data.names) {
-              logger.serverLog(TAG, `data.names ${JSON.stringify(data.names)}`)
               var result = data.phone_numbers.replace(/[- )(]/g, '')
               // var savePhoneNumber = new PhoneNumber({
               //   name: data.name,
@@ -132,6 +132,53 @@ exports.upload = function (req, res) {
                         description: 'phone number create failed'
                       })
                     }
+                    PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: newFileName}, (err, number) => {
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: 'phone number not found'
+                        })
+                      }
+                      if (number.length > 0) {
+                        let findNumber = []
+                        let findPage = []
+                        for (let a = 0; a < number.length; a++) {
+                          findNumber.push(number[a].number)
+                          findPage.push(number[a].pageId)
+                        }
+                        let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                        subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                          phoneNumber: {
+                            $in: findNumber
+                          },
+                          pageId: {
+                            $in: findPage
+                          }
+                        })
+                        Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
+                          if (err) {
+                            return res.status(500).json({
+                              status: 'failed',
+                              description: `Internal Server Error ${JSON.stringify(err)}`
+                            })
+                          }
+                          let temp = []
+                          for (let i = 0; i < subscribers.length; i++) {
+                            temp.push(subscribers[i]._id)
+                          }
+                          Lists.update({listName: newFileName, userId: req.user._id, companyId: companyUser.companyId}, {
+                            content: temp
+                          }, (err2, savedList) => {
+                            if (err) {
+                              return res.status(500).json({
+                                status: 'failed',
+                                description: `Internal Server Error ${JSON.stringify(err)}`
+                              })
+                            }
+                          })
+                        })
+                      }
+                    })
                   })
                 }
               })
@@ -141,7 +188,6 @@ exports.upload = function (req, res) {
                 if (err) {
                   logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                logger.serverLog(TAG, `Pages ${JSON.stringify(pages)}`)
                 pages.forEach(page => {
                   let messageData = {
                     'recipient': JSON.stringify({
@@ -166,9 +212,6 @@ exports.upload = function (req, res) {
                           `At invite to messenger using phone ${JSON.stringify(
                             err)}`)
                       } else {
-                        logger.serverLog(TAG,
-                          `At invite to messenger using phone ${JSON.stringify(
-                            res)}`)
                       }
                     })
                 })
@@ -195,7 +238,6 @@ exports.upload = function (req, res) {
 }
 
 exports.sendNumbers = function (req, res) {
-  logger.serverLog(TAG, `pageIdanisha ${JSON.stringify(req.body)}`)
   let parametersMissing = false
 
   if (!_.has(req.body, 'numbers')) parametersMissing = true
@@ -284,11 +326,57 @@ exports.sendNumbers = function (req, res) {
                   description: 'phone number create failed'
                 })
               }
+              PhoneNumber.find({companyId: companyUser.companyId, hasSubscribed: true, fileName: 'Other'}, (err, number) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'phone number not found'
+                  })
+                }
+                if (number.length > 0) {
+                  let findNumber = []
+                  let findPage = []
+                  for (let a = 0; a < number.length; a++) {
+                    findNumber.push(number[a].number)
+                    findPage.push(number[a].pageId)
+                  }
+                  let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                    phoneNumber: {
+                      $in: findNumber
+                    },
+                    pageId: {
+                      $in: findPage
+                    }
+                  })
+                  Subscribers.find(subscriberFindCriteria).populate('pageId').exec((err, subscribers) => {
+                    if (err) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: `Internal Server Error ${JSON.stringify(err)}`
+                      })
+                    }
+                    let temp = []
+                    for (let i = 0; i < subscribers.length; i++) {
+                      temp.push(subscribers[i]._id)
+                    }
+                    Lists.update({listName: 'Other', userId: req.user._id, companyId: companyUser.companyId}, {
+                      content: temp
+                    }, (err2, savedList) => {
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
+                    })
+                  })
+                }
+              })
             })
           }
         })
         pages.forEach(page => {
-          logger.serverLog(TAG, `number where message is going ${result}`)
           let messageData = {
             'recipient': JSON.stringify({
               'phone_number': result
@@ -312,9 +400,6 @@ exports.sendNumbers = function (req, res) {
                   `Error At invite to messenger using phone ${JSON.stringify(
                     err)}`)
               } else {
-                logger.serverLog(TAG,
-                  `At invite to messenger using phone ${JSON.stringify(
-                    res)}`)
               }
             })
         })

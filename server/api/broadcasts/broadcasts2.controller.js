@@ -5,9 +5,9 @@
 const logger = require('../../components/logger')
 const TAG = 'api/broadcast/broadcasts2.controller.js'
 const Broadcasts = require('./broadcasts.model')
-const URL = require('./URL.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
+const URL = require('./../URLforClickedCount/URL.model')
 
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
@@ -37,10 +37,9 @@ function exists (list, content) {
 }
 
 exports.sendConversation = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside Send Broadcast, req body = ${JSON.stringify(req.body)}`)
-
+  logger.serverLog(TAG, `Sending Broadcast ${JSON.stringify(req.body)}`)
   if (!utility.validateInput(req.body)) {
+    logger.serverLog(TAG, 'Parameters are missing.')
     return res.status(400)
     .json({status: 'failed', description: 'Parameters or components are missing'})
   }
@@ -140,7 +139,25 @@ exports.sendConversation = function (req, res) {
           return res.status(500)
           .json({status: 'failed', description: 'Broadcasts not created'})
         }
-
+        let newPayload = req.body.payload
+        req.body.payload.forEach((payloadItem, pindex) => {
+          if (payloadItem.buttons) {
+            payloadItem.buttons.forEach((button, bindex) => {
+              let URLObject = new URL({
+                originalURL: button.url,
+                module: {
+                  id: broadcast._id,
+                  type: 'broadcast'
+                }
+              })
+              URLObject.save((err, savedurl) => {
+                if (err) logger.serverLog(TAG, err)
+                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                newPayload[pindex].buttons[bindex].url = newURL
+              })
+            })
+          }
+        })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -170,8 +187,6 @@ exports.sendConversation = function (req, res) {
             }
           }
         }
-        logger.serverLog(TAG,
-          `Page Criteria for segmentation ${JSON.stringify(pagesFindCriteria)}`)
 
         Pages.find(pagesFindCriteria, (err, pages) => {
           if (err) {
@@ -181,10 +196,7 @@ exports.sendConversation = function (req, res) {
           }
 
           pages.forEach(page => {
-            logger.serverLog(TAG, `Page in the loop ${page.pageName}`)
-
             if (req.body.isList === true) {
-              logger.serverLog(TAG, `inside isList`)
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
                 {
@@ -224,9 +236,6 @@ exports.sendConversation = function (req, res) {
                   }
                   req.body.payload.forEach(payloadItem => {
                     subscribers.forEach(subscriber => {
-                      logger.serverLog(TAG,
-                        `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
-
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -251,7 +260,6 @@ exports.sendConversation = function (req, res) {
                             return logger.serverLog(TAG,
                               `At get session ${JSON.stringify(err)}`)
                           }
-                          logger.serverLog(TAG, 'Chat message saved for broadcast sent')
                         })
                       })
                       // update broadcast sent field
@@ -291,7 +299,7 @@ exports.sendConversation = function (req, res) {
                               if (resp.statusCode !== 200) {
                                 logger.serverLog(TAG,
                                   `At send message broadcast response ${JSON.stringify(
-                                    resp.body.error)}`)
+                                    resp)}`)
                               } else {
                                 logger.serverLog(TAG,
                                   `At send message broadcast response ${JSON.stringify(
@@ -323,22 +331,13 @@ exports.sendConversation = function (req, res) {
                   })
                 }
               }
-              logger.serverLog(TAG,
-                `Subscribers Criteria for segmentation ${JSON.stringify(
-                  subscriberFindCriteria)}`)
 
               Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-
-                logger.serverLog(TAG,
-                  `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
-                req.body.payload.forEach(payloadItem => {
+                newPayload.forEach(payloadItem => {
                   subscribers.forEach(subscriber => {
-                    logger.serverLog(TAG,
-                      `At Subscriber fetched ${subscriber.firstName} ${subscriber.lastName} for payload ${payloadItem.componentType}`)
-
                     Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                       if (err) {
                         return logger.serverLog(TAG,
@@ -363,7 +362,6 @@ exports.sendConversation = function (req, res) {
                           return logger.serverLog(TAG,
                             `At get session ${JSON.stringify(err)}`)
                         }
-                        logger.serverLog(TAG, 'Chat message saved for broadcast sent')
                       })
                     })
                     // update broadcast sent field
@@ -384,72 +382,33 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      if (payloadItem.buttons) {
-                        for (var i = 0; i < payloadItem.buttons.length; i++) {
-                          let url = new URL({
-                            broadcastId: savedpagebroadcast._id,
-                            originalURL: payloadItem.buttons[i].url
-                          })
-                          url.save((err2, savedurl) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'url create failed',
-                                err2
-                              })
-                            }
-                            // logger.serverLog(TAG,
-                            //   `url saved ${JSON.stringify(savedurl)}`)
-                            // payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/' + savedurl._id
-                          })
-                        }
-                      }
-                      URL.find({}, (err, urls) => {
-                        if (err) {
-                          return res.status(500).json({
-                            status: 'failed',
-                            description: `Internal Server Error ${JSON.stringify(err)}`
-                          })
-                        }
-                        // if (payloadItem.buttons && urls.length > 0) {
-                        //   logger.serverLog(TAG,
-                        //     `inside if ${JSON.stringify(payloadItem)}`)
-                        //   payloadItem.buttons[0].url = 'https://staging.kibopush.com/link/'
-                        //   logger.serverLog(TAG,
-                        //     `payloaditem ${JSON.stringify(payloadItem)}`)
-                        // }
-                        logger.serverLog(TAG,
-                          `payloaditem ${JSON.stringify(payloadItem)}`)
-                        let messageData = utility.prepareSendAPIPayload(
-                          subscriber.senderId,
-                          payloadItem)
-                        logger.serverLog(TAG,
-                          `messageData ${JSON.stringify(messageData)}`)
-                        request(
-                          {
-                            'method': 'POST',
-                            'json': true,
-                            'formData': messageData,
-                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                            page.accessToken
-                          },
-                          function (err, resp) {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At send message broadcast ${JSON.stringify(err)}`)
+                      let messageData = utility.prepareSendAPIPayload(
+                        subscriber.senderId,
+                        payloadItem)
+                      request(
+                        {
+                          'method': 'POST',
+                          'json': true,
+                          'formData': messageData,
+                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                          page.accessToken
+                        },
+                        function (err, resp) {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `At send message broadcast ${JSON.stringify(err)}`)
+                          } else {
+                            if (resp.statusCode !== 200) {
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp)}`)
                             } else {
-                              if (resp.statusCode !== 200) {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.error)}`)
-                              } else {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.message_id)}`)
-                              }
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp.body.message_id)}`)
                             }
-                          })
-                      })
+                          }
+                        })
                     })
                   })
                 })
@@ -465,9 +424,6 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
-  logger.serverLog(TAG,
-    `upload file route called. file is: ${JSON.stringify(req.files)}`)
-
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -525,8 +481,6 @@ exports.download = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  logger.serverLog(TAG,
-    `Inside delete file Broadcast`)
   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
   // unlink file
   fs.unlink(dir + '/' + req.params.id, function (err) {
@@ -535,7 +489,6 @@ exports.delete = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'File not found'})
     } else {
-      logger.serverLog(TAG, 'file deleted')
       return res.status(200)
         .json({status: 'success', payload: 'File deleted successfully'})
     }

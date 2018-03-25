@@ -60,7 +60,6 @@ class CopyLink extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    console.log('componentWillReceiveProps is called')
     if (nextprops.pages && nextprops.pages.length > 0) {
       if (nextprops.pages[0].pageUserName) {
         this.setState({
@@ -84,17 +83,6 @@ class CopyLink extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/material.min.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/main.js')
-    // document.body.appendChild(addScript)
   }
 
   render () {
@@ -158,7 +146,6 @@ class CopyLink extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     pages: (state.pagesInfo.pages)
 

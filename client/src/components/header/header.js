@@ -25,19 +25,18 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
   }
 
-  toggleSidebar (){
-     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
-     console.log("Class Added")
+  toggleSidebar () {
+    /* eslint-disable */
+      $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
+    /* eslint-enable */
   }
   handleNotificationOnShow () {
-    console.log('handleNotificationOnShow called')
     this.setState({ignore: true})
     this.props.resetSocket()
   }
 
   onNotificationClick () {
     window.focus()
-    console.log('Notificaation is clicked')
     browserHistory.push({
       pathname: '/live',
       state: {session_id: this.props.socketData.session_id}
@@ -45,36 +44,19 @@ class Header extends React.Component {
     this.setState({ignore: true})
   }
 
-  componentDidMount () {
-      // require('../../../public/js/jquery-3.2.0.min.js')
-      // require('../../../public/js/jquery.min.js')
-      // var addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-      // document.body.appendChild(addScript)
-      // addScript = document.createElement('script')
-      // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-      // document.body.appendChild(addScript)
-  }
-
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in header called', this.state.ignore)
     if (nextProps.socketSession !== '' && this.state.ignore) {
-      console.log('Notification Data', nextProps.socketData)
       this.setState({ignore: false})
     }
-    if(nextProps.user){
-      FS.identify(nextProps.user.email, {
-        displayName: nextProps.user.name,
-        email: nextProps.user.email,
-        // TODO: Add your own custom user variables here, details at
-        // http://help.fullstory.com/develop-js/setuservars.
-        reviewsWritten_int: 14,
-      });
-      console.log("FS identify Executed");
+    if (nextProps.user) {
+      // FS.identify(nextProps.user.email, {
+      //   displayName: nextProps.user.name,
+      //   email: nextProps.user.email,
+      //   // TODO: Add your own custom user variables here, details at
+      //   // http://help.fullstory.com/develop-js/setuservars.
+      //   reviewsWritten_int: 14
+      // })
+      // console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
@@ -98,17 +80,14 @@ class Header extends React.Component {
     this.props.getuserdetails()
   }
   render () {
-    console.log('This user details', this.props.user)
-
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
-        <div className="fb-customerchat"
-         data-page_id="151990922046256"
-         data-minimized = "true"
-         data-logged_in_greeting="Hi, Let us know if you find any bugs or have a feature request"
-         data-logged_out_greeting="Hi, Let us know if you find any bugs or have a feature request">
-        </div>
+        <div className='fb-customerchat'
+          data-page_id='151990922046256'
+          data-minimized='true'
+          data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
+          data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
 
         <Notification
           ignore={this.state.ignore}
@@ -154,45 +133,6 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
-              {/*
-              <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark ' >
-                <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                    <a href='#' className='m-menu__link m-menu__toggle'>
-                      <i className='m-menu__link-icon flaticon-add' />
-                      <span className='m-menu__link-text'>Quick Actions</span>
-                      <i className='m-menu__hor-arrow la la-angle-down' />
-                      <i className='m-menu__ver-arrow la la-angle-right' />
-                    </a>
-                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                      <span className='m-menu__arrow m-menu__arrow--adjust' />
-                      <ul className='m-menu__subnav'>
-                        <li className='m-menu__item ' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-tool-1' />
-                            <span className='m-menu__link-text'>Send Page Invites</span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-interface-8' />
-                            <span className='m-menu__link-text'>Setup Messenger Menu</span>
-                          </a>
-                        </li>
-
-                        <li className='m-menu__item ' data-redirect='true' aria-haspopup='true'>
-                          <a href='header/actions.html' className='m-menu__link '>
-                            <i className='m-menu__link-icon flaticon-users' />
-                            <span className='m-menu__link-text'>Subscribe to Messenger</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-          */}
-
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
@@ -214,11 +154,11 @@ class Header extends React.Component {
                                     {
                                     (this.props.subscribers &&
                                     this.props.subscribers.length === 0)
-                                    ? <Link to='/convos' className='m-nav-grid__item'>
+                                    ? <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
-                                    : <Link to='/convos' className='m-nav-grid__item'>
+                                    : <Link to='/broadcasts' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-file' />
                                       <span className='m-nav-grid__text'>Send New Broadcast</span>
                                     </Link>
@@ -358,7 +298,6 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),

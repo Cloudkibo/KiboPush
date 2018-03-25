@@ -47,14 +47,15 @@
   <!--Dashboard custom CSS -->
   <link href="assets/dashboard/dashboard.css" rel="stylesheet" type="text/css"/>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1"></script>
-        <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-        gtag('config', 'UA-104907011-1');
-        </script>-->
+    gtag('config', 'UA-104907011-1');
+  </script>
+
 
   <script>
     window['_fs_debug'] = false
@@ -110,7 +111,11 @@
       for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
       mixpanel.init("d2710a2ab5b80db305979b4780a4f0b4");</script>-->
   <!-- end Mixpanel -->
-
+  <style>
+    .row:before, .row:after{
+       display: none;
+     }
+ </style>
 </head>
 <!-- end::Head -->
 <body
@@ -124,7 +129,7 @@
 
 
 <!--<script src="js/jquery-3.2.0.min.js"></script>-->
-<script>
+<!-- <script>
   window.fbAsyncInit = function () {
     FB.init({
       appId: '132767517443810',
@@ -143,7 +148,7 @@
     fjs.parentNode.insertBefore(js, fjs)
   }(document, 'script', 'facebook-jssdk'))
 </script>
-
+ -->
 <script src="https://cdn.ravenjs.com/3.22.3/raven.min.js"
         crossorigin="anonymous"></script>
 <script>

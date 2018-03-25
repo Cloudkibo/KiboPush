@@ -37,28 +37,15 @@ class Autoposting extends React.Component {
     this.updateDeleteID = this.updateDeleteID.bind(this)
   }
   scrollToTop () {
-    console.log('in scrollToTop')
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
     document.title = 'KiboPush | Autoposting'
     this.scrollToTop()
     var compProp = this.props
     registerAction({
       event: 'autoposting_created',
       action: function (data) {
-        console.log('New socket event occured: In Callback')
         compProp.loadAutopostingList()
       }
     })
@@ -66,17 +53,8 @@ class Autoposting extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
-      // this.setState({
-      //   alertMessage: nextProps.successMessage,
-      //   alertType: 'success'
-      // })
-      console.log('in success message')
       this.msg.success(nextProps.successMessage)
     } else if (nextProps.errorMessage) {
-      // this.setState({
-      //   alertMessage: nextProps.errorMessage,
-      //   alertType: 'danger'
-      // })
       this.msg.error(nextProps.errorMessage)
     }
   }
@@ -104,7 +82,7 @@ class Autoposting extends React.Component {
 
   gotoSettings (item) {
     this.props.history.push({
-      pathname: `/autoposting-itemsettings`,
+      pathname: `/autopostingItemSettings`,
       state: item
     })
   }
@@ -222,7 +200,7 @@ class Autoposting extends React.Component {
                                     this.props.autopostingData && this.props.autopostingData.length > 0
                                       ? this.props.autopostingData.map((item, i) => (
                                         <div className='m-widget5'>
-                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={true} />
+                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState />
                                         </div>
                                     ))
                                       : <div>
@@ -277,7 +255,6 @@ class Autoposting extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     successMessage: (state.autopostingInfo.successMessageCreate),
