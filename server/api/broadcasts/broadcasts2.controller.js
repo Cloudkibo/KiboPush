@@ -37,7 +37,9 @@ function exists (list, content) {
 }
 
 exports.sendConversation = function (req, res) {
+  logger.serverLog(TAG, `Sending Broadcast ${JSON.stringify(req.body)}`)
   if (!utility.validateInput(req.body)) {
+    logger.serverLog(TAG, 'Parameters are missing.')
     return res.status(400)
     .json({status: 'failed', description: 'Parameters or components are missing'})
   }
@@ -258,7 +260,6 @@ exports.sendConversation = function (req, res) {
                             return logger.serverLog(TAG,
                               `At get session ${JSON.stringify(err)}`)
                           }
-                          logger.serverLog(TAG, 'Chat message saved for broadcast sent')
                         })
                       })
                       // update broadcast sent field
@@ -298,7 +299,7 @@ exports.sendConversation = function (req, res) {
                               if (resp.statusCode !== 200) {
                                 logger.serverLog(TAG,
                                   `At send message broadcast response ${JSON.stringify(
-                                    resp.body.error)}`)
+                                    resp)}`)
                               } else {
                                 logger.serverLog(TAG,
                                   `At send message broadcast response ${JSON.stringify(
@@ -336,7 +337,6 @@ exports.sendConversation = function (req, res) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
                 newPayload.forEach(payloadItem => {
-                  console.log('paylodItem', payloadItem.buttons)
                   subscribers.forEach(subscriber => {
                     Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                       if (err) {
@@ -401,7 +401,7 @@ exports.sendConversation = function (req, res) {
                             if (resp.statusCode !== 200) {
                               logger.serverLog(TAG,
                                 `At send message broadcast response ${JSON.stringify(
-                                  resp.body.error)}`)
+                                  resp)}`)
                             } else {
                               logger.serverLog(TAG,
                                 `At send message broadcast response ${JSON.stringify(
