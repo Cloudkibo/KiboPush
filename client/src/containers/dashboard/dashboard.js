@@ -110,8 +110,10 @@ class Dashboard extends React.Component {
         <div className='m-content'>
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
-            this.props.user && !this.props.user.wizardSeen &&
-            <GettingStarted pages={this.props.pages} />
+            this.props.user && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo
+            ? null
+            : <div>{this.props.user && !this.props.user.wizardSeen &&
+            <GettingStarted pages={this.props.pages} />}</div>
           }
           <div className='row'>
             {
