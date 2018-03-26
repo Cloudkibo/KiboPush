@@ -2,6 +2,8 @@ const Teams = require('./teams.model')
 const TeamAgents = require('./team_agents.model')
 const TeamPages = require('./team_pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const logger = require('../../components/logger')
+const TAG = 'api/teams/teams.controller.js'
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -81,12 +83,12 @@ exports.createTeam = function (req, res) {
           agentId: agentId
         }
         const teamAgent = new TeamAgents(teamAgentsPayload)
-
         TeamAgents.create(teamAgent, (err, newTeamAgent) => {
           if (err) {
+            logger.serverLog(TAG, `Error in create agent ${err}`)
             return res.status(500).json({
               status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
+              description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
         })
@@ -98,12 +100,12 @@ exports.createTeam = function (req, res) {
           companyId: companyUser.companyId
         }
         const teamPage = new TeamPages(teamPagesPayload)
-
         TeamPages.create(teamPage, (err, newTeamPage) => {
           if (err) {
+            logger.serverLog(TAG, `Error in create page ${err}`)
             return res.status(500).json({
               status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
+              description: `Internal Server Error${JSON.stringify(err)}`
             })
           }
         })
@@ -228,7 +230,7 @@ exports.removeAgent = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'Record not found'})
     }
-    teamAgent.remove((err2) => {
+    teamAgent[0].remove((err2) => {
       if (err2) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})
@@ -239,16 +241,16 @@ exports.removeAgent = function (req, res) {
   })
 }
 exports.removePage = function (req, res) {
-  TeamPages.find({agentId: req.body.pageId, teamId: req.body.teamId}, (err, teamPage) => {
+  TeamPages.find({pageId: req.body.pageId, teamId: req.body.teamId}, (err, teamPage) => {
     if (err) {
       return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
     }
-    if (!teamPage) {
+    if (!teamPage || teamPage.length === 0) {
       return res.status(404)
         .json({status: 'failed', description: 'Record not found'})
     }
-    teamPage.remove((err2) => {
+    teamPage[0].remove((err2) => {
       if (err2) {
         return res.status(500)
           .json({status: 'failed', description: 'poll update failed'})

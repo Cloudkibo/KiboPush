@@ -6,8 +6,7 @@ let teamSchema = new Schema({
   description: String,
   created_by: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
-  creation_date: { type: Date, default: Date.now },
-  delete_status: {type: String, default: 'No'}
+  creation_date: { type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model('teams', teamSchema)
