@@ -47,6 +47,7 @@ class CreatePoll extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       alert: false,
       statement: '',
       option1: '',
@@ -200,7 +201,7 @@ class CreatePoll extends React.Component {
       }
       remappedOptions[i] = temp
     }
-    // var self = this
+    var self = this
       /* eslint-disable */
     $('#selectTags').select2({
       /* eslint-enable */
@@ -220,7 +221,7 @@ class CreatePoll extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        // self.setState({ pageValue: selected })
+        self.setState({ tagValue: selected })
       }
     })
   }
@@ -304,7 +305,7 @@ class CreatePoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       this.props.addPoll('', {
@@ -317,6 +318,7 @@ class CreatePoll extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationGender: this.state.genderValue,
         segmentationLocale: this.state.localeValue,
+        segmentationTags: this.state.tagValue,
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
@@ -349,7 +351,7 @@ class CreatePoll extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], tagValue: []})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }
@@ -375,10 +377,10 @@ class CreatePoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
-      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers, this.state.tagValue)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -392,6 +394,7 @@ class CreatePoll extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationTags: this.state.tagValue,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)

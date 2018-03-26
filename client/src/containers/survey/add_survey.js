@@ -54,6 +54,7 @@ class AddSurvey extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       steps: [],
       showDropDown: false,
       selectedRadio: '',
@@ -66,6 +67,7 @@ class AddSurvey extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -88,6 +90,19 @@ class AddSurvey extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    if (this.props.user.isSuperUser) {
+      let tags = [
+        {
+          tag_id: 'america',
+          tag_name: 'America'
+        },
+        {
+          tag_id: 'pakistan',
+          tag_name: 'Pakistan'
+        }
+      ]
+      this.initializeTagSelect(tags)
+    }
   }
   initializeListSelect (lists) {
     var self = this
@@ -196,6 +211,41 @@ class AddSurvey extends React.Component {
     })
   }
 
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag_id,
+        text: tagOptions[i].tag_name
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists) {
       let options = []
@@ -289,7 +339,7 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
@@ -305,6 +355,7 @@ class AddSurvey extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationTags: this.state.tagValue,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
@@ -518,7 +569,7 @@ class AddSurvey extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], tagValue: []})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }
@@ -584,12 +635,12 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
-        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers, this.state.tagValue)
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
@@ -604,6 +655,7 @@ class AddSurvey extends React.Component {
             segmentationPageIds: this.state.pageValue,
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
+            segmentationTags: this.state.tagValue,
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
@@ -779,6 +831,10 @@ class AddSurvey extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            {this.props.user.isSuperUser
+                            ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div> : null}
                           </div>
                           : <div className='m-form'>
                             <div className='form-group m-form__group' style={{marginTop: '10px'}}>
@@ -787,6 +843,10 @@ class AddSurvey extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                             </div>
+                            {this.props.user.isSuperUser
+                            ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                            </div> : null}
                           </div>
                           }
                         </div>
