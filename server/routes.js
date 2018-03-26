@@ -38,6 +38,7 @@ module.exports = function (app) {
   app.use('/api/api_settings', require('./api/api_settings'))
   app.use('/api/templates', require('./api/templates'))
   app.use('/api/URL', require('./api/URLforClickedCount'))
+  app.use('/api/teams', require('./api/teams'))
   app.use('/api/company', require('./api/companyprofile'))
   app.use('/api/reset_password', require('./api/passwordresettoken'))
   app.use('/api/email_verification', require('./api/verificationtoken'))
