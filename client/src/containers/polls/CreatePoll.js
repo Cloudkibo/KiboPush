@@ -66,6 +66,7 @@ class CreatePoll extends React.Component {
     this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -83,37 +84,30 @@ class CreatePoll extends React.Component {
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
+    if (this.props.user.isSuperUser) {
+      let tags = [
+        {
+          tag_id: 'america',
+          tag_name: 'America'
+        },
+        {
+          tag_id: 'pakistan',
+          tag_name: 'Pakistan'
+        }
+      ]
+      this.initializeTagSelect(tags)
+    }
     this.initializePageSelect(options)
-
-    this.addSteps([{
-      title: 'Question',
-      text: 'You can write a question here that you need to get feedback on',
-      selector: 'div#question',
-      position: 'top-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Response',
-      text: 'Give your subscribers list of possible responses to choose from',
-      selector: 'div#responses',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Targetting',
-      text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
-      selector: 'div#target',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}
-    ])
   }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
+
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
   initializeListSelect (lists) {
     var self = this
     /* eslint-disable */
@@ -192,6 +186,41 @@ class CreatePoll extends React.Component {
           selected.push(selectedOption)
         }
         self.setState({ genderValue: selected })
+      }
+    })
+  }
+
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag_id,
+        text: tagOptions[i].tag_name
+      }
+      remappedOptions[i] = temp
+    }
+    // var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        // self.setState({ pageValue: selected })
       }
     })
   }
@@ -494,7 +523,7 @@ class CreatePoll extends React.Component {
                         </button>
                         <Link
                           to='/poll'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                          className='btn btn-secondary' style={{'marginLeft': '10px'}}>
                           Cancel
                         </Link>
                       </div>
@@ -535,6 +564,10 @@ class CreatePoll extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            {this.props.user.isSuperUser
+                             ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                               <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                             </div> : null}
                           </div>
                           : <div className='m-form'>
                             <div className='form-group m-form__group' style={{marginTop: '10px'}}>
@@ -543,6 +576,10 @@ class CreatePoll extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                             </div>
+                            {this.props.user.isSuperUser
+                            ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                            </div> : null}
                           </div>
                           }
                         </div>
@@ -593,7 +630,6 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers)
-
   }
 }
 
