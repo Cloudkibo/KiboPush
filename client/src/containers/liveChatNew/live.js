@@ -526,7 +526,6 @@ class LiveChat extends React.Component {
                       </div>
                     </div>
                   </div>
-                  { console.log('this.state.activeSession', activeSession) }
                   {this.state.activeSession &&
                   <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
