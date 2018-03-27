@@ -137,7 +137,7 @@ class Survey extends React.Component {
     })
   }
   sendSurvey (survey) {
-    var res = checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale, survey.segmentationTags)
+    var res = checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale, survey.segmentationTags, this.props.subscribers)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {

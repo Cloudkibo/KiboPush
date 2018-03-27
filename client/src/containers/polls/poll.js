@@ -150,7 +150,7 @@ class Poll extends React.Component {
   }
 
   sendPoll (poll) {
-    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, poll.segmentationTags)
+    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, poll.segmentationTags, this.props.subscribers)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
