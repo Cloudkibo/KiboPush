@@ -32,7 +32,7 @@ exports.index = function (req, res) {
       }
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
-        if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id.isSubscribed) {
+        if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
           tempSessions.push(sessions[i])
         }
       }

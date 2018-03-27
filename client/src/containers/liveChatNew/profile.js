@@ -70,9 +70,11 @@ class Profile extends React.Component {
                   <span className='m-card-profile__name'>
                     {this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName}
                   </span>
-                  <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
-                    (Unsubscribe)
-                  </a>
+                  {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
+                      (Unsubscribe)
+                    </a>
+                  }
                   <br />
                   <a className='m-card-profile__email m-link'>
                     {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
