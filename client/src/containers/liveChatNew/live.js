@@ -215,7 +215,6 @@ class LiveChat extends React.Component {
         //     }
         //   }
         // }
-        console.log('in componentWillReceiveProps')
         for (var a = 0; a < nextProps.sessions.length; a++) {
           if (nextProps.sessions[a].status === 'new') {
             this.setState({activeSession: nextProps.sessions[a]})
@@ -527,8 +526,9 @@ class LiveChat extends React.Component {
                     </div>
                   </div>
                   {this.state.activeSession &&
-                  <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} /> }
-                  {this.state.activeSession && <Profile currentSession={this.state.activeSession} /> }
+                  <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
+                  {this.state.activeSession && <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} /> }
                 </div>
                 )
               }
