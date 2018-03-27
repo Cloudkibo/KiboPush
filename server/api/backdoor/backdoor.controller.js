@@ -4,7 +4,7 @@
 
 const logger = require('../../components/logger')
 const TAG = 'api/backdoor/backdoor.controller.js'
-const CompanyUsers = require('./../companyprofile/companyprofile.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
@@ -20,7 +20,7 @@ const sortBy = require('sort-array')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const SurveyPage = require('../page_survey/page_survey.model')
 const PollPage = require('../page_poll/page_poll.model')
-const CompanyUsers1 = require('./../companyuser/companyuser.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const config = require('./../../config/environment/index')
 const LiveChat = require('../livechat/livechat.model')
 
@@ -45,7 +45,7 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  //  5a584c3729a3150272d8c007
+  logger.serverLog(TAG, 'Payload sent ' + JSON.stringify(req.params))
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -53,6 +53,7 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
+    logger.serverLog(TAG, 'Pages count ' + pages.length)
     CompanyUsers.findOne({userId: req.params.userid}, (err, companyUser) => {
       if (err) {
         return res.status(500).json({
@@ -794,7 +795,7 @@ exports.broadcastsByDays = function (req, res) {
             description: 'internal server error' + JSON.stringify(err)
           })
         }
-        CompanyUsers.find({_id: {
+        CompanyProfile.find({_id: {
           $in: tempCompany
         }}, (err, companies) => {
           if (err) {
@@ -926,7 +927,7 @@ exports.surveysByDays = function (req, res) {
               description: 'internal server error' + JSON.stringify(err)
             })
           }
-          CompanyUsers.find({_id: {
+          CompanyProfile.find({_id: {
             $in: tempCompany
           }}, (err, companies) => {
             if (err) {
@@ -1085,7 +1086,7 @@ exports.pollsByDays = function (req, res) {
               description: 'internal server error' + JSON.stringify(err)
             })
           }
-          CompanyUsers.find({_id: {
+          CompanyProfile.find({_id: {
             $in: tempCompany
           }}, (err, companies) => {
             if (err) {
@@ -1206,7 +1207,7 @@ exports.sendEmail = function (req, res) {
         surveys: 0,
         liveChat: 0
       }
-      CompanyUsers1.findOne({domain_email: user.domain_email}, (err, companyUser) => {
+      CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyUser) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
