@@ -472,6 +472,7 @@ class ChatBox extends React.Component {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
   changeStatus (e, status, id) {
+    this.props.changeActiveSessionFromChatbox()
     this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
   }
   render () {
