@@ -70,6 +70,13 @@ export function urlMetaReceived (meta) {
   }
 }
 
+export function showChangeStatus (data) {
+  return {
+    type: ActionTypes.CHANGE_STATUS,
+    data
+  }
+}
+
 export function fetchSessions (companyid) {
   return (dispatch) => {
     callApi('sessions', 'post', companyid)
@@ -151,6 +158,24 @@ export function markRead (sessionid, sessions) {
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
+    })
+  }
+}
+
+export function changeStatus (data, companyId) {
+  return (dispatch) => {
+    callApi('sessions/changeStatus', 'post', data).then(res => {
+      dispatch(showChangeStatus('changed'))
+      dispatch(fetchSessions(companyId))
+    })
+  }
+}
+
+export function unSubscribe (id, companyId) {
+  return (dispatch) => {
+    callApi(`sessions/unSubscribe/${id}`).then(res => {
+      dispatch(showChangeStatus('changed'))
+      dispatch(fetchSessions(companyId))
     })
   }
 }

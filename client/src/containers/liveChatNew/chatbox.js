@@ -12,7 +12,8 @@ import {
   sendAttachment,
   sendChatMessage,
   fetchUrlMeta,
-  markRead
+  markRead,
+  changeStatus
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -33,6 +34,7 @@ import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 const styles = {
   iconclass: {
@@ -67,7 +69,8 @@ class ChatBox extends React.Component {
       urlmeta: '',
       prevURL: '',
       displayUrlMeta: false,
-      showStickers: false
+      showStickers: false,
+      isShowingModal: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -96,8 +99,16 @@ class ChatBox extends React.Component {
     this.createGallery = this.createGallery.bind(this)
     this.getmainURL = this.getmainURL.bind(this)
     this.geturl = this.geturl.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
   }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
@@ -105,7 +116,6 @@ class ChatBox extends React.Component {
     this.scrollToBottom()
     this.scrollToTop()
   }
-
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
   }
@@ -461,7 +471,9 @@ class ChatBox extends React.Component {
   getmainURL (payload) {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
-
+  changeStatus (e, status, id) {
+    this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
+  }
   render () {
     var settings = {
       arrows: true,
@@ -482,6 +494,32 @@ class ChatBox extends React.Component {
     }
     return (
       <div className='col-xl-5'>
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <h3>Resolve Chat Session</h3>
+              <p>Are you sure you want to resolve this chat session?</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={(e) => {
+                    this.changeStatus(e, 'resolved', this.props.currentSession._id)
+                    this.closeDialog()
+                  }}>
+                    Yes
+                  </button>
+                </div>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={this.closeDialog}>
+                    No
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -538,7 +576,7 @@ class ChatBox extends React.Component {
             <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
             {
               this.props.currentSession.status === 'new'
-              ? <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'><i className='la la-check' /> Mark as done</button>
+              ? <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success' onClick={this.showDialog}><i className='la la-check' /> Mark as done</button>
               : <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'><i className='fa fa-envelope-open-o' /> Reopen</button>
             }
           </div>
@@ -1176,7 +1214,8 @@ function mapDispatchToProps (dispatch) {
     sendAttachment: (sendAttachment),
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
-    markRead: (markRead)
+    markRead: (markRead),
+    changeStatus: (changeStatus)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

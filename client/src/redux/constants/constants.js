@@ -87,6 +87,7 @@ export const RESET_SOCKET = 'RESET_SOCKET'
 export const LOADING_URL_META = 'LOADING_URL_META'
 export const GET_URL_META = 'GET_URL_META'
 export const UPDATE_CHAT = 'UPDATE_CHAT'
+export const CHANGE_STATUS = 'CHANGE_STATUS'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
