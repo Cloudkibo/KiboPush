@@ -26,4 +26,16 @@ router.get('/:id',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.show)
 
+router.post('/changeStatus',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesRolePermitsThisAction('livechatPermission'),
+    controller.changeStatus)
+
+router.get('/unSubscribe/:id',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesRolePermitsThisAction('livechatPermission'),
+    controller.unSubscribe)
+
 module.exports = router

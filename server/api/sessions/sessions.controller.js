@@ -4,6 +4,7 @@
 const Sessions = require('./sessions.model')
 const LiveChat = require('./../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const Subscribers = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sessions/sessions.controller.js'
 
@@ -31,7 +32,7 @@ exports.index = function (req, res) {
       }
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
-        if (sessions[i].page_id.connected && sessions[i].subscriber_id.isSubscribed) {
+        if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id.isSubscribed) {
           tempSessions.push(sessions[i])
         }
       }
@@ -104,6 +105,17 @@ exports.show = function (req, res) {
 }
 
 // get fb session
+exports.changeStatus = function (req, res) {
+  // todo tell fb users that message is read
+  Sessions.update(
+    {_id: req.body._id},
+    {status: req.body.status}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      res.status(200).json({status: 'success', payload: updated})
+    })
+}
 exports.markread = function (req, res) {
   // todo tell fb users that message is read
   LiveChat.update(
@@ -112,6 +124,18 @@ exports.markread = function (req, res) {
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      res.status(200).json({status: 'success', payload: updated})
+    })
+}
+exports.unSubscribe = function (req, res) {
+  // todo tell fb users that message is read
+  Subscribers.update({_id: req.params.id},
+    {isSubscribed: false}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Subscribers update subscription: ${JSON.stringify(
+            err)}`)
       }
       res.status(200).json({status: 'success', payload: updated})
     })
