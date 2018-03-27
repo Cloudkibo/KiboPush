@@ -409,6 +409,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps in chat box')
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -429,6 +430,7 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+    console.log('componentDidUpdate')
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
@@ -471,10 +473,12 @@ class ChatBox extends React.Component {
   getmainURL (payload) {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
+
   changeStatus (e, status, id) {
     this.props.changeActiveSessionFromChatbox()
     this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
   }
+
   render () {
     var settings = {
       arrows: true,
@@ -578,7 +582,10 @@ class ChatBox extends React.Component {
             {
               this.props.currentSession.status === 'new'
               ? <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success' onClick={this.showDialog}><i className='la la-check' /> Mark as done</button>
-              : <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'><i className='fa fa-envelope-open-o' /> Reopen</button>
+              : <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'
+                onClick={(e) => {
+                  this.changeStatus(e, 'new', this.props.currentSession._id)
+                }}><i className='fa fa-envelope-open-o' /> Reopen</button>
             }
           </div>
           <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>

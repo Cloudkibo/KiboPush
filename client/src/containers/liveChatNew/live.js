@@ -76,9 +76,11 @@ class LiveChat extends React.Component {
       this.setState({ignore: true})
     }
   }
+
   changeActiveSessionFromChatbox () {
     this.setState({activeSession: ''})
   }
+
   changeTab (value) {
     if (value === 'open') {
       this.setState({tabValue: 'open'})
@@ -200,26 +202,12 @@ class LiveChat extends React.Component {
       this.setState({sessionsData: nextProps.sessions})
       this.separateResolvedSessions(nextProps.sessions)
       if (this.state.activeSession === '') {
-        // if (this.props.location.state && this.props.location.state.session_id) {
-        //   for (var p = 0; p < nextProps.sessions.length; p++) {
-        //     if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
-        //       this.setState({activeSession: nextProps.sessions[p]})
-        //       break
-        //     }
-        //   }
-        // } else {
-        //   for (var a = 0; a < nextProps.sessions.length; a++) {
-        //     if (nextProps.sessions[a].subscriber_id !== null) {
-        //       this.setState({activeSession: nextProps.sessions[a]})
-        //       break
-        //     }
-        //   }
-        // }
-        for (var a = 0; a < nextProps.sessions.length; a++) {
-          if (nextProps.sessions[a].status === 'new') {
-            this.setState({activeSession: nextProps.sessions[a]})
-            break
-          }
+        if (this.state.tabValue === 'open') {
+          let newSessions = nextProps.sessions.filter(session => session.status === 'new')
+          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
+        } else {
+          let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
+          this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
         }
       }
       // } else if (nextProps.changedStatus) {
@@ -263,13 +251,10 @@ class LiveChat extends React.Component {
       }
     }
 
-    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
-    }
-
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.sessions) {
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
+        this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
         var isPresent = false
         nextProps.sessions.map((sess) => {
@@ -280,9 +265,10 @@ class LiveChat extends React.Component {
 
         if (isPresent) {
           this.props.fetchSessions({ company_id: this.props.user._id })
-          // this.props.resetSocket()
+          this.props.resetSocket()
         } else {
           this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.resetSocket()
         }
       }
     }
@@ -525,10 +511,24 @@ class LiveChat extends React.Component {
                       </div>
                     </div>
                   </div>
-                  {this.state.activeSession &&
-                  <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  {
+                    this.state.activeSession === '' &&
+                    <div className='col-xl-8'>
+                      <div className='m-portlet m-portlet--full-height'>
+                        <div style={{textAlign: 'center'}} className='m-portlet__body'>
+                          <p>Please select a session to view its chat.</p>
+                        </div>
+                      </div>
+                    </div>
                   }
-                  {this.state.activeSession && <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} /> }
+                  {
+                    this.state.activeSession !== '' &&
+                    <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
+                  {
+                    this.state.activeSession !== '' &&
+                    <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
                 </div>
                 )
               }
