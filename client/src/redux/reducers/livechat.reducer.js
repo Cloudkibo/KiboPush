@@ -51,6 +51,10 @@ export function liveChat (state = initialState, action) {
         urlMeta: action.urlMeta,
         loadingUrl: action.loadingUrl
       })
+    case ActionTypes.CHANGE_STATUS:
+      return Object.assign({}, state, {
+        changedStatus: action.data
+      })
 
     default:
       return state

@@ -197,19 +197,33 @@ class LiveChat extends React.Component {
       this.setState({sessionsData: nextProps.sessions})
       this.separateResolvedSessions(nextProps.sessions)
       if (this.state.activeSession === '') {
-        if (this.props.location.state && this.props.location.state.session_id) {
-          for (var p = 0; p < nextProps.sessions.length; p++) {
-            if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
-              this.setState({activeSession: nextProps.sessions[p]})
-              break
-            }
+        // if (this.props.location.state && this.props.location.state.session_id) {
+        //   for (var p = 0; p < nextProps.sessions.length; p++) {
+        //     if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
+        //       this.setState({activeSession: nextProps.sessions[p]})
+        //       break
+        //     }
+        //   }
+        // } else {
+        //   for (var a = 0; a < nextProps.sessions.length; a++) {
+        //     if (nextProps.sessions[a].subscriber_id !== null) {
+        //       this.setState({activeSession: nextProps.sessions[a]})
+        //       break
+        //     }
+        //   }
+        // }
+        console.log('in componentWillReceiveProps')
+        for (var a = 0; a < nextProps.sessions.length; a++) {
+          if (nextProps.sessions[a].status === 'new') {
+            this.setState({activeSession: nextProps.sessions[a]})
+            break
           }
-        } else {
-          for (var a = 0; a < nextProps.sessions.length; a++) {
-            if (nextProps.sessions[a].subscriber_id !== null) {
-              this.setState({activeSession: nextProps.sessions[a]})
-              break
-            }
+        }
+      } else if (nextProps.changedStatus) {
+        for (var b = 0; b < nextProps.sessions.length; b++) {
+          if (nextProps.sessions[b].status === 'new') {
+            this.setState({activeSession: nextProps.sessions[b]})
+            break
           }
         }
       }
@@ -577,6 +591,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
     unreadSession: (state.liveChat.unreadSession),
+    changedStatus: (state.liveChat.changedStatus),
     userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
     socketData: (state.liveChat.socketData)
