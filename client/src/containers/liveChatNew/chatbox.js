@@ -214,7 +214,8 @@ class ChatBox extends React.Component {
       status: 'unseen', // seen or unseen
       replied_by: {
         type: 'agent',
-        id: this.props.user._id
+        id: this.props.user._id,
+        name: this.props.user.name
       }
     }
     return data
