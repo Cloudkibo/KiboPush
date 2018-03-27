@@ -45,7 +45,6 @@ exports.index = function (req, res) {
 }
 
 exports.allpages = function (req, res) {
-  logger.serverLog(TAG, 'Payload sent ' + JSON.stringify(req.params))
   Pages.find({userId: req.params.userid}, (err, pages) => {
     if (err) {
       return res.status(404).json({
@@ -53,7 +52,6 @@ exports.allpages = function (req, res) {
         description: `Error in getting pages ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, 'Pages count ' + pages.length)
     CompanyUsers.findOne({userId: req.params.userid}, (err, companyUser) => {
       if (err) {
         return res.status(500).json({

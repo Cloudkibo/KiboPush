@@ -38,8 +38,6 @@ export function updateTopPages (data) {
 }
 
 export function updatePagesList (data) {
-  console.log('RESPONSE FROM THE BACKDOOR API')
-  console.log(data)
   return {
     type: ActionTypes.LOAD_BACKDOOR_PAGES_LIST,
     data: data.payload
