@@ -38,6 +38,12 @@ router.post('/assignAgent',
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.assignAgent)
 
+router.post('/assignTeam',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesRolePermitsThisAction('livechatPermission'),
+    controller.assignTeam)
+
 router.get('/unSubscribe/:id',
     auth.isAuthenticated(),
     auth.doesPlanPermitsThisAction('live_chat'),

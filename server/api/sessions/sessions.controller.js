@@ -169,3 +169,31 @@ exports.assignAgent = function (req, res) {
       res.status(200).json({status: 'success', payload: updated})
     })
 }
+
+exports.assignTeam = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'teamId')) parametersMissing = true
+  if (!_.has(req.body, 'teamName')) parametersMissing = true
+  if (!_.has(req.body, 'sessionId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  let assignedTo = {
+    type: 'team',
+    id: req.body.teamId,
+    name: req.body.teamName
+  }
+
+  Sessions.update(
+    {_id: req.body.sessionId},
+    {assigned_to: assignedTo}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      res.status(200).json({status: 'success', payload: updated})
+    })
+}
