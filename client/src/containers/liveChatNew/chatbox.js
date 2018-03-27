@@ -533,7 +533,15 @@ class ChatBox extends React.Component {
           </div>
         </Popover>
         <div className='m-portlet m-portlet--mobile'>
-          <div className='m-portlet__body'>
+          <div style={{padding: '1.3rem', borderBottom: '1px solid #ebedf2'}}>
+            <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
+            {
+              this.props.currentSession.status === 'new'
+              ? <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'><i className='la la-check' /> Mark as done</button>
+              : <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'><i className='fa fa-envelope-open-o' /> Reopen</button>
+            }
+          </div>
+          <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>

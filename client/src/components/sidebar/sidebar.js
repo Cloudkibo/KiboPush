@@ -197,6 +197,23 @@ class Sidebar extends Component {
     }
   }
 
+  showLiveChatNewItem () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-chat-1' />
+              <span className='m-menu__link-text'>Live Chat (New)</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showAutoPostingItem () {
     if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
@@ -349,6 +366,7 @@ class Sidebar extends Component {
               {this.showPollsItem()}
               {this.showWorkflowsItem()}
               {this.showLiveChatItem()}
+              {this.showLiveChatNewItem()}
               {this.showAutoPostingItem()}
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
