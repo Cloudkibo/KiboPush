@@ -7,6 +7,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sessions/sessions.controller.js'
+const _ = require('lodash')
 
 // get list of fb sessions
 exports.index = function (req, res) {
@@ -136,6 +137,34 @@ exports.unSubscribe = function (req, res) {
         logger.serverLog(TAG,
           `Subscribers update subscription: ${JSON.stringify(
             err)}`)
+      }
+      res.status(200).json({status: 'success', payload: updated})
+    })
+}
+
+exports.assignAgent = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'agentId')) parametersMissing = true
+  if (!_.has(req.body, 'agentName')) parametersMissing = true
+  if (!_.has(req.body, 'sessionId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  let assignedTo = {
+    type: 'agent',
+    id: req.body.agentId,
+    name: req.body.agentName
+  }
+
+  Sessions.update(
+    {_id: req.body.sessionId},
+    {assigned_to: assignedTo}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
       res.status(200).json({status: 'success', payload: updated})
     })

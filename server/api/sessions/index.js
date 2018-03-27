@@ -32,6 +32,12 @@ router.post('/changeStatus',
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.changeStatus)
 
+router.post('/assignAgent',
+    auth.isAuthenticated(),
+    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesRolePermitsThisAction('livechatPermission'),
+    controller.assignAgent)
+
 router.get('/unSubscribe/:id',
     auth.isAuthenticated(),
     auth.doesPlanPermitsThisAction('live_chat'),
