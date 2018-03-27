@@ -165,7 +165,6 @@ export function markRead (sessionid, sessions) {
 export function changeStatus (data, companyId) {
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(showChangeStatus('changed'))
       dispatch(fetchSessions(companyId))
     })
   }

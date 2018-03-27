@@ -215,7 +215,6 @@ class LiveChat extends React.Component {
         //     }
         //   }
         // }
-        console.log('in componentWillReceiveProps', nextProps.sessions)
         for (var a = 0; a < nextProps.sessions.length; a++) {
           if (nextProps.sessions[a].status === 'new') {
             this.setState({activeSession: nextProps.sessions[a]})
