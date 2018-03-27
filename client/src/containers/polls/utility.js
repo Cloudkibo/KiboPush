@@ -36,17 +36,17 @@ export function checkConditions (pageValue, genderValue, localeValue, subscriber
       }
     }
   }
-  if (tagValue.length > 0) {
-    for (var o = 0; o < subscribers.length; o++) {
-      for (var p = 0; p < tagValue.length; p++) {
-        for (var q = 0; q < subscribers[o].tags.length; q++) {
-          if (subscribers[o].tags[q] === tagValue[p]) {
-            subscribersMatchTag.push(subscribers[o])
-          }
-        }
-      }
-    }
-  }
+  // if (tagValue.length > 0) {
+  //   for (var o = 0; o < subscribers.length; o++) {
+  //     for (var p = 0; p < tagValue.length; p++) {
+  //       for (var q = 0; q < subscribers[o].tags.length; q++) {
+  //         if (subscribers[o].tags[q] === tagValue[p]) {
+  //           subscribersMatchTag.push(subscribers[o])
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag).length === 0) {
     return false
   }
