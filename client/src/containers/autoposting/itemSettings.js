@@ -28,11 +28,18 @@ class ItemSettings extends React.Component {
                   {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
+      Tag: {
+        options: [
+          {id: 'america', text: 'America', value: 'america'},
+          {id: 'pakistan', text: 'Pakistan', value: 'pakistan'}
+        ]
+      },
       stayOpen: false,
       disabled: false,
       pageValue: this.props.location.state.item.segmentationPageIds,
       genderValue: this.props.location.state.item.segmentationGender,
       localeValue: this.props.location.state.item.segmentationLocale,
+      tagValue: [],
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
       alertType: ''
@@ -47,6 +54,7 @@ class ItemSettings extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
   componentDidMount () {
@@ -106,9 +114,36 @@ class ItemSettings extends React.Component {
     }
     this.setState({Locale: {options: optionsLocale}})
 
+    // let optionsTag = []
+    // for (let i = 0; i < this.state.Tag.options.length; i++) {
+    //   if (this.props.location.state.item.segmentationTags !== '') {
+    //     if (this.props.location.state.item.segmentationTags.indexOf(this.state.Tag.options[i].value) !== -1) {
+    //       optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value, selected: true}
+    //     } else {
+    //       optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+    //     }
+    //   } else {
+    //     optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+    //   }
+    // }
+    // this.setState({Tag: {options: optionsTag}})
+
     this.initializePageSelect(options)
     this.initializeGenderSelect(optionsGender)
     this.initializeLocaleSelect(optionsLocale)
+    if (this.props.user.isSuperUser) {
+      let tags = [
+        {
+          tag_id: 'america',
+          tag_name: 'America'
+        },
+        {
+          tag_id: 'pakistan',
+          tag_name: 'Pakistan'
+        }
+      ]
+      this.initializeTagSelect(tags)
+    }
   }
 
   initializePageSelect (pageOptions) {
@@ -192,6 +227,41 @@ class ItemSettings extends React.Component {
     })
   }
 
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag_id,
+        text: tagOptions[i].tag_name
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#tagSelect').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#tagSelect').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.setState({
@@ -248,6 +318,7 @@ class ItemSettings extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationGender: this.state.genderValue,
       segmentationLocale: this.state.localeValue,
+      segmentationTags: this.state.tagValue,
       isActive: isActive
     }
     this.props.editautoposting(autopostingData)
@@ -340,6 +411,14 @@ class ItemSettings extends React.Component {
                           <select id='localeSelect' />
                         </div>
                       </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Tags
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='tagSelect' />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit'>
@@ -392,7 +471,8 @@ function mapStateToProps (state) {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
     successMessage: (state.autopostingInfo.successMessageEdit),
-    errorMessage: (state.autopostingInfo.errorMessageEdit)
+    errorMessage: (state.autopostingInfo.errorMessageEdit),
+    user: (state.basicInfo.user)
   }
 }
 
