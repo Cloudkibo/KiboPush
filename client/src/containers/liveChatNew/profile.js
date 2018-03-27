@@ -31,8 +31,8 @@ class Profile extends React.Component {
   }
   render () {
     return (
-        <div className='col-xl-3'>
-          {
+      <div className='col-xl-3'>
+        {
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
               onClose={this.closeDialog}>
@@ -43,6 +43,7 @@ class Profile extends React.Component {
                 <div style={{width: '100%', textAlign: 'center'}}>
                   <div style={{display: 'inline-block', padding: '5px'}}>
                     <button className='btn btn-primary' onClick={(e) => {
+                      this.props.changeActiveSessionFromChatbox()
                       this.props.unSubscribe(this.state.subscriber, {company_id: this.props.user._id})
                       this.closeDialog()
                     }}>
@@ -58,32 +59,32 @@ class Profile extends React.Component {
               </ModalDialog>
             </ModalContainer>
           }
-          <div className='m-portlet m-portlet--full-height'>
-            <div className='m-portlet__body'>
-              <div className='m-card-profile'>
-                <div className='m-card-profile__pic'>
-                  <div className='m-card-profile__pic-wrapper'>
-                    <img style={{width: '80px', height: '80px'}} src={this.props.currentSession.subscriber_id.profilePic} alt='' />
-                  </div>
+        <div className='m-portlet m-portlet--full-height'>
+          <div className='m-portlet__body'>
+            <div className='m-card-profile'>
+              <div className='m-card-profile__pic'>
+                <div className='m-card-profile__pic-wrapper'>
+                  <img style={{width: '80px', height: '80px'}} src={this.props.currentSession.subscriber_id.profilePic} alt='' />
                 </div>
-                <div className='m-card-profile__details'>
-                  <span className='m-card-profile__name'>
-                    {this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName}
-                  </span>
-                  {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
+              </div>
+              <div className='m-card-profile__details'>
+                <span className='m-card-profile__name'>
+                  {this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName}
+                </span>
+                {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
                       (Unsubscribe)
                     </a>
                   }
-                  <br />
-                  <a className='m-card-profile__email m-link'>
-                    {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
-                  </a>
-                </div>
+                <br />
+                <a className='m-card-profile__email m-link'>
+                  {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
+                </a>
               </div>
             </div>
           </div>
         </div>
+      </div>
     )
   }
 }
