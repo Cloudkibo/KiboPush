@@ -43,6 +43,7 @@ class Profile extends React.Component {
                 <div style={{width: '100%', textAlign: 'center'}}>
                   <div style={{display: 'inline-block', padding: '5px'}}>
                     <button className='btn btn-primary' onClick={(e) => {
+                      this.props.changeActiveSessionFromChatbox()
                       this.props.unSubscribe(this.state.subscriber, {company_id: this.props.user._id})
                       this.closeDialog()
                     }}>

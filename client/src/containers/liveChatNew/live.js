@@ -64,6 +64,7 @@ class LiveChat extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changeTab = this.changeTab.bind(this)
     this.separateResolvedSessions = this.separateResolvedSessions.bind(this)
+    this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
   }
 
   componentDidMount () {
@@ -75,7 +76,9 @@ class LiveChat extends React.Component {
       this.setState({ignore: true})
     }
   }
-
+  changeActiveSessionFromChatbox () {
+    this.setState({activeSession: ''})
+  }
   changeTab (value) {
     if (value === 'open') {
       this.setState({tabValue: 'open'})
@@ -212,21 +215,21 @@ class LiveChat extends React.Component {
         //     }
         //   }
         // }
-        console.log('in componentWillReceiveProps')
         for (var a = 0; a < nextProps.sessions.length; a++) {
           if (nextProps.sessions[a].status === 'new') {
             this.setState({activeSession: nextProps.sessions[a]})
             break
           }
         }
-      } else if (nextProps.changedStatus) {
-        for (var b = 0; b < nextProps.sessions.length; b++) {
-          if (nextProps.sessions[b].status === 'new') {
-            this.setState({activeSession: nextProps.sessions[b]})
-            break
-          }
-        }
       }
+      // } else if (nextProps.changedStatus) {
+      //   for (var b = 0; b < nextProps.sessions.length; b++) {
+      //     if (nextProps.sessions[b].status === 'new') {
+      //       this.setState({activeSession: nextProps.sessions[b]})
+      //       break
+      //     }
+      //   }
+      // }
     }
 
     if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
@@ -522,8 +525,10 @@ class LiveChat extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <ChatBox currentSession={this.state.activeSession} />
-                  <Profile currentSession={this.state.activeSession} />
+                  {this.state.activeSession &&
+                  <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
+                  {this.state.activeSession && <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} /> }
                 </div>
                 )
               }
