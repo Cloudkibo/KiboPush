@@ -5,6 +5,10 @@ export function checkConditions (pageValue, genderValue, localeValue, subscriber
   let subscribersMatchLocale = []
   let subscribersMatchGender = []
   let subscribersMatchTag = []
+
+  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0) {
+    return true
+  }
   if (pageValue.length > 0) {
     for (var i = 0; i < pageValue.length; i++) {
       for (var j = 0; j < subscribers.length; j++) {
