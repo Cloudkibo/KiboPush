@@ -173,7 +173,6 @@ export function changeStatus (data, companyId) {
 export function unSubscribe (id, companyId) {
   return (dispatch) => {
     callApi(`sessions/unSubscribe/${id}`).then(res => {
-      dispatch(showChangeStatus('changed'))
       dispatch(fetchSessions(companyId))
     })
   }
