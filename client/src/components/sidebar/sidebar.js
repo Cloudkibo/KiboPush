@@ -271,7 +271,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-users' />
+              <i className='m-menu__link-icon flaticon-user-ok' />
               <span className='m-menu__link-text'>Subscribers</span>
             </Link>
           </li>
@@ -318,7 +318,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' />
+              <i className='m-menu__link-icon flaticon-user-add' />
               <span className='m-menu__link-text'>Invite Members</span>
             </Link>
           </li>
@@ -335,7 +335,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/members' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' />
+              <i className='m-menu__link-icon flaticon-users' />
               <span className='m-menu__link-text'>Members</span>
             </Link>
           </li>
@@ -347,14 +347,20 @@ class Sidebar extends Component {
   }
 
   showTeams () {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <Link to='/createTeam' className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-add' />
-          <span className='m-menu__link-text'>Teams</span>
-        </Link>
-      </li>
-    )
+    if (this.props.user && this.props.user.isSuperUser) {
+      if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/teams' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon fa fa-group' />
+              <span className='m-menu__link-text'>Teams</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
   }
 
   render () {
