@@ -12,6 +12,8 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import fileDownload from 'js-file-download'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import Select from 'react-select'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -26,11 +28,21 @@ class Subscriber extends React.Component {
       filterByPage: '',
       filteredData: '',
       searchValue: '',
-      isShowingTagModal: false,
-      selectedSubscribers: []
+      selectedSubscribers: [],
+      dropdownActionOpen: false,
+      popoverAddTagOpen: false,
+      popoverRemoveTagOpen: false,
+      addTags: [],
+      removeTags: [],
+      options: [{ value: 'R', label: 'Red' }, { value: 'G', label: 'Green' }, { value: 'B', label: 'Blue' }]
     }
     props.loadMyPagesList()
     props.loadSubscribersList()
+    this.handleAdd = this.handleAdd.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
+    this.toggleTag = this.toggleTag.bind(this)
+    this.toggleAdd = this.toggleAdd.bind(this)
+    this.toggleRemove = this.toggleRemove.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
@@ -43,55 +55,93 @@ class Subscriber extends React.Component {
     this.exportRecords = this.exportRecords.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     this.handleSubscriberClick = this.handleSubscriberClick.bind(this)
-    this.showTagDialog = this.showTagDialog.bind(this)
-    this.closeTagDialog = this.closeTagDialog.bind(this)
-    this.initializeTagSelect = this.initializeTagSelect.bind(this)
+    this.showAddTag = this.showAddTag.bind(this)
+    this.showRemoveTag = this.showRemoveTag.bind(this)
+    this.addTags = this.addTags.bind(this)
+    this.removeTags = this.removeTags.bind(this)
   }
-
+  handleAdd (value) {
+    this.setState({ addTags: value })
+  }
+  addTags () {
+    var subscribers = this.state.subscribersData
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      if (this.state.subscribersData[i].selected) {
+        subscribers[i].tags = this.state.addTags
+      }
+    }
+    this.setState({
+      subscribersData: subscribers
+    })
+    console.log(this.state.subscribersData)
+  }
+  removeTags () {
+    var subscribers = this.state.subscribersData
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      if (this.state.subscribersData[i].selected) {
+        var tags = this.state.subscribersData[i].tags
+        if (tags) {
+          for (var j = 0; j < this.state.subscribersData[i].tags.length; j++) {
+            for (var k = 0; k < this.state.removeTags.length; k++) {
+              if (this.state.subscribersData[i].tags[j].value === this.state.removeTags[k].value) {
+                tags.splice(j, 1)
+                break
+              }
+            }
+          }
+        }
+        subscribers[i].tags = tags
+      }
+    }
+    this.setState({
+      subscribersData: subscribers
+    })
+    console.log(this.state.subscribersData)
+  }
+  handleRemove (value) {
+    this.setState({ removeTags: value })
+  }
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
   }
   componentDidUpdate () {
-    let tags = []
-    let options = []
-    for (var i = 0; i < tags.length; i++) {
-      options[i] = {id: tags[i]._id, text: tags[i].name}
+  }
+  toggleTag () {
+    this.setState({
+      dropdownActionOpen: !this.state.dropdownActionOpen
+    })
+    if (this.state.popoverAddTagOpen) {
+      this.setState({
+        popoverAddTagOpen: false
+      })
     }
-    this.initializeTagSelect(options)
+    if (this.state.popoverRemoveTagOpen) {
+      this.setState({
+        popoverRemoveTagOpen: false
+      })
+    }
   }
-  showTagDialog () {
-    this.setState({isShowingTagModal: true})
-  }
-
-  closeTagDialog () {
-    this.setState({isShowingTagModal: false})
-  }
-
-  initializeTagSelect (tagOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectTags').select2({
-      /* eslint-enable */
-      data: tagOptions,
-      placeholder: 'Select Tags',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectTags').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].label
-          selected.push(selectedOption)
-        }
-        self.setState({ tagValue: selected })
-      }
+  toggleAdd () {
+    this.setState({
+      popoverAddTagOpen: !this.state.popoverAddTagOpen
     })
   }
+  toggleRemove () {
+    this.setState({
+      popoverRemoveTagOpen: !this.state.popoverRemoveTagOpen
+    })
+  }
+  showAddTag () {
+    this.setState({
+      popoverAddTagOpen: true
+    })
+  }
+  showRemoveTag () {
+    this.setState({
+      popoverRemoveTagOpen: true
+    })
+  }
+
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
@@ -435,14 +485,69 @@ class Subscriber extends React.Component {
                                     </div>
                                   </div>
                                   <div className='col-md-12' style={{marginTop: '25px'}}>
-                                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showTagDialog}>
-                                      <span>
-                                        <i className='la la-plus' />
-                                        <span>
-                                          Assign Tags
-                                        </span>
-                                      </span>
-                                    </button>
+                                    <div className='pull-right'>
+                                      <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
+                                        <DropdownToggle caret>
+                                           Assign Tags in bulk
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                          <DropdownItem onClick={this.showAddTag}>Add Tags</DropdownItem>
+                                          <DropdownItem onClick={this.showRemoveTag}>Remove Tags</DropdownItem>
+                                        </DropdownMenu>
+                                      </Dropdown>
+                                      <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
+                                        <PopoverHeader>Add Tags</PopoverHeader>
+                                        <PopoverBody>
+                                          <div className='row' style={{minWidth: '250px'}}>
+                                            <div className='col-12'>
+                                              <label>Select Tags</label>
+                                              <Select.Creatable
+                                                multi
+                                                options={this.state.options}
+                                                onChange={this.handleAdd}
+                                                value={this.state.addTags}
+                                                placeholder='Add User Tags'
+                                              />
+                                            </div>
+                                            <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                onClick={() => {
+                                                  this.addTags()
+                                                  this.toggleAdd()
+                                                }}>Save
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </PopoverBody>
+                                      </Popover>
+                                      <Popover placement='left' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
+                                        <PopoverHeader>Remove Tags</PopoverHeader>
+                                        <PopoverBody>
+                                          <div clasName='row' style={{minWidth: '250px'}}>
+                                            <div className='col-12'>
+                                              <label>Select Tags</label>
+                                              <Select
+                                                multi
+                                                options={this.state.options}
+                                                onChange={this.handleRemove}
+                                                value={this.state.removeTags}
+                                                placeholder='Remove User Tags'
+                                              />
+                                            </div>
+                                            <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                onClick={() => {
+                                                  this.removeTags()
+                                                  this.toggleRemove()
+                                                }}>Save
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </PopoverBody>
+                                      </Popover>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
