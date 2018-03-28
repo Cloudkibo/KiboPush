@@ -1,4 +1,5 @@
 const Teams = require('./teams.model')
+const Pages = require('../pages/Pages.model')
 const TeamAgents = require('./team_agents.model')
 const TeamPages = require('./team_pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
@@ -33,14 +34,25 @@ exports.index = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        TeamPages.find({companyId: companyUser.companyId}, (err, teamPages) => {
-          if (err) {
+
+        TeamPages
+        .find({companyId: companyUser.companyId})
+        .distinct('pageId', function (error, ids) {
+          if (error) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          return res.status(201).json({status: 'success', payload: {teams: teams, teamAgents: teamAgents, teamPages: teamPages}})
+          Pages.find({'_id': {$in: ids}}, function (err, teamUniquePages) {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            return res.status(201).json({status: 'success', payload: {teams: teams, teamAgents: teamAgents, teamUniquePages: teamUniquePages}})
+          })
         })
       })
     })
