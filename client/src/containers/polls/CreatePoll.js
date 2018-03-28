@@ -84,29 +84,6 @@ class CreatePoll extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-
-    this.addSteps([{
-      title: 'Question',
-      text: 'You can write a question here that you need to get feedback on',
-      selector: 'div#question',
-      position: 'top-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Response',
-      text: 'Give your subscribers list of possible responses to choose from',
-      selector: 'div#responses',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true},
-    {
-      title: 'Targetting',
-      text: 'You can target a specific demographic amongst your subscribers, by choosing these options',
-      selector: 'div#target',
-      position: 'bottom-left',
-      type: 'hover',
-      isFixed: true}
-    ])
   }
   showDialog () {
     this.setState({isShowingModal: true})

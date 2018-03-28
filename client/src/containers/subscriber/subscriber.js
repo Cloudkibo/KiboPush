@@ -25,7 +25,9 @@ class Subscriber extends React.Component {
       filterByLocale: '',
       filterByPage: '',
       filteredData: '',
-      searchValue: ''
+      searchValue: '',
+      isShowingTagModal: false,
+      selectedSubscribers: []
     }
     props.loadMyPagesList()
     props.loadSubscribersList()
@@ -40,12 +42,56 @@ class Subscriber extends React.Component {
     this.stackLocaleFilter = this.stackLocaleFilter.bind(this)
     this.exportRecords = this.exportRecords.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
+    this.handleSubscriberClick = this.handleSubscriberClick.bind(this)
+    this.showTagDialog = this.showTagDialog.bind(this)
+    this.closeTagDialog = this.closeTagDialog.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
   }
+  componentDidUpdate () {
+    let tags = []
+    let options = []
+    for (var i = 0; i < tags.length; i++) {
+      options[i] = {id: tags[i]._id, text: tags[i].name}
+    }
+    this.initializeTagSelect(options)
+  }
+  showTagDialog () {
+    this.setState({isShowingTagModal: true})
+  }
 
+  closeTagDialog () {
+    this.setState({isShowingTagModal: false})
+  }
+
+  initializeTagSelect (tagOptions) {
+    var self = this
+    /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: tagOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].label
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
@@ -78,6 +124,31 @@ class Subscriber extends React.Component {
       index++
     }
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
+  }
+  handleSubscriberClick (e) {
+    var subscribers = this.state.subscribersData
+    if (e.target.value === 'All') {
+      if (e.target.checked) {
+        for (var i = 0; i < this.state.subscribersData.length; i++) {
+          subscribers[i].selected = true
+        }
+      } else {
+        for (var j = 0; j < this.state.subscribersData.length; j++) {
+          subscribers[j].selected = false
+        }
+      }
+      this.setState({subscribersData: subscribers})
+      return
+    }
+    if (e.target.value !== '') {
+      if (e.target.checked) {
+        subscribers[e.target.value].selected = true
+        this.setState({subscribersData: subscribers})
+      } else {
+        subscribers[e.target.value].selected = false
+        this.setState({subscribersData: subscribers})
+      }
+    }
   }
   prepareExportData () {
     var data = []
@@ -363,6 +434,16 @@ class Subscriber extends React.Component {
                                       <div className='d-md-none m--margin-bottom-10' />
                                     </div>
                                   </div>
+                                  <div className='col-md-12' style={{marginTop: '25px'}}>
+                                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showTagDialog}>
+                                      <span>
+                                        <i className='la la-plus' />
+                                        <span>
+                                          Assign Tags
+                                        </span>
+                                      </span>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -377,6 +458,9 @@ class Subscriber extends React.Component {
                               <thead className='m-datatable__head'>
                                 <tr className='m-datatable__row'
                                   style={{height: '53px'}}>
+                                  <th data-field='Select All'
+                                    className='m-datatable__cell--center m-datatable__cell'>
+                                    <input type='checkbox' name='Select All' value='All' onChange={this.handleSubscriberClick} /></th>
                                   <th data-field='Profile Picture'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
@@ -392,10 +476,6 @@ class Subscriber extends React.Component {
                                   <th data-field='PhoneNumber'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>PhoneNumber</span>
-                                  </th>
-                                  <th data-field='Email'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Email</span>
                                   </th>
                                   <th data-field='Source'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -416,8 +496,10 @@ class Subscriber extends React.Component {
                                 {
                               this.state.subscribersData.map((subscriber, i) => (
                                 <tr data-row={i}
-                                  className='m-datatable__row m-datatable__row--even'
+                                  className='m-datatable__row m-datatable__row--even subscriberRow'
                                   style={{height: '55px'}} key={i}>
+                                  <td data-field='Select All'
+                                    className='m-datatable__cell'><input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} /></td>
                                   <td data-field='Profile Picture'
                                     className='m-datatable__cell'>
                                     <span
@@ -447,13 +529,6 @@ class Subscriber extends React.Component {
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
                                       {subscriber.phoneNumber}
-                                    </span>
-                                  </td>
-                                  <td data-field='email'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.email}
                                     </span>
                                   </td>
                                   <td data-field='source'
