@@ -43,11 +43,14 @@ class LiveChat extends React.Component {
       loading: true,
       ignore: true,
       sessionsData: [],
+      sessionsDataNew: [],
+      sessionsDataResolved: [],
       searchValue: '',
       filterValue: '',
       sortValue: '',
       showDropDown: false,
-      isShowingModalGuideLines: false
+      isShowingModalGuideLines: false,
+      tabValue: 'open'
     }
     props.fetchSessions({ company_id: this.props.user._id })
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
@@ -59,6 +62,9 @@ class LiveChat extends React.Component {
     this.filterSession = this.filterSession.bind(this)
     this.showDropdown = this.showDropdown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+    this.separateResolvedSessions = this.separateResolvedSessions.bind(this)
+    this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
   }
 
   componentDidMount () {
@@ -71,7 +77,26 @@ class LiveChat extends React.Component {
     }
   }
 
-  componentWillMount () {
+  changeActiveSessionFromChatbox () {
+    this.setState({activeSession: ''})
+  }
+
+  changeTab (value) {
+    if (value === 'open') {
+      this.setState({tabValue: 'open'})
+    } else {
+      this.setState({tabValue: 'closed'})
+    }
+  }
+
+  separateResolvedSessions (sessions) {
+    let newSessions = sessions.filter(session => session.status === 'new')
+    let resolvedSessions = sessions.filter(session => session.status === 'resolved')
+
+    this.setState({
+      sessionsDataNew: newSessions,
+      sessionsDataResolved: resolvedSessions
+    })
   }
 
   changeActiveSession (session) {
@@ -89,6 +114,7 @@ class LiveChat extends React.Component {
           _id: temp[i]._id
         }
         this.setState({sessionsData: temp})
+        this.separateResolvedSessions(temp)
       }
     }
     this.props.fetchUserChats(session._id)
@@ -157,6 +183,7 @@ class LiveChat extends React.Component {
     }
 
     this.setState({sessionsData: temp})
+    this.separateResolvedSessions(temp)
   }
 
   showDropdown () {
@@ -173,23 +200,24 @@ class LiveChat extends React.Component {
     if (nextProps.sessions) {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
+      this.separateResolvedSessions(nextProps.sessions)
       if (this.state.activeSession === '') {
-        if (this.props.location.state && this.props.location.state.session_id) {
-          for (var p = 0; p < nextProps.sessions.length; p++) {
-            if (nextProps.sessions[p]._id === this.props.location.state.session_id) {
-              this.setState({activeSession: nextProps.sessions[p]})
-              break
-            }
-          }
+        if (this.state.tabValue === 'open') {
+          let newSessions = nextProps.sessions.filter(session => session.status === 'new')
+          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
         } else {
-          for (var a = 0; a < nextProps.sessions.length; a++) {
-            if (nextProps.sessions[a].subscriber_id !== null) {
-              this.setState({activeSession: nextProps.sessions[a]})
-              break
-            }
-          }
+          let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
+          this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
         }
       }
+      // } else if (nextProps.changedStatus) {
+      //   for (var b = 0; b < nextProps.sessions.length; b++) {
+      //     if (nextProps.sessions[b].status === 'new') {
+      //       this.setState({activeSession: nextProps.sessions[b]})
+      //       break
+      //     }
+      //   }
+      // }
     }
 
     if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
@@ -197,8 +225,8 @@ class LiveChat extends React.Component {
       for (var i = 0; i < temp.length; i++) {
         if (temp[i]._id === nextProps.unreadSession) {
           temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
-          this.setState({sessionsData: temp}, () => {
-          })
+          this.setState({sessionsData: temp})
+          this.separateResolvedSessions(temp)
         }
       }
       this.props.resetUnreadSession()
@@ -217,19 +245,16 @@ class LiveChat extends React.Component {
             subscriber_id: sess[j].subscriber_id,
             _id: sess[j]._id
           }
-          this.setState({sessionsData: sess}, () => {
-          })
+          this.setState({sessionsData: sess})
+          this.separateResolvedSessions(sess)
         }
       }
-    }
-
-    if (nextProps.socketSession !== '' && nextProps.socketSession !== this.props.socketSession) {
-      this.setState({ignore: false, body: 'You got a new message from ' + nextProps.socketData.name + ' : ' + nextProps.socketData.text})
     }
 
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.sessions) {
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
         this.props.fetchUserChats(nextProps.socketSession)
+        this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
         var isPresent = false
         nextProps.sessions.map((sess) => {
@@ -240,9 +265,10 @@ class LiveChat extends React.Component {
 
         if (isPresent) {
           this.props.fetchSessions({ company_id: this.props.user._id })
-          // this.props.resetSocket()
+          this.props.resetSocket()
         } else {
           this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.resetSocket()
         }
       }
     }
@@ -398,47 +424,111 @@ class LiveChat extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div style={{height: '525px', overflowY: 'scroll', padding: '2.2rem 0rem'}} className='m-portlet__body'>
+                      <div style={{padding: '0rem 2.2rem'}}>
+                        <ul className='nav nav-tabs m-tabs-line' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                              Open
+                            </a>
+                          </li>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
+                              Closed
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
                         <div className='tab-content'>
-                          <div className='tab-pane active' id='m_widget4_tab1_content'>
-                            <div className='m-widget4'>
-                              {
-                                this.state.sessionsData && this.state.sessionsData.length > 0
-                                ? (this.state.sessionsData.map((session) => (
-                                  session.subscriber_id !== null &&
-                                  <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
-                                    <div className='m-widget4__img m-widget4__img--pic'>
-                                      <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                          {
+                            this.state.tabValue === 'open'
+                            ? <div className='tab-pane active' id='m_widget4_tab1_content'>
+                              <div className='m-widget4'>
+                                {
+                                  this.state.sessionsDataNew && this.state.sessionsDataNew.length > 0
+                                  ? (this.state.sessionsDataNew.map((session) => (
+                                    <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div className='m-widget4__img m-widget4__img--pic'>
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                                      </div>
+                                      <div className='m-widget4__info'>
+                                        <span className='m-widget4__title'>
+                                          {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
+                                        </span>
+                                        <br />
+                                        <span className='m-widget4__sub'>
+                                          {session.page_id.pageName}
+                                        </span>
+                                      </div>
+                                      <div className='m-widget4__ext'>
+                                        {
+                                          session.unreadCount &&
+                                          <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                                            {session.unreadCount}
+                                          </a>
+                                        }
+                                      </div>
                                     </div>
-                                    <div className='m-widget4__info'>
-                                      <span className='m-widget4__title'>
-                                        {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
-                                      </span>
-                                      <br />
-                                      <span className='m-widget4__sub'>
-                                        {session.page_id.pageName}
-                                      </span>
-                                    </div>
-                                    <div className='m-widget4__ext'>
-                                      {
-                                        session.unreadCount &&
-                                        <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                                          {session.unreadCount}
-                                        </a>
-                                      }
-                                    </div>
-                                  </div>
-                                )))
-                                : <p style={{marginLeft: '30px'}}>No data to display</p>
-                              }
+                                  )))
+                                  : <p style={{marginLeft: '30px'}}>No data to display</p>
+                                }
+                              </div>
                             </div>
-                          </div>
+                            : <div className='tab-pane active' id='m_widget4_tab1_content'>
+                              <div className='m-widget4'>
+                                {
+                                  this.state.sessionsDataResolved && this.state.sessionsDataResolved.length > 0
+                                  ? (this.state.sessionsDataResolved.map((session) => (
+                                    <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div className='m-widget4__img m-widget4__img--pic'>
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                                      </div>
+                                      <div className='m-widget4__info'>
+                                        <span className='m-widget4__title'>
+                                          {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
+                                        </span>
+                                        <br />
+                                        <span className='m-widget4__sub'>
+                                          {session.page_id.pageName}
+                                        </span>
+                                      </div>
+                                      <div className='m-widget4__ext'>
+                                        {
+                                          session.unreadCount &&
+                                          <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                                            {session.unreadCount}
+                                          </a>
+                                        }
+                                      </div>
+                                    </div>
+                                  )))
+                                  : <p style={{marginLeft: '30px'}}>No data to display</p>
+                                }
+                              </div>
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
                   </div>
-                  <ChatBox currentSession={this.state.activeSession} />
-                  <Profile currentSession={this.state.activeSession} />
+                  {
+                    this.state.activeSession === '' &&
+                    <div className='col-xl-8'>
+                      <div className='m-portlet m-portlet--full-height'>
+                        <div style={{textAlign: 'center'}} className='m-portlet__body'>
+                          <p>Please select a session to view its chat.</p>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  {
+                    this.state.activeSession !== '' &&
+                    <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
+                  {
+                    this.state.activeSession !== '' &&
+                    <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
                 </div>
                 )
               }
@@ -506,6 +596,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
     unreadSession: (state.liveChat.unreadSession),
+    changedStatus: (state.liveChat.changedStatus),
     userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
     socketData: (state.liveChat.socketData)
