@@ -17,13 +17,14 @@ class Profile extends React.Component {
     super(props, context)
     this.state = {
       isShowingModal: false,
-      subscriber: ''
+      subscriber: '',
+      page: ''
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
   }
-  showDialog (subscriber) {
-    this.setState({isShowingModal: true, subscriber: subscriber})
+  showDialog (subscriber, page) {
+    this.setState({isShowingModal: true, subscriber: subscriber, page: page})
   }
 
   closeDialog () {
@@ -44,7 +45,7 @@ class Profile extends React.Component {
                   <div style={{display: 'inline-block', padding: '5px'}}>
                     <button className='btn btn-primary' onClick={(e) => {
                       this.props.changeActiveSessionFromChatbox()
-                      this.props.unSubscribe(this.state.subscriber, {company_id: this.props.user._id})
+                      this.props.unSubscribe({subscriber_id: this.state.subscriber, page_id: this.state.page}, {company_id: this.props.user._id})
                       this.closeDialog()
                     }}>
                       Yes
@@ -72,7 +73,7 @@ class Profile extends React.Component {
                   {this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName}
                 </span>
                 {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
+                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id, this.props.currentSession.page_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
                       (Unsubscribe)
                     </a>
                   }

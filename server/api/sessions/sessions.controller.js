@@ -6,7 +6,10 @@ const LiveChat = require('./../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
+const Pages = require('../pages/Pages.model')
 const TAG = 'api/sessions/sessions.controller.js'
+const Users = require('./../user/Users.model')
+const needle = require('needle')
 const _ = require('lodash')
 
 // get list of fb sessions
@@ -131,15 +134,72 @@ exports.markread = function (req, res) {
 }
 exports.unSubscribe = function (req, res) {
   // todo tell fb users that message is read
-  Subscribers.update({_id: req.params.id},
-    {isSubscribed: false}, (err, updated) => {
+  Pages.findOne({ _id: req.body.page_id }, (err, userPage) => {
+    if (err) {
+      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    Subscribers.findOne({_id: req.body.subscriber_id}, (err, subscriber) => {
       if (err) {
         logger.serverLog(TAG,
           `Subscribers update subscription: ${JSON.stringify(
             err)}`)
       }
-      res.status(200).json({status: 'success', payload: updated})
+      Subscribers.update({_id: req.body.subscriber_id},
+        {isSubscribed: false, unSubscribedBy: 'agent'}, (err, updated) => {
+          if (err) {
+            logger.serverLog(TAG,
+              `Subscribers update subscription: ${JSON.stringify(
+                err)}`)
+          }
+            /* Getting the company user who has connected the facebook account */
+          Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            var currentUser
+            if (req.user.facebookInfo) {
+              currentUser = req.user
+            } else {
+              currentUser = connectedUser
+            }
+            needle.get(
+            `https://graph.facebook.com/v2.10/${userPage.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Page access token from graph api error ${JSON.stringify(
+                  err)}`)
+              }
+              const messageData = {
+                text: 'We have unsubscribed you from our page. We will notify you when we subscribe you again. Thanks'
+              }
+              const data = {
+                recipient: {id: subscriber.senderId}, // this is the subscriber id
+                message: messageData
+              }
+              needle.post(
+              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+              data, (err, resp) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: JSON.stringify(err)
+                  })
+                }
+                res.status(200).json({status: 'success', payload: updated})
+              })
+            })
+          })
+        })
     })
+  })
 }
 
 exports.assignAgent = function (req, res) {

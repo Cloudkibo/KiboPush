@@ -95,6 +95,7 @@ import AutopostingWizard from './containers/wizard/autoposting'
 import WorkflowWizard from './containers/wizard/workflow'
 import MenuWizard from './containers/wizard/menu'
 import FinishWizard from './containers/wizard/finish'
+import CreateTeam from './containers/teams/createTeam'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -219,6 +220,7 @@ const routes = (
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />
+    <Route path='/createTeam' component={CreateTeam} onEnter={requireAuth} />
   </Route>
 
 )
