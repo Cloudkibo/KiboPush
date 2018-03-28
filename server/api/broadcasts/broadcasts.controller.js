@@ -601,7 +601,6 @@ function handleThePagePostsForAutoPosting (event, status) {
                           let newURL = config.domain + '/api/URL/' +
                             savedurl._id
 
-                          console.log(savedurl)
 
                           messageData = {
                             'recipient': JSON.stringify({
@@ -1135,17 +1134,34 @@ function sendautomatedmsg (req, page) {
               }
               unsubscribeResponse = true
             } else if (index === -111) {
-              messageData = {
-                text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
-              }
-              Subscribers.update({senderId: req.sender.id},
-                {isSubscribed: true}, (err) => {
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Subscribers update subscription: ${JSON.stringify(
-                        err)}`)
+              Subscribers.find({senderId: req.sender.id, unSubscribedBy: 'subscriber'}, (err, subscribers) => {
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Subscribers update subscription: ${JSON.stringify(
+                      err)}`)
+                }
+                if (subscribers.length > 0) {
+                  messageData = {
+                    text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
                   }
-                })
+                  Subscribers.update({senderId: req.sender.id},
+                    {isSubscribed: true}, (err) => {
+                      if (err) {
+                        logger.serverLog(TAG,
+                          `Subscribers update subscription: ${JSON.stringify(
+                            err)}`)
+                      }
+                    })
+                  const data = {
+                    recipient: {id: req.sender.id}, // this is the subscriber id
+                    message: messageData
+                  }
+                  needle.post(
+                    `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
+                    data, (err4, respp) => {
+                    })
+                }
+              })
             } else if (index > -1) {
               messageData = {
                 text: workflows[index].reply

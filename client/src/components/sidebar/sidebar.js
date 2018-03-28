@@ -346,6 +346,17 @@ class Sidebar extends Component {
     }
   }
 
+  showTeams () {
+    return (
+      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+        <Link to='/createTeam' className='m-menu__link m-menu__toggle'>
+          <i className='m-menu__link-icon flaticon-add' />
+          <span className='m-menu__link-text'>Teams</span>
+        </Link>
+      </li>
+    )
+  }
+
   render () {
     return (
       <div>
@@ -374,6 +385,7 @@ class Sidebar extends Component {
               {this.showCreatePhoneList()}
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
+              {this.showTeams()}
               {this.showBroadcastTemplates()}
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
