@@ -23,4 +23,16 @@ router.post('/rename',
   auth.isAuthenticated(),
   controller.rename)
 
+router.post('/delete',
+  auth.isAuthenticated(),
+  controller.delete)
+
+router.post('/assign',
+  auth.isAuthenticated(),
+  controller.assign)
+
+router.post('/unassign',
+  auth.isAuthenticated(),
+  controller.unassign)
+
 module.exports = router
