@@ -60,6 +60,7 @@ class EditTeam extends React.Component {
     this.scrollToTop()
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
     if (nextProps.pages && nextProps.members) {
       var agents = []
       var pages = []
@@ -200,16 +201,16 @@ class EditTeam extends React.Component {
     return false
   }
   existsUpdateAgent (agent) {
-    for (var i = 0; i < this.props.teams.teamUniqueAgents.length; i++) {
-      if (this.props.teams.teamUniqueAgents[i].agentId._id === agent.userId._id && this.props.teams.teamUniqueAgents[i].teamId === agent.teamId) {
+    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
+      if (this.props.teamUniqueAgents[i].agentId._id === agent.userId._id && this.props.teamUniqueAgents[i].teamId === agent.teamId) {
         return true
       }
     }
     return false
   }
   existsUpdatePage (page) {
-    for (var i = 0; i < this.props.teams.teamUniquePages.length; i++) {
-      if (this.props.teams.teamUniquePages[i].pageId._id === page.pageName && this.props.teams.teamUniquePages[i].teamId === page.teamId) {
+    for (var i = 0; i < this.props.teamUniquePages.length; i++) {
+      if (this.props.teamUniquePages[i].pageId._id === page.pageName && this.props.teamUniquePages[i].teamId === page.teamId) {
         return true
       }
     }
@@ -464,7 +465,9 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
     members: (state.membersInfo.members),
-    teams: (state.teamsInfo.teams)
+    teams: (state.teamsInfo.teams),
+    teamUniquePages: (state.teamsInfo.teamUniquePages),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents)
   }
 }
 
