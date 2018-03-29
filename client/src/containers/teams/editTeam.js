@@ -39,6 +39,8 @@ class EditTeam extends React.Component {
     this.removePage = this.removePage.bind(this)
     this.exists = this.exists.bind(this)
     this.existsPage = this.existsPage.bind(this)
+    this.existsUpdatePage = this.existsUpdatePage.bind(this)
+    this.existsUpdateAgent = this.existsUpdateAgent.bind(this)
   }
   showDropDown () {
     this.setState({showDropDown: true})
@@ -94,10 +96,14 @@ class EditTeam extends React.Component {
     } else {
       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
+        if (this.existsUpdateAgent(this.state.agentIds[i].userId._id) === false) {
+          this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
+        }
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+        if (this.existsUpdatePage(this.state.pageIds[j]._id) === false) {
+          this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+        }
       }
       this.msg.success('Changes saved successfully')
     }
@@ -188,6 +194,22 @@ class EditTeam extends React.Component {
   existsPage (page) {
     for (var i = 0; i < this.state.pageIds.length; i++) {
       if (this.state.pageIds[i].pageName === page) {
+        return true
+      }
+    }
+    return false
+  }
+  existsUpdateAgent (agent) {
+    for (var i = 0; i < this.props.location.state.agents.length; i++) {
+      if (this.props.location.state.agents[i].agentId._id === agent) {
+        return true
+      }
+    }
+    return false
+  }
+  existsUpdatePage (page) {
+    for (var i = 0; i < this.props.location.state.pages.length; i++) {
+      if (this.props.location.state.pages[i].pageId._id === page) {
         return true
       }
     }
