@@ -96,12 +96,12 @@ class EditTeam extends React.Component {
     } else {
       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        if (this.existsUpdateAgent(this.state.agentIds[i].userId._id) === false) {
+        if (this.existsUpdateAgent(this.state.agentIds[i]) === false) {
           this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
         }
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        if (this.existsUpdatePage(this.state.pageIds[j]._id) === false) {
+        if (this.existsUpdatePage(this.state.pageIds[j]) === false) {
           this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
         }
       }
@@ -201,7 +201,7 @@ class EditTeam extends React.Component {
   }
   existsUpdateAgent (agent) {
     for (var i = 0; i < this.props.teams.teamUniqueAgents.length; i++) {
-      if (this.props.teams.teamUniqueAgents[i].agentId._id === agent) {
+      if (this.props.teams.teamUniqueAgents[i].agentId._id === agent.userId._id && this.props.teams.teamUniqueAgents[i].teamId === agent.teamId) {
         return true
       }
     }
@@ -209,7 +209,7 @@ class EditTeam extends React.Component {
   }
   existsUpdatePage (page) {
     for (var i = 0; i < this.props.teams.teamUniquePages.length; i++) {
-      if (this.props.teams.teamUniquePages[i].pageId._id === page) {
+      if (this.props.teams.teamUniquePages[i].pageId._id === page.pageName && this.props.teams.teamUniquePages[i].teamId === page.teamId) {
         return true
       }
     }
