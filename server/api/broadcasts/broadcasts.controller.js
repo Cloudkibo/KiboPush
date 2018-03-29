@@ -600,8 +600,6 @@ function handleThePagePostsForAutoPosting (event, status) {
 
                           let newURL = config.domain + '/api/URL/' +
                             savedurl._id
-
-
                           messageData = {
                             'recipient': JSON.stringify({
                               'id': subscriber.senderId

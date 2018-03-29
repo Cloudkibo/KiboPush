@@ -7,13 +7,13 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { createTeam } from '../../redux/actions/teams.actions'
+import { update, addAgent, addPage, removePage, removeAgent } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import AlertContainer from 'react-alert'
-class CreateTeam extends React.Component {
+class EditTeam extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadMembersList()
@@ -58,6 +58,25 @@ class CreateTeam extends React.Component {
     this.scrollToTop()
   }
   componentWillReceiveProps (nextProps) {
+    if (nextProps.pages && nextProps.members) {
+      var agents = []
+      var pages = []
+      for (var i = 0; i < nextProps.members.length; i++) {
+        for (var j = 0; j < this.props.location.state.agents.length; j++) {
+          if (this.props.location.state.agents[j].agentId._id === nextProps.members[i].userId._id) {
+            agents.push(nextProps.members[i])
+          }
+        }
+      }
+      for (var a = 0; a < nextProps.length; a++) {
+        for (var b = 0; b < this.props.location.state.pages.length; b++) {
+          if (this.props.location.state.pages[b].pageId._id === nextProps.pages[a]._id) {
+            pages.push(nextProps.pages[a])
+          }
+        }
+      }
+      this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
+    }
   }
   createTeam () {
     if (this.state.name === '') {
@@ -69,20 +88,14 @@ class CreateTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
-      var agents = []
+      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        agents.push(this.state.agentIds[i]._id)
+        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
       }
-      let pageIds = []
-      let pageNames = []
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        pageIds.push(this.state.pageIds[j]._id)
-        pageNames.push(this.state.pageIds[j].pageName)
+        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
       }
-      this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds})
-      browserHistory.push({
-        pathname: `/teams`
-      })
+      this.msg.success('Changes saved successfully')
     }
   }
   updateDescription (e) {
@@ -114,10 +127,11 @@ class CreateTeam extends React.Component {
     this.setState({agentIds: temp})
   }
   removeAgent (agent) {
+    this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
     var index = -1
     var temp = this.state.agentIds
     for (var i = 0; i < this.state.agentIds.length; i++) {
-      if (agent === this.state.agentIds[i].userId.name) {
+      if (agent.name === this.state.agentIds[i].userId.name) {
         index = i
       }
     }
@@ -146,10 +160,11 @@ class CreateTeam extends React.Component {
     this.setState({pageIds: temp})
   }
   removePage (page) {
+    this.props.removeAgent({ pageId: page._id, teamId: this.props.location.state._id })
     var index = -1
     var temp = this.state.pageIds
     for (var i = 0; i < this.state.pageIds.length; i++) {
-      if (page === this.state.pageIds[i].pageName) {
+      if (page.pageName === this.state.pageIds[i].pageName) {
         index = i
       }
     }
@@ -196,7 +211,10 @@ class CreateTeam extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Team</h3>
+                  {this.props.location.state.module === 'edit'
+                  ? <h3 className='m-subheader__title'>Edit Team</h3>
+                  : <h3 className='m-subheader__title'>View Team</h3>
+                  }
                 </div>
               </div>
             </div>
@@ -208,15 +226,25 @@ class CreateTeam extends React.Component {
                       <div className='m-form'>
                         <div id='name' className='form-group m-form__group'>
                           <label className='control-label'>Team Name:</label>
-                          <input className='form-control'
+                          {this.props.location.state.module === 'edit'
+                          ? <input className='form-control'
                             placeholder='Enter name here' value={this.state.name} onChange={(e) => this.updateName(e)}
                              />
+                           : <input className='form-control'
+                             placeholder='Enter name here' value={this.state.name} disabled
+                              />
+                         }
                         </div>
                         <div id='description' className='form-group m-form__group'>
                           <label className='control-label'>Team Description:</label>
-                          <textarea className='form-control'
+                          {this.props.location.state.module === 'edit'
+                          ? <textarea className='form-control'
                             placeholder='Enter description here' value={this.state.description} onChange={(e) => this.updateDescription(e)}
                              />
+                           : <textarea className='form-control'
+                             placeholder='Enter description here' value={this.state.description} disabled
+                              />
+                          }
                         </div>
                       </div>
                       <br />
@@ -232,7 +260,9 @@ class CreateTeam extends React.Component {
                                     <span>
                                       <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
                                       <span>{agent.userId.name}</span>&nbsp;&nbsp;&nbsp;
-                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId.name)} />
+                                      {this.props.location.state.module === 'edit' &&
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId)} />
+                                      }
                                     </span>
                                   </li>
                                   ))
@@ -241,6 +271,7 @@ class CreateTeam extends React.Component {
                             </div>
                           }
                           <br />
+                          {this.props.location.state.module === 'edit' &&
                           <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
                             <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                             Add Agents
@@ -291,6 +322,7 @@ class CreateTeam extends React.Component {
                                 </div>
                               }
                           </div>
+                        }
                         </div>
                         <div className='col-lg-4 col-md-4 col-sm-4'>
                           <label>Assigned to Pages:</label>
@@ -303,7 +335,9 @@ class CreateTeam extends React.Component {
                                     <span>
                                       <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
                                       <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
-                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page.pagePic)} />
+                                      {this.props.location.state.module === 'edit' &&
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page)} />
+                                      }
                                     </span>
                                   </li>
                                   ))
@@ -312,6 +346,7 @@ class CreateTeam extends React.Component {
                             </div>
                           }
                           <br />
+                          {this.props.location.state.module === 'edit' &&
                           <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
                             <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                             Add Pages
@@ -362,12 +397,14 @@ class CreateTeam extends React.Component {
                                 </div>
                               }
                           </div>
+                        }
                         </div>
                       </div>
                       <br /><br />
                       <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                        <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                          <button className='btn btn-primary' onClick={this.createTeam}> Create Team
+                        {this.props.location.state.module === 'edit'
+                        ? <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <button className='btn btn-primary' onClick={this.createTeam}> Save
                           </button>
                           <Link
                             to='/teams'
@@ -375,6 +412,14 @@ class CreateTeam extends React.Component {
                             Cancel
                           </Link>
                         </div>
+                        : <div className='m-form__actions' style={{'float': 'left', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <Link
+                            to='/teams'
+                            className='btn btn-primary' style={{'marginLeft': '10px'}}>
+                            Back
+                          </Link>
+                        </div>
+                      }
                       </div>
                     </div>
                   </div>
@@ -400,9 +445,13 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
     loadMyPagesList: loadMyPagesList,
-    createTeam: createTeam,
-    loadMembersList: loadMembersList
+    loadMembersList: loadMembersList,
+    addPage: addPage,
+    addAgent: addAgent,
+    removePage: removePage,
+    removeAgent: removeAgent,
+    update: update
   },
     dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTeam)
+export default connect(mapStateToProps, mapDispatchToProps)(EditTeam)
