@@ -72,7 +72,7 @@ class CreateTeam extends React.Component {
     } else {
       var agents = []
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        agents.push(this.state.agentIds[i]._id)
+        agents.push(this.state.agentIds[i].userId._id)
       }
       let pageIds = []
       let pageNames = []
