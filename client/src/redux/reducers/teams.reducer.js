@@ -5,7 +5,8 @@ export function teamsInfo (state = {}, action) {
     case ActionTypes.SHOW_TEAMS_LIST:
       return Object.assign({}, state, {
         teams: action.teams,
-        teamUniquePages: action.teamUniquePages
+        teamUniquePages: action.teamUniquePages,
+        teamUniqueAgents: action.teamUniqueAgents
       })
 
     default:

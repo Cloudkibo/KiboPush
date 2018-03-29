@@ -74,7 +74,13 @@ class CreateTeam extends React.Component {
     for (var i = 0; i < this.state.agentIds.length; i++) {
       agents.push(this.state.agentIds[i]._id)
     }
-    this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, pageIds: this.state.pageIds})
+    let pageIds = []
+    let pageNames = []
+    for (var j = 0; j < this.state.pageIds.length; j++) {
+      pageIds.push(this.state.pageIds[j]._id)
+      pageNames.push(this.state.pageIds[j].pageName)
+    }
+    this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds})
     browserHistory.push({
       pathname: `/teams`
     })
@@ -206,7 +212,7 @@ class CreateTeam extends React.Component {
                                     <span>
                                       <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
                                       <span>{agent.userId.name}</span>&nbsp;&nbsp;&nbsp;
-                                      <i className='fa fa-times' onClick={() => this.removeAgent(agent.userId.name)} />
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId.name)} />
                                     </span>
                                   </li>
                                   ))
@@ -265,8 +271,8 @@ class CreateTeam extends React.Component {
                                   <li key={page._id} className='m-nav__item'>
                                     <span>
                                       <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                                      <span>{page.pagePic}</span>&nbsp;&nbsp;&nbsp;
-                                      <i className='fa fa-times' onClick={() => this.removePage(page.pagePic)} />
+                                      <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page.pagePic)} />
                                     </span>
                                   </li>
                                   ))
