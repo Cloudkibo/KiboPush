@@ -60,6 +60,7 @@ class EditTeam extends React.Component {
     this.scrollToTop()
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
     if (nextProps.pages && nextProps.members) {
       var agents = []
       var pages = []
