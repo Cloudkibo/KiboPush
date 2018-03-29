@@ -6,12 +6,14 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { loadTeamsList, deleteTeam } from '../../redux/actions/teams.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class Teams extends React.Component {
   constructor (props, context) {
@@ -20,7 +22,8 @@ class Teams extends React.Component {
       teamsData: [],
       totalLength: 0,
       filterValue: '',
-      isShowingModal: false
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     props.loadTeamsList()
     this.displayData = this.displayData.bind(this)
@@ -28,10 +31,23 @@ class Teams extends React.Component {
     this.searchTeams = this.searchTeams.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
+    this.goToEdit = this.goToEdit.bind(this)
+    this.goToView = this.goToView.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
   }
 
   componentDidMount () {
@@ -97,10 +113,53 @@ class Teams extends React.Component {
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
   }
-
+  goToEdit (team) {
+    var agents = []
+    var pages = []
+    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
+      if (team._id === this.props.teamUniqueAgents[i].teamId) {
+        agents.push(this.props.teamUniqueAgents[i])
+      }
+    }
+    for (var j = 0; j < this.props.teamUniquePages.length; j++) {
+      if (team._id === this.props.teamUniquePages[j].teamId) {
+        pages.push(this.props.teamUniquePages[j])
+      }
+    }
+    browserHistory.push({
+      pathname: `/editTeam`,
+      state: {module: 'edit', agents: agents, pages: pages, name: team.name, description: team.description, _id: team._id}
+    })
+  }
+  goToView (team) {
+    var agents = []
+    var pages = []
+    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
+      if (team._id === this.props.teamUniqueAgents[i].teamId) {
+        agents.push(this.props.teamUniqueAgents[i])
+      }
+    }
+    for (var j = 0; j < this.props.teamUniquePages.length; j++) {
+      if (team._id === this.props.teamUniquePages[j].teamId) {
+        pages.push(this.props.teamUniquePages[i])
+      }
+    }
+    browserHistory.push({
+      pathname: `/editTeam`,
+      state: {module: 'view', agents: agents, pages: pages, name: team.name, description: team.description}
+    })
+  }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 3000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -108,6 +167,24 @@ class Teams extends React.Component {
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            {
+              this.state.isShowingModalDelete &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialogDelete}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialogDelete}>
+                  <h3>Delete Team</h3>
+                  <p>Are you sure you want to delete this team?</p>
+                  <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.props.deleteTeam(this.state.deleteid, this.msg)
+                      this.closeDialogDelete()
+                    }}>Delete
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
@@ -222,13 +299,13 @@ class Teams extends React.Component {
                                         <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{handleDate(team.creation_date)}</span></td>
                                         <td data-field='actions' className='m-datatable__cell'>
                                           <span style={{width: '175px'}}>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(team)}>
                                               View
                                             </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(team)}>
                                               Edit
                                             </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
                                               Delete
                                             </button>
                                           </span>
@@ -276,13 +353,15 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     teams: (state.teamsInfo.teams),
-    teamUniquePages: (state.teamsInfo.teamUniquePages)
+    teamUniquePages: (state.teamsInfo.teamUniquePages),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadTeamsList: loadTeamsList
+    loadTeamsList: loadTeamsList,
+    deleteTeam: deleteTeam
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Teams)
