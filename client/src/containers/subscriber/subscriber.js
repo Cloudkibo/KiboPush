@@ -27,6 +27,7 @@ class Subscriber extends React.Component {
       filterByLocale: '',
       filterByPage: '',
       filteredData: '',
+      filterByTag: '',
       searchValue: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
@@ -49,6 +50,7 @@ class Subscriber extends React.Component {
     this.handleFilterByGender = this.handleFilterByGender.bind(this)
     this.handleFilterByLocale = this.handleFilterByLocale.bind(this)
     this.handleFilterByPage = this.handleFilterByPage.bind(this)
+    this.handleFilterByTag = this.handleFilterByTag.bind(this)
     this.stackGenderFilter = this.stackGenderFilter.bind(this)
     this.stackPageFilter = this.stackPageFilter.bind(this)
     this.stackLocaleFilter = this.stackLocaleFilter.bind(this)
@@ -149,11 +151,13 @@ class Subscriber extends React.Component {
   }
   showAddTag () {
     this.setState({
+      addTags: [],
       popoverAddTagOpen: true
     })
   }
   showRemoveTag () {
     this.setState({
+      removeTags: [],
       popoverRemoveTagOpen: true
     })
   }
@@ -299,11 +303,54 @@ class Subscriber extends React.Component {
     }
     return filteredData
   }
+  stackTagFilter (filteredData) {
+    if (this.state.filterByTag !== '') {
+      var filtered = []
+      for (var i = 0; i < filteredData.length; i++) {
+        if (filteredData[i].tags) {
+          for (var j = 0; j < filteredData[i].tags.length; j++) {
+            if (filteredData[i].tags[j].value === this.state.filterByTag) {
+              filtered.push(filteredData[i])
+              break
+            }
+          }
+        }
+      }
+      filteredData = filtered
+    }
+    return filteredData
+  }
+
+  handleFilterByTag (e) {
+    this.setState({filterByTag: e.target.value, searchValue: ''})
+    var filteredData = this.props.subscribers
+    filteredData = this.stackGenderFilter(filteredData)
+    filteredData = this.stackLocaleFilter(filteredData)
+    filteredData = this.stackPageFilter(filteredData)
+    var filtered = []
+    if (e.target.value !== '') {
+      for (var k = 0; k < filteredData.length; k++) {
+        if (filteredData[k].tags) {
+          for (var i = 0; i < filteredData[k].tags.length; i++) {
+            if (filteredData[k].tags[i].value === e.target.value) {
+              filtered.push(filteredData[k])
+              break
+            }
+          }
+        }
+      }
+      filteredData = filtered
+    }
+    this.setState({filteredData: filteredData})
+    this.displayData(0, filteredData)
+    this.setState({ totalLength: filteredData.length })
+  }
   handleFilterByPage (e) {
     this.setState({filterByPage: e.target.value, searchValue: ''})
     var filteredData = this.props.subscribers
     filteredData = this.stackGenderFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
+    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -323,6 +370,7 @@ class Subscriber extends React.Component {
     var filteredData = this.props.subscribers
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
+    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -342,6 +390,7 @@ class Subscriber extends React.Component {
     var filteredData = this.props.subscribers
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackGenderFilter(filteredData)
+    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -438,33 +487,35 @@ class Subscriber extends React.Component {
                                       </span>
                                     </div>
                                   </div>
-                                  <div className='filters' style={{marginTop: '10px', display: 'flex'}}>
-                                    <div className='col-md-4'>
+                                  <div className='row filters' style={{marginTop: '10px', display: 'flex'}}>
+
+                                    <div className='col-md-6'>
                                       <div className='m-form__group m-form__group--inline'>
-                                        <div className='m-form__label'>
-                                          <label>Gender:</label>
+                                        <div className='col-md-2' style={{marginTop: '10px'}}>
+                                          <label style={{width: '60px'}}>Gender:</label>
                                         </div>
                                         {/* <div className='m-form__control'>
                                       <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
                                       </div> */}
-                                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
-                                          <option value='' disabled>Filter by Gender...</option>
-                                          <option value=''>All</option>
-                                          <option value='male'>Male</option>
-                                          <option value='female'>Female</option>
-                                          <option value='other'>Other</option>
-                                        </select>{/* </div>
-                                    </div> */}
+                                        <div className='col-md-4 m-form__control'>
+                                          <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                            <option value='' disabled>Filter by Gender...</option>
+                                            <option value=''>All</option>
+                                            <option value='male'>Male</option>
+                                            <option value='female'>Female</option>
+                                            <option value='other'>Other</option>
+                                          </select>
+                                        </div>
                                       </div>
                                       <div className='d-md-none m--margin-bottom-10' />
                                     </div>
-                                    <div className='col-md-4'>
+                                    <div className='col-md-6'>
                                       <div className='m-form__group m-form__group--inline'>
-                                        <div className='m-form__label'>
-                                          <label className='m-label m-label--single'>Page:</label>
+                                        <div className='col-md-2' style={{marginTop: '10px'}}>
+                                          <label style={{width: '60px'}}>Page:</label>
                                         </div>
-                                        <div className='m-form__control'>
-                                          <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
+                                        <div className='col-md-4 m-form__control'>
+                                          <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
                                             <option value='' disabled>Filter by Page...</option>
                                             <option value=''>ALL</option>
                                             {
@@ -476,17 +527,17 @@ class Subscriber extends React.Component {
                                         </div>
                                       </div>
                                     </div>
-                                    <div className='col-md-4'>
+                                    <div className='col-md-6' style={{marginTop: '20px'}}>
                                       <div className='m-form__group m-form__group--inline'>
-                                        <div className='m-form__label'>
-                                          <label className='m-label m-label--single'>Locale:</label>
+                                        <div className='col-md-2' style={{marginTop: '10px'}}>
+                                          <label style={{width: '60px'}}>Locale:</label>
                                         </div>
-                                        <div className='m-form__control'>
+                                        <div className='col-md-4 m-form__control'>
                                           {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
                                         <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
                                         <div className='dropdown-menu open' role='combobox'>
                                           <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                        */}<select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
+                                        */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
                                           <option value='' disabled>Filter by Locale...</option>
                                           <option value=''>ALL</option>
                                           {
@@ -497,7 +548,24 @@ class Subscriber extends React.Component {
                                         </select>{/* </div> */}
                                         </div>
                                       </div>
-                                      <div className='d-md-none m--margin-bottom-10' />
+                                    </div>
+                                    <div className='col-md-6' style={{marginTop: '20px'}}>
+                                      <div className='m-form__group m-form__group--inline'>
+                                        <div className='col-md-2' style={{marginTop: '10px'}}>
+                                          <label style={{width: '60px'}}>Tags:</label>
+                                        </div>
+                                        <div className='col-md-4 m-form__control'>
+                                          <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                            <option value='' disabled>Filter by Tags...</option>
+                                            <option value=''>ALL</option>
+                                            {
+                                              this.state.options.map((tag, i) => (
+                                                <option value={tag.value}>{tag.label}</option>
+                                              ))
+                                            }
+                                          </select>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className='col-md-12' style={{marginTop: '25px'}}>
