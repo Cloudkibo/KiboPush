@@ -9,4 +9,4 @@ const tagSchema = new Schema({
   dateCreated: {type: Date, default: Date.now}
 })
 
-module.exports = mongoose.model('tags', tagSchema)
+module.exports = mongoose.model('tags_subscribers', tagSchema)
