@@ -52,8 +52,9 @@ module.exports = function (app) {
   app.use('/migrations', require('./api/migrations'))
 
   app.use('/auth', require('./auth'))
-
   app.get('/', (req, res) => {
+    res.cookie('environment', config.env,
+      {expires: new Date(Date.now() + 900000)})
     res.sendFile(path.join(config.root, 'client/index.html'))
   })
 
