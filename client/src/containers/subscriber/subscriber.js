@@ -40,7 +40,6 @@ class Subscriber extends React.Component {
     props.loadSubscribersList()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
-    this.toggleToolTip = this.toggleToolTip.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.toggleRemove = this.toggleRemove.bind(this)
@@ -122,12 +121,6 @@ class Subscriber extends React.Component {
     document.title = 'KiboPush | Subscribers'
   }
   componentDidUpdate () {
-  }
-  toggleToolTip (index) {
-    var subscribers = this.state.subscribersData
-    for (var i = 0; i < this.state.subscribersData.length; i++) {
-      subscribers[index].tooltip = !subscribers[index].tooltip
-    }
   }
   toggleTag () {
     this.setState({
