@@ -141,7 +141,7 @@ class Teams extends React.Component {
     }
     for (var j = 0; j < this.props.teamUniquePages.length; j++) {
       if (team._id === this.props.teamUniquePages[j].teamId) {
-        pages.push(this.props.teamUniquePages[i])
+        pages.push(this.props.teamUniquePages[j])
       }
     }
     browserHistory.push({
