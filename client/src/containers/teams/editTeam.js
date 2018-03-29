@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { update, addAgent, addPage, removePage, removeAgent } from '../../redux/actions/teams.actions'
+import { update, addAgent, addPage, removePage, removeAgent, loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import AlertContainer from 'react-alert'
 class EditTeam extends React.Component {
@@ -102,11 +102,13 @@ class EditTeam extends React.Component {
       for (var i = 0; i < this.state.agentIds.length; i++) {
         if (this.existsUpdateAgent(this.state.agentIds[i]) === false) {
           this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
+          this.props.loadTeamsList()
         }
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
         if (this.existsUpdatePage(this.state.pageIds[j]) === false) {
           this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+          this.props.loadTeamsList()
         }
       }
       this.msg.success('Changes saved successfully')
@@ -153,6 +155,7 @@ class EditTeam extends React.Component {
     }
     this.setState({agentIds: temp})
     this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
+    this.props.loadTeamsList()
   }
   changePage (page) {
     var temp = this.state.pageIds
@@ -186,6 +189,7 @@ class EditTeam extends React.Component {
     }
     this.setState({pageIds: temp})
     this.props.removeAgent({ pageId: page._id, teamId: this.props.location.state._id })
+    this.props.loadTeamsList()
   }
   exists (agent) {
     for (var i = 0; i < this.state.agentIds.length; i++) {
@@ -483,7 +487,8 @@ function mapDispatchToProps (dispatch) {
     addAgent: addAgent,
     removePage: removePage,
     removeAgent: removeAgent,
-    update: update
+    update: update,
+    loadTeamsList: loadTeamsList
   },
     dispatch)
 }
