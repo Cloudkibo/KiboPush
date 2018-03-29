@@ -143,7 +143,7 @@ class EditTeam extends React.Component {
   changePage (page) {
     var temp = this.state.pageIds
     if (page === 'All') {
-      for (var i = 0; i < this.pages.length; i++) {
+      for (var i = 0; i < this.props.pages.length; i++) {
         if (this.existsPage(this.props.pages[i].pageName) === false) {
           temp.push(this.props.pages[i])
         }

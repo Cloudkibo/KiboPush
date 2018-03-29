@@ -58,6 +58,7 @@ class CreateTeam extends React.Component {
     this.scrollToTop()
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
   }
   createTeam () {
     if (this.state.name === '') {
@@ -128,6 +129,8 @@ class CreateTeam extends React.Component {
   }
   changePage (page) {
     var temp = this.state.pageIds
+    console.log('page', page)
+    console.log('this.props.pages', this.props.pages)
     if (page === 'All') {
       for (var i = 0; i < this.props.pages.length; i++) {
         if (this.existsPage(this.props.pages[i].pageName) === false) {
