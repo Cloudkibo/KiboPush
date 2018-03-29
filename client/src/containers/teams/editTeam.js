@@ -200,16 +200,16 @@ class EditTeam extends React.Component {
     return false
   }
   existsUpdateAgent (agent) {
-    for (var i = 0; i < this.props.location.state.agents.length; i++) {
-      if (this.props.location.state.agents[i].agentId._id === agent) {
+    for (var i = 0; i < this.props.teams.teamUniqueAgents.length; i++) {
+      if (this.props.teams.teamUniqueAgents[i].agentId._id === agent) {
         return true
       }
     }
     return false
   }
   existsUpdatePage (page) {
-    for (var i = 0; i < this.props.location.state.pages.length; i++) {
-      if (this.props.location.state.pages[i].pageId._id === page) {
+    for (var i = 0; i < this.props.teams.teamUniquePages.length; i++) {
+      if (this.props.teams.teamUniquePages[i].pageId._id === page) {
         return true
       }
     }
@@ -463,7 +463,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
-    members: (state.membersInfo.members)
+    members: (state.membersInfo.members),
+    teams: (state.teamsInfo.teams)
   }
 }
 
