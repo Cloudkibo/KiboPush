@@ -24,6 +24,7 @@ export function update (data) {
   return (dispatch) => {
     callApi('teams/update', 'post', data)
       .then(res => {
+        dispatch(loadTeamsList())
       })
   }
 }
@@ -32,6 +33,7 @@ export function addAgent (data) {
   return (dispatch) => {
     callApi('teams/addAgent', 'post', data)
       .then(res => {
+        dispatch(loadTeamsList())
       })
   }
 }
@@ -40,6 +42,7 @@ export function addPage (data) {
   return (dispatch) => {
     callApi('teams/addPage', 'post', data)
       .then(res => {
+        dispatch(loadTeamsList())
       })
   }
 }
@@ -48,6 +51,7 @@ export function removePage (data) {
   return (dispatch) => {
     callApi('teams/removePage', 'post', data)
       .then(res => {
+        dispatch(loadTeamsList())
       })
   }
 }
@@ -56,6 +60,7 @@ export function removeAgent (data) {
   return (dispatch) => {
     callApi('teams/removeAgent', 'post', data)
       .then(res => {
+        dispatch(loadTeamsList())
       })
   }
 }

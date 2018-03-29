@@ -96,12 +96,12 @@ class EditTeam extends React.Component {
     } else {
       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        if (this.existsUpdateAgent(this.state.agentIds[i].userId._id) === false) {
+        if (this.existsUpdateAgent(this.state.agentIds[i]) === false) {
           this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
         }
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        if (this.existsUpdatePage(this.state.pageIds[j]._id) === false) {
+        if (this.existsUpdatePage(this.state.pageIds[j]) === false) {
           this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
         }
       }
@@ -200,16 +200,16 @@ class EditTeam extends React.Component {
     return false
   }
   existsUpdateAgent (agent) {
-    for (var i = 0; i < this.props.location.state.agents.length; i++) {
-      if (this.props.location.state.agents[i].agentId._id === agent) {
+    for (var i = 0; i < this.props.teams.teamUniqueAgents.length; i++) {
+      if (this.props.teams.teamUniqueAgents[i].agentId._id === agent.userId._id && this.props.teams.teamUniqueAgents[i].teamId === agent.teamId) {
         return true
       }
     }
     return false
   }
   existsUpdatePage (page) {
-    for (var i = 0; i < this.props.location.state.pages.length; i++) {
-      if (this.props.location.state.pages[i].pageId._id === page) {
+    for (var i = 0; i < this.props.teams.teamUniquePages.length; i++) {
+      if (this.props.teams.teamUniquePages[i].pageId._id === page.pageName && this.props.teams.teamUniquePages[i].teamId === page.teamId) {
         return true
       }
     }
@@ -463,7 +463,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
-    members: (state.membersInfo.members)
+    members: (state.membersInfo.members),
+    teams: (state.teamsInfo.teams)
   }
 }
 
