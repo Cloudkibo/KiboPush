@@ -68,7 +68,7 @@ class EditTeam extends React.Component {
       console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < nextProps.members.length; i++) {
         for (var j = 0; j < this.props.teamUniqueAgents.length; j++) {
-          if (this.props.teamUniqueAgents[j].agentId._id === nextProps.members[i].userId._id && this.props.teamUniqueAgents[j].agentId._id === this.props.location.state._id) {
+          if (this.props.teamUniqueAgents[j].agentId._id === nextProps.members[i].userId._id && this.props.teamUniqueAgents[j].teamId === this.props.location.state._id) {
             agents.push(nextProps.members[i])
           }
         }
@@ -76,7 +76,7 @@ class EditTeam extends React.Component {
       console.log('agents', agents)
       for (var a = 0; a < nextProps.pages.length; a++) {
         for (var b = 0; b < this.props.teamUniquePages.length; b++) {
-          if (this.props.teamUniquePages[b].pageId._id === nextProps.pages[a]._id && this.props.teamUniquePages[b].pageId._id === this.props.location.state._id) {
+          if (this.props.teamUniquePages[b].pageId._id === nextProps.pages[a]._id && this.props.teamUniquePages[b].teamId === this.props.location.state._id) {
             pages.push(nextProps.pages[a])
           }
         }
