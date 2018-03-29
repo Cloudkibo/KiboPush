@@ -7,12 +7,12 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersList, saveSubscriberTags } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import fileDownload from 'js-file-download'
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
 var json2csv = require('json2csv')
 
@@ -40,6 +40,7 @@ class Subscriber extends React.Component {
     props.loadSubscribersList()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
+    this.toggleToolTip = this.toggleToolTip.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.toggleRemove = this.toggleRemove.bind(this)
@@ -58,6 +59,7 @@ class Subscriber extends React.Component {
     this.showAddTag = this.showAddTag.bind(this)
     this.showRemoveTag = this.showRemoveTag.bind(this)
     this.addTags = this.addTags.bind(this)
+    this.handleAssignedTags = this.handleAssignedTags.bind(this)
     this.removeTags = this.removeTags.bind(this)
   }
   handleAdd (value) {
@@ -74,25 +76,40 @@ class Subscriber extends React.Component {
       subscribersData: subscribers
     })
     console.log(this.state.subscribersData)
+    // this.props.saveSubscriberTags(this.state.subscribersData, this.handleAssignedTags)
+  }
+  handleAssignedTags () {
+
   }
   removeTags () {
-    var subscribers = this.state.subscribersData
-    for (var i = 0; i < this.state.subscribersData.length; i++) {
-      if (this.state.subscribersData[i].selected) {
-        var tags = this.state.subscribersData[i].tags
-        if (tags) {
-          for (var j = 0; j < this.state.subscribersData[i].tags.length; j++) {
-            for (var k = 0; k < this.state.removeTags.length; k++) {
-              if (this.state.subscribersData[i].tags[j].value === this.state.removeTags[k].value) {
-                tags.splice(j, 1)
-                break
-              }
+    var subscribers = []
+    subscribers = this.state.subscribersData
+    subscribers.map((subscriber, i) => {
+      if (subscriber.selected && subscriber.tags) {
+        var newTags = subscriber.tags
+        for (var j = 0; j < subscriber.tags.length; j++) {
+          var isRemovable = false
+          var removableValue = ''
+          for (var k = 0; k < this.state.removeTags.length; k++) {
+            if (subscriber.tags[j].value === this.state.removeTags[k].value) {
+              isRemovable = true
+              removableValue = subscriber.tags[j].value
+              break
             }
           }
+          if (isRemovable) {
+            var tempTags = []
+            for (var m = 0; m < newTags.length; m++) {
+              if (newTags[m].value !== removableValue) {
+                tempTags.push(newTags[m])
+              }
+            }
+            newTags = tempTags
+          }
         }
-        subscribers[i].tags = tags
+        subscribers[i].tags = newTags
       }
-    }
+    })
     this.setState({
       subscribersData: subscribers
     })
@@ -105,6 +122,12 @@ class Subscriber extends React.Component {
     document.title = 'KiboPush | Subscribers'
   }
   componentDidUpdate () {
+  }
+  toggleToolTip (index) {
+    var subscribers = this.state.subscribersData
+    for (var i = 0; i < this.state.subscribersData.length; i++) {
+      subscribers[index].tooltip = !subscribers[index].tooltip
+    }
   }
   toggleTag () {
     this.setState({
@@ -524,7 +547,7 @@ class Subscriber extends React.Component {
                                       <Popover placement='left' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
                                         <PopoverHeader>Remove Tags</PopoverHeader>
                                         <PopoverBody>
-                                          <div clasName='row' style={{minWidth: '250px'}}>
+                                          <div className='row' style={{minWidth: '250px'}}>
                                             <div className='col-12'>
                                               <label>Select Tags</label>
                                               <Select
@@ -594,6 +617,8 @@ class Subscriber extends React.Component {
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Gender</span>
                                   </th>
+                                  <th data-field='Tag'
+                                    className='m-datatable__cell--center m-datatable__cell' />
                                 </tr>
                               </thead>
 
@@ -645,6 +670,20 @@ class Subscriber extends React.Component {
                                   </td>
                                   <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
                                   <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
+                                  <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
+                                    {
+                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : <span />
+                                    }
+                                    {subscriber.tags && subscriber.tags.length > 0 &&
+                                      <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
+                                          {
+                                              subscriber.tags.map((tag, i) => (
+                                                <span style={{display: 'block'}}>{tag.label}</span>
+                                              ))
+                                          }
+                                        </UncontrolledTooltip>
+                                    }
+                                  </td>
                                 </tr>
                               ))
                             }
@@ -704,7 +743,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadSubscribersList: loadSubscribersList,
-    loadMyPagesList: loadMyPagesList},
+    loadMyPagesList: loadMyPagesList,
+    saveSubscriberTags: saveSubscriberTags},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Subscriber)
