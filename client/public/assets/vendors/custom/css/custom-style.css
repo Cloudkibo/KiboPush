@@ -131,3 +131,12 @@ a.broadcastTabs.active {
   border-bottom-color: transparent;
   cursor: default;
 }
+.tagList {
+  display: inline-block !important
+}
+.tagToolTip {
+  background-color: 'white';
+  color: 'black';
+  min-width: '100px';
+  opacity: '1.0';
+}
