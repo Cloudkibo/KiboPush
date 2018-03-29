@@ -151,7 +151,7 @@ class EditTeam extends React.Component {
     } else {
       for (var j = 0; j < this.props.pages.length; j++) {
         if (page === this.props.pages[j].pageName) {
-          if (this.existsPage(this.props.pages[i].pageName) === false) {
+          if (this.existsPage(this.props.pages[j].pageName) === false) {
             temp.push(this.props.pages[j])
           }
         }
