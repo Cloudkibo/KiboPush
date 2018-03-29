@@ -70,6 +70,7 @@ class EditTeam extends React.Component {
           }
         }
       }
+      console.log('agents', agents)
       for (var a = 0; a < nextProps.pages.length; a++) {
         for (var b = 0; b < this.props.location.state.pages.length; b++) {
           if (this.props.location.state.pages[b].pageId._id === nextProps.pages[a]._id) {
@@ -77,6 +78,7 @@ class EditTeam extends React.Component {
           }
         }
       }
+      console.log('pages', pages)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
   }
