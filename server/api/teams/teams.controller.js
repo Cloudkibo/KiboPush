@@ -1,5 +1,6 @@
 const Teams = require('./teams.model')
 const Pages = require('../pages/Pages.model')
+const Users = require('../user/Users.model')
 const TeamAgents = require('./team_agents.model')
 const TeamPages = require('./team_pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
@@ -20,38 +21,52 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Teams.find({companyId: companyUser.companyId}, (err, teams) => {
+    Teams.find({companyId: companyUser.companyId})
+    .populate('created_by')
+    .exec((err, teams) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      TeamAgents.find({companyId: companyUser.companyId}, (err, teamAgents) => {
-        if (err) {
+
+      TeamAgents
+      .find({companyId: companyUser.companyId})
+      .distinct('agentId', function (error, ids) {
+        if (error) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-
-        TeamPages
-        .find({companyId: companyUser.companyId})
-        .distinct('pageId', function (error, ids) {
-          if (error) {
+        Users.find({'_id': {$in: ids}}, function (err, teamUniqueAgents) {
+          if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          Pages.find({'_id': {$in: ids}}, function (err, teamUniquePages) {
-            if (err) {
+
+          TeamPages
+          .find({companyId: companyUser.companyId})
+          .distinct('pageId', function (error, ids) {
+            if (error) {
               return res.status(500).json({
                 status: 'failed',
                 description: `Internal Server Error ${JSON.stringify(err)}`
               })
             }
-            return res.status(201).json({status: 'success', payload: {teams: teams, teamAgents: teamAgents, teamUniquePages: teamUniquePages}})
+            Pages.find({'_id': {$in: ids}}, function (err, teamUniquePages) {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+
+              return res.status(201).json({status: 'success', payload: {teams: teams, teamUniqueAgents: teamUniqueAgents, teamUniquePages: teamUniquePages}})
+            })
           })
         })
       })
@@ -77,7 +92,9 @@ exports.createTeam = function (req, res) {
       name: req.body.name,
       description: req.body.description,
       created_by: req.user._id,
-      companyId: companyUser.companyId
+      companyId: companyUser.companyId,
+      teamPages: req.body.teamPages,
+      teamPagesIds: req.body.pageIds
     }
     const team = new Teams(teamPayload)
 

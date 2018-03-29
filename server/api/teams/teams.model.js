@@ -6,6 +6,8 @@ let teamSchema = new Schema({
   description: String,
   created_by: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
+  teamPages: [String],
+  teamPagesIds: [String],
   creation_date: { type: Date, default: Date.now }
 })
 

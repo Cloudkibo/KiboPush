@@ -6,7 +6,8 @@ export function showTeamsList (data) {
   return {
     type: ActionTypes.SHOW_TEAMS_LIST,
     teams: data.teams,
-    teamUniquePages: data.teamUniquePages
+    teamUniquePages: data.teamUniquePages,
+    teamUniqueAgents: data.teamUniqueAgents
   }
 }
 
