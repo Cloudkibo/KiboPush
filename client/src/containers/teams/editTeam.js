@@ -68,7 +68,10 @@ class EditTeam extends React.Component {
       console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < nextProps.members.length; i++) {
         for (var j = 0; j < this.props.teamUniqueAgents.length; j++) {
+          console.log('this.props.teamUniqueAgents', this.props.teamUniqueAgents)
+          console.log('this.props.location.state._id', this.props.location.state._id)
           if (this.props.teamUniqueAgents[j].agentId._id === nextProps.members[i].userId._id && this.props.teamUniqueAgents[j].teamId === this.props.location.state._id) {
+            console.log('inside if')
             agents.push(nextProps.members[i])
           }
         }
