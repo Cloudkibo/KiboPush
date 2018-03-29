@@ -70,6 +70,7 @@ export function loadTeamsList () {
     callApi('teams')
       .then(res => {
         if (res.status === 'success') {
+          console.log('loadTeamsList', res.payload)
           dispatch(showTeamsList(res.payload))
         }
       })
