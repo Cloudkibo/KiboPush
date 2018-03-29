@@ -67,16 +67,16 @@ class EditTeam extends React.Component {
       console.log('nextProps', nextProps)
       console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < nextProps.members.length; i++) {
-        for (var j = 0; j < this.props.location.state.agents.length; j++) {
-          if (this.props.location.state.agents[j].agentId._id === nextProps.members[i].userId._id) {
+        for (var j = 0; j < this.props.teamUniqueAgents.length; j++) {
+          if (this.props.teamUniqueAgents[j].agentId._id === nextProps.members[i].userId._id && this.props.teamUniqueAgents[j].agentId._id === this.props.location.state._id) {
             agents.push(nextProps.members[i])
           }
         }
       }
       console.log('agents', agents)
       for (var a = 0; a < nextProps.pages.length; a++) {
-        for (var b = 0; b < this.props.location.state.pages.length; b++) {
-          if (this.props.location.state.pages[b].pageId._id === nextProps.pages[a]._id) {
+        for (var b = 0; b < this.props.teamUniquePages.length; b++) {
+          if (this.props.teamUniquePages[b].pageId._id === nextProps.pages[a]._id && this.props.teamUniquePages[b].pageId._id === this.props.location.state._id) {
             pages.push(nextProps.pages[a])
           }
         }
@@ -138,7 +138,6 @@ class EditTeam extends React.Component {
     this.setState({agentIds: temp})
   }
   removeAgent (agent) {
-    this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
     var index = -1
     var temp = this.state.agentIds
     for (var i = 0; i < this.state.agentIds.length; i++) {
@@ -150,6 +149,7 @@ class EditTeam extends React.Component {
       temp.splice(index, 1)
     }
     this.setState({agentIds: temp})
+    this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
   }
   changePage (page) {
     var temp = this.state.pageIds
@@ -171,7 +171,6 @@ class EditTeam extends React.Component {
     this.setState({pageIds: temp})
   }
   removePage (page) {
-    this.props.removeAgent({ pageId: page._id, teamId: this.props.location.state._id })
     var index = -1
     var temp = this.state.pageIds
     for (var i = 0; i < this.state.pageIds.length; i++) {
@@ -183,6 +182,7 @@ class EditTeam extends React.Component {
       temp.splice(index, 1)
     }
     this.setState({pageIds: temp})
+    this.props.removeAgent({ pageId: page._id, teamId: this.props.location.state._id })
   }
   exists (agent) {
     for (var i = 0; i < this.state.agentIds.length; i++) {
