@@ -34,9 +34,29 @@ exports.index = function (req, res) {
             .json({status: 'failed', description: 'Subscribers not found'})
         }
         let subsArray = []
+        let subscribersPayload = []
         for (let i = 0; i < subscribers.length; i++) {
           subsArray.push(subscribers[i]._id)
-          subscribers.tags = []
+          subscribersPayload.push({
+            _id: subscribers[i]._id,
+            firstName: subscribers[i].firstName,
+            lastName: subscribers[i].lastName,
+            locale: subscribers[i].locale,
+            gender: subscribers[i].gender,
+            timezone: subscribers[i].timezone,
+            profilePic: subscribers[i].profilePic,
+            companyId: subscribers[i].companyId,
+            pageScopedId: '',
+            email: '',
+            senderId: subscribers[i].senderId,
+            pageId: subscribers[i].pageId,
+            datetime: '2018-03-30T12:14:30.249Z',
+            isEnabledByPage: true,
+            isSubscribed: true,
+            isSubscribedByPhoneNumber: false,
+            unSubscribedBy: 'subscriber',
+            tags: []
+          })
         }
         TagsSubscribers.find({subscriberId: {$in: subsArray}})
           .populate('tagId')
@@ -48,12 +68,12 @@ exports.index = function (req, res) {
             }
             for (let i = 0; i < subscribers.length; i++) {
               for (let j = 0; j < tags.length; j++) {
-                if (subscribers[i]._id === tags[j].subscriberId) {
-                  subscribers[i].tags.push(tags[j].tagId.tag)
+                if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
+                  subscribersPayload[i].tags.push(tags[j].tagId.tag)
                 }
               }
             }
-            res.status(200).json(subscribers)
+            res.status(200).json(subscribersPayload)
           })
       })
     })
