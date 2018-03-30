@@ -5,7 +5,6 @@ const tagSchema = new Schema({
   tag: {type: String},
   userId: {type: Schema.ObjectId, ref: 'users'},
   companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
-  pageId: {type: Schema.ObjectId, ref: 'pages'},
   dateCreated: {type: Date, default: Date.now}
 })
 

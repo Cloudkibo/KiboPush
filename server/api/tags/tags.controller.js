@@ -42,7 +42,6 @@ exports.create = function (req, res) {
   let parametersMissing = false
 
   if (!_.has(req.body, 'tag')) parametersMissing = true
-  if (!_.has(req.body, 'pageId')) parametersMissing = true
 
   if (parametersMissing) {
     return res.status(400)
@@ -66,8 +65,7 @@ exports.create = function (req, res) {
       let tagPayload = new Tags({
         tag: req.body.tag,
         userId: req.user._id,
-        companyId: companyUser.companyId,
-        pageId: req.body.pageId
+        companyId: companyUser.companyId
       })
       tagPayload.save((err, newTag) => {
         if (err) {
@@ -183,8 +181,7 @@ exports.assign = function (req, res) {
         let subscriberTagsPayload = new TagsSubscribers({
           tagId: tagPayload._id,
           subscriberId: subscriber._id,
-          companyId: tagPayload.companyId,
-          pageId: tagPayload.pageId
+          companyId: tagPayload.companyId
         })
         subscriberTagsPayload.save((err) => {
           if (err) {
