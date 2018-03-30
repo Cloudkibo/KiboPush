@@ -18,6 +18,7 @@ import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
+import { checkConditions } from '../polls/utility'
 import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
@@ -30,7 +31,6 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import _ from 'underscore'
 import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
 
@@ -62,6 +62,7 @@ class CreateConvo extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       isShowingModal: false,
       isShowingModalGuideLines: false,
       isShowingModalResetAlert: false,
@@ -84,6 +85,7 @@ class CreateConvo extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.handleText = this.handleText.bind(this)
@@ -102,7 +104,6 @@ class CreateConvo extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
-    this.checkConditions = this.checkConditions.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
@@ -173,6 +174,27 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    if (this.props.user.isSuperUser) {
+      let tags = [
+        {
+          _id: 'america',
+          tag: 'America',
+          companyId: 'xx',
+          userId: 'xx',
+          dateCreated: 'xx',
+          pageId: 'xx'
+        },
+        {
+          _id: 'pakistan',
+          tag: 'Pakistan',
+          companyId: 'xx',
+          userId: 'xx',
+          dateCreated: 'xx',
+          pageId: 'xx'
+        }
+      ]
+      this.initializeTagSelect(tags)
+    }
     this.initTab()
     // if (this.props.pages.length > 0) {
     //   var temp = []
@@ -369,63 +391,7 @@ class CreateConvo extends React.Component {
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     this.setState({list: temp, broadcast: temp2})
   }
-  checkConditions (pageValue, genderValue, localeValue) {
-    let subscribersMatchPages = []
-    let subscribersMatchLocale = []
-    let subscribersMatchGender = []
-    if (pageValue.length > 0) {
-      for (var i = 0; i < pageValue.length; i++) {
-        for (var j = 0; j < this.props.location.state.subscribers.length; j++) {
-          if (this.props.location.state.subscribers[j].pageId.pageId === pageValue[i]) {
-            subscribersMatchPages.push(this.props.location.state.subscribers[j])
-          }
-        }
-      }
-    }
-    if (genderValue.length > 0) {
-      for (var k = 0; k < this.props.location.state.subscribers.length; k++) {
-        for (var l = 0; l < genderValue.length; l++) {
-          if (this.props.location.state.subscribers[k].gender === genderValue[l]) {
-            subscribersMatchGender.push(this.props.location.state.subscribers[k])
-          }
-        }
-      }
-    }
-    if (localeValue.length > 0) {
-      for (var m = 0; m < this.props.location.state.subscribers.length; m++) {
-        for (var n = 0; n < localeValue.length; n++) {
-          if (this.props.location.state.subscribers[m].locale === localeValue[n]) {
-            subscribersMatchLocale.push(this.props.location.state.subscribers[m])
-          }
-        }
-      }
-    }
-    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
-      if (result.length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && genderValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (genderValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
-      return false
-    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
-      return false
-    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
-      return false
-    }
-    return true
-  }
+
   sendConvo () {
     if (this.state.broadcast.length === 0) {
       return
@@ -459,7 +425,7 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var res = this.checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue)
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -470,6 +436,7 @@ class CreateConvo extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
+          segmentationTags: this.state.tagValue,
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
@@ -519,6 +486,7 @@ class CreateConvo extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
+        segmentationTags: this.state.tagValue,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
@@ -645,6 +613,42 @@ class CreateConvo extends React.Component {
       }
     })
   }
+
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i]._id,
+        text: tagOptions[i].tag
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
+
   goBack () {
     this.props.history.push({
       pathname: `/welcomeMessage`
@@ -973,6 +977,10 @@ class CreateConvo extends React.Component {
                                           <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                                             <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                                           </div>
+                                          {this.props.user.isSuperUser
+                                          ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                                            <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                                          </div> : null}
                                         </div>
                                       : <div className='m-form'>
                                         <div className='form-group m-form__group'>
@@ -981,6 +989,10 @@ class CreateConvo extends React.Component {
                                         <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                                           <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                                         </div>
+                                        {this.props.user.isSuperUser
+                                           ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                                             <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                                           </div> : null}
                                       </div>
                                       }
                                       { (this.state.lists.length === 0)
@@ -1044,7 +1056,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription,
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 

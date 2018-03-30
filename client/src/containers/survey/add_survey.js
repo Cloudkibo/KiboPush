@@ -93,12 +93,20 @@ class AddSurvey extends React.Component {
     if (this.props.user.isSuperUser) {
       let tags = [
         {
-          tag_id: 'america',
-          tag_name: 'America'
+          _id: 'america',
+          tag: 'America',
+          companyId: 'xx',
+          userId: 'xx',
+          dateCreated: 'xx',
+          pageId: 'xx'
         },
         {
-          tag_id: 'pakistan',
-          tag_name: 'Pakistan'
+          _id: 'pakistan',
+          tag: 'Pakistan',
+          companyId: 'xx',
+          userId: 'xx',
+          dateCreated: 'xx',
+          pageId: 'xx'
         }
       ]
       this.initializeTagSelect(tags)
@@ -216,8 +224,8 @@ class AddSurvey extends React.Component {
 
     for (let i = 0; i < tagOptions.length; i++) {
       let temp = {
-        id: tagOptions[i].tag_id,
-        text: tagOptions[i].tag_name
+        id: tagOptions[i]._id,
+        text: tagOptions[i].tag
       }
       remappedOptions[i] = temp
     }
