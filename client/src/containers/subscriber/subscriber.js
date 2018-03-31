@@ -7,13 +7,15 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadSubscribersList, saveSubscriberTags } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
+import AlertContainer from 'react-alert'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -33,12 +35,15 @@ class Subscriber extends React.Component {
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
       popoverRemoveTagOpen: false,
-      addTags: [],
-      removeTags: [],
-      options: [{ value: 'R', label: 'Red' }, { value: 'G', label: 'Green' }, { value: 'B', label: 'Blue' }]
+      addTag: '',
+      removeTag: '',
+      options: [],
+      selectAllChecked: null,
+      saveEnable: false
     }
     props.loadMyPagesList()
     props.loadSubscribersList()
+    props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
@@ -60,64 +65,113 @@ class Subscriber extends React.Component {
     this.showAddTag = this.showAddTag.bind(this)
     this.showRemoveTag = this.showRemoveTag.bind(this)
     this.addTags = this.addTags.bind(this)
-    this.handleAssignedTags = this.handleAssignedTags.bind(this)
+    this.handleSaveTags = this.handleSaveTags.bind(this)
+    this.createAssignPayload = this.createAssignPayload.bind(this)
+    this.createUnassignPayload = this.createUnassignPayload.bind(this)
     this.removeTags = this.removeTags.bind(this)
+    this.handleCreateTag = this.handleCreateTag.bind(this)
   }
   handleAdd (value) {
-    this.setState({ addTags: value })
-  }
-  addTags () {
-    var subscribers = this.state.subscribersData
-    for (var i = 0; i < this.state.subscribersData.length; i++) {
-      if (this.state.subscribersData[i].selected) {
-        subscribers[i].tags = this.state.addTags
+    var index = 0
+    if (value) {
+      for (var i = 0; i < this.props.tags.length; i++) {
+        if (this.props.tags[i].tag !== value.label) {
+          index++
+        }
       }
+      if (index === this.props.tags.length) {
+        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+      } else {
+        this.setState({
+          saveEnable: true,
+          addTag: value
+        })
+      }
+    } else {
+      this.setState({
+        saveEnable: false,
+        addTag: value
+      })
     }
+  }
+  handleCreateTag () {
     this.setState({
-      subscribersData: subscribers
+      saveEnable: false
     })
-    console.log(this.state.subscribersData)
-    // this.props.saveSubscriberTags(this.state.subscribersData, this.handleAssignedTags)
   }
-  handleAssignedTags () {
-
-  }
-  removeTags () {
-    var subscribers = []
-    subscribers = this.state.subscribersData
-    subscribers.map((subscriber, i) => {
-      if (subscriber.selected && subscriber.tags) {
-        var newTags = subscriber.tags
-        for (var j = 0; j < subscriber.tags.length; j++) {
-          var isRemovable = false
-          var removableValue = ''
-          for (var k = 0; k < this.state.removeTags.length; k++) {
-            if (subscriber.tags[j].value === this.state.removeTags[k].value) {
-              isRemovable = true
-              removableValue = subscriber.tags[j].value
-              break
-            }
-          }
-          if (isRemovable) {
-            var tempTags = []
-            for (var m = 0; m < newTags.length; m++) {
-              if (newTags[m].value !== removableValue) {
-                tempTags.push(newTags[m])
-              }
-            }
-            newTags = tempTags
+  createUnassignPayload () {
+    var payload = {}
+    var selectedIds = []
+    var subscribers = this.state.subscribersData
+    for (var i = 0; i < subscribers.length; i++) {
+      var index = 0
+      if (subscribers[i].selected && subscribers[i].tags) {
+        for (var j = 0; j < subscribers[i].tags.length; j++) {
+          if (subscribers[i].tags[j] !== this.state.removeTag.label) {
+            index++
           }
         }
-        subscribers[i].tags = newTags
+        if (index !== subscribers[i].tags.length) {
+          selectedIds.push(subscribers[i]._id)
+        }
       }
-    })
+    }
+    payload.subscribers = selectedIds
+    payload.tagId = this.state.removeTag.value
     this.setState({
-      subscribersData: subscribers
+      selectedSubscribers: selectedIds
     })
-    console.log(this.state.subscribersData)
+    return payload
+  }
+  createAssignPayload () {
+    var payload = {}
+    var selectedIds = []
+    var subscribers = this.state.subscribersData
+    for (var i = 0; i < subscribers.length; i++) {
+      var index = 0
+      if (subscribers[i].selected && subscribers[i].tags) {
+        for (var j = 0; j < subscribers[i].tags.length; j++) {
+          if (subscribers[i].tags[j] !== this.state.addTag.label) {
+            index++
+          }
+        }
+        if (index === subscribers[i].tags.length) {
+          selectedIds.push(subscribers[i]._id)
+        }
+      }
+    }
+    payload.subscribers = selectedIds
+    payload.tagId = this.state.addTag.value
+    this.setState({
+      selectedSubscribers: selectedIds
+    })
+    return payload
+  }
+  addTags () {
+    var payload = this.createAssignPayload()
+    if (payload.subscribers.length > 0) {
+      this.props.assignTags(payload, this.handleSaveTags, this.msg)
+    } else {
+      this.msg.error('Select relevant subscribers')
+    }
+  }
+  handleSaveTags () {
+    this.props.loadSubscribersList()
+    this.setState({
+      selectAllChecked: false
+    })
+  }
+
+  removeTags () {
+    var payload = this.createUnassignPayload()
+    if (payload.subscribers.length > 0) {
+      this.props.unassignTags(payload, this.handleSaveTags, this.msg)
+    } else {
+      this.msg.error('Select relevant subscribers')
+    }
   }
   handleRemove (value) {
-    this.setState({ removeTags: value })
+    this.setState({ removeTag: value })
   }
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
@@ -151,13 +205,13 @@ class Subscriber extends React.Component {
   }
   showAddTag () {
     this.setState({
-      addTags: [],
+      addTag: null,
       popoverAddTagOpen: true
     })
   }
   showRemoveTag () {
     this.setState({
-      removeTags: [],
+      removeTag: null,
       popoverRemoveTagOpen: true
     })
   }
@@ -199,10 +253,16 @@ class Subscriber extends React.Component {
     var subscribers = this.state.subscribersData
     if (e.target.value === 'All') {
       if (e.target.checked) {
+        this.setState({
+          selectAllChecked: true
+        })
         for (var i = 0; i < this.state.subscribersData.length; i++) {
           subscribers[i].selected = true
         }
       } else {
+        this.setState({
+          selectAllChecked: false
+        })
         for (var j = 0; j < this.state.subscribersData.length; j++) {
           subscribers[j].selected = false
         }
@@ -265,6 +325,15 @@ class Subscriber extends React.Component {
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.subscribers.length })
     }
+    if (nextProps.tags) {
+      var tagOptions = []
+      for (var i = 0; i < nextProps.tags.length; i++) {
+        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
+      }
+      this.setState({
+        options: tagOptions
+      })
+    }
   }
   stackGenderFilter (filteredData) {
     if (this.state.filterByGender !== '') {
@@ -309,7 +378,7 @@ class Subscriber extends React.Component {
       for (var i = 0; i < filteredData.length; i++) {
         if (filteredData[i].tags) {
           for (var j = 0; j < filteredData[i].tags.length; j++) {
-            if (filteredData[i].tags[j].value === this.state.filterByTag) {
+            if (filteredData[i].tags[j] === this.state.filterByTag) {
               filtered.push(filteredData[i])
               break
             }
@@ -332,7 +401,7 @@ class Subscriber extends React.Component {
       for (var k = 0; k < filteredData.length; k++) {
         if (filteredData[k].tags) {
           for (var i = 0; i < filteredData[k].tags.length; i++) {
-            if (filteredData[k].tags[i].value === e.target.value) {
+            if (filteredData[k].tags[i] === e.target.value) {
               filtered.push(filteredData[k])
               break
             }
@@ -406,11 +475,20 @@ class Subscriber extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
+
     return (
       <div>
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -487,7 +565,7 @@ class Subscriber extends React.Component {
                                       </span>
                                     </div>
                                   </div>
-                                  <div className='row filters' style={{marginTop: '10px', display: 'flex'}}>
+                                  <div className='row filters' style={{marginTop: '25px', display: 'flex'}}>
 
                                     <div className='col-md-6'>
                                       <div className='m-form__group m-form__group--inline'>
@@ -499,11 +577,11 @@ class Subscriber extends React.Component {
                                       </div> */}
                                         <div className='col-md-4 m-form__control'>
                                           <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
-                                            <option value='' disabled>Filter by Gender...</option>
-                                            <option value=''>All</option>
-                                            <option value='male'>Male</option>
-                                            <option value='female'>Female</option>
-                                            <option value='other'>Other</option>
+                                            <option key='' value='' disabled>Filter by Gender...</option>
+                                            <option key='ALL' value=''>All</option>
+                                            <option key='male' value='male'>Male</option>
+                                            <option key='female' value='female'>Female</option>
+                                            <option key='other' value='other'>Other</option>
                                           </select>
                                         </div>
                                       </div>
@@ -516,11 +594,11 @@ class Subscriber extends React.Component {
                                         </div>
                                         <div className='col-md-4 m-form__control'>
                                           <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
-                                            <option value='' disabled>Filter by Page...</option>
-                                            <option value=''>ALL</option>
+                                            <option key='' value='' disabled>Filter by Page...</option>
+                                            <option key='ALL' value=''>ALL</option>
                                             {
                                               this.props.pages.map((page, i) => (
-                                                <option value={page.pageId}>{page.pageName}</option>
+                                                <option key={i} value={page.pageId}>{page.pageName}</option>
                                               ))
                                             }
                                           </select>
@@ -538,11 +616,11 @@ class Subscriber extends React.Component {
                                         <div className='dropdown-menu open' role='combobox'>
                                           <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
                                         */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
-                                          <option value='' disabled>Filter by Locale...</option>
-                                          <option value=''>ALL</option>
+                                          <option key='' value='' disabled>Filter by Locale...</option>
+                                          <option key='ALL' value=''>ALL</option>
                                           {
                                             this.props.locales.map((locale, i) => (
-                                              <option value={locale}>{locale}</option>
+                                              <option key={i} value={locale}>{locale}</option>
                                             ))
                                           }
                                         </select>{/* </div> */}
@@ -556,11 +634,11 @@ class Subscriber extends React.Component {
                                         </div>
                                         <div className='col-md-4 m-form__control'>
                                           <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
-                                            <option value='' disabled>Filter by Tags...</option>
-                                            <option value=''>ALL</option>
+                                            <option key='' value='' disabled>Filter by Tags...</option>
+                                            <option key='ALL' value=''>ALL</option>
                                             {
                                               this.state.options.map((tag, i) => (
-                                                <option value={tag.value}>{tag.label}</option>
+                                                <option key={i} value={tag.label}>{tag.label}</option>
                                               ))
                                             }
                                           </select>
@@ -586,14 +664,14 @@ class Subscriber extends React.Component {
                                             <div className='col-12'>
                                               <label>Select Tags</label>
                                               <Select.Creatable
-                                                multi
                                                 options={this.state.options}
                                                 onChange={this.handleAdd}
-                                                value={this.state.addTags}
+                                                value={this.state.addTag}
                                                 placeholder='Add User Tags'
                                               />
                                             </div>
-                                            <div className='col-12'>
+                                            {this.state.saveEnable
+                                            ? <div className='col-12'>
                                               <button style={{float: 'right', margin: '15px'}}
                                                 className='btn btn-primary btn-sm'
                                                 onClick={() => {
@@ -602,6 +680,14 @@ class Subscriber extends React.Component {
                                                 }}>Save
                                               </button>
                                             </div>
+                                            : <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                disabled>
+                                                 Save
+                                              </button>
+                                            </div>
+                                          }
                                           </div>
                                         </PopoverBody>
                                       </Popover>
@@ -612,10 +698,9 @@ class Subscriber extends React.Component {
                                             <div className='col-12'>
                                               <label>Select Tags</label>
                                               <Select
-                                                multi
                                                 options={this.state.options}
                                                 onChange={this.handleRemove}
-                                                value={this.state.removeTags}
+                                                value={this.state.removeTag}
                                                 placeholder='Remove User Tags'
                                               />
                                             </div>
@@ -649,7 +734,7 @@ class Subscriber extends React.Component {
                                   style={{height: '53px'}}>
                                   <th data-field='Select All'
                                     className='m-datatable__cell--center m-datatable__cell'>
-                                    <input type='checkbox' name='Select All' value='All' onChange={this.handleSubscriberClick} /></th>
+                                    <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></th>
                                   <th data-field='Profile Picture'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
@@ -739,7 +824,7 @@ class Subscriber extends React.Component {
                                       <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
                                           {
                                               subscriber.tags.map((tag, i) => (
-                                                <span style={{display: 'block'}}>{tag.label}</span>
+                                                <span key={i} style={{display: 'block'}}>{tag}</span>
                                               ))
                                           }
                                         </UncontrolledTooltip>
@@ -798,14 +883,18 @@ function mapStateToProps (state) {
   return {
     subscribers: (state.subscribersInfo.subscribers),
     locales: (state.subscribersInfo.locales),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    tags: (state.tagsInfo.tags)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadSubscribersList: loadSubscribersList,
     loadMyPagesList: loadMyPagesList,
-    saveSubscriberTags: saveSubscriberTags},
+    assignTags: assignTags,
+    unassignTags: unassignTags,
+    loadTags: loadTags,
+    createTag: createTag},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Subscriber)

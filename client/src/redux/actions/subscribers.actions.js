@@ -29,12 +29,3 @@ export function loadSubscribersList () {
     callApi('subscribers').then(res => dispatch(updateSubscribersList(res)))
   }
 }
-export function saveSubscriberTags (data, handleResponse) {
-  console.log('Actions for saving subscriber Tags', data)
-  return (dispatch) => {
-    callApi('tags/saveTags', 'post', data).then(res => {
-      dispatch(updateSubscribersList(res))
-      handleResponse()
-    })
-  }
-}

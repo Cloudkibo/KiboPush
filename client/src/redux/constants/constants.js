@@ -179,3 +179,6 @@ export const ADD_FILE_URL = 'ADD_FILE_URL'
 export const ADD_FILE_INFO = 'ADD_FILE_INFO'
 export const SET_LOADING = 'SET_LOADING'
 export const GET_STARTED_COMPLETED = 'GET_STARTED_COMPLETED'
+
+// constants for tags
+export const LOAD_TAGS_LIST = 'LOAD_TAGS_LIST'
