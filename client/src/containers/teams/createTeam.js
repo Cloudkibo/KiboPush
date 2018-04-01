@@ -69,7 +69,7 @@ class CreateTeam extends React.Component {
       this.msg.error('Please select one agent atleast')
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
-    }
+    } else {
       var agents = []
       for (var i = 0; i < this.state.agentIds.length; i++) {
         agents.push(this.state.agentIds[i].userId._id)
@@ -84,6 +84,7 @@ class CreateTeam extends React.Component {
       browserHistory.push({
         pathname: `/teams`
       })
+    }
   }
   updateDescription (e) {
     this.setState({description: e.target.value})

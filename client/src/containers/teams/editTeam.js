@@ -63,16 +63,16 @@ class EditTeam extends React.Component {
       var pages = []
       console.log('this.props.location.state', this.props.location.state)
       for (var i = 0; i < this.props.location.state.agents.length; i++) {
-          if (this.props.location.state.agents[i].teamId === this.props.location.state._id) {
-            agents.push(this.props.location.state.agents[i].agentId)
-          }
+        if (this.props.location.state.agents[i].teamId === this.props.location.state._id) {
+          agents.push(this.props.location.state.agents[i].agentId)
         }
+      }
       console.log('agents', agents)
       for (var a = 0; a < this.props.location.state.pages.length; a++) {
-          if (this.props.location.state.pages[a].teamId === this.props.location.state._id) {
-            pages.push(this.props.location.state.pages[a].pageId)
-          }
+        if (this.props.location.state.pages[a].teamId === this.props.location.state._id) {
+          pages.push(this.props.location.state.pages[a].pageId)
         }
+      }
       console.log('pages', pages)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
