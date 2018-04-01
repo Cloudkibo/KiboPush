@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { registerAction } from '../../utility/socketio'
 
-class Workflows extends React.Component {
+class Bot extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadWorkFlowList()

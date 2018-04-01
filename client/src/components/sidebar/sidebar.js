@@ -170,7 +170,7 @@ class Sidebar extends Component {
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/workflows' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-interface-8' />
-              <span className='m-menu__link-text'>Workflows</span>
+              <span className='m-menu__link-text'>Smart Replies</span>
             </Link>
           </li>
         )
