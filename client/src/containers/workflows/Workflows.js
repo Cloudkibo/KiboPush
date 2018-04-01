@@ -231,7 +231,7 @@ class Workflows extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Workflows</h3>
+                  <h3 className='m-subheader__title'>Smart Replies</h3>
                 </div>
               </div>
             </div>
@@ -243,7 +243,7 @@ class Workflows extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Workflows are automated messages which are sent to subscriber when subscriber sends a message which matches the set criteria.
+                  Smart Replies are automated messages which are sent to subscriber when subscriber sends a message which matches the set criteria.
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>
@@ -341,19 +341,19 @@ class Workflows extends React.Component {
                                 style={{height: '53px'}}>
                                 <th data-field='Condition'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Condition</span>
+                                  <span style={{width: '150px'}}>Bot Title</span>
                                 </th>
                                 <th data-field='KeyWords'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Key Words</span>
+                                  <span style={{width: '150px'}}>Page Name</span>
                                 </th>
                                 <th data-field='Message'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Message</span>
+                                  <span style={{width: '150px'}}>Status</span>
                                 </th>
                                 <th data-field='Active'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Active</span>
+                                  <span style={{width: '150px'}}>Status</span>
                                 </th>
                                 <th data-field='Action'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
