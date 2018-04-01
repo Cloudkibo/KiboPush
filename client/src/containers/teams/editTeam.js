@@ -39,8 +39,6 @@ class EditTeam extends React.Component {
     this.removePage = this.removePage.bind(this)
     this.exists = this.exists.bind(this)
     this.existsPage = this.existsPage.bind(this)
-    this.existsUpdatePage = this.existsUpdatePage.bind(this)
-    this.existsUpdateAgent = this.existsUpdateAgent.bind(this)
   }
   showDropDown () {
     this.setState({showDropDown: true})
@@ -172,7 +170,7 @@ class EditTeam extends React.Component {
       temp.splice(index, 1)
     }
     this.setState({pageIds: temp})
-    this.props.removeAgent({ pageId: page._id, teamId: this.props.location.state._id })
+    this.props.removePage({ pageId: page._id, teamId: this.props.location.state._id })
     this.props.loadTeamsList()
   }
   exists (agent) {
@@ -186,22 +184,6 @@ class EditTeam extends React.Component {
   existsPage (page) {
     for (var i = 0; i < this.state.pageIds.length; i++) {
       if (this.state.pageIds[i]._id === page) {
-        return true
-      }
-    }
-    return false
-  }
-  existsUpdateAgent (agent) {
-    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
-      if (this.props.teamUniqueAgents[i].agentId._id === agent.userId._id && this.props.teamUniqueAgents[i].teamId === agent.teamId) {
-        return true
-      }
-    }
-    return false
-  }
-  existsUpdatePage (page) {
-    for (var i = 0; i < this.props.teamUniquePages.length; i++) {
-      if (this.props.teamUniquePages[i].pageId._id === page.pageName && this.props.teamUniquePages[i].teamId === page.teamId) {
         return true
       }
     }
