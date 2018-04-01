@@ -58,35 +58,27 @@ class EditTeam extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
-  }
-  componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
-    if (nextProps.pages && nextProps.members) {
+    if (this.props.location.state) {
       var agents = []
       var pages = []
-      console.log('nextProps', nextProps)
       console.log('this.props.location.state', this.props.location.state)
-      for (var i = 0; i < nextProps.members.length; i++) {
-        for (var j = 0; j < this.props.teamUniqueAgents.length; j++) {
-          console.log('this.props.teamUniqueAgents', this.props.teamUniqueAgents)
-          console.log('this.props.location.state._id', this.props.location.state._id)
-          if (this.props.teamUniqueAgents[j].agentId._id === nextProps.members[i].userId._id && this.props.teamUniqueAgents[j].teamId === this.props.location.state._id) {
-            console.log('inside if')
-            agents.push(nextProps.members[i])
+      for (var i = 0; i < this.props.location.state.agents.length; i++) {
+          if (this.props.location.state.agents[i].teamId === this.props.location.state._id) {
+            agents.push(this.props.location.state.agents[i].agentId)
           }
         }
-      }
       console.log('agents', agents)
-      for (var a = 0; a < nextProps.pages.length; a++) {
-        for (var b = 0; b < this.props.teamUniquePages.length; b++) {
-          if (this.props.teamUniquePages[b].pageId._id === nextProps.pages[a]._id && this.props.teamUniquePages[b].teamId === this.props.location.state._id) {
-            pages.push(nextProps.pages[a])
+      for (var a = 0; a < this.props.location.state.pages.length; a++) {
+          if (this.props.location.state.pages[a].teamId === this.props.location.state._id) {
+            pages.push(this.props.location.state.pages[a].pageId)
           }
         }
-      }
       console.log('pages', pages)
       this.setState({ agentIds: agents, pageIds: pages, name: this.props.location.state.name, description: this.props.location.state.description })
     }
+  }
+  componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
   }
   createTeam () {
     if (this.state.name === '') {
@@ -100,16 +92,12 @@ class EditTeam extends React.Component {
     } else {
       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        if (this.existsUpdateAgent(this.state.agentIds[i]) === false) {
           this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
           this.props.loadTeamsList()
-        }
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        if (this.existsUpdatePage(this.state.pageIds[j]) === false) {
           this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
           this.props.loadTeamsList()
-        }
       }
       this.msg.success('Changes saved successfully')
     }
@@ -127,26 +115,27 @@ class EditTeam extends React.Component {
     var temp = this.state.agentIds
     if (agent === 'All') {
       for (var i = 0; i < this.props.members.length; i++) {
-        if (this.exists(this.props.members[i].userId.name) === false) {
-          temp.push(this.props.members[i])
+        if (this.exists(this.props.members[i].userId._id) === false) {
+          temp.push(this.props.members[i].userId)
         }
       }
     } else {
       for (var j = 0; j < this.props.members.length; j++) {
-        if (agent === this.props.members[j].userId.name) {
-          if (this.exists(this.props.members[j].userId.name) === false) {
-            temp.push(this.props.members[j])
+        if (agent._id === this.props.members[j].userId._id) {
+          if (this.exists(this.props.members[j].userId._id) === false) {
+            temp.push(this.props.members[j].userId)
           }
         }
       }
     }
+    console.log('temp', temp)
     this.setState({agentIds: temp})
   }
   removeAgent (agent) {
     var index = -1
     var temp = this.state.agentIds
     for (var i = 0; i < this.state.agentIds.length; i++) {
-      if (agent.name === this.state.agentIds[i].userId.name) {
+      if (agent._id === this.state.agentIds[i]._id) {
         index = i
       }
     }
@@ -161,14 +150,14 @@ class EditTeam extends React.Component {
     var temp = this.state.pageIds
     if (page === 'All') {
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.existsPage(this.props.pages[i].pageName) === false) {
+        if (this.existsPage(this.props.pages[i]._id) === false) {
           temp.push(this.props.pages[i])
         }
       }
     } else {
       for (var j = 0; j < this.props.pages.length; j++) {
-        if (page === this.props.pages[j].pageName) {
-          if (this.existsPage(this.props.pages[j].pageName) === false) {
+        if (page._id === this.props.pages[j]._id) {
+          if (this.existsPage(this.props.pages[j]._id) === false) {
             temp.push(this.props.pages[j])
           }
         }
@@ -180,7 +169,7 @@ class EditTeam extends React.Component {
     var index = -1
     var temp = this.state.pageIds
     for (var i = 0; i < this.state.pageIds.length; i++) {
-      if (page.pageName === this.state.pageIds[i].pageName) {
+      if (page._id === this.state.pageIds[i]._id) {
         index = i
       }
     }
@@ -193,7 +182,7 @@ class EditTeam extends React.Component {
   }
   exists (agent) {
     for (var i = 0; i < this.state.agentIds.length; i++) {
-      if (this.state.agentIds[i].userId.name === agent) {
+      if (this.state.agentIds[i]._id === agent) {
         return true
       }
     }
@@ -201,7 +190,7 @@ class EditTeam extends React.Component {
   }
   existsPage (page) {
     for (var i = 0; i < this.state.pageIds.length; i++) {
-      if (this.state.pageIds[i].pageName === page) {
+      if (this.state.pageIds[i]._id === page) {
         return true
       }
     }
@@ -292,10 +281,10 @@ class EditTeam extends React.Component {
                                 this.state.agentIds.map((agent, i) => (
                                   <li className='m-nav__item'>
                                     <span>
-                                      <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                                      <span>{agent.userId.name}</span>&nbsp;&nbsp;&nbsp;
+                                      <img alt='pic' style={{height: '30px'}} src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                                      <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
                                       {this.props.location.state.module === 'edit' &&
-                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId)} />
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
                                       }
                                     </span>
                                   </li>
@@ -326,7 +315,7 @@ class EditTeam extends React.Component {
                                           {
                                             this.props.members.map((member, i) => (
                                               <li className='m-nav__item'>
-                                                <a onClick={() => this.changeAgent(member.userId.name)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                <a onClick={() => this.changeAgent(member.userId)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                   { this.exists(member.userId.name) === true
                                                   ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                     <i className='la la-check' /> {member.userId.name}
@@ -401,7 +390,7 @@ class EditTeam extends React.Component {
                                           {
                                             this.props.pages.map((page, i) => (
                                               <li className='m-nav__item'>
-                                                <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                <a onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                   { this.existsPage(page.pageName) === true
                                                   ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                     <i className='la la-check' /> {page.pageName}

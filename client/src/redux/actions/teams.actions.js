@@ -51,6 +51,7 @@ export function removePage (data) {
   return (dispatch) => {
     callApi('teams/removePage', 'post', data)
       .then(res => {
+        console.log('res', res)
         dispatch(loadTeamsList())
       })
   }
@@ -60,6 +61,7 @@ export function removeAgent (data) {
   return (dispatch) => {
     callApi('teams/removeAgent', 'post', data)
       .then(res => {
+        console.log('res', res)
         dispatch(loadTeamsList())
       })
   }
