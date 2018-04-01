@@ -1,4 +1,6 @@
 const Teams = require('./teams.model')
+const Users = require('../user/Users.model')
+const Pages = require('../pages/Pages.model')
 const TeamAgents = require('./team_agents.model')
 const TeamPages = require('./team_pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
@@ -38,7 +40,7 @@ exports.index = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        TeamAgents.find({'agentId': {$in: ids}}).populate('agentId').exec((err, teamUniqueAgents) => {
+        Users.find({'_id': {$in: ids}}, function (err, teamUniqueAgents) {
           if (err) {
             return res.status(500).json({
               status: 'failed',
@@ -55,7 +57,7 @@ exports.index = function (req, res) {
                 description: `Internal Server Error ${JSON.stringify(err)}`
               })
             }
-            TeamPages.find({'pageId': {$in: ids}}).populate('pageId').exec((err, teamUniquePages) => {
+            Pages.find({'_id': {$in: ids}}, function (err, teamUniquePages) {
               if (err) {
                 return res.status(500).json({
                   status: 'failed',
