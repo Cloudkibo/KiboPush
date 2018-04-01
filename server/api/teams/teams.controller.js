@@ -203,15 +203,21 @@ exports.addAgent = function (req, res) {
       agentId: req.body.agentId
     }
     const teamAgent = new TeamAgents(teamAgentsPayload)
-
-    TeamAgents.create(teamAgent, (err, newTeamAgent) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
+    TeamAgents.find({teamId: req.body.teamId, companyId: companyUser.companyId, agentId: req.body.agentId}, (err, found) => {
+      if (err) {}
+      if (found.length === 0) {
+        TeamAgents.create(teamAgent, (err, newTeamAgent) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: newTeamAgent})
         })
+      } else {
+        return res.status(404).json({status: 'error', description: 'record already exists'})
       }
-      return res.status(201).json({status: 'success', payload: newTeamAgent})
     })
   })
 }
@@ -235,15 +241,21 @@ exports.addPage = function (req, res) {
       agentId: req.body.pageId
     }
     const teamPage = new TeamPages(teamPagesPayload)
-
-    TeamPages.create(teamPage, (err, newTeamPage) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
+    TeamPages.find({teamId: req.body.teamId, companyId: companyUser.companyId, pageId: req.body.pageId}, (err, found) => {
+      if (err) {}
+      if (found.length === 0) {
+        TeamPages.create(teamPage, (err, newTeamPage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: newTeamPage})
         })
+      } else {
+        return res.status(404).json({status: 'error', description: 'record already exists'})
       }
-      return res.status(201).json({status: 'success', payload: newTeamPage})
     })
   })
 }
