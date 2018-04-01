@@ -91,14 +91,6 @@ class EditTeam extends React.Component {
       this.msg.error('Please select one page atleast')
     } else {
       this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
-      for (var i = 0; i < this.state.agentIds.length; i++) {
-          this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i].userId._id })
-          this.props.loadTeamsList()
-      }
-      for (var j = 0; j < this.state.pageIds.length; j++) {
-          this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
-          this.props.loadTeamsList()
-      }
       this.msg.success('Changes saved successfully')
     }
   }
@@ -117,6 +109,7 @@ class EditTeam extends React.Component {
       for (var i = 0; i < this.props.members.length; i++) {
         if (this.exists(this.props.members[i].userId._id) === false) {
           temp.push(this.props.members[i].userId)
+          this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.props.members[i].userId._id })
         }
       }
     } else {
@@ -124,6 +117,7 @@ class EditTeam extends React.Component {
         if (agent._id === this.props.members[j].userId._id) {
           if (this.exists(this.props.members[j].userId._id) === false) {
             temp.push(this.props.members[j].userId)
+            this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.props.members[j].userId._id })
           }
         }
       }
@@ -144,7 +138,6 @@ class EditTeam extends React.Component {
     }
     this.setState({agentIds: temp})
     this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
-    this.props.loadTeamsList()
   }
   changePage (page) {
     var temp = this.state.pageIds
@@ -152,6 +145,7 @@ class EditTeam extends React.Component {
       for (var i = 0; i < this.props.pages.length; i++) {
         if (this.existsPage(this.props.pages[i]._id) === false) {
           temp.push(this.props.pages[i])
+          this.props.addPage({ teamId: this.props.location.state._id, pageId: this.props.pages[i]._id })
         }
       }
     } else {
@@ -159,6 +153,7 @@ class EditTeam extends React.Component {
         if (page._id === this.props.pages[j]._id) {
           if (this.existsPage(this.props.pages[j]._id) === false) {
             temp.push(this.props.pages[j])
+            this.props.addPage({ teamId: this.props.location.state._id, pageId: this.props.pages[j]._id })
           }
         }
       }
