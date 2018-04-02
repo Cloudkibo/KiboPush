@@ -267,8 +267,8 @@ class CreatePoll extends React.Component {
         this.state.selectedRadio = 'segmentation'
       }
     }
-    if (this.props.user.isSuperUser && nextProps.tags) {
-      this.initializeTagSelect(nextProps.tags)
+    if (this.props.user.isSuperUser && this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
   }
   handlePageChange (value) {
