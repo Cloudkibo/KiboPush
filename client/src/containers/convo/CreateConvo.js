@@ -414,6 +414,14 @@ class CreateConvo extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -421,7 +429,7 @@ class CreateConvo extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
-          segmentationTags: this.state.tagIDs,
+          segmentationTags: tagIDs,
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
@@ -462,6 +470,14 @@ class CreateConvo extends React.Component {
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
+      }
       var data = {
         platform: 'facebook',
         self: true,
@@ -471,7 +487,7 @@ class CreateConvo extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
-        segmentationTags: this.state.tagIDs,
+        segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
@@ -629,15 +645,7 @@ class CreateConvo extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        let tagIDs = []
-        for (let i = 0; i < this.props.tags.length; i++) {
-          for (let j = 0; j < this.state.tagValue.length; j++) {
-            if (this.props.tags[i].tag === this.state.tagValue[j]) {
-              tagIDs.push(this.props.tags[i]._id)
-            }
-          }
-        }
-        self.setState({ tagValue: selected, tagIDs: tagIDs })
+        self.setState({ tagValue: selected })
       }
     })
   }
