@@ -395,7 +395,7 @@ class CreatePoll extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
-          segmentationTags: this.state.tagValue,
+          segmentationTags: this.state.tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)
