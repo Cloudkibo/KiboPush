@@ -11,6 +11,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class ItemSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.props.loadTags()
     this.state = {
       page: {
         options: []
@@ -113,15 +114,15 @@ class ItemSettings extends React.Component {
     this.setState({Locale: {options: optionsLocale}})
 
     let optionsTag = []
-    for (let i = 0; i < this.state.tagValue.length; i++) {
+    for (let i = 0; i < this.props.tags.length; i++) {
       if (this.props.location.state.item.segmentationTags !== '') {
-        if (this.props.location.state.item.segmentationTags.indexOf(this.state.tagValue[i]) !== -1) {
-          optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i], selected: true}
+        if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true}
         } else {
-          optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i]}
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
         }
       } else {
-        optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i]}
+        optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
       }
     }
     this.setState({Tag: {options: optionsTag}})
@@ -265,7 +266,7 @@ class ItemSettings extends React.Component {
         alertType: ''
       })
     }
-    if (this.props.user.isSuperUser) {
+    if (this.props.user.isSuperUser && this.state.T) {
       this.initializeTagSelect(this.props.tags)
     }
   }
