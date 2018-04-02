@@ -106,6 +106,9 @@ exports.create = function (req, res) {
       pollPayload.segmentationLocale = (req.body.segmentationLocale)
         ? req.body.segmentationLocale
         : null
+      pollPayload.segmentationTags = (req.body.segmentationTags)
+        ? req.body.segmentationTags
+        : null
     }
     if (req.body.isList) {
       pollPayload.isList = true
