@@ -11,7 +11,6 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class ItemSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.props.loadTags()
     this.state = {
       page: {
         options: []
@@ -56,9 +55,10 @@ class ItemSettings extends React.Component {
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
-  componentDidMount () {
+  componentWillMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
+    this.props.loadTags()
     var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
