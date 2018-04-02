@@ -11,6 +11,9 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
 import { loadPollsList } from './../redux/actions/poll.actions'
 import { loadSurveysList } from './../redux/actions/surveys.actions'
+import { loadTags } from './../redux/actions/tags.actions'
+import { loadSubscribersList } from './../redux/actions/subscribers.actions'
+
 const socket = io('')
 let store
 
@@ -80,6 +83,10 @@ socket.on('message', (data) => {
   } else if (data.action === 'survey_created') {
     store.dispatch(loadSurveysList())
     store.dispatch(sentVsSeen())
+  } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
+    store.dispatch(loadTags())
+  } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
+    store.dispatch(loadSubscribersList())
   }
 
   if (callbacks[data.action]) {
