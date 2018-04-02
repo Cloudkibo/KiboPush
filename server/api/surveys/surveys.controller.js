@@ -19,6 +19,7 @@ let _ = require('lodash')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
+const utility = require('./../broadcasts/broadcasts.utility')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -461,51 +462,53 @@ exports.send = function (req, res) {
                             `Page access token from graph api error ${JSON.stringify(
                             err)}`)
                           }
-
-                          for (let j = 0; j < subscribers.length; j++) {
-                            const messageData = {
-                              attachment: {
-                                type: 'template',
-                                payload: {
-                                  template_type: 'button',
-                                  text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                                  buttons
+                          utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                            subscribers = taggedSubscribers
+                            for (let j = 0; j < subscribers.length; j++) {
+                              const messageData = {
+                                attachment: {
+                                  type: 'template',
+                                  payload: {
+                                    template_type: 'button',
+                                    text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                    buttons
+                                  }
                                 }
                               }
-                            }
-                            const data = {
-                              recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                              message: messageData
-                            }
-                            needle.post(
-                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                            data, (err, resp) => {
-                              if (err) {
-                                return res.status(500).json({
-                                  status: 'failed',
-                                  description: JSON.stringify(err)
-                                })
+                              const data = {
+                                recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                                message: messageData
                               }
-                              let surveyPage = new SurveyPage({
-                                pageId: pages[z].pageId,
-                                userId: req.user._id,
-                                subscriberId: subscribers[j].senderId,
-                                surveyId: req.body._id,
-                                seen: false,
-                                companyId: companyUser.companyId
-                              })
-
-                              surveyPage.save((err2) => {
-                                if (err2) {
-                                  logger.serverLog(TAG, {
-                                    status: 'failed',
-                                    description: 'PollBroadcast create failed',
-                                    err2
+                              needle.post(
+                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                data, (err, resp) => {
+                                  if (err) {
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: JSON.stringify(err)
+                                    })
+                                  }
+                                  let surveyPage = new SurveyPage({
+                                    pageId: pages[z].pageId,
+                                    userId: req.user._id,
+                                    subscriberId: subscribers[j].senderId,
+                                    surveyId: req.body._id,
+                                    seen: false,
+                                    companyId: companyUser.companyId
                                   })
-                                }
-                              })
-                            })
-                          }
+
+                                  surveyPage.save((err2) => {
+                                    if (err2) {
+                                      logger.serverLog(TAG, {
+                                        status: 'failed',
+                                        description: 'PollBroadcast create failed',
+                                        err2
+                                      })
+                                    }
+                                  })
+                                })
+                            }
+                          })
                         })
                       })
                     })
@@ -545,87 +548,89 @@ exports.send = function (req, res) {
                           `Page access token from graph api error ${JSON.stringify(
                           err)}`)
                         }
-
-                        for (let j = 0; j < subscribers.length; j++) {
-                          const messageData = {
-                            attachment: {
-                              type: 'template',
-                              payload: {
-                                template_type: 'button',
-                                text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                                buttons
+                        utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                          subscribers = taggedSubscribers
+                          for (let j = 0; j < subscribers.length; j++) {
+                            const messageData = {
+                              attachment: {
+                                type: 'template',
+                                payload: {
+                                  template_type: 'button',
+                                  text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                  buttons
+                                }
                               }
                             }
-                          }
-                          const data = {
-                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                            message: messageData
-                          }
-                          needle.post(
-                          `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                          data, (err, resp) => {
-                            if (err) {
-                              return res.status(500).json({
-                                status: 'failed',
-                                description: JSON.stringify(err)
-                              })
+                            const data = {
+                              recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                              message: messageData
                             }
-                            let surveyPage = new SurveyPage({
-                              pageId: pages[z].pageId,
-                              userId: req.user._id,
-                              subscriberId: subscribers[j].senderId,
-                              surveyId: req.body._id,
-                              seen: false,
-                              companyId: companyUser.companyId
-                            })
-
-                            surveyPage.save((err2) => {
-                              if (err2) {
-                                logger.serverLog(TAG, {
-                                  status: 'failed',
-                                  description: 'PollBroadcast create failed',
-                                  err2
+                            needle.post(
+                              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                              data, (err, resp) => {
+                                if (err) {
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: JSON.stringify(err)
+                                  })
+                                }
+                                let surveyPage = new SurveyPage({
+                                  pageId: pages[z].pageId,
+                                  userId: req.user._id,
+                                  subscriberId: subscribers[j].senderId,
+                                  surveyId: req.body._id,
+                                  seen: false,
+                                  companyId: companyUser.companyId
                                 })
-                              }
-                              // not using now
-                              // Sessions.findOne({
-                              //   subscriber_id: subscribers[j]._id,
-                              //   page_id: pages[z]._id,
-                              //   company_id: pages[z].userId._id
-                              // }, (err, session) => {
-                              //   if (err) {
-                              //     return logger.serverLog(TAG,
-                              //       `At get session ${JSON.stringify(err)}`)
-                              //   }
-                              //   if (!session) {
-                              //     return logger.serverLog(TAG,
-                              //       `No chat session was found for surveys`)
-                              //   }
-                              //   const chatMessage = new LiveChat({
-                              //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
-                              //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
-                              //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
-                              //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                              //     session_id: session._id,
-                              //     company_id: pages[z].userId._id, // this is admin id till we have companies
-                              //     payload: {
-                              //       componentType: 'survey',
-                              //       payload: messageData
-                              //     }, // this where message content will go
-                              //     status: 'unseen' // seen or unseen
-                              //   })
-                              //   chatMessage.save((err, chatMessageSaved) => {
-                              //     if (err) {
-                              //       return logger.serverLog(TAG,
-                              //         `At save chat${JSON.stringify(err)}`)
-                              //     }
-                              //     logger.serverLog(TAG,
-                              //       'Chat message saved for surveys sent')
-                              //   })
-                              // })
-                            })
-                          })
-                        }
+
+                                surveyPage.save((err2) => {
+                                  if (err2) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'PollBroadcast create failed',
+                                      err2
+                                    })
+                                  }
+                                  // not using now
+                                  // Sessions.findOne({
+                                  //   subscriber_id: subscribers[j]._id,
+                                  //   page_id: pages[z]._id,
+                                  //   company_id: pages[z].userId._id
+                                  // }, (err, session) => {
+                                  //   if (err) {
+                                  //     return logger.serverLog(TAG,
+                                  //       `At get session ${JSON.stringify(err)}`)
+                                  //   }
+                                  //   if (!session) {
+                                  //     return logger.serverLog(TAG,
+                                  //       `No chat session was found for surveys`)
+                                  //   }
+                                  //   const chatMessage = new LiveChat({
+                                  //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                                  //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                                  //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                                  //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                                  //     session_id: session._id,
+                                  //     company_id: pages[z].userId._id, // this is admin id till we have companies
+                                  //     payload: {
+                                  //       componentType: 'survey',
+                                  //       payload: messageData
+                                  //     }, // this where message content will go
+                                  //     status: 'unseen' // seen or unseen
+                                  //   })
+                                  //   chatMessage.save((err, chatMessageSaved) => {
+                                  //     if (err) {
+                                  //       return logger.serverLog(TAG,
+                                  //         `At save chat${JSON.stringify(err)}`)
+                                  //     }
+                                  //     logger.serverLog(TAG,
+                                  //       'Chat message saved for surveys sent')
+                                  //   })
+                                  // })
+                                })
+                              })
+                          }
+                        })
                       })
                     })
                   }
@@ -843,7 +848,6 @@ exports.sendSurvey = function (req, res) {
                           if (err) {
                             return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                           }
-
                           needle.get(
                           `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                           (err, resp) => {
@@ -852,51 +856,53 @@ exports.sendSurvey = function (req, res) {
                               `Page access token from graph api error ${JSON.stringify(
                               err)}`)
                             }
-
-                            for (let j = 0; j < subscribers.length; j++) {
-                              const messageData = {
-                                attachment: {
-                                  type: 'template',
-                                  payload: {
-                                    template_type: 'button',
-                                    text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                                    buttons
+                            utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                              subscribers = taggedSubscribers
+                              for (let j = 0; j < subscribers.length; j++) {
+                                const messageData = {
+                                  attachment: {
+                                    type: 'template',
+                                    payload: {
+                                      template_type: 'button',
+                                      text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                      buttons
+                                    }
                                   }
                                 }
-                              }
-                              const data = {
-                                recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                message: messageData
-                              }
-                              needle.post(
-                              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                              data, (err, resp) => {
-                                if (err) {
-                                  return res.status(500).json({
-                                    status: 'failed',
-                                    description: JSON.stringify(err)
-                                  })
+                                const data = {
+                                  recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                                  message: messageData
                                 }
-                                let surveyPage = new SurveyPage({
-                                  pageId: pages[z].pageId,
-                                  userId: req.user._id,
-                                  subscriberId: subscribers[j].senderId,
-                                  surveyId: survey._id,
-                                  seen: false,
-                                  companyId: companyUser.companyId
-                                })
-
-                                surveyPage.save((err2) => {
-                                  if (err2) {
-                                    logger.serverLog(TAG, {
-                                      status: 'failed',
-                                      description: 'PollBroadcast create failed',
-                                      err2
+                                needle.post(
+                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                  data, (err, resp) => {
+                                    if (err) {
+                                      return res.status(500).json({
+                                        status: 'failed',
+                                        description: JSON.stringify(err)
+                                      })
+                                    }
+                                    let surveyPage = new SurveyPage({
+                                      pageId: pages[z].pageId,
+                                      userId: req.user._id,
+                                      subscriberId: subscribers[j].senderId,
+                                      surveyId: survey._id,
+                                      seen: false,
+                                      companyId: companyUser.companyId
                                     })
-                                  }
-                                })
-                              })
-                            }
+
+                                    surveyPage.save((err2) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, {
+                                          status: 'failed',
+                                          description: 'PollBroadcast create failed',
+                                          err2
+                                        })
+                                      }
+                                    })
+                                  })
+                              }
+                            })
                           })
                         })
                       })
@@ -936,51 +942,53 @@ exports.sendSurvey = function (req, res) {
                             `Page access token from graph api error ${JSON.stringify(
                             err)}`)
                           }
-
-                          for (let j = 0; j < subscribers.length; j++) {
-                            const messageData = {
-                              attachment: {
-                                type: 'template',
-                                payload: {
-                                  template_type: 'button',
-                                  text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
-                                  buttons
+                          utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                            subscribers = taggedSubscribers
+                            for (let j = 0; j < subscribers.length; j++) {
+                              const messageData = {
+                                attachment: {
+                                  type: 'template',
+                                  payload: {
+                                    template_type: 'button',
+                                    text: `${survey.description}\nPlease respond to these questions. \n${first_question.statement}`,
+                                    buttons
+                                  }
                                 }
                               }
-                            }
-                            const data = {
-                              recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                              message: messageData
-                            }
-                            needle.post(
-                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                            data, (err, resp) => {
-                              if (err) {
-                                return res.status(500).json({
-                                  status: 'failed',
-                                  description: JSON.stringify(err)
-                                })
+                              const data = {
+                                recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                                message: messageData
                               }
-                              let surveyPage = new SurveyPage({
-                                pageId: pages[z].pageId,
-                                userId: req.user._id,
-                                subscriberId: subscribers[j].senderId,
-                                surveyId: survey._id,
-                                seen: false,
-                                companyId: companyUser.companyId
-                              })
-
-                              surveyPage.save((err2) => {
-                                if (err2) {
-                                  logger.serverLog(TAG, {
-                                    status: 'failed',
-                                    description: 'PollBroadcast create failed',
-                                    err2
+                              needle.post(
+                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                data, (err, resp) => {
+                                  if (err) {
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: JSON.stringify(err)
+                                    })
+                                  }
+                                  let surveyPage = new SurveyPage({
+                                    pageId: pages[z].pageId,
+                                    userId: req.user._id,
+                                    subscriberId: subscribers[j].senderId,
+                                    surveyId: survey._id,
+                                    seen: false,
+                                    companyId: companyUser.companyId
                                   })
-                                }
-                              })
-                            })
-                          }
+
+                                  surveyPage.save((err2) => {
+                                    if (err2) {
+                                      logger.serverLog(TAG, {
+                                        status: 'failed',
+                                        description: 'PollBroadcast create failed',
+                                        err2
+                                      })
+                                    }
+                                  })
+                                })
+                            }
+                          })
                         })
                       })
                     }

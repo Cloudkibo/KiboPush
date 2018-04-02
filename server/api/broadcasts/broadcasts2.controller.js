@@ -235,7 +235,112 @@ exports.sendConversation = function (req, res) {
                     return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
                   req.body.payload.forEach(payloadItem => {
-                    subscribers.forEach(subscriber => {
+                    utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                      taggedSubscribers.forEach(subscriber => {
+                        Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `At get session ${JSON.stringify(err)}`)
+                          }
+                          if (!session) {
+                            return logger.serverLog(TAG,
+                              `No chat session was found for broadcast`)
+                          }
+                          const chatMessage = new LiveChat({
+                            sender_id: page._id, // this is the page id: _id of Pageid
+                            recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                            sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                            recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                            session_id: session._id,
+                            company_id: req.user._id, // this is admin id till we have companies
+                            payload: payloadItem, // this where message content will go
+                            status: 'unseen' // seen or unseen
+                          })
+                          chatMessage.save((err, chatMessageSaved) => {
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At get session ${JSON.stringify(err)}`)
+                            }
+                          })
+                        })
+                        // update broadcast sent field
+                        let pagebroadcast = new BroadcastPage({
+                          pageId: page.pageId,
+                          userId: req.user._id,
+                          subscriberId: subscriber.senderId,
+                          broadcastId: broadcast._id,
+                          seen: false,
+                          companyId: companyUser.companyId
+                        })
+
+                        pagebroadcast.save((err2, savedpagebroadcast) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'PageBroadcast create failed',
+                              err2
+                            })
+                          }
+                          let messageData = utility.prepareSendAPIPayload(
+                            subscriber.senderId,
+                            payloadItem)
+                          request(
+                            {
+                              'method': 'POST',
+                              'json': true,
+                              'formData': messageData,
+                              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                              page.accessToken
+                            },
+                            function (err, resp) {
+                              if (err) {
+                                return logger.serverLog(TAG,
+                                  `At send message broadcast ${JSON.stringify(err)}`)
+                              } else {
+                                if (resp.statusCode !== 200) {
+                                  logger.serverLog(TAG,
+                                    `At send message broadcast response ${JSON.stringify(
+                                      resp)}`)
+                                } else {
+                                  logger.serverLog(TAG,
+                                    `At send message broadcast response ${JSON.stringify(
+                                      resp.body.message_id)}`)
+                                }
+                              }
+                            })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            } else {
+              let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
+              if (req.body.isSegmented) {
+                if (req.body.segmentationGender.length > 0) {
+                  subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                    {
+                      gender: {
+                        $in: req.body.segmentationGender
+                      }
+                    })
+                }
+                if (req.body.segmentationLocale.length > 0) {
+                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                    locale: {
+                      $in: req.body.segmentationLocale
+                    }
+                  })
+                }
+              }
+
+              Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+                if (err) {
+                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                }
+                newPayload.forEach(payloadItem => {
+                  utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                    taggedSubscribers.forEach(subscriber => {
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -308,107 +413,6 @@ exports.sendConversation = function (req, res) {
                             }
                           })
                       })
-                    })
-                  })
-                })
-              })
-            } else {
-              let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
-              if (req.body.isSegmented) {
-                if (req.body.segmentationGender.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                    {
-                      gender: {
-                        $in: req.body.segmentationGender
-                      }
-                    })
-                }
-                if (req.body.segmentationLocale.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                    locale: {
-                      $in: req.body.segmentationLocale
-                    }
-                  })
-                }
-              }
-
-              Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                if (err) {
-                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                }
-                newPayload.forEach(payloadItem => {
-                  subscribers.forEach(subscriber => {
-                    Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                      if (err) {
-                        return logger.serverLog(TAG,
-                          `At get session ${JSON.stringify(err)}`)
-                      }
-                      if (!session) {
-                        return logger.serverLog(TAG,
-                          `No chat session was found for broadcast`)
-                      }
-                      const chatMessage = new LiveChat({
-                        sender_id: page._id, // this is the page id: _id of Pageid
-                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        session_id: session._id,
-                        company_id: req.user._id, // this is admin id till we have companies
-                        payload: payloadItem, // this where message content will go
-                        status: 'unseen' // seen or unseen
-                      })
-                      chatMessage.save((err, chatMessageSaved) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At get session ${JSON.stringify(err)}`)
-                        }
-                      })
-                    })
-                    // update broadcast sent field
-                    let pagebroadcast = new BroadcastPage({
-                      pageId: page.pageId,
-                      userId: req.user._id,
-                      subscriberId: subscriber.senderId,
-                      broadcastId: broadcast._id,
-                      seen: false,
-                      companyId: companyUser.companyId
-                    })
-
-                    pagebroadcast.save((err2, savedpagebroadcast) => {
-                      if (err2) {
-                        logger.serverLog(TAG, {
-                          status: 'failed',
-                          description: 'PageBroadcast create failed',
-                          err2
-                        })
-                      }
-                      let messageData = utility.prepareSendAPIPayload(
-                        subscriber.senderId,
-                        payloadItem)
-                      request(
-                        {
-                          'method': 'POST',
-                          'json': true,
-                          'formData': messageData,
-                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                          page.accessToken
-                        },
-                        function (err, resp) {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At send message broadcast ${JSON.stringify(err)}`)
-                          } else {
-                            if (resp.statusCode !== 200) {
-                              logger.serverLog(TAG,
-                                `At send message broadcast response ${JSON.stringify(
-                                  resp)}`)
-                            } else {
-                              logger.serverLog(TAG,
-                                `At send message broadcast response ${JSON.stringify(
-                                  resp.body.message_id)}`)
-                            }
-                          }
-                        })
                     })
                   })
                 })
