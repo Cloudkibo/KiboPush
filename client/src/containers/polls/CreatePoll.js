@@ -16,6 +16,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
@@ -24,6 +25,7 @@ class CreatePoll extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
+    props.loadTags()
     this.state = {
       page: {
         options: []
@@ -48,6 +50,7 @@ class CreatePoll extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
+      tagIDs: [],
       alert: false,
       statement: '',
       option1: '',
@@ -85,27 +88,6 @@ class CreatePoll extends React.Component {
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
-    if (this.props.user.isSuperUser) {
-      let tags = [
-        {
-          _id: 'america',
-          tag: 'America',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        },
-        {
-          _id: 'pakistan',
-          tag: 'Pakistan',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        }
-      ]
-      this.initializeTagSelect(tags)
-    }
     this.initializePageSelect(options)
   }
 
@@ -204,7 +186,7 @@ class CreatePoll extends React.Component {
 
     for (let i = 0; i < tagOptions.length; i++) {
       let temp = {
-        id: tagOptions[i]._id,
+        id: tagOptions[i].tag,
         text: tagOptions[i].tag
       }
       remappedOptions[i] = temp
@@ -229,7 +211,15 @@ class CreatePoll extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ tagValue: selected })
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
+        self.setState({ tagValue: selected, tagIDs: tagIDs })
       }
     })
   }
@@ -276,6 +266,9 @@ class CreatePoll extends React.Component {
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
+    }
+    if (this.props.user.isSuperUser && this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
   }
   handlePageChange (value) {
@@ -326,7 +319,7 @@ class CreatePoll extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationGender: this.state.genderValue,
         segmentationLocale: this.state.localeValue,
-        segmentationTags: this.state.tagValue,
+        segmentationTags: this.state.tagIDs,
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
@@ -402,7 +395,7 @@ class CreatePoll extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
-          segmentationTags: this.state.tagValue,
+          segmentationTags: this.state.tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)
@@ -640,7 +633,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -652,7 +646,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
-    sendPollDirectly: sendPollDirectly
+    sendPollDirectly: sendPollDirectly,
+    loadTags: loadTags
   },
     dispatch)
 }
