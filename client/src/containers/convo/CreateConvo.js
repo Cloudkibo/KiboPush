@@ -461,6 +461,14 @@ class CreateConvo extends React.Component {
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[i]) {
+            tagIDs.append(this.props.tags[i]._id)
+          }
+        }
+      }
       var data = {
         platform: 'facebook',
         self: true,
@@ -470,7 +478,7 @@ class CreateConvo extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
-        segmentationTags: this.state.tagValue,
+        segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
