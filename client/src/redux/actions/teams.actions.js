@@ -56,6 +56,7 @@ export function addPage (data) {
   return (dispatch) => {
     callApi('teams/addPage', 'post', data)
       .then(res => {
+        console.log('addpage', res)
         dispatch(loadTeamsList())
       })
   }

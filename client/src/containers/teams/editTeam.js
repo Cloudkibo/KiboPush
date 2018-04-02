@@ -106,6 +106,7 @@ class EditTeam extends React.Component {
   }
   cancel () {
     console.log('removedAgents', this.state.removedAgents)
+    console.log('removedAgents', this.state.removedPages)
     for (var i = 0; i < this.state.removedAgents.length; i++) {
       this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.removedAgents[i]._id })
     }
