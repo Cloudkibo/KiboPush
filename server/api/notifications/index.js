@@ -2,7 +2,7 @@
 
 const express = require('express')
 const router = express.Router()
-const controller = require('./livechat.controller')
+const controller = require('./notifications.controller')
 const auth = require('../../auth/auth.service')
 
 router.get('/', auth.isAuthenticated(), controller.index)
