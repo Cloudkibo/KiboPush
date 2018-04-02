@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import { Alert } from 'react-bs-notifier'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -28,12 +29,7 @@ class ItemSettings extends React.Component {
                   {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
-      Tag: {
-        options: [
-          {id: 'america', text: 'America', value: 'america'},
-          {id: 'pakistan', text: 'Pakistan', value: 'pakistan'}
-        ]
-      },
+      Tag: {},
       stayOpen: false,
       disabled: false,
       pageValue: this.props.location.state.item.segmentationPageIds,
@@ -114,44 +110,23 @@ class ItemSettings extends React.Component {
     }
     this.setState({Locale: {options: optionsLocale}})
 
-    // let optionsTag = []
-    // for (let i = 0; i < this.state.Tag.options.length; i++) {
-    //   if (this.props.location.state.item.segmentationTags !== '') {
-    //     if (this.props.location.state.item.segmentationTags.indexOf(this.state.Tag.options[i].value) !== -1) {
-    //       optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value, selected: true}
-    //     } else {
-    //       optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
-    //     }
-    //   } else {
-    //     optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
-    //   }
-    // }
-    // this.setState({Tag: {options: optionsTag}})
+    let optionsTag = []
+    for (let i = 0; i < this.state.Tag.options.length; i++) {
+      if (this.props.location.state.item.segmentationTags !== '') {
+        if (this.props.location.state.item.segmentationTags.indexOf(this.state.Tag.options[i].value) !== -1) {
+          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value, selected: true}
+        } else {
+          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+        }
+      } else {
+        optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+      }
+    }
+    this.setState({Tag: {options: optionsTag}})
 
     this.initializePageSelect(options)
     this.initializeGenderSelect(optionsGender)
     this.initializeLocaleSelect(optionsLocale)
-    if (this.props.user.isSuperUser) {
-      let tags = [
-        {
-          _id: 'america',
-          tag: 'America',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        },
-        {
-          _id: 'pakistan',
-          tag: 'Pakistan',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        }
-      ]
-      this.initializeTagSelect(tags)
-    }
   }
 
   initializePageSelect (pageOptions) {
@@ -240,7 +215,7 @@ class ItemSettings extends React.Component {
 
     for (let i = 0; i < tagOptions.length; i++) {
       let temp = {
-        id: tagOptions[i]._id,
+        id: tagOptions[i].tag,
         text: tagOptions[i].tag
       }
       remappedOptions[i] = temp
@@ -265,7 +240,7 @@ class ItemSettings extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ tagValue: selected })
+        self.setState({ tagValue: selected, Tag: selected })
       }
     })
   }
@@ -286,6 +261,9 @@ class ItemSettings extends React.Component {
         alertMessage: '',
         alertType: ''
       })
+    }
+    if (this.props.user.isSuperUser) {
+      this.initializeTagSelect(this.props.tags)
     }
   }
 
@@ -319,6 +297,14 @@ class ItemSettings extends React.Component {
     } else {
       isActive = false
     }
+    let tagIDs = []
+    for (let i = 0; i < this.props.tags.length; i++) {
+      for (let j = 0; j < this.state.tagValue.length; j++) {
+        if (this.props.tags[i].tag === this.state.tagValue[j]) {
+          tagIDs.push(this.props.tags[i]._id)
+        }
+      }
+    }
     const autopostingData = {
       _id: this.props.location.state.item._id,
       accountTitle: this.accountTitleValue.value ? this.accountTitleValue.value : this.props.location.state.title,
@@ -326,7 +312,7 @@ class ItemSettings extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationGender: this.state.genderValue,
       segmentationLocale: this.state.localeValue,
-      segmentationTags: this.state.tagValue,
+      segmentationTags: tagIDs,
       isActive: isActive
     }
     this.props.editautoposting(autopostingData)
@@ -484,7 +470,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     successMessage: (state.autopostingInfo.successMessageEdit),
     errorMessage: (state.autopostingInfo.errorMessageEdit),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -492,7 +479,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       editautoposting: editautoposting,
-      clearAlertMessages: clearAlertMessages
+      clearAlertMessages: clearAlertMessages,
+      loadTags: loadTags
     },
     dispatch)
 }

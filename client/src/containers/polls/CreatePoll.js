@@ -392,20 +392,6 @@ class CreatePoll extends React.Component {
             }
           }
         }
-        console.log('sending Poll ', {
-          platform: 'Facebook',
-          datetime: Date.now(),
-          statement: this.state.statement,
-          sent: 0,
-          options: options,
-          isSegmented: isSegmentedValue,
-          segmentationPageIds: this.state.pageValue,
-          segmentationGender: this.state.genderValue,
-          segmentationLocale: this.state.localeValue,
-          segmentationTags: tagIDs,
-          isList: isListValue,
-          segmentationList: this.state.listSelected
-        })
         this.props.sendPollDirectly({
           platform: 'Facebook',
           datetime: Date.now(),
