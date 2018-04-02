@@ -15,5 +15,7 @@ router.post('/addAgent', auth.isAuthenticated(), controller.addAgent)
 router.post('/addPage', auth.isAuthenticated(), controller.addPage)
 router.post('/removeAgent', auth.isAuthenticated(), controller.removeAgent)
 router.post('/removePage', auth.isAuthenticated(), controller.removePage)
+router.get('/fetchPages/:id', auth.isAuthenticated(), controller.fetchPages)
+router.get('/fetchAgents/:id', auth.isAuthenticated(), controller.fetchAgents)
 
 module.exports = router

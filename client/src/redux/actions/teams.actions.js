@@ -11,6 +11,20 @@ export function showTeamsList (data) {
   }
 }
 
+export function showPagesList (data) {
+  return {
+    type: ActionTypes.SHOW_TEAM_PAGES,
+    teamPages: data
+  }
+}
+
+export function showAgentsList (data) {
+  return {
+    type: ActionTypes.SHOW_TEAM_AGENTS,
+    teamAgents: data
+  }
+}
+
 export function createTeam (data) {
   return (dispatch) => {
     callApi('teams/create', 'post', data)
@@ -86,6 +100,32 @@ export function deleteTeam (id, msg) {
         if (res.status === 'success') {
           msg.success('Team deleted successfully')
           dispatch(loadTeamsList())
+        }
+      })
+  }
+}
+
+export function fetchPages (id) {
+  console.log('fetchPages', id)
+  return (dispatch) => {
+    callApi(`teams/fetchPages/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('fetchPages', res.payload)
+          dispatch(showPagesList(res.payload))
+        }
+      })
+  }
+}
+
+export function fetchAgents (id) {
+  console.log('fetchAgents', id)
+  return (dispatch) => {
+    callApi(`teams/fetchAgents/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('fetchAgents', res.payload)
+          dispatch(showAgentsList(res.payload))
         }
       })
   }

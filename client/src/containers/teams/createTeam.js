@@ -69,7 +69,7 @@ class CreateTeam extends React.Component {
       this.msg.error('Please select one agent atleast')
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
-    } else {
+    }
       var agents = []
       for (var i = 0; i < this.state.agentIds.length; i++) {
         agents.push(this.state.agentIds[i].userId._id)
@@ -84,7 +84,6 @@ class CreateTeam extends React.Component {
       browserHistory.push({
         pathname: `/teams`
       })
-    }
   }
   updateDescription (e) {
     this.setState({description: e.target.value})
@@ -306,7 +305,7 @@ class CreateTeam extends React.Component {
                                     <span>
                                       <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
                                       <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
-                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page.pagePic)} />
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page.pageName)} />
                                     </span>
                                   </li>
                                   ))
