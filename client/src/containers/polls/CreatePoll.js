@@ -186,7 +186,7 @@ class CreatePoll extends React.Component {
 
     for (let i = 0; i < tagOptions.length; i++) {
       let temp = {
-        id: tagOptions[i]._id,
+        id: tagOptions[i].tag,
         text: tagOptions[i].tag
       }
       remappedOptions[i] = temp
