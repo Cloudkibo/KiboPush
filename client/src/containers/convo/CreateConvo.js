@@ -413,6 +413,14 @@ class CreateConvo extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[i]) {
+              tagIDs.append(this.props.tags[i]._id)
+            }
+          }
+        }
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -420,7 +428,7 @@ class CreateConvo extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
-          segmentationTags: this.state.tagValue,
+          segmentationTags: tagIDs,
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
