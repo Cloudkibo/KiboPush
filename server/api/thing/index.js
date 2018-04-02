@@ -60,6 +60,7 @@ router.get('/updateSessions', (req, res) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
+            logger.serverLog(TAG, `UPDATED ${JSON.stringify(updated)}`)
           })
         })
       })
