@@ -15,6 +15,7 @@ import { fetchSessions,
   showChatSessions,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
+import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { Link } from 'react-router'
 import ChatBox from './chatbox'
 import Profile from './profile'
@@ -53,6 +54,7 @@ class LiveChat extends React.Component {
       tabValue: 'open'
     }
     props.fetchSessions({ company_id: this.props.user._id })
+    props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.changeActiveSession = this.changeActiveSession.bind(this)
@@ -201,14 +203,12 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       this.separateResolvedSessions(nextProps.sessions)
-      if (this.state.activeSession === '') {
-        if (this.state.tabValue === 'open') {
-          let newSessions = nextProps.sessions.filter(session => session.status === 'new')
-          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
-        } else {
-          let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
-          this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
-        }
+      if (this.state.tabValue === 'open') {
+        let newSessions = nextProps.sessions.filter(session => session.status === 'new')
+        this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
+      } else {
+        let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
+        this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
       }
       // } else if (nextProps.changedStatus) {
       //   for (var b = 0; b < nextProps.sessions.length; b++) {
@@ -527,7 +527,7 @@ class LiveChat extends React.Component {
                   }
                   {
                     this.state.activeSession !== '' &&
-                    <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                    <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
                 )
@@ -599,7 +599,9 @@ function mapStateToProps (state) {
     changedStatus: (state.liveChat.changedStatus),
     userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
-    socketData: (state.liveChat.socketData)
+    socketData: (state.liveChat.socketData),
+    teams: (state.teamsInfo.teams),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents)
   }
 }
 
@@ -611,7 +613,8 @@ function mapDispatchToProps (dispatch) {
     fetchSingleSession: fetchSingleSession,
     resetUnreadSession: resetUnreadSession,
     markRead: markRead,
-    showChatSessions: showChatSessions
+    showChatSessions: showChatSessions,
+    loadTeamsList: loadTeamsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
