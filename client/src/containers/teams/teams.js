@@ -114,39 +114,41 @@ class Teams extends React.Component {
     this.setState({ totalLength: filtered.length })
   }
   goToEdit (team) {
-    var agents = []
-    var pages = []
-    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
-      if (team._id === this.props.teamUniqueAgents[i].teamId) {
-        agents.push(this.props.teamUniqueAgents[i])
-      }
-    }
-    for (var j = 0; j < this.props.teamUniquePages.length; j++) {
-      if (team._id === this.props.teamUniquePages[j].teamId) {
-        pages.push(this.props.teamUniquePages[j])
-      }
-    }
+    // var agents = []
+    // var pages = []
+    // for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
+    //   if (team._id === this.props.teamUniqueAgents[i].teamId) {
+    //     agents.push(this.props.teamUniqueAgents[i])
+    //   }
+    // }
+    // for (var j = 0; j < this.props.teamUniquePages.length; j++) {
+    //   if (team._id === this.props.teamUniquePages[j].teamId) {
+    //     pages.push(this.props.teamUniquePages[j])
+    //   }
+    // }
+    // console.log('agents', agents)
+    // console.log('pages', pages)
     browserHistory.push({
       pathname: `/editTeam`,
-      state: {module: 'edit', agents: agents, pages: pages, name: team.name, description: team.description, _id: team._id}
+      state: {module: 'edit', name: team.name, description: team.description, _id: team._id}
     })
   }
   goToView (team) {
-    var agents = []
-    var pages = []
-    for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
-      if (team._id === this.props.teamUniqueAgents[i].teamId) {
-        agents.push(this.props.teamUniqueAgents[i])
-      }
-    }
-    for (var j = 0; j < this.props.teamUniquePages.length; j++) {
-      if (team._id === this.props.teamUniquePages[j].teamId) {
-        pages.push(this.props.teamUniquePages[j])
-      }
-    }
+    // var agents = []
+    // var pages = []
+    // for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
+    //   if (team._id === this.props.teamUniqueAgents[i].teamId) {
+    //     agents.push(this.props.teamUniqueAgents[i])
+    //   }
+    // }
+    // for (var j = 0; j < this.props.teamUniquePages.length; j++) {
+    //   if (team._id === this.props.teamUniquePages[j].teamId) {
+    //     pages.push(this.props.teamUniquePages[j])
+    //   }
+    // }
     browserHistory.push({
       pathname: `/editTeam`,
-      state: {module: 'view', agents: agents, pages: pages, name: team.name, description: team.description}
+      state: {module: 'view', name: team.name, description: team.description, _id: team._id}
     })
   }
   render () {
