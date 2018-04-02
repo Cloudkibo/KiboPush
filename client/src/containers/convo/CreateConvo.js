@@ -385,7 +385,7 @@ class CreateConvo extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
     for (let i = 0; i < this.state.broadcast.length; i++) {
@@ -458,7 +458,7 @@ class CreateConvo extends React.Component {
         isListValue = true
       }
       var isSegmentedValue = false
-      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       var data = {
@@ -474,7 +474,6 @@ class CreateConvo extends React.Component {
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
-
       }
       this.props.sendBroadcast(data, this.msg)
     }
