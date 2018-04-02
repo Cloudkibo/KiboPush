@@ -29,7 +29,9 @@ class ItemSettings extends React.Component {
                   {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
-      Tag: {},
+      Tag: {
+        options: []
+      },
       stayOpen: false,
       disabled: false,
       pageValue: this.props.location.state.item.segmentationPageIds,
@@ -111,15 +113,15 @@ class ItemSettings extends React.Component {
     this.setState({Locale: {options: optionsLocale}})
 
     let optionsTag = []
-    for (let i = 0; i < this.state.Tag.options.length; i++) {
+    for (let i = 0; i < this.state.tagValue.length; i++) {
       if (this.props.location.state.item.segmentationTags !== '') {
-        if (this.props.location.state.item.segmentationTags.indexOf(this.state.Tag.options[i].value) !== -1) {
-          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value, selected: true}
+        if (this.props.location.state.item.segmentationTags.indexOf(this.state.tagValue[i]) !== -1) {
+          optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i], selected: true}
         } else {
-          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+          optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i]}
         }
       } else {
-        optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
+        optionsTag[i] = {text: this.state.tagValue[i], id: this.state.tagValue[i]}
       }
     }
     this.setState({Tag: {options: optionsTag}})
@@ -289,7 +291,7 @@ class ItemSettings extends React.Component {
   editAutoposting () {
     var isSegmented = false
     var isActive = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmented = true
     }
     if (this.state.isActive === 'Active') {
