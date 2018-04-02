@@ -421,6 +421,9 @@ class CreateConvo extends React.Component {
             }
           }
         }
+        console.log('tags ', this.props.tags)
+        console.log('tagValue', this.state.tagValue)
+        console.log('tagIDS ', tagIDs)
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
