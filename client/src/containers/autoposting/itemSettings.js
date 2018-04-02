@@ -200,20 +200,11 @@ class ItemSettings extends React.Component {
   }
 
   initializeTagSelect (tagOptions) {
-    let remappedOptions = []
-
-    for (let i = 0; i < tagOptions.length; i++) {
-      let temp = {
-        id: tagOptions[i].tag,
-        text: tagOptions[i].tag
-      }
-      remappedOptions[i] = temp
-    }
     var self = this
       /* eslint-disable */
     $('#tagSelect').select2({
       /* eslint-enable */
-      data: remappedOptions,
+      data: tagOptions,
       placeholder: 'Select Tags',
       allowClear: true,
       multiple: true
