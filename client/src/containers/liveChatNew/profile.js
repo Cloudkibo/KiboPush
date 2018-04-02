@@ -71,8 +71,8 @@ class Profile extends React.Component {
 
   assignToAgent () {
     let data = {
-      agentId: this.state.agentValue._id,
-      agentName: this.state.agentValue.name,
+      agentId: this.state.agentObject._id,
+      agentName: this.state.agentObject.name,
       sessionId: this.props.currentSession._id
     }
     this.props.assignToAgent(data, {company_id: this.props.user._id})
@@ -80,8 +80,8 @@ class Profile extends React.Component {
 
   assignToTeam () {
     let data = {
-      teamId: this.state.teamValue._id,
-      teamName: this.state.teamValue.name,
+      teamId: this.state.teamObject._id,
+      teamName: this.state.teamObject.name,
       sessionId: this.props.currentSession._id
     }
     this.props.assignToTeam(data, {company_id: this.props.user._id})
