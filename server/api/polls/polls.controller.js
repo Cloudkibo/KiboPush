@@ -564,6 +564,9 @@ exports.sendPoll = function (req, res) {
       pollPayload.segmentationLocale = (req.body.segmentationLocale)
         ? req.body.segmentationLocale
         : null
+      pollPayload.segmentationTags = (req.body.segmentationTags)
+        ? req.body.segmentationTags
+        : null
     }
     if (req.body.isList) {
       pollPayload.isList = true
@@ -710,41 +713,44 @@ exports.sendPoll = function (req, res) {
                         logger.serverLog(TAG,
                         `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                       }
-                      for (let j = 0; j < subscribers.length; j++) {
-                        const data = {
-                          recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
-                        }
-
-                        needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                        data, (err, resp) => {
-                          if (err) {
-                            logger.serverLog(TAG, err)
-                            logger.serverLog(TAG,
-                            `Error occured at subscriber :${JSON.stringify(
-                              subscribers[j])}`)
+                      utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                        subscribers = taggedSubscribers
+                        for (let j = 0; j < subscribers.length; j++) {
+                          const data = {
+                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                            message: messageData
                           }
-                          let pollBroadcast = new PollPage({
-                            pageId: pages[z].pageId,
-                            userId: req.user._id,
-                            companyId: companyUser.companyId,
-                            subscriberId: subscribers[j].senderId,
-                            pollId: pollCreated._id,
-                            seen: false
-                          })
 
-                          pollBroadcast.save((err2) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'PollBroadcast create failed',
-                                err2
+                          needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                            data, (err, resp) => {
+                              if (err) {
+                                logger.serverLog(TAG, err)
+                                logger.serverLog(TAG,
+                                  `Error occured at subscriber :${JSON.stringify(
+                                    subscribers[j])}`)
+                              }
+                              let pollBroadcast = new PollPage({
+                                pageId: pages[z].pageId,
+                                userId: req.user._id,
+                                companyId: companyUser.companyId,
+                                subscriberId: subscribers[j].senderId,
+                                pollId: pollCreated._id,
+                                seen: false
                               })
-                            }
-                          })
-                        })
-                      }
+
+                              pollBroadcast.save((err2) => {
+                                if (err2) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'PollBroadcast create failed',
+                                    err2
+                                  })
+                                }
+                              })
+                            })
+                        }
+                      })
                     })
                   })
                 })
@@ -782,41 +788,44 @@ exports.sendPoll = function (req, res) {
                       `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                     }
                     if (subscribers.length > 0) {
-                      for (let j = 0; j < subscribers.length; j++) {
-                        const data = {
-                          recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
-                        }
-
-                        needle.post(
-                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                        data, (err, resp) => {
-                          if (err) {
-                            logger.serverLog(TAG, err)
-                            logger.serverLog(TAG,
-                            `Error occured at subscriber :${JSON.stringify(
-                              subscribers[j])}`)
+                      utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                        subscribers = taggedSubscribers
+                        for (let j = 0; j < subscribers.length; j++) {
+                          const data = {
+                            recipient: {id: subscribers[j].senderId}, // this is the subscriber id
+                            message: messageData
                           }
-                          let pollBroadcast = new PollPage({
-                            pageId: pages[z].pageId,
-                            userId: req.user._id,
-                            companyId: companyUser.companyId,
-                            subscriberId: subscribers[j].senderId,
-                            pollId: pollCreated._id,
-                            seen: false
-                          })
 
-                          pollBroadcast.save((err2) => {
-                            if (err2) {
-                              logger.serverLog(TAG, {
-                                status: 'failed',
-                                description: 'PollBroadcast create failed',
-                                err2
+                          needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                            data, (err, resp) => {
+                              if (err) {
+                                logger.serverLog(TAG, err)
+                                logger.serverLog(TAG,
+                                  `Error occured at subscriber :${JSON.stringify(
+                                    subscribers[j])}`)
+                              }
+                              let pollBroadcast = new PollPage({
+                                pageId: pages[z].pageId,
+                                userId: req.user._id,
+                                companyId: companyUser.companyId,
+                                subscriberId: subscribers[j].senderId,
+                                pollId: pollCreated._id,
+                                seen: false
                               })
-                            }
-                          })
-                        })
-                      }
+
+                              pollBroadcast.save((err2) => {
+                                if (err2) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'PollBroadcast create failed',
+                                    err2
+                                  })
+                                }
+                              })
+                            })
+                        }
+                      })
                     }
                   })
                 })

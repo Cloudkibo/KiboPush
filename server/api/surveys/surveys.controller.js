@@ -683,6 +683,9 @@ exports.sendSurvey = function (req, res) {
       surveyPayload.segmentationLocale = (req.body.segmentationLocale)
         ? req.body.segmentationLocale
         : null
+      surveyPayload.segmentationTags = (req.body.segmentationTags)
+        ? req.body.segmentationTags
+        : null
     }
     if (req.body.isList) {
       surveyPayload.isList = true
