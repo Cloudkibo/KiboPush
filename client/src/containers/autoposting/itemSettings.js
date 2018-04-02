@@ -113,21 +113,6 @@ class ItemSettings extends React.Component {
     }
     this.setState({Locale: {options: optionsLocale}})
 
-    let optionsTag = []
-    for (let i = 0; i < this.props.tags.length; i++) {
-      if (this.props.location.state.item.segmentationTags !== '') {
-        if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
-          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true}
-        } else {
-          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
-        }
-      } else {
-        optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
-      }
-    }
-    this.setState({Tag: {options: optionsTag}})
-
-    this.initializeTagSelect(optionsTag)
     this.initializePageSelect(options)
     this.initializeGenderSelect(optionsGender)
     this.initializeLocaleSelect(optionsLocale)
@@ -266,9 +251,21 @@ class ItemSettings extends React.Component {
         alertType: ''
       })
     }
-    if (this.props.user.isSuperUser && this.state.T) {
-      this.initializeTagSelect(this.props.tags)
+    let optionsTag = []
+    for (let i = 0; i < this.props.tags.length; i++) {
+      if (this.props.location.state.item.segmentationTags !== '') {
+        if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true}
+        } else {
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+        }
+      } else {
+        optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+      }
     }
+    this.setState({Tag: {options: optionsTag}})
+
+    this.initializeTagSelect(optionsTag)
   }
 
   handlePageChange (value) {
