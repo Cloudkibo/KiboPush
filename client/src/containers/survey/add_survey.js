@@ -17,6 +17,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
@@ -24,6 +25,7 @@ class AddSurvey extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
+    props.loadTags()
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
@@ -90,27 +92,6 @@ class AddSurvey extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    if (this.props.user.isSuperUser) {
-      let tags = [
-        {
-          _id: 'america',
-          tag: 'America',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        },
-        {
-          _id: 'pakistan',
-          tag: 'Pakistan',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        }
-      ]
-      this.initializeTagSelect(tags)
-    }
   }
   initializeListSelect (lists) {
     var self = this
@@ -224,7 +205,7 @@ class AddSurvey extends React.Component {
 
     for (let i = 0; i < tagOptions.length; i++) {
       let temp = {
-        id: tagOptions[i]._id,
+        id: tagOptions[i].tag,
         text: tagOptions[i].tag
       }
       remappedOptions[i] = temp
@@ -277,6 +258,9 @@ class AddSurvey extends React.Component {
         pathname: '/surveys'
 
       })
+    }
+    if (this.props.user.isSuperUser && this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
   }
   updateDescription (e) {
@@ -352,6 +336,14 @@ class AddSurvey extends React.Component {
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var surveybody = {
           survey: {
             title: this.state.title, // title of survey
@@ -363,7 +355,7 @@ class AddSurvey extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
-          segmentationTags: this.state.tagValue,
+          segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
@@ -652,6 +644,14 @@ class AddSurvey extends React.Component {
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
+          let tagIDs = []
+          for (let i = 0; i < this.props.tags.length; i++) {
+            for (let j = 0; j < this.state.tagValue.length; j++) {
+              if (this.props.tags[i].tag === this.state.tagValue[j]) {
+                tagIDs.push(this.props.tags[i]._id)
+              }
+            }
+          }
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey
@@ -663,7 +663,7 @@ class AddSurvey extends React.Component {
             segmentationPageIds: this.state.pageValue,
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
-            segmentationTags: this.state.tagValue,
+            segmentationTags: tagIDs,
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
@@ -905,7 +905,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -916,7 +917,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
-    sendSurveyDirectly: sendSurveyDirectly
+    sendSurveyDirectly: sendSurveyDirectly,
+    loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
