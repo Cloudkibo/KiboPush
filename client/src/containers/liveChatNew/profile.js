@@ -20,7 +20,9 @@ class Profile extends React.Component {
       subscriber: '',
       page: '',
       teamValue: '',
+      teamObject: {},
       agentValue: '',
+      agentObject: {},
       showAssignTeam: false,
       showAssignAgent: false
     }
@@ -52,7 +54,7 @@ class Profile extends React.Component {
       }
     }
 
-    this.setState({teamValue: team})
+    this.setState({teamValue: e.target.value, teamObject: team})
   }
 
   onAgentChange (e) {
@@ -64,7 +66,7 @@ class Profile extends React.Component {
         break
       }
     }
-    this.setState({agentValue: agent})
+    this.setState({agentValue: e.target.value, agentObject: agent})
   }
 
   assignToAgent () {
