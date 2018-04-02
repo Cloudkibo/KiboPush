@@ -50,7 +50,6 @@ class CreatePoll extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
-      tagIDs: [],
       alert: false,
       statement: '',
       option1: '',
@@ -211,15 +210,7 @@ class CreatePoll extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        let tagIDs = []
-        for (let i = 0; i < this.props.tags.length; i++) {
-          for (let j = 0; j < this.state.tagValue.length; j++) {
-            if (this.props.tags[i].tag === this.state.tagValue[j]) {
-              tagIDs.push(this.props.tags[i]._id)
-            }
-          }
-        }
-        self.setState({ tagValue: selected, tagIDs: tagIDs })
+        self.setState({ tagValue: selected })
       }
     })
   }
@@ -309,6 +300,14 @@ class CreatePoll extends React.Component {
                     this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
+      }
       this.props.addPoll('', {
         platform: 'Facebook',
         datetime: Date.now(),
@@ -319,7 +318,7 @@ class CreatePoll extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationGender: this.state.genderValue,
         segmentationLocale: this.state.localeValue,
-        segmentationTags: this.state.tagIDs,
+        segmentationTags: tagIDs,
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
@@ -385,6 +384,28 @@ class CreatePoll extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
+        console.log('sending Poll ', {
+          platform: 'Facebook',
+          datetime: Date.now(),
+          statement: this.state.statement,
+          sent: 0,
+          options: options,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.pageValue,
+          segmentationGender: this.state.genderValue,
+          segmentationLocale: this.state.localeValue,
+          segmentationTags: tagIDs,
+          isList: isListValue,
+          segmentationList: this.state.listSelected
+        })
         this.props.sendPollDirectly({
           platform: 'Facebook',
           datetime: Date.now(),
@@ -395,7 +416,7 @@ class CreatePoll extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
-          segmentationTags: this.state.tagIDs,
+          segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)
