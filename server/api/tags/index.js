@@ -35,4 +35,8 @@ router.post('/unassign',
   auth.isAuthenticated(),
   controller.unassign)
 
+router.post('/subscribertags',
+  auth.isAuthenticated(),
+  controller.subscribertags)
+
 module.exports = router

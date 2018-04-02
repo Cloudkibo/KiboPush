@@ -74,6 +74,16 @@ exports.create = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'new_tag',
+            payload: {
+              tag_id: newTag._id,
+              tag_name: newTag.tag
+            }
+          }
+        })
         res.status(201).json({status: 'success', payload: newTag})
       })
     })
@@ -111,6 +121,16 @@ exports.rename = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: newTag.companyId,
+        body: {
+          action: 'tag_rename',
+          payload: {
+            tag_id: newTag._id,
+            tag_name: newTag.tag
+          }
+        }
+      })
       res.status(200).json({status: 'success', payload: newTag})
     })
   })
@@ -125,22 +145,45 @@ exports.delete = function (req, res) {
     return res.status(400)
       .json({status: 'failed', description: 'Parameters are missing'})
   }
-  TagsSubscribers.remove({tagId: req.body.tagId}, (err) => {
+  Tags.findOne({_id: req.body.tagId}, (err, tagPayload) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    Tags.remove({_id: req.body.tagId}, (err) => {
+    if (!tagPayload) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'No tag is available on server with given tagId.'
+      })
+    }
+    TagsSubscribers.remove({tagId: req.body.tagId}, (err) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      res.status(200)
-        .json({status: 'success', description: 'Tag removed successfully'})
+      Tags.remove({_id: req.body.tagId}, (err) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: tagPayload.companyId,
+          body: {
+            action: 'tag_remove',
+            payload: {
+              tag_id: req.body.tagId
+            }
+          }
+        })
+        res.status(200)
+          .json({status: 'success', description: 'Tag removed successfully'})
+      })
     })
   })
 }
@@ -191,6 +234,16 @@ exports.assign = function (req, res) {
         })
       })
     })
+    require('./../../config/socketio').sendMessageToClient({
+      room_id: tagPayload.companyId,
+      body: {
+        action: 'tag_assign',
+        payload: {
+          tag_id: req.body.tagId,
+          subscriber_ids: req.body.subscribers
+        }
+      }
+    })
     res.status(201).json({
       status: 'success',
       description: 'Tag assigned successfully'
@@ -208,16 +261,71 @@ exports.unassign = function (req, res) {
     return res.status(400)
       .json({status: 'failed', description: 'Parameters are missing'})
   }
-  TagsSubscribers.remove(
-    {tagId: req.body.tagId, subscriberId: {$in: req.body.subscribers}},
-    (err) => {
+  Tags.findOne({_id: req.body.tagId}, (err, tagPayload) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!tagPayload) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'No tag is available on server with given tagId.'
+      })
+    }
+    TagsSubscribers.remove(
+      {tagId: req.body.tagId, subscriberId: {$in: req.body.subscribers}},
+      (err) => {
+        if (err) {
+          return res.status(400)
+          .json({status: 'failed', description: 'Parameters are missing'})
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: tagPayload.companyId,
+          body: {
+            action: 'tag_unassign',
+            payload: {
+              tag_id: req.body.tagId,
+              subscriber_ids: req.body.subscribers
+            }
+          }
+        })
+        res.status(201).json({
+          status: 'success',
+          description: 'Tag unassigned successfully'
+        })
+      })
+  })
+}
+
+exports.subscribertags = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'subscriberId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  TagsSubscribers.find({subscriberId: req.body.subscriberId})
+    .populate('tagId')
+    .exec((err, tagsSubscriber) => {
       if (err) {
         return res.status(400)
           .json({status: 'failed', description: 'Parameters are missing'})
       }
-      res.status(201).json({
+      let payload = []
+      for (let i = 0; i < tagsSubscriber.length; i++) {
+        payload.push({
+          _id: tagsSubscriber[i].tagId._id,
+          tag: tagsSubscriber[i].tagId.tag,
+          subscriberId: tagsSubscriber[i].subscriberId
+        })
+      }
+      res.status(200).json({
         status: 'success',
-        description: 'Tag unassigned successfully'
+        payload: payload
       })
     })
 }
