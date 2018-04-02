@@ -20,6 +20,7 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
 import { checkConditions } from '../polls/utility'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class Survey extends React.Component {
   constructor (props, context) {
@@ -51,6 +52,7 @@ class Survey extends React.Component {
   componentWillMount () {
     this.props.loadSubscribersList()
     this.props.loadSurveysList()
+    this.props.loadTags()
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -137,7 +139,15 @@ class Survey extends React.Component {
     })
   }
   sendSurvey (survey) {
-    var res = checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale, survey.segmentationTags, this.props.subscribers)
+    let segmentationValues = []
+    for (let i = 0; i < survey.segmentationTags; i++) {
+      for (let j = 0; j < this.props.tags.length; j++) {
+        if (survey.segmentationTags[i] === this.props.tags[j]._id) {
+          segmentationValues.push(this.props.tags[j].tag)
+        }
+      }
+    }
+    var res = checkConditions(survey.segmentationPageIds, survey.segmentationGender, survey.segmentationLocale, segmentationValues, this.props.subscribers)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
@@ -413,12 +423,13 @@ function mapStateToProps (state) {
     errorMessage: (state.surveysInfo.errorMessage),
     successTime: (state.surveysInfo.successTime),
     errorTime: (state.surveysInfo.errorTime),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    tags: (state.tagsInfo.tags)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey}, dispatch)
+    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)
