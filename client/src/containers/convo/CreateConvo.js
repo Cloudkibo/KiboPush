@@ -217,7 +217,7 @@ class CreateConvo extends React.Component {
         this.state.selectedRadio = 'segmentation'
       }
     }
-    if (this.props.user.isSuperUser && this.props.tags) {
+    if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
     }
     // if(nextProps.pages.length > 0){
@@ -977,10 +977,9 @@ class CreateConvo extends React.Component {
                                           <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                                             <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                                           </div>
-                                          {this.props.user.isSuperUser
-                                          ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                                          <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
                                             <select id='selectTags' style={{minWidth: 75 + '%'}} />
-                                          </div> : null}
+                                          </div>
                                         </div>
                                       : <div className='m-form'>
                                         <div className='form-group m-form__group'>
@@ -989,10 +988,9 @@ class CreateConvo extends React.Component {
                                         <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                                           <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                                         </div>
-                                        {this.props.user.isSuperUser
-                                           ? <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                                             <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
-                                           </div> : null}
+                                        <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                                          <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                                        </div>
                                       </div>
                                       }
                                       { (this.state.lists.length === 0)

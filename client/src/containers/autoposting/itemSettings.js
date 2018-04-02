@@ -400,17 +400,14 @@ class ItemSettings extends React.Component {
                           <select id='localeSelect' />
                         </div>
                       </div>
-                      {
-                        this.props.user.isSuperUser
-                        ? <div className='form-group m-form__group row'>
-                          <label className='col-lg-2 col-form-label'>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
                           Tags
                         </label>
-                          <div className='col-lg-6'>
-                            <select id='tagSelect' />
-                          </div>
-                        </div> : null
-                      }
+                        <div className='col-lg-6'>
+                          <select id='tagSelect' />
+                        </div>
+                      </div>
 
                     </div>
                   </div>
