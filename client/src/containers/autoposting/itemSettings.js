@@ -126,6 +126,7 @@ class ItemSettings extends React.Component {
     }
     this.setState({Tag: {options: optionsTag}})
 
+    this.initializeTagSelect(optionsTag)
     this.initializePageSelect(options)
     this.initializeGenderSelect(optionsGender)
     this.initializeLocaleSelect(optionsLocale)
