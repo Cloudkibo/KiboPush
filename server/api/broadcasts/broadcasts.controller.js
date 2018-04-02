@@ -318,15 +318,17 @@ exports.getfbMessage = function (req, res) {
 
         if (event.postback) {
           try {
-            let resp = JSON.parse(event.postback.payload)
-            if (resp.poll_id) {
-              // savepoll(event)
-            } else if (resp.survey_id) {
-              savesurvey(event)
-            } else if (resp.unsubscribe) {
-              handleUnsubscribe(resp, event)
-            } else {
-              sendReply(event)
+            if (event.postback.payload !== '<GET_STARTED_PAYLOAD>') {
+              let resp = JSON.parse(event.postback.payload)
+              if (resp.poll_id) {
+                // savepoll(event)
+              } else if (resp.survey_id) {
+                savesurvey(event)
+              } else if (resp.unsubscribe) {
+                handleUnsubscribe(resp, event)
+              } else {
+                sendReply(event)
+              }
             }
           } catch (e) {
             logger.serverLog(TAG, `Parse Error : ${e}`)

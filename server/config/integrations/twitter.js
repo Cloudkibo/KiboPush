@@ -72,7 +72,6 @@ function connect () {
                     logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
                   pages.forEach(page => {
-
                     let subscriberFindCriteria = {
                       pageId: page._id,
                       isSubscribed: true
