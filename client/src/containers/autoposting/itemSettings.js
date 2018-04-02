@@ -55,7 +55,7 @@ class ItemSettings extends React.Component {
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
-  componentWillMount () {
+  componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
     this.props.loadTags()
