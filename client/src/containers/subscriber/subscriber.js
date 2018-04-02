@@ -39,7 +39,8 @@ class Subscriber extends React.Component {
       removeTag: '',
       options: [],
       selectAllChecked: null,
-      saveEnable: false
+      saveEnable: false,
+      pageSelected: 0
     }
     props.loadMyPagesList()
     props.loadSubscribersList()
@@ -317,12 +318,13 @@ class Subscriber extends React.Component {
     })
   }
   handlePageClick (data) {
+    this.setState({pageSelected: data.selected})
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.subscribers) {
-      this.displayData(0, nextProps.subscribers)
+      this.displayData(this.state.pageSelected, nextProps.subscribers)
       this.setState({ totalLength: nextProps.subscribers.length })
     }
     if (nextProps.tags) {
@@ -764,7 +766,9 @@ class Subscriber extends React.Component {
                                     <span style={{width: '100px', overflow: 'inherit'}}>Gender</span>
                                   </th>
                                   <th data-field='Tag'
-                                    className='m-datatable__cell--center m-datatable__cell' />
+                                    className='m-datatable__cell--center m-datatable__cell'>
+                                    <span>Tags</span>
+                                  </th>
                                 </tr>
                               </thead>
 
@@ -818,7 +822,7 @@ class Subscriber extends React.Component {
                                   <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
                                   <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                                     {
-                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : <span />
+                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : <span>No Tags Assigned</span>
                                     }
                                     {subscriber.tags && subscriber.tags.length > 0 &&
                                       <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
