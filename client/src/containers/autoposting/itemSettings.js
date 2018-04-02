@@ -242,21 +242,23 @@ class ItemSettings extends React.Component {
         alertType: ''
       })
     }
-    let optionsTag = []
-    for (let i = 0; i < this.props.tags.length; i++) {
-      if (this.props.autopostingData.segmentationTags !== '') {
-        if (this.props.autopostingData.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
-          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true}
+    if (this.props.tags) {
+      let optionsTag = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        if (this.props.autopostingData.segmentationTags !== '') {
+          if (this.props.autopostingData.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
+            optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true}
+          } else {
+            optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+          }
         } else {
           optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
         }
-      } else {
-        optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
       }
-    }
-    this.setState({Tag: {options: optionsTag}})
+      this.setState({Tag: {options: optionsTag}})
 
-    this.initializeTagSelect(optionsTag)
+      this.initializeTagSelect(optionsTag)
+    }
   }
 
   handlePageChange (value) {
