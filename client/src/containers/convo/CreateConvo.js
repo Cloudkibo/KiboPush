@@ -64,7 +64,6 @@ class CreateConvo extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
-      tagIDs: [],
       isShowingModal: false,
       isShowingModalGuideLines: false,
       isShowingModalResetAlert: false,

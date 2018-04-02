@@ -50,7 +50,6 @@ class CreatePoll extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
-      tagIDs: [],
       alert: false,
       statement: '',
       option1: '',
@@ -319,7 +318,7 @@ class CreatePoll extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationGender: this.state.genderValue,
         segmentationLocale: this.state.localeValue,
-        segmentationTags: this.state.tagIDs,
+        segmentationTags: tagIDs,
         isList: isListValue,
         segmentationList: this.state.listSelected
       })
