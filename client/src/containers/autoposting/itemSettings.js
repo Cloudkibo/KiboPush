@@ -29,7 +29,9 @@ class ItemSettings extends React.Component {
                   {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
-      Tag: {},
+      Tag: {
+        options: []
+      },
       stayOpen: false,
       disabled: false,
       pageValue: this.props.location.state.item.segmentationPageIds,
@@ -56,6 +58,7 @@ class ItemSettings extends React.Component {
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
+    this.props.loadTags()
     var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
@@ -109,20 +112,6 @@ class ItemSettings extends React.Component {
       }
     }
     this.setState({Locale: {options: optionsLocale}})
-
-    let optionsTag = []
-    for (let i = 0; i < this.state.Tag.options.length; i++) {
-      if (this.props.location.state.item.segmentationTags !== '') {
-        if (this.props.location.state.item.segmentationTags.indexOf(this.state.Tag.options[i].value) !== -1) {
-          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value, selected: true}
-        } else {
-          optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
-        }
-      } else {
-        optionsTag[i] = {text: this.state.Tag.options[i].value, id: this.state.Tag.options[i].value}
-      }
-    }
-    this.setState({Tag: {options: optionsTag}})
 
     this.initializePageSelect(options)
     this.initializeGenderSelect(optionsGender)
@@ -211,20 +200,11 @@ class ItemSettings extends React.Component {
   }
 
   initializeTagSelect (tagOptions) {
-    let remappedOptions = []
-
-    for (let i = 0; i < tagOptions.length; i++) {
-      let temp = {
-        id: tagOptions[i].tag,
-        text: tagOptions[i].tag
-      }
-      remappedOptions[i] = temp
-    }
     var self = this
       /* eslint-disable */
     $('#tagSelect').select2({
       /* eslint-enable */
-      data: remappedOptions,
+      data: tagOptions,
       placeholder: 'Select Tags',
       allowClear: true,
       multiple: true
@@ -240,7 +220,7 @@ class ItemSettings extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ tagValue: selected, Tag: selected })
+        self.setState({ tagValue: selected })
       }
     })
   }
@@ -262,8 +242,23 @@ class ItemSettings extends React.Component {
         alertType: ''
       })
     }
-    if (this.props.user.isSuperUser) {
-      this.initializeTagSelect(this.props.tags)
+    if (this.props.tags) {
+      console.log('this.props.location.state.item.segmentationTags', this.props.location.state.item.segmentationTags)
+      let optionsTag = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        if (this.props.location.state.item.segmentationTags !== '') {
+          if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
+            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true})
+          } else {
+            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag})
+          }
+        } else {
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+        }
+      }
+      this.setState({Tag: {options: optionsTag}})
+
+      this.initializeTagSelect(optionsTag)
     }
   }
 
@@ -289,7 +284,7 @@ class ItemSettings extends React.Component {
   editAutoposting () {
     var isSegmented = false
     var isActive = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmented = true
     }
     if (this.state.isActive === 'Active') {
