@@ -32,6 +32,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
+import {loadTags} from '../../redux/actions/tags.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
@@ -78,6 +79,7 @@ class CreateConvo extends React.Component {
     props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
+    props.loadTags()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -174,26 +176,8 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    if (this.props.user.isSuperUser) {
-      let tags = [
-        {
-          _id: 'america',
-          tag: 'America',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        },
-        {
-          _id: 'pakistan',
-          tag: 'Pakistan',
-          companyId: 'xx',
-          userId: 'xx',
-          dateCreated: 'xx',
-          pageId: 'xx'
-        }
-      ]
-      this.initializeTagSelect(tags)
+    if (this.props.user.isSuperUser && this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
     this.initTab()
     // if (this.props.pages.length > 0) {
@@ -1057,7 +1041,8 @@ function mapStateToProps (state) {
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription,
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -1075,7 +1060,8 @@ function mapDispatchToProps (dispatch) {
       getFbAppId: getFbAppId,
       createWelcomeMessage: createWelcomeMessage,
       getAdminSubscriptions: getAdminSubscriptions,
-      loadCustomerLists: loadCustomerLists
+      loadCustomerLists: loadCustomerLists,
+      loadTags: loadTags
     },
     dispatch)
 }

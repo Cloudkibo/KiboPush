@@ -461,4 +461,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {loadWorkFlowList: loadWorkFlowList, addWorkFlow: addWorkFlow, enableworkflow, disableworkflow}, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Workflows)
+export default connect(mapStateToProps, mapDispatchToProps)(Bot)
