@@ -25,10 +25,9 @@ class EditTeam extends React.Component {
       agentIds: [],
       showDropDown: false,
       showDropDown1: false,
-      addedPages: [],
       removedPages: [],
-      addedAgents: [],
-      removedAgents: []
+      removedAgents: [],
+      inCancel: true
     }
     this.createTeam = this.createTeam.bind(this)
     this.updateName = this.updateName.bind(this)
@@ -107,11 +106,13 @@ class EditTeam extends React.Component {
   cancel () {
     console.log('removedAgents', this.state.removedAgents)
     console.log('removedAgents', this.state.removedPages)
-    for (var i = 0; i < this.state.removedAgents.length; i++) {
-      this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.removedAgents[i]._id })
-    }
-    for (var j = 0; j < this.state.removedPages.length; j++) {
-      this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.removedPages[j]._id })
+    if (this.state.inCancel) {
+      for (var i = 0; i < this.state.removedAgents.length; i++) {
+        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.removedAgents[i]._id })
+      }
+      for (var j = 0; j < this.state.removedPages.length; j++) {
+        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.removedPages[j]._id })
+      }
     }
     browserHistory.push({
       pathname: `/teams`
@@ -134,6 +135,7 @@ class EditTeam extends React.Component {
       for (var j = 0; j < this.state.pageIds.length; j++) {
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
       }
+      this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
   }
