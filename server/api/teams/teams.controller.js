@@ -240,7 +240,7 @@ exports.addPage = function (req, res) {
     let teamPagesPayload = {
       teamId: req.body.teamId,
       companyId: companyUser.companyId,
-      agentId: req.body.pageId
+      pageId: req.body.pageId
     }
     const teamPage = new TeamPages(teamPagesPayload)
     TeamPages.find({teamId: req.body.teamId, companyId: companyUser.companyId, pageId: req.body.pageId}, (err, found) => {
