@@ -143,6 +143,9 @@ class Profile extends React.Component {
                     </a>
                   }
                 <br />
+                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id, this.props.currentSession.page_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
+                  <i className='la la-plus' /> Assign User Tags
+                </a>
                 <a className='m-card-profile__email m-link'>
                   {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
