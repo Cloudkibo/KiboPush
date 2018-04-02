@@ -13,6 +13,7 @@ const logger = require('../../components/logger')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/broadcast/broadcasts.utility.js'
 const utility = require('../../components/utility')
+const TagSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -330,8 +331,49 @@ function parseUrl (text) {
   return onlyUrl
 }
 
+function applyTagFilterIfNecessary (req, subscribers, fn) {
+  if (req.body.segmentationTags && req.body.segmentationTags.length > 0) {
+    TagSubscribers.find({tagId: {$in: req.body.segmentationTags}}, (err, tagSubscribers) => {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At get tags subscribers ${JSON.stringify(err)}`)
+      }
+      let subscribersPayload = []
+      for (let i = 0; i < subscribers.length; i++) {
+        for (let j = 0; j < tagSubscribers.length; j++) {
+          if (subscribers[i]._id.toString() === tagSubscribers[j].subscriberId.toString()) {
+            subscribersPayload.push({
+              _id: subscribers[i]._id,
+              firstName: subscribers[i].firstName,
+              lastName: subscribers[i].lastName,
+              locale: subscribers[i].locale,
+              gender: subscribers[i].gender,
+              timezone: subscribers[i].timezone,
+              profilePic: subscribers[i].profilePic,
+              companyId: subscribers[i].companyId,
+              pageScopedId: '',
+              email: '',
+              senderId: subscribers[i].senderId,
+              pageId: subscribers[i].pageId,
+              datetime: subscribers[i].datetime,
+              isEnabledByPage: subscribers[i].isEnabledByPage,
+              isSubscribed: subscribers[i].isSubscribed,
+              isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+              unSubscribedBy: subscribers[i].unSubscribedBy
+            })
+          }
+        }
+      }
+      fn(subscribersPayload)
+    })
+  } else {
+    fn(subscribers)
+  }
+}
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareSendAPIPayloadList = prepareSendAPIPayloadList
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
 exports.validateInput = validateInput
+exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary

@@ -50,11 +50,11 @@ exports.index = function (req, res) {
             email: '',
             senderId: subscribers[i].senderId,
             pageId: subscribers[i].pageId,
-            datetime: '2018-03-30T12:14:30.249Z',
-            isEnabledByPage: true,
-            isSubscribed: true,
-            isSubscribedByPhoneNumber: false,
-            unSubscribedBy: 'subscriber',
+            datetime: subscribers[i].datetime,
+            isEnabledByPage: subscribers[i].isEnabledByPage,
+            isSubscribed: subscribers[i].isSubscribed,
+            isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+            unSubscribedBy: subscribers[i].unSubscribedBy,
             tags: []
           })
         }
