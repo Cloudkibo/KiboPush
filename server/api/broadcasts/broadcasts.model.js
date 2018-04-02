@@ -20,6 +20,7 @@ let broadcastSchema = new Schema({
   segmentationLocale: [String],
   segmentationGender: [String],
   segmentationTimeZone: String,
+  segmentationTags: [String],
   isList: {type: Boolean, default: false},
   segmentationList: [String],
   userId: { type: Schema.ObjectId, ref: 'users' },
