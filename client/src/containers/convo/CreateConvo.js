@@ -416,7 +416,7 @@ class CreateConvo extends React.Component {
         let tagIDs = []
         for (let i = 0; i < this.props.tags.length; i++) {
           for (let j = 0; j < this.state.tagValue.length; j++) {
-            if (this.props.tags[i].tag === this.state.tagValue[i]) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
               tagIDs.push(this.props.tags[i]._id)
             }
           }
@@ -475,7 +475,7 @@ class CreateConvo extends React.Component {
       let tagIDs = []
       for (let i = 0; i < this.props.tags.length; i++) {
         for (let j = 0; j < this.state.tagValue.length; j++) {
-          if (this.props.tags[i].tag === this.state.tagValue[i]) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
             tagIDs.push(this.props.tags[i]._id)
           }
         }
