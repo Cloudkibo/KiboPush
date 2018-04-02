@@ -58,7 +58,7 @@ router.get('/updateSessions', (req, res) => {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
           console.log('user', user)
-          LiveChat.update({company_Id: JSON.stringify(profile._id)}, {replied_by: {id: profile.ownerId, name: user.name, type: 'agent'}}, {multi: true}, (err, updated) => {
+          LiveChat.update({company_id: JSON.stringify(profile._id)}, {replied_by: {id: profile.ownerId, name: user.name, type: 'agent'}}, {multi: true}, (err, updated) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
