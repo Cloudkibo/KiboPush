@@ -47,7 +47,7 @@ module.exports = function (app) {
   app.use('/api/company_user', require('./api/companyuser'))
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
   app.use('/api/tags', require('./api/tags'))
-
+  app.use('/api/notifications', require('./api/notifications'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
 
