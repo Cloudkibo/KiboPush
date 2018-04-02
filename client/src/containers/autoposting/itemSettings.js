@@ -247,7 +247,7 @@ class ItemSettings extends React.Component {
       let optionsTag = []
       for (let i = 0; i < this.props.tags.length; i++) {
         if (this.props.location.state.item.segmentationTags !== '') {
-          if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i].tag) !== -1) {
+          if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i]._id) !== -1) {
             optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true})
           } else {
             optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag})
