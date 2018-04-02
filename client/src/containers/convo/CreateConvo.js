@@ -64,6 +64,7 @@ class CreateConvo extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
+      tagIDs: [],
       isShowingModal: false,
       isShowingModalGuideLines: false,
       isShowingModalResetAlert: false,
@@ -217,8 +218,8 @@ class CreateConvo extends React.Component {
         this.state.selectedRadio = 'segmentation'
       }
     }
-    if (this.props.user.isSuperUser && this.props.tags) {
-      this.initializeTagSelect(this.props.tags)
+    if (this.props.user.isSuperUser && nextProps.tags) {
+      this.initializeTagSelect(nextProps.tags)
     }
     // if(nextProps.pages.length > 0){
     //   this.setState({pageValue: nextProps.pages[0].pageId})
@@ -413,17 +414,6 @@ class CreateConvo extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
-        let tagIDs = []
-        for (let i = 0; i < this.props.tags.length; i++) {
-          for (let j = 0; j < this.state.tagValue.length; j++) {
-            if (this.props.tags[i].tag === this.state.tagValue[j]) {
-              tagIDs.push(this.props.tags[i]._id)
-            }
-          }
-        }
-        console.log('tags ', this.props.tags)
-        console.log('tagValue', this.state.tagValue)
-        console.log('tagIDS ', tagIDs)
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -431,7 +421,7 @@ class CreateConvo extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
-          segmentationTags: tagIDs,
+          segmentationTags: this.state.tagIDs,
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
@@ -472,14 +462,6 @@ class CreateConvo extends React.Component {
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
-      let tagIDs = []
-      for (let i = 0; i < this.props.tags.length; i++) {
-        for (let j = 0; j < this.state.tagValue.length; j++) {
-          if (this.props.tags[i].tag === this.state.tagValue[j]) {
-            tagIDs.push(this.props.tags[i]._id)
-          }
-        }
-      }
       var data = {
         platform: 'facebook',
         self: true,
@@ -489,7 +471,7 @@ class CreateConvo extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
-        segmentationTags: tagIDs,
+        segmentationTags: this.state.tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
