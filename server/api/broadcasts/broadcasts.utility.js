@@ -297,6 +297,9 @@ function prepareBroadCastPayload (req, companyId) {
     broadcastPayload.segmentationLocale = (req.body.segmentationLocale)
       ? req.body.segmentationLocale
       : null
+    broadcastPayload.segmentationTags = (req.body.segmentationTags)
+      ? req.body.segmentationTags
+      : null
   }
   if (req.body.isList) {
     broadcastPayload.isList = true
