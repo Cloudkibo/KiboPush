@@ -85,7 +85,7 @@ class EditTeam extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
-    if (nextProps.teamAgents && nextProps.teamAgents.length > 0) {
+    if (nextProps.teamAgents && nextProps.teamAgents.length > 0 && nextProps.teamPages && nextProps.teamPages.length > 0) {
       var agents = []
       var pages = []
       console.log('this.props.location.state', this.props.location.state)
