@@ -156,6 +156,8 @@ exports.updateTeam = function (req, res) {
     }
     team.name = req.body.name
     team.description = req.body.description
+    team.teamPages = req.body.teamPages
+    team.teamPagesIds = req.body.teamPagesIds
     team.save((err2) => {
       if (err2) {
         return res.status(500)

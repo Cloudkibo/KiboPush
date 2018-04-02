@@ -128,13 +128,17 @@ class EditTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
-      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description})
+      let pageIds = []
+      let pageNames = []
       for (var i = 0; i < this.state.agentIds.length; i++) {
         this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
         this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+        pageIds.push(this.state.pageIds[j]._id)
+        pageNames.push(this.state.pageIds[j].pageName)
       }
+      this.props.update({_id: this.props.location.state._id, name: this.state.name, description: this.state.description, teamPages: pageNames, teamPagesIds: pageIds})
       this.setState({inCancel: false})
       this.msg.success('Changes saved successfully')
     }
