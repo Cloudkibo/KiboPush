@@ -243,6 +243,7 @@ class ItemSettings extends React.Component {
       })
     }
     if (this.props.tags) {
+      console.log('this.props.location.state.item.segmentationTags', this.props.location.state.item.segmentationTags)
       let optionsTag = []
       for (let i = 0; i < this.props.tags.length; i++) {
         if (this.props.location.state.item.segmentationTags !== '') {
