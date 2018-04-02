@@ -461,7 +461,7 @@ function handleThePagePostsForAutoPosting (event, status) {
         }
 
         if (postingItem.isSegmented) {
-          if (postingItem.segmentationPageIds) {
+          if (postingItem.segmentationPageIds && postingItem.segmentationPageIds.length > 0) {
             pagesFindCriteria = _.merge(pagesFindCriteria, {
               pageId: {
                 $in: postingItem.segmentationPageIds

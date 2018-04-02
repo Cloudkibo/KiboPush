@@ -58,7 +58,7 @@ function connect () {
                 }
 
                 if (postingItem.isSegmented) {
-                  if (postingItem.segmentationPageIds) {
+                  if (postingItem.segmentationPageIds && postingItem.segmentationPageIds.length > 0) {
                     pagesFindCriteria = _.merge(pagesFindCriteria, {
                       pageId: {
                         $in: postingItem.segmentationPageIds
@@ -66,15 +66,12 @@ function connect () {
                     })
                   }
                 }
+
                 Pages.find(pagesFindCriteria, (err, pages) => {
                   if (err) {
                     logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
-                  logger.serverLog(TAG,
-                    `Pages records got for tweet : ${pages.length}`, true)
                   pages.forEach(page => {
-                    logger.serverLog(TAG,
-                      `Page in the loop for tweet ${page.pageName}`, true)
 
                     let subscriberFindCriteria = {
                       pageId: page._id,
@@ -100,18 +97,12 @@ function connect () {
                       }
                     }
 
-                    logger.serverLog(TAG,
-                      `Subscribers Criteria for segmentation ${JSON.stringify(
-                        subscriberFindCriteria)}`, true)
                     Subscribers.find(subscriberFindCriteria,
                       (err, subscribers) => {
                         if (err) {
                           return logger.serverLog(TAG,
                             `Error ${JSON.stringify(err)}`)
                         }
-
-                        logger.serverLog(TAG,
-                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`, true)
 
                         if (subscribers.length > 0) {
                           let newMsg = new AutopostingMessages({
@@ -126,7 +117,6 @@ function connect () {
 
                           newMsg.save((err, savedMsg) => {
                             if (err) logger.serverLog(TAG, err)
-                            logger.serverLog(TAG, 'autoposting message saved', true)
                             utility.applyTagFilterIfNecessary({body: postingItem}, subscribers, (taggedSubscribers) => {
                               taggedSubscribers.forEach(subscriber => {
                                 let messageData = {}
@@ -233,9 +223,9 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
           `At send tweet broadcast response ${JSON.stringify(
             res.body.error)}`)
         } else {
-          logger.serverLog(TAG,
-            `At send tweet broadcast response ${JSON.stringify(
-            res.body.message_id)}`, true)
+          // logger.serverLog(TAG,
+          //   `At send tweet broadcast response ${JSON.stringify(
+          //   res.body.message_id)}`, true)
         }
       }
     })
