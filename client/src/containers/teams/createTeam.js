@@ -70,20 +70,20 @@ class CreateTeam extends React.Component {
     } else if (this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     }
-      var agents = []
-      for (var i = 0; i < this.state.agentIds.length; i++) {
-        agents.push(this.state.agentIds[i].userId._id)
-      }
-      let pageIds = []
-      let pageNames = []
-      for (var j = 0; j < this.state.pageIds.length; j++) {
-        pageIds.push(this.state.pageIds[j]._id)
-        pageNames.push(this.state.pageIds[j].pageName)
-      }
-      this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds})
-      browserHistory.push({
-        pathname: `/teams`
-      })
+    var agents = []
+    for (var i = 0; i < this.state.agentIds.length; i++) {
+      agents.push(this.state.agentIds[i].userId._id)
+    }
+    let pageIds = []
+    let pageNames = []
+    for (var j = 0; j < this.state.pageIds.length; j++) {
+      pageIds.push(this.state.pageIds[j]._id)
+      pageNames.push(this.state.pageIds[j].pageName)
+    }
+    this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds})
+    browserHistory.push({
+      pathname: `/teams`
+    })
   }
   updateDescription (e) {
     this.setState({description: e.target.value})

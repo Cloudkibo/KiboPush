@@ -220,7 +220,7 @@ class ItemSettings extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        self.setState({ tagValue: selected, Tag: selected })
+        self.setState({ tagValue: selected })
       }
     })
   }
