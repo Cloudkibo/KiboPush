@@ -257,7 +257,7 @@ class ItemSettings extends React.Component {
         }
       }
       this.setState({Tag: {options: optionsTag}})
-
+      console.log('optionsTag', optionsTag)
       this.initializeTagSelect(optionsTag)
     }
   }
