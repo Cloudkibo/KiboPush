@@ -176,9 +176,6 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
-    if (this.props.user.isSuperUser && this.props.tags) {
-      this.initializeTagSelect(this.props.tags)
-    }
     this.initTab()
     // if (this.props.pages.length > 0) {
     //   var temp = []
@@ -219,6 +216,9 @@ class CreateConvo extends React.Component {
       if (options.length === 0) {
         this.state.selectedRadio = 'segmentation'
       }
+    }
+    if (this.props.user.isSuperUser && this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
     // if(nextProps.pages.length > 0){
     //   this.setState({pageValue: nextProps.pages[0].pageId})
