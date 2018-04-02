@@ -22,6 +22,7 @@ class Teams extends React.Component {
       teamsData: [],
       totalLength: 0,
       filterValue: '',
+      searchValue: '',
       isShowingModalDelete: false,
       deleteid: ''
     }
@@ -84,10 +85,17 @@ class Teams extends React.Component {
   }
 
   searchTeams (event) {
+    this.setState({searchValue: event.target.value})
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
       for (let i = 0; i < this.props.teams.length; i++) {
         if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.teams[i])
+        }
+      }
+    } else if (event.target.value !== '' && this.state.filterValue !== '') {
+      for (let i = 0; i < this.props.teams.length; i++) {
+        if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.teams[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
           filtered.push(this.props.teams[i])
         }
       }
@@ -101,9 +109,15 @@ class Teams extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && this.state.searchValue === '') {
       for (let i = 0; i < this.props.teams.length; i++) {
         if (this.props.teams[i].teamPagesIds.indexOf(e.target.value) !== -1) {
+          filtered.push(this.props.teams[i])
+        }
+      }
+    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+      for (let i = 0; i < this.props.teams.length; i++) {
+        if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.teams[i].teamPagesIds.indexOf(e.target.value) !== -1) {
           filtered.push(this.props.teams[i])
         }
       }
