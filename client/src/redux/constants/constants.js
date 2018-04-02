@@ -171,6 +171,8 @@ export const CLEAR_WORKFLOW_ALERT_MESSAGES = 'CLEAR_WORKFLOW_ALERT_MESSAGES'
 
 // constants for teams
 export const SHOW_TEAMS_LIST = 'SHOW_TEAMS_LIST'
+export const SHOW_TEAM_PAGES = 'SHOW_TEAM_PAGES'
+export const SHOW_TEAM_AGENTS = 'SHOW_TEAM_AGENTS'
 
 // other constants
 export const SEND_MESSAGE_SUCCESS = 'SEND_MESSAGE_SUCCESS'

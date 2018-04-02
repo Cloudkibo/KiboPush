@@ -301,3 +301,53 @@ exports.removePage = function (req, res) {
     })
   })
 }
+exports.fetchPages = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    TeamPages.find({teamId: req.params.id, companyId: companyUser.companyId}).populate('pageId')
+    .exec((err, teamPage) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      return res.status(200)
+      .json({status: 'success', payload: teamPage})
+    })
+  })
+}
+exports.fetchAgents = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    TeamAgents.find({teamId: req.params.id, companyId: companyUser.companyId}).populate('agentId')
+    .exec((err, teamAgent) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      return res.status(200)
+      .json({status: 'success', payload: teamAgent})
+    })
+  })
+}
