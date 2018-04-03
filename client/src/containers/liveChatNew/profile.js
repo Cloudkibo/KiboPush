@@ -8,6 +8,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { unSubscribe, assignToTeam, assignToAgent } from '../../redux/actions/livechat.actions'
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import Select from 'react-select'
+import { assignTags, unassignTags, loadTags, createTag, getSubscriberTags } from '../../redux/actions/tags.actions'
+import AlertContainer from 'react-alert'
 
 // import Image from 'react-image-resizer'
 //  import ChatBox from './chatbox'
@@ -24,8 +28,27 @@ class Profile extends React.Component {
       agentValue: '',
       agentObject: {},
       showAssignTeam: false,
-      showAssignAgent: false
+      showAssignAgent: false,
+      popoverAddTagOpen: false,
+      popOverShowTagOpen: false,
+      addTag: '',
+      removeTag: '',
+      tagOptions: [],
+      saveEnable: false,
+      showTags: false,
+      subscriberTags: []
     }
+    props.loadTags()
+    var subscriberId = this.props.currentSession.subscriber_id._id
+    props.getSubscriberTags(subscriberId, this.msg)
+    this.toggleAdd = this.toggleAdd.bind(this)
+    this.handleAdd = this.handleAdd.bind(this)
+    this.handleCreateTag = this.handleCreateTag.bind(this)
+    this.showAddTag = this.showAddTag.bind(this)
+    this.addTags = this.addTags.bind(this)
+    this.removeTags = this.removeTags.bind(this)
+    this.handleSaveTags = this.handleSaveTags.bind(this)
+    this.showTags = this.showTags.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.onTeamChange = this.onTeamChange.bind(this)
@@ -34,8 +57,115 @@ class Profile extends React.Component {
     this.assignToAgent = this.assignToAgent.bind(this)
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
+    this.toggleShowTagPopover = this.toggleShowTagPopover.bind(this)
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.tags) {
+      var tagOptions = []
+      for (var i = 0; i < nextProps.tags.length; i++) {
+        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
+      }
+      this.setState({
+        tagOptions: tagOptions
+      })
+    }
+    if (nextProps.subscriberTags) {
+      var subscriberTags = []
+      for (var j = 0; j < nextProps.subscriberTags.length; j++) {
+        subscriberTags.push({'_id': nextProps.subscriberTags[j]._id, 'tag': nextProps.subscriberTags[j].tag})
+      }
+      this.setState({
+        subscriberTags: subscriberTags
+      })
+    }
+  }
+  showAddTag () {
+    this.setState({
+      addTag: null,
+      popoverAddTagOpen: true
+    })
+  }
+  toggleAdd () {
+    this.setState({
+      popoverAddTagOpen: !this.state.popoverAddTagOpen
+    })
+  }
+  handleAdd (value) {
+    var index = 0
+    if (value) {
+      for (var i = 0; i < this.props.tags.length; i++) {
+        if (this.props.tags[i].tag !== value.label) {
+          index++
+        }
+      }
+      if (index === this.props.tags.length) {
+        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+      } else {
+        this.setState({
+          saveEnable: true,
+          addTag: value
+        })
+      }
+    } else {
+      this.setState({
+        saveEnable: false,
+        addTag: value
+      })
+    }
+  }
+  handleCreateTag () {
+    this.setState({
+      saveEnable: false
+    })
   }
 
+  addTags () {
+    var payload = {}
+    var selectedIds = []
+    var index = 0
+    for (var i = 0; i < this.state.subscriberTags.length; i++) {
+      if (this.state.subscriberTags[i].tag !== this.state.addTag.label) {
+        index++
+      }
+    }
+    if (index === this.state.subscriberTags.length) {
+      selectedIds.push(this.props.currentSession.subscriber_id._id)
+    } else {
+      this.msg.error('Tag is already assigned')
+      return
+    }
+    payload.subscribers = selectedIds
+    payload.tagId = this.state.addTag.value
+    this.props.assignTags(payload, this.handleSaveTags, this.msg)
+  }
+  removeTags (value) {
+    var payload = {}
+    var selectedIds = []
+    selectedIds.push(this.props.currentSession.subscriber_id._id)
+    payload.subscribers = selectedIds
+    this.setState({
+      removeTag: value
+    })
+    payload.tagId = value
+    this.props.unassignTags(payload, this.handleSaveTags, this.msg)
+  }
+  handleSaveTags () {
+    this.setState({
+      popOverShowTagOpen: false
+    })
+    var subscriberId = this.props.currentSession.subscriber_id._id
+    this.props.getSubscriberTags(subscriberId, this.msg)
+  }
+  showTags () {
+    this.setState({
+      popOverShowTagOpen: true
+    })
+  }
+  toggleShowTagPopover () {
+    this.setState({
+      popOverShowTagOpen: !(this.state.popOverShowTagOpen)
+    })
+  }
   showDialog (subscriber, page) {
     this.setState({isShowingModal: true, subscriber: subscriber, page: page})
   }
@@ -96,8 +226,16 @@ class Profile extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='col-xl-3'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
             this.state.isShowingModal &&
             <ModalContainer style={{width: '500px'}}
@@ -143,9 +281,6 @@ class Profile extends React.Component {
                     </a>
                   }
                 <br />
-                <a className='m-card-profile__email m-link' onClick={() => this.showDialog(this.props.currentSession.subscriber_id._id, this.props.currentSession.page_id._id)} style={{color: '#716aca', cursor: 'pointer'}}>
-                  <i className='la la-plus' /> Assign User Tags
-                </a>
                 <a className='m-card-profile__email m-link'>
                   {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
@@ -241,6 +376,67 @@ class Profile extends React.Component {
                   </div>
                 }
               </div>
+              <div className='row' style={{display: 'flex', paddingLeft: '45px', paddingTop: '40px'}}>
+                <span style={{width: '120px'}}>
+                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{color: '#716aca', cursor: 'pointer'}}>
+                    <i className='la la-plus' /> Assign Tags
+                  </a>
+                </span>
+                {
+                  this.state.subscriberTags.length > 0 ? (<i className='la la-tags' style={{cursor: 'pointer', color: '#716aca'}} id='tags' onClick={this.showTags} />) : <span id='tags' />
+                }
+              </div>
+              <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
+                <PopoverHeader>Add Tags</PopoverHeader>
+                <PopoverBody>
+                  <div className='row' style={{minWidth: '250px'}}>
+                    <div className='col-12'>
+                      <label>Select Tags</label>
+                      <Select.Creatable
+                        options={this.state.tagOptions}
+                        onChange={this.handleAdd}
+                        value={this.state.addTag}
+                        placeholder='Add User Tags'
+                      />
+                    </div>
+                    {this.state.saveEnable
+                    ? <div className='col-12'>
+                      <button style={{float: 'right', margin: '15px'}}
+                        className='btn btn-primary btn-sm'
+                        onClick={() => {
+                          this.addTags()
+                          this.toggleAdd()
+                        }}>Save
+                      </button>
+                    </div>
+                    : <div className='col-12'>
+                      <button style={{float: 'right', margin: '15px'}}
+                        className='btn btn-primary btn-sm'
+                        disabled>
+                         Save
+                      </button>
+                    </div>
+                  }
+                  </div>
+                </PopoverBody>
+              </Popover>
+              <Popover placement='left' isOpen={this.state.popOverShowTagOpen} target='tags' toggle={this.toggleShowTagPopover}>
+                <PopoverHeader>Tags</PopoverHeader>
+                <PopoverBody>
+                  <div className='row' style={{minWidth: '150px', display: 'block', padding: '10px'}}>
+                    {
+                      this.state.subscriberTags.map((tag, i) => (
+                        <span key={i} className='tagLabel' style={{display: 'flex'}}>
+                          <label className='tagName'>{tag.tag}</label>
+                          <div className='deleteTag' style={{marginLeft: '10px'}}>
+                            <i className='fa fa-times fa-stack' onClick={() => this.removeTags(tag._id)} />
+                          </div>
+                        </span>
+                      ))
+                    }
+                  </div>
+                </PopoverBody>
+              </Popover>
             </div>
           </div>
         </div>
@@ -253,7 +449,9 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     chat: (state.liveChat.chat),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    tags: (state.tagsInfo.tags),
+    subscriberTags: (state.tagsInfo.subscriberTags)
   }
 }
 
@@ -261,7 +459,12 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     unSubscribe: unSubscribe,
     assignToAgent: assignToAgent,
-    assignToTeam: assignToTeam
+    assignToTeam: assignToTeam,
+    assignTags: assignTags,
+    unassignTags: unassignTags,
+    loadTags: loadTags,
+    createTag: createTag,
+    getSubscriberTags: getSubscriberTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

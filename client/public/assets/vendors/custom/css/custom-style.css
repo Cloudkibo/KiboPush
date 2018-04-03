@@ -134,9 +134,24 @@ a.broadcastTabs.active {
 .tagList {
   display: inline-block !important
 }
-.tagToolTip {
-  background-color: 'white';
-  color: 'black';
-  min-width: '100px';
-  opacity: '1.0';
+.tagLabel {
+  position: relative;
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  padding: 3px 10px;
+  background-color: #f4f5f8;
+  border: 1px solid #c7e4ff;
+  border-radius: 13px;
+  cursor: default;
+  color: #3c4858;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  width: '200px'
+}
+.tagName {
+  margin-top: 5px;
+  width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

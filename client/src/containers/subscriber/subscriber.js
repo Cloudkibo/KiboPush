@@ -16,6 +16,8 @@ import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import EditTags from './editTags'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -40,7 +42,8 @@ class Subscriber extends React.Component {
       options: [],
       selectAllChecked: null,
       saveEnable: false,
-      pageSelected: 0
+      pageSelected: 0,
+      showEditModal: false
     }
     props.loadMyPagesList()
     props.loadSubscribersList()
@@ -71,6 +74,15 @@ class Subscriber extends React.Component {
     this.createUnassignPayload = this.createUnassignPayload.bind(this)
     this.removeTags = this.removeTags.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
+    this.openEditModal = this.openEditModal.bind(this)
+    this.closeEditModal = this.closeEditModal.bind(this)
+  }
+  openEditModal () {
+    this.setState({showEditModal: true})
+  }
+  closeEditModal () {
+    this.setState({showEditModal: false})
+    this.props.loadSubscribersList()
   }
   handleAdd (value) {
     var index = 0
@@ -153,7 +165,9 @@ class Subscriber extends React.Component {
     if (payload.subscribers.length > 0) {
       this.props.assignTags(payload, this.handleSaveTags, this.msg)
     } else {
-      this.msg.error('Select relevant subscribers')
+      if (this.msg) {
+        this.msg.error('Select relevant subscribers')
+      }
     }
   }
   handleSaveTags () {
@@ -168,7 +182,9 @@ class Subscriber extends React.Component {
     if (payload.subscribers.length > 0) {
       this.props.unassignTags(payload, this.handleSaveTags, this.msg)
     } else {
-      this.msg.error('Select relevant subscribers')
+      if (this.msg) {
+        this.msg.error('Select relevant subscribers')
+      }
     }
   }
   handleRemove (value) {
@@ -414,6 +430,7 @@ class Subscriber extends React.Component {
     }
     this.setState({filteredData: filteredData})
     this.displayData(0, filteredData)
+    this.setState({pageSelected: 0})
     this.setState({ totalLength: filteredData.length })
   }
   handleFilterByPage (e) {
@@ -433,6 +450,7 @@ class Subscriber extends React.Component {
     }
     this.setState({filteredData: filteredData})
     this.displayData(0, filteredData)
+    this.setState({pageSelected: 0})
     this.setState({ totalLength: filteredData.length })
   }
 
@@ -453,6 +471,7 @@ class Subscriber extends React.Component {
     }
     this.setState({filteredData: filteredData})
     this.displayData(0, filteredData)
+    this.setState({pageSelected: 0})
     this.setState({ totalLength: filteredData.length })
   }
 
@@ -473,6 +492,7 @@ class Subscriber extends React.Component {
     }
     this.setState({filteredData: filteredData})
     this.displayData(0, filteredData)
+    this.setState({pageSelected: 0})
     this.setState({ totalLength: filteredData.length })
   }
 
@@ -649,16 +669,27 @@ class Subscriber extends React.Component {
                                     </div>
                                   </div>
                                   <div className='col-md-12' style={{marginTop: '25px'}}>
-                                    <div className='pull-right'>
+                                    <div className='pull-right' style={{display: 'flex'}}>
                                       <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
                                         <DropdownToggle caret>
                                            Assign Tags in bulk
                                         </DropdownToggle>
                                         <DropdownMenu>
-                                          <DropdownItem onClick={this.showAddTag}>Add Tags</DropdownItem>
-                                          <DropdownItem onClick={this.showRemoveTag}>Remove Tags</DropdownItem>
+                                          <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
+                                          <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         </DropdownMenu>
                                       </Dropdown>
+                                      <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
+                                      {
+                                        this.state.showEditModal &&
+                                        <ModalContainer style={{width: '800px'}}
+                                          onClose={this.closeEditModal}>
+                                          <ModalDialog style={{width: '800px'}}
+                                            onClose={this.closeEditModal}>
+                                            <EditTags />
+                                          </ModalDialog>
+                                        </ModalContainer>
+                                      }
                                       <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                                         <PopoverHeader>Add Tags</PopoverHeader>
                                         <PopoverBody>
@@ -736,7 +767,8 @@ class Subscriber extends React.Component {
                                   style={{height: '53px'}}>
                                   <th data-field='Select All'
                                     className='m-datatable__cell--center m-datatable__cell'>
-                                    <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></th>
+                                    <span style={{width: '30px', overflow: 'inherit'}}>
+                                      <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriberClick} /></span></th>
                                   <th data-field='Profile Picture'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
@@ -751,23 +783,23 @@ class Subscriber extends React.Component {
                                   </th>
                                   <th data-field='PhoneNumber'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>PhoneNumber</span>
+                                    <span style={{width: '100px', overflow: 'inherit'}}>Phone</span>
                                   </th>
                                   <th data-field='Source'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
                                   </th>
+                                  <th data-field='Gender'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
+                                  </th>
                                   <th data-field='Locale'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
                                   </th>
-                                  <th data-field='Gender'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Gender</span>
-                                  </th>
                                   <th data-field='Tag'
                                     className='m-datatable__cell--center m-datatable__cell'>
-                                    <span>Tags</span>
+                                    <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
                                   </th>
                                 </tr>
                               </thead>
@@ -779,7 +811,10 @@ class Subscriber extends React.Component {
                                   className='m-datatable__row m-datatable__row--even subscriberRow'
                                   style={{height: '55px'}} key={i}>
                                   <td data-field='Select All'
-                                    className='m-datatable__cell'><input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} /></td>
+                                    className='m-datatable__cell'>
+                                    <span style={{width: '30px', overflow: 'inherit'}}>
+                                      <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
+                                    </span></td>
                                   <td data-field='Profile Picture'
                                     className='m-datatable__cell'>
                                     <span
@@ -818,12 +853,20 @@ class Subscriber extends React.Component {
                                       {subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other'}
                                     </span>
                                   </td>
+                                  <td data-field='Gender' className='m-datatable__cell'>
+                                    <span style={{width: '50px'}}>
+                                      {
+                                        subscriber.gender === 'male' ? (<i className='la la-male' style={{color: '#716aca'}} />) : (<i className='la la-female' style={{color: '#716aca'}} />)
+                                      }
+                                    </span>
+                                  </td>
                                   <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
-                                  <td data-field='Gender' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.gender}</span></td>
                                   <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
-                                    {
-                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : <span>No Tags Assigned</span>
-                                    }
+                                    <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
+                                      {
+                                        subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : ('No Tags Assigned')
+                                      }
+                                    </span>
                                     {subscriber.tags && subscriber.tags.length > 0 &&
                                       <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
                                           {
@@ -849,7 +892,8 @@ class Subscriber extends React.Component {
                               onPageChange={this.handlePageClick}
                               containerClassName={'pagination'}
                               subContainerClassName={'pages pagination'}
-                              activeClassName={'active'} />
+                              activeClassName={'active'}
+                              forceSelected={this.state.pageSelected} />
 
                           </div>
                           <div className='m-form m-form--label-align-right m--margin-bottom-30'>

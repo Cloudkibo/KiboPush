@@ -8,7 +8,13 @@ export function updateTagsList (data) {
     data
   }
 }
-
+export function loadSubscriberTags (data) {
+  console.log('Subscriber Tags', data)
+  return {
+    type: ActionTypes.LOAD_SUBSCRIBER_TAGS,
+    data
+  }
+}
 export function loadTags () {
   console.log('Actions for loading subscriber Tags')
   return (dispatch) => {
@@ -63,11 +69,61 @@ export function createTag (tag, handleResponse, msg) {
     callApi('tags', 'post', {tag: tag})
       .then(res => {
         if (res.status === 'success' && res.payload) {
-          dispatch(loadTags(res.payload))
+          dispatch(loadTags())
         } else {
           msg.error('Error in Creating Tag')
         }
         handleResponse()
+      })
+  }
+}
+export function getSubscriberTags (id, msg) {
+  console.log('Actions for getting subscriber Tag', id)
+  return (dispatch) => {
+    callApi('tags/subscribertags/', 'post', {subscriberId: id})
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          dispatch(loadSubscriberTags(res.payload))
+        } else {
+          msg.error('Error in getting subscriber tags')
+        }
+      })
+  }
+}
+export function deleteTag (id, msg) {
+  console.log('Actions for deleteing Tag', id)
+  return (dispatch) => {
+    callApi('tags/delete/', 'post', {tagId: id})
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success(`${res.description}`)
+          dispatch(loadTags())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to delete tag. ${res.description}`)
+          } else {
+            msg.error('Unable to delete tag')
+          }
+        }
+      })
+  }
+}
+export function renameTag (payload, msg, handleEdit) {
+  console.log('Actions for renaming Tag', payload)
+  return (dispatch) => {
+    callApi('tags/rename/', 'post', payload)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          msg.success('Tag has been changed')
+          dispatch(loadTags())
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Unable to edit tag name. ${res.description}`)
+          } else {
+            msg.error('Unable to edit tag name')
+          }
+        }
+        handleEdit()
       })
   }
 }

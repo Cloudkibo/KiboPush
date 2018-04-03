@@ -6,7 +6,10 @@ export function tagsInfo (state = {}, action) {
       return Object.assign({}, state, {
         tags: action.data
       })
-
+    case ActionTypes.LOAD_SUBSCRIBER_TAGS:
+      return Object.assign({}, state, {
+        subscriberTags: action.data
+      })
     default:
       return state
   }
