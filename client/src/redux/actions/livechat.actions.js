@@ -84,6 +84,13 @@ export function fetchSessions (companyid) {
   }
 }
 
+export function fetchAllSessions (userid) {
+  return (dispatch) => {
+    callApi('sessions/getAll', 'post', userid)
+      .then(res => dispatch(showChatSessions(res.payload)))
+  }
+}
+
 export function fetchSingleSession (sessionid, sessions) {
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)

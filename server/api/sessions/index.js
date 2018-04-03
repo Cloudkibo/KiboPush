@@ -14,6 +14,12 @@ router.post('/',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 
+router.post('/getAll',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesRolePermitsThisAction('livechatPermission'),
+  controller.getAll)
+
 router.get('/markread/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),

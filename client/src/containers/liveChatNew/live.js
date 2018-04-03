@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { fetchSessions,
+import { fetchAllSessions,
   fetchSingleSession,
   fetchUserChats,
   resetSocket,
@@ -53,7 +53,7 @@ class LiveChat extends React.Component {
       isShowingModalGuideLines: false,
       tabValue: 'open'
     }
-    props.fetchSessions({ company_id: this.props.user._id })
+    props.fetchAllSessions({ userId: this.props.user._id })
     props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
@@ -264,10 +264,10 @@ class LiveChat extends React.Component {
         })
 
         if (isPresent) {
-          this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.fetchAllSessions({ userId: this.props.user._id })
           this.props.resetSocket()
         } else {
-          this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.fetchAllSessions({ userId: this.props.user._id })
           this.props.resetSocket()
         }
       }
@@ -607,7 +607,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSessions: fetchSessions,
+    fetchAllSessions: fetchAllSessions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,
     fetchSingleSession: fetchSingleSession,
