@@ -185,3 +185,6 @@ export const GET_STARTED_COMPLETED = 'GET_STARTED_COMPLETED'
 // constants for tags
 export const LOAD_TAGS_LIST = 'LOAD_TAGS_LIST'
 export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
+
+// constants for notifications
+export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
