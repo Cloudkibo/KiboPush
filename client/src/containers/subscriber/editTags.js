@@ -153,7 +153,7 @@ class EditTags extends React.Component {
             </table>
           </div>
         </div>
-      : <div className='table-responsive'>
+      : <div className='col-12 table-responsive'>
         <p> No data to display </p>
       </div>
     }

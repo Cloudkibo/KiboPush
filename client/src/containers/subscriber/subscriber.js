@@ -131,9 +131,6 @@ class Subscriber extends React.Component {
     }
     payload.subscribers = selectedIds
     payload.tagId = this.state.removeTag.value
-    this.setState({
-      selectedSubscribers: selectedIds
-    })
     return payload
   }
   createAssignPayload () {
@@ -155,9 +152,6 @@ class Subscriber extends React.Component {
     }
     payload.subscribers = selectedIds
     payload.tagId = this.state.addTag.value
-    this.setState({
-      selectedSubscribers: selectedIds
-    })
     return payload
   }
   addTags () {
@@ -267,33 +261,33 @@ class Subscriber extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handleSubscriberClick (e) {
-    var subscribers = this.state.subscribersData
+    var subscribers = this.state.subscribersDataAll
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
           selectAllChecked: true
         })
-        for (var i = 0; i < this.state.subscribersData.length; i++) {
+        for (var i = 0; i < this.state.subscribersDataAll.length; i++) {
           subscribers[i].selected = true
         }
       } else {
         this.setState({
           selectAllChecked: false
         })
-        for (var j = 0; j < this.state.subscribersData.length; j++) {
+        for (var j = 0; j < this.state.subscribersDataAll.length; j++) {
           subscribers[j].selected = false
         }
       }
-      this.setState({subscribersData: subscribers})
+      this.setState({subscribersDataAll: subscribers})
       return
     }
     if (e.target.value !== '') {
       if (e.target.checked) {
         subscribers[e.target.value].selected = true
-        this.setState({subscribersData: subscribers})
+        this.setState({subscribersDataAll: subscribers})
       } else {
         subscribers[e.target.value].selected = false
-        this.setState({subscribersData: subscribers})
+        this.setState({subscribersDataAll: subscribers})
       }
     }
   }
@@ -679,7 +673,9 @@ class Subscriber extends React.Component {
                                           <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                         </DropdownMenu>
                                       </Dropdown>
-                                      <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
+                                      { this.props.tags && this.props.tags.length > 0 &&
+                                        <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
+                                      }
                                       {
                                         this.state.showEditModal &&
                                         <ModalContainer style={{width: '800px'}}
