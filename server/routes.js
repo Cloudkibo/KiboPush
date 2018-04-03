@@ -22,6 +22,7 @@ module.exports = function (app) {
   app.use('/api/backdoor', require('./api/backdoor'))
   app.use('/api/polls', require('./api/polls'))
   app.use('/api/workflows', require('./api/workflows'))
+  app.use('/api/bots', require('./api/smart_replies'))
   app.use('/api/subscribers', require('./api/subscribers'))
   app.use('/api/pages', require('./api/pages'))
   app.use('/api/growthtools', require('./api/growthtools'))
