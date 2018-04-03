@@ -20,3 +20,14 @@ export function fetchNotifications () {
     })
   }
 }
+
+export function markRead (data) {
+  return (dispatch) => {
+    callApi('notifications/markRead', 'post', data).then(res => {
+      console.log('response from notifications', res)
+      if (res.status === 'success') {
+        dispatch(fetchNotifications())
+      }
+    })
+  }
+}
