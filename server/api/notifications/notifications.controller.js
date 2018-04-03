@@ -1,6 +1,6 @@
 const Notifications = require('./notifications.model')
-// const logger = require('../../components/logger')
-// const TAG = 'api/teams/teams.controller.js'
+const logger = require('../../components/logger')
+const TAG = 'api/teams/teams.controller.js'
 const _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -46,4 +46,24 @@ exports.create = function (req, res) {
       return res.status(200).json({status: 'success', payload: savedNotification})
     })
   })
+}
+
+exports.markRead = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'notificationId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Notifications.update(
+    {_id: req.body.notificationId},
+    {seen: true}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      res.status(200).json({status: 'success', payload: updated})
+    })
 }

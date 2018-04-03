@@ -8,7 +8,7 @@ let Schema = mongoose.Schema
 
 let NotificationsSchema = new Schema({
   message: String,
-  category: String, // livechat or other
+  category: Schema.Types.Mixed, // livechat or other
   seen: {type: Boolean, default: false},
   agentId: {type: Schema.ObjectId, ref: 'users'},
   companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
