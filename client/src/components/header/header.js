@@ -6,7 +6,7 @@ import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { fetchNotifications } from '../../redux/actions/notifications.actions'
+import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { browserHistory, Link } from 'react-router'
@@ -73,7 +73,8 @@ class Header extends React.Component {
           message: nextProps.notifications[i].message,
           category: nextProps.notifications[i].category,
           date: this.timeSince(nextProps.notifications[i].datetime),
-          seen: nextProps.notifications[i].seen
+          seen: nextProps.notifications[i].seen,
+          _id: nextProps.notifications[i]._id
         }
         if (nextProps.notifications[i].seen === true) {
           seen.push(jsonObject)
@@ -441,7 +442,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
     fetchNotifications: fetchNotifications,
-    resetSocket: resetSocket
+    resetSocket: resetSocket,
+    markRead: markRead
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
