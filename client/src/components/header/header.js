@@ -130,7 +130,8 @@ class Header extends React.Component {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  gotoView (id) {
+  gotoView (id, _id) {
+    this.props.markRead({notificationId: _id})
     browserHistory.push({
       pathname: `/liveChat`,
       state: {id: id}
@@ -231,7 +232,7 @@ class Header extends React.Component {
                                           this.state.unseenNotifications.map((unseen, i) => (
                                             <div className='m-list-timeline__item'>
                                               <span className='m-list-timeline__badge m-list-timeline__badge--brand' />
-                                              <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id)} style={{cursor: 'pointer'}}>
+                                              <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id)} style={{cursor: 'pointer'}}>
                                                 {unseen.message}
                                               </span>
                                               <span className='m-list-timeline__time' style={{width: '100px'}}>
@@ -243,7 +244,7 @@ class Header extends React.Component {
                                         { this.state.seenNotifications.map((seen, i) => (
                                           <div className='m-list-timeline__item m-list-timeline__item--read'>
                                             <span className='m-list-timeline__badge' />
-                                            <span href='' className='m-list-timeline__text' onClick={() => this.gotoView(seen.category.id)} style={{cursor: 'pointer'}}>
+                                            <span href='' className='m-list-timeline__text' onClick={() => this.gotoView(seen.category.id, seen._id)} style={{cursor: 'pointer'}}>
                                               {seen.message}
                                             </span>
                                             <span className='m-list-timeline__time' style={{width: '100px'}}>

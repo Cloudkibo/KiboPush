@@ -203,12 +203,22 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       this.separateResolvedSessions(nextProps.sessions)
-      if (this.state.tabValue === 'open') {
-        let newSessions = nextProps.sessions.filter(session => session.status === 'new')
+      if (this.props.location.state) {
+        let newSessions = nextProps.sessions.filter(session => session._id === this.props.location.state.id)
         this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
-      } else {
-        let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
-        this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
+        if (newSessions.length > 0 && newSessions[0].status === 'new') {
+          this.setState({tabValue: 'open'})
+        } else if (newSessions.length > 0 && newSessions[0].status === 'resolved') {
+          this.setState({tabValue: 'closed'})
+        }
+      } else if (activeSession === '') {
+        if (this.state.tabValue === 'open') {
+          let newSessions = nextProps.sessions.filter(session => session.status === 'new')
+          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
+        } else {
+          let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
+          this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
+        }
       }
       // } else if (nextProps.changedStatus) {
       //   for (var b = 0; b < nextProps.sessions.length; b++) {
