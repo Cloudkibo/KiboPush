@@ -23,6 +23,7 @@ import {menuInfo} from './menu.reducer.js'
 import {backdoorInfo} from './backdoor.reducer'
 import {teamsInfo} from './teams.reducer'
 import {tagsInfo} from './tags.reducer'
+import {notificationsInfo} from './notifications.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -47,7 +48,8 @@ const appReducer = combineReducers({
   membersInfo,
   listsInfo,
   teamsInfo,
-  tagsInfo
+  tagsInfo,
+  notificationsInfo
 })
 
 export default appReducer
