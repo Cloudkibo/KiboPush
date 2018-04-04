@@ -115,7 +115,7 @@ class Subscriber extends React.Component {
   createUnassignPayload () {
     var payload = {}
     var selectedIds = []
-    var subscribers = this.state.subscribersData
+    var subscribers = this.state.subscribersDataAll
     for (var i = 0; i < subscribers.length; i++) {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
@@ -136,7 +136,7 @@ class Subscriber extends React.Component {
   createAssignPayload () {
     var payload = {}
     var selectedIds = []
-    var subscribers = this.state.subscribersData
+    var subscribers = this.state.subscribersDataAll
     for (var i = 0; i < subscribers.length; i++) {
       var index = 0
       if (subscribers[i].selected && subscribers[i].tags) {
@@ -262,32 +262,52 @@ class Subscriber extends React.Component {
   }
   handleSubscriberClick (e) {
     var subscribers = this.state.subscribersData
+    var subscribersAll = this.state.subscribersDataAll
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
           selectAllChecked: true
         })
-        for (var i = 0; i < this.state.subscribersData.length; i++) {
-          subscribers[i].selected = true
+        for (var i = 0; i < this.state.subscribersDataAll.length; i++) {
+          subscribersAll[i].selected = true
+        }
+        for (var j = 0; j < this.state.subscribersData.length; j++) {
+          subscribers[j].selected = true
         }
       } else {
         this.setState({
           selectAllChecked: false
         })
-        for (var j = 0; j < this.state.subscribersData.length; j++) {
-          subscribers[j].selected = false
+        for (var k = 0; k < this.state.subscribersDataAll.length; k++) {
+          subscribersAll[k].selected = false
+        }
+        for (var m = 0; m < this.state.subscribersData.length; m++) {
+          subscribers[m].selected = false
         }
       }
       this.setState({subscribersData: subscribers})
+      this.setState({subscribersDataAll: subscribersAll})
       return
     }
     if (e.target.value !== '') {
       if (e.target.checked) {
+        for (var p = 0; p < this.state.subscribersDataAll.length; p++) {
+          if (subscribersAll[p]._id === subscribers[e.target.value]._id) {
+            subscribersAll[p].selected = true
+          }
+        }
         subscribers[e.target.value].selected = true
         this.setState({subscribersData: subscribers})
+        this.setState({subscribersDataAll: subscribersAll})
       } else {
+        for (var q = 0; q < this.state.subscribersDataAll.length; q++) {
+          if (subscribersAll[q]._id === subscribers[e.target.value]._id) {
+            subscribersAll[q].selected = false
+          }
+        }
         subscribers[e.target.value].selected = false
         this.setState({subscribersData: subscribers})
+        this.setState({subscribersDataAll: subscribersAll})
       }
     }
   }
