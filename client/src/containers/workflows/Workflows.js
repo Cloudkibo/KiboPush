@@ -231,7 +231,7 @@ class Workflows extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Smart Replies</h3>
+                  <h3 className='m-subheader__title'>Workflows</h3>
                 </div>
               </div>
             </div>
@@ -243,7 +243,7 @@ class Workflows extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  Smart Replies are automated messages which are sent to subscriber when subscriber sends a message which matches the set criteria.
+                  Workflows are automated messages which are sent to subscriber when subscriber sends a message which matches the set criteria.
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>
@@ -256,12 +256,12 @@ class Workflows extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link to='createworkflow'>
+                    <Link to='/createWorkflow'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Bot
+                            Create Workflows
                           </span>
                         </span>
                       </button>
