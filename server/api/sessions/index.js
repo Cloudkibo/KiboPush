@@ -14,7 +14,7 @@ router.post('/',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 
-router.post('/getAll',
+router.get('/getAll',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),

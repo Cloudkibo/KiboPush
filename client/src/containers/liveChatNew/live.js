@@ -13,6 +13,7 @@ import { fetchAllSessions,
   resetSocket,
   resetUnreadSession,
   showChatSessions,
+  resetActiveSession,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -55,7 +56,7 @@ class LiveChat extends React.Component {
       isShowingModalGuideLines: false,
       tabValue: 'open'
     }
-    props.fetchAllSessions({ userId: this.props.user._id })
+    props.fetchAllSessions()
     props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
@@ -222,6 +223,14 @@ class LiveChat extends React.Component {
           let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
           this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
         }
+      } else if (nextProps.activeSession && nextProps.activeSession !== '') {
+        for (let x = 0; nextProps.sessions.length; x++) {
+          if (nextProps.sessions[x]._id === nextProps.activeSession) {
+            this.setState({activeSession: nextProps.sessions[x]})
+            break
+          }
+        }
+        this.props.resetActiveSession()
       }
       // } else if (nextProps.changedStatus) {
       //   for (var b = 0; b < nextProps.sessions.length; b++) {
@@ -279,10 +288,10 @@ class LiveChat extends React.Component {
         })
 
         if (isPresent) {
-          this.props.fetchAllSessions({ userId: this.props.user._id })
+          this.props.fetchAllSessions()
           this.props.resetSocket()
         } else {
-          this.props.fetchAllSessions({ userId: this.props.user._id })
+          this.props.fetchAllSessions()
           this.props.resetSocket()
         }
       }
@@ -618,6 +627,7 @@ function mapStateToProps (state) {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
+    activeSession: (state.liveChat.activeSession),
     unreadSession: (state.liveChat.unreadSession),
     changedStatus: (state.liveChat.changedStatus),
     userChat: (state.liveChat.userChat),
@@ -639,7 +649,8 @@ function mapDispatchToProps (dispatch) {
     markRead: markRead,
     showChatSessions: showChatSessions,
     loadTeamsList: loadTeamsList,
-    getSubscriberTags: getSubscriberTags
+    getSubscriberTags: getSubscriberTags,
+    resetActiveSession: resetActiveSession
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

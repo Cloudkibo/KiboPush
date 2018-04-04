@@ -35,6 +35,13 @@ export function socketUpdate (data) {
   }
 }
 
+export function setActiveSession (sessionId) {
+  return {
+    type: ActionTypes.SET_ACTIVE_SESSION,
+    activeSession: sessionId
+  }
+}
+
 export function showUserChats (userChat) {
   return {
     type: ActionTypes.SHOW_USER_CHAT,
@@ -42,9 +49,9 @@ export function showUserChats (userChat) {
   }
 }
 
-export function resetSocket () {
+export function resetActiveSession () {
   return {
-    type: ActionTypes.RESET_SOCKET
+    type: ActionTypes.RESET_ACTIVE_SESSION
   }
 }
 
@@ -84,9 +91,9 @@ export function fetchSessions (companyid) {
   }
 }
 
-export function fetchAllSessions (userid) {
+export function fetchAllSessions () {
   return (dispatch) => {
-    callApi('sessions/getAll', 'post', userid)
+    callApi('sessions/getAll')
       .then(res => dispatch(showChatSessions(res.payload)))
   }
 }

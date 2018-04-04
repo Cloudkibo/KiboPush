@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, fetchAllSessions, fetchUserChats } from './../redux/actions/livechat.actions'
+import { socketUpdate, fetchAllSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { loadWorkFlowList } from './../redux/actions/workflows.actions'
@@ -89,10 +89,12 @@ socket.on('message', (data) => {
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadSubscribersList())
   } else if (['session_assign', 'session_status', 'unsubscribe'].indexOf(data.action) !== -1) {
-    store.dispatch(fetchAllSessions({userId: data.payload.user_id}))
+    store.dispatch(fetchAllSessions())
+    store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchNotifications())
   } else if (data.action === 'agent_replied') {
-    store.dispatch(fetchAllSessions({userId: data.payload.user_id}))
+    store.dispatch(fetchAllSessions())
+    store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchUserChats(data.payload.session_id))
   }
 
