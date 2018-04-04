@@ -88,6 +88,8 @@ export const LOADING_URL_META = 'LOADING_URL_META'
 export const GET_URL_META = 'GET_URL_META'
 export const UPDATE_CHAT = 'UPDATE_CHAT'
 export const CHANGE_STATUS = 'CHANGE_STATUS'
+export const SET_ACTIVE_SESSION = 'SET_ACTIVE_SESSION'
+export const RESET_ACTIVE_SESSION = 'RESET_ACTIVE_SESSION'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
