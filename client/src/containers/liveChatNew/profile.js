@@ -206,7 +206,7 @@ class Profile extends React.Component {
       agentName: this.state.agentObject.name,
       sessionId: this.props.currentSession._id
     }
-    this.props.assignToAgent(data, {company_id: this.props.user._id})
+    this.props.assignToAgent(data, {userId: this.props.user._id})
     if (this.state.agentObject._id !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been assigned to you.`,
@@ -243,7 +243,7 @@ class Profile extends React.Component {
       sessionId: this.props.currentSession._id
     }
     this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
-    this.props.assignToTeam(data, {company_id: this.props.user._id})
+    this.props.assignToTeam(data, {userId: this.props.user._id})
   }
 
   toggleAssignTeam () {
