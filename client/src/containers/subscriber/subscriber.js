@@ -261,33 +261,33 @@ class Subscriber extends React.Component {
     this.setState({subscribersData: data, subscribersDataAll: subscribers})
   }
   handleSubscriberClick (e) {
-    var subscribers = this.state.subscribersDataAll
+    var subscribers = this.state.subscribersData
     if (e.target.value === 'All') {
       if (e.target.checked) {
         this.setState({
           selectAllChecked: true
         })
-        for (var i = 0; i < this.state.subscribersDataAll.length; i++) {
+        for (var i = 0; i < this.state.subscribersData.length; i++) {
           subscribers[i].selected = true
         }
       } else {
         this.setState({
           selectAllChecked: false
         })
-        for (var j = 0; j < this.state.subscribersDataAll.length; j++) {
+        for (var j = 0; j < this.state.subscribersData.length; j++) {
           subscribers[j].selected = false
         }
       }
-      this.setState({subscribersDataAll: subscribers})
+      this.setState({subscribersData: subscribers})
       return
     }
     if (e.target.value !== '') {
       if (e.target.checked) {
         subscribers[e.target.value].selected = true
-        this.setState({subscribersDataAll: subscribers})
+        this.setState({subscribersData: subscribers})
       } else {
         subscribers[e.target.value].selected = false
-        this.setState({subscribersDataAll: subscribers})
+        this.setState({subscribersData: subscribers})
       }
     }
   }
