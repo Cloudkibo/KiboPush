@@ -211,7 +211,7 @@ class LiveChat extends React.Component {
         } else if (newSessions.length > 0 && newSessions[0].status === 'resolved') {
           this.setState({tabValue: 'closed'})
         }
-      } else if (activeSession === '') {
+      } else if (this.state.activeSession === '') {
         if (this.state.tabValue === 'open') {
           let newSessions = nextProps.sessions.filter(session => session.status === 'new')
           this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
