@@ -7,8 +7,8 @@ const answerSchema = new Schema({
   botId: {type: Schema.ObjectId, ref: 'bots'}, // TODO ENUMS
   intentId: String, //This will represent each unique intent
   questions: [String],
-  answer: String,,
+  answer: String,
   datetime: {type: Date, default: Date.now}
 })
 
-module.exports = mongoose.model('answers', botSchema)
+module.exports = mongoose.model('answers', answerSchema)
