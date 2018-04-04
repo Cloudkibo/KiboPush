@@ -132,7 +132,7 @@ class ChatBox extends React.Component {
 
   getDisabledValue () {
     if (this.props.currentSession.is_assigned) {
-      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id === this.props.user._id) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
         this.setState({disabledValue: true})
       } else if (this.props.currentSession.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
@@ -1137,11 +1137,7 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      {
-                        this.state.disabledValue
-                        ? <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' disabled />
-                        : <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
-                      }
+                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
