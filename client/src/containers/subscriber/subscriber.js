@@ -695,7 +695,7 @@ class Subscriber extends React.Component {
                                             <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
                                           </DropdownMenu>
                                         </Dropdown>
-                                        <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span>
+                                        {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
                                       </div>
                                       { this.props.tags && this.props.tags.length > 0 &&
                                         <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>

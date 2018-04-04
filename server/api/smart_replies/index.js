@@ -20,7 +20,6 @@ router.post('/create',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.create)
 
-
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 

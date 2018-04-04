@@ -383,7 +383,7 @@ class Profile extends React.Component {
                     <i className='la la-plus' /> Assign Tags
                   </a>
                 </div>
-                <span style={{fontSize: '0.8rem', color: '#5cb85c', marginLeft: '20px'}}>Tag limit for each subscriber is 10</span>
+                {/* <span style={{fontSize: '0.8rem', color: '#5cb85c', marginLeft: '20px'}}>Tag limit for each subscriber is 10</span> */}
               </div>
               {this.props.subscriberTags && this.props.subscriberTags.length > 0 && <div className='row' style={{minWidth: '150px', padding: '10px'}}>
                 {
