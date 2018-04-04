@@ -139,10 +139,10 @@ export function sendAttachment (data, handleSendAttachment) {
   }
 }
 
-export function sendChatMessage (data, companyId) {
+export function sendChatMessage (data, userId) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      dispatch(fetchSessions(companyId))
+      dispatch(fetchAllSessions(userId))
     })
   }
 }
@@ -169,10 +169,10 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, companyId) {
+export function changeStatus (data, userId) {
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(fetchSessions(companyId))
+      dispatch(fetchAllSessions(userId))
     })
   }
 }
@@ -185,10 +185,10 @@ export function unSubscribe (data, companyId) {
   }
 }
 
-export function assignToAgent (data, companyId) {
+export function assignToAgent (data, userId) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
-      dispatch(fetchSessions(companyId))
+      dispatch(fetchAllSessions(userId))
     })
   }
 }
@@ -199,11 +199,11 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data, companyId) {
+export function assignToTeam (data, userId) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
-      dispatch(fetchSessions(companyId))
+      dispatch(fetchAllSessions(userId))
     })
   }
 }
