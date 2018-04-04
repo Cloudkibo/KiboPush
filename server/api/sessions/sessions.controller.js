@@ -370,15 +370,41 @@ exports.show = function (req, res) {
 
 // get fb session
 exports.changeStatus = function (req, res) {
-  // todo tell fb users that message is read
-  Sessions.update(
-    {_id: req.body._id},
-    {status: req.body.status}, (err, updated) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      res.status(200).json({status: 'success', payload: updated})
-    })
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    // todo tell fb users that message is read
+    Sessions.update(
+      {_id: req.body._id},
+      {status: req.body.status}, (err, updated) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'session_status',
+            payload: {
+              session_id: req.body._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              status: req.body.status
+            }
+          }
+        })
+        res.status(200).json({status: 'success', payload: updated})
+      })
+  })
 }
 exports.markread = function (req, res) {
   // todo tell fb users that message is read
@@ -393,71 +419,96 @@ exports.markread = function (req, res) {
     })
 }
 exports.unSubscribe = function (req, res) {
-  // todo tell fb users that message is read
-  Pages.findOne({ _id: req.body.page_id }, (err, userPage) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    Subscribers.findOne({_id: req.body.subscriber_id}, (err, subscriber) => {
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    // todo tell fb users that message is read
+    Pages.findOne({ _id: req.body.page_id }, (err, userPage) => {
       if (err) {
-        logger.serverLog(TAG,
-          `Subscribers update subscription: ${JSON.stringify(
-            err)}`)
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
       }
-      Subscribers.update({_id: req.body.subscriber_id},
-        {isSubscribed: false, unSubscribedBy: 'agent'}, (err, updated) => {
-          if (err) {
-            logger.serverLog(TAG,
-              `Subscribers update subscription: ${JSON.stringify(
-                err)}`)
-          }
-            /* Getting the company user who has connected the facebook account */
-          Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+      Subscribers.findOne({_id: req.body.subscriber_id}, (err, subscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Subscribers update subscription: ${JSON.stringify(
+              err)}`)
+        }
+        Subscribers.update({_id: req.body.subscriber_id},
+          {isSubscribed: false, unSubscribedBy: 'agent'}, (err, updated) => {
             if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              })
-            }
-            var currentUser
-            if (req.user.facebookInfo) {
-              currentUser = req.user
-            } else {
-              currentUser = connectedUser
-            }
-            needle.get(
-            `https://graph.facebook.com/v2.10/${userPage.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-            (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG,
-                  `Page access token from graph api error ${JSON.stringify(
+              logger.serverLog(TAG,
+                `Subscribers update subscription: ${JSON.stringify(
                   err)}`)
+            }
+              /* Getting the company user who has connected the facebook account */
+            Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
               }
-              const messageData = {
-                text: 'We have unsubscribed you from our page. We will notify you when we subscribe you again. Thanks'
+              var currentUser
+              if (req.user.facebookInfo) {
+                currentUser = req.user
+              } else {
+                currentUser = connectedUser
               }
-              const data = {
-                recipient: {id: subscriber.senderId}, // this is the subscriber id
-                message: messageData
-              }
-              needle.post(
-              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-              data, (err, resp) => {
+              needle.get(
+              `https://graph.facebook.com/v2.10/${userPage.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+              (err, resp) => {
                 if (err) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: JSON.stringify(err)
-                  })
+                  logger.serverLog(TAG,
+                    `Page access token from graph api error ${JSON.stringify(
+                    err)}`)
                 }
-                res.status(200).json({status: 'success', payload: updated})
+                const messageData = {
+                  text: 'We have unsubscribed you from our page. We will notify you when we subscribe you again. Thanks'
+                }
+                const data = {
+                  recipient: {id: subscriber.senderId}, // this is the subscriber id
+                  message: messageData
+                }
+                needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                data, (err, resp) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: JSON.stringify(err)
+                    })
+                  }
+                  require('./../../config/socketio').sendMessageToClient({
+                    room_id: companyUser.companyId,
+                    body: {
+                      action: 'unsubscribe',
+                      payload: {
+                        subscriber_id: req.body.subscriber_id,
+                        user_id: req.user._id,
+                        user_name: req.user.name
+                      }
+                    }
+                  })
+                  res.status(200).json({status: 'success', payload: updated})
+                })
               })
             })
           })
-        })
+      })
     })
   })
 }
@@ -474,20 +525,47 @@ exports.assignAgent = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  let assignedTo = {
-    type: 'agent',
-    id: req.body.agentId,
-    name: req.body.agentName
-  }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
 
-  Sessions.update(
-    {_id: req.body.sessionId},
-    {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      res.status(200).json({status: 'success', payload: updated})
-    })
+    let assignedTo = {
+      type: 'agent',
+      id: req.body.agentId,
+      name: req.body.agentName
+    }
+
+    Sessions.update(
+      {_id: req.body.sessionId},
+      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'session_assign',
+            payload: {
+              session_id: req.body.sessionId,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              assigned_to: assignedTo
+            }
+          }
+        })
+        res.status(200).json({status: 'success', payload: updated})
+      })
+  })
 }
 
 exports.assignTeam = function (req, res) {
@@ -502,18 +580,45 @@ exports.assignTeam = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  let assignedTo = {
-    type: 'team',
-    id: req.body.teamId,
-    name: req.body.teamName
-  }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
 
-  Sessions.update(
-    {_id: req.body.sessionId},
-    {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      res.status(200).json({status: 'success', payload: updated})
-    })
+    let assignedTo = {
+      type: 'team',
+      id: req.body.teamId,
+      name: req.body.teamName
+    }
+
+    Sessions.update(
+      {_id: req.body.sessionId},
+      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'session_assign',
+            payload: {
+              session_id: req.body.sessionId,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              assigned_to: assignedTo
+            }
+          }
+        })
+        res.status(200).json({status: 'success', payload: updated})
+      })
+  })
 }
