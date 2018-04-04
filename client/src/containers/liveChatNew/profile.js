@@ -58,7 +58,7 @@ class Profile extends React.Component {
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
     this.toggleShowTagPopover = this.toggleShowTagPopover.bind(this)
-    this.props.handleAgents = this.props.handleAgents.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.tags) {
