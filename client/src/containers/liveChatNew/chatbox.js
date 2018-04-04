@@ -108,6 +108,7 @@ class ChatBox extends React.Component {
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
+    this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -136,6 +137,17 @@ class ChatBox extends React.Component {
       } else if (this.props.currentSession.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
       }
+    }
+  }
+
+  getRepliedByMsg (msg) {
+    if (
+      (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+      msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
+    ) {
+      return `${msg.replied_by.name} replied`
+    } else {
+      return 'You replied'
     }
   }
 
@@ -299,53 +311,59 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
-    var isUrl = getmetaurl(this.state.textAreaValue)
-    if (e.which === 13) {
-      e.preventDefault()
-      var payload = {}
-      var session = this.props.currentSession
-      var data = {}
-      if (this.state.uploadedId !== '' && this.state.attachment) {
-        payload = this.setDataPayload('attachment')
-        data = this.setMessageData(session, payload)
-        this.props.sendAttachment(data, this.handleSendAttachment)
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (isUrl !== null && isUrl !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, {userId: this.props.user._id})
-        this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.textAreaValue !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, {userId: this.props.user._id})
-        this.setState({textAreaValue: ''})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'gif') {
-        payload = this.setDataPayload('gif')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, {userId: this.props.user._id})
-        this.closeGif()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'sticker') {
-        payload = this.setDataPayload('sticker')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, {userId: this.props.user._id})
-        this.hideStickers()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'thumbsUp') {
-        payload = this.setDataPayload('thumbsUp')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, {userId: this.props.user._id})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-        this.setState({textAreaValue: ''})
+    if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent') {
+      this.msg.error('You can not send message. Only assigned agent can send messages.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team') {
+      this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
+    } else {
+      var isUrl = getmetaurl(this.state.textAreaValue)
+      if (e.which === 13) {
+        e.preventDefault()
+        var payload = {}
+        var session = this.props.currentSession
+        var data = {}
+        if (this.state.uploadedId !== '' && this.state.attachment) {
+          payload = this.setDataPayload('attachment')
+          data = this.setMessageData(session, payload)
+          this.props.sendAttachment(data, this.handleSendAttachment)
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (isUrl !== null && isUrl !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.textAreaValue !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.setState({textAreaValue: ''})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'gif') {
+          payload = this.setDataPayload('gif')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.closeGif()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'sticker') {
+          payload = this.setDataPayload('sticker')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.hideStickers()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'thumbsUp') {
+          payload = this.setDataPayload('thumbsUp')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+          this.setState({textAreaValue: ''})
+        }
       }
     }
   }
@@ -867,6 +885,9 @@ class ChatBox extends React.Component {
                                       msg.payload.componentType &&
                                       (msg.payload.componentType === 'video'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -877,6 +898,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'audio'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -887,12 +911,18 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'file'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
                                           <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                         </a>
                                       </div>
                                       : msg.payload.componentType === 'card'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div>
                                           <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                             <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
@@ -917,6 +947,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gallery'
                                       ? <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <Slider ref={(c) => { this.slider = c }} {...settings}>
                                           {
                                             msg.payload.cards.map((card, i) => (
@@ -947,6 +980,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'image'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl.url}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -954,6 +990,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gif'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -961,6 +1000,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'sticker'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -968,6 +1010,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'thumbsUp'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -976,6 +1021,9 @@ class ChatBox extends React.Component {
                                       : msg.url_meta && msg.url_meta !== ''
                                       ? (msg.url_meta.type
                                         ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{clear: 'both', display: 'block'}}>
                                             <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
                                               <table style={{maxWidth: '175px'}}>
@@ -1032,6 +1080,9 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                         : <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           {
                                             validURL(msg.payload.text)
                                             ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
@@ -1047,12 +1098,18 @@ class ChatBox extends React.Component {
                                       )
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
                                           {msg.payload.text}
                                         </div>
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
