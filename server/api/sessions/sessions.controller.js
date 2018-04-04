@@ -10,6 +10,7 @@ const Pages = require('../pages/Pages.model')
 const TeamAgents = require('../teams/team_agents.model')
 const TAG = 'api/sessions/sessions.controller.js'
 const Users = require('./../user/Users.model')
+const Notifications = require('./../notifications/notifications.model')
 const needle = require('needle')
 const _ = require('lodash')
 
@@ -454,6 +455,7 @@ exports.unSubscribe = function (req, res) {
                 `Subscribers update subscription: ${JSON.stringify(
                   err)}`)
             }
+            saveNotifications(subscriber, req.user)
               /* Getting the company user who has connected the facebook account */
             Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
               if (err) {
@@ -511,6 +513,46 @@ exports.unSubscribe = function (req, res) {
       })
     })
   })
+}
+
+function saveNotifications (subscriber, user) {
+  CompanyUsers.findOne({domain_email: user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Internal server error ${JSON.stringify(
+          err)}`)
+      }
+      if (!companyUser) {
+        logger.serverLog(TAG,
+          `The user account does not belong any company. Please contact support ${JSON.stringify(
+          err)}`)
+      }
+      CompanyUsers.find({companyId: companyUser.companyId})
+        .populate('userId')
+        .exec((err, members) => {
+          if (err) {
+            logger.serverLog(TAG,
+              `Internal server error ${JSON.stringify(
+              err)}`)
+          }
+          members.forEach(member => {
+            let notification = new Notifications({
+              message: `Subscriber ${subscriber.firstName + ' ' + subscriber.lastName} has been unsubscribed by ${user.name}`,
+              category: {type: 'unsubscribe', id: subscriber._id},
+              agentId: member.userId._id,
+              companyId: subscriber.companyId
+            })
+            notification.save((err, savedNotification) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Error at saving notification ${JSON.stringify(
+                  err)}`)
+              }
+            })
+          })
+        })
+    })
 }
 
 exports.assignAgent = function (req, res) {
