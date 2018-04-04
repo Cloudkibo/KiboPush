@@ -214,7 +214,7 @@ class Header extends React.Component {
                               {this.state.unseenNotifications.length} New
                             </span>
                             : <span className='m-dropdown__header-title'>
-                              No
+                              No New
                             </span>
                             }
                             <span className='m-dropdown__header-subtitle'>
