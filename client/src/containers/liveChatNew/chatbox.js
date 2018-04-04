@@ -72,7 +72,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
-      isShowingModal: false
+      isShowingModal: false,
+      disabledValue: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -105,6 +106,8 @@ class ChatBox extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
+    this.getDisabledValue = this.getDisabledValue.bind(this)
+    this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -113,12 +116,36 @@ class ChatBox extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
+  handleAgentsForDisbaledValue (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.indexOf(this.props.user._id) !== -1) {
+      this.setState({disabledValue: true})
+    }
+  }
+
+  getDisabledValue () {
+    if (this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id === this.props.user._id) {
+        this.setState({disabledValue: true})
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
+      }
+    }
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
     this.scrollToTop()
+    this.getDisabledValue()
   }
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
@@ -413,7 +440,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in chat box')
+    this.getDisabledValue()
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -1053,7 +1080,11 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      {
+                        this.state.disabledValue
+                        ? <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' disabled />
+                        : <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      }
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
