@@ -13,7 +13,9 @@ import {
   sendChatMessage,
   fetchUrlMeta,
   markRead,
-  changeStatus
+  changeStatus,
+  sendNotifications,
+  fetchTeamAgents
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -70,7 +72,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
-      isShowingModal: false
+      isShowingModal: false,
+      disabledValue: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -101,6 +104,10 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
+    this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
+    this.getDisabledValue = this.getDisabledValue.bind(this)
+    this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -109,12 +116,36 @@ class ChatBox extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
+  handleAgentsForDisbaledValue (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.indexOf(this.props.user._id) !== -1) {
+      this.setState({disabledValue: true})
+    }
+  }
+
+  getDisabledValue () {
+    if (this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id === this.props.user._id) {
+        this.setState({disabledValue: true})
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
+      }
+    }
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
     this.scrollToTop()
+    this.getDisabledValue()
   }
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
@@ -283,35 +314,35 @@ class ChatBox extends React.Component {
       } else if (isUrl !== null && isUrl !== '') {
         payload = this.setDataPayload('text')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, {userId: this.props.user._id})
         this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.textAreaValue !== '') {
         payload = this.setDataPayload('text')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, {userId: this.props.user._id})
         this.setState({textAreaValue: ''})
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.componentType === 'gif') {
         payload = this.setDataPayload('gif')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, {userId: this.props.user._id})
         this.closeGif()
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.componentType === 'sticker') {
         payload = this.setDataPayload('sticker')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, {userId: this.props.user._id})
         this.hideStickers()
         data.format = 'convos'
         this.props.userChat.push(data)
       } else if (this.state.componentType === 'thumbsUp') {
         payload = this.setDataPayload('thumbsUp')
         data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, session.companyId)
+        this.props.sendChatMessage(data, {userId: this.props.user._id})
         data.format = 'convos'
         this.props.userChat.push(data)
         this.setState({textAreaValue: ''})
@@ -409,7 +440,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in chat box')
+    this.getDisabledValue()
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -474,9 +505,70 @@ class ChatBox extends React.Component {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
 
+  handleAgentsForResolved (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  handleAgentsForReopen (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
   changeStatus (e, status, id) {
     this.props.changeActiveSessionFromChatbox()
-    this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
+    this.props.changeStatus({_id: id, status: status}, {userId: this.props.user._id})
+    if (status === 'resolved' && this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        let notificationsData = {
+          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+          category: {type: 'chat_session', id: this.props.currentSession._id},
+          agentIds: [this.props.currentSession.assigned_to.id],
+          companyId: this.props.currentSession.company_id
+        }
+        this.props.sendNotifications(notificationsData)
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
+      }
+    } else if (status === 'new' && this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        let notificationsData = {
+          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+          category: {type: 'chat_session', id: this.props.currentSession._id},
+          agentIds: [this.props.currentSession.assigned_to.id],
+          companyId: this.props.currentSession.company_id
+        }
+        this.props.sendNotifications(notificationsData)
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
+      }
+    }
   }
 
   render () {
@@ -988,7 +1080,11 @@ class ChatBox extends React.Component {
                   <div className='m-messenger__seperator' />
                   <div className='m-messenger__form'>
                     <div className='m-messenger__form-controls'>
-                      <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      {
+                        this.state.disabledValue
+                        ? <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' disabled />
+                        : <input autoFocus ref={(input) => { this.textInput = input }} type='text' name='' placeholder='Type here...' onChange={this.handleTextChange} value={this.state.textAreaValue} onKeyPress={this.onEnter} className='m-messenger__form-input' />
+                      }
                     </div>
                     <div className='m-messenger__form-tools'>
                       <a className='m-messenger__form-attachment'>
@@ -1223,7 +1319,9 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
     markRead: (markRead),
-    changeStatus: (changeStatus)
+    changeStatus: (changeStatus),
+    sendNotifications: (sendNotifications),
+    fetchTeamAgents: (fetchTeamAgents)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { unSubscribe, assignToTeam, assignToAgent } from '../../redux/actions/livechat.actions'
+import { unSubscribe, assignToTeam, assignToAgent, sendNotifications, fetchTeamAgents } from '../../redux/actions/livechat.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
 import { assignTags, unassignTags, loadTags, createTag, getSubscriberTags } from '../../redux/actions/tags.actions'
@@ -58,6 +58,7 @@ class Profile extends React.Component {
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
     this.toggleShowTagPopover = this.toggleShowTagPopover.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.tags) {
@@ -205,7 +206,34 @@ class Profile extends React.Component {
       agentName: this.state.agentObject.name,
       sessionId: this.props.currentSession._id
     }
-    this.props.assignToAgent(data, {company_id: this.props.user._id})
+    this.props.assignToAgent(data, {userId: this.props.user._id})
+    if (this.state.agentObject._id !== this.props.user._id) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been assigned to you.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: [this.state.agentObject._id],
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  handleAgents (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been assigned to your team ${this.state.teamObject.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
   }
 
   assignToTeam () {
@@ -214,7 +242,8 @@ class Profile extends React.Component {
       teamName: this.state.teamObject.name,
       sessionId: this.props.currentSession._id
     }
-    this.props.assignToTeam(data, {company_id: this.props.user._id})
+    this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
+    this.props.assignToTeam(data, {userId: this.props.user._id})
   }
 
   toggleAssignTeam () {
@@ -464,7 +493,9 @@ function mapDispatchToProps (dispatch) {
     unassignTags: unassignTags,
     loadTags: loadTags,
     createTag: createTag,
-    getSubscriberTags: getSubscriberTags
+    getSubscriberTags: getSubscriberTags,
+    sendNotifications: sendNotifications,
+    fetchTeamAgents: fetchTeamAgents
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
