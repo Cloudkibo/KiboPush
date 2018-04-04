@@ -121,9 +121,7 @@ class ChatBox extends React.Component {
   handleAgentsForDisbaledValue (teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
-      }
+      agentIds.push(teamAgents[i].agentId)
     }
     if (agentIds.indexOf(this.props.user._id) !== -1) {
       this.setState({disabledValue: true})
@@ -311,14 +309,14 @@ class ChatBox extends React.Component {
   }
 
   onEnter (e) {
-    if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent') {
-      this.msg.error('You can not send message. Only assigned agent can send messages.')
-    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team') {
-      this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
-    } else {
-      var isUrl = getmetaurl(this.state.textAreaValue)
-      if (e.which === 13) {
-        e.preventDefault()
+    var isUrl = getmetaurl(this.state.textAreaValue)
+    if (e.which === 13) {
+      e.preventDefault()
+      if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent') {
+        this.msg.error('You can not send message. Only assigned agent can send messages.')
+      } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team') {
+        this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
+      } else {
         var payload = {}
         var session = this.props.currentSession
         var data = {}

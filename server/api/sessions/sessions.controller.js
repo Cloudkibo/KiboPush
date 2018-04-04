@@ -94,7 +94,7 @@ exports.getAll = function (req, res) {
       })
     }
     // get user info
-    Users.findOne({_id: req.body.userId}, (err, user) => {
+    Users.findOne({_id: req.user._id}, (err, user) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
