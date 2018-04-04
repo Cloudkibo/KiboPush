@@ -201,9 +201,14 @@ class Header extends React.Component {
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger m-animate-blink' />
                         }
-                        <span className='m-nav__link-icon m-animate-shake'>
+                        {this.props.notifications && this.state.unseenNotifications.length > 0
+                        ? <span className='m-nav__link-icon m-animate-shake'>
                           <i className='flaticon-music-2' />
                         </span>
+                        : <span className='m-nav__link-icon'>
+                          <i className='flaticon-music-2' />
+                        </span>
+                      }
                       </a>
                       <div className='m-dropdown__wrapper'>
                         <span className='m-dropdown__arrow m-dropdown__arrow--center' />
