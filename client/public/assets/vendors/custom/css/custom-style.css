@@ -137,8 +137,8 @@ a.broadcastTabs.active {
 .tagLabel {
   position: relative;
   display: inline-block;
-  margin: 0 8px 8px 0;
-  padding: 3px 10px;
+  margin: 5px 5px 0 0;
+  padding: 0px 5px;
   background-color: #f4f5f8;
   border: 1px solid #c7e4ff;
   border-radius: 13px;
@@ -151,7 +151,6 @@ a.broadcastTabs.active {
 }
 .tagName {
   margin-top: 5px;
-  width: 150px;
   text-overflow: ellipsis;
   overflow: hidden;
 }

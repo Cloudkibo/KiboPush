@@ -70,6 +70,7 @@ export function createTag (tag, handleResponse, msg) {
       .then(res => {
         if (res.status === 'success' && res.payload) {
           dispatch(loadTags())
+          msg.success('New Tag Created')
         } else {
           msg.error('Error in Creating Tag')
         }
@@ -85,7 +86,9 @@ export function getSubscriberTags (id, msg) {
         if (res.status === 'success' && res.payload) {
           dispatch(loadSubscriberTags(res.payload))
         } else {
-          msg.error('Error in getting subscriber tags')
+          if (msg) {
+            msg.error('Error in getting subscriber tags')
+          }
         }
       })
   }

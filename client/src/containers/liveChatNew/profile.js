@@ -30,17 +30,12 @@ class Profile extends React.Component {
       showAssignTeam: false,
       showAssignAgent: false,
       popoverAddTagOpen: false,
-      popOverShowTagOpen: false,
       addTag: '',
       removeTag: '',
       tagOptions: [],
-      saveEnable: false,
-      showTags: false,
-      subscriberTags: []
+      saveEnable: false
     }
     props.loadTags()
-    var subscriberId = this.props.currentSession.subscriber_id._id
-    props.getSubscriberTags(subscriberId, this.msg)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
@@ -48,7 +43,6 @@ class Profile extends React.Component {
     this.addTags = this.addTags.bind(this)
     this.removeTags = this.removeTags.bind(this)
     this.handleSaveTags = this.handleSaveTags.bind(this)
-    this.showTags = this.showTags.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.onTeamChange = this.onTeamChange.bind(this)
@@ -57,29 +51,9 @@ class Profile extends React.Component {
     this.assignToAgent = this.assignToAgent.bind(this)
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
-    this.toggleShowTagPopover = this.toggleShowTagPopover.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
   }
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.tags) {
-      var tagOptions = []
-      for (var i = 0; i < nextProps.tags.length; i++) {
-        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
-      }
-      this.setState({
-        tagOptions: tagOptions
-      })
-    }
-    if (nextProps.subscriberTags) {
-      var subscriberTags = []
-      for (var j = 0; j < nextProps.subscriberTags.length; j++) {
-        subscriberTags.push({'_id': nextProps.subscriberTags[j]._id, 'tag': nextProps.subscriberTags[j].tag})
-      }
-      this.setState({
-        subscriberTags: subscriberTags
-      })
-    }
-  }
+
   showAddTag () {
     this.setState({
       addTag: null,
@@ -124,12 +98,12 @@ class Profile extends React.Component {
     var payload = {}
     var selectedIds = []
     var index = 0
-    for (var i = 0; i < this.state.subscriberTags.length; i++) {
-      if (this.state.subscriberTags[i].tag !== this.state.addTag.label) {
+    for (var i = 0; i < this.props.subscriberTags.length; i++) {
+      if (this.props.subscriberTags[i].tag !== this.state.addTag.label) {
         index++
       }
     }
-    if (index === this.state.subscriberTags.length) {
+    if (index === this.props.subscriberTags.length) {
       selectedIds.push(this.props.currentSession.subscriber_id._id)
     } else {
       this.msg.error('Tag is already assigned')
@@ -151,21 +125,8 @@ class Profile extends React.Component {
     this.props.unassignTags(payload, this.handleSaveTags, this.msg)
   }
   handleSaveTags () {
-    this.setState({
-      popOverShowTagOpen: false
-    })
     var subscriberId = this.props.currentSession.subscriber_id._id
     this.props.getSubscriberTags(subscriberId, this.msg)
-  }
-  showTags () {
-    this.setState({
-      popOverShowTagOpen: true
-    })
-  }
-  toggleShowTagPopover () {
-    this.setState({
-      popOverShowTagOpen: !(this.state.popOverShowTagOpen)
-    })
   }
   showDialog (subscriber, page) {
     this.setState({isShowingModal: true, subscriber: subscriber, page: page})
@@ -252,6 +213,17 @@ class Profile extends React.Component {
 
   toggleAssignAgent () {
     this.setState({showAssignAgent: !this.state.showAssignAgent})
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.tags) {
+      var tagOptions = []
+      for (var i = 0; i < nextProps.tags.length; i++) {
+        tagOptions.push({'value': nextProps.tags[i]._id, 'label': nextProps.tags[i].tag})
+      }
+      this.setState({
+        tagOptions: tagOptions
+      })
+    }
   }
 
   render () {
@@ -405,16 +377,27 @@ class Profile extends React.Component {
                   </div>
                 }
               </div>
-              <div className='row' style={{display: 'flex', paddingLeft: '45px', paddingTop: '40px'}}>
-                <span style={{width: '120px'}}>
-                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{color: '#716aca', cursor: 'pointer'}}>
+              <div className='row' style={{display: 'block'}}>
+                <div style={{marginLeft: '50px', marginTop: '40px'}}>
+                  <a id='assignTag' className='m-link' onClick={this.showAddTag} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                     <i className='la la-plus' /> Assign Tags
                   </a>
-                </span>
+                </div>
+                <span style={{fontSize: '0.8rem', color: '#5cb85c', marginLeft: '20px'}}>Tag limit for each subscriber is 10</span>
+              </div>
+              {this.props.subscriberTags && this.props.subscriberTags.length > 0 && <div className='row' style={{minWidth: '150px', padding: '10px'}}>
                 {
-                  this.state.subscriberTags.length > 0 ? (<i className='la la-tags' style={{cursor: 'pointer', color: '#716aca'}} id='tags' onClick={this.showTags} />) : <span id='tags' />
+                  this.props.subscriberTags.map((tag, i) => (
+                    <span key={i} style={{display: 'flex'}} className='tagLabel'>
+                      <label className='tagName'>{tag.tag}</label>
+                      <div className='deleteTag' style={{marginLeft: '10px'}}>
+                        <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeTags(tag._id)} />
+                      </div>
+                    </span>
+                  ))
                 }
               </div>
+            }
               <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                 <PopoverHeader>Add Tags</PopoverHeader>
                 <PopoverBody>
@@ -446,23 +429,6 @@ class Profile extends React.Component {
                       </button>
                     </div>
                   }
-                  </div>
-                </PopoverBody>
-              </Popover>
-              <Popover placement='left' isOpen={this.state.popOverShowTagOpen} target='tags' toggle={this.toggleShowTagPopover}>
-                <PopoverHeader>Tags</PopoverHeader>
-                <PopoverBody>
-                  <div className='row' style={{minWidth: '150px', display: 'block', padding: '10px'}}>
-                    {
-                      this.state.subscriberTags.map((tag, i) => (
-                        <span key={i} className='tagLabel' style={{display: 'flex'}}>
-                          <label className='tagName'>{tag.tag}</label>
-                          <div className='deleteTag' style={{marginLeft: '10px'}}>
-                            <i className='fa fa-times fa-stack' onClick={() => this.removeTags(tag._id)} />
-                          </div>
-                        </span>
-                      ))
-                    }
                   </div>
                 </PopoverBody>
               </Popover>

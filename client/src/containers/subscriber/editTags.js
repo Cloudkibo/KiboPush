@@ -3,22 +3,26 @@ import { deleteTag, renameTag, loadTags } from '../../redux/actions/tags.actions
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class EditTags extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       editTag: '',
-      tags: [],
-      renameValue: ''
+      tags: this.props.currentTags,
+      renameValue: '',
+      showDeleteConfirmation: false,
+      deleteTagId: ''
     }
-    props.loadTags()
     this.editTag = this.editTag.bind(this)
     this.deleteTag = this.deleteTag.bind(this)
     this.changeTag = this.changeTag.bind(this)
     this.saveTag = this.saveTag.bind(this)
     this.handleEdit = this.handleEdit.bind(this)
     this.resetTag = this.resetTag.bind(this)
+    this.openDeleteConfirmation = this.openDeleteConfirmation.bind(this)
+    this.closeDeleteConfirmation = this.closeDeleteConfirmation.bind(this)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.tags) {
@@ -26,6 +30,18 @@ class EditTags extends React.Component {
         tags: nextProps.tags
       })
     }
+  }
+  openDeleteConfirmation (id) {
+    this.setState({
+      deleteTagId: id,
+      showDeleteConfirmation: true
+    })
+  }
+  closeDeleteConfirmation () {
+    this.setState({
+      deleteTagId: '',
+      showDeleteConfirmation: false
+    })
   }
   resetTag () {
     this.setState({
@@ -120,7 +136,7 @@ class EditTags extends React.Component {
                           </button>
                            <button className='btn btn-primary btn-sm'
                              style={{float: 'left', margin: 2}}
-                             onClick={() => this.deleteTag(tag._id)}>
+                             onClick={() => this.openDeleteConfirmation(tag._id)}>
                              Delete
                            </button>
                          </span>
@@ -157,6 +173,29 @@ class EditTags extends React.Component {
         <p> No data to display </p>
       </div>
     }
+        {
+          this.state.showDeleteConfirmation &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDeleteConfirmation}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDeleteConfirmation}>
+              <p>Are you sure you want to delete? The tag will be removed and unassigned from all the subscribers.</p>
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.deleteTag(this.state.deleteTagId)
+                  this.closeDeleteConfirmation()
+                }}>Yes
+              </button>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.closeDeleteConfirmation()
+                }}>Cancel
+              </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
       </div>
     )
   }

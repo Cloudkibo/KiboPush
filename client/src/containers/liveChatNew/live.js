@@ -16,11 +16,13 @@ import { fetchAllSessions,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { getSubscriberTags } from '../../redux/actions/tags.actions'
 import { Link } from 'react-router'
 import ChatBox from './chatbox'
 import Profile from './profile'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
@@ -121,6 +123,7 @@ class LiveChat extends React.Component {
     }
     this.props.fetchUserChats(session._id)
     this.props.markRead(session._id, this.props.sessions)
+    this.props.getSubscriberTags(session.subscriber_id, this.msg)
   }
 
   handleSearch (e) {
@@ -229,7 +232,9 @@ class LiveChat extends React.Component {
       //   }
       // }
     }
-
+    if (!nextProps.subscriberTags && nextProps.sessions[0] && nextProps.sessions[0].subscriber_id) {
+      this.props.getSubscriberTags(nextProps.sessions[0].subscriber_id._id)
+    }
     if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
       var temp = this.state.sessionsData
       for (var i = 0; i < temp.length; i++) {
@@ -302,8 +307,16 @@ class LiveChat extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -537,7 +550,7 @@ class LiveChat extends React.Component {
                   }
                   {
                     this.state.activeSession !== '' &&
-                    <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                    <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
                 )
@@ -611,7 +624,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     socketData: (state.liveChat.socketData),
     teams: (state.teamsInfo.teams),
-    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents)
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    subscriberTags: (state.tagsInfo.subscriberTags)
   }
 }
 
@@ -624,7 +638,8 @@ function mapDispatchToProps (dispatch) {
     resetUnreadSession: resetUnreadSession,
     markRead: markRead,
     showChatSessions: showChatSessions,
-    loadTeamsList: loadTeamsList
+    loadTeamsList: loadTeamsList,
+    getSubscriberTags: getSubscriberTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
