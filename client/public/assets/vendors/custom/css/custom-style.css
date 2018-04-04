@@ -131,3 +131,26 @@ a.broadcastTabs.active {
   border-bottom-color: transparent;
   cursor: default;
 }
+.tagList {
+  display: inline-block !important
+}
+.tagLabel {
+  position: relative;
+  display: inline-block;
+  margin: 5px 5px 0 0;
+  padding: 0px 5px;
+  background-color: #f4f5f8;
+  border: 1px solid #c7e4ff;
+  border-radius: 13px;
+  cursor: default;
+  color: #3c4858;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  width: '200px'
+}
+.tagName {
+  margin-top: 5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

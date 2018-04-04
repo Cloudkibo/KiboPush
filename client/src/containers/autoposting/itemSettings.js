@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import { Alert } from 'react-bs-notifier'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -28,11 +29,15 @@ class ItemSettings extends React.Component {
                   {id: 'pa_IN', text: 'pa_IN', value: 'pa_IN'}
         ]
       },
+      Tag: {
+        options: []
+      },
       stayOpen: false,
       disabled: false,
       pageValue: this.props.location.state.item.segmentationPageIds,
       genderValue: this.props.location.state.item.segmentationGender,
       localeValue: this.props.location.state.item.segmentationLocale,
+      tagValue: [],
       isActive: this.props.location.state.item.isActive ? 'Active' : 'Disabled',
       alertMessage: '',
       alertType: ''
@@ -47,11 +52,13 @@ class ItemSettings extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
   componentDidMount () {
     require('../../../public/js/jquery-3.2.0.min.js')
     require('../../../public/js/jquery.min.js')
+    this.props.loadTags()
     var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/theme-plugins.js')
     document.body.appendChild(addScript)
@@ -192,6 +199,32 @@ class ItemSettings extends React.Component {
     })
   }
 
+  initializeTagSelect (tagOptions) {
+    var self = this
+      /* eslint-disable */
+    $('#tagSelect').select2({
+      /* eslint-enable */
+      data: tagOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#tagSelect').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.setState({
@@ -208,6 +241,24 @@ class ItemSettings extends React.Component {
         alertMessage: '',
         alertType: ''
       })
+    }
+    if (this.props.tags) {
+      console.log('this.props.location.state.item.segmentationTags', this.props.location.state.item.segmentationTags)
+      let optionsTag = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        if (this.props.location.state.item.segmentationTags !== '') {
+          if (this.props.location.state.item.segmentationTags.indexOf(this.props.tags[i]._id) !== -1) {
+            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag, selected: true})
+          } else {
+            optionsTag.push({text: this.props.tags[i].tag, id: this.props.tags[i].tag})
+          }
+        } else {
+          optionsTag[i] = {text: this.props.tags[i].tag, id: this.props.tags[i].tag}
+        }
+      }
+      this.setState({Tag: {options: optionsTag}})
+      console.log('optionsTag', optionsTag)
+      this.initializeTagSelect(optionsTag)
     }
   }
 
@@ -233,13 +284,21 @@ class ItemSettings extends React.Component {
   editAutoposting () {
     var isSegmented = false
     var isActive = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmented = true
     }
     if (this.state.isActive === 'Active') {
       isActive = true
     } else {
       isActive = false
+    }
+    let tagIDs = []
+    for (let i = 0; i < this.props.tags.length; i++) {
+      for (let j = 0; j < this.state.tagValue.length; j++) {
+        if (this.props.tags[i].tag === this.state.tagValue[j]) {
+          tagIDs.push(this.props.tags[i]._id)
+        }
+      }
     }
     const autopostingData = {
       _id: this.props.location.state.item._id,
@@ -248,6 +307,7 @@ class ItemSettings extends React.Component {
       segmentationPageIds: this.state.pageValue,
       segmentationGender: this.state.genderValue,
       segmentationLocale: this.state.localeValue,
+      segmentationTags: tagIDs,
       isActive: isActive
     }
     this.props.editautoposting(autopostingData)
@@ -340,6 +400,15 @@ class ItemSettings extends React.Component {
                           <select id='localeSelect' />
                         </div>
                       </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Tags
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='tagSelect' />
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit'>
@@ -392,7 +461,9 @@ function mapStateToProps (state) {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
     successMessage: (state.autopostingInfo.successMessageEdit),
-    errorMessage: (state.autopostingInfo.errorMessageEdit)
+    errorMessage: (state.autopostingInfo.errorMessageEdit),
+    user: (state.basicInfo.user),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -400,7 +471,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       editautoposting: editautoposting,
-      clearAlertMessages: clearAlertMessages
+      clearAlertMessages: clearAlertMessages,
+      loadTags: loadTags
     },
     dispatch)
 }

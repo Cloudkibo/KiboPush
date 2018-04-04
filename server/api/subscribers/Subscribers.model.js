@@ -39,6 +39,7 @@ const subscriberSchema = new Schema({
   phoneNumber: {
     type: String
   },
+  unSubscribedBy: {type: String, default: 'subscriber'},
   isSubscribedByPhoneNumber: {
     type: Boolean,
     default: false

@@ -22,6 +22,7 @@ module.exports = function (app) {
   app.use('/api/backdoor', require('./api/backdoor'))
   app.use('/api/polls', require('./api/polls'))
   app.use('/api/workflows', require('./api/workflows'))
+  app.use('/api/bots', require('./api/smart_replies'))
   app.use('/api/subscribers', require('./api/subscribers'))
   app.use('/api/pages', require('./api/pages'))
   app.use('/api/growthtools', require('./api/growthtools'))
@@ -38,6 +39,7 @@ module.exports = function (app) {
   app.use('/api/api_settings', require('./api/api_settings'))
   app.use('/api/templates', require('./api/templates'))
   app.use('/api/URL', require('./api/URLforClickedCount'))
+  app.use('/api/teams', require('./api/teams'))
   app.use('/api/company', require('./api/companyprofile'))
   app.use('/api/reset_password', require('./api/passwordresettoken'))
   app.use('/api/email_verification', require('./api/verificationtoken'))
@@ -45,13 +47,15 @@ module.exports = function (app) {
   app.use('/api/invitations', require('./api/invitations'))
   app.use('/api/company_user', require('./api/companyuser'))
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
-
+  app.use('/api/tags', require('./api/tags'))
+  app.use('/api/notifications', require('./api/notifications'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
 
   app.use('/auth', require('./auth'))
-
   app.get('/', (req, res) => {
+    res.cookie('environment', config.env,
+      {expires: new Date(Date.now() + 900000)})
     res.sendFile(path.join(config.root, 'client/index.html'))
   })
 

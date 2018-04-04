@@ -34,6 +34,7 @@ exports.create = function (req, res) {
   if (!_.has(req.body, 'session_id')) parametersMissing = true
   if (!_.has(req.body, 'company_id')) parametersMissing = true
   if (!_.has(req.body, 'payload')) parametersMissing = true
+  if (!_.has(req.body, 'replied_by')) parametersMissing = true
 
   if (parametersMissing) {
     return res.status(400)
@@ -49,7 +50,8 @@ exports.create = function (req, res) {
     company_id: req.body.company_id, // this is admin id till we have companies
     payload: req.body.payload, // this where message content will go
     url_meta: req.body.url_meta,
-    status: 'unseen' // seen or unseen
+    status: 'unseen', // seen or unseen
+    replied_by: req.body.replied_by
   })
 
   chatMessage.save((err, chatMessage) => {

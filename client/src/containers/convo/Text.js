@@ -89,7 +89,15 @@ class Text extends React.Component {
     this.setState({button: temp})
   }
   removeButton (obj) {
-    var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
+    // var temp = this.state.button.filter((elm, index) => {
+    //   return index !== obj.id
+    // })
+    this.state.button.map((elm, index) => {
+      if (index === obj.id) {
+        this.state.button.splice(index, 1)
+      }
+    })
+    var temp = this.state.button
     this.setState({button: temp})
   }
 

@@ -256,12 +256,12 @@ class Workflows extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link to='createworkflow'>
+                    <Link to='/createWorkflow'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Workflow
+                            Create Workflows
                           </span>
                         </span>
                       </button>
@@ -341,19 +341,19 @@ class Workflows extends React.Component {
                                 style={{height: '53px'}}>
                                 <th data-field='Condition'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Condition</span>
+                                  <span style={{width: '150px'}}>Bot Title</span>
                                 </th>
                                 <th data-field='KeyWords'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Key Words</span>
+                                  <span style={{width: '150px'}}>Page Name</span>
                                 </th>
                                 <th data-field='Message'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Message</span>
+                                  <span style={{width: '150px'}}>Status</span>
                                 </th>
                                 <th data-field='Active'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Active</span>
+                                  <span style={{width: '150px'}}>Status</span>
                                 </th>
                                 <th data-field='Action'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>

@@ -6,7 +6,7 @@ const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
-const TAG = 'api/polls/polls.controller.js'
+const TAG = 'api/templates/templates.controller.js'
 
 exports.allPolls = function (req, res) {
   TemplatePolls.find({}, (err, polls) => {

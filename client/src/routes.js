@@ -52,6 +52,7 @@ import Autoposting from './containers/autoposting/autoposting'
 import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
+import LiveChatNew from './containers/liveChatNew/live'
 import Settings from './containers/settings/settings'
 import CreateSurvey from './containers/templates/createSurvey'
 import CreateTemplatePoll from './containers/templates/createPoll'
@@ -94,6 +95,9 @@ import AutopostingWizard from './containers/wizard/autoposting'
 import WorkflowWizard from './containers/wizard/workflow'
 import MenuWizard from './containers/wizard/menu'
 import FinishWizard from './containers/wizard/finish'
+import CreateTeam from './containers/teams/createTeam'
+import Teams from './containers/teams/teams'
+import EditTeam from './containers/teams/editTeam'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -167,6 +171,7 @@ const routes = (
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
     <Route path='/live' component={LiveChat} onEnter={requireAuth} />
+    <Route path='/liveChat' component={LiveChatNew} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />
     <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
@@ -217,6 +222,9 @@ const routes = (
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />
+    <Route path='/createTeam' component={CreateTeam} onEnter={requireAuth} />
+    <Route path='/teams' component={Teams} onEnter={requireAuth} />
+    <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
   </Route>
 
 )

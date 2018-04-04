@@ -104,6 +104,7 @@ export function sendPollDirectly (poll, msg) {
   return (dispatch) => {
     callApi('polls/sendPollDirectly', 'post', poll)
       .then(res => {
+        console.log('response from polls', res)
         if (res.status === 'success') {
           msg.success('Poll sent successfully')
         } else {

@@ -12,6 +12,7 @@ const AutopostingMessages = require('../../api/autoposting_messages/autoposting_
 const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
 let request = require('request')
 let _ = require('lodash')
+let utility = require('../../api/broadcasts/broadcasts.utility')
 
 const logger = require('../../components/logger')
 const TAG = 'config/integrations/twitter.js'
@@ -57,7 +58,7 @@ function connect () {
                 }
 
                 if (postingItem.isSegmented) {
-                  if (postingItem.segmentationPageIds) {
+                  if (postingItem.segmentationPageIds && postingItem.segmentationPageIds.length > 0) {
                     pagesFindCriteria = _.merge(pagesFindCriteria, {
                       pageId: {
                         $in: postingItem.segmentationPageIds
@@ -65,16 +66,12 @@ function connect () {
                     })
                   }
                 }
+
                 Pages.find(pagesFindCriteria, (err, pages) => {
                   if (err) {
                     logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
-                  logger.serverLog(TAG,
-                    `Pages records got for tweet : ${pages.length}`, true)
                   pages.forEach(page => {
-                    logger.serverLog(TAG,
-                      `Page in the loop for tweet ${page.pageName}`, true)
-
                     let subscriberFindCriteria = {
                       pageId: page._id,
                       isSubscribed: true
@@ -99,18 +96,12 @@ function connect () {
                       }
                     }
 
-                    logger.serverLog(TAG,
-                      `Subscribers Criteria for segmentation ${JSON.stringify(
-                        subscriberFindCriteria)}`, true)
                     Subscribers.find(subscriberFindCriteria,
                       (err, subscribers) => {
                         if (err) {
                           return logger.serverLog(TAG,
                             `Error ${JSON.stringify(err)}`)
                         }
-
-                        logger.serverLog(TAG,
-                          `Total Subscribers of page ${page.pageName} are ${subscribers.length}`, true)
 
                         if (subscribers.length > 0) {
                           let newMsg = new AutopostingMessages({
@@ -125,78 +116,78 @@ function connect () {
 
                           newMsg.save((err, savedMsg) => {
                             if (err) logger.serverLog(TAG, err)
-                            logger.serverLog(TAG, 'autoposting message saved', true)
-
-                            subscribers.forEach(subscriber => {
-                              let messageData = {}
-                              if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
-                                messageData = {
-                                  'recipient': JSON.stringify({
-                                    'id': subscriber.senderId
-                                  }),
-                                  'message': JSON.stringify({
-                                    'text': tweet.text,
-                                    'metadata': 'This is a meta data for tweet'
-                                  })
-                                }
-                                sendAutopostingMessage(messageData, page, savedMsg)
-                              } else {
-                                let URLObject = new URL({
-                                  originalURL: tweet.entities.media[0].url,
-                                  subscriberId: subscriber._id,
-                                  module: {
-                                    id: savedMsg._id,
-                                    type: 'autoposting'
-                                  }
-                                })
-
-                                URLObject.save((err, savedurl) => {
-                                  if (err) logger.serverLog(TAG, err)
-
-                                  let newURL = config.domain + '/api/URL/' + savedurl._id
+                            utility.applyTagFilterIfNecessary({body: postingItem}, subscribers, (taggedSubscribers) => {
+                              taggedSubscribers.forEach(subscriber => {
+                                let messageData = {}
+                                if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
                                   messageData = {
                                     'recipient': JSON.stringify({
                                       'id': subscriber.senderId
                                     }),
                                     'message': JSON.stringify({
-                                      'attachment': {
-                                        'type': 'template',
-                                        'payload': {
-                                          'template_type': 'generic',
-                                          'elements': [
-                                            {
-                                              'title': tweet.text,
-                                              'image_url': tweet.entities.media[0].media_url,
-                                              'subtitle': 'kibopush.com',
-                                              'buttons': [
-                                                {
-                                                  'type': 'web_url',
-                                                  'url': newURL,
-                                                  'title': 'View Tweet'
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      }
+                                      'text': tweet.text,
+                                      'metadata': 'This is a meta data for tweet'
                                     })
                                   }
                                   sendAutopostingMessage(messageData, page, savedMsg)
+                                } else {
+                                  let URLObject = new URL({
+                                    originalURL: tweet.entities.media[0].url,
+                                    subscriberId: subscriber._id,
+                                    module: {
+                                      id: savedMsg._id,
+                                      type: 'autoposting'
+                                    }
+                                  })
+
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+
+                                    let newURL = config.domain + '/api/URL/' + savedurl._id
+                                    messageData = {
+                                      'recipient': JSON.stringify({
+                                        'id': subscriber.senderId
+                                      }),
+                                      'message': JSON.stringify({
+                                        'attachment': {
+                                          'type': 'template',
+                                          'payload': {
+                                            'template_type': 'generic',
+                                            'elements': [
+                                              {
+                                                'title': tweet.text,
+                                                'image_url': tweet.entities.media[0].media_url,
+                                                'subtitle': 'kibopush.com',
+                                                'buttons': [
+                                                  {
+                                                    'type': 'web_url',
+                                                    'url': newURL,
+                                                    'title': 'View Tweet'
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      })
+                                    }
+                                    sendAutopostingMessage(messageData, page, savedMsg)
+                                  })
+                                }
+
+                                let newSubscriberMsg = new AutopostingSubscriberMessages({
+                                  pageId: page.pageId,
+                                  companyId: postingItem.companyId,
+                                  autopostingId: postingItem._id,
+                                  autoposting_messages_id: savedMsg._id,
+                                  subscriberId: subscriber.senderId,
+                                  payload: messageData
                                 })
-                              }
 
-                              let newSubscriberMsg = new AutopostingSubscriberMessages({
-                                pageId: page.pageId,
-                                companyId: postingItem.companyId,
-                                autopostingId: postingItem._id,
-                                autoposting_messages_id: savedMsg._id,
-                                subscriberId: subscriber.senderId,
-                                payload: messageData
-                              })
-
-                              newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                                if (err) logger.serverLog(TAG, err)
-                                logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                                newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                                })
                               })
                             })
                           })
@@ -231,9 +222,9 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
           `At send tweet broadcast response ${JSON.stringify(
             res.body.error)}`)
         } else {
-          logger.serverLog(TAG,
-            `At send tweet broadcast response ${JSON.stringify(
-            res.body.message_id)}`, true)
+          // logger.serverLog(TAG,
+          //   `At send tweet broadcast response ${JSON.stringify(
+          //   res.body.message_id)}`, true)
         }
       }
     })

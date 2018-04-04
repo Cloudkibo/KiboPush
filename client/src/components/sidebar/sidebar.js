@@ -197,6 +197,23 @@ class Sidebar extends Component {
     }
   }
 
+  showLiveChatNewItem () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-chat-1' />
+              <span className='m-menu__link-text'>Live Chat (New)</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showAutoPostingItem () {
     if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
@@ -254,7 +271,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-users' />
+              <i className='m-menu__link-icon flaticon-user-ok' />
               <span className='m-menu__link-text'>Subscribers</span>
             </Link>
           </li>
@@ -301,7 +318,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' />
+              <i className='m-menu__link-icon flaticon-user-add' />
               <span className='m-menu__link-text'>Invite Members</span>
             </Link>
           </li>
@@ -318,8 +335,25 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/members' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' />
+              <i className='m-menu__link-icon flaticon-users' />
               <span className='m-menu__link-text'>Members</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showTeams () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/teams' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon fa fa-group' />
+              <span className='m-menu__link-text'>Teams</span>
             </Link>
           </li>
         )
@@ -349,6 +383,7 @@ class Sidebar extends Component {
               {this.showPollsItem()}
               {this.showWorkflowsItem()}
               {this.showLiveChatItem()}
+              {this.showLiveChatNewItem()}
               {this.showAutoPostingItem()}
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
@@ -356,6 +391,7 @@ class Sidebar extends Component {
               {this.showCreatePhoneList()}
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
+              {this.showTeams()}
               {this.showBroadcastTemplates()}
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>

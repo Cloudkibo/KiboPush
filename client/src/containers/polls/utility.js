@@ -1,9 +1,15 @@
 import _ from 'underscore'
 
-export function checkConditions (pageValue, genderValue, localeValue, subscribers) {
+export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers) {
   let subscribersMatchPages = []
   let subscribersMatchLocale = []
   let subscribersMatchGender = []
+  let subscribersMatchTag = []
+
+  // Need to add tagValue.length === 0 once tags are complete
+  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0) {
+    return true
+  }
   if (pageValue.length > 0) {
     for (var i = 0; i < pageValue.length; i++) {
       for (var j = 0; j < subscribers.length; j++) {
@@ -31,29 +37,30 @@ export function checkConditions (pageValue, genderValue, localeValue, subscriber
       }
     }
   }
-  if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-    var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
-    if (result.length === 0) {
-      return false
+  // Uncomment once tags are complete
+  if (tagValue.length > 0) {
+    for (var o = 0; o < subscribers.length; o++) {
+      for (var p = 0; p < tagValue.length; p++) {
+        for (var q = 0; q < subscribers[o].tags.length; q++) {
+          if (subscribers[o].tags[q] === tagValue[p]) {
+            subscribersMatchTag.push(subscribers[o])
+          }
+        }
+      }
     }
-  } else if (pageValue.length > 0 && genderValue.length) {
-    if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
-      return false
-    }
-  } else if (pageValue.length > 0 && localeValue.length) {
-    if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
-      return false
-    }
-  } else if (genderValue.length > 0 && localeValue.length) {
-    if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
-      return false
-    }
-  } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
-    return false
-  } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
-    return false
-  } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
+  }
+  if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag).length === 0) {
     return false
   }
   return true
+}
+
+function intersection (...arrays) {
+  let nonEmptyArrays = []
+  for (let i = 0; i < arrays.length; i++) {
+    if (arrays[i].length > 0) {
+      nonEmptyArrays.push(arrays[i])
+    }
+  }
+  return _.intersection(...nonEmptyArrays)
 }

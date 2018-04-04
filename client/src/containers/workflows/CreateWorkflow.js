@@ -38,9 +38,6 @@ class CreateWorkflow extends React.Component {
       alertMessage: '',
       alertType: ''
     }
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
   }
 
   componentDidMount () {

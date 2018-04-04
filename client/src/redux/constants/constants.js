@@ -87,6 +87,7 @@ export const RESET_SOCKET = 'RESET_SOCKET'
 export const LOADING_URL_META = 'LOADING_URL_META'
 export const GET_URL_META = 'GET_URL_META'
 export const UPDATE_CHAT = 'UPDATE_CHAT'
+export const CHANGE_STATUS = 'CHANGE_STATUS'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
@@ -168,6 +169,11 @@ export const WORKFLOW_SUCCESS = 'WORKFLOW_SUCCESS'
 export const EDIT_WORKFLOW_FAILURE = 'EDIT_WORKFLOW_FAILURE'
 export const CLEAR_WORKFLOW_ALERT_MESSAGES = 'CLEAR_WORKFLOW_ALERT_MESSAGES'
 
+// constants for teams
+export const SHOW_TEAMS_LIST = 'SHOW_TEAMS_LIST'
+export const SHOW_TEAM_PAGES = 'SHOW_TEAM_PAGES'
+export const SHOW_TEAM_AGENTS = 'SHOW_TEAM_AGENTS'
+
 // other constants
 export const SEND_MESSAGE_SUCCESS = 'SEND_MESSAGE_SUCCESS'
 export const SEND_MESSAGE_FAILURE = 'SEND_MESSAGE_FAILURE'
@@ -175,3 +181,10 @@ export const ADD_FILE_URL = 'ADD_FILE_URL'
 export const ADD_FILE_INFO = 'ADD_FILE_INFO'
 export const SET_LOADING = 'SET_LOADING'
 export const GET_STARTED_COMPLETED = 'GET_STARTED_COMPLETED'
+
+// constants for tags
+export const LOAD_TAGS_LIST = 'LOAD_TAGS_LIST'
+export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
+
+// constants for notifications
+export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'

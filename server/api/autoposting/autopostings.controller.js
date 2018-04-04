@@ -99,6 +99,9 @@ exports.create = function (req, res) {
             autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
               ? req.body.segmentationLocale
               : null
+            autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+              ? req.body.segmentationTags
+              : null
           }
           if (req.body.subscriptionType === 'twitter') {
             let url = req.body.subscriptionUrl
@@ -190,6 +193,9 @@ exports.create = function (req, res) {
                 autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
                   ? req.body.segmentationLocale
                   : null
+                autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                  ? req.body.segmentationTags
+                  : null
               }
               const autoPosting = new AutoPosting(autoPostingPayload)
               autoPosting.save((err, createdRecord) => {
@@ -242,6 +248,9 @@ exports.create = function (req, res) {
               autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
                 ? req.body.segmentationLocale
                 : null
+              autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                ? req.body.segmentationTags
+                : null
             }
             const autoPosting = new AutoPosting(autoPostingPayload)
             autoPosting.save((err, createdRecord) => {
@@ -290,6 +299,7 @@ exports.edit = function (req, res) {
       autoposting.segmentationPageIds = req.body.segmentationPageIds
       autoposting.segmentationGender = req.body.segmentationGender
       autoposting.segmentationLocale = req.body.segmentationLocale
+      autoposting.segmentationTags = req.body.segmentationTags
       autoposting.isActive = req.body.isActive
       autoposting.save((err2) => {
         if (err2) {

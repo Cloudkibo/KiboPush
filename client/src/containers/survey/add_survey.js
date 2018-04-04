@@ -17,6 +17,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class AddSurvey extends React.Component {
   constructor (props, context) {
@@ -24,6 +25,7 @@ class AddSurvey extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
+    props.loadTags()
     this.state = {
       questionType: 'multichoice',
       surveyQuestions: [],
@@ -54,6 +56,7 @@ class AddSurvey extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       steps: [],
       showDropDown: false,
       selectedRadio: '',
@@ -66,6 +69,7 @@ class AddSurvey extends React.Component {
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -196,6 +200,41 @@ class AddSurvey extends React.Component {
     })
   }
 
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag,
+        text: tagOptions[i].tag
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists) {
       let options = []
@@ -219,6 +258,9 @@ class AddSurvey extends React.Component {
         pathname: '/surveys'
 
       })
+    }
+    if (this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
   }
   updateDescription (e) {
@@ -289,11 +331,19 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var surveybody = {
           survey: {
             title: this.state.title, // title of survey
@@ -305,6 +355,7 @@ class AddSurvey extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
@@ -518,7 +569,7 @@ class AddSurvey extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], tagValue: []})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }
@@ -584,15 +635,23 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
-        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
+          let tagIDs = []
+          for (let i = 0; i < this.props.tags.length; i++) {
+            for (let j = 0; j < this.state.tagValue.length; j++) {
+              if (this.props.tags[i].tag === this.state.tagValue[j]) {
+                tagIDs.push(this.props.tags[i]._id)
+              }
+            }
+          }
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey
@@ -604,6 +663,7 @@ class AddSurvey extends React.Component {
             segmentationPageIds: this.state.pageValue,
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
+            segmentationTags: tagIDs,
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
@@ -779,6 +839,9 @@ class AddSurvey extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
                           </div>
                           : <div className='m-form'>
                             <div className='form-group m-form__group' style={{marginTop: '10px'}}>
@@ -786,6 +849,9 @@ class AddSurvey extends React.Component {
                             </div>
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
                             </div>
                           </div>
                           }
@@ -837,7 +903,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -848,7 +915,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
-    sendSurveyDirectly: sendSurveyDirectly
+    sendSurveyDirectly: sendSurveyDirectly,
+    loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddSurvey)
