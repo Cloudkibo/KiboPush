@@ -522,7 +522,7 @@ class ChatBox extends React.Component {
         let notificationsData = {
           message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
           category: {type: 'chat_session', id: this.props.currentSession._id},
-          agentIds: agentIds,
+          agentIds: [this.props.user._id],
           companyId: this.props.currentSession.company_id
         }
         this.props.sendNotifications(notificationsData)
@@ -534,7 +534,7 @@ class ChatBox extends React.Component {
         let notificationsData = {
           message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
           category: {type: 'chat_session', id: this.props.currentSession._id},
-          agentIds: agentIds,
+          agentIds: [this.props.user._id],
           companyId: this.props.currentSession.company_id
         }
         this.props.sendNotifications(notificationsData)
