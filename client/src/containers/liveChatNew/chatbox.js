@@ -13,7 +13,9 @@ import {
   sendChatMessage,
   fetchUrlMeta,
   markRead,
-  changeStatus
+  changeStatus,
+  sendNotifications,
+  fetchTeamAgents
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -101,6 +103,8 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
+    this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -474,9 +478,70 @@ class ChatBox extends React.Component {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
 
+  handleAgentsForResolved (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  handleAgentsForReopen (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
   changeStatus (e, status, id) {
     this.props.changeActiveSessionFromChatbox()
     this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
+    if (status === 'resolved' && this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        let notificationsData = {
+          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+          category: {type: 'chat_session', id: this.props.currentSession._id},
+          agentIds: agentIds,
+          companyId: this.props.currentSession.company_id
+        }
+        this.props.sendNotifications(notificationsData)
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
+      }
+    } else if (status === 'new' && this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        let notificationsData = {
+          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+          category: {type: 'chat_session', id: this.props.currentSession._id},
+          agentIds: agentIds,
+          companyId: this.props.currentSession.company_id
+        }
+        this.props.sendNotifications(notificationsData)
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
+      }
+    }
   }
 
   render () {
@@ -1223,7 +1288,9 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
     markRead: (markRead),
-    changeStatus: (changeStatus)
+    changeStatus: (changeStatus),
+    sendNotifications: (sendNotifications),
+    fetchTeamAgents: (fetchTeamAgents)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)
