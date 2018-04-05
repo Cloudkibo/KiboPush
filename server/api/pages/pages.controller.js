@@ -511,7 +511,7 @@ exports.addPages = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      Pages.find({companyId: companyUser.companyIdd}, (err, pages) => {
+      Pages.find({companyId: companyUser.companyId}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
