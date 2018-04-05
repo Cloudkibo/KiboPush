@@ -52,7 +52,6 @@ import Autoposting from './containers/autoposting/autoposting'
 import AutopostingMessages from './containers/autoposting/autoposting_messages'
 import ItemSettings from './containers/autoposting/itemSettings'
 import LiveChat from './containers/liveChat/live'
-import LiveChatNew from './containers/liveChatNew/live'
 import Settings from './containers/settings/settings'
 import CreateSurvey from './containers/templates/createSurvey'
 import CreateTemplatePoll from './containers/templates/createPoll'
@@ -170,8 +169,7 @@ const routes = (
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
-    <Route path='/live' component={LiveChat} onEnter={requireAuth} />
-    <Route path='/liveChat' component={LiveChatNew} onEnter={requireAuth} />
+    <Route path='/liveChat' component={LiveChat} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />
     <Route path='/stackedBar' component={StackedBar} onEnter={requireAuth} />
