@@ -558,7 +558,6 @@ class ChatBox extends React.Component {
   }
 
   changeStatus (e, status, id) {
-    this.props.changeActiveSessionFromChatbox()
     this.props.changeStatus({_id: id, status: status})
     if (status === 'resolved' && this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
@@ -585,6 +584,7 @@ class ChatBox extends React.Component {
         this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
       }
     }
+    this.props.changeActiveSessionFromChatbox()
   }
 
   render () {
