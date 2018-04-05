@@ -539,7 +539,7 @@ exports.addPages = function (req, res) {
             }
             let pagesSend = []
             for (let i = 0; i < pages.length; i++) {
-              if (exists(pages, pages[i]._id) === false) {
+              if (exists(pagesSend, pages[i]._id) === false) {
                 pagesSend.push(pages[i])
               }
             }
