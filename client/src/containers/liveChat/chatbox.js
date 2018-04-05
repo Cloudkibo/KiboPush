@@ -329,35 +329,35 @@ class ChatBox extends React.Component {
         } else if (isUrl !== null && isUrl !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.props.sendChatMessage(data)
           this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
           payload = this.setDataPayload('text')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.props.sendChatMessage(data)
           this.setState({textAreaValue: ''})
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.componentType === 'gif') {
           payload = this.setDataPayload('gif')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.props.sendChatMessage(data)
           this.closeGif()
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.componentType === 'sticker') {
           payload = this.setDataPayload('sticker')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.props.sendChatMessage(data)
           this.hideStickers()
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.componentType === 'thumbsUp') {
           payload = this.setDataPayload('thumbsUp')
           data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data, {userId: this.props.user._id})
+          this.props.sendChatMessage(data)
           data.format = 'convos'
           this.props.userChat.push(data)
           this.setState({textAreaValue: ''})
@@ -559,7 +559,7 @@ class ChatBox extends React.Component {
 
   changeStatus (e, status, id) {
     this.props.changeActiveSessionFromChatbox()
-    this.props.changeStatus({_id: id, status: status}, {userId: this.props.user._id})
+    this.props.changeStatus({_id: id, status: status})
     if (status === 'resolved' && this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
         let notificationsData = {
