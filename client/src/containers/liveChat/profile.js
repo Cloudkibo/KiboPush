@@ -167,7 +167,7 @@ class Profile extends React.Component {
       agentName: this.state.agentObject.name,
       sessionId: this.props.currentSession._id
     }
-    this.props.assignToAgent(data, {userId: this.props.user._id})
+    this.props.assignToAgent(data)
     if (this.state.agentObject._id !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been assigned to you.`,
@@ -204,7 +204,7 @@ class Profile extends React.Component {
       sessionId: this.props.currentSession._id
     }
     this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
-    this.props.assignToTeam(data, {userId: this.props.user._id})
+    this.props.assignToTeam(data)
   }
 
   toggleAssignTeam () {
@@ -249,7 +249,7 @@ class Profile extends React.Component {
                   <div style={{display: 'inline-block', padding: '5px'}}>
                     <button className='btn btn-primary' onClick={(e) => {
                       this.props.changeActiveSessionFromChatbox()
-                      this.props.unSubscribe({subscriber_id: this.state.subscriber, page_id: this.state.page}, {company_id: this.props.user._id})
+                      this.props.unSubscribe({subscriber_id: this.state.subscriber, page_id: this.state.page})
                       this.closeDialog()
                     }}>
                       Yes

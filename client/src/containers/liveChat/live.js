@@ -316,6 +316,7 @@ class LiveChat extends React.Component {
   }
 
   render () {
+    console.log('State in live', this.state)
     var alertOptions = {
       offset: 14,
       position: 'top right',
