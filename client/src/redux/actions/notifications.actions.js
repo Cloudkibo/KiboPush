@@ -8,7 +8,7 @@ export function showNotifications (data) {
   })
   return {
     type: ActionTypes.SHOW_NOTIFICATIONS,
-    sorted
+    data: sorted
   }
 }
 
