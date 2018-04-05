@@ -231,7 +231,7 @@ class Header extends React.Component {
                             <div className='m-dropdown__content'>
                               <div className='tab-content'>
                                 <div className='tab-pane active' id='topbar_notifications_notifications' role='tabpanel' aria-expanded='true'>
-                                  <div className='m-scrollable mCustomScrollbar _mCS_2 mCS-autoHide mCS_no_scrollbar' data-scrollable='true' data-max-height='250' data-mobile-max-height='200' style={{maxHeight: '250px', height: '250px', position: 'relative', overflow: 'visible'}}><div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabindex='0' style={{maxHeight: '250px'}}><div id='mCSB_2_container' className='mCSB_container mCS_y_hidden mCS_no_scrollbar_y' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
+                                  <div className='m-scrollable mCustomScrollbar _mCS_2 mCS-autoHide mCS_no_scrollbar' data-scrollable='true' data-max-height='250' data-mobile-max-height='200' style={{maxHeight: '250px', height: '250px', position: 'relative', overflow: 'visible'}}><div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: '250px'}}><div id='mCSB_2_container' className='mCSB_container mCS_y_hidden mCS_no_scrollbar_y' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
                                     <div className='m-list-timeline m-list-timeline--skin-light'>
                                       <div className='m-list-timeline__items'>
                                         {
