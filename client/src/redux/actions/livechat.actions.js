@@ -84,16 +84,9 @@ export function showChangeStatus (data) {
   }
 }
 
-export function fetchSessions (companyid) {
+export function fetchSessions () {
   return (dispatch) => {
-    callApi('sessions', 'post', companyid)
-      .then(res => dispatch(showChatSessions(res.payload)))
-  }
-}
-
-export function fetchAllSessions () {
-  return (dispatch) => {
-    callApi('sessions/getAll')
+    callApi('sessions')
       .then(res => dispatch(showChatSessions(res.payload)))
   }
 }
@@ -149,7 +142,7 @@ export function sendAttachment (data, handleSendAttachment) {
 export function sendChatMessage (data, userId) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions(userId))
     })
   }
 }
@@ -179,7 +172,7 @@ export function markRead (sessionid, sessions) {
 export function changeStatus (data, userId) {
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions(userId))
     })
   }
 }
@@ -195,7 +188,7 @@ export function unSubscribe (data, companyId) {
 export function assignToAgent (data, userId) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions(userId))
     })
   }
 }
@@ -210,7 +203,7 @@ export function assignToTeam (data, userId) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions(userId))
     })
   }
 }
