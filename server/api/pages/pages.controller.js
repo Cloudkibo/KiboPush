@@ -496,6 +496,15 @@ exports.otherPages = function (req, res) {
     })
 }
 
+function exists (list, content) {
+  for (let i = 0; i < list.length; i++) {
+    if (JSON.stringify(list[i]._id) === JSON.stringify(content)) {
+      return true
+    }
+  }
+  return false
+}
+
 exports.addPages = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
@@ -528,7 +537,13 @@ exports.addPages = function (req, res) {
                 }
               }
             }
-            res.status(201).json({status: 'success', payload: pages})
+            let pagesSend = []
+            for (let i = 0; i < pages.length; i++) {
+              if (exists(pages, pages[i]._id) === false) {
+                pagesSend.push(pages[i])
+              }
+            }
+            res.status(201).json({status: 'success', payload: pagesSend})
           })
       })
       //  return res.status(200).json({ status: 'success', payload: user});
