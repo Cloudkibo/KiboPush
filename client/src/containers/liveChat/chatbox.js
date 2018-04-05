@@ -129,6 +129,7 @@ class ChatBox extends React.Component {
   }
 
   getDisabledValue () {
+    this.setState({disabledValue: false})
     if (this.props.currentSession.is_assigned) {
       if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
         this.setState({disabledValue: true})
@@ -558,33 +559,42 @@ class ChatBox extends React.Component {
   }
 
   changeStatus (e, status, id) {
-    this.props.changeStatus({_id: id, status: status})
-    if (status === 'resolved' && this.props.currentSession.is_assigned) {
-      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
-        let notificationsData = {
-          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
-          category: {type: 'chat_session', id: this.props.currentSession._id},
-          agentIds: [this.props.currentSession.assigned_to.id],
-          companyId: this.props.currentSession.company_id
+    if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only assigned agent can resolve it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only assigned agent can reopen it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only agents who are part of assigned team can resolve chat session.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
+    } else {
+      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox())
+      if (status === 'resolved' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
         }
-        this.props.sendNotifications(notificationsData)
-      } else if (this.props.currentSession.assigned_to.type === 'team') {
-        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
-      }
-    } else if (status === 'new' && this.props.currentSession.is_assigned) {
-      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
-        let notificationsData = {
-          message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
-          category: {type: 'chat_session', id: this.props.currentSession._id},
-          agentIds: [this.props.currentSession.assigned_to.id],
-          companyId: this.props.currentSession.company_id
+      } else if (status === 'new' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
         }
-        this.props.sendNotifications(notificationsData)
-      } else if (this.props.currentSession.assigned_to.type === 'team') {
-        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
       }
     }
-    this.props.changeActiveSessionFromChatbox()
   }
 
   render () {
