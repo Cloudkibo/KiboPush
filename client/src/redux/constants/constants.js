@@ -190,3 +190,6 @@ export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
+
+// constants for bots
+export const SHOW_BOTS = 'SHOW_BOTS'
