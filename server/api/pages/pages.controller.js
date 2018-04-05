@@ -498,7 +498,7 @@ exports.otherPages = function (req, res) {
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
-    if (JSON.stringify(list[i]._id) === JSON.stringify(content)) {
+    if (list[i].pageId === content) {
       return true
     }
   }
@@ -539,7 +539,7 @@ exports.addPages = function (req, res) {
             }
             let pagesSend = []
             for (let i = 0; i < pages.length; i++) {
-              if (exists(pagesSend, pages[i]._id) === false) {
+              if (exists(pagesSend, pages[i].pageId) === false) {
                 pagesSend.push(pages[i])
               }
             }
