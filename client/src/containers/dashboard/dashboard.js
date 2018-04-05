@@ -114,7 +114,7 @@ class Dashboard extends React.Component {
               (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
             ? null
             : <div>
-              {this.props.user && !this.props.user.role === 'agent' && !this.props.user.wizardSeen &&
+              {this.props.user && !this.props.user.wizardSeen &&
               <GettingStarted pages={this.props.pages} />}
             </div>
           }
