@@ -330,7 +330,7 @@ class Sidebar extends Component {
   }
 
   showTeams () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>

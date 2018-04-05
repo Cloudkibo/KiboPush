@@ -169,10 +169,11 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data) {
+export function changeStatus (data, handleActiveSession) {
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
       dispatch(fetchSessions())
+      handleActiveSession()
     })
   }
 }
