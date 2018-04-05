@@ -511,32 +511,27 @@ exports.addPages = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      Users.findOne({fbId: req.user.fbId}, (err, user) => {
+      Pages.find({companyId: companyUser.companyIdd}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
-        Pages.find({userId: req.user._id}, (err, pages) => {
-          if (err) {
-            return res.status(500).json({status: 'failed', description: err})
-          }
-          Pages.find({companyId: companyUser.companyId, connected: true},
-            (err, connectedPages) => {
-              if (err) {
-                return res.status(500)
-                  .json({status: 'failed', description: err})
-              }
-              for (let a = 0; a < connectedPages.length; a++) {
-                for (let b = 0; b < pages.length; b++) {
-                  if (connectedPages[a].pageId === pages[b].pageId) {
-                    pages[b].connected = true
-                  }
+        Pages.find({companyId: companyUser.companyId, connected: true},
+          (err, connectedPages) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: err})
+            }
+            for (let a = 0; a < connectedPages.length; a++) {
+              for (let b = 0; b < pages.length; b++) {
+                if (connectedPages[a].pageId === pages[b].pageId) {
+                  pages[b].connected = true
                 }
               }
-              res.status(201).json({status: 'success', payload: pages})
-            })
-        })
-        //  return res.status(200).json({ status: 'success', payload: user});
+            }
+            res.status(201).json({status: 'success', payload: pages})
+          })
       })
+      //  return res.status(200).json({ status: 'success', payload: user});
     })
 }
 exports.createWelcomeMessage = function (req, res) {
