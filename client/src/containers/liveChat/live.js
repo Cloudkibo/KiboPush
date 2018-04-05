@@ -83,6 +83,7 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSessionFromChatbox () {
+    console.log('in changeActiveSessionFromChatbox')
     this.setState({activeSession: ''})
   }
 
@@ -623,7 +624,7 @@ class LiveChat extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('live.js', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
