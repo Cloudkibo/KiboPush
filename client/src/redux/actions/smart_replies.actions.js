@@ -28,6 +28,7 @@ export function loadBotsList () {
 }
 
 export function createBot (data) {
+  console.log('createBot data', data)
   return (dispatch) => {
     callApi('bots/create', 'post', data)
       .then(res => {
