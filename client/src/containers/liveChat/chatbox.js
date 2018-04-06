@@ -120,7 +120,7 @@ class ChatBox extends React.Component {
 
   handleAgentsForDisbaledValue (teamAgents) {
     let agentIds = []
-    consoe.log('handleAgentsForDisbaledValue', teamAgents)
+    console.log('handleAgentsForDisbaledValue', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
       agentIds.push(teamAgents[i].agentId._id)
     }
