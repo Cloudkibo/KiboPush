@@ -35,6 +35,7 @@ exports.index = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
       }
+      logger.serverLog(TAG, `Sessions Found ${JSON.stringify(sessions)}`)
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
         if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {

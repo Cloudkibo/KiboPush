@@ -87,7 +87,10 @@ export function showChangeStatus (data) {
 export function fetchSessions () {
   return (dispatch) => {
     callApi('sessions')
-      .then(res => dispatch(showChatSessions(res.payload)))
+      .then(res => {
+        console.log('fetchSessions response', res)
+        dispatch(showChatSessions(res.payload))
+      })
   }
 }
 
