@@ -357,8 +357,8 @@ class Bot extends React.Component {
                           <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
                             <option value='' disabled>Filter by Pages...</option>
                             {
-                              this.props.teamUniquePages && this.props.teamUniquePages.length > 0 &&
-                              this.props.teamUniquePages.map((page, i) => (
+                              this.props.pages && this.props.pages.length > 0 &&
+                              this.props.pages.map((page, i) => (
                                 <option key={i} value={page._id}>{page.pageName}</option>
                               ))
                             }
