@@ -126,6 +126,7 @@ class ChatBox extends React.Component {
     }
     console.log('agentIds', agentIds)
     if (agentIds.indexOf(this.props.user._id) !== -1) {
+      console.log('this.props.user._id', this.props.user._id)
       this.setState({disabledValue: true})
     }
   }
