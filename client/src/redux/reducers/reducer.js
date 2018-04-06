@@ -24,6 +24,7 @@ import {backdoorInfo} from './backdoor.reducer'
 import {teamsInfo} from './teams.reducer'
 import {tagsInfo} from './tags.reducer'
 import {notificationsInfo} from './notifications.reducer'
+import {botsInfo} from './smart_replies.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -49,7 +50,8 @@ const appReducer = combineReducers({
   listsInfo,
   teamsInfo,
   tagsInfo,
-  notificationsInfo
+  notificationsInfo,
+  botsInfo
 })
 
 export default appReducer

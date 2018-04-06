@@ -193,3 +193,4 @@ export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
 
 // constants for bots
 export const SHOW_BOTS = 'SHOW_BOTS'
+export const SHOW_CREATED_BOT = 'SHOW_CREATED_BOT'

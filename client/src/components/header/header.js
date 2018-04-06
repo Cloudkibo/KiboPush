@@ -385,20 +385,20 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
+                                {this.props.user && this.props.user.role !== 'agent' &&
                                 <li className='m-nav__item'>
                                   <Link to='/addPageWizard' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-list-2' />
                                     <span className='m-nav__link-text'>Setup Using Wizard</span>
                                   </Link>
                                 </li>
-                                {this.props.user && this.props.user.isSuperUser &&
-                                  <li className='m-nav__item'>
-                                    <Link to='/live' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </Link>
-                                  </li>
                                 }
+                                <li className='m-nav__item'>
+                                  <Link to='/liveChat' className='m-nav__link'>
+                                    <i className='m-nav__link-icon flaticon-chat-1' />
+                                    <span className='m-nav__link-text'>Messages</span>
+                                  </Link>
+                                </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>
