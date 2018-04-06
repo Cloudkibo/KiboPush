@@ -120,9 +120,11 @@ class ChatBox extends React.Component {
 
   handleAgentsForDisbaledValue (teamAgents) {
     let agentIds = []
+    consoe.log('handleAgentsForDisbaledValue', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
       agentIds.push(teamAgents[i].agentId._id)
     }
+    console.log('agentIds', agentIds)
     if (agentIds.indexOf(this.props.user._id) !== -1) {
       this.setState({disabledValue: true})
     }
