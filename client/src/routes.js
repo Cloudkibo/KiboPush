@@ -97,6 +97,7 @@ import FinishWizard from './containers/wizard/finish'
 import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
+import Bots from './containers/smart_replies/bots'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -223,6 +224,8 @@ const routes = (
     <Route path='/createTeam' component={CreateTeam} onEnter={requireAuth} />
     <Route path='/teams' component={Teams} onEnter={requireAuth} />
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
+    <Route path='/bots' component={Bots} onEnter={requireAuth} />
+
   </Route>
 
 )
