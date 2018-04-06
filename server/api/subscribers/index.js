@@ -13,4 +13,16 @@ router.get('/',
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.index)
 
+router.get('/allSubscribers',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.allSubscribers)
+
+router.get('/subscribeBack/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.subscribeBack)
+
 module.exports = router
