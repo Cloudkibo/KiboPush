@@ -199,7 +199,7 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
-                          <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger m-animate-blink' />
+                          <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
                         }
                         {this.props.notifications && this.state.unseenNotifications.length > 0
                         ? <span className='m-nav__link-icon m-animate-shake'>

@@ -27,7 +27,10 @@ class Bot extends React.Component {
       deleteid: '',
       name: '',
       pageSelected: '',
-      isActive: true
+      isActive: true,
+      error: false,
+      filterValue: '',
+      searchValue: ''
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -41,6 +44,8 @@ class Bot extends React.Component {
     this.updateName = this.updateName.bind(this)
     this.changePage = this.changePage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.searchBot = this.searchBot.bind(this)
+    this.onFilter = this.onFilter.bind(this)
   }
 
   showDialog () {
@@ -85,7 +90,51 @@ class Bot extends React.Component {
   }
 
   updateName (e) {
-    this.setState({name: e.target.value})
+    this.setState({name: e.target.value, error: false})
+  }
+
+  searchBot (event) {
+    this.setState({searchValue: event.target.value})
+    var filtered = []
+    if (event.target.value !== '' && this.state.filterValue === '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else if (event.target.value !== '' && this.state.filterValue !== '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.bots[i].pageId._id === this.state.filterValue) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else {
+      filtered = this.props.bots
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
+  }
+
+  onFilter (e) {
+    this.setState({filterValue: e.target.value})
+    var filtered = []
+    if (e.target.value !== '' && this.state.searchValue === '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].pageId._id === e.target.value) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else {
+      filtered = this.props.bots
+    }
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   componentWillReceiveProps (nextProps) {
@@ -93,6 +142,9 @@ class Bot extends React.Component {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
+    }
+    if (nextProps.pages && nextProps.pages.length > 0) {
+      this.state.pageSelected = nextProps.pages[0]._id
     }
   }
 
@@ -115,11 +167,8 @@ class Bot extends React.Component {
   }
 
   changeStatus (e) {
-    if (e.target.value === 'active') {
-      this.setState({isActive: true})
-    } else {
-      this.setState({isActive: false})
-    }
+    console.log('e.target.value', e.target.value)
+    this.setState({isActive: e.target.value})
   }
 
   gotoView (poll) {
@@ -138,10 +187,14 @@ class Bot extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
   gotoCreate () {
-    this.props.createBot({botName: this.state.name, pageId: this.state.pageId, isActive: this.state.isActive})
-    browserHistory.push({
-      pathname: `/createBot`
-    })
+    if (this.state.name === '') {
+      this.setState({error: true})
+    } else {
+      this.props.createBot({botName: this.state.name, pageId: this.state.pageId, isActive: this.state.isActive})
+      browserHistory.push({
+        pathname: `/createBot`
+      })
+    }
   }
 
   render () {
@@ -168,6 +221,13 @@ class Bot extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              {
+                this.props.user && this.props.user.role !== 'agent' && this.props.pages && this.props.pages.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Connected Pages</h4>
+                    You do not have any connected pages. Unless you do not connect any pages, you won't be able to create a bot. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your facebook page.
+                  </div>
+              }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
@@ -190,15 +250,29 @@ class Bot extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {
-                          this.props.user && this.props.user.role !== 'agent' &&
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                            <span>
-                              <i className='la la-plus' />
+                          this.props.pages && this.props.pages.length === 0
+                          ? <div>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} >
                               <span>
-                                Create Bot
+                                <i className='la la-plus' />
+                                <span>
+                                  Create Bot
+                                </span>
                               </span>
-                            </span>
-                          </button>
+                            </button>
+                          </div>
+                          : <div>
+                            {this.props.user && this.props.user.role !== 'agent' &&
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                              <span>
+                                <i className='la la-plus' />
+                                <span>
+                                  Create Bot
+                                </span>
+                              </span>
+                            </button>
+                          }
+                          </div>
                         }
                       </div>
                     </div>
@@ -216,13 +290,15 @@ class Bot extends React.Component {
                                 <div className='m-form'>
                                   <div id='question' className='form-group m-form__group'>
                                     <label className='control-label'>Bot Name:</label>
-                                    <input className='form-control' placeholder='Enter form title here'
+                                      {this.state.error &&
+                                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
+                                      }
+                                    <input className='form-control' placeholder='Enter bot name here'
                                       value={this.state.name} onChange={(e) => this.updateName(e)} />
                                   </div>
                                   <div className='form-group m-form__group'>
                                     <label className='control-label'>Assigned to Page:&nbsp;&nbsp;&nbsp;</label>
                                     <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
-                                      <option key='1' value='' disabled>Select Page...</option>
                                       {
                                         this.props.pages.map((page, i) => (
                                           <option key={i} value={page._id}>{page.pageName}</option>
@@ -233,8 +309,8 @@ class Bot extends React.Component {
                                   <div className='form-group m-form__group'>
                                     <label className='control-label'>Status:&nbsp;&nbsp;&nbsp;</label>
                                     <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.isActive} onChange={this.changeStatus}>
-                                      <option key='2' value='active'>Active</option>
-                                      <option key='3' value='disabled'>Disabled</option>
+                                      <option key='2' value='true'>Active</option>
+                                      <option key='3' value='false'>Disabled</option>
                                     </select>
                                   </div>
                                 </div>
@@ -267,7 +343,30 @@ class Bot extends React.Component {
                             </ModalContainer>
                           */}
                         </div>
+                        <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                          <input type='text' placeholder='Search bots by name ...' className='form-control m-input m-input--solid' onChange={this.searchBots} />
+                          <span className='m-input-icon__icon m-input-icon__icon--left'>
+                            <span><i className='la la-search' /></span>
+                          </span>
+                        </div>
+                        <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                        <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                          <div className='m-form__label'>
+                            <label>Pages:&nbsp;&nbsp;</label>
+                          </div>
+                          <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
+                            <option value='' disabled>Filter by Pages...</option>
+                            {
+                              this.props.teamUniquePages && this.props.teamUniquePages.length > 0 &&
+                              this.props.teamUniquePages.map((page, i) => (
+                                <option key={i} value={page._id}>{page.pageName}</option>
+                              ))
+                            }
+                            <option value=''>All</option>
+                          </select>
+                        </div>
                       </div>
+                      <br />
                       { this.state.botsData && this.state.botsData.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
