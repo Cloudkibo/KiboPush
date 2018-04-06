@@ -524,11 +524,13 @@ class ChatBox extends React.Component {
 
   handleAgentsForResolved (teamAgents) {
     let agentIds = []
+    console.log('teamAgents', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId !== this.props.user._id) {
         agentIds.push(teamAgents[i].agentId)
       }
     }
+    console.log('agentIds', agentIds)
     if (agentIds.length > 0) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
