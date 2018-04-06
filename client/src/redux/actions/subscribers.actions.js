@@ -26,6 +26,6 @@ export function updateSubscribersList (data) {
 export function loadSubscribersList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
-    callApi('subscribers').then(res => dispatch(updateSubscribersList(res)))
+    callApi('subscribers/allSubscribers').then(res => dispatch(updateSubscribersList(res)))
   }
 }
