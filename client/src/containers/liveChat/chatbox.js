@@ -121,7 +121,7 @@ class ChatBox extends React.Component {
   handleAgentsForDisbaledValue (teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
-      agentIds.push(teamAgents[i].agentId)
+      agentIds.push(teamAgents[i].agentId._id)
     }
     if (agentIds.indexOf(this.props.user._id) !== -1) {
       this.setState({disabledValue: true})
@@ -526,8 +526,8 @@ class ChatBox extends React.Component {
     let agentIds = []
     console.log('teamAgents', teamAgents)
     for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
       }
     }
     console.log('agentIds', agentIds)
@@ -545,8 +545,8 @@ class ChatBox extends React.Component {
   handleAgentsForReopen (teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
       }
     }
     if (agentIds.length > 0) {
