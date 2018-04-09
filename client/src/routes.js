@@ -98,6 +98,7 @@ import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
+import CreateBot from './containers/smart_replies/createBot'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -225,7 +226,7 @@ const routes = (
     <Route path='/teams' component={Teams} onEnter={requireAuth} />
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
-
+    <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
   </Route>
 
 )

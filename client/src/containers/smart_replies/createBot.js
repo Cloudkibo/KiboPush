@@ -7,40 +7,24 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import {
-  addWorkFlow,
-  loadWorkFlowList,
-  clearAlertMessages
-} from '../../redux/actions/workflows.actions'
+import {editBot, updateStatus} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import {
-  getuserdetails
-} from '../../redux/actions/basicinfo.actions'
-import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 
-class CreateWorkflow extends React.Component {
+class CreateBot extends React.Component {
   constructor (props) {
     super(props)
-    props.getuserdetails()
-    props.clearAlertMessages()
-    this.gotoWorkflow = this.gotoWorkflow.bind(this)
-    this.changeCondition = this.changeCondition.bind(this)
-    this.changeKeywords = this.changeKeywords.bind(this)
-    this.changeReply = this.changeReply.bind(this)
-    this.changeActive = this.changeActive.bind(this)
     this.state = {
-      condition: 'message_is',
-      keywords: [],
-      reply: '',
-      isActive: 'Yes',
-      steps: [],
-      alertMessage: '',
-      alertType: ''
+      id: '',
+      name: '',
+      page: '',
+      payload: [],
+      isActive: true
     }
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
+    this.createUI = this.createUI.bind(this)
+    this.changeStatus = this.changeStatus.bind(this)
+    this.createBot = this.createBot.bind(this)
   }
 
   componentDidMount () {
@@ -48,73 +32,169 @@ class CreateWorkflow extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        alertType: 'success'
-      })
-    } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
+    if (nextProps.createdBot) {
+      this.setState({id: nextProps._id, name: nextProps.botName, page: nextProps.pageId.pageName, isActive: nextProps.isActive})
     }
   }
 
-  gotoWorkflow () {
-    if (this.state.keywords.length === 0) {
-      this.setState({
-        alertMessage: 'Please fill the keywords field',
-        alertType: 'danger'
-      })
-      return
-    }
-    if (this.state.reply === '') {
-      this.setState({
-        alertMessage: 'Please fill the reply field',
-        alertType: 'danger'
-      })
-      return
-    }
+  changeStatus (e) {
+    this.setState({isActive: e.target.value})
+  }
 
-    this.props.addWorkFlow({
-      condition: this.state.condition,
-      keywords: this.state.keywords,
-      reply: this.state.reply,
-      isActive: this.state.isActive
+  createUI () {
+    let uiItems = []
+    for (let i = 0; i < this.state.payload.length; i++) {
+      uiItems.push(
+        <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+          <br />
+          <div className='panel panel-default field-editor'>
+            <div className='panel-heading clearfix'>
+              <strong className='panel-title'>Question {i + 1}</strong>
+              <div role='toolbar' className='pull-right btn-toolbar'>
+                <a className='remove'
+                  onClick={this.removeClick.bind(this, i)}>
+                  <span className='fa fa-times' />
+                </a>
+              </div>
+            </div>
+            <div className='panel-body'>
+              <div className='row'>
+                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6'>
+                  <div className='form-group' id={'question' + i}>
+                    <label style={{fontWeight: 'normal'}}>Enter several variations of same question to train the bot.</label>
+                  </div>
+                  {this.createMore(i)}
+                  <button className='btn btn-primary btn-sm'
+                    onClick={this.addMore.bind(this, i)}> Add More
+                </button>
+                </div>
+                <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2'}}>
+                  <br />
+                  <br />
+                  <br />
+                  <div className='m-input-icon m-input-icon--right'>
+                    <textarea className='form-control'
+                      placeholder='Type the answer of your questions here...'
+                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return uiItems || null
+  }
+
+  createMore (payloadIndex) {
+    console.log('this.state.payload', this.state.payload)
+    let uiItems = []
+    for (let i = 0; i < this.state.payload[payloadIndex].questions.length; i++) {
+      uiItems.push(
+        <div>
+          <div className='m-input-icon m-input-icon--right'>
+            <input type='text' className='form-control m-input' placeholder='Enter new question here' value={this.state.payload[payloadIndex].questions[i]}
+              onChange={this.handleQuestionChange.bind(this, i, payloadIndex)} />
+            <span className='m-input-icon__icon m-input-icon__icon--right'>
+              <span>
+                <i className='fa fa-times-circle' onClick={this.removeQuestion.bind(this, i, payloadIndex)} />
+              </span>
+            </span>
+          </div>
+          <br />
+        </div>
+      )
+    }
+    return uiItems || null
+  }
+
+  addMore (payloadIndex) {
+    let payload = this.state.payload
+    payload[payloadIndex].questions.push('')
+    this.setState({payload: payload})
+  }
+
+  addClick () {
+    let botQuestions = this.state.payload
+    let questions = ['', '', '']
+    botQuestions.push({
+      'questions': questions,
+      'answer': ''
     })
-    // this.props.history.push({
-    //   pathname: '/workflows'
-    // })
+    this.setState({payload: botQuestions})
   }
 
-  changeCondition (event) {
-    this.setState({condition: event.target.value})
+  removeClick (i) {
+    let botQuestions = this.state.payload.slice()
+    botQuestions.splice(i, 1)
+    this.setState({
+      payload: botQuestions
+    })
   }
 
-  changeKeywords (event) {
-    this.setState({keywords: event.target.value.split(',')})
+  removeQuestion (i, payloadIndex) {
+    let payload = this.state.payload
+    payload[payloadIndex].questions = this.state.payload[payloadIndex].questions.slice()
+    payload[payloadIndex].questions.splice(i, 1)
+    this.setState({payload: payload})
   }
 
-  changeReply (event) {
-    this.setState({reply: event.target.value})
+  handleQuestionChange (i, payloadIndex, event) {
+    let payload = this.state.payload
+    payload[payloadIndex].questions = this.state.payload[payloadIndex].questions.slice()
+    payload[payloadIndex].questions[i] = event.target.value
+    this.setState({payload: payload})
   }
 
-  changeActive (event) {
-    this.setState({isActive: event.target.value})
+  handleAnswerChange (i, event) {
+    let payload = this.state.payload
+    payload[i].answer = event.target.value
+    this.setState({payload: payload})
+  }
+
+  createBot () {
+    console.log('payload', this.state.payload)
+    if (this.state.payload.length === 0) {
+      this.msg.error('Please enter one question atleast')
+      return
+    } else {
+      for (var i = 0; i < this.state.payload.length; i++) {
+        if (this.state.payload[i].questions.length < 3) {
+          this.msg.error('You must enter atleast 3 variations of a question')
+          return
+        } else {
+          for (var j = 0; j < this.state.payload[i].questions.length; j++) {
+            if (this.state.payload[i].questions[j] === '') {
+              this.msg.error('You must enter atleast 3 variations of a question')
+              return
+            }
+          }
+        }
+        if (this.state.payload[i].answer === '') {
+          this.msg.error('You must enter answer of all the questions')
+          return
+        }
+      }
+    }
+    this.props.editBot({botId: this.state.id, payload: this.state.payload})
+    this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
+    this.props.history.push({
+      pathname: `/bots`
+    })
   }
 
   render () {
-    console.log('Alert Message:', this.state.alertMessage)
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
-
       <div>
-
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
@@ -123,146 +203,87 @@ class CreateWorkflow extends React.Component {
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Workflow</h3>
+                  <h3 className='m-subheader__title'>Create Bot</h3>
                 </div>
               </div>
             </div>
             <div className='m-content'>
-              <div
-                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-                role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-exclamation m--font-brand' />
-                </div>
-                <div className='m-alert__text'>
-                  Define good rules for your workflow
-                </div>
-              </div>
-              <div id='workflow' className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Form
-                      </h3>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        <div className='form-group' id='titl'>
+                          <label className='control-label'>Bot Name:</label>
+                          <input className='form-control'
+                            value={this.state.name} disabled />
+                        </div>
+                      </div>
+                      <br />
+                      <div className='col-xl-12'>
+                        <label>Assigned to Page:</label>
+                        {this.props.createdBot && this.props.createdBot.pageId &&
+                        <span>
+                          <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                          <span>{this.props.createdBot.pageId.pageName}</span>
+                        </span>
+                      }
+                      </div>
+                      <div className='col-xl-12'>
+                        <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
+                        <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>
+                          <option key='2' value='true'>Active</option>
+                          <option key='3' value='false'>Disabled</option>
+                        </select>
+                      </div>
+                      <br />
+                      <div className='col-xl-12'>
+                        <h5> Questions </h5>
+                        {this.createUI()}
+                      </div>
+
+                      <div id='questions' className='col-sm-6 col-md-4'>
+                        <button className='btn btn-primary btn-sm'
+                          onClick={this.addClick.bind(this)}> Add Questions
+                      </button>
+                      </div>
+                      <br />
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+                        <button className='btn btn-primary'
+                          onClick={this.createBot}> Create
+                        </button>
+                        <Link
+                          to='/bots'
+                          className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                          Cancel
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <form className='m-form m-form--label-align-right'>
-                  <div className='m-portlet__body'>
-                    <div className='m-form__section m-form__section--first'>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Rule
-                        </label>
-                        <div className='col-lg-6' id='rules'>
-                          <select className='form-control m-input' onChange={this.changeCondition}
-                            value={this.state.condition}>
-                            <option value='message_is'>Message is</option>
-                            <option value='message_contains'>Message Contains</option>
-                            <option value='message_begins'>Message Begins with</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Keywords (separated by comma)
-                        </label>
-                        <div className='col-lg-6'>
-                          <input className='form-control m-input'
-                            onChange={this.changeKeywords}
-                            value={this.state.keywords}
-                            id='keywords'
-                            placeholder='hi,hello,hey' />
-                        </div>
-                      </div>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Reply
-                        </label>
-                        <div className='col-lg-6'>
-                          <textarea className='form-control m-input'
-                            onChange={this.changeReply}
-                            value={this.state.reply} rows='5'
-                            placeholder='Your reply here'
-                            id='reply' />
-                        </div>
-                      </div>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Is Active?
-                        </label>
-                        <div className='col-lg-6'>
-                          <select className='form-control m-input' onChange={this.changeActive}
-                            value={this.state.isActive} id='isActive'>
-                            <option value='Yes'>Yes</option>
-                            <option value='No'>No</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='m-portlet__foot m-portlet__foot--fit'>
-                    <div className='m-form__actions m-form__actions'>
-                      <div className='row'>
-                        <div className='col-lg-2' />
-                        <div className='col-lg-6'>
-                          <button className='btn btn-primary' type='button' onClick={this.gotoWorkflow} >
-                            Create
-                          </button>
-                          <span>&nbsp;&nbsp;</span>
-                          <Link to='workflows'>
-                            <button className='btn btn-secondary'>
-                              { this.state.alertMessage !== '' ? 'Back' : 'Cancel'}
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                      <div className='row'>
-                        <span>&nbsp;&nbsp;</span>
-                      </div>
-                      <div className='row'>
-                        <div className='col-lg-2' />
-                        <div className='col-lg-6'>
-                          {
-                            this.state.alertMessage !== '' &&
-                            <center>
-                              <Alert type={this.state.alertType}>
-                                {this.state.alertMessage}
-                              </Alert>
-                            </center>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }
 
 function mapStateToProps (state) {
   return {
-    workflows: (state.workflowsInfo.workflows),
-    user: (state.basicInfo.user),
-    successMessage: (state.workflowsInfo.successMessageEdit),
-    errorMessage: (state.workflowsInfo.errorMessageEdit)
+    createdBot: (state.botsInfo.createdBot)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadWorkFlowList: loadWorkFlowList,
-      addWorkFlow: addWorkFlow,
-      getuserdetails: getuserdetails,
-      clearAlertMessages: clearAlertMessages
+      editBot: editBot,
+      updateStatus: updateStatus
     }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(CreateWorkflow)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateBot)
