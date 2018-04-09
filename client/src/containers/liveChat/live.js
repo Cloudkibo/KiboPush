@@ -269,7 +269,10 @@ class LiveChat extends React.Component {
             request_time: sess[j].request_time,
             status: sess[j].status,
             subscriber_id: sess[j].subscriber_id,
-            _id: sess[j]._id
+            _id: sess[j]._id,
+            lastPayload: nextProps.userChat[0].lastPayload,
+            lastDateTime: nextProps.userChat[0].lastDateTime,
+            lastRepliedBy: nextProps.userChat[0].lastRepliedBy
           }
           this.setState({sessionsData: sess})
           this.separateResolvedSessions(sess)
@@ -594,7 +597,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>
@@ -730,7 +733,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>
