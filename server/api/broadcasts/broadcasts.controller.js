@@ -770,6 +770,9 @@ function createSession (page, subscriber, event) {
         })
       } else {
         session.last_activity_time = Date.now()
+        if (session.status === 'resolved') {
+          session.status = 'new'
+        }
         session.save((err) => {
           if (err) logger.serverLog(TAG, err)
           saveLiveChat(page, subscriber, session, event)

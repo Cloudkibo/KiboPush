@@ -88,6 +88,8 @@ export const LOADING_URL_META = 'LOADING_URL_META'
 export const GET_URL_META = 'GET_URL_META'
 export const UPDATE_CHAT = 'UPDATE_CHAT'
 export const CHANGE_STATUS = 'CHANGE_STATUS'
+export const SET_ACTIVE_SESSION = 'SET_ACTIVE_SESSION'
+export const RESET_ACTIVE_SESSION = 'RESET_ACTIVE_SESSION'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
@@ -188,3 +190,7 @@ export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
+
+// constants for bots
+export const SHOW_BOTS = 'SHOW_BOTS'
+export const SHOW_CREATED_BOT = 'SHOW_CREATED_BOT'

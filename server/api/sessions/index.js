@@ -8,17 +8,11 @@ const router = express.Router()
 const controller = require('./sessions.controller')
 const auth = require('../../auth/auth.service')
 
-router.post('/',
+router.get('/',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
-
-router.post('/getAll',
-  auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
-  auth.doesRolePermitsThisAction('livechatPermission'),
-  controller.getAll)
 
 router.get('/markread/:id',
   auth.isAuthenticated(),

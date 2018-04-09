@@ -154,3 +154,10 @@ a.broadcastTabs.active {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.popover.show.buttonPopover {
+  left: -110px !important;
+  height: auto !important
+}
+.buttonPopover > .popover-inner {
+  height: auto !important;
+}

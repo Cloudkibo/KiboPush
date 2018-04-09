@@ -13,7 +13,9 @@ import {
   sendChatMessage,
   fetchUrlMeta,
   markRead,
-  changeStatus
+  changeStatus,
+  sendNotifications,
+  fetchTeamAgents
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -70,7 +72,8 @@ class ChatBox extends React.Component {
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
-      isShowingModal: false
+      isShowingModal: false,
+      disabledValue: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -101,6 +104,11 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
+    this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
+    this.getDisabledValue = this.getDisabledValue.bind(this)
+    this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
+    this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -109,12 +117,49 @@ class ChatBox extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
+  handleAgentsForDisbaledValue (teamAgents) {
+    let agentIds = []
+    console.log('handleAgentsForDisbaledValue', teamAgents)
+    for (let i = 0; i < teamAgents.length; i++) {
+      agentIds.push(teamAgents[i].agentId._id)
+    }
+    console.log('agentIds', agentIds)
+    if (!agentIds.includes(this.props.user._id)) {
+      console.log('this.props.user._id', this.props.user._id)
+      this.setState({disabledValue: true})
+    }
+  }
+
+  getDisabledValue () {
+    this.setState({disabledValue: false})
+    if (this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        this.setState({disabledValue: true})
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
+      }
+    }
+  }
+
+  getRepliedByMsg (msg) {
+    if (
+      (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+      msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
+    ) {
+      return `${msg.replied_by.name} replied`
+    } else {
+      return 'You replied'
+    }
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
     this.scrollToTop()
+    this.getDisabledValue()
   }
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
@@ -271,50 +316,56 @@ class ChatBox extends React.Component {
     var isUrl = getmetaurl(this.state.textAreaValue)
     if (e.which === 13) {
       e.preventDefault()
-      var payload = {}
-      var session = this.props.currentSession
-      var data = {}
-      if (this.state.uploadedId !== '' && this.state.attachment) {
-        payload = this.setDataPayload('attachment')
-        data = this.setMessageData(session, payload)
-        this.props.sendAttachment(data, this.handleSendAttachment)
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (isUrl !== null && isUrl !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.textAreaValue !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.setState({textAreaValue: ''})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'gif') {
-        payload = this.setDataPayload('gif')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.closeGif()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'sticker') {
-        payload = this.setDataPayload('sticker')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.hideStickers()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'thumbsUp') {
-        payload = this.setDataPayload('thumbsUp')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, session.companyId)
-        data.format = 'convos'
-        this.props.userChat.push(data)
-        this.setState({textAreaValue: ''})
+      if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent') {
+        this.msg.error('You can not send message. Only assigned agent can send messages.')
+      } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team') {
+        this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
+      } else {
+        var payload = {}
+        var session = this.props.currentSession
+        var data = {}
+        if (this.state.uploadedId !== '' && this.state.attachment) {
+          payload = this.setDataPayload('attachment')
+          data = this.setMessageData(session, payload)
+          this.props.sendAttachment(data, this.handleSendAttachment)
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (isUrl !== null && isUrl !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.textAreaValue !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.setState({textAreaValue: ''})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'gif') {
+          payload = this.setDataPayload('gif')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.closeGif()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'sticker') {
+          payload = this.setDataPayload('sticker')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.hideStickers()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'thumbsUp') {
+          payload = this.setDataPayload('thumbsUp')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          data.format = 'convos'
+          this.props.userChat.push(data)
+          this.setState({textAreaValue: ''})
+        }
       }
     }
   }
@@ -409,7 +460,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in chat box')
+    this.getDisabledValue()
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -474,9 +525,81 @@ class ChatBox extends React.Component {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
 
+  handleAgentsForResolved (teamAgents) {
+    let agentIds = []
+    console.log('teamAgents', teamAgents)
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
+      }
+    }
+    console.log('agentIds', agentIds)
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  handleAgentsForReopen (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
   changeStatus (e, status, id) {
-    this.props.changeActiveSessionFromChatbox()
-    this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
+    if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only assigned agent can resolve it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only assigned agent can reopen it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only agents who are part of assigned team can resolve chat session.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
+    } else {
+      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox)
+      if (status === 'resolved' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
+        }
+      } else if (status === 'new' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
+        }
+      }
+    }
   }
 
   render () {
@@ -775,6 +898,9 @@ class ChatBox extends React.Component {
                                       msg.payload.componentType &&
                                       (msg.payload.componentType === 'video'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -785,6 +911,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'audio'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -795,12 +924,18 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'file'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
                                           <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                         </a>
                                       </div>
                                       : msg.payload.componentType === 'card'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div>
                                           <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                             <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
@@ -825,6 +960,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gallery'
                                       ? <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <Slider ref={(c) => { this.slider = c }} {...settings}>
                                           {
                                             msg.payload.cards.map((card, i) => (
@@ -855,6 +993,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'image'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl.url}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -862,6 +1003,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gif'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -869,6 +1013,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'sticker'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -876,6 +1023,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'thumbsUp'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -884,6 +1034,9 @@ class ChatBox extends React.Component {
                                       : msg.url_meta && msg.url_meta !== ''
                                       ? (msg.url_meta.type
                                         ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{clear: 'both', display: 'block'}}>
                                             <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
                                               <table style={{maxWidth: '175px'}}>
@@ -940,6 +1093,9 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                         : <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           {
                                             validURL(msg.payload.text)
                                             ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
@@ -955,12 +1111,18 @@ class ChatBox extends React.Component {
                                       )
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
                                           {msg.payload.text}
                                         </div>
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
@@ -1223,7 +1385,9 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
     markRead: (markRead),
-    changeStatus: (changeStatus)
+    changeStatus: (changeStatus),
+    sendNotifications: (sendNotifications),
+    fetchTeamAgents: (fetchTeamAgents)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

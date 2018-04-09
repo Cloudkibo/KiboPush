@@ -3,9 +3,12 @@ import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 export function showNotifications (data) {
+  var sorted = data.sort(function (a, b) {
+    return new Date(b.datetime) - new Date(a.datetime)
+  })
   return {
     type: ActionTypes.SHOW_NOTIFICATIONS,
-    data
+    data: sorted
   }
 }
 

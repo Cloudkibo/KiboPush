@@ -13,13 +13,17 @@ import { fetchSessions,
   resetSocket,
   resetUnreadSession,
   showChatSessions,
+  resetActiveSession,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
+import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { getSubscriberTags } from '../../redux/actions/tags.actions'
 import { Link } from 'react-router'
 import ChatBox from './chatbox'
 import Profile from './profile'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
@@ -52,7 +56,8 @@ class LiveChat extends React.Component {
       isShowingModalGuideLines: false,
       tabValue: 'open'
     }
-    props.fetchSessions({ company_id: this.props.user._id })
+    props.fetchSessions()
+    props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.changeActiveSession = this.changeActiveSession.bind(this)
@@ -78,6 +83,7 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSessionFromChatbox () {
+    console.log('in changeActiveSessionFromChatbox')
     this.setState({activeSession: ''})
   }
 
@@ -119,6 +125,7 @@ class LiveChat extends React.Component {
     }
     this.props.fetchUserChats(session._id)
     this.props.markRead(session._id, this.props.sessions)
+    this.props.getSubscriberTags(session.subscriber_id, this.msg)
   }
 
   handleSearch (e) {
@@ -201,7 +208,15 @@ class LiveChat extends React.Component {
       this.setState({loading: false})
       this.setState({sessionsData: nextProps.sessions})
       this.separateResolvedSessions(nextProps.sessions)
-      if (this.state.activeSession === '') {
+      if (this.props.location.state && this.state.activeSession === '') {
+        let newSessions = nextProps.sessions.filter(session => session._id === this.props.location.state.id)
+        this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
+        if (newSessions.length > 0 && newSessions[0].status === 'new') {
+          this.setState({tabValue: 'open'})
+        } else if (newSessions.length > 0 && newSessions[0].status === 'resolved') {
+          this.setState({tabValue: 'closed'})
+        }
+      } else if (this.state.activeSession === '') {
         if (this.state.tabValue === 'open') {
           let newSessions = nextProps.sessions.filter(session => session.status === 'new')
           this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
@@ -209,6 +224,14 @@ class LiveChat extends React.Component {
           let resolvedSessions = nextProps.sessions.filter(session => session.status === 'resolved')
           this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
         }
+      } else if (nextProps.activeSession && nextProps.activeSession !== '') {
+        for (let x = 0; nextProps.sessions.length; x++) {
+          if (nextProps.sessions[x]._id === nextProps.activeSession) {
+            this.setState({activeSession: nextProps.sessions[x]})
+            break
+          }
+        }
+        this.props.resetActiveSession()
       }
       // } else if (nextProps.changedStatus) {
       //   for (var b = 0; b < nextProps.sessions.length; b++) {
@@ -219,7 +242,9 @@ class LiveChat extends React.Component {
       //   }
       // }
     }
-
+    if (!nextProps.subscriberTags && nextProps.sessions[0] && nextProps.sessions[0].subscriber_id) {
+      this.props.getSubscriberTags(nextProps.sessions[0].subscriber_id._id)
+    }
     if (nextProps.unreadSession && this.state.sessionsData.length > 0) {
       var temp = this.state.sessionsData
       for (var i = 0; i < temp.length; i++) {
@@ -264,10 +289,10 @@ class LiveChat extends React.Component {
         })
 
         if (isPresent) {
-          this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.fetchSessions()
           this.props.resetSocket()
         } else {
-          this.props.fetchSessions({ company_id: this.props.user._id })
+          this.props.fetchSessions()
           this.props.resetSocket()
         }
       }
@@ -292,8 +317,17 @@ class LiveChat extends React.Component {
   }
 
   render () {
+    console.log('State in live', this.state)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -456,7 +490,109 @@ class LiveChat extends React.Component {
                                           {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
                                         </span>
                                         <br />
+                                        {((!session.payload.componentType && session.payload.text) || (session.payload.componentType && session.payload.componentType === 'text')) &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.replied_by.type
+                                              ? <span>{session.payload.text}</span>
+                                              : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                              ? <span>You: {session.payload.text}</span>
+                                              : <span>{session.replied_by.name}: {session.payload.text}</span>
+                                            }
+                                          </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'image' &&
                                         <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent an image</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent an image</span>
+                                            : <span>{session.replied_by.name} sent an image</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'video' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a video</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a video</span>
+                                            : <span>{session.replied_by.name} sent a video</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'audio' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent an audio</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent an audio</span>
+                                            : <span>{session.replied_by.name} sent an audio</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'file' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a file</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a file</span>
+                                            : <span>{session.replied_by.name} sent a file</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'card' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a card</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a card</span>
+                                            : <span>{session.replied_by.name} sent a card</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'gallery' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a gallery</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a gallery</span>
+                                            : <span>{session.replied_by.name} sent a gallery</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'gif' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a gif</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a gif</span>
+                                            : <span>{session.replied_by.name} sent a gif</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'sticker' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by
+                                            ? <span>{session.subscriber_id.firstName} sent a sticker</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>You sent a sticker</span>
+                                            : <span>{session.replied_by.name} sent a sticker</span>
+                                          }
+                                        </span>
+                                        }
+                                        {session.payload.componentType && session.payload.componentType === 'thumbsUp' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.replied_by.type
+                                            ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span><i className='fa fa-thumbs-o-up' /></span>
+                                            : <span>{session.replied_by.name}: <i className='fa fa-thumbs-o-up' /></span>
+                                          }
+                                        </span>
+                                        }
+                                        <br />
+                                        <span className='m-widget4__sub'>
+                                          <i className='fa fa-facebook-square' />&nbsp;&nbsp;
                                           {session.page_id.pageName}
                                         </span>
                                       </div>
@@ -527,7 +663,7 @@ class LiveChat extends React.Component {
                   }
                   {
                     this.state.activeSession !== '' &&
-                    <Profile currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                    <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
                 )
@@ -590,16 +726,20 @@ class LiveChat extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('live.js', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
     socketSession: (state.liveChat.socketSession),
+    activeSession: (state.liveChat.activeSession),
     unreadSession: (state.liveChat.unreadSession),
     changedStatus: (state.liveChat.changedStatus),
     userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
-    socketData: (state.liveChat.socketData)
+    socketData: (state.liveChat.socketData),
+    teams: (state.teamsInfo.teams),
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    subscriberTags: (state.tagsInfo.subscriberTags)
   }
 }
 
@@ -611,7 +751,10 @@ function mapDispatchToProps (dispatch) {
     fetchSingleSession: fetchSingleSession,
     resetUnreadSession: resetUnreadSession,
     markRead: markRead,
-    showChatSessions: showChatSessions
+    showChatSessions: showChatSessions,
+    loadTeamsList: loadTeamsList,
+    getSubscriberTags: getSubscriberTags,
+    resetActiveSession: resetActiveSession
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

@@ -180,6 +180,21 @@ class Sidebar extends Component {
     }
   }
 
+  showSmartRespliesItem () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/bots' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-interface-8' />
+            <span className='m-menu__link-text'>Smart Replies</span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   showLiveChatItem () {
     if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
@@ -330,7 +345,7 @@ class Sidebar extends Component {
   }
 
   showTeams () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -365,6 +380,7 @@ class Sidebar extends Component {
               {this.showSurveysItem()}
               {this.showPollsItem()}
               {this.showWorkflowsItem()}
+              {this.showSmartRespliesItem()}
               {this.showLiveChatItem()}
               {this.showAutoPostingItem()}
               {this.showPersistentMenuItem()}
