@@ -82,9 +82,6 @@ exports.index = function (req, res) {
                   sessions[b].set('lastDateTime',
                     gotLastMessage[a].datetime,
                     {strict: false})
-                  sessions[b].set('payload',
-                    sessions[b].payload,
-                    {strict: false})
                 }
               }
             }
