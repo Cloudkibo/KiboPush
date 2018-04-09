@@ -494,10 +494,10 @@ class LiveChat extends React.Component {
                                         {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
-                                              ? <span>{session.lastPayload.text.slice(0, 30)}...</span>
+                                              ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text}</span>
                                               : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You: {session.lastPayload.text.slice(0, 25)}...</span>
-                                              : <span>{session.lastRepliedBy.name}: {session.lastPayload.text.slice(0, 20)}...</span>
+                                              ? <span>You: {(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text }</span>
+                                              : <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
                                             }
                                           </span>
                                         }
@@ -586,7 +586,7 @@ class LiveChat extends React.Component {
                                           {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                            ? <span><i className='fa fa-thumbs-o-up' /></span>
+                                            ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
                                             : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                                           }
                                         </span>
@@ -594,7 +594,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>
@@ -630,10 +630,10 @@ class LiveChat extends React.Component {
                                         {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
-                                              ? <span>{session.lastPayload.text.slice(0, 30)}...</span>
+                                              ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text }</span>
                                               : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You: {session.lastPayload.text.slice(0, 25)}...</span>
-                                              : <span>{session.lastRepliedBy.name}: {session.lastPayload.text.slice(0, 20)}...</span>
+                                              ? <span>You: {(session.lastPayload.text.length > 25) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text}</span>
+                                              : <span>{session.lastRepliedBy.name}: {(session.lastPayload.text.length > 20) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
                                             }
                                           </span>
                                         }
@@ -722,7 +722,7 @@ class LiveChat extends React.Component {
                                           {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                            ? <span><i className='fa fa-thumbs-o-up' /></span>
+                                            ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
                                             : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                                           }
                                         </span>
@@ -730,7 +730,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>
