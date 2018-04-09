@@ -24,6 +24,7 @@ import Profile from './profile'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { timeSince } from './utilities'
 // import Notification from 'react-web-notification'
 var _ = require('lodash/core')
 
@@ -492,7 +493,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         {((!session.payload.componentType && session.payload.text) || (session.payload.componentType && session.payload.componentType === 'text')) &&
                                           <span className='m-widget4__sub'>
-                                            {!session.replied_by.type
+                                            {!session.replied_by
                                               ? <span>{session.payload.text}</span>
                                               : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                               ? <span>You: {session.payload.text}</span>
@@ -593,7 +594,9 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {session.page_id.pageName}
+                                          {session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <i className='fa fa-calendar' />&nbsp;&nbsp;
+                                          {timeSince(session.datetime)}
                                         </span>
                                       </div>
                                       <div className='m-widget4__ext'>
