@@ -85,6 +85,7 @@ exports.index = function (req, res) {
                 }
               }
             }
+            logger.serverLog(TAG, `LAST MESSAGE FOUND SESSIONS ${JSON.stringify(sessions)}`)
             return res.status(200).json({
               status: 'success',
               payload: sessions

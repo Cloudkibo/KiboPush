@@ -501,7 +501,7 @@ class LiveChat extends React.Component {
                                             }
                                           </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an image</span>
@@ -511,7 +511,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a video</span>
@@ -521,7 +521,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an audio</span>
@@ -531,7 +531,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a file</span>
@@ -541,7 +541,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a card</span>
@@ -551,7 +551,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gallery</span>
@@ -561,7 +561,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gif</span>
@@ -571,7 +571,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a sticker</span>
@@ -581,7 +581,7 @@ class LiveChat extends React.Component {
                                           }
                                         </span>
                                         }
-                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
                                         <span className='m-widget4__sub'>
                                           {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
