@@ -594,7 +594,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>
@@ -730,7 +730,7 @@ class LiveChat extends React.Component {
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {(session.page_id.pageName.length > 8) ? session.page_id.pageName.slice(0, 8) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
                                           {timeSince(session.lastDateTime)}
                                         </span>

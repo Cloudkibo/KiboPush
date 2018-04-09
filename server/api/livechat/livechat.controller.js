@@ -13,11 +13,12 @@ const _ = require('lodash')
 
 // Get list of Facebook Chat Messages
 exports.index = function (req, res) {
-  LiveChat.find({session_id: req.params.session_id}, (err, fbchats) => {
+  LiveChat.find({session_id: req.params.session_id}).sort({ datetime: 1 }).exec(function (err, fbchats) {
     if (err) {
       return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
     }
+    fbchats.lastPayload = fbchats.payload[fbchats.length - 1]
     return res.status(200).json({
       status: 'success',
       payload: fbchats
