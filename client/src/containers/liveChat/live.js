@@ -494,10 +494,10 @@ class LiveChat extends React.Component {
                                         {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
-                                              ? <span>{session.lastPayload.text}</span>
+                                              ? <span>{session.lastPayload.text.slice(0, 30)}...</span>
                                               : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You: {session.lastPayload.text}</span>
-                                              : <span>{session.lastRepliedBy.name}: {session.lastRepliedBy.text}</span>
+                                              ? <span>You: {session.lastPayload.text.slice(0, 25)}...</span>
+                                              : <span>{session.lastRepliedBy.name}: {session.lastPayload.text.slice(0, 20)}...</span>
                                             }
                                           </span>
                                         }
@@ -630,10 +630,10 @@ class LiveChat extends React.Component {
                                         {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
-                                              ? <span>{session.lastPayload.text}</span>
+                                              ? <span>{session.lastPayload.text.slice(0, 30)}...</span>
                                               : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You: {session.lastPayload.text}</span>
-                                              : <span>{session.lastRepliedBy.name}: {session.lastRepliedBy.text}</span>
+                                              ? <span>You: {session.lastPayload.text.slice(0, 25)}...</span>
+                                              : <span>{session.lastRepliedBy.name}: {session.lastPayload.text.slice(0, 20)}...</span>
                                             }
                                           </span>
                                         }
