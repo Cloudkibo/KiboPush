@@ -38,3 +38,25 @@ export function createBot (data) {
       })
   }
 }
+
+export function editBot (data) {
+  return (dispatch) => {
+    callApi('bots/edit', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(loadBotsList())
+        }
+      })
+  }
+}
+
+export function updateStatus (data) {
+  return (dispatch) => {
+    callApi('bots/updateStatus', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(loadBotsList())
+        }
+      })
+  }
+}
