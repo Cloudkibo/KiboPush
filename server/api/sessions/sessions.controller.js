@@ -70,21 +70,27 @@ exports.index = function (req, res) {
               .json({status: 'failed', description: 'Internal Server Error'})
             }
             logger.serverLog(TAG, `LAST MESSAGE FOUND ${JSON.stringify(gotLastMessage)}`)
-            // for (let i = 0; i < gotUnreadCount.length; i++) {
-            //   for (let j = 0; j < sessions.length; j++) {
-            //     if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-            //       sessions[j].set('unreadCount',
-            //         gotUnreadCount[i].count,
-            //         {strict: false})
-            //     }
-            //   }
-            // }
-          return res.status(200).json({
-            status: 'success',
-            payload: sessions
+            for (let a = 0; a < gotLastMessage.length; a++) {
+              for (let b = 0; b < sessions.length; b++) {
+                if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
+                  sessions[b].set('payload',
+                    gotLastMessage[a].payload,
+                    {strict: false})
+                  sessions[b].set('replied_by',
+                    gotLastMessage[a].replied_by,
+                    {strict: false})
+                  sessions[b].set('datetime',
+                    gotLastMessage[a].datetime,
+                    {strict: false})
+                }
+              }
+            }
+            return res.status(200).json({
+              status: 'success',
+              payload: sessions
+            })
           })
         })
-      })
       } else {
         return res.status(200).json({
           status: 'success',
