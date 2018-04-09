@@ -49,6 +49,12 @@ export function showUserChats (userChat) {
   }
 }
 
+export function resetSocket () {
+  return {
+    type: ActionTypes.RESET_SOCKET
+  }
+}
+
 export function resetActiveSession () {
   return {
     type: ActionTypes.RESET_ACTIVE_SESSION
