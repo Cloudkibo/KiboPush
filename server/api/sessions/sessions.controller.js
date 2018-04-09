@@ -47,7 +47,7 @@ exports.index = function (req, res) {
         LiveChat.aggregate([
           {$match: {status: 'unseen', format: 'facebook'}},
           {$sort: { datetime: 1 }},
-          {$group: {_id: '$session_id', payload: {$push: {$last: '$payload'}}, count: {$sum: 1}, lastMessage: { $last: '$datetime' }}}
+          {$group: {_id: '$session_id', lastMessage: { $last: '$payload' }, count: {$sum: 1}}}
         ], (err2, gotUnreadCount) => {
           if (err2) {
             return res.status(500)
