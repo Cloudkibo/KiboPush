@@ -46,14 +46,12 @@ exports.index = function (req, res) {
       if (sessions.length > 0) {
         LiveChat.aggregate([
           {$match: {status: 'unseen', format: 'facebook'}},
-          {$sort: { datetime: 1 }},
-          {$group: {_id: '$session_id', books: { $push: '$payload' }, count: {$sum: 1}}}
+          {$sort: { datetime: 1 }}
         ], (err2, gotUnreadCount) => {
           if (err2) {
             return res.status(500)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
-          logger.serverLog(TAG, `LAST MESSAGE FOUND ${JSON.stringify(gotUnreadCount)}`)
           for (let i = 0; i < gotUnreadCount.length; i++) {
             for (let j = 0; j < sessions.length; j++) {
               if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
@@ -63,12 +61,30 @@ exports.index = function (req, res) {
               }
             }
           }
-
+          LiveChat.aggregate([
+            {$sort: { datetime: 1 }},
+            {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
+          ], (err2, gotLastMessage) => {
+            if (err2) {
+              return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            logger.serverLog(TAG, `LAST MESSAGE FOUND ${JSON.stringify(gotLastMessage)}`)
+            // for (let i = 0; i < gotUnreadCount.length; i++) {
+            //   for (let j = 0; j < sessions.length; j++) {
+            //     if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+            //       sessions[j].set('unreadCount',
+            //         gotUnreadCount[i].count,
+            //         {strict: false})
+            //     }
+            //   }
+            // }
           return res.status(200).json({
             status: 'success',
             payload: sessions
           })
         })
+      })
       } else {
         return res.status(200).json({
           status: 'success',
