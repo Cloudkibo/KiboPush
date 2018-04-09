@@ -73,13 +73,13 @@ exports.index = function (req, res) {
             for (let a = 0; a < gotLastMessage.length; a++) {
               for (let b = 0; b < sessions.length; b++) {
                 if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                  sessions[b].set('payload',
+                  sessions[b].set('lastPayload',
                     gotLastMessage[a].payload,
                     {strict: false})
-                  sessions[b].set('replied_by',
+                  sessions[b].set('lastRepliedBy',
                     gotLastMessage[a].replied_by,
                     {strict: false})
-                  sessions[b].set('datetime',
+                  sessions[b].set('lastDateTime',
                     gotLastMessage[a].datetime,
                     {strict: false})
                 }

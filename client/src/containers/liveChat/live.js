@@ -491,112 +491,112 @@ class LiveChat extends React.Component {
                                           {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
                                         </span>
                                         <br />
-                                        {((!session.payload.componentType && session.payload.text) || (session.payload.componentType && session.payload.componentType === 'text')) &&
+                                        {((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text')) &&
                                           <span className='m-widget4__sub'>
-                                            {!session.replied_by
-                                              ? <span>{session.payload.text}</span>
-                                              : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
-                                              ? <span>You: {session.payload.text}</span>
-                                              : <span>{session.replied_by.name}: {session.payload.text}</span>
+                                            {!session.lastRepliedBy
+                                              ? <span>{session.lastPayload.text}</span>
+                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                              ? <span>You: {session.lastPayload.text}</span>
+                                              : <span>{session.lastRepliedBy.name}: {session.lastRepliedBy.text}</span>
                                             }
                                           </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'image' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an image</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an image</span>
-                                            : <span>{session.replied_by.name} sent an image</span>
+                                            : <span>{session.lastRepliedBy.name} sent an image</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'video' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a video</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a video</span>
-                                            : <span>{session.replied_by.name} sent a video</span>
+                                            : <span>{session.lastRepliedBy.name} sent a video</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'audio' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an audio</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an audio</span>
-                                            : <span>{session.replied_by.name} sent an audio</span>
+                                            : <span>{session.lastRepliedBy.name} sent an audio</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'file' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a file</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a file</span>
-                                            : <span>{session.replied_by.name} sent a file</span>
+                                            : <span>{session.lastRepliedBy.name} sent a file</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'card' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a card</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a card</span>
-                                            : <span>{session.replied_by.name} sent a card</span>
+                                            : <span>{session.lastRepliedBy.name} sent a card</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'gallery' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gallery</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gallery</span>
-                                            : <span>{session.replied_by.name} sent a gallery</span>
+                                            : <span>{session.lastRepliedBy.name} sent a gallery</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'gif' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gif</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gif</span>
-                                            : <span>{session.replied_by.name} sent a gif</span>
+                                            : <span>{session.lastRepliedBy.name} sent a gif</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'sticker' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a sticker</span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a sticker</span>
-                                            : <span>{session.replied_by.name} sent a sticker</span>
+                                            : <span>{session.lastRepliedBy.name} sent a sticker</span>
                                           }
                                         </span>
                                         }
-                                        {session.payload.componentType && session.payload.componentType === 'thumbsUp' &&
+                                        {session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
-                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span><i className='fa fa-thumbs-o-up' /></span>
-                                            : <span>{session.replied_by.name}: <i className='fa fa-thumbs-o-up' /></span>
+                                            : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                                           }
                                         </span>
                                         }
                                         <br />
                                         <span className='m-widget4__sub'>
                                           <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                           <i className='fa fa-calendar' />&nbsp;&nbsp;
-                                          {timeSince(session.datetime)}
+                                          {timeSince(session.lastDateTime)}
                                         </span>
                                       </div>
                                       <div className='m-widget4__ext'>
