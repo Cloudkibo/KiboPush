@@ -491,7 +491,7 @@ class LiveChat extends React.Component {
                                           {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
                                         </span>
                                         <br />
-                                        {((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text')) &&
+                                        {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
                                               ? <span>{session.lastPayload.text}</span>
