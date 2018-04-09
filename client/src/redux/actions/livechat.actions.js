@@ -43,6 +43,7 @@ export function setActiveSession (sessionId) {
 }
 
 export function showUserChats (userChat) {
+  console.log('showUserChats response', userChat)
   return {
     type: ActionTypes.SHOW_USER_CHAT,
     userChat
