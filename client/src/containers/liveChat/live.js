@@ -269,7 +269,10 @@ class LiveChat extends React.Component {
             request_time: sess[j].request_time,
             status: sess[j].status,
             subscriber_id: sess[j].subscriber_id,
-            _id: sess[j]._id
+            _id: sess[j]._id,
+            lastPayload: nextProps.userChat[0].lastPayload,
+            lastDateTime: nextProps.userChat[0].lastDateTime,
+            lastRepliedBy: nextProps.userChat[0].lastRepliedBy
           }
           this.setState({sessionsData: sess})
           this.separateResolvedSessions(sess)
