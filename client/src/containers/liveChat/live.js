@@ -502,7 +502,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'image' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent an image</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent an image</span>
@@ -512,7 +512,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'video' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a video</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a video</span>
@@ -522,7 +522,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'audio' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent an audio</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent an audio</span>
@@ -532,7 +532,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'file' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a file</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a file</span>
@@ -542,7 +542,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'card' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a card</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a card</span>
@@ -552,7 +552,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'gallery' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a gallery</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a gallery</span>
@@ -562,7 +562,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'gif' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a gif</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a gif</span>
@@ -572,7 +572,7 @@ class LiveChat extends React.Component {
                                         }
                                         {session.payload.componentType && session.payload.componentType === 'sticker' &&
                                         <span className='m-widget4__sub'>
-                                          {!session.replied_by.type
+                                          {!session.replied_by
                                             ? <span>{session.subscriber_id.firstName} sent a sticker</span>
                                             : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
                                             ? <span>You sent a sticker</span>
