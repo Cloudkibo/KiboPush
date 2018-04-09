@@ -290,7 +290,7 @@ class Bot extends React.Component {
                                 <div className='m-form'>
                                   <div id='question' className='form-group m-form__group'>
                                     <label className='control-label'>Bot Name:</label>
-                                      {this.state.error &&
+                                    {this.state.error &&
                                       <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
                                       }
                                     <input className='form-control' placeholder='Enter bot name here'

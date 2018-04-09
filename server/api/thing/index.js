@@ -8,7 +8,6 @@ const Subscribers = require('./../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const Users = require('./../user/Users.model')
-const mongoose = require('mongoose')
 
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
