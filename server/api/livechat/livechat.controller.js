@@ -18,19 +18,18 @@ exports.index = function (req, res) {
       return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
     }
-    for (var i = 0; i < fbchats.length; i++) {
-      fbchats[i].lastPayload = fbchats[fbchats.length - 1].payload
-      fbchats[i].set('lastPayload',
-        fbchats[fbchats.length - 1].payload,
-        {strict: false})
-      fbchats[i].set('lastRepliedBy',
-      fbchats[fbchats.length - 1].replied_by,
-      {strict: false})
-      fbchats[i].set('lastDateTime',
-        fbchats[fbchats.length - 1].datetime,
-        {strict: false})
-    }
-    fbchats.lastPayload = fbchats.payload[fbchats.length - 1]
+    // for (var i = 0; i < fbchats.length; i++) {
+    //   fbchats[i].lastPayload = fbchats[fbchats.length - 1].payload
+    //   fbchats[i].set('lastPayload',
+    //     fbchats[fbchats.length - 1].payload,
+    //     {strict: false})
+    //   fbchats[i].set('lastRepliedBy',
+    //   fbchats[fbchats.length - 1].replied_by,
+    //   {strict: false})
+    //   fbchats[i].set('lastDateTime',
+    //     fbchats[fbchats.length - 1].datetime,
+    //     {strict: false})
+    // }
     return res.status(200).json({
       status: 'success',
       payload: fbchats
