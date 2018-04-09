@@ -5,7 +5,6 @@
 const logger = require('../../components/logger')
 const Pages = require('./Pages.model')
 const TAG = 'api/pages/pages.controller.js'
-const Users = require('../user/Users.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')

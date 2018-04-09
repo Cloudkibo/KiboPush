@@ -7,10 +7,7 @@ const logger = require('../../components/logger')
 // const Workflows = require('./Workflows.model')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/smart_replies/bots.controller.js'
-const CompanyUsers = require('./../companyuser/companyuser.model')
 const Bots = require('./Bots.model')
-const Answers = require('./Answers.model')
-const _ = require('lodash')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
@@ -38,7 +35,7 @@ exports.create = function (req, res) {
         if (err) {
           return logger.serverLog(TAG,
             'Error Occured In Creating WIT.AI app')
-          return res.status(500).json({status: 'failed', payload: {error: err}})
+          // return res.status(500).json({status: 'failed', payload: {error: err}})
         } else {
           if (witres.statusCode !== 200) {
             logger.serverLog(TAG,
