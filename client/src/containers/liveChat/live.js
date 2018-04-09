@@ -490,9 +490,17 @@ class LiveChat extends React.Component {
                                           {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
                                         </span>
                                         <br />
+                                        {session.payload.componentType === 'image' &&
                                         <span className='m-widget4__sub'>
+                                          {!session.replied_by.type
+                                            ? <span>{session.subscriber_id.firstName} sent an image</span>
+                                            : session.replied_by.type === 'agent' && session.replied_by.id === this.props.user._id
+                                            ? <span>{session.subscriber_id.firstName} You sent an image</span>
+                                            : <span>{session.replied_by.name} sent an image</span>
+                                          }
                                           {session.page_id.pageName}
                                         </span>
+                                          }
                                       </div>
                                       <div className='m-widget4__ext'>
                                         {
