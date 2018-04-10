@@ -327,6 +327,7 @@ exports.send = function (req, res) {
                       subscribers = taggedSubscribers
                       for (let j = 0; j < subscribers.length; j++) {
                         const data = {
+                          messaging_type: 'UPDATE',
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                           message: messageData
                         }
@@ -402,6 +403,7 @@ exports.send = function (req, res) {
                       subscribers = taggedSubscribers
                       for (let j = 0; j < subscribers.length; j++) {
                         const data = {
+                          messaging_type: 'UPDATE',
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                           message: messageData
                         }
@@ -717,6 +719,7 @@ exports.sendPoll = function (req, res) {
                         subscribers = taggedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
                           const data = {
+                            messaging_type: 'UPDATE',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                             message: messageData
                           }
@@ -792,6 +795,7 @@ exports.sendPoll = function (req, res) {
                         subscribers = taggedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
                           const data = {
+                            messaging_type: 'UPDATE',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                             message: messageData
                           }

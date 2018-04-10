@@ -479,6 +479,7 @@ exports.send = function (req, res) {
                                 }
                               }
                               const data = {
+                                messaging_type: 'UPDATE',
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
@@ -565,6 +566,7 @@ exports.send = function (req, res) {
                               }
                             }
                             const data = {
+                              messaging_type: 'UPDATE',
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                               message: messageData
                             }
@@ -876,6 +878,7 @@ exports.sendSurvey = function (req, res) {
                                   }
                                 }
                                 const data = {
+                                  messaging_type: 'UPDATE',
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
@@ -962,6 +965,7 @@ exports.sendSurvey = function (req, res) {
                                 }
                               }
                               const data = {
+                                messaging_type: 'UPDATE',
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
