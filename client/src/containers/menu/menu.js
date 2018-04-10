@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem } from '../../redux/actions/menu.actions'
+import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem, removeMenu } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import Popover from 'react-simple-popover'
-import { transformData, getUrl } from './utility'
+import { transformData, getUrl, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
@@ -63,8 +63,10 @@ class Menu extends React.Component {
     this.getItemClicked = this.getItemClicked.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.reset = this.reset.bind(this)
+    this.handleReset = this.handleReset.bind(this)
     props.fetchMenu()
-    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
+    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.props.pages.length > 0) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
     }
   }
@@ -416,7 +418,21 @@ class Menu extends React.Component {
     }
     this.setState({itemMenus: temp})
   }
-
+  handleReset () {
+    this.props.getIndexBypage(this.state.pageValue, this.handleIndexByPage)
+  }
+  reset () {
+    var data = {}
+    data.payload = removeMenuPayload()
+    data.pageId = this.state.pageValue
+    data.userId = this.props.user._id
+    var tempItemMenus = [{
+      title: 'First Menu',
+      submenu: []
+    }]
+    data.jsonStructure = tempItemMenus
+    this.props.removeMenu(data, this.handleReset, this.msg)
+  }
   save () {
     if (this.props.currentMenuItem && this.props.currentMenuItem.itemMenus && this.props.currentMenuItem.itemMenus.length > 0) {
       for (var j = 0; j < this.props.currentMenuItem.itemMenus.length; j++) {
@@ -801,6 +817,9 @@ class Menu extends React.Component {
                             Preview
                           </button>
                         }
+                        <button style={{marginLeft: '15px'}} onClick={this.reset.bind(this)} className='btn btn-sm btn-secondary'>
+                          Reset Menu
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -832,7 +851,8 @@ function mapDispatchToProps (dispatch) {
     fetchMenu: fetchMenu,
     saveMenu: saveMenu,
     getIndexBypage: getIndexBypage,
-    saveCurrentMenuItem: saveCurrentMenuItem
+    saveCurrentMenuItem: saveCurrentMenuItem,
+    removeMenu: removeMenu
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
