@@ -190,6 +190,7 @@ exports.upload = function (req, res) {
                 }
                 pages.forEach(page => {
                   let messageData = {
+                    'messaging_type': 'UPDATE',
                     'recipient': JSON.stringify({
                       'phone_number': result
                     }),
@@ -378,6 +379,7 @@ exports.sendNumbers = function (req, res) {
         })
         pages.forEach(page => {
           let messageData = {
+            'messaging_type': 'UPDATE',
             'recipient': JSON.stringify({
               'phone_number': result
             }),

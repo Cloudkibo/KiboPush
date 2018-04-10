@@ -214,7 +214,7 @@ exports.getfbMessage = function (req, res) {
                               }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
-                                payloadItem, false)
+                                payloadItem, true)
 
                               request(
                                 {
@@ -531,6 +531,7 @@ function handleThePagePostsForAutoPosting (event, status) {
 
                         if (event.value.item === 'status' || status) {
                           messageData = {
+                            'messaging_type': 'UPDATE',
                             'recipient': JSON.stringify({
                               'id': subscriber.senderId
                             }),
@@ -557,6 +558,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                               savedurl._id
 
                             messageData = {
+                              'messaging_type': 'UPDATE',
                               'recipient': JSON.stringify({
                                 'id': subscriber.senderId
                               }),
@@ -604,6 +606,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                             let newURL = config.domain + '/api/URL/' +
                               savedurl._id
                             messageData = {
+                              'messaging_type': 'UPDATE',
                               'recipient': JSON.stringify({
                                 'id': subscriber.senderId
                               }),
@@ -636,6 +639,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                           })
                         } else if (event.value.item === 'video') {
                           messageData = {
+                            'messaging_type': 'UPDATE',
                             'recipient': JSON.stringify({
                               'id': subscriber.senderId
                             }),
@@ -945,7 +949,7 @@ function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {
     let messageData = utility.prepareSendAPIPayload(
-      req.sender.id, payloadItem)
+      req.sender.id, payloadItem, true)
     logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
     Pages.find({pageId: req.recipient.id}, (err, pages) => {
       if (err) {
@@ -1039,6 +1043,7 @@ function handleUnsubscribe (resp, req) {
           `Page token error from graph api ${JSON.stringify(err3)}`)
       }
       const data = {
+        messaging_type: 'RESPONSE',
         recipient: {id: req.sender.id}, // this is the subscriber id
         message: messageData
       }
@@ -1158,6 +1163,7 @@ function sendautomatedmsg (req, page) {
                       }
                     })
                   const data = {
+                    messaging_type: 'RESPONSE',
                     recipient: {id: req.sender.id}, // this is the subscriber id
                     message: messageData
                   }
@@ -1174,6 +1180,7 @@ function sendautomatedmsg (req, page) {
             }
 
             const data = {
+              messaging_type: 'RESPONSE',
               recipient: {id: req.sender.id}, // this is the subscriber id
               message: messageData
             }
@@ -1326,6 +1333,7 @@ function savesurvey (req) {
                 }
               }
               const data = {
+                messaging_type: 'RESPONSE',
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
@@ -1411,6 +1419,7 @@ function savesurvey (req) {
                 text: 'Thank you. Response submitted successfully.'
               }
               const data = {
+                messaging_type: 'RESPONSE',
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
