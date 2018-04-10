@@ -16,6 +16,13 @@ export function showCreatedBot (data) {
   }
 }
 
+export function showBotDetails (data) {
+  return {
+    type: ActionTypes.SHOW_BOT_DETAILS,
+    data
+  }
+}
+
 export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
@@ -56,6 +63,29 @@ export function updateStatus (data) {
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadBotsList())
+        }
+      })
+  }
+}
+
+export function deleteBot (id, msg) {
+  return (dispatch) => {
+    callApi(`bots/delete/${id}`, 'delete')
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Bot deleted successfully')
+          dispatch(loadBotsList())
+        }
+      })
+  }
+}
+
+export function botDetails (id) {
+  return (dispatch) => {
+    callApi(`bots/botDetails/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showBotDetails(res.payload))
         }
       })
   }
