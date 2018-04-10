@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -171,18 +171,18 @@ class Bot extends React.Component {
     this.setState({isActive: e.target.value})
   }
 
-  gotoView (poll) {
+  gotoView (bot) {
     this.props.history.push({
-      pathname: `/pollResult`,
-      state: poll
+      pathname: `/viewBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
-  gotoEdit (poll) {
+  gotoEdit (bot) {
     this.props.history.push({
-      pathname: `/pollView`,
-      state: poll
+      pathname: `/editBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
@@ -324,24 +324,24 @@ class Bot extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
-                          {/*
+                          {
                             this.state.isShowingModalDelete &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialogDelete}>
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialogDelete}>
-                                <h3>Delete Poll</h3>
-                                <p>Are you sure you want to delete this poll?</p>
+                                <h3>Delete Bot</h3>
+                                <p>Are you sure you want to delete this bot?</p>
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.props.deleteBot(this.state.deleteid, this.msg)
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
-                          */}
+                          }
                         </div>
                         <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                           <input type='text' placeholder='Search bots by name ...' className='form-control m-input m-input--solid' onChange={this.searchBots} />
@@ -410,12 +410,12 @@ class Bot extends React.Component {
                                   ? <span style={{width: '200px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(bot)}>
+                                      onClick={() => this.gotoView(bot._id)}>
                                       View
                                     </button>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoEdit(bot)}>Edit
+                                      onClick={() => this.gotoEdit(bot._id)}>Edit
                                     </button>
                                     <button className='btn btn-sm' disabled
                                       style={{float: 'left', margin: 2}}
@@ -480,7 +480,8 @@ function mapDispatchToProps (dispatch) {
     {
       loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
-      createBot: createBot
+      createBot: createBot,
+      deleteBot: deleteBot
     },
     dispatch)
 }

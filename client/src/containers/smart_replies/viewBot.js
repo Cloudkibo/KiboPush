@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 
-class EditBot extends React.Component {
+class ViewBot extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -78,7 +78,7 @@ class EditBot extends React.Component {
                   <div className='m-input-icon m-input-icon--right'>
                     <textarea className='form-control'
                       placeholder='Type the answer of your questions here...'
-                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
+                      rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} disabled />
                   </div>
                 </div>
               </div>
@@ -98,7 +98,7 @@ class EditBot extends React.Component {
         <div>
           <div className='m-input-icon m-input-icon--right'>
             <input type='text' className='form-control m-input' placeholder='Enter new question here' value={this.state.payload[payloadIndex].questions[i]}
-              onChange={this.handleQuestionChange.bind(this, i, payloadIndex)} />
+              onChange={this.handleQuestionChange.bind(this, i, payloadIndex)} disabled />
             <span className='m-input-icon__icon m-input-icon__icon--right'>
               <span>
                 <i className='fa fa-times-circle' onClick={this.removeQuestion.bind(this, i, payloadIndex)} />
@@ -182,7 +182,9 @@ class EditBot extends React.Component {
     }
     this.props.editBot({botId: this.state.id, payload: this.state.payload})
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
-    this.msg.success('Bot updated successfully')
+    this.props.history.push({
+      pathname: `/bots`
+    })
   }
 
   render () {
@@ -253,9 +255,6 @@ class EditBot extends React.Component {
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.createBot}> Save
-                        </button>
                         <Link
                           to='/bots'
                           className='btn btn-secondary' style={{'marginLeft': '10px'}}>
@@ -288,4 +287,4 @@ function mapDispatchToProps (dispatch) {
       botDetails: botDetails
     }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(EditBot)
+export default connect(mapStateToProps, mapDispatchToProps)(ViewBot)

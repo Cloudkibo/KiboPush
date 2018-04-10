@@ -10,6 +10,10 @@ export function botsInfo (state = {}, action) {
       return Object.assign({}, state, {
         createdBot: action.data
       })
+    case ActionTypes.SHOW_BOT_DETAILS:
+      return Object.assign({}, state, {
+        botDetails: action.data
+      })
     default:
       return state
   }

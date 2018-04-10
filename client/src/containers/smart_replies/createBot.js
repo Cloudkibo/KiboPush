@@ -33,7 +33,7 @@ class CreateBot extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.createdBot) {
-      this.setState({id: nextProps._id, name: nextProps.botName, page: nextProps.pageId.pageName, isActive: nextProps.isActive})
+      this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, page: nextProps.createdBot.pageId.pageName, isActive: nextProps.createdBot.isActive})
     }
   }
 
