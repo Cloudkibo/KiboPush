@@ -540,13 +540,14 @@ exports.graphData = function (req, res) {
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: {company_id: companyUser.companyId,
+              $match: {
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
                   $lt: new Date(
                     (new Date().getTime()))
-                }
+                },
+                company_id: companyUser.companyId
               }
             },
             {
@@ -560,6 +561,7 @@ exports.graphData = function (req, res) {
                 description: `Error in getting sessions count ${JSON.stringify(err)}`
               })
             }
+            logger.serverLog(TAG, `sessions found: ${JSON.stringify(sessionsgraphdata)}`)
             Sessions.find({company_id: companyUser.companyId}, (err, sessionsgraphdata1) => {
               if (err) {
                 return res.status(404).json({
