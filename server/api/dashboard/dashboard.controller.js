@@ -538,7 +538,7 @@ exports.graphData = function (req, res) {
           }
           Sessions.aggregate([
             {
-              $match: { companyId: companyUser.companyId,
+              $match: { company_id: companyUser.companyId,
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
