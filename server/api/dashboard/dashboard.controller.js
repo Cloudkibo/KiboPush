@@ -536,9 +536,11 @@ exports.graphData = function (req, res) {
               description: `Error in getting surveys count ${JSON.stringify(err)}`
             })
           }
+          logger.serverLog(TAG, `companyId: ${companyUser.companyId}`)
+          logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: { company_id: JSON.stringify(companyUser.companyId),
+              $match: { company_id: req.user.companyId,
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
