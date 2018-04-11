@@ -546,13 +546,12 @@ exports.graphData = function (req, res) {
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
                   $lt: new Date(
                     (new Date().getTime()))
-                },
-                company_id: companyUser.companyId
+                }
               }
             },
             {
               $group: {
-                _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
+                _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}, 'company': '$company_id'},
                 count: {$sum: 1}}
             }], (err, sessionsgraphdata) => {
             if (err) {
