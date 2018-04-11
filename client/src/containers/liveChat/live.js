@@ -487,7 +487,7 @@ class LiveChat extends React.Component {
                                   ? (this.state.sessionsDataNew.map((session) => (
                                     <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                       <div className='m-widget4__img m-widget4__img--pic'>
-                                        <img style={{width: '56px', height: '56px'}} src={(session.subscriber_id.profilePic) ? session.subscriber_id.profilePic : 'icons/users.jpg'} alt='' />
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                       </div>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -623,7 +623,7 @@ class LiveChat extends React.Component {
                                   ? (this.state.sessionsDataResolved.map((session) => (
                                     <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                       <div className='m-widget4__img m-widget4__img--pic'>
-                                        <img style={{width: '56px', height: '56px'}} src={(session.subscriber_id.profilePic) ? session.subscriber_id.profilePic : 'icons/users.jpg'} alt='' />
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                       </div>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
