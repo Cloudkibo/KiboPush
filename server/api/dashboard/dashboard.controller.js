@@ -560,9 +560,18 @@ exports.graphData = function (req, res) {
                 description: `Error in getting sessions count ${JSON.stringify(err)}`
               })
             }
+            Sessions.find({company_id: companyUser.companyId}, (err, sessionsgraphdata1) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting sessions count ${JSON.stringify(err)}`
+                })
+              }
+              logger.serverLog(TAG, `sessions found: ${JSON.stringify(sessionsgraphdata1)}`)
             return res.status(200)
               .json({status: 'success', payload: {broadcastsgraphdata: broadcastsgraphdata, pollsgraphdata: pollsgraphdata, surveysgraphdata: surveysgraphdata, sessionsgraphdata: sessionsgraphdata}})
           })
+        })
         })
       })
     })
