@@ -27,50 +27,108 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Polls.find({companyId: companyUser.companyId}, (err, polls) => {
-      if (err) {
-        logger.serverLog(TAG, `Error: ${err}`)
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error${JSON.stringify(err)}`
-        })
-      }
-      PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+    if (req.params.days === '0') {
+      Polls.find({companyId: companyUser.companyId}, (err, polls) => {
         if (err) {
-          return res.status(404)
-          .json({status: 'failed', description: 'Polls not found'})
+          logger.serverLog(TAG, `Error: ${err}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error${JSON.stringify(err)}`
+          })
         }
-        PollResponse.aggregate([{
-          $group: {
-            _id: {pollId: '$pollId'},
-            count: {$sum: 1}
-          }}
-        ], (err2, responsesCount1) => {
-          if (err2) {
+        PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+          if (err) {
             return res.status(404)
             .json({status: 'failed', description: 'Polls not found'})
           }
-          let responsesCount = []
-          for (let i = 0; i < polls.length; i++) {
-            responsesCount.push({
-              _id: polls[i]._id,
-              count: 0
-            })
-          }
-          for (let i = 0; i < polls.length; i++) {
-            for (let j = 0; j < responsesCount1.length; j++) {
-              if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
-                responsesCount[i].count = responsesCount1[j].count
+          PollResponse.aggregate([{
+            $group: {
+              _id: {pollId: '$pollId'},
+              count: {$sum: 1}
+            }}
+          ], (err2, responsesCount1) => {
+            if (err2) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Polls not found'})
+            }
+            let responsesCount = []
+            for (let i = 0; i < polls.length; i++) {
+              responsesCount.push({
+                _id: polls[i]._id,
+                count: 0
+              })
+            }
+            for (let i = 0; i < polls.length; i++) {
+              for (let j = 0; j < responsesCount1.length; j++) {
+                if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+                  responsesCount[i].count = responsesCount1[j].count
+                }
               }
             }
-          }
-          res.status(200).json({
-            status: 'success',
-            payload: {polls, pollpages, responsesCount}
+            res.status(200).json({
+              status: 'success',
+              payload: {polls, pollpages, responsesCount}
+            })
           })
         })
       })
-    })
+    } else {
+      Polls.aggregate([
+        {
+          $match: { companyId: companyUser.companyId,
+            'datetime': {
+              $gte: new Date(
+                (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            }
+          }
+        }
+      ], (err, polls) => {
+        if (err) {
+          logger.serverLog(TAG, `Error: ${err}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error${JSON.stringify(err)}`
+          })
+        }
+        PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Polls not found'})
+          }
+          PollResponse.aggregate([{
+            $group: {
+              _id: {pollId: '$pollId'},
+              count: {$sum: 1}
+            }}
+          ], (err2, responsesCount1) => {
+            if (err2) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Polls not found'})
+            }
+            let responsesCount = []
+            for (let i = 0; i < polls.length; i++) {
+              responsesCount.push({
+                _id: polls[i]._id,
+                count: 0
+              })
+            }
+            for (let i = 0; i < polls.length; i++) {
+              for (let j = 0; j < responsesCount1.length; j++) {
+                if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+                  responsesCount[i].count = responsesCount1[j].count
+                }
+              }
+            }
+            res.status(200).json({
+              status: 'success',
+              payload: {polls, pollpages, responsesCount}
+            })
+          })
+        })
+      })
+    }
   })
 }
 

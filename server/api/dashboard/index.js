@@ -38,4 +38,16 @@ router.get('/:id',
   auth.doesRolePermitsThisAction('dashboardPermission'),
   controller.index)
 
+router.get('/graphData/:days',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('dashboard'),
+  auth.doesRolePermitsThisAction('dashboardPermission'),
+  controller.graphData)
+
+router.get('/topPages',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('dashboard'),
+  auth.doesRolePermitsThisAction('dashboardPermission'),
+  controller.topPages)
+
 module.exports = router
