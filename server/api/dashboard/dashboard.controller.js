@@ -538,7 +538,7 @@ exports.graphData = function (req, res) {
           }
           Sessions.aggregate([
             {
-              $match: { company_id: companyUser.companyId,
+              $match: {
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -567,7 +567,7 @@ exports.graphData = function (req, res) {
   })
 }
 
-exports.topPages = function (req, res) {
+exports.toppages = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
