@@ -540,7 +540,7 @@ exports.graphData = function (req, res) {
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: { company_id: req.user.companyId,
+              $match: { company_id: companyUser.companyId,
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -560,9 +560,58 @@ exports.graphData = function (req, res) {
                 description: `Error in getting sessions count ${JSON.stringify(err)}`
               })
             }
+            logger.serverLog(TAG, `one ${JSON.stringify(sessionsgraphdata)}`)
+            Sessions.aggregate([
+              {
+                $match: {company_id: JSON.stringify(companyUser.companyId),
+                  'request_time': {
+                    $gte: new Date(
+                      (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                    $lt: new Date(
+                      (new Date().getTime()))
+                  }
+                }
+              },
+              {
+                $group: {
+                  _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
+                  count: {$sum: 1}}
+              }], (err, sessionsgraphdata2) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting sessions count ${JSON.stringify(err)}`
+                })
+              }
+              logger.serverLog(TAG, `two ${JSON.stringify(sessionsgraphdata2)}`)
+              Sessions.aggregate([
+                {
+                  $match: {company_id: mongoose.Types.ObjectId(companyUser.companyId),
+                    'request_time': {
+                      $gte: new Date(
+                        (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                      $lt: new Date(
+                        (new Date().getTime()))
+                    }
+                  }
+                },
+                {
+                  $group: {
+                    _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
+                    count: {$sum: 1}}
+                }], (err, sessionsgraphdata3) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting sessions count ${JSON.stringify(err)}`
+                  })
+                }
+                logger.serverLog(TAG, `three ${JSON.stringify(sessionsgraphdata3)}`)
             return res.status(200)
               .json({status: 'success', payload: {broadcastsgraphdata: broadcastsgraphdata, pollsgraphdata: pollsgraphdata, surveysgraphdata: surveysgraphdata, sessionsgraphdata: sessionsgraphdata}})
           })
+        })
+      })
         })
       })
     })
