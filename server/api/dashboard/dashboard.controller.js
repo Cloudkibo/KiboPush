@@ -540,7 +540,7 @@ exports.graphData = function (req, res) {
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: {
+              $match: {company_id: companyUser.companyId,
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -552,7 +552,6 @@ exports.graphData = function (req, res) {
             {
               $group: {
                 _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}},
-                $push: { companyId: '$company_id' },
                 count: {$sum: 1}}
             }], (err, sessionsgraphdata) => {
             if (err) {
