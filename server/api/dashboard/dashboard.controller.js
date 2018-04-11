@@ -540,7 +540,7 @@ exports.graphData = function (req, res) {
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: { company_id: '5a95ab86ddc2045990930bc7',
+              $match: {
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -560,7 +560,27 @@ exports.graphData = function (req, res) {
                 description: `Error in getting sessions count ${JSON.stringify(err)}`
               })
             }
-            logger.serverLog(TAG, `sessions found: ${JSON.stringify(sessionsgraphdata)}`)
+            let temp = []
+            for (let i = 0; i < sessionsgraphdata.length; i++) {
+              if (sessionsgraphdata[i]._id.company === companyUser.companyId) {
+                temp.push(sessionsgraphdata[i])
+              }
+            }
+            logger.serverLog(TAG, `temp: ${JSON.stringify(temp)}`)
+            let temp1 = []
+            for (let i = 0; i < sessionsgraphdata.length; i++) {
+              if (sessionsgraphdata[i]._id.company === JSON.stringify(companyUser.companyId)) {
+                temp1.push(sessionsgraphdata[i])
+              }
+            }
+            logger.serverLog(TAG, `temp1: ${JSON.stringify(temp1)}`)
+            let temp2 = []
+            for (let i = 0; i < sessionsgraphdata.length; i++) {
+              if (JSON.stringify(sessionsgraphdata[i]._id.company) === JSON.stringify(companyUser.companyId)) {
+                temp2.push(sessionsgraphdata[i])
+              }
+            }
+            logger.serverLog(TAG, `temp1: ${JSON.stringify(temp2)}`)
             Sessions.find({company_id: companyUser.companyId}, (err, sessionsgraphdata1) => {
               if (err) {
                 return res.status(404).json({
@@ -570,7 +590,7 @@ exports.graphData = function (req, res) {
               }
               logger.serverLog(TAG, `sessions found: ${JSON.stringify(sessionsgraphdata1)}`)
             return res.status(200)
-              .json({status: 'success', payload: {broadcastsgraphdata: broadcastsgraphdata, pollsgraphdata: pollsgraphdata, surveysgraphdata: surveysgraphdata, sessionsgraphdata: sessionsgraphdata}})
+              .json({status: 'success', payload: {broadcastsgraphdata: broadcastsgraphdata, pollsgraphdata: pollsgraphdata, surveysgraphdata: surveysgraphdata, sessionsgraphdata: temp}})
           })
         })
         })
