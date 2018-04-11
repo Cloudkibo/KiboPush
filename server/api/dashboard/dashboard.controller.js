@@ -538,11 +538,9 @@ exports.graphData = function (req, res) {
           }
           logger.serverLog(TAG, `companyId: ${companyUser.companyId}`)
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
-          logger.serverLog(TAG, `req.user: ${JSON.stringify(req.user)}`)
-          logger.serverLog(TAG, `days: ${days}`)
           Sessions.aggregate([
             {
-              $match: { company_id: req.user.companyId,
+              $match: {
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -565,7 +563,7 @@ exports.graphData = function (req, res) {
             logger.serverLog(TAG, `one ${JSON.stringify(sessionsgraphdata)}`)
             Sessions.aggregate([
               {
-                $match: {company_id: JSON.stringify(req.user.companyId),
+                $match: {company_id: JSON.stringify(companyUser.companyId),
                   'request_time': {
                     $gte: new Date(
                       (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
@@ -588,7 +586,7 @@ exports.graphData = function (req, res) {
               logger.serverLog(TAG, `two ${JSON.stringify(sessionsgraphdata2)}`)
               Sessions.aggregate([
                 {
-                  $match: {company_id: mongoose.Types.ObjectId(req.user.companyId),
+                  $match: {company_id: mongoose.Types.ObjectId(companyUser.companyId),
                     'request_time': {
                       $gte: new Date(
                         (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
