@@ -51,7 +51,7 @@ class Survey extends React.Component {
   }
   componentWillMount () {
     this.props.loadSubscribersList()
-    this.props.loadSurveysList()
+    this.props.loadSurveysList(0)
     this.props.loadTags()
   }
   showDialog () {

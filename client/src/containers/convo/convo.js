@@ -33,7 +33,7 @@ class Convo extends React.Component {
       isShowingModal: false
 
     }
-    props.loadBroadcastsList()
+    props.loadBroadcastsList(0)
     props.loadSubscribersList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)

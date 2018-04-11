@@ -27,7 +27,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
-    props.loadPollsList()
+    props.loadPollsList(0)
     props.loadTags()
     super(props, context)
     this.state = {
