@@ -536,8 +536,6 @@ exports.graphData = function (req, res) {
               description: `Error in getting surveys count ${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG, `companyId: ${companyUser.companyId}`)
-          logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
               $match: {
