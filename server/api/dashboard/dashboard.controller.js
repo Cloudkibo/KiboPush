@@ -540,7 +540,7 @@ exports.graphData = function (req, res) {
           logger.serverLog(TAG, `companyId: ${JSON.stringify(companyUser.companyId)}`)
           Sessions.aggregate([
             {
-              $match: {
+              $match: { company_id: '5a95ab86ddc2045990930bc7',
                 'request_time': {
                   $gte: new Date(
                     (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
