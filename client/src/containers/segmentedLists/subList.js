@@ -1,4 +1,4 @@
-export function getSubList (data, conditions, pages) {
+export function getSubList (data, conditions, pages, joiningCondition) {
   var filteredData = []
   var field = ''
   var text = ''
@@ -20,8 +20,10 @@ export function getSubList (data, conditions, pages) {
           filteredData.push(obj)
         }
       }
-      data = filteredData
-      filteredData = []
+      if (joiningCondition === 'AND') {
+        data = filteredData
+        filteredData = []
+      }
     } else if (conditions[i].criteria === 'contains') {
       field = conditions[i].condition
       text = conditions[i].text
@@ -37,8 +39,10 @@ export function getSubList (data, conditions, pages) {
           filteredData.push(obj)
         }
       }
-      data = filteredData
-      filteredData = []
+      if (joiningCondition === 'AND') {
+        data = filteredData
+        filteredData = []
+      }
     } else if (conditions[i].criteria === 'begins') {
       field = conditions[i].condition
       text = conditions[i].text
@@ -58,14 +62,23 @@ export function getSubList (data, conditions, pages) {
           }
         }
       }
-      data = filteredData
-      filteredData = []
+      if (joiningCondition === 'AND') {
+        data = filteredData
+        filteredData = []
+      }
     } else {
       return
     }
   }
-  for (let i = 0; i < data.length; i++) {
-    subSetIds.push(data[i]._id)
+  if (joiningCondition === 'AND') {
+    for (let i = 0; i < data.length; i++) {
+      subSetIds.push(data[i]._id)
+    }
+  }
+  if (joiningCondition === 'OR') {
+    for (let j = 0; j < filteredData.length; j++) {
+      subSetIds.push(filteredData[j]._id)
+    }
   }
   return subSetIds
 }

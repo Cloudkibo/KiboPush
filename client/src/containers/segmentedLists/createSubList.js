@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -29,7 +30,9 @@ class CreateSubList extends React.Component {
       parentListName: '',
       parentListData: [],
       allSubscribers: [],
-      lists: []
+      lists: [],
+      dropdownConditionOpen: false,
+      joiningCondition: 'AND'
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -49,6 +52,9 @@ class CreateSubList extends React.Component {
     this.handleGetParentList = this.handleGetParentList.bind(this)
     this.createSubList = this.createSubList.bind(this)
     this.editSubList = this.editSubList.bind(this)
+    this.toggleCondition = this.toggleCondition.bind(this)
+    this.changeConditionToAnd = this.changeConditionToAnd.bind(this)
+    this.changeConditionToOr = this.changeConditionToOr.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
@@ -81,7 +87,19 @@ class CreateSubList extends React.Component {
       this.setState({ allSubscribers: nextProps.subscribers })
     }
   }
-
+  toggleCondition () {
+    this.setState({dropdownConditionOpen: !this.state.dropdownConditionOpen})
+  }
+  changeConditionToAnd () {
+    this.setState({
+      joiningCondition: 'AND'
+    })
+  }
+  changeConditionToOr () {
+    this.setState({
+      joiningCondition: 'OR'
+    })
+  }
   initializeList () {
     var tempConditions = []
     if (this.props.currentList.conditions) {
@@ -113,7 +131,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -126,7 +144,7 @@ class CreateSubList extends React.Component {
   handleGetParentList (response) {
     if (response.payload) {
       this.setState({parentListData: response.payload})
-      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages)
+      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -162,7 +180,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -488,6 +506,18 @@ class CreateSubList extends React.Component {
                               ))
                             }
                           </span>
+                        </div>
+                        <div className='form-group m-form__group col-12' style={{marginBottom: '20px', color: '#337ab7', display: 'flex'}}>
+                          <div style={{marginTop: '10px'}}>Create a list of subscribers that match<span id='switchCondition' style={{fontWeight: 'bold', textDecoration: 'underline'}}>{this.state.joiningCondition === 'OR' ? ' any of the following conditions' : ' all of the following conditions'}:</span></div>
+                          <Dropdown id='switchCondition' style={{marginLeft: '10px'}}isOpen={this.state.dropdownConditionOpen} toggle={this.toggleCondition}>
+                            <DropdownToggle caret>
+                               Change Joining Condition
+                            </DropdownToggle>
+                            <DropdownMenu>
+                              <DropdownItem onClick={this.changeConditionToAnd}>all of the following conditions</DropdownItem>
+                              <DropdownItem onClick={this.changeConditionToOr}>any of the following conditions</DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
                         </div>
                         <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                           <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
