@@ -44,10 +44,10 @@ router.get('/graphData/:days',
   auth.doesRolePermitsThisAction('dashboardPermission'),
   controller.graphData)
 
-router.get('/topPages',
+router.get('/toppages',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('dashboard'),
   auth.doesRolePermitsThisAction('dashboardPermission'),
-  controller.topPages)
+  controller.toppages)
 
 module.exports = router
