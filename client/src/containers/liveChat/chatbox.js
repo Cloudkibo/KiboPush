@@ -118,6 +118,7 @@ class ChatBox extends React.Component {
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    this.blobToFile = this.blobToFile.bind(this)
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -226,8 +227,9 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
-    //  var file = new File([recordedBlob], 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
-    var file = blobToFile(recordedBlob, 'audio.m4a')
+    var file1 = new File(recordedBlob, 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    console.log('file1', file1)
+    var file = this.blobToFile(recordedBlob, 'audio.m4a')
     console.log('recordedBlob', file)
     if (file) {
       this.resetFileComponent()
