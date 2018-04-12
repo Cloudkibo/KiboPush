@@ -227,7 +227,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
-    var file1 = new File(recordedBlob, 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    var file1 = new File([recordedBlob], 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
     console.log('file1', file1)
     var file = this.blobToFile(recordedBlob, 'audio.m4a')
     console.log('recordedBlob', file)
