@@ -219,7 +219,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
-    console.log('readasdat', recordedBlob.readAsDataURL(rec))
+    console.log('readasdat', recordedBlob.readAsDataURL(recordedBlob))
     var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/webm;codecs=opus', lastModified: Date.now()})
     console.log('file', file)
     console.log('readasdat', file.readAsDataURL(file))
