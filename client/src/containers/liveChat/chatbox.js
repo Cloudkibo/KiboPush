@@ -194,7 +194,7 @@ class ChatBox extends React.Component {
 
   showRecorder () {
     this.setState({showRecorder: true})
-    conosle.log('in recorder')
+    console.log('in recorder')
   }
 
   closeRecorder () {
@@ -458,7 +458,7 @@ class ChatBox extends React.Component {
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
         fileData.append('componentType', this.state.componentType)
-        console.log('file', fileData)
+        console.log('file', file)
         this.setState({uploadDescription: 'File is uploading..'})
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
@@ -1300,9 +1300,8 @@ class ChatBox extends React.Component {
                         }} className='fa fa-microphone' />
                       </i>
                     </div>
-                    {
-                      /*
-                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+
+                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons1'>
                         <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                           <i style={{
                             fontSize: '20px',
@@ -1316,7 +1315,8 @@ class ChatBox extends React.Component {
                           }} className='fa fa-smile-o' />
                         </i>
                       </div>
-
+                      {
+                        /*
                       <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
                         <i onClick={this.showStickers} style={styles.iconclass}>
                           <i style={{
