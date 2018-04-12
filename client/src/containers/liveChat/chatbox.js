@@ -219,8 +219,10 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
+    console.log('readasdat', recordedBlob.readAsDataURL(rec))
     var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/webm;codecs=opus', lastModified: Date.now()})
     console.log('file', file)
+    console.log('readasdat', file.readAsDataURL(file))
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -239,7 +241,6 @@ class ChatBox extends React.Component {
         fileData.append('filetype', recordedBlob.blob.type)
         fileData.append('filesize', recordedBlob.blob.size)
         fileData.append('componentType', this.state.componentType)
-        console.log('file', file)
         this.setState({uploadDescription: 'File is uploading..'})
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
@@ -779,8 +780,7 @@ class ChatBox extends React.Component {
               record={this.state.record}
               className='sound-wave'
               onStop={this.onStop}
-              strokeColor='#000000'
-              backgroundColor='#FF4081' />
+              strokeColor='#000000' />
             <button onClick={this.startRecording}>Start</button>
             <button onClick={this.stopRecording}>Stop</button>
           </div>
