@@ -219,7 +219,7 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob], 'audioRecording', {type: 'audio/x-m4a', lastModified: Date.now()})
+    var file = new File([recordedBlob], 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
     console.log('recordedBlob', file)
     if (file) {
       this.resetFileComponent()
@@ -711,27 +711,6 @@ class ChatBox extends React.Component {
                     No
                   </button>
                 </div>
-              </div>
-            </ModalDialog>
-          </ModalContainer>
-        }
-        {
-          this.state.isShowingModal &&
-          <ModalContainer style={{width: '500px'}}
-            onClose={this.closeDialog}>
-            <ModalDialog style={{width: '500px'}}
-              onClose={this.closeDialog}>
-              <h3>Voice Recording</h3>
-              <div role='dialog' aria-label='Voice clip'>
-                <div>
-                  <div class='_3z54' style='height: 0px; width: 0px;'></div>
-                  <a role='button' title='Record' href='#'>
-                    <div class='_3z55'>
-                      <span class='_3z56'>Record</span>
-                    </div>
-                  </a>
-                </div>
-                <div class='_3z53'>0:00</div>
               </div>
             </ModalDialog>
           </ModalContainer>
