@@ -194,6 +194,7 @@ class ChatBox extends React.Component {
 
   showRecorder () {
     this.setState({showRecorder: true})
+    conosle.log('in recorder')
   }
 
   closeRecorder () {
@@ -737,6 +738,7 @@ class ChatBox extends React.Component {
             <GiphyPicker onSelected={this.sendGif} />
           </div>
         </Popover>
+        {console.log('recorder', this.state.showRecorder)}
         <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -746,6 +748,7 @@ class ChatBox extends React.Component {
           onHide={this.closeRecorder}
         >
           <div>
+            hello
             <ReactMic
               record={this.state.record}
               className='sound-wave'
