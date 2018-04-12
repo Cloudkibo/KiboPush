@@ -1283,7 +1283,7 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
-                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
                       <i onClick={this.showRecorder} style={styles.iconclass}>
                         <i style={{
                           fontSize: '20px',
