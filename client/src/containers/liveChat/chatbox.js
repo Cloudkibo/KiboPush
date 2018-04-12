@@ -738,7 +738,6 @@ class ChatBox extends React.Component {
             <GiphyPicker onSelected={this.sendGif} />
           </div>
         </Popover>
-        {console.log('recorder', this.state.showRecorder)}
         <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -748,16 +747,14 @@ class ChatBox extends React.Component {
           onHide={this.closeRecorder}
         >
           <div>
-            hello
             <ReactMic
               record={this.state.record}
               className='sound-wave'
               onStop={this.onStop}
               strokeColor='#000000'
               backgroundColor='#FF4081' />
-            <button onTouchTap={this.startRecording}>Start</button>
-            <button onTouchTap={this.stopRecording}>Stop</button>
-            />
+            <button onClick={this.startRecording}>Start</button>
+            <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
         <div className='m-portlet m-portlet--mobile'>
@@ -1300,7 +1297,8 @@ class ChatBox extends React.Component {
                         }} className='fa fa-microphone' />
                       </i>
                     </div>
-
+                    {
+                      /*
                       <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons1'>
                         <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                           <i style={{
@@ -1315,8 +1313,7 @@ class ChatBox extends React.Component {
                           }} className='fa fa-smile-o' />
                         </i>
                       </div>
-                      {
-                        /*
+
                       <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
                         <i onClick={this.showStickers} style={styles.iconclass}>
                           <i style={{
