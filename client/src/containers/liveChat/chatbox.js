@@ -32,6 +32,7 @@ import {
   showDate,
   validURL
 } from './utilities'
+import { ReactMic } from 'react-mic'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
@@ -67,13 +68,15 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       showGifPicker: false,
+      showRecorder: false,
       gifUrl: '',
       urlmeta: '',
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
       isShowingModal: false,
-      disabledValue: false
+      disabledValue: false,
+      record: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -89,6 +92,12 @@ class ChatBox extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
+    this.showRecorder = this.showRecorder.bind(this)
+    this.closeRecorder = this.closeRecorder.bind(this)
+    this.startRecording = this.startRecording.bind(this)
+    this.stopRecording = this.stopRecording.bind(this)
+    this.onData = this.onData.bind(this)
+    this.onStop = this.onStop.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.showStickers = this.showStickers.bind(this)
@@ -181,6 +190,34 @@ class ChatBox extends React.Component {
 
   closeEmojiPicker () {
     this.setState({showEmojiPicker: false})
+  }
+
+  showRecorder () {
+    this.setState({showRecorder: true})
+  }
+
+  closeRecorder () {
+    this.setState({showRecorder: false})
+  }
+
+  startRecording () {
+    this.setState({
+      record: true
+    })
+  }
+
+  stopRecording () {
+    this.setState({
+      record: false
+    })
+  }
+
+  onData (recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob)
+  }
+
+  onStop (recordedBlob) {
+    console.log('recordedBlob is: ', recordedBlob)
   }
 
   showStickers () {
@@ -697,6 +734,26 @@ class ChatBox extends React.Component {
         >
           <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
             <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
+        <Popover
+          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          placement='top'
+          height='390px'
+          target={this.recording}
+          show={this.state.showRecorder}
+          onHide={this.closeRecorder}
+        >
+          <div>
+            <ReactMic
+              record={this.state.record}
+              className='sound-wave'
+              onStop={this.onStop}
+              strokeColor='#000000'
+              backgroundColor='#FF4081' />
+            <button onTouchTap={this.startRecording}>Start</button>
+            <button onTouchTap={this.stopRecording}>Stop</button>
+            />
           </div>
         </Popover>
         <div className='m-portlet m-portlet--mobile'>
@@ -1224,6 +1281,20 @@ class ChatBox extends React.Component {
                             ref='selectFile' style={styles.inputf} />
                         </div>
                       }
+                    </div>
+                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                      <i onClick={this.showRecorder} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-microphone' />
+                      </i>
                     </div>
                     {
                       /*
