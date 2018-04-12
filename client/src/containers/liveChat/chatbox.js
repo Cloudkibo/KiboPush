@@ -507,6 +507,7 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
+    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
@@ -721,7 +722,17 @@ class ChatBox extends React.Component {
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialog}>
               <h3>Voice Recording</h3>
-
+              <div role='dialog' aria-label='Voice clip'>
+                <div>
+                  <div class='_3z54' style='height: 0px; width: 0px;'></div>
+                  <a role='button' title='Record' href='#'>
+                    <div class='_3z55'>
+                      <span class='_3z56'>Record</span>
+                    </div>
+                  </a>
+                </div>
+                <div class='_3z53'>0:00</div>
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
