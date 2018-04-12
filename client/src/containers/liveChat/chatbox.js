@@ -217,9 +217,17 @@ class ChatBox extends React.Component {
     console.log('chunk of real-time data is: ', recordedBlob)
   }
 
+  blobToFile (theBlob, fileName) {
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    theBlob.lastModifiedDate = new Date()
+    theBlob.name = fileName
+    return theBlob
+  }
+
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob], 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    //  var file = new File([recordedBlob], 'audioRecording.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    var file = blobToFile(recordedBlob, 'audio.m4a')
     console.log('recordedBlob', file)
     if (file) {
       this.resetFileComponent()
