@@ -7,7 +7,18 @@ export function updateDashboard (data) {
     data
   }
 }
-
+export function updateGraphData (data) {
+  return {
+    type: ActionTypes.UPDATE_GRAPH_DATA,
+    data
+  }
+}
+export function updateTopPages (data) {
+  return {
+    type: ActionTypes.UPDATE_TOP_PAGES,
+    data
+  }
+}
 export function updateSentVsSeen (data) {
   return {
     type: ActionTypes.UPDATE_SENT_VS_SEEN,
@@ -28,5 +39,17 @@ export function sentVsSeen () {
   return (dispatch) => {
     callApi('dashboard/sentVsSeen')
       .then(res => dispatch(updateSentVsSeen(res.payload)))
+  }
+}
+export function loadGraphData (days) {
+  return (dispatch) => {
+    callApi(`dashboard/graphData/${days}`)
+      .then(res => dispatch(updateGraphData(res.payload)))
+  }
+}
+export function loadTopPages () {
+  return (dispatch) => {
+    callApi(`dashboard/topPages/`)
+      .then(res => dispatch(updateTopPages(res.payload)))
   }
 }

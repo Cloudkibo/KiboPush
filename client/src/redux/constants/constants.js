@@ -64,6 +64,8 @@ export const CLEAR_CURRENT_CUSTOMER_LIST = 'CLEAR_CURRENT_CUSTOMER_LIST'
 // constants for dashboard
 export const UPDATE_DASHBOARD = 'UPDATE_DASHBOARD'
 export const UPDATE_SENT_VS_SEEN = 'UPDATE_SENT_VS_SEEN'
+export const UPDATE_GRAPH_DATA = 'UPDATE_GRAPH_DATA'
+export const UPDATE_TOP_PAGES = 'UPDATE_TOP_PAGES'
 
 // constants for growth tools
 export const SAVE_PHONE_NUMBERS = 'SAVE_PHONE_NUMBERS'
