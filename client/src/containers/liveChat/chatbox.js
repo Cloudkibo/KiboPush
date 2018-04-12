@@ -234,10 +234,10 @@ class ChatBox extends React.Component {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
         var fileData = new FormData()
-        fileData.append('file', file)
+        fileData.append('file', recordedBlob)
         fileData.append('filename', file.name)
-        fileData.append('filetype', file.type)
-        fileData.append('filesize', file.size)
+        fileData.append('filetype', recordedBlob.blob.type)
+        fileData.append('filesize', recordedBlob.blob.size)
         fileData.append('componentType', this.state.componentType)
         console.log('file', file)
         this.setState({uploadDescription: 'File is uploading..'})
